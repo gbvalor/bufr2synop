@@ -19,7 +19,7 @@
       <useconfiguration>debug</useconfiguration>
     </general>
     <run>
-      <mainprogram>src/bufr2synop0</mainprogram>
+      <mainprogram>src/bufr2synop</mainprogram>
       <terminal>true</terminal>
     </run>
     <configurations>
@@ -129,7 +129,7 @@
     <LICENSE>GPL</LICENSE>
     <LICENSEFILE>COPYING</LICENSEFILE>
     <OPT_INCS>-I/usr/include</OPT_INCS>
-    <OPT_LIBS>-lm -lgfortran -bufr</OPT_LIBS>
+    <OPT_LIBS>-lm -lgfortran -lbufr</OPT_LIBS>
     <VERSION>0.1</VERSION>
     <YEAR>2012</YEAR>
     <dest>/home/gbv/bufr2synop</dest>
