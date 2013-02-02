@@ -25,32 +25,8 @@
    1) Install ECMWF bufr library
    2) Then compile it as
       gcc bufr_decode.c -o bufr_decode -lgfortran -lbufr -lm
-*/
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#define KVALS 1024000
-#define KELEM 8192
-
-/*!
-  Note that big arrays are defined as global here to avoid segfaults
-*/
-
-char bufr_message[512000]; /*!< The array where the bufr file will be stored when readed */
-
-static char cnames[KELEM][64]; /*!< Array of strings with name of vars */
-static char cunits[KELEM][24]; /*!< Array of strings with name of used units */
-
-char cvals[KVALS][80]; /*!< array of strings with value of data */
-
-double values[KVALS],vals[KVALS];
-int ktdlst[KELEM], ktdexp[KELEM];
-
-
-int main(int argc, char *argv[])
-/*******************************************************************
+*******************************************************************
 *
 * Program : Bufr_decode
 *
@@ -85,7 +61,40 @@ int main(int argc, char *argv[])
 * Revised by Guillermo Ballester Valor AEMET (Spain) to be
 * compiled with gcc/gfortran in OpenSUSE 12.2.  November 2012
 *
-*******************************************************************/
+*******************************************************************
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+/*!
+  \def KVALS
+  \brief dimension of arrays of doubles
+*/
+#define KVALS 1024000
+
+/*!
+  \def KELEM
+  \brief max dimension of elements for a single report
+*/
+#define KELEM 8192
+
+/*!
+  Note that big arrays are defined as global here to avoid segfaults
+*/
+
+char bufr_message[512000]; /*!< The array where the bufr file will be stored when readed */
+
+static char cnames[KELEM][64]; /*!< Array of strings with name of vars */
+static char cunits[KELEM][24]; /*!< Array of strings with name of used units */
+
+char cvals[KVALS][80]; /*!< array of strings with value of data */
+
+double values[KVALS],vals[KVALS];
+int ktdlst[KELEM], ktdexp[KELEM];
+
+
+int main(int argc, char *argv[])
 {
 
   FILE *fp;
@@ -156,8 +165,8 @@ int main(int argc, char *argv[])
         }
       status=-1;
 
-      /*    Expand bufr message calling fortran program */
-      kbuff = (unsigned /*long*/ int *) bufr_message;
+      /* Expand bufr message calling fortran program */
+      kbuff = (unsigned int *) bufr_message;
       length /= 4; // Now length is sized in words
 
       bus012_(&length, kbuff , ksup, ksec0, ksec1, ksec2,  &kerr) ;
@@ -171,13 +180,16 @@ int main(int argc, char *argv[])
 
       if ( kelem > KELEM ) kelem = KELEM;
       kerr = 0;
-      bufrex_(&length,(/*long*/ int *)kbuff,ksup,ksec0,ksec1,ksec2,ksec3,ksec4,
+      bufrex_(&length,(int *)kbuff,ksup,ksec0,ksec1,ksec2,ksec3,ksec4,
               &kelem,(char **)cnames,(char **)cunits,&kvals,
               values,(char **)cvals,&kerr);
       if ( kerr )
         {
           kerr = 0;
         }
+     
+      /* NOTE the differences between array indexes in fortran and C 
+         so fortran KSEC3[3] is C ksec3[2]  */
       printf("ksec3[3]=%d\n", ksec3[2]);
       buukey_(ksec1,ksec2,key,ksup,&kerr);
 
@@ -189,7 +201,6 @@ int main(int argc, char *argv[])
       buprt_(&icode,&current_ss,&ksec3[2],&kelem,(char **)cnames,
              (char **)cunits,(char **)cvals,
              &kvals,values,ksup,ksec1,&kerr);
-
 
     }
 
