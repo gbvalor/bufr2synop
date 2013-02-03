@@ -34,26 +34,60 @@ char BUFR_MESSAGE[BUFR_LEN]; /*!< The array where the bufr file will be stored w
 char CNAMES[KELEM][64]; /*!< Array of strings with name of vars */
 char CUNITS[KELEM][24]; /*!< Array of strings with name of used units */
 
-int KSUP[9]; /*!< array containing supplementary information */
-int KSEC0[3];
-int KSEC1[40];
-int KSEC2[4096];
-int KSEC3[4];
-int KSEC4[2];
+int KSUP[9];  /*!< array containing supplementary information */
+int KSEC0[3]; /*!< array (size 3) containing Bufr Section 0 information.
+                   [0] Length of section 0 in bytes
+                   [1] Total length of Bufr message in bytes
+                   [2] Bufr Edition number (currently 4) */
+int KSEC1[40]; /*!< array of at least 40 words containing Bufr Section 1 information. When Section
+                 1 contains data for local use, KSEC1 should be sized accordingly.
+                   [0] Length of section 1 in bytes
+                   [1] Bufr Edition number (currently 4)
+                   [2] Originating centre
+                   [3] Update sequence number
+                   [4] Flag (presence of Section 2 in the message)
+                   [5] Bufr message type ( Bufr Table A)
+                   [6] Bufr message subtype (local use)
+                   [7] Version number of local table used
+                   [8] Year
+                   [9] Month
+                   [10] Day
+                   [11] Hour
+                   [12] Minute
+                   [13] Bufr Master Table used
+                   [14] Version number of Master table used
+                   [15] Originating sub-centre
+                   [16] International sub-category
+                   [17] Second
+                   [18-39] Local ADP centre information (byte by byte) */
+int KSEC2[4096];/*!< array of 4096 words containing Bufr Section 2 information. ECMWF uses this
+                 section to store Report Data Base KEY.
+                   [0] Length of Section 2 in bytes
+                   [1-4095] Report Data Base KEY in packed form */
+int KSEC3[4];   /*!< array of 4 words containing Bufr Section 3 information.
+                   [0] Length of Section 3 in bytes
+                   [1] Reserved
+                   [2] Number of subsets
+                   [3] Flag (data type, compression) */
+int KSEC4[2];   /*!< array of 2 words containing Section 4 information.
+                   [0] Length of Section 4 in bytes
+                   [1] Reserved */
 int KEY[46];
-int KERR;
+int KERR; /*!< An INTEGER containing an error code.*/
 
 
 char CVALS[KVALS][80]; /*!< array of strings with value of data */
 
-double VALUES[KVALS], VALS[KVALS];
-int KTDLST[KELEM], KTDEXP[KELEM];
+double VALUES[KVALS]; /*!< array of KVALS words containing element values.*/
+int KTDLST[KELEM]; 
+int KTDEXP[KELEM];
 
 char SELF[] = "bufr2synop"; /*!< The name of this binary */
 char INPUTFILE[256]; /*!< The pathname of input file */
 char OUTPUTFILE[256]; /*!< The pathname of output file */
 int VERBOSE; /*!< If != 0 the verbose output */
 
+struct synop_chunks SYN; /*!< struct where to set chunks of synops taken from a bufr subset */
 
 int main ( int argc, char *argv[] )
 {
@@ -205,23 +239,38 @@ int main ( int argc, char *argv[] )
                 VALUES, ( char ** ) CVALS, &KERR );
       if ( KERR )
         {
+          printf("KERR=%d\n", KERR);
           KERR = 0;
         }
 
-      /* NOTE the differences between array indexes in fortran and C
-         so fortran KSEC3[3] is C KSEC3[2]  */
-      printf ( "KSEC3[3]=%d\n", KSEC3[2] );
-      buukey_ ( KSEC1,KSEC2,KEY,KSUP,&KERR );
+      if (VERBOSE)
+        {
+          /*! Section 2 of the Bufr message is an optional section and every ADP centre can pack
+              any information in this section. The Bufr software decodes this local information
+              and stores it into KSEC2 array. ECMWF is storing RDB key in the Section 2 of the Bufr
+              messages. To print content of the Section 2, subroutine BUUKEY must be called before
+              the BUPRS2 routine. */
+          printf ( "KSEC3[3]=%d\n", KSEC3[2] );
+          buukey_ ( KSEC1, KSEC2, KEY, KSUP, &KERR );
 
-      busel_ ( &ktdlen,KTDLST,&ktdexl,KTDEXP,&KERR );
-      buprs3_ ( KSEC3,&ktdlen,KTDLST,&ktdexl,KTDEXP,&kelem, ( char ** ) CNAMES );
+          /*! Returns lists of unexpanded and expanded data descriptors from the Bufr message. 
+              The lists contains Bufr Table D sequence numbers, and the Bufr Table B reference numbers. */
 
-      icode = 0;
-      current_ss = 1;
-      buprt_ ( &icode,&current_ss,&KSEC3[2],&kelem, ( char ** ) CNAMES,
-               ( char ** ) CUNITS, ( char ** ) CVALS,
-               &kvals,VALUES,KSUP,KSEC1,&KERR );
+          busel_ ( &ktdlen, KTDLST, &ktdexl, KTDEXP, &KERR );
 
+          /*! Prints section 3.
+              Prior to calling the BUPRS3 routine, the BUSEL or BUSEL2 routine has to be called to get lists 
+              of unexpanded and fully expanded Data descriptors. In the case of multi-subset uncompressed bufr 
+              data the expanded list of descriptors might be different for different subsets. */
+          buprs3_ ( KSEC3, &ktdlen, KTDLST, &ktdexl, KTDEXP, &kelem, ( char ** ) CNAMES );
+
+          /*! Print data */
+          icode = 0;
+          current_ss = 1;
+          buprt_ ( &icode, &current_ss, &KSEC3[2], &kelem, ( char ** ) CNAMES,
+                   ( char ** ) CUNITS, ( char ** ) CVALS,
+                   &kvals, VALUES, KSUP, KSEC1, &KERR );
+        }
     }
 
   return KERR;
