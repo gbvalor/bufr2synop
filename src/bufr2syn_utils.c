@@ -82,3 +82,12 @@ void clean_synop_chunks( struct synop_chunks *syn)
   clean_syn_sec3( &(syn->s3));
   syn->error[0] = '\0';
 }
+
+/*!
+  \fn three_bytes_to_uint(const unsigned char *source)
+  \brief returns the integer value from an array of three bytes, most significant first
+*/
+unsigned int three_bytes_to_uint(const unsigned char *source)
+{
+   return  (source[2] + source[1] * 256 + source[0] * 65536);
+}

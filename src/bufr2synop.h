@@ -262,7 +262,7 @@ struct synop_chunks
 
 
 
-extern char BUFR_MESSAGE[BUFR_LEN]; 
+extern unsigned char BUFR_MESSAGE[BUFR_LEN]; 
 extern char CNAMES[KELEM][64]; 
 extern char CUNITS[KELEM][24]; 
 
@@ -295,3 +295,4 @@ void clean_syn_sec0(struct synop_sec0 *s);
 void clean_syn_sec1(struct synop_sec1 *s);
 void clean_syn_sec2(struct synop_sec2 *s);
 void clean_syn_sec3(struct synop_sec3 *s);
+unsigned int three_bytes_to_uint(const unsigned char *source);
