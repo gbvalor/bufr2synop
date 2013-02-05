@@ -24,6 +24,7 @@
 */
 #include "bufr2synop.h"
 
+#define DEBUG
 
 /*!
   Note that big arrays are defined as global here to avoid segfaults
@@ -95,6 +96,7 @@ int main ( int argc, char *argv[] )
   FILE *fp;
   int length = BUFR_LEN;
   int status = 0;
+  struct bufr_descriptor d;
 
   unsigned int *kbuff;
 
@@ -251,6 +253,13 @@ int main ( int argc, char *argv[] )
 
       busel_ ( &ktdlen, KTDLST, &ktdexl, KTDEXP, &KERR );
 
+#ifdef DEBUG
+      for (i = 0; i < ktdexl; i++)
+      {
+        integer_to_descriptor(&d, KTDEXP[i]);
+        printf("KTDEXP[%03d]=%06d F=%d, X=%02d, Y=%03d\n", i, KTDEXP[i], d.f, d.x, d.y);
+      }
+#endif
       /*! Prints section 3.
           Prior to calling the BUPRS3 routine, the BUSEL or BUSEL2 routine has to be called to get lists
           of unexpanded and fully expanded Data descriptors. In the case of multi-subset uncompressed bufr
@@ -265,7 +274,7 @@ int main ( int argc, char *argv[] )
                &kvals, VALUES, KSUP, KSEC1, &KERR );
     }
 
-
+#ifdef DEBUG
   for (i = 0; i < 3 ; i++)
     printf("KSEC0[%d] = %d\n", i,  KSEC0[i]);
   for (i = 0; i < 40 ; i++)
@@ -280,6 +289,7 @@ int main ( int argc, char *argv[] )
 
   for (i = 0; i < 9 ; i++)
     printf("KSUP[%d] = %d\n", i, KSUP[i]);
+#endif
 
   return KERR;
 

@@ -260,6 +260,11 @@ struct synop_chunks
    char error[128]; /*!< string with error code if a wrong synop report is found */
 };
 
+struct bufr_descriptor {
+   unsigned char f;
+   unsigned char x;
+   unsigned char y; 
+};
 
 
 extern unsigned char BUFR_MESSAGE[BUFR_LEN]; 
@@ -295,4 +300,5 @@ void clean_syn_sec0(struct synop_sec0 *s);
 void clean_syn_sec1(struct synop_sec1 *s);
 void clean_syn_sec2(struct synop_sec2 *s);
 void clean_syn_sec3(struct synop_sec3 *s);
+int integer_to_descriptor(struct bufr_descriptor *d, int id);
 unsigned int three_bytes_to_uint(const unsigned char *source);

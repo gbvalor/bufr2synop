@@ -91,3 +91,13 @@ unsigned int three_bytes_to_uint(const unsigned char *source)
 {
    return  (source[2] + source[1] * 256 + source[0] * 65536);
 }
+
+int integer_to_descriptor(struct bufr_descriptor *d, int id)
+{
+   if (d == NULL)
+     return 1;
+   d->f = id / 100000;
+   d->x = (id % 100000) / 1000;
+   d->y = id % 1000;
+   return 0;
+}
