@@ -24,21 +24,18 @@
 
 #include "bufr2synop.h"
 
-void
-print_usage(void)
+void print_usage(void)
 {
   printf("Usage: \n");
-  printf("  bufr2synop -i input [-o output][-v]\n");
-  printf(
-      "       -i input. Pathname of the file with the bufr message to parse\n");
-  printf(
-      "       -o output. Pathname of output file. Default is standar output\n");
+  printf("  bufr2synop -i input [-t bufrtable_dir][-o output][-v]\n");
+  printf("       -i input. Pathname of the file with the bufr message to parse\n");
+  printf("       -o output. Pathname of output file. Default is standar output\n");
+  printf("       -t bufrtable_dir. Pathname of bufr tables directory. Ended with '/'\n");
   printf("       -v. Verbose output\n");
   printf("       -h. Show this help\n");
 }
 
-int
-read_bufr(unsigned char *bufr, char *filename, int *length)
+int read_bufr(unsigned char *bufr, char *filename, int *length)
 {
   int aux;
   size_t n = 0;
@@ -70,7 +67,7 @@ read_bufr(unsigned char *bufr, char *filename, int *length)
       || bufr[n - 1] != '7')
     return -2;
 
-  printf("%d %d\n", n, three_bytes_to_uint(bufr + 4));
+  //printf("%d %d\n", n, three_bytes_to_uint(bufr + 4));
   // check about the expected size
   if (n != three_bytes_to_uint(bufr + 4))
     return -3;
@@ -82,20 +79,21 @@ read_bufr(unsigned char *bufr, char *filename, int *length)
  \fn int read_arguments( int _argc, char * _argv[])
  \brief read input arguments with the aid of getopt
  */
-int
-read_arguments(int _argc, char * _argv[])
+int read_arguments(int _argc, char * _argv[])
 {
   int iopt;
+  char aux[256];
 
   // Initial and default values
   INPUTFILE[0] = '\0';
   OUTPUTFILE[0] = '\0';
+  BUFRTABLES_DIR[0] = '\0';
   VERBOSE = 0;
-
+  
   /*
    Read input arguments using getop library
    */
-  while ((iopt = getopt(_argc, _argv, "hi:o:v")) != -1)
+  while ((iopt = getopt(_argc, _argv, "hi:o:t:v")) != -1)
     switch (iopt)
       {
     case 'i':
@@ -106,7 +104,13 @@ read_arguments(int _argc, char * _argv[])
       if (strlen(optarg) < 256)
         strcpy(OUTPUTFILE, optarg);
       break;
-    case 'v':
+     case 't':
+      if (strlen(optarg) < 256)
+      {
+        strcpy(BUFRTABLES_DIR, optarg);
+      }
+      break;
+   case 'v':
       VERBOSE = 1;
       break;
     case 'h':
@@ -121,4 +125,38 @@ read_arguments(int _argc, char * _argv[])
       return 1;
     }
   return 0;
+}
+
+int set_environment(void)
+{
+   char aux[256];
+
+   /*! During decoding Bufr table path and the names are printed. If user doeas not want that, set: VARIABLE
+      PRINT_TABLE_NAMES=false
+
+      During decoding code/flag tables could be read if code figure meaning is needed. If user want to use 
+      code and flag tables set: VARIABLE USE TABLE C=true
+
+      Then w set the proper environment here 
+   */
+   if (putenv("PRINT_TABLE_NAMES=false") || putenv("USE_TABLE_C=true"))
+    {
+      fprintf(stderr, "%s: Failure setting the environment\n", SELF);
+      exit (EXIT_FAILURE);
+    }
+
+    /*!
+      Default path for Bufr Tables is hard coded in the software. To change the path set environmental variable
+      BUFR_TABLES . The path must end with '/'
+    */
+    if (BUFRTABLES_DIR[0])
+    {
+        sprintf(aux,"BUFR_TABLES=%s", BUFRTABLES_DIR);
+        if (putenv(aux))
+        {
+           fprintf(stderr, "%s: Failure setting the environment\n", SELF);
+           exit (EXIT_FAILURE);
+        }
+    }
+    return 0;
 }

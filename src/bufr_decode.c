@@ -20,6 +20,7 @@
 
  Most important about modified is that all integers must have 4 bytes, i.e., need
  to be defined as 'int' or 'unsigned int' instead of 'long' and ' unsigned long'
+ for intel/amd X86_64 machines
 
  To be compiled with gcc we need:
    1) Install ECMWF bufr library

@@ -260,12 +260,15 @@ struct synop_chunks
    char error[128]; /*!< string with error code if a wrong synop report is found */
 };
 
+/*!
+  \struct bufr_descriptor
+  \brief BUFR descriptor
+*/
 struct bufr_descriptor {
-   unsigned char f;
-   unsigned char x;
-   unsigned char y; 
+   unsigned char f; /*!< F part of descriptor, 2 bits */
+   unsigned char x; /*!< X part of descriptor, 6 bits */
+   unsigned char y; /*!< Y part of descriptor, 8 bits */
 };
-
 
 extern unsigned char BUFR_MESSAGE[BUFR_LEN]; 
 extern char CNAMES[KELEM][64]; 
@@ -288,6 +291,7 @@ extern int KTDLST[KELEM], KTDEXP[KELEM];
 
 extern char INPUTFILE[256];
 extern char OUTPUTFILE[256];
+extern char BUFRTABLES_DIR[256];
 extern char SELF[];
 extern int VERBOSE;
 
@@ -300,5 +304,6 @@ void clean_syn_sec0(struct synop_sec0 *s);
 void clean_syn_sec1(struct synop_sec1 *s);
 void clean_syn_sec2(struct synop_sec2 *s);
 void clean_syn_sec3(struct synop_sec3 *s);
+int set_environment(void);
 int integer_to_descriptor(struct bufr_descriptor *d, int id);
 unsigned int three_bytes_to_uint(const unsigned char *source);

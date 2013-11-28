@@ -33,70 +33,87 @@
 unsigned char BUFR_MESSAGE[BUFR_LEN]; /*!< The array where the bufr file will be stored when readed */
 
 char CNAMES[KELEM][64]; /*!< Array of strings with name of vars */
+
 char CUNITS[KELEM][24]; /*!< Array of strings with name of used units */
 
 int KSUP[9]; /*!< array containing supplementary information */
+
 int KSEC0[3]; /*!< array (size 3) containing Bufr Section 0 information.
- [0] Length of section 0 in bytes
- [1] Total length of Bufr message in bytes
- [2] Bufr Edition number (currently 4) */
-int KSEC1[40]; /*!< array of at least 40 words containing Bufr Section 1 information. When Section
- 1 contains data for local use, KSEC1 should be sized accordingly.
- [0] Length of section 1 in bytes
- [1] Bufr Edition number (currently 4)
- [2] Originating centre
- [3] Update sequence number
- [4] Flag (presence of Section 2 in the message)
- [5] Bufr message type ( Bufr Table A)
- [6] Bufr message subtype (local use)
- [7] Version number of local table used
- [8] Year
- [9] Month
- [10] Day
- [11] Hour
- [12] Minute
- [13] Bufr Master Table used
- [14] Version number of Master table used
- [15] Originating sub-centre
- [16] International sub-category
- [17] Second
- [18-39] Local ADP centre information (byte by byte) */
+    [0] Length of section 0 in bytes
+    [1] Total length of Bufr message in bytes
+    [2] Bufr Edition number (currently 4) */
+
+int KSEC1[40]; /*!< array of at least 40 words containing Bufr Section 1 information. 
+ When Section 1 contains data for local use, KSEC1 should be sized accordingly.
+   [0] Length of section 1 in bytes
+   [1] Bufr Edition number (currently 4)
+   [2] Originating centre
+   [3] Update sequence number
+   [4] Flag (presence of Section 2 in the message)
+   [5] Bufr message type ( Bufr Table A)
+   [6] Bufr message subtype (local use)
+   [7] Version number of local table used
+   [8] Year
+   [9] Month
+   [10] Day
+   [11] Hour
+   [12] Minute
+   [13] Bufr Master Table used
+   [14] Version number of Master table used
+   [15] Originating sub-centre
+   [16] International sub-category
+   [17] Second
+   [18-39] Local ADP centre information (byte by byte) */
+
 int KSEC2[4096];/*!< array of 4096 words containing Bufr Section 2 information. ECMWF uses this
  section to store Report Data Base KEY.
- [0] Length of Section 2 in bytes
- [1-4095] Report Data Base KEY in packed form */
+   [0] Length of Section 2 in bytes
+   [1-4095] Report Data Base KEY in packed form */
+
 int KSEC3[4]; /*!< array of 4 words containing Bufr Section 3 information.
- [0] Length of Section 3 in bytes
- [1] Reserved
- [2] Number of subsets
- [3] Flag (data type, compression) */
+   [0] Length of Section 3 in bytes
+   [1] Reserved
+   [2] Number of subsets
+   [3] Flag (data type, compression) */
+
 int KSEC4[2]; /*!< array of 2 words containing Section 4 information.
- [0] Length of Section 4 in bytes
- [1] Reserved */
+   [0] Length of Section 4 in bytes
+   [1] Reserved */
+
 int KEY[46];
+
 int KERR; /*!< An INTEGER containing an error code.*/
 
 char CVALS[KVALS][80]; /*!< array of strings with value of data */
 
 double VALUES[KVALS]; /*!< array of KVALS words containing element values.*/
+
 int KTDLST[KELEM];
+
 int KTDEXP[KELEM];
 
 char SELF[] = "bufr2synop"; /*!< The name of this binary */
+char BUFRTABLES_DIR[256]; /*!< Directory for BUFR tables set by user */ 
 char INPUTFILE[256]; /*!< The pathname of input file */
 char OUTPUTFILE[256]; /*!< The pathname of output file */
 int VERBOSE; /*!< If != 0 the verbose output */
 
 struct synop_chunks SYN; /*!< struct where to set chunks of synops taken from a bufr subset */
 
-int
-main(int argc, char *argv[])
+/*!
+  \fn int main(int argc, char *argv[])
+  \brief the standard C main entry function
+  \param argc Number of arguments entered in standard input, including the the name of this binary.
+  \param argv the array of strings with the arguents 
+
+*/
+int main(int argc, char *argv[])
 {
 
   FILE *fp;
-  int length = BUFR_LEN;
-  int status = 0;
-  struct bufr_descriptor d;
+  int length = BUFR_LEN; // max length of a bufrfile in bytes
+  int status = 0; // initial status
+  struct bufr_descriptor d; // bufr descriptor
 
   unsigned int *kbuff;
 
@@ -110,6 +127,9 @@ main(int argc, char *argv[])
       fprintf(stderr, "%s: error geting arguments\n", SELF);
       return (EXIT_FAILURE);
     }
+
+  // set needed enviroment before use bufr library
+  set_environment();
 
   /* Read in bufr messages */
   //status = readbufr ( fp, &BUFR_MESSAGE, &length );
@@ -233,6 +253,7 @@ main(int argc, char *argv[])
   bufrex_(&length, (int *) kbuff, KSUP, KSEC0, KSEC1, KSEC2, KSEC3, KSEC4,
       &kelem, (char **) CNAMES, (char **) CUNITS, &kvals, VALUES,
       (char **) CVALS, &KERR);
+
   if (KERR)
     {
       printf("KERR=%d\n", KERR);
