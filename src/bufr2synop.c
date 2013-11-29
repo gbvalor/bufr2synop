@@ -46,7 +46,7 @@ int KSEC0[3]; /*!< array (size 3) containing Bufr Section 0 information.
 int KSEC1[40]; /*!< array of at least 40 words containing Bufr Section 1 information. 
  When Section 1 contains data for local use, KSEC1 should be sized accordingly.
    [0] Length of section 1 in bytes
-   [1] Bufr master table (zero if standard WMO FM 94-IX BUFR tables are used)
+   [1] Bufr Edition number (currently 4)
    [2] Originating centre
    [3] Update sequence number
    [4] Flag (presence of Section 2 in the message)
@@ -58,7 +58,7 @@ int KSEC1[40]; /*!< array of at least 40 words containing Bufr Section 1 informa
    [10] Day
    [11] Hour
    [12] Minute
-   [13] Bufr Master Table used
+   [13] Bufr Master Table used (zero if standard WMO FM 94-IX BUFR tables are used)
    [14] Version number of Master table used
    [15] Originating sub-centre
    [16] International sub-category
@@ -88,9 +88,9 @@ char CVALS[KVALS][80]; /*!< array of strings with value of data */
 
 double VALUES[KVALS]; /*!< array of KVALS words containing element values.*/
 
-int KTDLST[KELEM];
+int KTDLST[KELEM]; /*!< array with list of descriptor in sec3 */
 
-int KTDEXP[KELEM];
+int KTDEXP[KELEM]; /*!< array with expanded list of descriptors */
 
 char SELF[] = "bufr2synop"; /*!< The name of this binary */
 char BUFRTABLES_DIR[256]; /*!< Directory for BUFR tables set by user */ 
@@ -114,10 +114,9 @@ int main(int argc, char *argv[])
   int length = BUFR_LEN; // max length of a bufrfile in bytes
   int status = 0; // initial status
   struct bufr_descriptor d; // bufr descriptor
-
   unsigned int *kbuff;
 
-  int i;
+  int i, j;
   int kelem = KELEM, kvals = KVALS;
   int icode = 0, ktdlen, ktdexl;
   int current_ss;
@@ -196,7 +195,7 @@ int main(int argc, char *argv[])
    KSEC1 - An INTEGER array of at least 40 words containing Bufr Section 1 information. When Section
    1 contains data for local use, KSEC1 should be sized accordingly.
    [0] Length of section 1 in bytes
-   [1] Bufr master table (zero if standard WMO FM 94-IX BUFR tables are used)
+   [1] Bufr Edition number (currently 4)
    [2] Originating centre
    [3] Update sequence number
    [4] Flag (presence of Section 2 in the message)
@@ -208,7 +207,7 @@ int main(int argc, char *argv[])
    [10] Day
    [11] Hour
    [12] Minute
-   [13] Bufr Master Table used
+   [13] Bufr Master Table used (zero if standard WMO FM 94-IX BUFR tables are used)
    [14] Version number of Master table used
    [15] Originating sub-centre
    [16] International sub-category
@@ -254,6 +253,29 @@ int main(int argc, char *argv[])
       &kelem, (char **) CNAMES, (char **) CUNITS, &kvals, VALUES,
       (char **) CVALS, &KERR);
 
+  // Now convert arrays of chars to C-strings setting an '\0' 
+   for (i = 0; i < KSUP[4] ; i++)
+   {
+     CNAMES[i][63] = '\0';
+     CUNITS[i][23] = '\0';
+     CVALS[i][79] = '\0';
+   }
+
+#ifdef DEBUG
+   for (i = 0, j = 0; i < KSUP[4] ; i++)
+   {
+     printf("[%03d]=\"%s\": ", i, CNAMES[i]);
+     if (VALUES[i] != MISSING_REAL)
+       printf("%14.4lf %s ",VALUES[i], CUNITS[i]);
+     else
+       printf("   MISSING     %s ", CUNITS[i]);
+
+     if (strstr(CUNITS[i],"CCITTIA5") != NULL)
+       printf(" \"%s\"", CVALS[j++]);
+     printf("\n");
+   }
+#endif
+
   if (KERR)
     {
       printf("KERR=%d\n", KERR);
@@ -261,11 +283,34 @@ int main(int argc, char *argv[])
     }
 
   // Check about the WMO master table
-  if (KSEC1[1])
+  if (KSEC1[13])
     {
       fprintf(stderr,"Sorry, we only accept WMO BUFR master Table\n");
       exit(EXIT_FAILURE); 
     }
+
+  // Expand the descriptors 
+   /*!
+    kdelen - An INTEGER variable containing number of data descriptors in KTDLST array
+    KTDLST - An INTEGER array containing the list of kdtlen data descriptors
+    kdtexl - An INTEGER variable containing number of expanded data descriptors
+    KTDEXP - An INTEGER array containing the list of KTDEXL data descriptors
+    KERR - An INTEGER containing error code.
+   */
+   busel_(&ktdlen, KTDLST, &ktdexl, KTDEXP, &KERR);
+#ifdef DEBUG
+   for (i = 0; i < ktdlen; i++)
+   {
+      integer_to_descriptor(&d, KTDLST[i]);
+      printf("KTDLST[%03d]=%06d F=%d, X=%02d, Y=%03d\n", i, KTDLST[i], d.f, d.x, d.y);
+   }
+   for (i = 0; i < ktdexl; i++)
+   {
+      integer_to_descriptor(&d, KTDEXP[i]);
+      printf("KTDEXP[%03d]=%06d F=%d, X=%02d, Y=%03d\n", i, KTDEXP[i], d.f, d.x, d.y);
+   }
+#endif
+
 
   if (VERBOSE)
     {
@@ -274,21 +319,14 @@ int main(int argc, char *argv[])
        and stores it into KSEC2 array. ECMWF is storing RDB key in the Section 2 of the Bufr
        messages. To print content of the Section 2, subroutine BUUKEY must be called before
        the BUPRS2 routine. */
-      printf("KSEC3[3]=%d\n", KSEC3[2]);
-      buukey_(KSEC1, KSEC2, KEY, KSUP, &KERR);
+      if (KSEC1[4])
+        buukey_(KSEC1, KSEC2, KEY, KSUP, &KERR);
 
       /*! Returns lists of unexpanded and expanded data descriptors from the Bufr message.
        The lists contains Bufr Table D sequence numbers, and the Bufr Table B reference numbers. */
 
       busel_(&ktdlen, KTDLST, &ktdexl, KTDEXP, &KERR);
 
-#ifdef DEBUG
-      for (i = 0; i < ktdexl; i++)
-      {
-        integer_to_descriptor(&d, KTDEXP[i]);
-        printf("KTDEXP[%03d]=%06d F=%d, X=%02d, Y=%03d\n", i, KTDEXP[i], d.f, d.x, d.y);
-      }
-#endif
       /*! Prints section 3.
        Prior to calling the BUPRS3 routine, the BUSEL or BUSEL2 routine has to be called to get lists
        of unexpanded and fully expanded Data descriptors. In the case of multi-subset uncompressed bufr
@@ -320,7 +358,6 @@ int main(int argc, char *argv[])
   for (i = 0; i < 9; i++)
     printf("KSUP[%d] = %d\n", i, KSUP[i]);
 #endif
-
   return KERR;
 
 }

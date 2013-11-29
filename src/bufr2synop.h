@@ -80,6 +80,22 @@
 */
 #define SYNOP_NMISC 8
 
+/*!
+   \def BUFR_OBS_DATA_MASK
+   \brief bit mask for Observed data 
+*/
+#define BUFR_OBS_DATA_MASK 128
+
+/*!
+   \def BUFR_COMPRESSED_DATA_MASK
+   \brief bit mask for Observed data  
+*/
+#define BUFR_COMPRESSED_DATA_MASK 64
+
+#define MISSING_REAL (1.7e38)
+
+#define MISSING_INTEGER (2147483647)
+
 
 /*! \struct report_date_ext
     \brief contains extensions, not in wmo. Date/time UTC information
