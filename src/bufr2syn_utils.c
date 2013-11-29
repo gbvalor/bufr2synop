@@ -92,6 +92,12 @@ unsigned int three_bytes_to_uint(const unsigned char *source)
    return  (source[2] + source[1] * 256 + source[0] * 65536);
 }
 
+/*!
+  \fn int integer_to_descriptor(struct bufr_descriptor *d, int id)
+  \brief parse an integer with a descriptor fom bufr ECWMF libary
+  \param d pointer to a struct \ref bufr_descriptor where to set the result on output
+  \param id integer with the descriptor from ewcwf
+*/
 int integer_to_descriptor(struct bufr_descriptor *d, int id)
 {
    if (d == NULL)

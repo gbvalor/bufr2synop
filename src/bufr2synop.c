@@ -46,7 +46,7 @@ int KSEC0[3]; /*!< array (size 3) containing Bufr Section 0 information.
 int KSEC1[40]; /*!< array of at least 40 words containing Bufr Section 1 information. 
  When Section 1 contains data for local use, KSEC1 should be sized accordingly.
    [0] Length of section 1 in bytes
-   [1] Bufr Edition number (currently 4)
+   [1] Bufr master table (zero if standard WMO FM 94-IX BUFR tables are used)
    [2] Originating centre
    [3] Update sequence number
    [4] Flag (presence of Section 2 in the message)
@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
    KSEC1 - An INTEGER array of at least 40 words containing Bufr Section 1 information. When Section
    1 contains data for local use, KSEC1 should be sized accordingly.
    [0] Length of section 1 in bytes
-   [1] Bufr Edition number (currently 4)
+   [1] Bufr master table (zero if standard WMO FM 94-IX BUFR tables are used)
    [2] Originating centre
    [3] Update sequence number
    [4] Flag (presence of Section 2 in the message)
@@ -258,6 +258,13 @@ int main(int argc, char *argv[])
     {
       printf("KERR=%d\n", KERR);
       KERR = 0;
+    }
+
+  // Check about the WMO master table
+  if (KSEC1[1])
+    {
+      fprintf(stderr,"Sorry, we only accept WMO BUFR master Table\n");
+      exit(EXIT_FAILURE); 
     }
 
   if (VERBOSE)

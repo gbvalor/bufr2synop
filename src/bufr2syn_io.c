@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2012 by Guillermo Ballester Valor                       *
+ *   Copyright (C) 2013 by Guillermo Ballester Valor                       *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -35,6 +35,13 @@ void print_usage(void)
   printf("       -h. Show this help\n");
 }
 
+/*!
+  \fn int read_bufr(unsigned char *bufr, char *filename, int *length)
+  \brief read a bufr file as an array of unsigned chars
+  \param bufr pointer to an array of unsigned chars. On output it will contain the bufr
+  \param filename string with complete pathname of bufr file to read 
+  \param length On input max length allocated by caller. On output real length of bufr
+*/
 int read_bufr(unsigned char *bufr, char *filename, int *length)
 {
   int aux;
@@ -127,36 +134,3 @@ int read_arguments(int _argc, char * _argv[])
   return 0;
 }
 
-int set_environment(void)
-{
-   char aux[256];
-
-   /*! During decoding Bufr table path and the names are printed. If user doeas not want that, set: VARIABLE
-      PRINT_TABLE_NAMES=false
-
-      During decoding code/flag tables could be read if code figure meaning is needed. If user want to use 
-      code and flag tables set: VARIABLE USE TABLE C=true
-
-      Then w set the proper environment here 
-   */
-   if (putenv("PRINT_TABLE_NAMES=false") || putenv("USE_TABLE_C=true"))
-    {
-      fprintf(stderr, "%s: Failure setting the environment\n", SELF);
-      exit (EXIT_FAILURE);
-    }
-
-    /*!
-      Default path for Bufr Tables is hard coded in the software. To change the path set environmental variable
-      BUFR_TABLES . The path must end with '/'
-    */
-    if (BUFRTABLES_DIR[0])
-    {
-        sprintf(aux,"BUFR_TABLES=%s", BUFRTABLES_DIR);
-        if (putenv(aux))
-        {
-           fprintf(stderr, "%s: Failure setting the environment\n", SELF);
-           exit (EXIT_FAILURE);
-        }
-    }
-    return 0;
-}
