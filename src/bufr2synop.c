@@ -43,7 +43,7 @@ int KSEC0[3]; /*!< array (size 3) containing Bufr Section 0 information.
     [1] Total length of Bufr message in bytes
     [2] Bufr Edition number (currently 4) */
 
-int KSEC1[40]; /*!< array of at least 40 words containing Bufr Section 1 information. 
+int KSEC1[40]; /*!< array of at least 40 words containing Bufr Section 1 information.
  When Section 1 contains data for local use, KSEC1 should be sized accordingly.
    [0] Length of section 1 in bytes
    [1] Bufr Edition number (currently 4)
@@ -93,10 +93,14 @@ int KTDLST[KELEM]; /*!< array with list of descriptor in sec3 */
 int KTDEXP[KELEM]; /*!< array with expanded list of descriptors */
 
 char SELF[] = "bufr2synop"; /*!< The name of this binary */
-char BUFRTABLES_DIR[256]; /*!< Directory for BUFR tables set by user */ 
+char BUFRTABLES_DIR[256]; /*!< Directory for BUFR tables set by user */
 char INPUTFILE[256]; /*!< The pathname of input file */
 char OUTPUTFILE[256]; /*!< The pathname of output file */
 int VERBOSE; /*!< If != 0 the verbose output */
+
+size_t NLINES_TABLEC; /*!< current number of TABLE C file lines */
+char TABLEC[MAXLINES_TABLEC][92]; /*!< Here is where store the lines from table C file*/
+
 
 struct synop_chunks SYN; /*!< struct where to set chunks of synops taken from a bufr subset */
 
@@ -104,7 +108,7 @@ struct synop_chunks SYN; /*!< struct where to set chunks of synops taken from a 
   \fn int main(int argc, char *argv[])
   \brief the standard C main entry function
   \param argc Number of arguments entered in standard input, including the the name of this binary.
-  \param argv the array of strings with the arguents 
+  \param argv the array of strings with the arguents
 
 */
 int main(int argc, char *argv[])
@@ -115,11 +119,13 @@ int main(int argc, char *argv[])
   int status = 0; // initial status
   struct bufr_descriptor d; // bufr descriptor
   unsigned int *kbuff;
+  char aux[256]; // auxiliar string
 
-  int i, j;
+  int i, j, k,nsub, nsub1;
   int kelem = KELEM, kvals = KVALS;
   int icode = 0, ktdlen, ktdexl;
   int current_ss;
+  char cunits[26], cnames[66],cvals[82];
 
   if (read_arguments(argc, argv))
     {
@@ -140,7 +146,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "FILE '%s' do not end with '7777'.\n", INPUTFILE);
       else if (status == -3)
         fprintf(stderr, "FILE '%s' has different size than expected.\n",
-            INPUTFILE);
+                INPUTFILE);
       else if (status == -4)
         fprintf(stderr, "Too small input FILE.\n");
       exit(EXIT_FAILURE);
@@ -250,31 +256,8 @@ int main(int argc, char *argv[])
 
   KERR = 0;
   bufrex_(&length, (int *) kbuff, KSUP, KSEC0, KSEC1, KSEC2, KSEC3, KSEC4,
-      &kelem, (char **) CNAMES, (char **) CUNITS, &kvals, VALUES,
-      (char **) CVALS, &KERR);
-
-  // Now convert arrays of chars to C-strings setting an '\0' 
-   for (i = 0; i < KSUP[4] ; i++)
-   {
-     CNAMES[i][63] = '\0';
-     CUNITS[i][23] = '\0';
-     CVALS[i][79] = '\0';
-   }
-
-#ifdef DEBUG
-   for (i = 0, j = 0; i < KSUP[4] ; i++)
-   {
-     printf("[%03d]=\"%s\": ", i, CNAMES[i]);
-     if (VALUES[i] != MISSING_REAL)
-       printf("%14.4lf %s ",VALUES[i], CUNITS[i]);
-     else
-       printf("   MISSING     %s ", CUNITS[i]);
-
-     if (strstr(CUNITS[i],"CCITTIA5") != NULL)
-       printf(" \"%s\"", CVALS[j++]);
-     printf("\n");
-   }
-#endif
+          &kelem, (char **) CNAMES, (char **) CUNITS, &kvals, VALUES,
+          (char **) CVALS, &KERR);
 
   if (KERR)
     {
@@ -286,29 +269,80 @@ int main(int argc, char *argv[])
   if (KSEC1[13])
     {
       fprintf(stderr,"Sorry, we only accept WMO BUFR master Table\n");
-      exit(EXIT_FAILURE); 
+      exit(EXIT_FAILURE);
     }
 
-  // Expand the descriptors 
-   /*!
-    kdelen - An INTEGER variable containing number of data descriptors in KTDLST array
-    KTDLST - An INTEGER array containing the list of kdtlen data descriptors
-    kdtexl - An INTEGER variable containing number of expanded data descriptors
-    KTDEXP - An INTEGER array containing the list of KTDEXL data descriptors
-    KERR - An INTEGER containing error code.
-   */
-   busel_(&ktdlen, KTDLST, &ktdexl, KTDEXP, &KERR);
+  // Expand the descriptors
+  /*!
+   kdelen - An INTEGER variable containing number of data descriptors in KTDLST array
+   KTDLST - An INTEGER array containing the list of kdtlen data descriptors
+   kdtexl - An INTEGER variable containing number of expanded data descriptors
+   KTDEXP - An INTEGER array containing the list of KTDEXL data descriptors
+   KERR - An INTEGER containing error code.
+  */
+  busel_(&ktdlen, KTDLST, &ktdexl, KTDEXP, &KERR);
+
+  /*!
+   read table C
+  */
+  if (read_table_c() == 0)
+    {
+      fprintf(stderr,"Cannot read C Table  File\n");
+      exit(EXIT_FAILURE);
+    }
+
 #ifdef DEBUG
-   for (i = 0; i < ktdlen; i++)
-   {
+  for (i = 0; i < ktdlen; i++)
+    {
       integer_to_descriptor(&d, KTDLST[i]);
-      printf("KTDLST[%03d]=%06d F=%d, X=%02d, Y=%03d\n", i, KTDLST[i], d.f, d.x, d.y);
-   }
-   for (i = 0; i < ktdexl; i++)
-   {
-      integer_to_descriptor(&d, KTDEXP[i]);
-      printf("KTDEXP[%03d]=%06d F=%d, X=%02d, Y=%03d\n", i, KTDEXP[i], d.f, d.x, d.y);
-   }
+      printf("KTDLST[%03d]=%d %02d %03d\n", i, d.f, d.x, d.y);
+    }
+  for (nsub = 0; nsub < KSUP[5]; nsub++)
+    {
+      nsub1 = nsub + 1;
+
+      /*!
+         NOTE that not all subset have the same descriptor expanded because of replication factor
+         so is safer expand the subset descriptors individually
+
+         Also NOTE that all integers must be called by reference
+      */
+      busel2_(&nsub1, &kelem, &ktdlen, (char **)KTDLST, &ktdexl, (char **)KTDEXP, (char **)CNAMES, (char **)CUNITS, &KERR);
+
+      for (j = 0 ; j < ktdexl; j++)
+        {
+          i = nsub * KELEM + j;
+          charray_to_string(cnames, CNAMES[j], 64);
+          charray_to_string(cunits, CUNITS[j], 24);
+          integer_to_descriptor(&d, KTDEXP[j]);
+
+          printf("KTDEXP[%03d]=%d %02d %03d |%03d |", j, d.f, d.x, d.y, nsub);
+          printf("'%s'|", cnames);
+          if (VALUES[i] != MISSING_REAL)
+            {
+              if (strstr(cunits,"CCITTIA5") != NULL)
+                {
+                  k = ((int)VALUES[i]) % 1000;
+                  printf("'%s'", charray_to_string(cvals, CVALS[(int)(VALUES[i]/1000.0) - 1], k));
+                }
+              else if (strstr(cunits,"CODE TABLE") == cunits)
+                {
+                  //printf("%s %lf\n",d.c,VALUES[i]);
+                  if (get_explained_table_val (aux, 256, &d, (int) VALUES[i]) != NULL)
+                    printf("(%3d) '%s'", (int)VALUES[i], aux);
+                  else
+                    printf("(%3d) : 'NOT FOUND'", (int)VALUES[i]);
+                }
+              else
+                {
+                  printf("%14.4lf %s ", VALUES[i], cunits);
+                }
+            }
+          else
+            printf("   MISSING     %s ", cunits);
+          printf("\n");
+        }
+    }
 #endif
 
 
@@ -332,14 +366,14 @@ int main(int argc, char *argv[])
        of unexpanded and fully expanded Data descriptors. In the case of multi-subset uncompressed bufr
        data the expanded list of descriptors might be different for different subsets. */
       buprs3_(KSEC3, &ktdlen, KTDLST, &ktdexl, KTDEXP, &kelem,
-          (char **) CNAMES);
+              (char **) CNAMES);
 
       /*! Print data */
       icode = 0;
       current_ss = 1;
       buprt_(&icode, &current_ss, &KSEC3[2], &kelem, (char **) CNAMES,
-          (char **) CUNITS, (char **) CVALS, &kvals, VALUES, KSUP, KSEC1,
-          &KERR);
+             (char **) CUNITS, (char **) CVALS, &kvals, VALUES, KSUP, KSEC1,
+             &KERR);
     }
 
 #ifdef DEBUG
@@ -358,6 +392,8 @@ int main(int argc, char *argv[])
   for (i = 0; i < 9; i++)
     printf("KSUP[%d] = %d\n", i, KSUP[i]);
 #endif
+
+  printf("%d %d\n", ktdlen, ktdexl);
   return KERR;
 
 }

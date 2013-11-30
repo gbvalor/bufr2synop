@@ -134,3 +134,112 @@ int read_arguments(int _argc, char * _argv[])
   return 0;
 }
 
+
+/*!
+   
+*/ 
+int read_table_c(void)
+{
+   char *c, file[256];
+   FILE *t;
+   size_t i = 0;
+
+   NLINES_TABLEC = 0;
+
+   /*!
+      The name of file to open is Cssswwwwwxxxxxyyyzzz.TXT , where
+       sss - Master table number (zero for WMO meteorological tables)
+       wwwww - Originating sub-centre
+       xxxxx - Originating centre
+       yyy - Version number of master table used
+       zzz - Version number of local table used
+
+      If standard WMO tables are used, the Originating centre xxxxx will be set to
+   */
+   if (KSEC1[13] != 0)
+     sprintf(file,"%sC%03d%05d%05d%03d%03d.TXT", BUFRTABLES_DIR, KSEC1[13], KSEC1[15], KSEC1[2], KSEC1[14], KSEC1[7]);
+   else
+     sprintf(file,"%sC000%05d00000%03d%03d.TXT", BUFRTABLES_DIR, KSEC1[15], KSEC1[14], KSEC1[7]);
+
+   if ((t = fopen(file, "r")) == NULL)
+   {
+       fprintf(stderr,"Unable to open table C file '%s'\n", file);
+       return 0;
+   }
+   
+   while(fgets(TABLEC[i], 90, t) != NULL && i < MAXLINES_TABLEC)
+   {
+      // supress the newline
+      if ((c = strrchr(TABLEC[i],'\n')) != NULL)
+        *c = '\0';
+      i++;
+   }
+   fclose(t);
+   NLINES_TABLEC = i;
+   return i; 
+}
+
+char * get_explained_table_val(char *expl, size_t dim, struct bufr_descriptor *d, int ival)
+{
+   char *c;
+   long nv, v,  nl;
+   size_t i, j;
+
+   // Find first line for descriptor
+   for (i = 0; i <  NLINES_TABLEC; i++)
+   {
+      if(TABLEC[i][0] != d->c[0] ||
+         TABLEC[i][1] != d->c[1] ||
+         TABLEC[i][2] != d->c[2] ||
+         TABLEC[i][3] != d->c[3] ||
+         TABLEC[i][4] != d->c[4] ||
+         TABLEC[i][5] != d->c[5])
+        continue;
+      else
+        break;
+   }
+
+   if (i == NLINES_TABLEC)
+   {
+     //printf("Descriptor %s No encontrado\n", d->c);
+     return NULL; 
+   }
+   //printf("Descriptor %s en linea %d\n", d->c, i);
+
+   // reads the amount of possible values
+   if (TABLEC[i][7] != ' ')
+     nv = strtol(&TABLEC[i][7], &c, 10);
+   else
+     return NULL;
+
+   // read a value
+   for (j = 0; j < nv && i < NLINES_TABLEC ; i++)
+   {
+     if (TABLEC[i][12] != ' ')
+     {
+        v = strtol(&TABLEC[i][12], &c, 10);
+        nv++;
+        if (v != ival)
+          continue;
+        break;
+     }
+   }
+
+   if (j == nv || i == NLINES_TABLEC)
+     return NULL; // Value not found 
+
+   // read how many lines for the descriptors
+   nl = strtol(&TABLEC[i][21], &c, 10);
+
+
+   // if match then we have finished the search
+   strcpy(expl, &TABLEC[i][24]);
+   if (nl > 1)
+   {
+     for (nv = 1 ; nv < nl; nv++)
+        if ((strlen(expl) + strlen(&TABLEC[i + nv][24])) < dim)
+          strcat(expl, &TABLEC[i][24]);
+   }
+
+   return expl;
+}

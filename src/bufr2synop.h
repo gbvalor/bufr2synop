@@ -36,7 +36,7 @@
   \def KELEM
   \brief max dimension of elements for a single report
 */
-#define KELEM 8192
+#define KELEM 4096
 
 /*!
   \def BUFR_LEN
@@ -92,10 +92,23 @@
 */
 #define BUFR_COMPRESSED_DATA_MASK 64
 
+/*!
+  \def MISSING_REAL
+  \brief The missing default value for real values
+*/
 #define MISSING_REAL (1.7e38)
 
+/*!
+  \def MISSING_INTEGER
+  \brief The missing default value for integer values
+*/
 #define MISSING_INTEGER (2147483647)
 
+/*!
+  \def MAXLINES_TABLEC
+  \brief The maximum expected lines in a Table C file
+*/
+#define MAXLINES_TABLEC 8192
 
 /*! \struct report_date_ext
     \brief contains extensions, not in wmo. Date/time UTC information
@@ -284,6 +297,7 @@ struct bufr_descriptor {
    unsigned char f; /*!< F part of descriptor, 2 bits */
    unsigned char x; /*!< X part of descriptor, 6 bits */
    unsigned char y; /*!< Y part of descriptor, 8 bits */
+   char c[8]; /*!< string with whole descriptor (6 decimal digits plus the 0x00 as the end of string */
 };
 
 extern unsigned char BUFR_MESSAGE[BUFR_LEN]; 
@@ -313,6 +327,8 @@ extern int VERBOSE;
 
 extern struct synop_chunks SYN;
 
+extern size_t NLINES_TABLEC; 
+extern char TABLEC[MAXLINES_TABLEC][92];
 
 void clean_report_date_ext(struct report_date_ext *s);
 void clean_synop_chunks( struct synop_chunks *syn);
@@ -320,6 +336,10 @@ void clean_syn_sec0(struct synop_sec0 *s);
 void clean_syn_sec1(struct synop_sec1 *s);
 void clean_syn_sec2(struct synop_sec2 *s);
 void clean_syn_sec3(struct synop_sec3 *s);
+
 int set_environment(void);
 int integer_to_descriptor(struct bufr_descriptor *d, int id);
 unsigned int three_bytes_to_uint(const unsigned char *source);
+char * charray_to_string(char *s, unsigned char *buf, size_t size);
+char * adjust_string(char *s);
+char * get_explained_table_val(char *expl, size_t dim, struct bufr_descriptor *d, int ival);

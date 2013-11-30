@@ -37,7 +37,7 @@
 */
 int set_environment(void)
 {
-   char aux[256];
+   char aux[256], *c;
 
    /*!   */
    if (putenv("PRINT_TABLE_NAMES=false") || putenv("USE_TABLE_C=true"))
@@ -58,6 +58,9 @@ int set_environment(void)
            fprintf(stderr, "%s: Failure setting the environment\n", SELF);
            exit (EXIT_FAILURE);
         }
+        //	Set BUFRRABLES_DIR if is on environment
+        if ((c = getenv("BUFR_TABLES")) != NULL)
+           strcpy(BUFRTABLES_DIR, c); 
     }
     return 0;
 }

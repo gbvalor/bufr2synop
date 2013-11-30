@@ -105,5 +105,36 @@ int integer_to_descriptor(struct bufr_descriptor *d, int id)
    d->f = id / 100000;
    d->x = (id % 100000) / 1000;
    d->y = id % 1000;
+   sprintf(d->c, "%06d", id);
    return 0;
+}
+
+/*!
+  \fn char * charray_to_string(char *s, unsigned char *buf, size_t size)
+  \brief get a null termitated c-string from an array of unsignde chars
+  \param s resulting string
+  \param buf pointer to first element in array
+  \param size number of chars in array
+*/
+char * charray_to_string(char *s, unsigned char *buf, size_t size)
+{
+   // copy
+   memcpy(s , buf, size);
+   // add final string mark
+   s[size] = '\0';
+   return s;
+}
+
+/*!
+  \fn char * adjust_string(char *s)
+  \brief Supress trailing blanks of a string
+  \param s string to process
+*/
+char * adjust_string(char *s)
+{
+   size_t l;
+
+   while (l && s[--l] == ' ') 
+     s[l] = '\0';
+   return s;
 }
