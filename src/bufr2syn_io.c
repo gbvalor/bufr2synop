@@ -134,9 +134,34 @@ int read_arguments(int _argc, char * _argv[])
   return 0;
 }
 
+/*!
+  \fn char * get_ecmwf_tablename(char *target, char type)
+  \brief Get the complete pathname of a table file needed by a bufr message
+  \param target the resulting name
+  \param type a char with type, i.e, 'B', 'C', or 'D'
+
+  In ECMWF library the name of a table file is Kssswwwwwxxxxxyyyzzz.TXT , where
+       - K - type of table, i.e, 'B', 'C', or 'D'
+       - sss - Master table number (zero for WMO meteorological tables)
+       - wwwww - Originating sub-centre
+       - xxxxx - Originating centre
+       - yyy - Version number of master table used
+       - zzz - Version number of local table used
+
+  If standard WMO tables are used, the Originating centre xxxxx will be set to
+*/
+char * get_ecmwf_tablename(char *target, char type)
+{
+   if (KSEC1[13] != 0) // case of not WMO tables
+     sprintf(target,"%s%c%03d%05d%05d%03d%03d.TXT", BUFRTABLES_DIR, type, KSEC1[13], KSEC1[15], KSEC1[2], KSEC1[14], KSEC1[7]);
+   else
+     sprintf(target,"%s%c000%05d00000%03d%03d.TXT", BUFRTABLES_DIR, type, KSEC1[15], KSEC1[14], KSEC1[7]);
+   return target;
+} 
 
 /*!
-   
+  \fn int read_table_c(void)
+  \brief read a Table C file with code TABLE and flag descriptors   
 */ 
 int read_table_c(void)
 {
@@ -146,20 +171,7 @@ int read_table_c(void)
 
    NLINES_TABLEC = 0;
 
-   /*!
-      The name of file to open is Cssswwwwwxxxxxyyyzzz.TXT , where
-       sss - Master table number (zero for WMO meteorological tables)
-       wwwww - Originating sub-centre
-       xxxxx - Originating centre
-       yyy - Version number of master table used
-       zzz - Version number of local table used
-
-      If standard WMO tables are used, the Originating centre xxxxx will be set to
-   */
-   if (KSEC1[13] != 0)
-     sprintf(file,"%sC%03d%05d%05d%03d%03d.TXT", BUFRTABLES_DIR, KSEC1[13], KSEC1[15], KSEC1[2], KSEC1[14], KSEC1[7]);
-   else
-     sprintf(file,"%sC000%05d00000%03d%03d.TXT", BUFRTABLES_DIR, KSEC1[15], KSEC1[14], KSEC1[7]);
+   get_ecmwf_tablename(&file[0], 'C');
 
    if ((t = fopen(file, "r")) == NULL)
    {
@@ -179,6 +191,16 @@ int read_table_c(void)
    return i; 
 }
 
+/*!
+  \fn char * get_explained_table_val(char *expl, size_t dim, struct bufr_descriptor *d, int ival)
+  \brief gets a strung with the meaning of a value for a code table descriptor 
+  \param expl string with resulting meaning
+  \param dim max length alowed for \a expl string
+  \param d pointer to the source descriptor
+  \param ival integer value for the descriptos
+
+  If something went wrong, it returns NULL . Otherwise it returns \a expl
+*/
 char * get_explained_table_val(char *expl, size_t dim, struct bufr_descriptor *d, int ival)
 {
    char *c;

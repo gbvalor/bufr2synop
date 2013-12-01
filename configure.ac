@@ -1,7 +1,8 @@
-AC_INIT(configure.ac)
+AC_INIT([bufr2synop], 0.1)
+AC_CONFIG_SRCDIR([src/bufr2synop.c])
+AM_INIT_AUTOMAKE
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(bufr2synop, 0.1)
 
 AC_LANG_C
 AC_PROG_CC

@@ -110,6 +110,20 @@
 */
 #define MAXLINES_TABLEC 8192
 
+/*!
+  \def NMAXSEQ
+  \brief Maximum expected descriptor in a expanded sequence for a single subset
+*/
+#define NMAXSEQ 512
+
+#define DESCRIPTOR_VALUE_MISSING 1 
+#define DESCRIPTOR_HAVE_REAL_VALUE 2
+#define DESCRIPTOR_HAVE_STRING_VALUE 4
+#define DESCRIPTOR_IS_CODE_TABLE 8
+#define DESCRIPTOR_IS_FLAG_TABLE 16
+#define DESCRIPTIR_IS_A_REPLICATOR 32
+
+
 /*! \struct report_date_ext
     \brief contains extensions, not in wmo. Date/time UTC information
 */
@@ -300,6 +314,25 @@ struct bufr_descriptor {
    char c[8]; /*!< string with whole descriptor (6 decimal digits plus the 0x00 as the end of string */
 };
 
+/*!
+  \struct bufr_atom_data
+  \brief Contains all the information for a single descriptor in a expanded squence 
+*/
+struct bufr_atom_data {
+   struct bufr_descriptor desc; /*!< struct \ref bufr_descriptor */
+   int mask; /*!< Mask with for the type */
+   char name[66]; /*!< String with the name of descriptir */
+   char unit[26]; /*!< String with the name of units */
+   double val; /*!< Value for the bufr descriptor */
+   char cval[80]; /*!< String value for the bufr descriptor */
+   char ctable[256]; /*!< Explained meaning for a code table */
+};
+
+struct bufr_subset_squence_data {
+   size_t nd; 
+   struct bufr_atom_data squence[NMAXSEQ];
+};
+
 extern unsigned char BUFR_MESSAGE[BUFR_LEN]; 
 extern char CNAMES[KELEM][64]; 
 extern char CUNITS[KELEM][24]; 
@@ -343,3 +376,4 @@ unsigned int three_bytes_to_uint(const unsigned char *source);
 char * charray_to_string(char *s, unsigned char *buf, size_t size);
 char * adjust_string(char *s);
 char * get_explained_table_val(char *expl, size_t dim, struct bufr_descriptor *d, int ival);
+char * get_ecmwf_tablename(char *target, char TYPE);

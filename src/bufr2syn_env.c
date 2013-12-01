@@ -58,9 +58,15 @@ int set_environment(void)
            fprintf(stderr, "%s: Failure setting the environment\n", SELF);
            exit (EXIT_FAILURE);
         }
-        //	Set BUFRRABLES_DIR if is on environment
-        if ((c = getenv("BUFR_TABLES")) != NULL)
-           strcpy(BUFRTABLES_DIR, c); 
     }
+    else if ((c = getenv("BUFR_TABLES")) != NULL)
+       strcpy(BUFRTABLES_DIR, c); // otherwise check if BUFRRABLES_DIR if is on environment
+    else 
+       {
+          fprintf(stderr,"%s: Unable to find bufrtables directory\n");
+          fprintf(stderr,"    Please set the proper enviromnet 'BUFR_TABLES=my_bufrtables_dir' or\n");
+          fprintf(stderr,"    use '-t' argument . i. e.'-t my_bufrtables_dir/'\n");
+          exit (EXIT_FAILURE);
+       }
     return 0;
 }
