@@ -120,8 +120,9 @@
 #define DESCRIPTOR_HAVE_REAL_VALUE 2
 #define DESCRIPTOR_HAVE_STRING_VALUE 4
 #define DESCRIPTOR_IS_CODE_TABLE 8
-#define DESCRIPTOR_IS_FLAG_TABLE 16
-#define DESCRIPTIR_IS_A_REPLICATOR 32
+#define DESCRIPTOR_HAVE_CODE_TABLE_STRING 16
+#define DESCRIPTOR_IS_FLAG_TABLE 32
+#define DESCRIPTIR_IS_A_REPLICATOR 64
 
 
 /*! \struct report_date_ext
@@ -328,9 +329,9 @@ struct bufr_atom_data {
    char ctable[256]; /*!< Explained meaning for a code table */
 };
 
-struct bufr_subset_squence_data {
+struct bufr_subset_sequence_data {
    size_t nd; 
-   struct bufr_atom_data squence[NMAXSEQ];
+   struct bufr_atom_data sequence[NMAXSEQ];
 };
 
 extern unsigned char BUFR_MESSAGE[BUFR_LEN]; 
@@ -362,6 +363,8 @@ extern struct synop_chunks SYN;
 
 extern size_t NLINES_TABLEC; 
 extern char TABLEC[MAXLINES_TABLEC][92];
+
+extern struct bufr_subset_sequence_data SUBSET;
 
 void clean_report_date_ext(struct report_date_ext *s);
 void clean_synop_chunks( struct synop_chunks *syn);

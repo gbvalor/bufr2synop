@@ -101,6 +101,7 @@ int VERBOSE; /*!< If != 0 the verbose output */
 size_t NLINES_TABLEC; /*!< current number of TABLE C file lines */
 char TABLEC[MAXLINES_TABLEC][92]; /*!< Here is where store the lines from table C file*/
 
+struct bufr_subset_sequence_data SUBSET; /*!< ALl data decoded for a subset*/
 
 struct synop_chunks SYN; /*!< struct where to set chunks of synops taken from a bufr subset */
 
@@ -285,11 +286,14 @@ int main(int argc, char *argv[])
   /*!
    read table C
   */
-  if (read_table_c() == 0)
-    {
-      fprintf(stderr,"Cannot read C Table  File\n");
-      exit(EXIT_FAILURE);
-    }
+  if (VERBOSE)
+  {
+    if (read_table_c() == 0)
+      {
+        fprintf(stderr,"Cannot read C Table  File\n");
+        exit(EXIT_FAILURE);
+      }
+  }
 
 #ifdef DEBUG
   for (i = 0; i < ktdlen; i++)
@@ -297,12 +301,16 @@ int main(int argc, char *argv[])
       integer_to_descriptor(&d, KTDLST[i]);
       printf("KTDLST[%03d]=%d %02d %03d\n", i, d.f, d.x, d.y);
     }
+#endif
+  // loop for every subset
   for (nsub = 0; nsub < KSUP[5]; nsub++)
     {
       nsub1 = nsub + 1;
 
+      memset(&SUBSET, 0, sizeof( struct bufr_subset_sequence_data));
+
       /*!
-         NOTE that not all subset have the same descriptor expanded because of replication factor
+         NOTE that not all subset have the same descriptor expanded list because of replication factor
          so is safer expand the subset descriptors individually
 
          Also NOTE that all integers must be called by reference
@@ -312,41 +320,56 @@ int main(int argc, char *argv[])
       for (j = 0 ; j < ktdexl; j++)
         {
           i = nsub * KELEM + j;
-          charray_to_string(cnames, CNAMES[j], 64);
-          charray_to_string(cunits, CUNITS[j], 24);
-          integer_to_descriptor(&d, KTDEXP[j]);
+          charray_to_string(SUBSET.sequence[j].name, CNAMES[j], 64);
+          charray_to_string(SUBSET.sequence[j].unit, CUNITS[j], 24);
+          integer_to_descriptor(&SUBSET.sequence[j].desc, KTDEXP[j]);
 
-          printf("KTDEXP[%03d]=%d %02d %03d |%03d |", j, d.f, d.x, d.y, nsub);
-          printf("'%s'|", cnames);
+          printf("KTDEXP[%03d]=%s |%03d |", j, SUBSET.sequence[j].desc.c, nsub);
+          printf("'%s'|", SUBSET.sequence[j].name);
           if (VALUES[i] != MISSING_REAL)
             {
-              if (strstr(cunits,"CCITTIA5") != NULL)
+              if (strstr(SUBSET.sequence[j].unit,"CCITTIA5") != NULL)
                 {
+                  SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_STRING_VALUE;
                   k = ((int)VALUES[i]) % 1000;
-                  printf("'%s'", charray_to_string(cvals, CVALS[(int)(VALUES[i]/1000.0) - 1], k));
+                  printf("'%s'", charray_to_string(SUBSET.sequence[j].cval, CVALS[(int)(VALUES[i]/1000.0) - 1], k));
                 }
-              else if (strstr(cunits,"CODE TABLE") == cunits)
+              else if (strstr(SUBSET.sequence[j].unit,"CODE TABLE") == SUBSET.sequence[j].unit)
                 {
-                  //printf("%s %lf\n",d.c,VALUES[i]);
-                  if (get_explained_table_val (aux, 256, &d, (int) VALUES[i]) != NULL)
-                    printf("(%3d) '%s'", (int)VALUES[i], aux);
-                  else
-                    printf("(%3d) : 'NOT FOUND'", (int)VALUES[i]);
+                  SUBSET.sequence[j].mask |= DESCRIPTOR_IS_CODE_TABLE;
+                  SUBSET.sequence[j].val = VALUES[i];
+                  if (VERBOSE)
+                  {
+                     if (get_explained_table_val (SUBSET.sequence[j].ctable, 256, &SUBSET.sequence[j].desc, (int) VALUES[i]) != NULL)
+                     {
+                       SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_CODE_TABLE_STRING;
+                       printf("%3d : '%s'", (int)VALUES[i], SUBSET.sequence[j].ctable);
+                     }
+                     else
+                     {
+                       printf("%3d : 'NOT FOUND'", (int)VALUES[i]);
+                     }
+                  }
                 }
               else
                 {
-                  printf("%14.4lf %s ", VALUES[i], cunits);
+                  SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_REAL_VALUE;
+                  SUBSET.sequence[j].val = VALUES[i];
+                  printf("%14.4lf %s ", VALUES[i], SUBSET.sequence[j].unit);
                 }
             }
           else
-            printf("   MISSING     %s ", cunits);
+            {
+              SUBSET.sequence[j].mask |= DESCRIPTOR_VALUE_MISSING;
+              printf("   MISSING     %s ", cunits);
+            }
+          SUBSET.nd = j;
           printf("\n");
         }
     }
-#endif
 
 
-  if (VERBOSE)
+  if (0)
     {
       /*! Section 2 of the Bufr message is an optional section and every ADP centre can pack
        any information in this section. The Bufr software decodes this local information
@@ -393,7 +416,6 @@ int main(int argc, char *argv[])
     printf("KSUP[%d] = %d\n", i, KSUP[i]);
 #endif
 
-  printf("%d %d\n", ktdlen, ktdexl);
   return KERR;
 
 }
