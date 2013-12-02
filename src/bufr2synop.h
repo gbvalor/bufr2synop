@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <getopt.h>
+#include <sys/stat.h>
 
 /*!
   \def KVALS
@@ -114,7 +115,7 @@
   \def NMAXSEQ
   \brief Maximum expected descriptor in a expanded sequence for a single subset
 */
-#define NMAXSEQ 512
+#define NMAXSEQ 8192
 
 #define DESCRIPTOR_VALUE_MISSING 1 
 #define DESCRIPTOR_HAVE_REAL_VALUE 2
@@ -363,7 +364,7 @@ extern struct synop_chunks SYN;
 
 extern size_t NLINES_TABLEC; 
 extern char TABLEC[MAXLINES_TABLEC][92];
-
+extern char DEFAULT_BUFRTABLES[];
 extern struct bufr_subset_sequence_data SUBSET;
 
 void clean_report_date_ext(struct report_date_ext *s);

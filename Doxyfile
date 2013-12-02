@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = bufr2synop0
+PROJECT_NAME           = bufr2synop
 PROJECT_NUMBER         = 0.1
 OUTPUT_DIRECTORY       = 
 CREATE_SUBDIRS         = NO
@@ -95,7 +95,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = /home/gbv/bufr2synop0
+INPUT                  = /home/gbv/bufr2synop
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.c \
                          *.cc \
@@ -220,7 +220,7 @@ FORMULA_FONTSIZE       = 10
 #---------------------------------------------------------------------------
 # configuration options related to the LaTeX output
 #---------------------------------------------------------------------------
-GENERATE_LATEX         = YES
+GENERATE_LATEX         = NO
 LATEX_OUTPUT           = latex
 LATEX_CMD_NAME         = latex
 MAKEINDEX_CMD_NAME     = makeindex
@@ -251,7 +251,7 @@ MAN_LINKS              = NO
 #---------------------------------------------------------------------------
 # configuration options related to the XML output
 #---------------------------------------------------------------------------
-GENERATE_XML           = yes
+GENERATE_XML           = no
 XML_OUTPUT             = xml
 XML_SCHEMA             = 
 XML_DTD                = 
@@ -283,7 +283,7 @@ SKIP_FUNCTION_MACROS   = YES
 # Configuration::additions related to external references   
 #---------------------------------------------------------------------------
 TAGFILES               = 
-GENERATE_TAGFILE       = bufr2synop0.tag
+GENERATE_TAGFILE       = bufr2synop.tag
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = YES
 PERL_PATH              = /usr/bin/perl
@@ -293,7 +293,7 @@ PERL_PATH              = /usr/bin/perl
 CLASS_DIAGRAMS         = YES
 MSCGEN_PATH            = 
 HIDE_UNDOC_RELATIONS   = YES
-HAVE_DOT               = NO
+HAVE_DOT               = YES
 DOT_FONTNAME           = FreeSans
 DOT_FONTSIZE           = 10
 DOT_FONTPATH           = 
@@ -304,8 +304,8 @@ UML_LOOK               = NO
 TEMPLATE_RELATIONS     = NO
 INCLUDE_GRAPH          = YES
 INCLUDED_BY_GRAPH      = YES
-CALL_GRAPH             = NO
-CALLER_GRAPH           = NO
+CALL_GRAPH             = YES
+CALLER_GRAPH           = YES
 GRAPHICAL_HIERARCHY    = YES
 DIRECTORY_GRAPH        = YES
 DOT_IMAGE_FORMAT       = png

@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 /*!
- \file bufr_decode.c
+ \file bufr2synop.c
  \brief decodes a bufr file using ECMWF bufr library and tries to pass the decoded reports to synop-format
 
  */
@@ -27,8 +27,8 @@
 #define DEBUG
 
 /*!
- Note that big arrays are defined as global here to avoid segfaults
- */
+   Note that big arrays are defined as global here to avoid segfaults
+*/
 
 unsigned char BUFR_MESSAGE[BUFR_LEN]; /*!< The array where the bufr file will be stored when readed */
 
@@ -104,6 +104,8 @@ char TABLEC[MAXLINES_TABLEC][92]; /*!< Here is where store the lines from table 
 struct bufr_subset_sequence_data SUBSET; /*!< ALl data decoded for a subset*/
 
 struct synop_chunks SYN; /*!< struct where to set chunks of synops taken from a bufr subset */
+
+char DEFAULT_BUFRTABLES[] = "/usr/local/lib/bufrtables/"; /*!< Default bufr tables dir */ 
 
 /*!
   \fn int main(int argc, char *argv[])
@@ -275,16 +277,16 @@ int main(int argc, char *argv[])
 
   // Expand the descriptors
   /*!
-   kdelen - An INTEGER variable containing number of data descriptors in KTDLST array
+   kdelen - A pointer to an INTEGER variable containing number of data descriptors in KTDLST array
    KTDLST - An INTEGER array containing the list of kdtlen data descriptors
-   kdtexl - An INTEGER variable containing number of expanded data descriptors
+   kdtexl - A pointer to an INTEGER variable containing number of expanded data descriptors
    KTDEXP - An INTEGER array containing the list of KTDEXL data descriptors
    KERR - An INTEGER containing error code.
   */
   busel_(&ktdlen, KTDLST, &ktdexl, KTDEXP, &KERR);
 
   /*!
-   read table C
+   read table C if VERBOSE
   */
   if (VERBOSE)
   {

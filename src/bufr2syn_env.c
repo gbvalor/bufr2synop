@@ -37,9 +37,12 @@
 */
 int set_environment(void)
 {
+   int i;
    char aux[256], *c;
+   struct stat s;
 
-   /*!   */
+   i = stat(DEFAULT_BUFRTABLES, &s);
+
    if (putenv("PRINT_TABLE_NAMES=false") || putenv("USE_TABLE_C=true"))
     {
       fprintf(stderr, "%s: Failure setting the environment\n", SELF);
@@ -60,7 +63,19 @@ int set_environment(void)
         }
     }
     else if ((c = getenv("BUFR_TABLES")) != NULL)
+    {
        strcpy(BUFRTABLES_DIR, c); // otherwise check if BUFRRABLES_DIR if is on environment
+    }
+    else if (i == 0 && S_ISDIR(s.st_mode)) // last chance, the default dir
+    {  
+        strcpy(BUFRTABLES_DIR, DEFAULT_BUFRTABLES);
+        sprintf(aux,"BUFR_TABLES=%s", BUFRTABLES_DIR);
+        if (putenv(aux))
+        {
+           fprintf(stderr, "%s: Failure setting the environment\n", SELF);
+           exit (EXIT_FAILURE);
+        }
+    }
     else 
        {
           fprintf(stderr,"%s: Unable to find bufrtables directory\n");
