@@ -49,7 +49,7 @@ int set_environment(void)
       exit (EXIT_FAILURE);
     }
 
-    /*!
+    /*
       Default path for Bufr Tables is hard coded in the software. To change the path set environmental variable
       BUFR_TABLES . The path must end with '/'
     */

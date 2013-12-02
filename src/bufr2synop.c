@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
       printf("%s\n", &BUFR_MESSAGE[0]); // print the string 'BUFR'
     }
 
-  /*! Fortran routines works with 4-bytes words, so the readed file byte-oriented
+  /* Fortran routines works with 4-bytes words, so the readed file byte-oriented
    is redefined as an array of unsigned int
    */
   kbuff = (unsigned int *) BUFR_MESSAGE;
@@ -185,7 +185,7 @@ int main(int argc, char *argv[])
         kelem = KELEM;
     }
 
-  /*! Here we call to bufrex() rotine, doing all de decode bufr work
+  /* Here we call to bufrex() rotine, doing all de decode bufr work
 
    ON INPUT:
 
@@ -276,7 +276,7 @@ int main(int argc, char *argv[])
     }
 
   // Expand the descriptors
-  /*!
+  /*
    kdelen - A pointer to an INTEGER variable containing number of data descriptors in KTDLST array
    KTDLST - An INTEGER array containing the list of kdtlen data descriptors
    kdtexl - A pointer to an INTEGER variable containing number of expanded data descriptors
@@ -285,7 +285,7 @@ int main(int argc, char *argv[])
   */
   busel_(&ktdlen, KTDLST, &ktdexl, KTDEXP, &KERR);
 
-  /*!
+  /*
    read table C if VERBOSE
   */
   if (VERBOSE)
@@ -311,7 +311,7 @@ int main(int argc, char *argv[])
 
       memset(&SUBSET, 0, sizeof( struct bufr_subset_sequence_data));
 
-      /*!
+      /*
          NOTE that not all subset have the same descriptor expanded list because of replication factor
          so is safer expand the subset descriptors individually
 
@@ -373,7 +373,7 @@ int main(int argc, char *argv[])
 
   if (0)
     {
-      /*! Section 2 of the Bufr message is an optional section and every ADP centre can pack
+      /* Section 2 of the Bufr message is an optional section and every ADP centre can pack
        any information in this section. The Bufr software decodes this local information
        and stores it into KSEC2 array. ECMWF is storing RDB key in the Section 2 of the Bufr
        messages. To print content of the Section 2, subroutine BUUKEY must be called before
@@ -381,19 +381,19 @@ int main(int argc, char *argv[])
       if (KSEC1[4])
         buukey_(KSEC1, KSEC2, KEY, KSUP, &KERR);
 
-      /*! Returns lists of unexpanded and expanded data descriptors from the Bufr message.
+      /* Returns lists of unexpanded and expanded data descriptors from the Bufr message.
        The lists contains Bufr Table D sequence numbers, and the Bufr Table B reference numbers. */
 
       busel_(&ktdlen, KTDLST, &ktdexl, KTDEXP, &KERR);
 
-      /*! Prints section 3.
+      /* Prints section 3.
        Prior to calling the BUPRS3 routine, the BUSEL or BUSEL2 routine has to be called to get lists
        of unexpanded and fully expanded Data descriptors. In the case of multi-subset uncompressed bufr
        data the expanded list of descriptors might be different for different subsets. */
       buprs3_(KSEC3, &ktdlen, KTDLST, &ktdexl, KTDEXP, &kelem,
               (char **) CNAMES);
 
-      /*! Print data */
+      /* Print data */
       icode = 0;
       current_ss = 1;
       buprt_(&icode, &current_ss, &KSEC3[2], &kelem, (char **) CNAMES,
