@@ -122,8 +122,9 @@
 #define DESCRIPTOR_HAVE_STRING_VALUE 4
 #define DESCRIPTOR_IS_CODE_TABLE 8
 #define DESCRIPTOR_HAVE_CODE_TABLE_STRING 16
-#define DESCRIPTOR_IS_FLAG_TABLE 32
-#define DESCRIPTIR_IS_A_REPLICATOR 64
+#define DESCRIPTOR_HAVE_FLAG_TABLE_STRING 32
+#define DESCRIPTOR_IS_FLAG_TABLE 64
+#define DESCRIPTIR_IS_A_REPLICATOR 128
 
 
 /*! \struct report_date_ext
@@ -380,4 +381,5 @@ unsigned int three_bytes_to_uint(const unsigned char *source);
 char * charray_to_string(char *s, unsigned char *buf, size_t size);
 char * adjust_string(char *s);
 char * get_explained_table_val(char *expl, size_t dim, struct bufr_descriptor *d, int ival);
+char * get_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d, unsigned long ival);
 char * get_ecmwf_tablename(char *target, char TYPE);

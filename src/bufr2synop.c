@@ -275,8 +275,9 @@ int main(int argc, char *argv[])
       exit(EXIT_FAILURE);
     }
 
-  // Expand the descriptors
   /*
+   Expand the descriptors
+
    kdelen - A pointer to an INTEGER variable containing number of data descriptors in KTDLST array
    KTDLST - An INTEGER array containing the list of kdtlen data descriptors
    kdtexl - A pointer to an INTEGER variable containing number of expanded data descriptors
@@ -312,6 +313,8 @@ int main(int argc, char *argv[])
       memset(&SUBSET, 0, sizeof( struct bufr_subset_sequence_data));
 
       /*
+         Expand the descriptors for a subset
+
          NOTE that not all subset have the same descriptor expanded list because of replication factor
          so is safer expand the subset descriptors individually
 
@@ -350,6 +353,23 @@ int main(int argc, char *argv[])
                      else
                      {
                        printf("%3d : 'NOT FOUND'", (int)VALUES[i]);
+                     }
+                  }
+                }
+              else if (strstr(SUBSET.sequence[j].unit,"FLAGTABLE") == SUBSET.sequence[j].unit)
+                {
+                  SUBSET.sequence[j].mask |= DESCRIPTOR_IS_FLAG_TABLE;
+                  SUBSET.sequence[j].val = VALUES[i];
+                  if (VERBOSE)
+                  {
+                     if (get_explained_flag_val (SUBSET.sequence[j].ctable, 256, &SUBSET.sequence[j].desc, (unsigned long) VALUES[i]) != NULL)
+                     {
+                       SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_FLAG_TABLE_STRING;
+                       printf("%6d : '%s'", (int)VALUES[i], SUBSET.sequence[j].ctable);
+                     }
+                     else
+                     {
+                       printf("%6d : 'NOT FOUND'", (int)VALUES[i]);
                      }
                   }
                 }
