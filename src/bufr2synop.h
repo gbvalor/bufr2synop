@@ -360,7 +360,8 @@ extern char OUTPUTFILE[256];
 extern char BUFRTABLES_DIR[256];
 extern char SELF[];
 extern int VERBOSE;
-
+extern int SHOW_SEQUENCE;
+extern int SHOW_ECMWF_OUTPUT;
 extern struct synop_chunks SYN;
 
 extern size_t NLINES_TABLEC; 

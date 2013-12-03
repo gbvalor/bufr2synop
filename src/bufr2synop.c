@@ -97,6 +97,8 @@ char BUFRTABLES_DIR[256]; /*!< Directory for BUFR tables set by user */
 char INPUTFILE[256]; /*!< The pathname of input file */
 char OUTPUTFILE[256]; /*!< The pathname of output file */
 int VERBOSE; /*!< If != 0 the verbose output */
+int SHOW_SEQUENCE; /*!< Output explained sequence */ 
+int SHOW_ECMWF_OUTPUT; /*!< Print original output from ECMWF library */ 
 
 size_t NLINES_TABLEC; /*!< current number of TABLE C file lines */
 char TABLEC[MAXLINES_TABLEC][92]; /*!< Here is where store the lines from table C file*/
@@ -123,7 +125,8 @@ int main(int argc, char *argv[])
   struct bufr_descriptor d; // bufr descriptor
   unsigned int *kbuff;
   char aux[256]; // auxiliar string
-
+  char linaux[1024]; // output line
+  char *c; // auxiliar pointer for sprintf tasks
   int i, j, k,nsub, nsub1;
   int kelem = KELEM, kvals = KVALS;
   int icode = 0, ktdlen, ktdexl;
@@ -156,10 +159,10 @@ int main(int argc, char *argv[])
     }
   else if (VERBOSE)
     {
-      printf("It is OK.\n");
-      printf("message read ");
+      printf("#It is OK.\n");
+      printf("#message read ");
       printf("%d\n", length);
-      printf("%s\n", &BUFR_MESSAGE[0]); // print the string 'BUFR'
+      printf("#%s\n", &BUFR_MESSAGE[0]); // print the string 'BUFR'
     }
 
   /* Fortran routines works with 4-bytes words, so the readed file byte-oriented
@@ -168,7 +171,7 @@ int main(int argc, char *argv[])
   kbuff = (unsigned int *) BUFR_MESSAGE;
   length /= 4; // Now length is sized in words
 
-  if (VERBOSE)
+  if (SHOW_ECMWF_OUTPUT)
     {
 
       bus012_(&length, kbuff, KSUP, KSEC0, KSEC1, KSEC2, &KERR);
@@ -302,7 +305,7 @@ int main(int argc, char *argv[])
   for (i = 0; i < ktdlen; i++)
     {
       integer_to_descriptor(&d, KTDLST[i]);
-      printf("KTDLST[%03d]=%d %02d %03d\n", i, d.f, d.x, d.y);
+      printf("#KTDLST[%03d]=%d %02d %03d\n", i, d.f, d.x, d.y);
     }
 #endif
   // loop for every subset
@@ -325,19 +328,22 @@ int main(int argc, char *argv[])
       for (j = 0 ; j < ktdexl; j++)
         {
           i = nsub * KELEM + j;
+          linaux[0] = '\0'; // clean the output line
+          c = linaux; 
           charray_to_string(SUBSET.sequence[j].name, CNAMES[j], 64);
           charray_to_string(SUBSET.sequence[j].unit, CUNITS[j], 24);
           integer_to_descriptor(&SUBSET.sequence[j].desc, KTDEXP[j]);
 
-          printf("KTDEXP[%03d]=%s |%03d |", j, SUBSET.sequence[j].desc.c, nsub);
-          printf("'%s'|", SUBSET.sequence[j].name);
+          c += sprintf(c, "KTDEXP[%03d]=%s |%03d |", j, SUBSET.sequence[j].desc.c, nsub);
+          c += sprintf(c, "'%s'|", SUBSET.sequence[j].name);
           if (VALUES[i] != MISSING_REAL)
             {
               if (strstr(SUBSET.sequence[j].unit,"CCITTIA5") != NULL)
                 {
                   SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_STRING_VALUE;
                   k = ((int)VALUES[i]) % 1000;
-                  printf("'%s'", charray_to_string(SUBSET.sequence[j].cval, CVALS[(int)(VALUES[i]/1000.0) - 1], k));
+                  charray_to_string(SUBSET.sequence[j].cval, CVALS[(int)(VALUES[i]/1000.0) - 1], k);
+                  c += sprintf(c, "'%s'", SUBSET.sequence[j].cval);
                 }
               else if (strstr(SUBSET.sequence[j].unit,"CODE TABLE") == SUBSET.sequence[j].unit)
                 {
@@ -348,11 +354,11 @@ int main(int argc, char *argv[])
                      if (get_explained_table_val (SUBSET.sequence[j].ctable, 256, &SUBSET.sequence[j].desc, (int) VALUES[i]) != NULL)
                      {
                        SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_CODE_TABLE_STRING;
-                       printf("%3d : '%s'", (int)VALUES[i], SUBSET.sequence[j].ctable);
+                       c += sprintf(c, "%3d : '%s'", (int)VALUES[i], SUBSET.sequence[j].ctable);
                      }
                      else
                      {
-                       printf("%3d : 'NOT FOUND'", (int)VALUES[i]);
+                       c += sprintf(c,"%3d : 'NOT FOUND'", (int)VALUES[i]);
                      }
                   }
                 }
@@ -365,11 +371,11 @@ int main(int argc, char *argv[])
                      if (get_explained_flag_val (SUBSET.sequence[j].ctable, 256, &SUBSET.sequence[j].desc, (unsigned long) VALUES[i]) != NULL)
                      {
                        SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_FLAG_TABLE_STRING;
-                       printf("%6d : '%s'", (int)VALUES[i], SUBSET.sequence[j].ctable);
+                       c += sprintf(c, "%6d : '%s'", (int)VALUES[i], SUBSET.sequence[j].ctable);
                      }
                      else
                      {
-                       printf("%6d : 'NOT FOUND'", (int)VALUES[i]);
+                       c += sprintf(c, "%6d : 'NOT FOUND'", (int)VALUES[i]);
                      }
                   }
                 }
@@ -377,21 +383,23 @@ int main(int argc, char *argv[])
                 {
                   SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_REAL_VALUE;
                   SUBSET.sequence[j].val = VALUES[i];
-                  printf("%14.4lf %s ", VALUES[i], SUBSET.sequence[j].unit);
+                  c += sprintf(c, "%14.4lf %s ", VALUES[i], SUBSET.sequence[j].unit);
                 }
             }
           else
             {
               SUBSET.sequence[j].mask |= DESCRIPTOR_VALUE_MISSING;
-              printf("   MISSING     %s ", cunits);
+              c += sprintf(c, "   MISSING     %s ", SUBSET.sequence[j].unit);
             }
           SUBSET.nd = j;
-          printf("\n");
+          c += sprintf(c, "\n");
+          if (SHOW_SEQUENCE && strlen(linaux))
+            printf("#%s", linaux);
         }
     }
 
 
-  if (0)
+  if (SHOW_ECMWF_OUTPUT)
     {
       /* Section 2 of the Bufr message is an optional section and every ADP centre can pack
        any information in this section. The Bufr software decodes this local information
@@ -423,19 +431,19 @@ int main(int argc, char *argv[])
 
 #ifdef DEBUG
   for (i = 0; i < 3 ; i++)
-    printf("KSEC0[%d] = %d\n", i,  KSEC0[i]);
+    printf("#KSEC0[%d] = %d\n", i,  KSEC0[i]);
   for (i = 0; i < 40 ; i++)
-    printf("KSEC1[%d] = %d\n", i, KSEC1[i]);
+    printf("#KSEC1[%d] = %d\n", i, KSEC1[i]);
   if (KSEC1[4])
     {
       for (i = 0; i < 4096; i++)
-        printf("KSEC2[%d] = %d\n", i, KSEC2[i]);
+        printf("#KSEC2[%d] = %d\n", i, KSEC2[i]);
     }
   for (i = 0; i < 4; i++)
-    printf("KSEC3[%d] = %d\n", i, KSEC3[i]);
+    printf("#KSEC3[%d] = %d\n", i, KSEC3[i]);
 
   for (i = 0; i < 9; i++)
-    printf("KSUP[%d] = %d\n", i, KSUP[i]);
+    printf("#KSUP[%d] = %d\n", i, KSUP[i]);
 #endif
 
   return KERR;

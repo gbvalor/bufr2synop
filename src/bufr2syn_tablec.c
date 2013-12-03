@@ -149,7 +149,7 @@ char * get_explained_table_val(char *expl, size_t dim, struct bufr_descriptor *d
     {
       for (nv = 1 ; nv < nl; nv++)
         if ((strlen(expl) + strlen(&TABLEC[i + nv][22])) < dim)
-          strcat(expl, &TABLEC[i][22]);
+          strcat(expl, &TABLEC[i + nv][22]);
     }
 
   return expl;
@@ -222,7 +222,7 @@ char * get_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d,
                   for (nx = 1 ; nx < nl; nx++)
                     if ((strlen(expl) + strlen(&TABLEC[i + nx][22]))  < dim)
                       {
-                        s += sprintf(s, "%s", &TABLEC[i][22]);
+                        s += sprintf(s, "%s", &TABLEC[i + nx][22]);
                       }
                 }
 

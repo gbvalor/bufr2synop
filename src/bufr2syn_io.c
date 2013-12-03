@@ -27,9 +27,11 @@
 void print_usage(void)
 {
   printf("Usage: \n");
-  printf("  bufr2synop -i input [-t bufrtable_dir][-o output][-v]\n");
+  printf("  bufr2synop -i input [-t bufrtable_dir][-o output][-s][-v]\n");
+  printf("       -e Print some original output from ECMWF library\n");
   printf("       -i input. Pathname of the file with the bufr message to parse\n");
   printf("       -o output. Pathname of output file. Default is standar output\n");
+  printf("       -s prints a long output with explained sequence of descriptors\n");
   printf("       -t bufrtable_dir. Pathname of bufr tables directory. Ended with '/'\n");
   printf("       -v. Verbose output\n");
   printf("       -h. Show this help\n");
@@ -96,11 +98,13 @@ int read_arguments(int _argc, char * _argv[])
   OUTPUTFILE[0] = '\0';
   BUFRTABLES_DIR[0] = '\0';
   VERBOSE = 0;
+  SHOW_SEQUENCE = 0;
+  SHOW_ECMWF_OUTPUT = 0;
 
   /*
    Read input arguments using getop library
    */
-  while ((iopt = getopt(_argc, _argv, "hi:o:t:v")) != -1)
+  while ((iopt = getopt(_argc, _argv, "ehi:o:st:v")) != -1)
     switch (iopt)
       {
       case 'i':
@@ -117,8 +121,14 @@ int read_arguments(int _argc, char * _argv[])
             strcpy(BUFRTABLES_DIR, optarg);
           }
         break;
+      case 'e':
+        SHOW_ECMWF_OUTPUT = 1;
+        break;
       case 'v':
         VERBOSE = 1;
+        break;
+      case 's':
+        SHOW_SEQUENCE = 1;
         break;
       case 'h':
       default:
