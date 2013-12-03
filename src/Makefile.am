@@ -2,7 +2,7 @@ bin_PROGRAMS = bufr2synop bufr_decode
 
 bufr_decode_SOURCES = bufr_decode.c
 
-noinst_HEADERS= bufr2synop.h
+noinst_HEADERS = bufr2synop.h metbuoy.h metsynop.h
 
 # set the include path found by configure
 INCLUDES= $(all_includes)
@@ -12,5 +12,5 @@ bufr_decode_LDFLAGS = $(all_libraries)
 
 bufr_decode_LDADD = -lm -lgfortran -lbufr
 bufr2synop_SOURCES = bufr2syn_env.c bufr2syn_io.c bufr2syn_mrproper.c \
-	bufr2syn_tablec.c bufr2syn_utils.c bufr2synop.c
+	bufr2syn_sqparse.c bufr2syn_synop.c bufr2syn_tablec.c bufr2syn_utils.c bufr2synop.c
 bufr2synop_LDADD = -lgfortran -lbufr -lm
