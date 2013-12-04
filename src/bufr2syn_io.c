@@ -100,11 +100,12 @@ int read_arguments(int _argc, char * _argv[])
   VERBOSE = 0;
   SHOW_SEQUENCE = 0;
   SHOW_ECMWF_OUTPUT = 0;
+  DEBUG = 0;
 
   /*
    Read input arguments using getop library
    */
-  while ((iopt = getopt(_argc, _argv, "ehi:o:st:v")) != -1)
+  while ((iopt = getopt(_argc, _argv, "Dehi:o:st:v")) != -1)
     switch (iopt)
       {
       case 'i':
@@ -120,6 +121,9 @@ int read_arguments(int _argc, char * _argv[])
           {
             strcpy(BUFRTABLES_DIR, optarg);
           }
+        break;
+      case 'D':
+        DEBUG = 1;
         break;
       case 'e':
         SHOW_ECMWF_OUTPUT = 1;

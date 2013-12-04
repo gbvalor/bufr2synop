@@ -62,6 +62,8 @@ int parse_subset_sequence(struct bufr_subset_sequence_data *sq, int *kdtlst, siz
         strcpy(TYPE,"ZZXX"); // buoy
       break;
     case 2:
+      if (find_descriptor_interval(kdtlst, nlst, 309050, 309052))
+        strcpy(TYPE,"TTXX"); // ship
       break;
     case 7:
       if (find_descriptor_interval(kdtlst, nlst, 307079, 307086))
@@ -77,12 +79,16 @@ int parse_subset_sequence(struct bufr_subset_sequence_data *sq, int *kdtlst, siz
     sprintf(err, "Cannot find the report type\n");
     return 1;
   }
-#ifdef DEBUG 
+
+  if(DEBUG) 
     printf("Going to parse a %s report\n", TYPE);
-#endif
+  
 
-  if (strstr(TYPE,"AAXX") == 0)
-    parse_subset_as_aaxx(&SYNOP, sq, kdtlst, nlst, ksec1, err);
-
+  if (strcmp(TYPE,"AAXX") == 0)
+  {
+     parse_subset_as_aaxx(&SYNOP, sq, kdtlst, nlst, ksec1, err);
+     print_synop(REPORT, 2048, &SYNOP);
+     printf("%s\n", REPORT);
+  }
   return 0;
 }

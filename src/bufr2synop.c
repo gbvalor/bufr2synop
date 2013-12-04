@@ -97,18 +97,20 @@ char BUFRTABLES_DIR[256]; /*!< Directory for BUFR tables set by user */
 char INPUTFILE[256]; /*!< The pathname of input file */
 char OUTPUTFILE[256]; /*!< The pathname of output file */
 int VERBOSE; /*!< If != 0 the verbose output */
-int SHOW_SEQUENCE; /*!< Output explained sequence */ 
-int SHOW_ECMWF_OUTPUT; /*!< Print original output from ECMWF library */ 
+int SHOW_SEQUENCE; /*!< Output explained sequence */
+int SHOW_ECMWF_OUTPUT; /*!< Print original output from ECMWF library */
+int DEBUG; /*!< Show debug information */
 
 size_t NLINES_TABLEC; /*!< current number of TABLE C file lines */
 char TYPE[8]; /*! Type of report being parsed  (code MMMM) */
 char TABLEC[MAXLINES_TABLEC][92]; /*!< Here is where store the lines from table C file*/
+char REPORT[2048]; /*!< string to set the report */
 
 struct bufr_subset_sequence_data SUBSET; /*!< ALl data decoded for a subset*/
 
 struct synop_chunks SYN; /*!< struct where to set chunks of synops taken from a bufr subset */
 
-char DEFAULT_BUFRTABLES[] = "/usr/local/lib/bufrtables/"; /*!< Default bufr tables dir */ 
+char DEFAULT_BUFRTABLES[] = "/usr/local/lib/bufrtables/"; /*!< Default bufr tables dir */
 
 struct synop_chunks SYNOP;
 struct buoy_chunks BUOY;
@@ -282,11 +284,11 @@ int main(int argc, char *argv[])
       exit(EXIT_FAILURE);
     }
 
-   if (KSEC1[5] != 0 && KSEC1[5] != 1 && KSEC1[5] != 2 && KSEC1[5] !=  7)
-   {
+  if (KSEC1[5] != 0 && KSEC1[5] != 1 && KSEC1[5] != 2 && KSEC1[5] !=  7)
+    {
       fprintf(stderr,"The data category %d is not parsed at the moment");
       exit(EXIT_FAILURE);
-   }
+    }
 
 
   /*
@@ -304,21 +306,23 @@ int main(int argc, char *argv[])
    read table C if VERBOSE
   */
   if (VERBOSE)
-  {
-    if (read_table_c() == 0)
-      {
-        fprintf(stderr,"Cannot read C Table  File\n");
-        exit(EXIT_FAILURE);
-      }
-  }
-
-#ifdef DEBUG
-  for (i = 0; i < ktdlen; i++)
     {
-      integer_to_descriptor(&d, KTDLST[i]);
-      printf("#KTDLST[%03d]=%d %02d %03d\n", i, d.f, d.x, d.y);
+      if (read_table_c() == 0)
+        {
+          fprintf(stderr,"Cannot read C Table  File\n");
+          exit(EXIT_FAILURE);
+        }
     }
-#endif
+
+  if (DEBUG)
+    {
+      for (i = 0; i < ktdlen; i++)
+        {
+          integer_to_descriptor(&d, KTDLST[i]);
+          printf("#KTDLST[%03d]=%d %02d %03d\n", i, d.f, d.x, d.y);
+        }
+    }
+
   // loop for every subset
   for (nsub = 0; nsub < KSUP[5]; nsub++)
     {
@@ -340,7 +344,7 @@ int main(int argc, char *argv[])
         {
           i = nsub * KELEM + j;
           linaux[0] = '\0'; // clean the output line
-          c = linaux; 
+          c = linaux;
           charray_to_string(SUBSET.sequence[j].name, CNAMES[j], 64);
           charray_to_string(SUBSET.sequence[j].unit, CUNITS[j], 24);
           integer_to_descriptor(&SUBSET.sequence[j].desc, KTDEXP[j]);
@@ -361,42 +365,42 @@ int main(int argc, char *argv[])
                   SUBSET.sequence[j].mask |= DESCRIPTOR_IS_CODE_TABLE;
                   SUBSET.sequence[j].val = VALUES[i];
                   if (VERBOSE)
-                  {
-                     if (get_explained_table_val (SUBSET.sequence[j].ctable, 256, &SUBSET.sequence[j].desc, (int) VALUES[i]) != NULL)
-                     {
-                       SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_CODE_TABLE_STRING;
-                       c += sprintf(c, "%9d : '%s'", (int)VALUES[i], SUBSET.sequence[j].ctable);
-                     }
-                     else
-                     {
-                       c += sprintf(c,"%9d : 'NOT FOUND'", (int)VALUES[i]);
-                     }
-                  }
+                    {
+                      if (get_explained_table_val (SUBSET.sequence[j].ctable, 256, &SUBSET.sequence[j].desc, (int) VALUES[i]) != NULL)
+                        {
+                          SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_CODE_TABLE_STRING;
+                          c += sprintf(c, "%9d : '%s'", (int)VALUES[i], SUBSET.sequence[j].ctable);
+                        }
+                      else
+                        {
+                          c += sprintf(c,"%9d : 'NOT FOUND'", (int)VALUES[i]);
+                        }
+                    }
                   else
-                  {
-                    c += sprintf(c, "%9d", (int)VALUES[i]);
-                  }
+                    {
+                      c += sprintf(c, "%9d", (int)VALUES[i]);
+                    }
                 }
-              else if (strstr(SUBSET.sequence[j].unit,"FLAGTABLE") == SUBSET.sequence[j].unit)
+              else if (strstr(SUBSET.sequence[j].unit,"FLAG") == SUBSET.sequence[j].unit)
                 {
                   SUBSET.sequence[j].mask |= DESCRIPTOR_IS_FLAG_TABLE;
                   SUBSET.sequence[j].val = VALUES[i];
                   if (VERBOSE)
-                  {
-                     if (get_explained_flag_val (SUBSET.sequence[j].ctable, 256, &SUBSET.sequence[j].desc, (unsigned long) VALUES[i]) != NULL)
-                     {
-                       SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_FLAG_TABLE_STRING;
-                       c += sprintf(c, "%9d : '%s'", (int)VALUES[i], SUBSET.sequence[j].ctable);
-                     }
-                     else
-                     {
-                       c += sprintf(c, "%9d : 'NOT FOUND'", (int)VALUES[i]);
-                     }
-                  }
+                    {
+                      if (get_explained_flag_val (SUBSET.sequence[j].ctable, 256, &SUBSET.sequence[j].desc, (unsigned long) VALUES[i]) != NULL)
+                        {
+                          SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_FLAG_TABLE_STRING;
+                          c += sprintf(c, "%9d : '%s'", (int)VALUES[i], SUBSET.sequence[j].ctable);
+                        }
+                      else
+                        {
+                          c += sprintf(c, "%9d : 'NOT FOUND'", (int)VALUES[i]);
+                        }
+                    }
                   else
-                  {
-                    c += sprintf(c, "%9d", (int)VALUES[i]);
-                  }
+                    {
+                      c += sprintf(c, "%9d", (int)VALUES[i]);
+                    }
                 }
               else
                 {
@@ -416,8 +420,8 @@ int main(int argc, char *argv[])
             printf("#%s", linaux);
         }
 
-        /**** the call to parse the sequence and transform to solicited asciicode, if possible *****/
-        if (parse_subset_sequence(&SUBSET, &KTDLST, ktdlen, &KSEC1, ERR))
+      /**** the call to parse the sequence and transform to solicited asciicode, if possible *****/
+      if (parse_subset_sequence(&SUBSET, &KTDLST, ktdlen, &KSEC1, ERR))
         {
           fprintf(stderr, "#%s\n", ERR);
         }
@@ -454,22 +458,23 @@ int main(int argc, char *argv[])
              &KERR);
     }
 
-#ifdef DEBUG
-  for (i = 0; i < 3 ; i++)
-    printf("#KSEC0[%d] = %d\n", i,  KSEC0[i]);
-  for (i = 0; i < 40 ; i++)
-    printf("#KSEC1[%d] = %d\n", i, KSEC1[i]);
-  if (KSEC1[4])
+  if (DEBUG)
     {
-      for (i = 0; i < 4096; i++)
-        printf("#KSEC2[%d] = %d\n", i, KSEC2[i]);
-    }
-  for (i = 0; i < 4; i++)
-    printf("#KSEC3[%d] = %d\n", i, KSEC3[i]);
+      for (i = 0; i < 3 ; i++)
+        printf("#KSEC0[%d] = %d\n", i,  KSEC0[i]);
+      for (i = 0; i < 40 ; i++)
+        printf("#KSEC1[%d] = %d\n", i, KSEC1[i]);
+      if (KSEC1[4])
+        {
+          for (i = 0; i < 4096; i++)
+            printf("#KSEC2[%d] = %d\n", i, KSEC2[i]);
+        }
+      for (i = 0; i < 4; i++)
+        printf("#KSEC3[%d] = %d\n", i, KSEC3[i]);
 
-  for (i = 0; i < 9; i++)
-    printf("#KSUP[%d] = %d\n", i, KSUP[i]);
-#endif
+      for (i = 0; i < 9; i++)
+        printf("#KSUP[%d] = %d\n", i, KSUP[i]);
+    }
 
   return KERR;
 

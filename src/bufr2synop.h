@@ -25,13 +25,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <getopt.h>
+#include <time.h>
 #include <sys/stat.h>
 
 // project includes
 #include "metsynop.h"
 #include "metbuoy.h"
 
-#define DEBUG
+//#define DEBUG
 
 /*!
   \def KVALS
@@ -152,12 +153,15 @@ extern char SELF[];
 extern int VERBOSE;
 extern int SHOW_SEQUENCE;
 extern int SHOW_ECMWF_OUTPUT;
+extern int DEBUG;
 extern struct synop_chunks SYN;
 
 extern size_t NLINES_TABLEC; 
 extern char TABLEC[MAXLINES_TABLEC][92];
 extern char DEFAULT_BUFRTABLES[];
 extern char TYPE[8];
+extern char REPORT[2048];
+
 extern struct bufr_subset_sequence_data SUBSET;
 
 int set_environment(void);
@@ -168,3 +172,8 @@ char * adjust_string(char *s);
 char * get_explained_table_val(char *expl, size_t dim, struct bufr_descriptor *d, int ival);
 char * get_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d, unsigned long ival);
 char * get_ecmwf_tablename(char *target, char TYPE);
+
+int parse_subset_as_aaxx(struct synop_chunks *syn, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, 
+                          int *ksec1, char *err);
+int synop_YYYYMMDDHHmm_to_YYGG(struct synop_chunks *syn);
+
