@@ -19,7 +19,7 @@
  ***************************************************************************/
 /*!
  \file bufr2syn_tablec.c
- \brief file with the code to read table C data (code and flag tables) 
+ \brief file with the code to read table C data (code and flag tables)
  */
 #include "bufr2synop.h"
 
@@ -163,13 +163,16 @@ char * get_explained_table_val(char *expl, size_t dim, struct bufr_descriptor *d
   \param d pointer to the source descriptor
   \param ival integer value for the descriptos
 
+  Remember that in FLAG tables for bufr, bit 1 is most significant and N the less one. Bit N only is set to
+  1 when all others are also set to one, i.e. in case of missing value.
+
   If something went wrong, it returns NULL . Otherwise it returns \a expl
 */
 char * get_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d, unsigned long ival)
 {
   char *c, *s;
-  unsigned long test;
-  unsigned long nv, nx, v,  nl;
+  unsigned long test, test0;
+  unsigned long nb, nx, v,  nl;
   size_t i, j;
 
   // Find first line for descriptor
@@ -195,27 +198,52 @@ char * get_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d,
 
   // reads the amount of possible bits
   if (TABLEC[i][7] != ' ')
-    nv = strtol(&TABLEC[i][7], &c, 10);
+    nb = strtol(&TABLEC[i][7], &c, 10);
   else
     return NULL;
 
   // read a value
   s = expl;
   s[0] = '\0';
-  for (j = 0; j < nv && i < NLINES_TABLEC ; i++)
+
+  for (j = 0, test0 = 2; j < nb && i < NLINES_TABLEC ; i++)
     {
       if (TABLEC[i][12] != ' ')
         {
-          v = strtol(&TABLEC[i][12], &c, 10); //v is the bit number
+          v = strtol(&TABLEC[i][12], &c, 10); // v is the bit number
           j++;
-          if (((1U << (nv - v + 1)) & ival) == 0)
-            continue;
-          else
-            { // bit match
+
+          // case 0 with meaning 
+          if (v == 0)
+            {
+              test0 = 1;
+              if (ival == 0)
+                {
+                  nl = strtol(&TABLEC[i][21], &c, 10);
+                  if (strlen(expl) && (strlen(expl) + 1) < dim)
+                    s += sprintf(s, "|");
+                  s += sprintf(s,"%s", &TABLEC[i][24]);
+                  if (nl > 1)
+                    {
+                      for (nx = 1 ; nx < nl; nx++)
+                        if ((strlen(expl) + strlen(&TABLEC[i + nx][22]))  < dim)
+                          {
+                            s += sprintf(s, "%s", &TABLEC[i + nx][22]);
+                          }
+                    }
+                  return expl;
+                }
+            }
+
+          test = test0 << (nb - v);
+
+          if (v && (test & ival) != 0)
+            {
+              // bit match
               // read how many lines for the descriptors
               nl = strtol(&TABLEC[i][21], &c, 10);
               if (strlen(expl) && (strlen(expl) + 1) < dim)
-                s += sprintf(s, "|"); 
+                s += sprintf(s, "|");
               s += sprintf(s,"%s", &TABLEC[i][24]);
               if (nl > 1)
                 {
@@ -227,6 +255,8 @@ char * get_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d,
                 }
 
             }
+          else
+            continue;
         }
     }
 

@@ -19,7 +19,7 @@
  ***************************************************************************/
 /*!
  \file bufr2syn_mrproper.c
- \brief file with the code to clean and init structures 
+ \brief file with the code to clean and init structures
  */
 #include "bufr2synop.h"
 
@@ -29,7 +29,7 @@
 */
 void clean_syn_sec0(struct synop_sec0 *s)
 {
-   memset(s, 0, sizeof(struct synop_sec0));
+  memset(s, 0, sizeof(struct synop_sec0));
 }
 
 /*! \fn void clean_syn_sec1(struct synop_sec1 *s)
@@ -38,7 +38,7 @@ void clean_syn_sec0(struct synop_sec0 *s)
 */
 void clean_syn_sec1(struct synop_sec1 *s)
 {
-   memset(s, 0, sizeof(struct synop_sec1));
+  memset(s, 0, sizeof(struct synop_sec1));
 }
 
 /*! \fn void clean_syn_sec2(struct synop_sec2 *s)
@@ -47,7 +47,7 @@ void clean_syn_sec1(struct synop_sec1 *s)
 */
 void clean_syn_sec2(struct synop_sec2 *s)
 {
-   memset(s, 0, sizeof(struct synop_sec2));
+  memset(s, 0, sizeof(struct synop_sec2));
 }
 
 /*! \fn void clean_syn_sec3(struct synop_sec3 *s)
@@ -56,7 +56,7 @@ void clean_syn_sec2(struct synop_sec2 *s)
 */
 void clean_syn_sec3(struct synop_sec3 *s)
 {
-   memset(s, 0, sizeof(struct synop_sec3));
+  memset(s, 0, sizeof(struct synop_sec3));
 }
 
 /*! \fn void clean_report_date_ext(struct report_date_ext *s)
@@ -80,6 +80,20 @@ void clean_synop_chunks( struct synop_chunks *syn)
   clean_syn_sec0( &(syn->s0));
   clean_syn_sec1( &(syn->s1));
   clean_syn_sec3( &(syn->s3));
+
+  // default
+  strcpy(syn->s1.ir,"/");
+  strcpy(syn->s1.ix,"/");
+  strcpy(syn->s1.h,"/");
+  strcpy(syn->s1.VV,"//");
+  strcpy(syn->s1.N,"/");
+  strcpy(syn->s1.dd,"//");
+  strcpy(syn->s1.ff,"//");
+  strcpy(syn->s1.sn1,"/");
+  strcpy(syn->s1.TTT,"///");
+  strcpy(syn->s1.sn2,"/");
+  strcpy(syn->s1.TdTdTd,"///");
+
   syn->error[0] = '\0';
 }
 
