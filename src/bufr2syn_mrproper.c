@@ -82,6 +82,7 @@ void clean_synop_chunks( struct synop_chunks *syn)
   clean_syn_sec3( &(syn->s3));
 
   // default
+  strcpy(syn->s0.iw,"/");
   strcpy(syn->s1.ir,"/");
   strcpy(syn->s1.ix,"/");
   strcpy(syn->s1.h,"/");
@@ -89,10 +90,6 @@ void clean_synop_chunks( struct synop_chunks *syn)
   strcpy(syn->s1.N,"/");
   strcpy(syn->s1.dd,"//");
   strcpy(syn->s1.ff,"//");
-  strcpy(syn->s1.sn1,"/");
-  strcpy(syn->s1.TTT,"///");
-  strcpy(syn->s1.sn2,"/");
-  strcpy(syn->s1.TdTdTd,"///");
 
   syn->error[0] = '\0';
 }
