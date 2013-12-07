@@ -49,7 +49,8 @@ int parse_subset_sequence(struct bufr_subset_sequence_data *sq, int *kdtlst, siz
     {
     case 0:
       if (find_descriptor_interval(kdtlst, nlst, 307079, 307086) ||
-          find_descriptor(kdtlst, nlst,307091))
+          find_descriptor(kdtlst, nlst,307091) ||
+          find_descriptor(kdtlst, nlst,307096))
         strcpy(TYPE,"AAXX"); // synop
       break;
     case 1:

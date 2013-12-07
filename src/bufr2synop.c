@@ -105,6 +105,8 @@ size_t NLINES_TABLEC; /*!< current number of TABLE C file lines */
 char TYPE[8]; /*! Type of report being parsed  (code MMMM) */
 char TABLEC[MAXLINES_TABLEC][92]; /*!< Here is where store the lines from table C file*/
 char REPORT[2048]; /*!< string to set the report */
+char LINAUX[2048]; // output line
+
 
 struct bufr_subset_sequence_data SUBSET; /*!< ALl data decoded for a subset*/
 
@@ -131,7 +133,6 @@ int main(int argc, char *argv[])
   struct bufr_descriptor d; // bufr descriptor
   unsigned int *kbuff;
   char aux[256]; // auxiliar string
-  char linaux[1024]; // output line
   char *c; // auxiliar pointer for sprintf tasks
   int i, j, k,nsub, nsub1;
   int kelem = KELEM, kvals = KVALS;
@@ -163,7 +164,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Too small input FILE.\n");
       exit(EXIT_FAILURE);
     }
-  else if (VERBOSE)
+  else if (DEBUG)
     {
       printf("#It is OK.\n");
       printf("#message read ");
@@ -340,11 +341,14 @@ int main(int argc, char *argv[])
       */
       busel2_(&nsub1, &kelem, &ktdlen, (char **)KTDLST, &ktdexl, (char **)KTDEXP, (char **)CNAMES, (char **)CUNITS, &KERR);
 
+      if (KERR)
+        continue;
+
       for (j = 0 ; j < ktdexl; j++)
         {
           i = nsub * KELEM + j;
-          linaux[0] = '\0'; // clean the output line
-          c = linaux;
+          LINAUX[0] = '\0'; // clean the output line
+          c = LINAUX;
           charray_to_string(SUBSET.sequence[j].name, CNAMES[j], 64);
           charray_to_string(SUBSET.sequence[j].unit, CUNITS[j], 24);
           integer_to_descriptor(&SUBSET.sequence[j].desc, KTDEXP[j]);
@@ -416,8 +420,8 @@ int main(int argc, char *argv[])
             }
           SUBSET.nd = j;
           c += sprintf(c, "\n");
-          if (SHOW_SEQUENCE && strlen(linaux))
-            printf("#%s", linaux);
+          if (SHOW_SEQUENCE && strlen(LINAUX))
+            printf("#%s", LINAUX);
         }
 
       /**** the call to parse the sequence and transform to solicited asciicode, if possible *****/

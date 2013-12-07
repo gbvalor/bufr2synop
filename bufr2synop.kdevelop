@@ -19,7 +19,7 @@
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>src/bufr_decode</activetarget>
+      <activetarget>src/bufr2synop</activetarget>
       <useconfiguration>default</useconfiguration>
     </general>
     <run>

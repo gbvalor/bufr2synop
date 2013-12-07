@@ -35,16 +35,17 @@
 //#define DEBUG
 
 /*!
-  \def KVALS
-  \brief dimension of arrays of doubles
-*/
-#define KVALS 1024000
-
-/*!
   \def KELEM
   \brief max dimension of elements for a single report
 */
-#define KELEM 4096
+#define KELEM 16384
+
+/*!
+  \def KVALS
+  \brief dimension of arrays of doubles. It must store all the data for all subset
+*/
+#define KVALS 16384000
+
 
 /*!
   \def BUFR_LEN
@@ -86,7 +87,7 @@
   \def NMAXSEQ
   \brief Maximum expected descriptor in a expanded sequence for a single subset
 */
-#define NMAXSEQ 8192
+#define NMAXSEQ 16384
 
 #define DESCRIPTOR_VALUE_MISSING 1 
 #define DESCRIPTOR_HAVE_REAL_VALUE 2
@@ -115,16 +116,28 @@ struct bufr_descriptor {
 struct bufr_atom_data {
    struct bufr_descriptor desc; /*!< struct \ref bufr_descriptor */
    int mask; /*!< Mask with for the type */
-   char name[66]; /*!< String with the name of descriptir */
-   char unit[26]; /*!< String with the name of units */
+   char name[92]; /*!< String with the name of descriptir */
+   char unit[32]; /*!< String with the name of units */
    double val; /*!< Value for the bufr descriptor */
-   char cval[80]; /*!< String value for the bufr descriptor */
+   char cval[128]; /*!< String value for the bufr descriptor */
    char ctable[256]; /*!< Explained meaning for a code table */
 };
 
+/*!
+  \struct bufr_subset_sequence_data
+  \brief Contains all the information for a subset in a expanded squence 
+*/
 struct bufr_subset_sequence_data {
    size_t nd; 
    struct bufr_atom_data sequence[NMAXSEQ];
+};
+
+
+struct bufr_subset_state {
+   struct bufr_atom_data *a; /*! the current struct \ref bufr_atom_data being parsed */
+   int ival; 
+   double val;
+   int itval;
 };
 
 extern unsigned char BUFR_MESSAGE[BUFR_LEN]; 
@@ -176,4 +189,13 @@ char * get_ecmwf_tablename(char *target, char TYPE);
 int parse_subset_as_aaxx(struct synop_chunks *syn, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, 
                           int *ksec1, char *err);
 int synop_YYYYMMDDHHmm_to_YYGG(struct synop_chunks *syn);
+
+int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
+int syn_parse_x02 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
+int syn_parse_x04 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
+int syn_parse_x10 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
+int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
+int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
+int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
+int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 
