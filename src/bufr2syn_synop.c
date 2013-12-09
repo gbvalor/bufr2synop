@@ -75,11 +75,20 @@ char *guess_WMO_region(struct synop_chunks *syn)
       strcmp(syn->s0.II,"33") == 0 || strcmp(syn->s0.II,"34") == 0 || strcmp(syn->s0.II,"22") == 0 ||
       (strstr(aux,"201") == aux))
     {
-      // Reg 6
+      // Reg 6. Europe
       syn->s0.A1[0] = '6';
       strcpy(syn->s0.Reg,"VI");
       return syn->s0.A1;
     }
+
+  if (syn->s0.II[0] == '6' || (strstr(aux,"0858") == aux) ||  (strstr(aux,"0859") == aux))
+    {
+      // Reg 1. Africa
+      syn->s0.A1[0] = '1';
+      strcpy(syn->s0.Reg,"I");
+      return syn->s0.A1;
+    }
+
   return syn->s0.A1;
 }
 
@@ -340,6 +349,12 @@ int print_synop ( char *report, size_t lmax, struct synop_chunks *syn )
   if ( syn->mask & SYNOP_SEC3 )
     {
       c += sprintf ( c, " 333" );
+
+      // printf 1snxTxTxTx
+      if (syn->s3.XoXoXoXo[0])
+        {
+          c += sprintf(c, " 0%s", syn->s3.XoXoXoXo);
+        }
 
       // printf 1snxTxTxTx
       if (syn->s3.snx[0])

@@ -51,6 +51,20 @@ char * kelvin_to_snTT ( char *target, double T )
   return target;
 }
 
+char * kelvin_to_TT ( char *target, double T )
+{
+  int ic;
+  if ( T < 150.0 || T > 340.0)
+    return NULL;
+  ic = ( int ) (100.0 * T + 0.001) - 27315;
+  ic /= 100;
+  if ( ic < 0 )
+    sprintf ( target, "%02d", 50 - ic );
+  else
+    sprintf ( target, "%02d", ic );
+  return target;
+}
+
 int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
 {
   char aux[16];
@@ -63,9 +77,11 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
     case 104: // 0 12 104
       if (syn->s1.TTT[0] == 0)
         {
-          kelvin_to_snTTT ( aux, s->val );
+          if (kelvin_to_snTTT ( aux, s->val ))
+          {
           syn->s1.sn1[0] = aux[0];
           strcpy ( syn->s1.TTT, aux + 1 );
+          }
         }
       break;
     case 3: // 0 12 003
@@ -74,9 +90,11 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
     case 106: // 0 12 106
       if (syn->s1.TdTdTd[0] == 0)
         {
-          kelvin_to_snTTT ( aux, s->val );
+          if (kelvin_to_snTTT ( aux, s->val ))
+          {
           syn->s1.sn2[0] = aux[0];
           strcpy ( syn->s1.TdTdTd, aux + 1 );
+          }
         }
       break;
     case 11: // 0 12 011
@@ -87,10 +105,12 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
     case 116: // 0 12 116
       if (syn->s3.TxTxTx[0] == 0)
         {
-          kelvin_to_snTTT ( aux, s->val );
+          if (kelvin_to_snTTT ( aux, s->val ))
+          {
           syn->s3.snx[0] = aux[0];
           strcpy ( syn->s3.TxTxTx, aux + 1 );
           syn->mask |= SYNOP_SEC3;
+          }
         }
       break;
     case 12: // 0 12 012
@@ -101,18 +121,35 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
     case 117: // 0 12 117
       if (syn->s3.TnTnTn[0] == 0)
         {
-          kelvin_to_snTTT ( aux, s->val );
+          if (kelvin_to_snTTT ( aux, s->val ))
+          {
           syn->s3.snn[0] = aux[0];
           strcpy ( syn->s3.TnTnTn, aux + 1 );
           syn->mask |= SYNOP_SEC3;
+          }
         }
       break;
     case 113:
       if (strcmp("6", guess_WMO_region(syn)) == 0) // region VI
         {
-          kelvin_to_snTT ( aux, s->val );
+          if (kelvin_to_snTT ( aux, s->val ))
+          {
           strcpy ( syn->s3.jjj, aux);
           syn->mask |= SYNOP_SEC3;
+          }
+        }
+      else if (strcmp("1", guess_WMO_region(syn)) == 0)
+        {
+          if (kelvin_to_TT ( aux, s->val ))
+          {
+          syn->s3.XoXoXoXo[0] = aux[0];
+          syn->s3.XoXoXoXo[1] = aux[1];
+          if (syn->s3.XoXoXoXo[2] == 0)
+            syn->s3.XoXoXoXo[2] = '/';
+          if (syn->s3.XoXoXoXo[3] == 0)
+            syn->s3.XoXoXoXo[3] = '/';
+          syn->mask |= SYNOP_SEC3;
+          }
         }
       break;
     default:
