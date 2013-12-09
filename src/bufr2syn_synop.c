@@ -54,6 +54,34 @@ int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
   return 0;
 }
 
+// return NULL if not guessed
+char *guess_WMO_region(struct synop_chunks *syn)
+{
+  char aux[8];
+
+  if (syn->s0.A1[0])
+    {
+      return syn->s0.A1;
+    }
+
+  if (syn->s0.II[0] == 0  || syn->s0.iii[0] == 0)
+    return syn->s0.A1;
+
+  sprintf(aux,"%s%s",syn->s0.II, syn->s0.iii);
+
+  if ((syn->s0.II[0] == '0' && (strstr(aux,"042") != aux) && (strstr(aux,"043") != aux)  && (strstr(aux,"0441") != aux)  && (strstr(aux,"0858") != aux) &&  (strstr(aux,"0859") != aux)) ||
+      syn->s0.II[0] == '1' || (strstr(aux,"201") == aux) ||
+      strcmp(syn->s0.II,"22") == 0 || strcmp(syn->s0.II,"26") == 0 || strcmp(syn->s0.II,"27") == 0 ||
+      strcmp(syn->s0.II,"33") == 0 || strcmp(syn->s0.II,"34") == 0 || strcmp(syn->s0.II,"22") == 0 ||
+      (strstr(aux,"201") == aux))
+    {
+      // Reg 6
+      syn->s0.A1[0] = '6';
+      strcpy(syn->s0.Reg,"VI");
+      return syn->s0.A1;
+    }
+  return syn->s0.A1;
+}
 
 
 /*!
@@ -81,6 +109,7 @@ int parse_subset_as_aaxx ( struct synop_chunks *syn, struct bufr_subset_sequence
 
   // clean data
   clean_synop_chunks ( syn );
+  memset(&s, 0, sizeof(struct bufr_subset_state));
 
   sprintf ( syn->s0.MiMi, "AA" );
   sprintf ( syn->s0.MjMj, "XX" );
@@ -92,6 +121,7 @@ int parse_subset_as_aaxx ( struct synop_chunks *syn, struct bufr_subset_sequence
     {
       if ( sq->sequence[is].mask & DESCRIPTOR_VALUE_MISSING )
         continue;
+      s.i = is;
       s.ival = ( int ) sq->sequence[is].val;
       ival = ival;
       s.val = sq->sequence[is].val;
@@ -111,6 +141,10 @@ int parse_subset_as_aaxx ( struct synop_chunks *syn, struct bufr_subset_sequence
           syn_parse_x04 ( syn, &s, err );
           break;
 
+        case 5: //Position
+          syn_parse_x05 ( syn, &s, err );
+          break;
+
         case 10: // Air Pressure descriptors
           syn_parse_x10 ( syn, &s, err );
           break;
@@ -125,6 +159,10 @@ int parse_subset_as_aaxx ( struct synop_chunks *syn, struct bufr_subset_sequence
 
         case 13: // Humidity and precipitation data
           syn_parse_x13 ( syn, &s, err );
+          break;
+
+        case 14: // Radiation
+          syn_parse_x14 ( syn, &s, err );
           break;
 
         case 20: // Cloud data
@@ -156,6 +194,31 @@ int parse_subset_as_aaxx ( struct synop_chunks *syn, struct bufr_subset_sequence
   if ( syn->s0.iw[0] == '/' && syn->s1.ff[0] != '/' )
     syn->s0.iw[0] = '1';
 
+  // adjust ix
+  if (syn->s1.ix[0] == '/' && syn->s1.ww[0] == 0)
+    {
+      if ((s.mask & SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW) &&  
+          (s.mask & SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1) && 
+          (s.mask & SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2)  
+         )
+        {
+          if (s.mask & SUBSET_MASK_HAVE_TYPE_STATION)
+            {
+              if (s.type == 1 || s.type == 2)
+                strcpy(syn->s1.ix,"2");
+              else if (s.type == 0)
+                strcpy(syn->s1.ix,"5");
+            }
+        }
+      else if (s.mask & SUBSET_MASK_HAVE_TYPE_STATION)
+        {
+          if (s.type == 1)
+            strcpy(syn->s1.ix,"3");
+          else if (s.type == 0)
+            strcpy(syn->s1.ix,"6");
+        }
+    }
+
   /****** Final Adjust ***********/
   // fix YYGG according with YYYYMMDDHHmm
   synop_YYYYMMDDHHmm_to_YYGG ( syn );
@@ -179,10 +242,15 @@ int parse_subset_as_aaxx ( struct synop_chunks *syn, struct bufr_subset_sequence
 */
 int print_synop ( char *report, size_t lmax, struct synop_chunks *syn )
 {
+  size_t i;
   char *c;
 
   c = report;
+
   // print time extension
+  if (syn->e.YYYY[0] == 0)
+    return 1;
+
   c += sprintf ( c, "%s%s%s%s%s", syn->e.YYYY, syn->e.MM, syn->e.DD, syn->e.HH, syn->e.mm );
 
   // Print type
@@ -229,14 +297,14 @@ int print_synop ( char *report, size_t lmax, struct synop_chunks *syn )
       c += sprintf ( c, " 5%s%s", syn->s1.a, syn->s1.ppp );
     }
 
-  // printf 6trRRR
+  // printf 6RRRtr
   if ( syn->s1.tr[0] || syn->s1.RRR[0] )
     {
       if ( syn->s1.tr[0] == 0 )
         syn->s1.tr[0] = '/';
       if ( syn->s1.RRR[0] == 0 )
         strcpy ( syn->s1.RRR, "///" );
-      c += sprintf ( c, " 6%s%s", syn->s1.tr, syn->s1.RRR );
+      c += sprintf ( c, " 6%s%s", syn->s1.RRR, syn->s1.tr);
     }
 
   if ( syn->s1.ww[0] || syn->s1.W1[0] || syn->s1.W2[0] )
@@ -250,7 +318,10 @@ int print_synop ( char *report, size_t lmax, struct synop_chunks *syn )
       c += sprintf ( c, " 7%s%s%s", syn->s1.ww, syn->s1.W1, syn->s1.W2 );
     }
 
-  if ( syn->s1.Nh[0] || syn->s1.Cl[0] || syn->s1.Cm[0] || syn->s1.Ch[0])
+  if ( (syn->s1.Nh[0] && syn->s1.Nh[0] != '0') || 
+       (syn->s1.Cl[0] && syn->s1.Cl[0] != '0') || 
+       (syn->s1.Cm[0] && syn->s1.Cm[0] != '0') || 
+       (syn->s1.Ch[0] && syn->s1.Ch[0] != '0'))
     {
       if ( syn->s1.Nh[0] == 0 )
         strcpy ( syn->s1.Nh, "/" );
@@ -270,14 +341,60 @@ int print_synop ( char *report, size_t lmax, struct synop_chunks *syn )
     {
       c += sprintf ( c, " 333" );
 
-      // printf 6trRRR
+      // printf 1snxTxTxTx
+      if (syn->s3.snx[0])
+        {
+          c += sprintf(c, " 1%s%s", syn->s3.snx, syn->s3.TxTxTx);
+        }
+
+      // printf 1snnTnTnTn
+      if (syn->s3.snn[0])
+        {
+          c += sprintf(c, " 2%s%s", syn->s3.snn, syn->s3.TnTnTn);
+        }
+
+      // printf 3Ejjj
+      if (syn->s3.E[0] || syn->s3.jjj[0])
+        {
+          if (syn->s3.E[0] == 0)
+            syn->s3.E[0] = '/';
+          if (syn->s3.jjj[0] == 0)
+            strcpy(syn->s3.jjj, "///");
+          c += sprintf(c, " 3%s%s", syn->s3.E, syn->s3.jjj);
+        }
+
+      /**** Radiation Sunshine gropus ***/
+
+      // print 55SSS
+      if (syn->s3.SSS[0])
+        {
+          c += sprintf(c, " 55%s", syn->s3.SSS);
+          for (i = 0; i < 7; i++)
+            {
+              if (syn->s3.j524[i][0])
+                sprintf(c, " %s%s", syn->s3.j524[i], syn->s3.FFFF24[i]);
+            }
+        }
+
+      // print 553SS
+      if (syn->s3.SS[0])
+        {
+          c += sprintf(c, " 553%s", syn->s3.SS);
+          for (i = 0; i < 7; i++)
+            {
+              if (syn->s3.j5[i][0])
+                sprintf(c, " %s%s", syn->s3.j5[i], syn->s3.FFFF[i]);
+            }
+
+        }
+      // printf 6RRRtr
       if ( syn->s3.tr[0] || syn->s3.RRR[0] )
         {
           if ( syn->s3.tr[0] == 0 )
             syn->s3.tr[0] = '/';
           if ( syn->s3.RRR[0] == 0 )
             strcpy ( syn->s3.RRR, "///" );
-          c += sprintf ( c, " 6%s%s", syn->s3.tr, syn->s3.RRR );
+          c += sprintf ( c, " 6%s%s", syn->s3.RRR ,syn->s3.tr);
         }
 
       if ( syn->s3.RRRR24[0] )

@@ -18,59 +18,52 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 /*!
- \file bufr2syn_x04.c
- \brief decodes the descriptors with X = 04
+ \file bufr2syn_x05.c
+ \brief decodes the descriptors with X = 05 (Position)
  */
 #include "bufr2synop.h"
 
-int syn_parse_x04 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
+
+int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
 {
+  int ia;
   switch ( s->a->desc.y )
     {
-    case 1: // 0 04 001
-      sprintf ( syn->e.YYYY, "%04d", s->ival );
-      break;
-    case 2: // 0 04 002
-      sprintf ( syn->e.MM, "%02d", s->ival );
-      break;
-    case 3: // 0 04 003
-      sprintf ( syn->e.DD, "%02d", s->ival );
-      //sprintf(syn->s0.YY, "%02d", (int) sq->sequence[is].val);
-      break;
-    case 4: // 0 04 004
-      sprintf ( syn->e.HH, "%02d", s->ival );
-      //sprintf(syn->s0.GG, "%02d", (int) sq->sequence[is].val);
-      break;
-    case 5: // 0 04 005
-      sprintf ( syn->e.mm, "%02d", s->ival );
-      break;
-      // store latest displacement in seconds
-    case 23: // 0 04 023
-      s->k_jtval = s->k_itval;
-      s->jtval = s->itval;
-      s->k_itval = s->i;
-      s->itval = s->ival * 86400;
-      break;
-    case 24: // 0 04 024
-      s->k_jtval = s->k_itval;
-      s->jtval = s->itval;
-      s->k_itval = s->i;
-      s->itval = s->ival * 3600;
-      break;
-    case 25: // 0 04 025
-      s->k_jtval = s->k_itval;
-      s->jtval = s->itval;
-      s->k_itval = s->i;
-      s->itval = s->ival * 60;
-      break;
-    case 26: // 0 04 026
-      s->k_jtval = s->k_itval;
-      s->jtval = s->itval;
-      s->k_itval = s->i;
-      s->itval = s->ival;
-      break;
+    case 1: // 0 05 001
+    case 2: // 0 05 002
+      if (s->val < 0.0)
+        s->mask |= SUBSET_MASK_LATITUDE_SOUTH; // Sign for latitude
+      ia = (int) (fabs(s->val) * 10.0);
+      sprintf(syn->s0.LaLaLa, "%03d",ia);
+    break;
+    case 11: // 0 05 001
+    case 12: // 0 05 002
+      if (s->val < 0.0)
+        s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
+      ia = (int) (fabs(s->val) * 10.0);
+      sprintf(syn->s0.LoLoLoLo, "%04d",ia);
+    break;
     default:
       break;
     }
+
+  // check if set both LaLaLa and LoLoLoLo to set Qc 
+  if ((syn->s0.Qc == 0) && syn->s0.LaLaLa[0] && syn->s0.LoLoLoLo[0])
+  {
+    if (s->mask & SUBSET_MASK_LATITUDE_SOUTH)
+    {
+       if (s->mask & SUBSET_MASK_LONGITUDE_WEST)
+         strcpy(syn->s0.Qc, "5");
+       else
+         strcpy(syn->s0.Qc, "3");
+    }
+    else
+    {
+       if (s->mask & SUBSET_MASK_LONGITUDE_WEST)
+         strcpy(syn->s0.Qc, "7");
+       else
+        strcpy(syn->s0.Qc, "0");
+    }
+  }
   return 0;
 }

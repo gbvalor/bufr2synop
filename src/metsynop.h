@@ -74,14 +74,14 @@ struct synop_sec0
    char A1[2]; /*!< A1 item. WMO region */
    char bw[2]; /*!< bw item. WMO subregion */
    char nbnbnb[4]; /*!< kins and serial number for buoy */
-   char D_D[8]; /*!< Ship signal*/
+   char D_D[10]; /*!< Ship signal*/
    char YY[4]; /*!< Day (UTC) of observation */
    char GG[4]; /*!< Hour (UTC) of observation */
    char iw[2]; /*!< Indicator for source and units used in speed wind data */
    char II[4]; /*!< Regional indicator for a synop station index */
    char iii[4]; /*!< Station index  */
    char Reg[4]; /*!< WMO IIiii region 'I','II','III', 'IV', 'V', ... */
-   char IIIII[8]; /*!< Ship index name */
+   char IIIII[10]; /*!< Ship index name */
    char LaLaLa[4]; /*!< Latitude in degree tenths */
    char Qc[2]; /*!< Quadrant of the globe. (Code table 3333) */
    char LoLoLoLo[6]; /*!< Longitude in degree tenths */

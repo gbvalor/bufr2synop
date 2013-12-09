@@ -291,6 +291,10 @@ int main(int argc, char *argv[])
       exit(EXIT_FAILURE);
     }
 
+  if (KSUP[5] > KSUBS)
+    {
+      fprintf(stderr,"%s: Warning, not all the %d subsets for this file can be managed, just %d\n", SELF, KSUP[5], KSUBS);
+    }
 
   /*
    Expand the descriptors
@@ -344,7 +348,7 @@ int main(int argc, char *argv[])
       if (KERR)
         continue;
 
-      for (j = 0 ; j < ktdexl; j++)
+      for (j = 0 ; j < ktdexl && j < KSUBS ; j++)
         {
           i = nsub * KELEM + j;
           LINAUX[0] = '\0'; // clean the output line

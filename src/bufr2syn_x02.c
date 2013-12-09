@@ -27,6 +27,10 @@ int syn_parse_x02 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
 {
   switch ( s->a->desc.y )
     {
+    case 1: // 0 02 001
+      s->type = s->ival;
+      s->mask |= SUBSET_MASK_HAVE_TYPE_STATION;
+      break;
     case 2: // 0 02 002
       if ( s->ival & 4 )
         strcpy ( syn->s0.iw, "4" );

@@ -26,6 +26,7 @@
 #include <string.h>
 #include <getopt.h>
 #include <time.h>
+#include <math.h>
 #include <sys/stat.h>
 
 // project includes
@@ -46,6 +47,11 @@
 */
 #define KVALS 16384000
 
+/*!
+  \def KSUBS
+  \brief Maximum number of subset this version can manage
+*/
+#define KSUBS (KVALS / KELEM)
 
 /*!
   \def BUFR_LEN
@@ -98,6 +104,14 @@
 #define DESCRIPTOR_IS_FLAG_TABLE 64
 #define DESCRIPTIR_IS_A_REPLICATOR 128
 
+#define SUBSET_MASK_LATITUDE_SOUTH 1
+#define SUBSET_MASK_LONGITUDE_WEST 2
+#define SUBSET_MASK_HAVE_TYPE_STATION 4
+#define SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW 8
+#define SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1 16
+#define SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2 32
+
+
 /*!
   \struct bufr_descriptor
   \brief BUFR descriptor
@@ -132,12 +146,17 @@ struct bufr_subset_sequence_data {
    struct bufr_atom_data sequence[NMAXSEQ];
 };
 
-
 struct bufr_subset_state {
-   struct bufr_atom_data *a; /*! the current struct \ref bufr_atom_data being parsed */
-   int ival; 
-   double val;
-   int itval;
+   struct bufr_atom_data *a; /*!< the current struct \ref bufr_atom_data being parsed */
+   size_t i; /*!< current index in array element */
+   int ival; /*!< the integer value in the descritor */
+   double val; /*!< the float value in the descriptor */
+   int itval; /*!< Latest parsed time displacement in seconds */
+   size_t k_itval; /*!< index in array of latest time displacemet descriptor */
+   int jtval; /*!< Prior to Latest parsed time displacement in seconds */
+   size_t k_jtval; /*!< index in array of time prior to latest displacemet descriptor */
+   int type; /*!< type of station */
+   int mask; /*!< mask which contain several information from the subset data taken at the moment */
 };
 
 extern unsigned char BUFR_MESSAGE[BUFR_LEN]; 
@@ -189,6 +208,7 @@ char * get_ecmwf_tablename(char *target, char TYPE);
 int parse_subset_as_aaxx(struct synop_chunks *syn, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, 
                           int *ksec1, char *err);
 int synop_YYYYMMDDHHmm_to_YYGG(struct synop_chunks *syn);
+char * guess_WMO_region(struct synop_chunks *syn);
 
 int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x02 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );

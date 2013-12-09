@@ -34,6 +34,29 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
     case 2: // 0 01 002
       sprintf ( syn->s0.iii, "%03d", s->ival );
       break;
+    case 3: // 0 01 003
+      sprintf ( syn->s0.A1, "%d", s->ival );
+      if (strcmp(syn->s0.A1, "1") == 0)
+        strcpy(syn->s0.Reg, "I");
+      else if (strcmp(syn->s0.A1, "2") == 0)
+        strcpy(syn->s0.Reg, "II");
+      else if (strcmp(syn->s0.A1, "3") == 0)
+        strcpy(syn->s0.Reg, "III");
+      else if (strcmp(syn->s0.A1, "4") == 0)
+        strcpy(syn->s0.Reg, "IV");
+      else if (strcmp(syn->s0.A1, "5") == 0)
+        strcpy(syn->s0.Reg, "V");
+      else if (strcmp(syn->s0.A1, "6") == 0)
+        strcpy(syn->s0.Reg, "VI");
+      break;
+    case 4: // 0 01 004
+    case 20: // 0 01 004
+      sprintf ( syn->s0.bw, "%d", s->ival );
+      break;
+    case 11: // 0 01 011
+      if (strlen(s->a->cval) < 10)
+        strcpy( syn->s0.IIIII, s->a->cval);
+      break;
     default:
       break;
     }

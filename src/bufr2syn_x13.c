@@ -39,7 +39,7 @@ char * prec_to_RRR ( char *target, double r )
 
 char * prec_to_RRRR ( char *target, double r )
 {
-  if ( r > 0.0 && r < 0.1 )
+  if ( r < 0.0||(r > 0.0 && r < 0.1))
     strcpy ( target,"9999" );
   else if ( r <= 999.8 )
     sprintf ( target,"%04d", ( int ) ( r * 10.0 ) );
@@ -50,10 +50,12 @@ char * prec_to_RRRR ( char *target, double r )
 
 char * prec_to_RRRR24 ( char *target, double r )
 {
-  if ( r >= 0.0)
+  if ( r < 0.0 || (r > 0.0 && r < 0.1))
+    strcpy ( target,"9999" );
+  else if ( r <= 999.8 )
     sprintf ( target,"%04d", ( int ) ( r * 10.0 ) );
   else
-    strcpy ( target,"0000" );
+    strcpy ( target,"9998" );
   return target;
 }
 
@@ -108,7 +110,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         }
       else if ( s->itval == - ( 12 * 3600 ) )
         {
-          if (syn->s1.RRR[0] == 0)
+          if (syn->s1.RRR[0] == 0 || syn->s1.tr[0] == '4')
             {
               syn->s1.tr[0] = '2'; // 12 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
@@ -136,7 +138,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
           if (syn->s3.RRR[0] == 0)
             {
               syn->s3.tr[0] = '4'; // 24 hour
-              prec_to_RRR ( syn->s1.RRR, s->val );
+              prec_to_RRR ( syn->s3.RRR, s->val );
             }
           if (syn->s3.RRRR24[0] == 0)
             {
@@ -169,7 +171,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         }
       break;
     case 22: // 0 13 022
-      if (syn->s1.RRR[0] == 0)
+      if (syn->s1.RRR[0] == 0 || syn->s1.tr[0] == '4')
         {
           syn->s1.tr[0] = '2'; // 12 hour
           prec_to_RRR ( syn->s1.RRR, s->val );
