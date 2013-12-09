@@ -69,7 +69,7 @@ char *guess_WMO_region(struct synop_chunks *syn)
 
   sprintf(aux,"%s%s",syn->s0.II, syn->s0.iii);
 
-  if ((syn->s0.II[0] == '0' && (strstr(aux,"042") != aux) && (strstr(aux,"043") != aux)  && (strstr(aux,"0441") != aux)  && (strstr(aux,"0858") != aux) &&  (strstr(aux,"0859") != aux)) ||
+  if ((syn->s0.II[0] == '0' && (strstr(aux,"042") != aux) && (strstr(aux,"043") != aux)  && (strstr(aux,"044") != aux)  && (strstr(aux,"0858") != aux) &&  (strstr(aux,"0859") != aux)) ||
       syn->s0.II[0] == '1' || (strstr(aux,"201") == aux) ||
       strcmp(syn->s0.II,"22") == 0 || strcmp(syn->s0.II,"26") == 0 || strcmp(syn->s0.II,"27") == 0 ||
       strcmp(syn->s0.II,"33") == 0 || strcmp(syn->s0.II,"34") == 0 || strcmp(syn->s0.II,"22") == 0 ||
@@ -80,15 +80,57 @@ char *guess_WMO_region(struct synop_chunks *syn)
       strcpy(syn->s0.Reg,"VI");
       return syn->s0.A1;
     }
-
-  if (syn->s0.II[0] == '6' || (strstr(aux,"0858") == aux) ||  (strstr(aux,"0859") == aux))
+  else if (syn->s0.II[0] == '6' || (strstr(aux,"0858") == aux) ||  (strstr(aux,"0859") == aux))
     {
       // Reg 1. Africa
       syn->s0.A1[0] = '1';
       strcpy(syn->s0.Reg,"I");
       return syn->s0.A1;
     }
-
+  else if (syn->s0.II[0] == '5' || (strcmp(syn->s0.II,"49") == 0) || (strcmp(syn->s0.II,"21") == 0) ||
+     (strcmp(syn->s0.II,"23") == 0) || (strcmp(syn->s0.II,"24") == 0) || (strcmp(syn->s0.II,"25") == 0) ||
+     (strcmp(syn->s0.II,"28") == 0) || (strcmp(syn->s0.II,"29") == 0) || (strcmp(syn->s0.II,"30") == 0) ||
+     (strcmp(syn->s0.II,"31") == 0) || (strcmp(syn->s0.II,"32") == 0) || (strcmp(syn->s0.II,"38") == 0) ||
+     (strcmp(syn->s0.II,"35") == 0) || (strcmp(syn->s0.II,"36") == 0) || (strcmp(syn->s0.II,"39") == 0) ||
+     (strcmp(aux, "20200") >= 0 && strcmp(aux, "20999") <= 0) ||
+     (strcmp(aux, "40000") >= 0 && strcmp(aux, "48599") <= 0) ||
+     (strcmp(aux, "48800") >= 0 && strcmp(aux, "49999") <= 0))
+    {
+      // Reg 2. Asia
+      syn->s0.A1[0] = '2';
+      strcpy(syn->s0.Reg,"II");
+      return syn->s0.A1;
+    }
+    else if (strcmp(aux, "80000") >= 0 && strcmp(aux, "88999") <= 0)
+    {
+      // Reg 3. South america
+      syn->s0.A1[0] = '3';
+      strcpy(syn->s0.Reg,"III");
+      return syn->s0.A1;
+    }
+    else if (syn->s0.II[0] == '7' || strstr(aux,"042") == aux || 
+             strstr(aux,"043") == aux  || strstr(aux,"044") == aux)
+    {
+      // Reg 4. North and central america
+      syn->s0.A1[0] = '4';
+      strcpy(syn->s0.Reg,"IV");
+      return syn->s0.A1;
+    }
+    else if ((strcmp(aux, "48600") >= 0 && strcmp(aux, "48799") <= 0) ||
+             (strcmp(aux, "90000") >= 0 && strcmp(aux, "98999") <= 0))
+    {
+      // Reg 5. Pacific South
+      syn->s0.A1[0] = '4';
+      strcpy(syn->s0.Reg,"IV");
+      return syn->s0.A1;
+    }
+    else if (strcmp(syn->s0.II,"89") == 0)
+    {
+      // Reg 0. Antarctica
+      syn->s0.A1[0] = '0';
+      strcpy(syn->s0.Reg,"0");
+      return syn->s0.A1;
+    }
   return syn->s0.A1;
 }
 
