@@ -85,11 +85,9 @@ int parse_subset_sequence(struct bufr_subset_sequence_data *sq, int *kdtlst, siz
     printf("Going to parse a %s report\n", TYPE);
   
 
-  if (strcmp(TYPE,"AAXX") == 0)
-  {
-     parse_subset_as_aaxx(&SYNOP, sq, kdtlst, nlst, ksec1, err);
-     if (print_synop(REPORT, 2048, &SYNOP) == 0)
-       printf("%s\n", REPORT);
-  }
+  parse_subset_as_synop(&SYNOP, TYPE, sq, kdtlst, nlst, ksec1, err);
+  if (print_synop(REPORT, 2048, &SYNOP) == 0)
+    printf("%s\n", REPORT);
+
   return 0;
 }

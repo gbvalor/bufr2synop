@@ -78,10 +78,10 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
       if (syn->s1.TTT[0] == 0)
         {
           if (kelvin_to_snTTT ( aux, s->val ))
-          {
-          syn->s1.sn1[0] = aux[0];
-          strcpy ( syn->s1.TTT, aux + 1 );
-          }
+            {
+              syn->s1.sn1[0] = aux[0];
+              strcpy ( syn->s1.TTT, aux + 1 );
+            }
         }
       break;
     case 3: // 0 12 003
@@ -91,10 +91,10 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
       if (syn->s1.TdTdTd[0] == 0)
         {
           if (kelvin_to_snTTT ( aux, s->val ))
-          {
-          syn->s1.sn2[0] = aux[0];
-          strcpy ( syn->s1.TdTdTd, aux + 1 );
-          }
+            {
+              syn->s1.sn2[0] = aux[0];
+              strcpy ( syn->s1.TdTdTd, aux + 1 );
+            }
         }
       break;
     case 11: // 0 12 011
@@ -106,11 +106,11 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
       if (syn->s3.TxTxTx[0] == 0)
         {
           if (kelvin_to_snTTT ( aux, s->val ))
-          {
-          syn->s3.snx[0] = aux[0];
-          strcpy ( syn->s3.TxTxTx, aux + 1 );
-          syn->mask |= SYNOP_SEC3;
-          }
+            {
+              syn->s3.snx[0] = aux[0];
+              strcpy ( syn->s3.TxTxTx, aux + 1 );
+              syn->mask |= SYNOP_SEC3;
+            }
         }
       break;
     case 12: // 0 12 012
@@ -122,34 +122,34 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
       if (syn->s3.TnTnTn[0] == 0)
         {
           if (kelvin_to_snTTT ( aux, s->val ))
-          {
-          syn->s3.snn[0] = aux[0];
-          strcpy ( syn->s3.TnTnTn, aux + 1 );
-          syn->mask |= SYNOP_SEC3;
-          }
+            {
+              syn->s3.snn[0] = aux[0];
+              strcpy ( syn->s3.TnTnTn, aux + 1 );
+              syn->mask |= SYNOP_SEC3;
+            }
         }
       break;
     case 113:
       if (strcmp("6", guess_WMO_region(syn)) == 0) // region VI
         {
           if (kelvin_to_snTT ( aux, s->val ))
-          {
-          strcpy ( syn->s3.jjj, aux);
-          syn->mask |= SYNOP_SEC3;
-          }
+            {
+              strcpy ( syn->s3.jjj, aux);
+              syn->mask |= SYNOP_SEC3;
+            }
         }
       else if (strcmp("1", guess_WMO_region(syn)) == 0)
         {
           if (kelvin_to_TT ( aux, s->val ))
-          {
-          syn->s3.XoXoXoXo[0] = aux[0];
-          syn->s3.XoXoXoXo[1] = aux[1];
-          if (syn->s3.XoXoXoXo[2] == 0)
-            syn->s3.XoXoXoXo[2] = '/';
-          if (syn->s3.XoXoXoXo[3] == 0)
-            syn->s3.XoXoXoXo[3] = '/';
-          syn->mask |= SYNOP_SEC3;
-          }
+            {
+              syn->s3.XoXoXoXo[0] = aux[0];
+              syn->s3.XoXoXoXo[1] = aux[1];
+              if (syn->s3.XoXoXoXo[2] == 0)
+                syn->s3.XoXoXoXo[2] = '/';
+              if (syn->s3.XoXoXoXo[3] == 0)
+                syn->s3.XoXoXoXo[3] = '/';
+              syn->mask |= SYNOP_SEC3;
+            }
         }
       break;
     default:

@@ -144,6 +144,23 @@ struct synop_sec2
 {
    char Ds[2]; /*!< True direction of resultant displacement of the ship during the three hours preceding the time of observation. (Code table 0700) */
    char vs[2]; /*!< Ship’s average speed made good during the three hours preceding the time of observation. (Code table 4451) */
+   char ss[2]; /*!< Sign of Sea Surface Temperature */
+   char TwTwTw[6]; /*!< Sea surfacec temperature in tenths of degree */
+   char PwaPwa[4];
+   char HwaHwa[4];
+   char PwPw[4];
+   char HwHw[4];
+   char dw1dw1[4];
+   char dw2dw2[4];
+   char Pw1Hw1[4];
+   char Hw1Hw1[4];
+   char Pw2Pw2[4];
+   char Hw2Hw2[4];
+   char ICING[32];
+   char HwaHwaHwa[6];
+   char sw[2];
+   char TbTbTb[6];
+   char ICE[32];
 };
 
 /*!

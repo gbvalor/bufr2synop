@@ -210,12 +210,25 @@ int parse_subset_as_aaxx(struct synop_chunks *syn, struct bufr_subset_sequence_d
 int synop_YYYYMMDDHHmm_to_YYGG(struct synop_chunks *syn);
 char * guess_WMO_region(struct synop_chunks *syn);
 
+char * kelvin_to_snTTT ( char *target, double T );
+char * kelvin_to_snTT ( char *target, double T );
+char * kelvin_to_TT ( char *target, double T );
+char * m_to_h ( char *target, double h );
+char * pascal_to_ppp ( char *target, double P );
+char * pascal_to_PPPP ( char *target, double P );
+char * percent_to_okta ( char *target, double perc );
+char * prec_to_RRR ( char *target, double r );
+char * prec_to_RRRR24 ( char *target, double r );
+char * vism_to_VV ( char *target, double V );
+
 int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x02 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x04 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
+int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x10 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
+int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
-
+int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );

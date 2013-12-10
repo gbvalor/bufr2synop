@@ -54,7 +54,13 @@ int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
   return 0;
 }
 
-// return NULL if not guessed
+/*!
+  \fn char *guess_WMO_region(struct synop_chunks *syn)
+  \brief Try to find WMO region if it is not already set and WMO Block and number index are known
+  \param syn pointer to the struct \ref synop_chunks with all known data for a synop
+
+  It returns a pointer to the string with WMO region
+*/
 char *guess_WMO_region(struct synop_chunks *syn)
 {
   char aux[8];
@@ -69,7 +75,8 @@ char *guess_WMO_region(struct synop_chunks *syn)
 
   sprintf(aux,"%s%s",syn->s0.II, syn->s0.iii);
 
-  if ((syn->s0.II[0] == '0' && (strstr(aux,"042") != aux) && (strstr(aux,"043") != aux)  && (strstr(aux,"044") != aux)  && (strstr(aux,"0858") != aux) &&  (strstr(aux,"0859") != aux)) ||
+  if ((syn->s0.II[0] == '0' && (strstr(aux,"042") != aux) && (strstr(aux,"043") != aux)  &&
+       (strstr(aux,"044") != aux)  && (strstr(aux,"0858") != aux) &&  (strstr(aux,"0859") != aux)) ||
       syn->s0.II[0] == '1' || (strstr(aux,"201") == aux) ||
       strcmp(syn->s0.II,"22") == 0 || strcmp(syn->s0.II,"26") == 0 || strcmp(syn->s0.II,"27") == 0 ||
       strcmp(syn->s0.II,"33") == 0 || strcmp(syn->s0.II,"34") == 0 || strcmp(syn->s0.II,"22") == 0 ||
@@ -78,67 +85,61 @@ char *guess_WMO_region(struct synop_chunks *syn)
       // Reg 6. Europe
       syn->s0.A1[0] = '6';
       strcpy(syn->s0.Reg,"VI");
-      return syn->s0.A1;
     }
   else if (syn->s0.II[0] == '6' || (strstr(aux,"0858") == aux) ||  (strstr(aux,"0859") == aux))
     {
       // Reg 1. Africa
       syn->s0.A1[0] = '1';
       strcpy(syn->s0.Reg,"I");
-      return syn->s0.A1;
     }
   else if (syn->s0.II[0] == '5' || (strcmp(syn->s0.II,"49") == 0) || (strcmp(syn->s0.II,"21") == 0) ||
-     (strcmp(syn->s0.II,"23") == 0) || (strcmp(syn->s0.II,"24") == 0) || (strcmp(syn->s0.II,"25") == 0) ||
-     (strcmp(syn->s0.II,"28") == 0) || (strcmp(syn->s0.II,"29") == 0) || (strcmp(syn->s0.II,"30") == 0) ||
-     (strcmp(syn->s0.II,"31") == 0) || (strcmp(syn->s0.II,"32") == 0) || (strcmp(syn->s0.II,"38") == 0) ||
-     (strcmp(syn->s0.II,"35") == 0) || (strcmp(syn->s0.II,"36") == 0) || (strcmp(syn->s0.II,"39") == 0) ||
-     (strcmp(aux, "20200") >= 0 && strcmp(aux, "20999") <= 0) ||
-     (strcmp(aux, "40000") >= 0 && strcmp(aux, "48599") <= 0) ||
-     (strcmp(aux, "48800") >= 0 && strcmp(aux, "49999") <= 0))
+           (strcmp(syn->s0.II,"23") == 0) || (strcmp(syn->s0.II,"24") == 0) || (strcmp(syn->s0.II,"25") == 0) ||
+           (strcmp(syn->s0.II,"28") == 0) || (strcmp(syn->s0.II,"29") == 0) || (strcmp(syn->s0.II,"30") == 0) ||
+           (strcmp(syn->s0.II,"31") == 0) || (strcmp(syn->s0.II,"32") == 0) || (strcmp(syn->s0.II,"38") == 0) ||
+           (strcmp(syn->s0.II,"35") == 0) || (strcmp(syn->s0.II,"36") == 0) || (strcmp(syn->s0.II,"39") == 0) ||
+           (strcmp(aux, "20200") >= 0 && strcmp(aux, "20999") <= 0) ||
+           (strcmp(aux, "40000") >= 0 && strcmp(aux, "48599") <= 0) ||
+           (strcmp(aux, "48800") >= 0 && strcmp(aux, "49999") <= 0))
     {
       // Reg 2. Asia
       syn->s0.A1[0] = '2';
       strcpy(syn->s0.Reg,"II");
-      return syn->s0.A1;
     }
-    else if (strcmp(aux, "80000") >= 0 && strcmp(aux, "88999") <= 0)
+  else if (strcmp(aux, "80000") >= 0 && strcmp(aux, "88999") <= 0)
     {
       // Reg 3. South america
       syn->s0.A1[0] = '3';
       strcpy(syn->s0.Reg,"III");
-      return syn->s0.A1;
     }
-    else if (syn->s0.II[0] == '7' || strstr(aux,"042") == aux || 
-             strstr(aux,"043") == aux  || strstr(aux,"044") == aux)
+  else if (syn->s0.II[0] == '7' || strstr(aux,"042") == aux ||
+           strstr(aux,"043") == aux  || strstr(aux,"044") == aux)
     {
       // Reg 4. North and central america
       syn->s0.A1[0] = '4';
       strcpy(syn->s0.Reg,"IV");
-      return syn->s0.A1;
     }
-    else if ((strcmp(aux, "48600") >= 0 && strcmp(aux, "48799") <= 0) ||
-             (strcmp(aux, "90000") >= 0 && strcmp(aux, "98999") <= 0))
+  else if ((strcmp(aux, "48600") >= 0 && strcmp(aux, "48799") <= 0) ||
+           (strcmp(aux, "90000") >= 0 && strcmp(aux, "98999") <= 0))
     {
       // Reg 5. Pacific South
       syn->s0.A1[0] = '4';
       strcpy(syn->s0.Reg,"IV");
-      return syn->s0.A1;
     }
-    else if (strcmp(syn->s0.II,"89") == 0)
+  else if (strcmp(syn->s0.II,"89") == 0)
     {
       // Reg 0. Antarctica
       syn->s0.A1[0] = '0';
       strcpy(syn->s0.Reg,"0");
-      return syn->s0.A1;
     }
   return syn->s0.A1;
 }
 
 
 /*!
-  \fn int parse_subset_as_aaxx(struct synop_chunks *syn, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err)
+  \fn int parse_subset_as_synop(struct synop_chunks *syn, char *type, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err)
   \brief parses a subset sequence as an Land fixed SYNOP-12 FM report
   \param syn pointer to a struct \ref synop_chunks where set the results
+  \param type strint with MiMiMjMj to choose the type pf synop (AAXX, BBXX ...) (synop, ship or synop-mobil)
   \param sq pointer to a struct \ref bufr_subset_sequence_data with the parsed sequence on input
   \param kdtlst array of descriptors (as integers) from the non-expanded bufr list
   \param nlst size of kdtlst array
@@ -147,7 +148,7 @@ char *guess_WMO_region(struct synop_chunks *syn)
 
   It return 0 if all is OK. Otherwise it also fills the \a err string
 */
-int parse_subset_as_aaxx ( struct synop_chunks *syn, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err )
+int parse_subset_as_synop ( struct synop_chunks *syn, char *type, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err )
 {
   int ival;
   double val;
@@ -162,8 +163,10 @@ int parse_subset_as_aaxx ( struct synop_chunks *syn, struct bufr_subset_sequence
   clean_synop_chunks ( syn );
   memset(&s, 0, sizeof(struct bufr_subset_state));
 
-  sprintf ( syn->s0.MiMi, "AA" );
-  sprintf ( syn->s0.MjMj, "XX" );
+  syn->s0.MiMi[0] = type[0];
+  syn->s0.MiMi[1] = type[1];
+  syn->s0.MjMj[0] = type[2];
+  syn->s0.MjMj[1] = type[3];
 
   syn->mask = SYNOP_SEC1;
 
@@ -220,6 +223,10 @@ int parse_subset_as_aaxx ( struct synop_chunks *syn, struct bufr_subset_sequence
           syn_parse_x20 ( syn, &s, err );
           break;
 
+        case 22: // Oceanographic data
+          syn_parse_x22 ( syn, &s, err );
+          break;
+
         default:
           break;
         }
@@ -248,9 +255,9 @@ int parse_subset_as_aaxx ( struct synop_chunks *syn, struct bufr_subset_sequence
   // adjust ix
   if (syn->s1.ix[0] == '/' && syn->s1.ww[0] == 0)
     {
-      if ((s.mask & SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW) &&  
-          (s.mask & SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1) && 
-          (s.mask & SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2)  
+      if ((s.mask & SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW) &&
+          (s.mask & SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1) &&
+          (s.mask & SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2)
          )
         {
           if (s.mask & SUBSET_MASK_HAVE_TYPE_STATION)
