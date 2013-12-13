@@ -163,6 +163,13 @@ int parse_subset_as_synop ( struct synop_chunks *syn, char *type, struct bufr_su
   clean_synop_chunks ( syn );
   memset(&s, 0, sizeof(struct bufr_subset_state));
 
+  // reject MiMi still not coded
+  if (strcmp(TYPE,"AAXX"))
+  {
+    sprintf(err,"%: '%s%s' reports still not decoded in this software", SELF, syn->s0.MiMi, syn->s0.MjMj);
+    return 1;
+  }
+
   syn->s0.MiMi[0] = type[0];
   syn->s0.MiMi[1] = type[1];
   syn->s0.MjMj[0] = type[2];
@@ -170,7 +177,7 @@ int parse_subset_as_synop ( struct synop_chunks *syn, char *type, struct bufr_su
 
   syn->mask = SYNOP_SEC1;
 
-  /**** First pass *****/
+  /**** First pass, sequential analysis *****/
   for ( is = 0, itval = 0; is < sq->nd; is++ )
     {
       if ( sq->sequence[is].mask & DESCRIPTOR_VALUE_MISSING )
@@ -233,7 +240,7 @@ int parse_subset_as_synop ( struct synop_chunks *syn, char *type, struct bufr_su
 
     }
 
-  /****** Second pass ************/
+  /****** Second pass, global results analysis ************/
   // set ir
   if ( syn->s1.RRR[0] == 0 && syn->s3.RRR[0] == 0 && syn->s3.RRRR24[0] == 0 )
     {

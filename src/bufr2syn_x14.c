@@ -33,6 +33,7 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         {
           strcpy(syn->s3.j524[4], "4");
           sprintf(syn->s3.FFFF24[4], "%04d", s->ival / 10000);
+          syn->mask |= SYNOP_SEC3;
         }
       break;
     case 2: // 0 14 002 Long-wave radiation
@@ -43,16 +44,18 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
             {
               strcpy(syn->s3.j524[4], "4");
               sprintf(syn->s3.FFFF24[4], "%04d", s->ival / 10000);
+              syn->mask |= SYNOP_SEC3;
             }
         }
       else if (s->itval == -3600)
         {
           if (syn->s3.SS[0])
             {
-          strcpy(syn->s3.j5[4], "4");
-          sprintf(syn->s3.FFFF[4], "%04d", s->ival / 1000);
-          }
+              strcpy(syn->s3.j5[4], "4");
+              sprintf(syn->s3.FFFF[4], "%04d", s->ival / 1000);
+            }
         }
+      syn->mask |= SYNOP_SEC3;
       break;
     case 3: // 0 14 001 short-wave radiation 24 hours
     case 13:
@@ -60,6 +63,7 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         {
           strcpy(syn->s3.j524[6], "6");
           sprintf(syn->s3.FFFF24[6], "%04d", s->ival / 10000);
+          syn->mask |= SYNOP_SEC3;
         }
       break;
     case 4: // 0 14 002 short-wave radiation
@@ -76,10 +80,11 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         {
           if (syn->s3.SS[0])
             {
-          strcpy(syn->s3.j5[6], "6");
-          sprintf(syn->s3.FFFF[6], "%04d", s->ival / 1000);
-          }
+              strcpy(syn->s3.j5[6], "6");
+              sprintf(syn->s3.FFFF[6], "%04d", s->ival / 1000);
+            }
         }
+      syn->mask |= SYNOP_SEC3;
       break;
     case 31: // 0 14 031 Total sunshine
       if (s->itval == (-24 * 3600))
@@ -90,6 +95,7 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         {
           sprintf(syn->s3.SS, "%02d", s->ival / 6);
         }
+      syn->mask |= SYNOP_SEC3;
       break;
     case 32: // 0 14 032 Total sunshine (hours)
       if (s->itval == (-24 * 3600))
@@ -100,11 +106,11 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         {
           sprintf(syn->s3.SS, "%02d", s->ival * 10);
         }
+      syn->mask |= SYNOP_SEC3;
       break;
     default:
       break;
     }
 
-  syn->mask |= SYNOP_SEC3;
   return 0;
 }

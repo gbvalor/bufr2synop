@@ -152,7 +152,7 @@ struct synop_sec2
    char HwHw[4];
    char dw1dw1[4];
    char dw2dw2[4];
-   char Pw1Hw1[4];
+   char Pw1Pw1[4];
    char Hw1Hw1[4];
    char Pw2Pw2[4];
    char Hw2Hw2[4];

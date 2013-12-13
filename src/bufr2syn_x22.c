@@ -29,6 +29,56 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
   char aux[16];
   switch ( s->a->desc.y )
     {
+    case 11: // 0 22 011 wind period in seconds 
+      if (syn->s2.PwPw[0] == 0)
+      {
+         sprintf(syn->s2.PwPw, "%02d", (int)(s->val));
+         syn->mask |= SYNOP_SEC2; // have sec2 data
+      }
+    break;
+    case 12: // 0 22 012 wind wave period in seconds 
+      if (syn->s2.PwaPwa[0] == 0)
+      {
+         sprintf(syn->s2.PwaPwa, "%02d", (int)(s->val));
+         syn->mask |= SYNOP_SEC2; // have sec2 data
+      }
+    break;
+    case 13: // 0 22 013 wave period in seconds 
+      if (syn->s2.Pw1Pw1[0] == 0)
+      {
+         sprintf(syn->s2.Pw1Pw1, "%02d", (int)(s->val));
+      }
+      else if (syn->s2.Pw2Pw2[0] == 0)
+      {
+         sprintf(syn->s2.Pw2Pw2, "%02d", (int)(s->val));
+      }
+      syn->mask |= SYNOP_SEC2; // have sec2 data
+    break;
+    case 21: // 0 22 021 wind heigh in m 
+      if (syn->s2.HwHw[0] == 0)
+      {
+         sprintf(syn->s2.HwHw, "%02d", (int)(s->val));
+         syn->mask |= SYNOP_SEC2; // have sec2 data
+      }
+    break;
+    case 22: // 0 22 022 wind wave heigh in meters 
+      if (syn->s2.HwaHwa[0] == 0)
+      {
+         sprintf(syn->s2.HwaHwa, "%02d", (int)(s->val));
+         syn->mask |= SYNOP_SEC2; // have sec2 data
+      }
+    break;
+    case 23: // 0 22 023 wave heigh in meters 
+      if (syn->s2.Hw1Hw1[0] == 0)
+      {
+         sprintf(syn->s2.Hw1Hw1, "%02d", (int)(s->val));
+      }
+      else if (syn->s2.Hw2Hw2[0] == 0)
+      {
+         sprintf(syn->s2.Hw2Hw2, "%02d",(int)(s->val));
+      }
+    syn->mask |= SYNOP_SEC2; // have sec2 data
+    break;
     case 49: // 0 22 049 Sea surface temperature
       if (syn->s2.TwTwTw[0] == 0)
         {
@@ -36,6 +86,7 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
             {
               syn->s2.ss[0] = aux[0];
               strcpy ( syn->s2.TwTwTw, aux + 1 );
+              syn->mask |= SYNOP_SEC2; // have sec2 data
             }
         }
      break;
