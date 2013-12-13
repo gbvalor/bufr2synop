@@ -204,7 +204,6 @@ char * adjust_string(char *s);
 char * get_explained_table_val(char *expl, size_t dim, struct bufr_descriptor *d, int ival);
 char * get_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d, unsigned long ival);
 char * get_ecmwf_tablename(char *target, char TYPE);
-int print_synop ( char *report, size_t lmax, struct synop_chunks *syn );
 int parse_subset_as_aaxx(struct synop_chunks *syn, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, 
                           int *ksec1, char *err);
 int synop_YYYYMMDDHHmm_to_YYGG(struct synop_chunks *syn);
@@ -220,6 +219,13 @@ char * percent_to_okta ( char *target, double perc );
 char * prec_to_RRR ( char *target, double r );
 char * prec_to_RRRR24 ( char *target, double r );
 char * vism_to_VV ( char *target, double V );
+
+int print_synop ( char *report, size_t lmax, struct synop_chunks *syn );
+char * print_synop_sec0 (char **sec0, size_t lmax, struct synop_chunks *syn);
+char * print_synop_sec1 (char **sec1, size_t lmax, struct synop_chunks *syn);
+char * print_synop_sec2 (char **sec2, size_t lmax, struct synop_chunks *syn);
+char * print_synop_sec3 (char **sec3, size_t lmax, struct synop_chunks *syn);
+
 
 int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x02 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
