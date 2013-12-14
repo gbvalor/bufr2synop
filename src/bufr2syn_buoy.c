@@ -28,7 +28,7 @@
   \brief Sets YYGG from YYYYMMDDHHmm extended group
   \param syn pointer to the target struct \ref synop_chunks
 */
-int buoy_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *b )
+int buoy_YYYYMMDDHHmm_to_YYGG ( struct buoy_chunks *b )
 {
   char aux[20];
   time_t t;
@@ -108,6 +108,56 @@ int parse_subset_as_buoy( struct buoy_chunks *b, struct bufr_subset_sequence_dat
       s.a = &sq->sequence[is];
       switch ( sq->sequence[is].desc.x )
         {
+
+        case 1: //localization descriptors
+          buoy_parse_x01 ( b, &s, err );
+          break;
+
+        case 2: //Date time descriptors
+          buoy_parse_x02 ( b, &s, err );
+          break;
+
+        case 4: //Date time descriptors
+          buoy_parse_x04 ( b, &s, err );
+          break;
+
+        case 5: //Position
+          buoy_parse_x05 ( b, &s, err );
+          break;
+
+        case 6: // Horizontal Position -2
+          buoy_parse_x06 ( b, &s, err );
+          break;
+
+        case 10: // Air Pressure descriptors
+          buoy_parse_x10 ( b, &s, err );
+          break;
+
+        case 11: // wind  data
+          buoy_parse_x11 ( b, &s, err );
+          break;
+
+        case 12: //Temperature descriptors
+          buoy_parse_x12 ( b, &s, err );
+          break;
+
+        case 13: // Humidity and precipitation data
+          buoy_parse_x13 ( b, &s, err );
+          break;
+
+        case 14: // Radiation
+          buoy_parse_x14 ( b, &s, err );
+          break;
+
+        case 20: // Cloud data
+          buoy_parse_x20 ( b, &s, err );
+          break;
+
+        case 22: // Oceanographic data
+          buoy_parse_x22 ( b, &s, err );
+          break;
+
+
         default:
           break;
         }

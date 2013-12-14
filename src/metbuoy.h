@@ -119,17 +119,24 @@ struct buoy_sec2
    char HwHwHw[4]; /*!< heigh of waves, in tenths of metre */
 };
 
-
+/*!
+  \struct b_sec3_layer1 
+  \brief A layer with Temperature and salinity for a buoy report
+*/
 struct b_sec3_layer1 {
-   char zzzz[6];
-   char TTTT[6];
-   char SSSS[6];   
+   char zzzz[6]; /*!< Meters below sea level */
+   char TTTT[6]; /*!< Temperature in cents of celsius degrees */
+   char SSSS[6]; /*!< Salinity in cents of parts per 1000 */
 };
 
+/*!
+  \struct b_sec3_layer2 
+  \brief A layer with direction and speed for a sea current
+*/
 struct b_sec3_layer2 {
-   char zzzz[6];
-   char dd[4];
-   char ccc[6];   
+   char zzzz[6]; /*!< Meters below sea level */
+   char dd[4]; /*!< Direction of current in ten degrees */
+   char ccc[6]; /*!< Current speed in cm/s */
 };
 
 /*! \struct buoy_sec3
@@ -137,13 +144,13 @@ struct b_sec3_layer2 {
 */
 struct buoy_sec3
 {
-   char Qd1[2]; 
-   char Qd2[2]; 
-   char k2[2]; 
-   char k3[2]; 
-   char k6[2]; 
-   struct b_sec3_layer1 l1[10];
-   struct b_sec3_layer2 l2[10];
+   char Qd1[2]; /*!< Quality control for temperature and salinity */ 
+   char Qd2[2]; /*!< Quality control for direction and speed */
+   char k2[2]; /*!< Method for salinity measurement */
+   char k3[2]; /*!< Duration and medition of current speed */
+   char k6[2]; /*!< Method to eliminate the effect the ship or buoy movement */
+   struct b_sec3_layer1 l1[10]; /*!< Array of temeperature and salinity for layers */
+   struct b_sec3_layer2 l2[10]; /*!< Array of direction and speed for layers */
 };
 
 

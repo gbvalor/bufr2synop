@@ -78,3 +78,34 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
   return 0;
 }
 
+/*!
+  \fn int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err )
+  \brief Parse a expanded descriptor with X = 01
+  \param b pointer to a struct \ref synop_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+  \param err string with optional error 
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
+int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err )
+{
+  char aux[16];
+
+  switch ( s->a->desc.y )
+    {
+    case 3: // 0 01 003
+      sprintf ( b->s0.A1, "%d", s->ival );
+      break;
+
+    case 4: // 0 01 004
+    case 20: // 0 01 004
+      sprintf ( b->s0.bw, "%d", s->ival );
+      break;
+    case 5: // 0 01 005
+      sprintf(b->s0.nbnbnb, "%03d", s->ival);
+      break;
+      default:
+      break;
+    }
+  return 0;
+}

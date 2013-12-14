@@ -218,6 +218,7 @@ char * get_ecmwf_tablename(char *target, char TYPE);
 int parse_subset_as_aaxx(struct synop_chunks *syn, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, 
                           int *ksec1, char *err);
 int synop_YYYYMMDDHHmm_to_YYGG(struct synop_chunks *syn);
+int buoy_YYYYMMDDHHmm_to_YYGG(struct buoy_chunks *b);
 char * guess_WMO_region(struct synop_chunks *syn);
 
 int parse_subset_sequence(struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err);
@@ -242,11 +243,18 @@ char * print_synop_sec1 (char **sec1, size_t lmax, struct synop_chunks *syn);
 char * print_synop_sec2 (char **sec2, size_t lmax, struct synop_chunks *syn);
 char * print_synop_sec3 (char **sec3, size_t lmax, struct synop_chunks *syn);
 
+int print_buoy ( char *report, size_t lmax, struct buoy_chunks *syn );
+char * print_buoy_sec0 (char **sec0, size_t lmax, struct buoy_chunks *syn);
+char * print_buoy_sec1 (char **sec1, size_t lmax, struct buoy_chunks *syn);
+char * print_buoy_sec2 (char **sec2, size_t lmax, struct buoy_chunks *syn);
+char * print_buoy_sec3 (char **sec3, size_t lmax, struct buoy_chunks *syn);
+
 
 int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x02 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x04 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
+int syn_parse_x06 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x10 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
@@ -254,5 +262,18 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
 int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
+
+int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err );
+int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err );
+int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err );
+int buoy_parse_x05 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err );
+int buoy_parse_x06 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err );
+int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err );
+int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err );
+int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err );
+int buoy_parse_x13 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err );
+int buoy_parse_x20 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err );
+int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err );
+
 
 #endif  // from ifndef BUFR2SYNOP_H
