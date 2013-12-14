@@ -23,12 +23,30 @@
 */
 #include "bufr2synop.h"
 
+/*!
+  \fn int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
+  \brief Parse a expanded descriptor with X = 01
+  \param syn pointer to a struct \ref synop_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+  \param err string with optional error 
 
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
 int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
 {
   char aux[16];
   switch ( s->a->desc.y )
     {
+    case 3: // 0 22 003 sind direction 
+      if (syn->s2.dw1dw1[0] == 0)
+      {
+         sprintf(syn->s2.dw1dw1, "%02d", (int)(s->val));
+      }
+      else if (syn->s2.dw2dw2[0] == 0)
+      {
+         sprintf(syn->s2.dw2dw2, "%02d", (int)(s->val));
+      }
+      syn->mask |= SYNOP_SEC2; // have sec2 data
     case 11: // 0 22 011 wind period in seconds 
       if (syn->s2.PwPw[0] == 0)
       {
@@ -54,28 +72,33 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
       }
       syn->mask |= SYNOP_SEC2; // have sec2 data
     break;
-    case 21: // 0 22 021 wind heigh in m 
+    case 21: // 0 22 021  estimated wind wave heigh in m 
       if (syn->s2.HwHw[0] == 0)
       {
-         sprintf(syn->s2.HwHw, "%02d", (int)(s->val));
+         sprintf(syn->s2.HwHw, "%02d", (int)(s->val * 2.0 + 0.01));
          syn->mask |= SYNOP_SEC2; // have sec2 data
       }
     break;
     case 22: // 0 22 022 wind wave heigh in meters 
       if (syn->s2.HwaHwa[0] == 0)
       {
-         sprintf(syn->s2.HwaHwa, "%02d", (int)(s->val));
+         sprintf(syn->s2.HwaHwa, "%02d", (int)(s->val * 2.0 + 0.01));  // 0.5 m units
+         syn->mask |= SYNOP_SEC2; // have sec2 data
+      }
+      if (syn->s2.HwaHwaHwa[0] == 0 && syn->s2.HwHw[0] == 0)
+      {
+         sprintf(syn->s2.HwaHwa, "%03d", (int)(s->val * 10.0 + 0.01));  // 0.1 m units
          syn->mask |= SYNOP_SEC2; // have sec2 data
       }
     break;
     case 23: // 0 22 023 wave heigh in meters 
       if (syn->s2.Hw1Hw1[0] == 0)
       {
-         sprintf(syn->s2.Hw1Hw1, "%02d", (int)(s->val));
+         sprintf(syn->s2.Hw1Hw1, "%02d", (int)(s->val * 2.0 + 0.01));
       }
       else if (syn->s2.Hw2Hw2[0] == 0)
       {
-         sprintf(syn->s2.Hw2Hw2, "%02d",(int)(s->val));
+         sprintf(syn->s2.Hw2Hw2, "%02d",(int)(s->val * 2.0 + 0.01));
       }
     syn->mask |= SYNOP_SEC2; // have sec2 data
     break;

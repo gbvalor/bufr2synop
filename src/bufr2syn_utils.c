@@ -74,7 +74,7 @@ char * charray_to_string(char *s, unsigned char *buf, size_t size)
 char * adjust_string(char *s)
 {
    size_t l;
-
+   l = strlen(s);
    while (l && s[--l] == ' ') 
      s[l] = '\0';
    return s;

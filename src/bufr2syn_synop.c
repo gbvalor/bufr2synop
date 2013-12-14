@@ -150,21 +150,21 @@ char *guess_WMO_region(struct synop_chunks *syn)
 */
 int parse_subset_as_synop ( struct synop_chunks *syn, char *type, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err )
 {
-  int ival;
-  double val;
-  size_t is;
+  int ival; // integer value for a descriptor
+  double val; // double value for a descriptor
+  size_t is; 
   int disp; // time displacement in seconds
   time_t tt, itval;
   struct tm tim;
-  struct bufr_subset_state s;
+  struct bufr_subset_state s; // stores util data when parsing sequence
   char aux[16];
 
   // clean data
   clean_synop_chunks ( syn );
   memset(&s, 0, sizeof(struct bufr_subset_state));
 
-  // reject MiMi still not coded
-  if (strcmp(TYPE,"AAXX"))
+  // reject if still not coded type
+  if (strcmp(TYPE,"AAXX") && strcmp(TYPE,"BBXX"))
   {
     sprintf(err,"%: '%s%s' reports still not decoded in this software", SELF, syn->s0.MiMi, syn->s0.MjMj);
     return 1;
@@ -206,6 +206,10 @@ int parse_subset_as_synop ( struct synop_chunks *syn, char *type, struct bufr_su
           syn_parse_x05 ( syn, &s, err );
           break;
 
+        case 6: // Horizontal Position -2
+          syn_parse_x06 ( syn, &s, err );
+          break;
+
         case 10: // Air Pressure descriptors
           syn_parse_x10 ( syn, &s, err );
           break;
@@ -240,7 +244,7 @@ int parse_subset_as_synop ( struct synop_chunks *syn, char *type, struct bufr_su
 
     }
 
-  /****** Second pass, global results analysis ************/
+  /****** Second pass. Global results and consistence analysis ************/
   // set ir
   if ( syn->s1.RRR[0] == 0 && syn->s3.RRR[0] == 0 && syn->s3.RRRR24[0] == 0 )
     {

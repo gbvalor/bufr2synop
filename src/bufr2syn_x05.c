@@ -24,6 +24,15 @@
 #include "bufr2synop.h"
 
 
+/*!
+  \fn int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
+  \brief Parse a expanded descriptor with X = 05
+  \param syn pointer to a struct \ref synop_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+  \param err string with optional error 
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
 int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
 {
   int ia;
@@ -33,14 +42,14 @@ int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
     case 2: // 0 05 002
       if (s->val < 0.0)
         s->mask |= SUBSET_MASK_LATITUDE_SOUTH; // Sign for latitude
-      ia = (int) (fabs(s->val) * 10.0);
+      ia = (int) (fabs(s->val) * 10.0 + 0.5);
       sprintf(syn->s0.LaLaLa, "%03d",ia);
     break;
     case 11: // 0 05 001
     case 12: // 0 05 002
       if (s->val < 0.0)
         s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
-      ia = (int) (fabs(s->val) * 10.0);
+      ia = (int) (fabs(s->val) * 10.0 + 0.5);
       sprintf(syn->s0.LoLoLoLo, "%04d",ia);
     break;
     default:
@@ -48,7 +57,7 @@ int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
     }
 
   // check if set both LaLaLa and LoLoLoLo to set Qc 
-  if ((syn->s0.Qc == 0) && syn->s0.LaLaLa[0] && syn->s0.LoLoLoLo[0])
+  if ((syn->s0.Qc[0] == 0) && syn->s0.LaLaLa[0] && syn->s0.LoLoLoLo[0])
   {
     if (s->mask & SUBSET_MASK_LATITUDE_SOUTH)
     {

@@ -23,6 +23,12 @@
  */
 #include "bufr2synop.h"
 
+/*!
+  \fn char * kelvin_to_snTTT ( char *target, double T )
+  \brief converts a kelvin temperature value into a snTTT string
+  \param T the temperature ( Kelvin )
+  \param target string with the result
+*/
 char * kelvin_to_snTTT ( char *target, double T )
 {
   int ic;
@@ -37,6 +43,12 @@ char * kelvin_to_snTTT ( char *target, double T )
   return target;
 }
 
+/*!
+  \fn char * kelvin_to_snTT ( char *target, double T )
+  \brief converts a kelvin temperature value into a snTT string
+  \param T the temperature ( Kelvin )
+  \param target string with the result
+*/
 char * kelvin_to_snTT ( char *target, double T )
 {
   int ic;
@@ -51,6 +63,12 @@ char * kelvin_to_snTT ( char *target, double T )
   return target;
 }
 
+/*!
+  \fn char * kelvin_to_TT ( char *target, double T )
+  \brief converts a kelvin temperature value into a TT string
+  \param T the temperature ( Kelvin )
+  \param target string with the result
+*/
 char * kelvin_to_TT ( char *target, double T )
 {
   int ic;
@@ -65,6 +83,15 @@ char * kelvin_to_TT ( char *target, double T )
   return target;
 }
 
+/*!
+  \fn int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
+  \brief Parse a expanded descriptor with X = 12
+  \param syn pointer to a struct \ref synop_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+  \param err string with optional error 
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
 int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
 {
   char aux[16];

@@ -21,6 +21,9 @@
  \file bufr2synop.h
  \brief Include header file for binary bufr2synop 
 */
+#ifndef BUFR2SYNOP_H
+#define BUFR2SYNOP_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -196,6 +199,7 @@ extern char REPORT[2048];
 
 extern struct bufr_subset_sequence_data SUBSET;
 
+
 int set_environment(void);
 int integer_to_descriptor(struct bufr_descriptor *d, int id);
 unsigned int three_bytes_to_uint(const unsigned char *source);
@@ -208,6 +212,10 @@ int parse_subset_as_aaxx(struct synop_chunks *syn, struct bufr_subset_sequence_d
                           int *ksec1, char *err);
 int synop_YYYYMMDDHHmm_to_YYGG(struct synop_chunks *syn);
 char * guess_WMO_region(struct synop_chunks *syn);
+
+int parse_subset_sequence(struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err);
+int find_descriptor(int *haystack, size_t nlst, int needle);
+int find_descriptor_interval(int *haystack, size_t nlst, int needlemin, int needlemax);
 
 char * kelvin_to_snTTT ( char *target, double T );
 char * kelvin_to_snTT ( char *target, double T );
@@ -238,3 +246,5 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
 int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
+
+#endif  // from ifndef BUFR2SYNOP_H

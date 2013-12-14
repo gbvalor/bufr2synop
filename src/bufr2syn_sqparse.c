@@ -23,6 +23,15 @@
  */
 #include "bufr2synop.h"
 
+/*!
+  \fn int find_descriptor(int *haystack, size_t nlst, int needle)
+  \brief Try to find a descriptor in an array
+  \param haystack array of integers as descriptors
+  \param nlst number of descriptors in array
+  \param needle descriptor to find
+
+  it returns 1 if found, 0 otherwise.
+*/
 int find_descriptor(int *haystack, size_t nlst, int needle)
 {
   size_t i = 0;
@@ -31,6 +40,20 @@ int find_descriptor(int *haystack, size_t nlst, int needle)
   return (i < nlst);
 }
 
+
+/*!
+  \fn int find_descriptor(int *haystack, size_t nlst, int needle)
+  \brief Try to find a descriptor in an array between two limits
+  \param haystack array of integers as descriptors
+  \param nlst number of descriptors in array
+  \param needlemin minimum descriptor to find
+  \param needlemax maximum descriptor to find
+
+  It tries to find a descriptor in haystack which is greater or equal to needlemin and
+  lesser or equal to needlemax
+
+  it returns 1 if found, 0 otherwise.
+*/
 int find_descriptor_interval(int *haystack, size_t nlst, int needlemin, int needlemax)
 {
   size_t i = 0;
@@ -39,7 +62,15 @@ int find_descriptor_interval(int *haystack, size_t nlst, int needlemin, int need
   return (i < nlst);
 }
 
-
+/*!
+  \fn int parse_subset_sequence(struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err)
+  \brief Parse a sequence of expanded descriptors for a subset 
+  \param sq pointer to a struct \ref bufr_subset_sequence_data where the values for sequence of descriptors for a subset has been decoded
+  \param kdtlst array of integers with descriptors
+  \param nlst number of descriptors in \a kdtlst
+  \param ksec1 array of auxiliar integers decoded by bufrdc ECMWF library
+  \param err string where to write errors if any
+*/
 int parse_subset_sequence(struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err)
 {
   /* First task to do is figure out the type of report */
@@ -51,20 +82,20 @@ int parse_subset_sequence(struct bufr_subset_sequence_data *sq, int *kdtlst, siz
       if (find_descriptor_interval(kdtlst, nlst, 307079, 307086) ||
           find_descriptor(kdtlst, nlst,307091) ||
           find_descriptor(kdtlst, nlst,307096))
-        strcpy(TYPE,"AAXX"); // synop
+        strcpy(TYPE,"AAXX"); // FM-12 synop
       break;
     case 1:
       if (find_descriptor_interval(kdtlst, nlst, 308004, 308005))
-        strcpy(TYPE,"BBXX"); // ship
+        strcpy(TYPE,"BBXX"); // FM-13 ship
       else if (find_descriptor_interval(kdtlst, nlst, 308001, 308003) ||
         find_descriptor(kdtlst, nlst,1005) ||
         find_descriptor(kdtlst, nlst,2036) ||
         find_descriptor(kdtlst, nlst,2149))
-        strcpy(TYPE,"ZZXX"); // buoy
+        strcpy(TYPE,"ZZXX"); // FM-18 buoy
       break;
     case 2:
       if (find_descriptor_interval(kdtlst, nlst, 309050, 309052))
-        strcpy(TYPE,"TTXX"); // ship
+        strcpy(TYPE,"TTXX"); // FM-13 ship 
       break;
     case 7:
       if (find_descriptor_interval(kdtlst, nlst, 307079, 307086))
@@ -84,10 +115,13 @@ int parse_subset_sequence(struct bufr_subset_sequence_data *sq, int *kdtlst, siz
   if(DEBUG) 
     printf("Going to parse a %s report\n", TYPE);
   
-
-  parse_subset_as_synop(&SYNOP, TYPE, sq, kdtlst, nlst, ksec1, err);
-  if (print_synop(REPORT, 2048, &SYNOP) == 0)
-    printf("%s\n", REPORT);
+  // Parse FM-12, FM-13 and FM-14
+  if (strcmp(TYPE,"AAXX") == 0 || strcmp(TYPE,"BBXX") == 0 || strcmp(TYPE,"OOXX") == 0)
+  {
+    parse_subset_as_synop(&SYNOP, TYPE, sq, kdtlst, nlst, ksec1, err);
+    if (print_synop(REPORT, 2048, &SYNOP) == 0)
+      printf("%s\n", REPORT);
+  }
 
   return 0;
 }

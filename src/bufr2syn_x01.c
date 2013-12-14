@@ -23,9 +23,19 @@
 */
 #include "bufr2synop.h"
 
+/*!
+  \fn int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
+  \brief Parse a expanded descriptor with X = 01
+  \param syn pointer to a struct \ref synop_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+  \param err string with optional error 
 
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
 int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
 {
+  char aux[16];
+
   switch ( s->a->desc.y )
     {
     case 1: // 0 01 001
@@ -54,8 +64,13 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
       sprintf ( syn->s0.bw, "%d", s->ival );
       break;
     case 11: // 0 01 011
-      if (strlen(s->a->cval) < 10)
-        strcpy( syn->s0.IIIII, s->a->cval);
+      if (strlen(s->a->cval) < 16)
+      {
+        strcpy(aux, s->a->cval);
+        adjust_string(aux);
+        if (strlen(aux) < 10)
+          strcpy( syn->s0.D_D, aux);
+      }
       break;
     default:
       break;

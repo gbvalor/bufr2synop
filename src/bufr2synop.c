@@ -429,7 +429,7 @@ int main(int argc, char *argv[])
         }
 
       /**** the call to parse the sequence and transform to solicited asciicode, if possible *****/
-      if (parse_subset_sequence(&SUBSET, &KTDLST, ktdlen, &KSEC1, ERR))
+      if (parse_subset_sequence(&SUBSET, KTDLST, ktdlen, KSEC1, ERR) && DEBUG)
         {
           fprintf(stderr, "#%s\n", ERR);
         }

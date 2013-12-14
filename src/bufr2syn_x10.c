@@ -23,6 +23,12 @@
  */
 #include "bufr2synop.h"
 
+/*!
+  \fn char * pascal_to_ppp ( char *target, double P )
+  \brief Converts pascal values (variation) into a ppp string 
+  \param P the pressure variation in Pascal units
+  \param target string with the result
+*/
 char * pascal_to_ppp ( char *target, double P )
 {
   int ic;
@@ -34,6 +40,13 @@ char * pascal_to_ppp ( char *target, double P )
   return target;
 }
 
+
+/*!
+  \fn char * pascal_to_PPPP ( char *target, double P )
+  \brief Converts pascal values into a PPPP string 
+  \param P the pressure variation in Pascal units
+  \param target string with the result
+*/
 char * pascal_to_PPPP ( char *target, double P )
 {
   int ic;
@@ -42,6 +55,15 @@ char * pascal_to_PPPP ( char *target, double P )
   return target;
 }
 
+/*!
+  \fn int syn_parse_x10 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
+  \brief Parse a expanded descriptor with X = 10
+  \param syn pointer to a struct \ref synop_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+  \param err string with optional error 
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
 int syn_parse_x10 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
 {
   char aux[16];

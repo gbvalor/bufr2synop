@@ -23,6 +23,12 @@
  */
 #include "bufr2synop.h"
 
+/*!
+  \fn char * prec_to_RRR ( char *target, double r )
+  \brief converts a precipitation in Kg/m2 into a RRR string
+  \param r the precipitation
+  \param target the resulting string
+*/
 char * prec_to_RRR ( char *target, double r )
 {
   if ( r == 0.0 )
@@ -37,6 +43,12 @@ char * prec_to_RRR ( char *target, double r )
 
 }
 
+/*!
+  \fn char * prec_to_RRRR ( char *target, double r )
+  \brief converts a precipitation in Kg/m2 into a RRRR string
+  \param r the precipitation
+  \param target the resulting string
+*/
 char * prec_to_RRRR ( char *target, double r )
 {
   if ( r < 0.0||(r > 0.0 && r < 0.1))
@@ -48,6 +60,12 @@ char * prec_to_RRRR ( char *target, double r )
   return target;
 }
 
+/*!
+  \fn char * prec_to_RRRR24 ( char *target, double r )
+  \brief converts a precipitation in Kg/m2 into a RRRR24 string
+  \param r the precipitation
+  \param target the resulting string
+*/
 char * prec_to_RRRR24 ( char *target, double r )
 {
   if ( r < 0.0 || (r > 0.0 && r < 0.1))
@@ -60,6 +78,15 @@ char * prec_to_RRRR24 ( char *target, double r )
 }
 
 
+/*!
+  \fn int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
+  \brief Parse a expanded descriptor with X = 13
+  \param syn pointer to a struct \ref synop_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+  \param err string with optional error 
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
 int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
 {
   switch ( s->a->desc.y )

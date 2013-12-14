@@ -23,6 +23,12 @@
  */
 #include "bufr2synop.h"
 
+/*!
+  \fn char * percent_to_okta ( char *target, double perc )
+  \brief Converts percent cloud cover into okta
+  \param perc the precent cloud cover
+  \param target the resulting okta string 
+*/
 char * percent_to_okta ( char *target, double perc )
 {
   if ( perc < 12.5 )
@@ -48,6 +54,12 @@ char * percent_to_okta ( char *target, double perc )
   return target;
 }
 
+/*!
+  \fn char * m_to_h ( char *target, double h )
+  \brief converts the altitude of cloud layer into h string code 
+  \param h the altitude in meters
+  \param target the resulting h coded string
+*/
 char * m_to_h ( char *target, double h )
 {
   if ( h < 50.0 )
@@ -74,6 +86,12 @@ char * m_to_h ( char *target, double h )
 
 }
 
+/*!
+  \fn char * vism_to_VV ( char *target, double V )
+  \brief Convert horizontal visibilty in meters to a VV string
+  \param V the visibility (m)
+  \param target the resulting VV string
+*/
 char * vism_to_VV ( char *target, double V )
 {
   if ( V < 100.0 )
@@ -89,6 +107,15 @@ char * vism_to_VV ( char *target, double V )
   return target;
 }
 
+/*!
+  \fn int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
+  \brief Parse a expanded descriptor with X = 20
+  \param syn pointer to a struct \ref synop_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+  \param err string with optional error 
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
 int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
 {
   switch ( s->a->desc.y )

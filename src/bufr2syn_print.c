@@ -29,7 +29,7 @@
   \fn char * print_synop_sec0 (char **sec0, size_t lmax, struct synop_chunks *syn)
   \brief Prints the synop section 0 (header)
   \param sec0 the pointer where to print section
-  \param lmax max length permited 
+  \param lmax max length permited
   \param syn pointer to s atruct \ref synop_chunks where the parse results are set
 */
 char * print_synop_sec0 (char **sec0, size_t lmax, struct synop_chunks *syn)
@@ -44,10 +44,36 @@ char * print_synop_sec0 (char **sec0, size_t lmax, struct synop_chunks *syn)
   if (check_len(sec0,5))
     c += sprintf ( c, " %s%s", syn->s0.MiMi, syn->s0.MjMj );
 
+  if (check_len(sec0,6))
+  {
+    if (syn->s0.D_D[0])
+      c += sprintf ( c, " %s", syn->s0.D_D);
+    else if (syn->s0.A1[0] && syn->s0.bw[0] && syn->s0.nbnbnb[0])
+      c += sprintf ( c, " %s%s%s", syn->s0.A1, syn->s0.bw, syn->s0.nbnbnb);
+
+  }
+
   // print YYGGiw
   if (check_len(sec0,6))
     c += sprintf ( c, " %s%s%s", syn->s0.YY, syn->s0.GG, syn->s0.iw );
 
+  // print IIiii
+  if (check_len(sec0,6) && syn->s0.II[0])
+    c += sprintf ( c, " %s%s", syn->s0.II, syn->s0.iii );
+  else
+  { 
+     if (syn->s0.LaLaLa[0])
+       c += sprintf ( c, " 99%s", syn->s0.LaLaLa );
+     else 
+       c += sprintf ( c, " 99///");
+    
+     if (syn->s0.Qc[0] && syn->s0.LoLoLoLo[0])
+       c += sprintf ( c, " %s%s", syn->s0.Qc, syn->s0.LoLoLoLo);
+     else 
+       c += sprintf ( c, " /////");
+     
+
+  }
   *sec0 = c;
   return *sec0;
 }
@@ -56,7 +82,7 @@ char * print_synop_sec0 (char **sec0, size_t lmax, struct synop_chunks *syn)
   \fn char * print_synop_sec1 (char **sec0, size_t lmax, struct synop_chunks *syn)
   \brief Prints the synop section 1
   \param sec0 the pointer where to print section
-  \param lmax max length permited 
+  \param lmax max length permited
   \param syn pointer to s atruct \ref synop_chunks where the parse results are set
 */
 char * print_synop_sec1 (char **sec1, size_t lmax, struct synop_chunks *syn)
@@ -64,17 +90,13 @@ char * print_synop_sec1 (char **sec1, size_t lmax, struct synop_chunks *syn)
   size_t i;
   char *c = *sec1;
 
-  // print IIiii
+  // printf Nddff
   if (check_len(sec1,6))
-    c += sprintf ( c, " %s%s", syn->s0.II, syn->s0.iii );
+    c += sprintf ( c, " %s%s%s%s", syn->s1.ir, syn->s1.ix, syn->s1.h, syn->s1.VV );
 
   // printf Nddff
   if (check_len(sec1,6))
-  c += sprintf ( c, " %s%s%s%s", syn->s1.ir, syn->s1.ix, syn->s1.h, syn->s1.VV );
-
-  // printf Nddff
-  if (check_len(sec1,6))
-  c += sprintf ( c, " %s%s%s", syn->s1.N, syn->s1.dd, syn->s1.ff );
+    c += sprintf ( c, " %s%s%s", syn->s1.N, syn->s1.dd, syn->s1.ff );
 
   if (check_len(sec1,6) && strlen ( syn->s1.fff ) )
     c += sprintf ( c, " 00%s", syn->s1.fff );
@@ -127,10 +149,10 @@ char * print_synop_sec1 (char **sec1, size_t lmax, struct synop_chunks *syn)
       c += sprintf ( c, " 7%s%s%s", syn->s1.ww, syn->s1.W1, syn->s1.W2 );
     }
 
-  if ( check_len(sec1,6) && ((syn->s1.Nh[0] && syn->s1.Nh[0] != '0') || 
-       (syn->s1.Cl[0] && syn->s1.Cl[0] != '0') || 
-       (syn->s1.Cm[0] && syn->s1.Cm[0] != '0') || 
-       (syn->s1.Ch[0] && syn->s1.Ch[0] != '0')))
+  if ( check_len(sec1,6) && ((syn->s1.Nh[0] && syn->s1.Nh[0] != '0') ||
+                             (syn->s1.Cl[0] && syn->s1.Cl[0] != '0') ||
+                             (syn->s1.Cm[0] && syn->s1.Cm[0] != '0') ||
+                             (syn->s1.Ch[0] && syn->s1.Ch[0] != '0')))
     {
       if ( syn->s1.Nh[0] == 0 )
         strcpy ( syn->s1.Nh, "/" );
@@ -152,10 +174,46 @@ char * print_synop_sec1 (char **sec1, size_t lmax, struct synop_chunks *syn)
 
 
 /*!
-  \fn char * print_synop_sec3 (char **sec0, size_t lmax, struct synop_chunks *syn)
+  \fn char * print_synop_sec2 (char **sec2, size_t lmax, struct synop_chunks *syn)
   \brief Prints the synop section 1
-  \param sec0 the pointer where to print section
-  \param lmax max length permited 
+  \param sec2 the pointer where to print section
+  \param lmax max length permited
+  \param syn pointer to s atruct \ref synop_chunks where the parse results are set
+*/
+char * print_synop_sec2 (char **sec2, size_t lmax, struct synop_chunks *syn)
+{
+  size_t i;
+  char *c = *sec2;
+  if ( syn->mask & SYNOP_SEC2 )
+    {
+      // 222Dsvs
+      if (check_len(sec2,46))
+        {
+          c += sprintf ( c, " 222");
+          if (syn->s2.Ds[0])
+            c += sprintf ( c, "%s", syn->s2.Ds);
+          else
+            c += sprintf ( c, "/");
+
+          if (syn->s2.vs[0])
+            c += sprintf ( c, "%s", syn->s2.vs);
+          else
+            c += sprintf ( c, "/");
+        }
+
+      // printf 0ssTwTwTw
+      if (check_len(sec2,6) && syn->s2.TwTwTw[0] )
+        c += sprintf ( c, " 0%s%s", syn->s2.ss, syn->s2.TwTwTw );
+
+    }
+  *sec2 = c;
+  return *sec2;
+}
+/*!
+  \fn char * print_synop_sec3 (char **sec3, size_t lmax, struct synop_chunks *syn)
+  \brief Prints the synop section 1
+  \param sec3 the pointer where to print section
+  \param lmax max length permited
   \param syn pointer to s atruct \ref synop_chunks where the parse results are set
 */
 char * print_synop_sec3 (char **sec3, size_t lmax, struct synop_chunks *syn)
@@ -165,7 +223,7 @@ char * print_synop_sec3 (char **sec3, size_t lmax, struct synop_chunks *syn)
   if ( syn->mask & SYNOP_SEC3 )
     {
       if (check_len(sec3,4))
-         c += sprintf ( c, " 333" );
+        c += sprintf ( c, " 333" );
 
       // printf 1snxTxTxTx
       if (check_len(sec3,6) && syn->s3.XoXoXoXo[0])
