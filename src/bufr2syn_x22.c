@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2012 by Guillermo Ballester Valor                       *
+ *   Copyright (C) 2013 by Guillermo Ballester Valor                       *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -37,16 +37,18 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
   char aux[16];
   switch ( s->a->desc.y )
     {
-    case 3: // 0 22 003 sind direction 
+    case 1: // 0 22 001
+    case 3: // 0 22 003 wind direction 
       if (syn->s2.dw1dw1[0] == 0)
       {
-         sprintf(syn->s2.dw1dw1, "%02d", (int)(s->val));
+         sprintf(syn->s2.dw1dw1, "%02d", (s->ival + 5)/10);
       }
       else if (syn->s2.dw2dw2[0] == 0)
       {
-         sprintf(syn->s2.dw2dw2, "%02d", (int)(s->val));
+         sprintf(syn->s2.dw2dw2, "%02d", (s->ival + 5)/10);
       }
       syn->mask |= SYNOP_SEC2; // have sec2 data
+     break;
     case 11: // 0 22 011 wind period in seconds 
       if (syn->s2.PwPw[0] == 0)
       {
@@ -61,7 +63,7 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
          syn->mask |= SYNOP_SEC2; // have sec2 data
       }
     break;
-    case 13: // 0 22 013 wave period in seconds 
+    case 13: // 0 22 013 swell wave period in seconds 
       if (syn->s2.Pw1Pw1[0] == 0)
       {
          sprintf(syn->s2.Pw1Pw1, "%02d", (int)(s->val));
@@ -72,7 +74,7 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
       }
       syn->mask |= SYNOP_SEC2; // have sec2 data
     break;
-    case 21: // 0 22 021  estimated wind wave heigh in m 
+    case 21: // 0 22 021  wind wave heigh in m 
       if (syn->s2.HwHw[0] == 0)
       {
          sprintf(syn->s2.HwHw, "%02d", (int)(s->val * 2.0 + 0.01));
@@ -85,13 +87,13 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
          sprintf(syn->s2.HwaHwa, "%02d", (int)(s->val * 2.0 + 0.01));  // 0.5 m units
          syn->mask |= SYNOP_SEC2; // have sec2 data
       }
-      if (syn->s2.HwaHwaHwa[0] == 0 && syn->s2.HwHw[0] == 0)
+      if (syn->s2.HwaHwaHwa[0] == 0)
       {
-         sprintf(syn->s2.HwaHwa, "%03d", (int)(s->val * 10.0 + 0.01));  // 0.1 m units
+         sprintf(syn->s2.HwaHwaHwa, "%03d", (int)(s->val * 10.0 + 0.01));  // 0.1 m units
          syn->mask |= SYNOP_SEC2; // have sec2 data
       }
     break;
-    case 23: // 0 22 023 wave heigh in meters 
+    case 23: // 0 22 023 swell wave heigh in meters 
       if (syn->s2.Hw1Hw1[0] == 0)
       {
          sprintf(syn->s2.Hw1Hw1, "%02d", (int)(s->val * 2.0 + 0.01));
@@ -102,6 +104,9 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
       }
     syn->mask |= SYNOP_SEC2; // have sec2 data
     break;
+    case 42:
+    case 43:
+    case 45:
     case 49: // 0 22 049 Sea surface temperature
       if (syn->s2.TwTwTw[0] == 0)
         {

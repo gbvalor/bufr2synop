@@ -71,9 +71,17 @@ char * print_synop_sec0 (char **sec0, size_t lmax, struct synop_chunks *syn)
        c += sprintf ( c, " %s%s", syn->s0.Qc, syn->s0.LoLoLoLo);
      else 
        c += sprintf ( c, " /////");
-     
+  }
+
+  if (strcmp(syn->s0.MiMi, "OO") == 0)
+  {
+     if (syn->s0.MMM[0] && syn->s0.Ula && syn->s0.Ulo)
+       c += sprintf ( c, " %s%s%s", syn->s0.MMM, syn->s0.Ula, syn->s0.Ulo);
+     if (syn->s0.h0h0h0h0[0])
+       c += sprintf ( c, " %s%s", syn->s0.h0h0h0h0, syn->s0.im);
 
   }
+
   *sec0 = c;
   return *sec0;
 }
@@ -175,7 +183,7 @@ char * print_synop_sec1 (char **sec1, size_t lmax, struct synop_chunks *syn)
 
 /*!
   \fn char * print_synop_sec2 (char **sec2, size_t lmax, struct synop_chunks *syn)
-  \brief Prints the synop section 1
+  \brief Prints the synop section 2
   \param sec2 the pointer where to print section
   \param lmax max length permited
   \param syn pointer to s atruct \ref synop_chunks where the parse results are set
@@ -205,13 +213,89 @@ char * print_synop_sec2 (char **sec2, size_t lmax, struct synop_chunks *syn)
       if (check_len(sec2,6) && syn->s2.TwTwTw[0] )
         c += sprintf ( c, " 0%s%s", syn->s2.ss, syn->s2.TwTwTw );
 
+      if (check_len(sec2,6) && (syn->s2.PwaPwa[0] || syn->s2.HwaHwa[0]))
+      {
+        if (syn->s2.PwaPwa[0])
+          c += sprintf ( c, " 1%s", syn->s2.PwaPwa);
+        else
+          c += sprintf ( c, " 1//");
+
+        if (syn->s2.HwaHwa[0])
+          c += sprintf ( c, "%s", syn->s2.HwaHwa);
+        else
+          c += sprintf ( c, "//");
+      }
+
+      if (check_len(sec2,6) && (syn->s2.PwPw[0] || syn->s2.HwHw[0]))
+      {
+        if (syn->s2.PwPw[0])
+          c += sprintf ( c, " 2%s", syn->s2.PwPw);
+        else
+          c += sprintf ( c, " 2//");
+
+        if (syn->s2.HwHw[0])
+          c += sprintf ( c, "%s", syn->s2.HwHw);
+        else
+          c += sprintf ( c, "//");
+      }
+
+      if (check_len(sec2,6) && (syn->s2.dw1dw1[0] || syn->s2.dw2dw2[0]))
+      {
+        if (syn->s2.dw1dw1[0])
+          c += sprintf ( c, " 3%s", syn->s2.dw1dw1);
+        else
+          c += sprintf ( c, " 3//");
+
+        if (syn->s2.dw2dw2[0])
+          c += sprintf ( c, "%s", syn->s2.dw2dw2);
+        else
+          c += sprintf ( c, "//");
+      }
+
+      if (check_len(sec2,6) && (syn->s2.Pw1Pw1[0] || syn->s2.Hw1Hw1[0]))
+      {
+        if (syn->s2.Pw1Pw1[0])
+          c += sprintf ( c, " 4%s", syn->s2.Pw1Pw1);
+        else
+          c += sprintf ( c, " 4//");
+
+        if (syn->s2.Hw1Hw1[0])
+          c += sprintf ( c, "%s", syn->s2.Hw1Hw1);
+        else
+          c += sprintf ( c, "//");
+      }
+
+
+      if (check_len(sec2,6) && (syn->s2.Pw2Pw2[0] || syn->s2.Hw2Hw2[0]))
+      {
+        if (syn->s2.Pw2Pw2[0])
+          c += sprintf ( c, " 5%s", syn->s2.Pw2Pw2);
+        else
+          c += sprintf ( c, " 5//");
+
+        if (syn->s2.Hw2Hw2[0])
+          c += sprintf ( c, "%s", syn->s2.Hw2Hw2);
+        else
+          c += sprintf ( c, "//");
+      }
+
+      if (check_len(sec2,6) && syn->s2.HwaHwaHwa[0])
+      {
+         c += sprintf(c, " 70%s", syn->s2.HwaHwaHwa);
+      }
+
+
+      if (check_len(sec2,6) && syn->s2.TbTbTb[0] )
+        c += sprintf ( c, " 8%s%s", syn->s2.sw, syn->s2.TbTbTb );
+
     }
   *sec2 = c;
   return *sec2;
 }
+
 /*!
   \fn char * print_synop_sec3 (char **sec3, size_t lmax, struct synop_chunks *syn)
-  \brief Prints the synop section 1
+  \brief Prints the synop section 3
   \param sec3 the pointer where to print section
   \param lmax max length permited
   \param syn pointer to s atruct \ref synop_chunks where the parse results are set
@@ -319,7 +403,91 @@ int print_synop ( char *report, size_t lmax, struct synop_chunks *syn )
 
   print_synop_sec1(&c, lmax - strlen(report), syn);
 
+  print_synop_sec2(&c, lmax - strlen(report), syn);
+
   print_synop_sec3(&c, lmax - strlen(report), syn);
+
+  c += sprintf ( c, "=" );
+
+  return 0;
+}
+
+
+/*!
+  \fn char * print_buoy_sec0 (char **sec0, size_t lmax, struct buoy_chunks *b)
+  \brief Prints the buoy section 1
+  \param sec3 the pointer where to print section
+  \param lmax max length permited
+  \param b pointer to s atruct \ref buoy_chunks where the parse results are set
+*/
+char * print_buoy_sec0 (char **sec0, size_t lmax, struct buoy_chunks *b)
+{
+   return *sec0;
+}
+
+/*!
+  \fn char * print_buoy_sec1 (char **sec1, size_t lmax, struct buoy_chunks *b)
+  \brief Prints the buoy section 1
+  \param sec3 the pointer where to print section
+  \param lmax max length permited
+  \param b pointer to s atruct \ref buoy_chunks where the parse results are set
+*/
+char * print_buoy_sec1 (char **sec1, size_t lmax, struct buoy_chunks *b)
+{
+   return *sec1;
+}
+
+/*!
+  \fn char * print_buoy_sec2 (char **sec2, size_t lmax, struct buoy_chunks *b)
+  \brief Prints the buoy section 1
+  \param sec3 the pointer where to print section
+  \param lmax max length permited
+  \param b pointer to s atruct \ref buoy_chunks where the parse results are set
+*/
+char * print_buoy_sec2 (char **sec2, size_t lmax, struct buoy_chunks *b)
+{
+   return *sec2;
+}
+
+/*!
+  \fn char * print_buoy_sec3 (char **sec3, size_t lmax, struct buoy_chunks *b)
+  \brief Prints the buoy section 3
+  \param sec3 the pointer where to print section
+  \param lmax max length permited
+  \param b pointer to s atruct \ref buoy_chunks where the parse results are set
+*/
+char * print_buoy_sec3 (char **sec3, size_t lmax, struct buoy_chunks *b)
+{
+   return *sec3;
+}
+
+/*!
+ \fn int print_buoy(char *report, size_t lmax, struct buoy_chunks *syn)
+ \brief prints a buoy into a string
+ \param report target string
+ \param lmax max size of string
+ \param syn pointer to a struct \ref buoy_chuncks with the result of parse tasks
+
+ returns 0 if all went right
+*/
+int print_buoy ( char *report, size_t lmax, struct buoy_chunks *b )
+{
+  size_t i;
+  char *c;
+
+  c = report;
+
+  // Needs time extension
+  if (b->e.YYYY[0] == 0)
+    return 1;
+
+  print_buoy_sec0(&c, lmax, b);
+
+  print_buoy_sec1(&c, lmax - strlen(report), b);
+
+  print_buoy_sec2(&c, lmax - strlen(report), b);
+
+  print_buoy_sec3(&c, lmax - strlen(report), b);
 
   c += sprintf ( c, "=" );
 

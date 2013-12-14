@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2012 by Guillermo Ballester Valor                       *
+ *   Copyright (C) 2013 by Guillermo Ballester Valor                       *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -110,12 +110,12 @@ char LINAUX[2048]; // output line
 
 struct bufr_subset_sequence_data SUBSET; /*!< ALl data decoded for a subset*/
 
-struct synop_chunks SYN; /*!< struct where to set chunks of synops taken from a bufr subset */
+//struct synop_chunks SYN; 
 
 char DEFAULT_BUFRTABLES[] = "/usr/local/lib/bufrtables/"; /*!< Default bufr tables dir */
 
-struct synop_chunks SYNOP;
-struct buoy_chunks BUOY;
+struct synop_chunks SYNOP; /*!< struct where to set chunks of synops taken from a bufr subset */
+struct buoy_chunks BUOY; /*!< struct where to set chunks of buoys taken from a bufr subset */
 
 /*!
   \fn int main(int argc, char *argv[])

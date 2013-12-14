@@ -18,37 +18,32 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 /*!
- \file bufr2syn_x02.c
- \brief decodes the descriptors with X = 02
+ \file bufr2syn_x07.c
+ \brief decodes the descriptors with X = 07 (Vertical Position)
  */
 #include "bufr2synop.h"
 
 /*!
-  \fn int syn_parse_x02 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
-  \brief Parse a expanded descriptor with X = 02
+  \fn int syn_parse_x07 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
+  \brief Parse a expanded descriptor with X = 07
   \param syn pointer to a struct \ref synop_chunks where to set the results
   \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
   \param err string with optional error 
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int syn_parse_x02 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
+int syn_parse_x07 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
 {
+  int ia;
   switch ( s->a->desc.y )
     {
-    case 1: // 0 02 001
-      s->type = s->ival;
-      s->mask |= SUBSET_MASK_HAVE_TYPE_STATION;
-      break;
-    case 2: // 0 02 002
-      if ( s->ival & 4 )
-        strcpy ( syn->s0.iw, "4" );
-      else
-        strcpy ( syn->s0.iw, "1" );
-      break;
+    case 1: // 0 07 001
+      if (syn->s0.h0h0h0h0[0] == 0)
+        sprintf(syn->s0.h0h0h0h0, "%s", s->ival); 
+        syn->s0.im[0] = '1';// set unit as m
     default:
       break;
     }
+
   return 0;
 }
-

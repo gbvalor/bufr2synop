@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2012 by Guillermo Ballester Valor                       *
+ *   Copyright (C) 2013 by Guillermo Ballester Valor                       *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -113,6 +113,10 @@
 #define SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW 8
 #define SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1 16
 #define SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2 32
+#define SUBSET_MASK_HAVE_LATITUDE 64
+#define SUBSET_MASK_HAVE_LONGITUDE 128
+#define SUBSET_MASK_HAVE_ALTITUDE 256
+
 
 
 /*!
@@ -159,6 +163,8 @@ struct bufr_subset_state {
    int jtval; /*!< Prior to Latest parsed time displacement in seconds */
    size_t k_jtval; /*!< index in array of time prior to latest displacemet descriptor */
    int type; /*!< type of station */
+   double lat; /*!< Latitude of station */
+   double lon; /*!< longitude of station */
    int mask; /*!< mask which contain several information from the subset data taken at the moment */
 };
 
@@ -189,7 +195,8 @@ extern int VERBOSE;
 extern int SHOW_SEQUENCE;
 extern int SHOW_ECMWF_OUTPUT;
 extern int DEBUG;
-extern struct synop_chunks SYN;
+extern struct synop_chunks SYNOP;
+extern struct buoy_chunks BUOY;
 
 extern size_t NLINES_TABLEC; 
 extern char TABLEC[MAXLINES_TABLEC][92];
@@ -217,6 +224,7 @@ int parse_subset_sequence(struct bufr_subset_sequence_data *sq, int *kdtlst, siz
 int find_descriptor(int *haystack, size_t nlst, int needle);
 int find_descriptor_interval(int *haystack, size_t nlst, int needlemin, int needlemax);
 
+char * latlon_to_MMM(char *target, double lat, double lon);
 char * kelvin_to_snTTT ( char *target, double T );
 char * kelvin_to_snTT ( char *target, double T );
 char * kelvin_to_TT ( char *target, double T );

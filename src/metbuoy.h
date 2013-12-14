@@ -1,6 +1,6 @@
 /* $Id$ */
 /***************************************************************************
- *   Copyright (C) 2004-2009 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2004-2013 by Guillermo Ballester Valor                  *
  *   gbv@oxixares.com                                                      *
  *                                                                         *
  *   This file is part of Ogimet                                           *
@@ -119,6 +119,34 @@ struct buoy_sec2
    char HwHwHw[4]; /*!< heigh of waves, in tenths of metre */
 };
 
+
+struct b_sec3_layer1 {
+   char zzzz[6];
+   char TTTT[6];
+   char SSSS[6];   
+};
+
+struct b_sec3_layer2 {
+   char zzzz[6];
+   char dd[4];
+   char ccc[6];   
+};
+
+/*! \struct buoy_sec3
+    \brief contains all possible substrings from section 1 when a report is parsed with success
+*/
+struct buoy_sec3
+{
+   char Qd1[2]; 
+   char Qd2[2]; 
+   char k2[2]; 
+   char k3[2]; 
+   char k6[2]; 
+   struct b_sec3_layer1 l1[10];
+   struct b_sec3_layer2 l2[10];
+};
+
+
 /*! \struct buoy_chunks
     \brief contains all possible substrings from a synop report is parsed with success
 */
@@ -129,6 +157,7 @@ struct buoy_chunks
    struct buoy_sec0 s0; /*!< struct with parsed header and section 0 */
    struct buoy_sec1 s1; /*!< struct with parsed section 1 */
    struct buoy_sec2 s2; /*!< struct with parsed section 2 if present */
+   struct buoy_sec3 s3; /*!< struct with parsed section 2 if present */
    char error[128]; /*!< string with error code if a wrong synop report is found */
 };
 

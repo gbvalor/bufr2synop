@@ -81,25 +81,27 @@ int parse_subset_sequence(struct bufr_subset_sequence_data *sq, int *kdtlst, siz
     case 0:
       if (find_descriptor_interval(kdtlst, nlst, 307079, 307086) ||
           find_descriptor(kdtlst, nlst,307091) ||
-          find_descriptor(kdtlst, nlst,307096))
+          find_descriptor(kdtlst, nlst,307096) || 
+          ksec1[6] == 0 || ksec1[6] == 1 || ksec1[6] == 2)
         strcpy(TYPE,"AAXX"); // FM-12 synop
+      else if (find_descriptor(kdtlst, nlst,307090)
+         || ksec1[6] == 3 || ksec1[6] == 4 || ksec1[6] == 5 )
+        strcpy(TYPE,"OOXX"); // FM-14 synop-mobil
       break;
     case 1:
-      if (find_descriptor_interval(kdtlst, nlst, 308004, 308005))
+      if (find_descriptor_interval(kdtlst, nlst, 308004, 308005) ||
+          find_descriptor(kdtlst, nlst,308009))
         strcpy(TYPE,"BBXX"); // FM-13 ship
       else if (find_descriptor_interval(kdtlst, nlst, 308001, 308003) ||
         find_descriptor(kdtlst, nlst,1005) ||
         find_descriptor(kdtlst, nlst,2036) ||
-        find_descriptor(kdtlst, nlst,2149))
+        find_descriptor(kdtlst, nlst,2149) ||
+        ksec1[6] == 25)
         strcpy(TYPE,"ZZXX"); // FM-18 buoy
       break;
     case 2:
       if (find_descriptor_interval(kdtlst, nlst, 309050, 309052))
         strcpy(TYPE,"TTXX"); // FM-13 ship 
-      break;
-    case 7:
-      if (find_descriptor_interval(kdtlst, nlst, 307079, 307086))
-        strcpy(TYPE,"AAXX");
       break;
     default:
       sprintf(err, "The data category %d is not parsed at the moment");
@@ -120,6 +122,12 @@ int parse_subset_sequence(struct bufr_subset_sequence_data *sq, int *kdtlst, siz
   {
     parse_subset_as_synop(&SYNOP, TYPE, sq, kdtlst, nlst, ksec1, err);
     if (print_synop(REPORT, 2048, &SYNOP) == 0)
+      printf("%s\n", REPORT);
+  }
+  else if (strcmp(TYPE,"ZZXX"))
+  {
+    parse_subset_as_buoy(&BUOY, sq, kdtlst, nlst, ksec1, err);
+    if (print_buoy(REPORT, 2048, &BUOY) == 0)
       printf("%s\n", REPORT);
   }
 

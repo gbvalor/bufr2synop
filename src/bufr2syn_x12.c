@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2012 by Guillermo Ballester Valor                       *
+ *   Copyright (C) 2013 by Guillermo Ballester Valor                       *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -112,7 +112,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         }
       break;
     case 3: // 0 12 003
-    case 6: // 0 12 006
+    case 5: // 0 12 006
     case 103: // 0 12 103
     case 106: // 0 12 106
       if (syn->s1.TdTdTd[0] == 0)
@@ -153,6 +153,20 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
               syn->s3.snn[0] = aux[0];
               strcpy ( syn->s3.TnTnTn, aux + 1 );
               syn->mask |= SYNOP_SEC3;
+            }
+        }
+      break;
+    case 2:
+    case 6:
+    case 102:
+    case 105: // 0 12 105 Wet bulb temperature 
+      if (syn->s2.TbTbTb[0] == 0)
+        {
+          if (kelvin_to_snTTT ( aux, s->val ))
+            {
+              syn->s2.sw[0] = aux[0];
+              strcpy ( syn->s2.TbTbTb, aux + 1 );
+              syn->mask |= SYNOP_SEC2;
             }
         }
       break;

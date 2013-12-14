@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2012 by Guillermo Ballester Valor                       *
+ *   Copyright (C) 2013 by Guillermo Ballester Valor                       *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -42,15 +42,19 @@ int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
     case 2: // 0 05 002
       if (s->val < 0.0)
         s->mask |= SUBSET_MASK_LATITUDE_SOUTH; // Sign for latitude
+      s->mask |= SUBSET_MASK_HAVE_LATITUDE;
       ia = (int) (fabs(s->val) * 10.0 + 0.5);
       sprintf(syn->s0.LaLaLa, "%03d",ia);
+      syn->s0.Ula[0] = syn->s0.LaLaLa[1];
     break;
     case 11: // 0 05 001
     case 12: // 0 05 002
       if (s->val < 0.0)
         s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
+      s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
       ia = (int) (fabs(s->val) * 10.0 + 0.5);
       sprintf(syn->s0.LoLoLoLo, "%04d",ia);
+      syn->s0.Ulo[0] = syn->s0.LoLoLoLo[2];
     break;
     default:
       break;
@@ -73,6 +77,12 @@ int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
        else
         strcpy(syn->s0.Qc, "0");
     }
+  }
+
+  // check if about MMM
+  if ((syn->s0.MMM[0] == 0) && syn->s0.LaLaLa[0] && syn->s0.LoLoLoLo[0])
+  {
+     latlon_to_MMM(syn->s0.MMM, s->lat, s->lon);
   }
   return 0;
 }

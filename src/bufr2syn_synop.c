@@ -137,7 +137,7 @@ char *guess_WMO_region(struct synop_chunks *syn)
 
 /*!
   \fn int parse_subset_as_synop(struct synop_chunks *syn, char *type, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err)
-  \brief parses a subset sequence as an Land fixed SYNOP-12 FM report
+  \brief parses a subset sequence as an Land fixed SYNOP FM-12, SHIP FM-13 or SYNOP-mobil FM-14 report
   \param syn pointer to a struct \ref synop_chunks where set the results
   \param type strint with MiMiMjMj to choose the type pf synop (AAXX, BBXX ...) (synop, ship or synop-mobil)
   \param sq pointer to a struct \ref bufr_subset_sequence_data with the parsed sequence on input

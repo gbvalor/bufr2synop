@@ -79,6 +79,7 @@ void clean_synop_chunks( struct synop_chunks *syn)
   clean_report_date_ext( &(syn->e));
   clean_syn_sec0( &(syn->s0));
   clean_syn_sec1( &(syn->s1));
+  clean_syn_sec2( &(syn->s2));
   clean_syn_sec3( &(syn->s3));
 
   // default
@@ -92,5 +93,58 @@ void clean_synop_chunks( struct synop_chunks *syn)
   strcpy(syn->s1.ff,"//");
 
   syn->error[0] = '\0';
+}
+
+/*! \fn void clean_buoy_sec0(struct buoy_sec0 *s)
+    \brief clean a buoy_sec0 struct
+    \param s pointer to the buoy_sec0 struct
+*/
+void clean_buoy_sec0(struct buoy_sec0 *s)
+{
+  memset(s, 0, sizeof(struct buoy_sec0));
+}
+
+/*! \fn void clean_buoy_sec1(struct buoy_sec1 *s)
+    \brief clean a buoy_sec1 struct
+    \param s pointer to the buoy_sec1 struct
+*/
+void clean_buoy_sec1(struct buoy_sec1 *s)
+{
+  memset(s, 0, sizeof(struct buoy_sec1));
+}
+
+/*! \fn void clean_buoy_sec2(struct buoy_sec2 *s)
+    \brief clean a buoy_sec2 struct
+    \param s pointer to the buoy_sec2 struct
+*/
+void clean_buoy_sec2(struct buoy_sec2 *s)
+{
+  memset(s, 0, sizeof(struct buoy_sec2));
+}
+
+/*! \fn void clean_buoy_sec3(struct buoy_sec3 *s)
+    \brief clean a buoy_sec3 struct
+    \param s pointer to the buoy_sec3 struct
+*/
+void clean_buoy_sec3(struct buoy_sec3 *s)
+{
+  memset(s, 0, sizeof(struct buoy_sec3));
+}
+
+/*!
+  \fn void clean_buoy_chunks( struct buoy_chunks *syn)
+  \brief cleans a \ref buoy_chunks struct
+  \param syn pointer to the struct to clean
+*/
+void clean_buoy_chunks( struct buoy_chunks *b)
+{
+  b->mask = 0;
+  clean_report_date_ext( &(b->e));
+  clean_buoy_sec0( &(b->s0));
+  clean_buoy_sec1( &(b->s1));
+  clean_buoy_sec2( &(b->s2));
+  clean_buoy_sec3( &(b->s3));
+
+  b->error[0] = '\0';
 }
 

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2012 by Guillermo Ballester Valor                       *
+ *   Copyright (C) 2013 by Guillermo Ballester Valor                       *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,6 +23,39 @@
  */
 #include "bufr2synop.h"
 
+
+/*!
+  \fn char * latlon_to_MMM(char *target, double lat, double lon)
+  \brief convert latitude and longitude to a MMM string
+  \param lat latitude (degree, N positive)
+  \param lon longitude (degree, E positive)
+  \param target resulting MMM string
+*/
+char * latlon_to_MMM(char *target, double lat, double lon)
+{
+   int col, row, ori = 0;
+
+   if (lon < 0.0)
+      col = (int)(-lat * 0.1) + 1;
+   else
+      col = 36 - (int)(lat * 0.1);
+
+  
+   if (lat >= 80.0)
+      row = 25;
+   else if (lat >=  0.0)
+      row = (int)(lat * 0.1);
+   else
+   {
+      ori = 299;
+      row = (int)(-lat * 0.1);
+   }
+
+   sprintf(target,"%03d", col + ori + row * 36);
+
+   return target;
+}
+
 /*!
   \fn int syn_parse_x06 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
   \brief Parse a expanded descriptor with X = 06
@@ -41,8 +74,10 @@ int syn_parse_x06 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
     case 2: // 0 06 002
       if (s->val < 0.0)
         s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
+      s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
       ia = (int) (fabs(s->val) * 10.0 + 0.5);
       sprintf(syn->s0.LoLoLoLo, "%04d",ia);
+      syn->s0.Ulo[0] = syn->s0.LoLoLoLo[2];
       break;
     default:
       break;
@@ -63,9 +98,16 @@ int syn_parse_x06 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
           if (s->mask & SUBSET_MASK_LONGITUDE_WEST)
             strcpy(syn->s0.Qc, "7");
           else
-            strcpy(syn->s0.Qc, "0");
+            strcpy(syn->s0.Qc, "1");
         }
     }
+
+  // check if about MMM
+  if ((syn->s0.MMM[0] == 0) && syn->s0.LaLaLa[0] && syn->s0.LoLoLoLo[0])
+  {
+     latlon_to_MMM(syn->s0.MMM, s->lat, s->lon);
+  }
+
   return 0;
 }
 
