@@ -123,9 +123,18 @@ int syn_parse_x06 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
 int buoy_parse_x06 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err )
 {
   char aux[16];
+  int ia;
 
   switch ( s->a->desc.y )
     {
+    case 1: // 0 06 001
+    case 2: // 0 06 002
+      if (s->val < 0.0)
+        s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
+      s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
+      ia = (int) (fabs(s->val) * 1000.0 + 0.5);
+      sprintf(b->s0.LoLoLoLoLoLo, "%06d",ia);
+      break;
       default:
       break;
     }

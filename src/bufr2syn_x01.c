@@ -28,7 +28,7 @@
   \brief Parse a expanded descriptor with X = 01
   \param syn pointer to a struct \ref synop_chunks where to set the results
   \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
-  \param err string with optional error 
+  \param err string with optional error
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
@@ -65,12 +65,12 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
       break;
     case 11: // 0 01 011
       if (strlen(s->a->cval) < 16)
-      {
-        strcpy(aux, s->a->cval);
-        adjust_string(aux);
-        if (strlen(aux) < 10)
-          strcpy( syn->s0.D_D, aux);
-      }
+        {
+          strcpy(aux, s->a->cval);
+          adjust_string(aux);
+          if (strlen(aux) < 10)
+            strcpy( syn->s0.D_D, aux);
+        }
       break;
     default:
       break;
@@ -83,7 +83,7 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
   \brief Parse a expanded descriptor with X = 01
   \param b pointer to a struct \ref synop_chunks where to set the results
   \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
-  \param err string with optional error 
+  \param err string with optional error
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
@@ -94,7 +94,10 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
   switch ( s->a->desc.y )
     {
     case 3: // 0 01 003
-      sprintf ( b->s0.A1, "%d", s->ival );
+      if (s->ival > 0)
+        sprintf ( b->s0.A1, "%d", s->ival );
+      else if (s->ival == 0)
+        sprintf ( b->s0.A1, "7");
       break;
 
     case 4: // 0 01 004
@@ -102,9 +105,12 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
       sprintf ( b->s0.bw, "%d", s->ival );
       break;
     case 5: // 0 01 005
-      sprintf(b->s0.nbnbnb, "%03d", s->ival);
+      if ( s->ival < 1000)
+        sprintf(b->s0.nbnbnb, "%03d", s->ival);
+      else
+        sprintf(b->s0.nbnbnb, "%05d", s->ival); // note this is a nnnnn extension 
       break;
-      default:
+    default:
       break;
     }
   return 0;

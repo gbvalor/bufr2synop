@@ -97,7 +97,7 @@ int parse_subset_sequence(struct bufr_subset_sequence_data *sq, int *kdtlst, siz
         find_descriptor(kdtlst, nlst,2036) ||
         find_descriptor(kdtlst, nlst,2149) ||
         ksec1[6] == 25)
-        strcpy(TYPE,"ZZXX"); // FM-18 buoy
+        strcpy(TYPE,"ZZYY"); // FM-18 buoy
       break;
     case 2:
       if (find_descriptor_interval(kdtlst, nlst, 309050, 309052))
@@ -124,7 +124,7 @@ int parse_subset_sequence(struct bufr_subset_sequence_data *sq, int *kdtlst, siz
     if (print_synop(REPORT, 2048, &SYNOP) == 0)
       printf("%s\n", REPORT);
   }
-  else if (strcmp(TYPE,"ZZXX"))
+  else if (strcmp(TYPE,"ZZYY") == 0)
   {
     parse_subset_as_buoy(&BUOY, sq, kdtlst, nlst, ksec1, err);
     if (print_buoy(REPORT, 2048, &BUOY) == 0)

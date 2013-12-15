@@ -166,7 +166,7 @@ int parse_subset_as_synop ( struct synop_chunks *syn, char *type, struct bufr_su
   // reject if still not coded type
   if (strcmp(TYPE,"AAXX") && strcmp(TYPE,"BBXX"))
   {
-    sprintf(err,"%: '%s%s' reports still not decoded in this software", SELF, syn->s0.MiMi, syn->s0.MjMj);
+    sprintf(err,"%: '%s' reports still not decoded in this software", SELF, TYPE);
     return 1;
   }
 
@@ -174,8 +174,6 @@ int parse_subset_as_synop ( struct synop_chunks *syn, char *type, struct bufr_su
   syn->s0.MiMi[1] = type[1];
   syn->s0.MjMj[0] = type[2];
   syn->s0.MjMj[1] = type[3];
-
-  syn->mask = SYNOP_SEC1;
 
   /**** First pass, sequential analysis *****/
   for ( is = 0, itval = 0; is < sq->nd; is++ )
@@ -237,6 +235,11 @@ int parse_subset_as_synop ( struct synop_chunks *syn, char *type, struct bufr_su
         case 22: // Oceanographic data
           syn_parse_x22 ( syn, &s, err );
           break;
+
+        case 31: // Replicators
+          syn_parse_x31 ( syn, &s, err );
+          break;
+
 
         default:
           break;

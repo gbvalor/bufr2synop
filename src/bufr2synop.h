@@ -156,6 +156,8 @@ struct bufr_subset_sequence_data {
 struct bufr_subset_state {
    struct bufr_atom_data *a; /*!< the current struct \ref bufr_atom_data being parsed */
    size_t i; /*!< current index in array element */
+   int rep;  /*!< Latest delayed replicator */
+   size_t k_rep;  /*!< Index of latest delayed replicator */
    int ival; /*!< the integer value in the descritor */
    double val; /*!< the float value in the descriptor */
    int itval; /*!< Latest parsed time displacement in seconds */
@@ -163,6 +165,7 @@ struct bufr_subset_state {
    int jtval; /*!< Prior to Latest parsed time displacement in seconds */
    size_t k_jtval; /*!< index in array of time prior to latest displacemet descriptor */
    int type; /*!< type of station */
+   int layer; /*!< Layer/level of data when parsing Buoy report*/
    double lat; /*!< Latitude of station */
    double lon; /*!< longitude of station */
    int mask; /*!< mask which contain several information from the subset data taken at the moment */
@@ -190,11 +193,14 @@ extern int KTDLST[KELEM], KTDEXP[KELEM];
 extern char INPUTFILE[256];
 extern char OUTPUTFILE[256];
 extern char BUFRTABLES_DIR[256];
+extern char LISTOFFILES[256];
 extern char SELF[];
 extern int VERBOSE;
 extern int SHOW_SEQUENCE;
 extern int SHOW_ECMWF_OUTPUT;
 extern int DEBUG;
+extern int NFILES;
+
 extern struct synop_chunks SYNOP;
 extern struct buoy_chunks BUOY;
 
@@ -203,7 +209,7 @@ extern char TABLEC[MAXLINES_TABLEC][92];
 extern char DEFAULT_BUFRTABLES[];
 extern char TYPE[8];
 extern char REPORT[2048];
-
+extern FILE * FL;
 extern struct bufr_subset_sequence_data SUBSET;
 
 
@@ -215,10 +221,11 @@ char * adjust_string(char *s);
 char * get_explained_table_val(char *expl, size_t dim, struct bufr_descriptor *d, int ival);
 char * get_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d, unsigned long ival);
 char * get_ecmwf_tablename(char *target, char TYPE);
+char * get_bufrfile_path( char *filename, char *err);
 int parse_subset_as_aaxx(struct synop_chunks *syn, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, 
                           int *ksec1, char *err);
 int synop_YYYYMMDDHHmm_to_YYGG(struct synop_chunks *syn);
-int buoy_YYYYMMDDHHmm_to_YYGG(struct buoy_chunks *b);
+int buoy_YYYYMMDDHHmm_to_JMMYYGGgg(struct buoy_chunks *b);
 char * guess_WMO_region(struct synop_chunks *syn);
 
 int parse_subset_sequence(struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err);

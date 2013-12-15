@@ -107,6 +107,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
             {
               syn->s1.tr[0] = '6'; // 2 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
+              syn->mask |= SYNOP_SEC1;
             }
         }
       else if ( s->itval == -10800 )
@@ -124,6 +125,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
             {
               syn->s1.tr[0] = '1'; // 6 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
+              syn->mask |= SYNOP_SEC1;
             }
         }
       else if ( s->itval == - ( 9 * 3600 ) )
@@ -141,6 +143,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
             {
               syn->s1.tr[0] = '2'; // 12 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
+              syn->mask |= SYNOP_SEC1;
             }
         }
       else if ( s->itval == - ( 15 * 3600 ) )
@@ -158,6 +161,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
             {
               syn->s1.tr[0] = '3'; // 12 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
+              syn->mask |= SYNOP_SEC1;
             }
         }
       else if ( s->itval == - ( 24 * 3600 ) )
@@ -166,6 +170,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
             {
               syn->s3.tr[0] = '4'; // 24 hour
               prec_to_RRR ( syn->s3.RRR, s->val );
+              syn->mask |= SYNOP_SEC3;
             }
           if (syn->s3.RRRR24[0] == 0)
             {
@@ -195,6 +200,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         {
           syn->s1.tr[0] = '1'; // 6 hour
           prec_to_RRR ( syn->s1.RRR, s->val );
+          syn->mask |= SYNOP_SEC1;
         }
       break;
     case 22: // 0 13 022
@@ -202,6 +208,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         {
           syn->s1.tr[0] = '2'; // 12 hour
           prec_to_RRR ( syn->s1.RRR, s->val );
+          syn->mask |= SYNOP_SEC1;
         }
       break;
     case 23: // 0 13 023
@@ -209,6 +216,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         {
           syn->s1.tr[0] = '4'; // 24 hour
           prec_to_RRR ( syn->s1.RRR, s->val );
+          syn->mask |= SYNOP_SEC1;
         }
       if (syn->s3.RRRR24[0] == 0)
         {

@@ -27,9 +27,10 @@
 void print_usage(void)
 {
   printf("Usage: \n");
-  printf("  bufr2synop -i input [-t bufrtable_dir][-o output][-s][-v]\n");
+  printf("  bufr2synop [-i input] [-I list_of_files [-t bufrtable_dir][-o output][-s][-v]\n");
   printf("       -e Print some original output from ECMWF library\n");
   printf("       -i input. Pathname of the file with the bufr message to parse\n");
+  printf("       -I list_of_files. Pathname of a file with the list of files to parse, one filename per line\n");
   printf("       -o output. Pathname of output file. Default is standar output\n");
   printf("       -s prints a long output with explained sequence of descriptors\n");
   printf("       -t bufrtable_dir. Pathname of bufr tables directory. Ended with '/'\n");
@@ -96,21 +97,26 @@ int read_arguments(int _argc, char * _argv[])
   // Initial and default values
   INPUTFILE[0] = '\0';
   OUTPUTFILE[0] = '\0';
+  LISTOFFILES[0] = '\0';
   BUFRTABLES_DIR[0] = '\0';
   VERBOSE = 0;
   SHOW_SEQUENCE = 0;
   SHOW_ECMWF_OUTPUT = 0;
   DEBUG = 0;
-
+  NFILES = 0;
   /*
    Read input arguments using getop library
    */
-  while ((iopt = getopt(_argc, _argv, "Dehi:o:st:v")) != -1)
+  while ((iopt = getopt(_argc, _argv, "Dehi:I:o:st:v")) != -1)
     switch (iopt)
       {
       case 'i':
         if (strlen(optarg) < 256)
           strcpy(INPUTFILE, optarg);
+        break;
+      case 'I':
+        if (strlen(optarg) < 256)
+          strcpy(LISTOFFILES, optarg);
         break;
       case 'o':
         if (strlen(optarg) < 256)
@@ -140,7 +146,7 @@ int read_arguments(int _argc, char * _argv[])
         exit(EXIT_SUCCESS);
       }
 
-  if (strlen(INPUTFILE) == 0)
+  if (INPUTFILE[0] == 0 && LISTOFFILES[0] == 0)
     {
       print_usage();
       return 1;
@@ -148,3 +154,35 @@ int read_arguments(int _argc, char * _argv[])
   return 0;
 }
 
+char * get_bufrfile_path( char *filename, char *err)
+{
+   char aux[256], *c;
+   if (LISTOFFILES[0] == 0) 
+   {
+      if (NFILES == 0)
+      {
+         strcpy(filename, INPUTFILE);
+         return filename;
+      }
+      else
+         return 0;
+   }
+   else if (NFILES == 0)
+   {
+     if ((FL = fopen(LISTOFFILES,"r")) == NULL)
+     {
+        sprintf(err,"Cannot open '%s'", LISTOFFILES);
+        return NULL;
+     }
+   }
+   if (fgets(aux, 256, FL))
+   {
+      c =  strrchr(aux,'\n');
+      if (c)
+       *c = 0;
+      strcpy(filename, aux);
+      return filename;
+   }
+   else
+     return NULL;
+}

@@ -28,7 +28,7 @@
   \brief Sets YYGG from YYYYMMDDHHmm extended group
   \param syn pointer to the target struct \ref synop_chunks
 */
-int buoy_YYYYMMDDHHmm_to_YYGG ( struct buoy_chunks *b )
+int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b )
 {
   char aux[20];
   time_t t;
@@ -47,10 +47,14 @@ int buoy_YYYYMMDDHHmm_to_YYGG ( struct buoy_chunks *b )
   memset ( &tim, 0, sizeof ( struct tm ) );
   strptime ( aux, "%Y%m%d%H%M", &tim );
 
-  t = mktime ( &tim ) + 1799 ; // rounding trick
+  t = mktime ( &tim );
   gmtime_r ( &t, &tim );
   sprintf ( b->s0.YY, "%02d", tim.tm_mday );
   sprintf ( b->s0.GG, "%02d", tim.tm_hour );
+  sprintf ( b->s0.MM, "%02d", tim.tm_mon + 1);
+  sprintf ( b->s0.J, "%d", tim.tm_year % 10);
+  sprintf ( b->s0.gg, "%02d", tim.tm_min);
+
   return 0;
 }
 
@@ -84,16 +88,16 @@ int parse_subset_as_buoy( struct buoy_chunks *b, struct bufr_subset_sequence_dat
   memset(&s, 0, sizeof(struct bufr_subset_state));
 
   // reject if still not coded type
-  if (strcmp(TYPE,"AAXX") && strcmp(TYPE,"BBXX"))
+  if (strcmp(TYPE,"ZZYY"))
   {
-    sprintf(err,"%: '%s%s' reports still not decoded in this software", SELF, b->s0.MiMi, b->s0.MjMj);
+    sprintf(err,"%: '%s' report still not decoded in this software", SELF, TYPE);
     return 1;
   }
 
   strcpy(b->s0.MiMi, "ZZ");
-  strcpy(b->s0.MjMj, "XX");
+  strcpy(b->s0.MjMj, "YY");
 
-  b->mask = BUOY_SEC1;
+  b->mask = BUOY_SEC0;
 
   /**** First pass, sequential analysis *****/
   for ( is = 0, itval = 0; is < sq->nd; is++ )
@@ -157,6 +161,15 @@ int parse_subset_as_buoy( struct buoy_chunks *b, struct bufr_subset_sequence_dat
           buoy_parse_x22 ( b, &s, err );
           break;
 
+        case 31: // Replicators
+          buoy_parse_x31 ( b, &s, err );
+          break;
+
+
+        case 33: // Quality data
+          buoy_parse_x33 ( b, &s, err );
+          break;
+
 
         default:
           break;
@@ -165,5 +178,44 @@ int parse_subset_as_buoy( struct buoy_chunks *b, struct bufr_subset_sequence_dat
     }
 
   /****** Second pass. Global results and consistence analysis ************/
+
+  // adjust iw
+  if ( b->s0.iw[0] == '/' && b->s1.ff[0] != '/' )
+    b->s0.iw[0] = '1';
+
+  // fill date fields YYYYMMDDHHmm
+  buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( b );
+  b->mask |= BUOY_EXT;
+
+  // check if set both LaLaLa and LoLoLoLo to set Qc 
+  if ((b->s0.Qc[0] == 0) && b->s0.LaLaLaLaLa[0] && b->s0.LoLoLoLoLoLo[0])
+  {
+    if (s.mask & SUBSET_MASK_LATITUDE_SOUTH)
+    {
+       if (s.mask & SUBSET_MASK_LONGITUDE_WEST)
+         strcpy(b->s0.Qc, "5");
+       else
+         strcpy(b->s0.Qc, "3");
+    }
+    else
+    {
+       if (s.mask & SUBSET_MASK_LONGITUDE_WEST)
+         strcpy(b->s0.Qc, "7");
+       else
+        strcpy(b->s0.Qc, "1");
+    }
+  }
+
+  // check Qx
+  if (b->s1.Qx[0] == 0 && b->s1.Qd[0])
+     b->s1.Qx[0] = '9';
+  if (b->s2.Qx[0] == 0 && b->s2.Qd[0])
+     b->s2.Qx[0] = '9';
+
+  if (b->s3.Qd1[0] ==  0)
+    b->s3.Qd1[0] == '0'; 
+  if (b->s3.Qd2[0] ==  0)
+    b->s3.Qd2[0] == '0'; 
+
   return 0;
 }

@@ -75,7 +75,7 @@ int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
        if (s->mask & SUBSET_MASK_LONGITUDE_WEST)
          strcpy(syn->s0.Qc, "7");
        else
-        strcpy(syn->s0.Qc, "0");
+        strcpy(syn->s0.Qc, "1");
     }
   }
 
@@ -99,11 +99,29 @@ int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
 int buoy_parse_x05 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err )
 {
   char aux[16];
+  int ia;
 
   switch ( s->a->desc.y )
     {
-      default:
+    case 1: // 0 05 001
+    case 2: // 0 05 002
+      if (s->val < 0.0)
+        s->mask |= SUBSET_MASK_LATITUDE_SOUTH; // Sign for latitude
+      s->mask |= SUBSET_MASK_HAVE_LATITUDE;
+      ia = (int) (fabs(s->val) * 1000.0 + 0.5);
+      sprintf(b->s0.LaLaLaLaLa, "%05d",ia);
+      break;
+    case 11: // 0 05 001
+    case 12: // 0 05 002
+      if (s->val < 0.0)
+        s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
+      s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
+      ia = (int) (fabs(s->val) * 1000.0 + 0.5);
+      sprintf(b->s0.LoLoLoLoLoLo, "%06d",ia);
+    break;
+    default:
       break;
     }
+
   return 0;
 }

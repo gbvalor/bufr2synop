@@ -67,7 +67,7 @@ struct buoy_sec0
    char MjMj[4]; /*!< MjMj item. (Code table 2582) */
    char A1[2]; /*!< A1 item. WMO region */
    char bw[2]; /*!< bw item. WMO subregion */
-   char nbnbnb[4]; /*!< kins and serial number for buoy */
+   char nbnbnb[8]; /*!< kins and serial number for buoy */
    char D_D[8]; /*!< Ship signal*/
    char YY[4]; /*!< Day (UTC) of observation */
    char MM[4]; /*!< Month (UTC) of observation 01, 02 .... 12 */
@@ -113,10 +113,10 @@ struct buoy_sec2
    char Qx[2]; /*!< Indicator of position of group (Regulation 18.3.3) */
    char sn[2]; /*!< Sign of temperature (Code table 3845) */
    char TwTwTw[4]; /*!< Sea surfacer temperature, in tenths of a degree Celsius, its sign being given by sn. */
-   char PwPw[4]; /*!< Period of waves, in seconds */
-   char HwHw[4]; /*!< heigh of waves, in units of 0.5 metre */
-   char PwPwPw[4]; /*!< Period of waves, in tenths of a second */
-   char HwHwHw[4]; /*!< heigh of waves, in tenths of metre */
+   char PwaPwa[4]; /*!< Period of waves, in seconds */
+   char HwaHwa[4]; /*!< heigh of waves, in units of 0.5 metre */
+   char PwaPwaPwa[4]; /*!< Period of waves, in tenths of a second */
+   char HwaHwaHwa[4]; /*!< heigh of waves, in tenths of metre */
 };
 
 /*!
@@ -144,13 +144,13 @@ struct b_sec3_layer2 {
 */
 struct buoy_sec3
 {
-   char Qd1[2]; /*!< Quality control for temperature and salinity */ 
-   char Qd2[2]; /*!< Quality control for direction and speed */
-   char k2[2]; /*!< Method for salinity measurement */
+   char Qd1[2]; /*!< Quality control for temperature and salinity (Table 3334)*/ 
+   char Qd2[2]; /*!< Quality control for direction and speed (Table 3334)*/
+   char k2[2]; /*!< Method for salinity measurement (Table 2263)*/
    char k3[2]; /*!< Duration and medition of current speed */
    char k6[2]; /*!< Method to eliminate the effect the ship or buoy movement */
-   struct b_sec3_layer1 l1[10]; /*!< Array of temeperature and salinity for layers */
-   struct b_sec3_layer2 l2[10]; /*!< Array of direction and speed for layers */
+   struct b_sec3_layer1 l1[32]; /*!< Array of temperature and salinity for layers */
+   struct b_sec3_layer2 l2[32]; /*!< Array of direction and speed for layers */
 };
 
 

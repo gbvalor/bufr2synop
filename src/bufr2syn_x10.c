@@ -25,7 +25,7 @@
 
 /*!
   \fn char * pascal_to_ppp ( char *target, double P )
-  \brief Converts pascal values (variation) into a ppp string 
+  \brief Converts pascal values (variation) into a ppp string
   \param P the pressure variation in Pascal units
   \param target string with the result
 */
@@ -43,7 +43,7 @@ char * pascal_to_ppp ( char *target, double P )
 
 /*!
   \fn char * pascal_to_PPPP ( char *target, double P )
-  \brief Converts pascal values into a PPPP string 
+  \brief Converts pascal values into a PPPP string
   \param P the pressure variation in Pascal units
   \param target string with the result
 */
@@ -60,7 +60,7 @@ char * pascal_to_PPPP ( char *target, double P )
   \brief Parse a expanded descriptor with X = 10
   \param syn pointer to a struct \ref synop_chunks where to set the results
   \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
-  \param err string with optional error 
+  \param err string with optional error
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
@@ -73,17 +73,21 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
     case 4: // 0 10 004
       pascal_to_PPPP ( aux, s->val );
       strcpy ( syn->s1.PoPoPoPo, aux );
+      syn->mask |= SYNOP_SEC1;
       break;
     case 51: // 0 10 051
       pascal_to_PPPP ( aux, s->val );
       strcpy ( syn->s1.PPPP, aux );
+      syn->mask |= SYNOP_SEC1;
       break;
     case 63: // 0 10 063
       sprintf ( syn->s1.a, "%1d",s->ival );
+      syn->mask |= SYNOP_SEC1;
       break;
     case 61: // 0 10 061
       pascal_to_ppp ( aux, s->val );
       sprintf ( syn->s1.ppp, "%s", aux );
+      syn->mask |= SYNOP_SEC1;
       break;
     default:
       break;
@@ -96,7 +100,7 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
   \brief Parse a expanded descriptor with X = 10
   \param b pointer to a struct \ref buoy_chunks where to set the results
   \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
-  \param err string with optional error 
+  \param err string with optional error
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
@@ -106,7 +110,28 @@ int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
 
   switch ( s->a->desc.y )
     {
-      default:
+
+    case 4: // 0 10 004
+      pascal_to_PPPP ( aux, s->val );
+      strcpy ( b->s1.PoPoPoPo, aux );
+      b->mask |= BUOY_SEC1;
+      break;
+    case 51: // 0 10 051
+      pascal_to_PPPP ( aux, s->val );
+      strcpy ( b->s1.PPPP, aux );
+      b->mask |= BUOY_SEC1;
+      break;
+    case 63: // 0 10 063
+      sprintf ( b->s1.a, "%1d",s->ival );
+      b->mask |= BUOY_SEC1;
+      break;
+    case 61: // 0 10 061
+      pascal_to_ppp ( aux, s->val );
+      sprintf ( b->s1.ppp, "%s", aux );
+      b->mask |= BUOY_SEC1;
+      break;
+
+    default:
       break;
     }
   return 0;

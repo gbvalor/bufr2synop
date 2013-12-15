@@ -18,70 +18,57 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 /*!
- \file bufr2syn_x02.c
- \brief decodes the descriptors with X = 02
- */
+ \file bufr2syn_x33.c
+ \brief decodes the descriptors with X = 33 (Quality data)
+*/
 #include "bufr2synop.h"
 
 /*!
-  \fn int syn_parse_x02 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
-  \brief Parse a expanded descriptor with X = 02
-  \param syn pointer to a struct \ref synop_chunks where to set the results
-  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
-  \param err string with optional error 
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
-*/
-int syn_parse_x02 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
-{
-  switch ( s->a->desc.y )
-    {
-    case 1: // 0 02 001
-      s->type = s->ival;
-      s->mask |= SUBSET_MASK_HAVE_TYPE_STATION;
-      break;
-    case 2: // 0 02 002
-      if ( s->ival & 4 )
-        strcpy ( syn->s0.iw, "4" );
-      else
-        strcpy ( syn->s0.iw, "1" );
-      break;
-    default:
-      break;
-    }
-  return 0;
-}
-
-/*!
-  \fn int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err )
-  \brief Parse a expanded descriptor with X = 02
+  \fn int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err )
+  \brief Parse a expanded descriptor with X = 33
   \param b pointer to a struct \ref buoy_chunks where to set the results
   \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
-  \param err string with optional error 
+  \param err string with optional error
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err )
+int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err )
 {
   char aux[16];
 
   switch ( s->a->desc.y )
     {
-    case 1: // 0 02 001
-      s->type = s->ival;
-      s->mask |= SUBSET_MASK_HAVE_TYPE_STATION;
+    case 20:
+      sprintf(b->s0.Qt, "%d", s->ival);
+      b->mask |= BUOY_SEC1;
       break;
-    case 2: // 0 02 002
-      if ( s->ival & 4 )
-        strcpy ( b->s0.iw, "4" );
-      else
-        strcpy ( b->s0.iw, "1" );
+    case 22:
+      if (s->ival == 0)
+        {
+          if ( b->s0.Qt[0] == 0)
+            sprintf(b->s0.Qt, "1", s->ival);
+          if ( b->s1.Qd[0] == 0)
+            sprintf(b->s1.Qd, "1", s->ival);
+          if ( b->s2.Qd[0] == 0)
+            sprintf(b->s2.Qd, "1", s->ival);
+        }
+      if (s->ival == 2)
+        {
+          if (b->s0.Qt[0] == 0)
+            sprintf(b->s0.Qt, "3", s->ival);
+          if ( b->s1.Qd[0] == 0)
+            sprintf(b->s1.Qd, "3", s->ival);
+          if ( b->s2.Qd[0] == 0)
+            sprintf(b->s2.Qd, "3", s->ival);
+        }
       break;
-    case 33: // 0 02 033
-      sprintf(b->s3.k2 ,"%d",s->ival);
-      b->mask |= BUOY_SEC3;
+    case 23:
+      sprintf(b->s0.Ql, "%d", s->ival);
       break;
-      default:
+    case 27:
+      sprintf(b->s0.QA, "%d", s->ival);
+      break;
+    default:
       break;
     }
   return 0;

@@ -129,6 +129,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
           if ( syn->s1.ix[0] == '/' )
             strcpy ( syn->s1.ix,"1" );
           sprintf ( syn->s1.ww, "%02d", s->ival );
+          syn->mask |= SYNOP_SEC1;
         }
       else if ( s->ival == 100)
         {
@@ -139,6 +140,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
           if ( syn->s1.ix[0] == '/' )
             strcpy ( syn->s1.ix,"7" );
           sprintf ( syn->s1.ww, "%02d", s->ival % 100 );
+          syn->mask |= SYNOP_SEC1;
         }
       else if ( s->ival == 508)
         {
@@ -151,6 +153,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
           if ( syn->s1.ix[0] == '/' )
             strcpy ( syn->s1.ix,"1" );
           sprintf ( syn->s1.W1, "%d", s->ival );
+          syn->mask |= SYNOP_SEC1;
         }
       else if (s->ival == 10)
         {
@@ -161,6 +164,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
           if ( syn->s1.ix[0] == '/' )
             strcpy ( syn->s1.ix,"7" );
           sprintf ( syn->s1.W1, "%d", s->ival % 10 );
+          syn->mask |= SYNOP_SEC1;
         }
       break;
     case 5: // 0 20 004
@@ -169,6 +173,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
           if ( syn->s1.ix[0] == '/' )
             strcpy ( syn->s1.ix,"1" );
           sprintf ( syn->s1.W2, "%d", s->ival );
+          syn->mask |= SYNOP_SEC1;
         }
       else if (s->ival == 10)
         {
@@ -179,6 +184,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
           if ( syn->s1.ix[0] == '/' )
             strcpy ( syn->s1.ix,"7" );
           sprintf ( syn->s1.W2, "%d", s->ival % 10 );
+          syn->mask |= SYNOP_SEC1;
         }
       break;
     case 10: // 0 20 010
@@ -191,6 +197,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         sprintf ( syn->s1.Nh, "9", s->ival );
       else if ( s->ival == 15 )
         sprintf ( syn->s1.Nh, "/");
+      syn->mask |= SYNOP_SEC1;
       break;
     case 12: // 0 20 012
       if (s->ival >= 10 && s->ival < 20)
@@ -207,6 +214,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         sprintf( syn->s1.Cm, "/");
       else if (s->ival == 62)
         sprintf( syn->s1.Cl, "/");
+      syn->mask |= SYNOP_SEC1;
       break;
     case 13: // 0 20 013
       m_to_h( syn->s1.h, s->val );

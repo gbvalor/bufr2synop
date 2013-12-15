@@ -28,7 +28,7 @@
   \brief Parse a expanded descriptor with X = 01
   \param syn pointer to a struct \ref synop_chunks where to set the results
   \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
-  \param err string with optional error 
+  \param err string with optional error
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
@@ -38,72 +38,72 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
   switch ( s->a->desc.y )
     {
     case 1: // 0 22 001
-    case 3: // 0 22 003 wind direction 
+    case 3: // 0 22 003 wind direction
       if (syn->s2.dw1dw1[0] == 0)
-      {
-         sprintf(syn->s2.dw1dw1, "%02d", (s->ival + 5)/10);
-      }
+        {
+          sprintf(syn->s2.dw1dw1, "%02d", (s->ival + 5)/10);
+        }
       else if (syn->s2.dw2dw2[0] == 0)
-      {
-         sprintf(syn->s2.dw2dw2, "%02d", (s->ival + 5)/10);
-      }
+        {
+          sprintf(syn->s2.dw2dw2, "%02d", (s->ival + 5)/10);
+        }
       syn->mask |= SYNOP_SEC2; // have sec2 data
-     break;
-    case 11: // 0 22 011 wind period in seconds 
+      break;
+    case 11: // 0 22 011 wind period in seconds
       if (syn->s2.PwPw[0] == 0)
-      {
-         sprintf(syn->s2.PwPw, "%02d", (int)(s->val));
-         syn->mask |= SYNOP_SEC2; // have sec2 data
-      }
-    break;
-    case 12: // 0 22 012 wind wave period in seconds 
+        {
+          sprintf(syn->s2.PwPw, "%02d", (int)(s->val));
+          syn->mask |= SYNOP_SEC2; // have sec2 data
+        }
+      break;
+    case 12: // 0 22 012 wind wave period in seconds
       if (syn->s2.PwaPwa[0] == 0)
-      {
-         sprintf(syn->s2.PwaPwa, "%02d", (int)(s->val));
-         syn->mask |= SYNOP_SEC2; // have sec2 data
-      }
-    break;
-    case 13: // 0 22 013 swell wave period in seconds 
+        {
+          sprintf(syn->s2.PwaPwa, "%02d", (int)(s->val));
+          syn->mask |= SYNOP_SEC2; // have sec2 data
+        }
+      break;
+    case 13: // 0 22 013 swell wave period in seconds
       if (syn->s2.Pw1Pw1[0] == 0)
-      {
-         sprintf(syn->s2.Pw1Pw1, "%02d", (int)(s->val));
-      }
+        {
+          sprintf(syn->s2.Pw1Pw1, "%02d", (int)(s->val));
+        }
       else if (syn->s2.Pw2Pw2[0] == 0)
-      {
-         sprintf(syn->s2.Pw2Pw2, "%02d", (int)(s->val));
-      }
+        {
+          sprintf(syn->s2.Pw2Pw2, "%02d", (int)(s->val));
+        }
       syn->mask |= SYNOP_SEC2; // have sec2 data
-    break;
-    case 21: // 0 22 021  wind wave heigh in m 
+      break;
+    case 21: // 0 22 021  wind wave heigh in m
       if (syn->s2.HwHw[0] == 0)
-      {
-         sprintf(syn->s2.HwHw, "%02d", (int)(s->val * 2.0 + 0.01));
-         syn->mask |= SYNOP_SEC2; // have sec2 data
-      }
-    break;
-    case 22: // 0 22 022 wind wave heigh in meters 
+        {
+          sprintf(syn->s2.HwHw, "%02d", (int)(s->val * 2.0 + 0.01));
+          syn->mask |= SYNOP_SEC2; // have sec2 data
+        }
+      break;
+    case 22: // 0 22 022 wind wave heigh in meters
       if (syn->s2.HwaHwa[0] == 0)
-      {
-         sprintf(syn->s2.HwaHwa, "%02d", (int)(s->val * 2.0 + 0.01));  // 0.5 m units
-         syn->mask |= SYNOP_SEC2; // have sec2 data
-      }
+        {
+          sprintf(syn->s2.HwaHwa, "%02d", (int)(s->val * 2.0 + 0.01));  // 0.5 m units
+          syn->mask |= SYNOP_SEC2; // have sec2 data
+        }
       if (syn->s2.HwaHwaHwa[0] == 0)
-      {
-         sprintf(syn->s2.HwaHwaHwa, "%03d", (int)(s->val * 10.0 + 0.01));  // 0.1 m units
-         syn->mask |= SYNOP_SEC2; // have sec2 data
-      }
-    break;
-    case 23: // 0 22 023 swell wave heigh in meters 
+        {
+          sprintf(syn->s2.HwaHwaHwa, "%03d", (int)(s->val * 10.0 + 0.5));  // 0.1 m units
+          syn->mask |= SYNOP_SEC2; // have sec2 data
+        }
+      break;
+    case 23: // 0 22 023 swell wave heigh in meters
       if (syn->s2.Hw1Hw1[0] == 0)
-      {
-         sprintf(syn->s2.Hw1Hw1, "%02d", (int)(s->val * 2.0 + 0.01));
-      }
+        {
+          sprintf(syn->s2.Hw1Hw1, "%02d", (int)(s->val * 2.0 + 0.01));
+        }
       else if (syn->s2.Hw2Hw2[0] == 0)
-      {
-         sprintf(syn->s2.Hw2Hw2, "%02d",(int)(s->val * 2.0 + 0.01));
-      }
-    syn->mask |= SYNOP_SEC2; // have sec2 data
-    break;
+        {
+          sprintf(syn->s2.Hw2Hw2, "%02d",(int)(s->val * 2.0 + 0.01));
+        }
+      syn->mask |= SYNOP_SEC2; // have sec2 data
+      break;
     case 42:
     case 43:
     case 45:
@@ -117,7 +117,7 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
               syn->mask |= SYNOP_SEC2; // have sec2 data
             }
         }
-     break;
+      break;
     default:
       break;
     }
@@ -129,7 +129,7 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
   \brief Parse a expanded descriptor with X = 22
   \param b pointer to a struct \ref buoy_chunks where to set the results
   \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
-  \param err string with optional error 
+  \param err string with optional error
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
@@ -139,7 +139,43 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
 
   switch ( s->a->desc.y )
     {
-      default:
+    case 12: // 0 22 012 wind wave period in seconds
+      if (b->s2.PwaPwa[0] == 0)
+        {
+          sprintf(b->s2.PwaPwa, "%02d", (int)(s->val));
+          b->mask |= BUOY_SEC2; // have sec2 data
+          if (b->s2.PwaPwaPwa[0] == 0)
+            sprintf(b->s2.PwaPwaPwa, "%03d", (int)(s->val * 10 + 0.5));
+
+        }
+      break;
+    case 22: // 0 22 022 wind wave heigh in meters
+      if (b->s2.HwaHwa[0] == 0)
+        {
+          sprintf(b->s2.HwaHwa, "%02d", (int)(s->val * 2.0 + 0.01));  // 0.5 m units
+          b->mask |= BUOY_SEC2; // have sec2 data
+        }
+      if (b->s2.HwaHwaHwa[0] == 0)
+        {
+          sprintf(b->s2.HwaHwaHwa, "%03d", (int)(s->val * 10.0 + 0.01));  // 0.1 m units
+          b->mask |= BUOY_SEC2; // have sec2 data
+        }
+      break;
+    case 42:
+    case 43:
+    case 45:
+    case 49: // 0 22 049 Sea surface temperature
+      if (b->s2.TwTwTw[0] == 0)
+        {
+          if (kelvin_to_snTTT ( aux, s->val ))
+            {
+              b->s2.sn[0] = aux[0];
+              strcpy ( b->s2.TwTwTw, aux + 1 );
+              b->mask |= BUOY_SEC2; // have sec2 data
+            }
+        }
+      break;
+    default:
       break;
     }
   return 0;

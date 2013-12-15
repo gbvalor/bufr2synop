@@ -108,6 +108,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
             {
               syn->s1.sn1[0] = aux[0];
               strcpy ( syn->s1.TTT, aux + 1 );
+              syn->mask |= SYNOP_SEC1;
             }
         }
       break;
@@ -121,6 +122,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
             {
               syn->s1.sn2[0] = aux[0];
               strcpy ( syn->s1.TdTdTd, aux + 1 );
+              syn->mask |= SYNOP_SEC1;
             }
         }
       break;
@@ -214,6 +216,35 @@ int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
 
   switch ( s->a->desc.y )
     {
+    case 1: // 0 12 001
+    case 4: // 0 12 004
+    case 101: // 0 12 101
+    case 104: // 0 12 104
+      if (b->s1.TTT[0] == 0)
+        {
+          if (kelvin_to_snTTT ( aux, s->val ))
+            {
+              b->s1.sn1[0] = aux[0];
+              strcpy ( b->s1.TTT, aux + 1 );
+              b->mask |= BUOY_SEC1;
+            }
+        }
+      break;
+    case 3: // 0 12 003
+    case 5: // 0 12 006
+    case 103: // 0 12 103
+    case 106: // 0 12 106
+      if (b->s1.TdTdTd[0] == 0)
+        {
+          if (kelvin_to_snTTT ( aux, s->val ))
+            {
+              b->s1.sn2[0] = aux[0];
+              strcpy ( b->s1.TdTdTd, aux + 1 );
+              b->mask |= BUOY_SEC1;
+            }
+        }
+      break;
+
       default:
       break;
     }
