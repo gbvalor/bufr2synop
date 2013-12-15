@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 /*!
- \file bufr2syn_x20.c
+ \file bufr2syn_x14.c
  \brief decodes the descriptors with X = 14 (Radiation)
  */
 #include "bufr2synop.h"

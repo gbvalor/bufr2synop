@@ -42,7 +42,7 @@ int find_descriptor(int *haystack, size_t nlst, int needle)
 
 
 /*!
-  \fn int find_descriptor(int *haystack, size_t nlst, int needle)
+  \fn int find_descriptor(int *haystack, size_t nlst, int needlemin, int needlemax)
   \brief Try to find a descriptor in an array between two limits
   \param haystack array of integers as descriptors
   \param nlst number of descriptors in array

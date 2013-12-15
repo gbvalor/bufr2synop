@@ -23,6 +23,10 @@
  */
 #include "bufr2synop.h"
 
+/*!
+  \def check_len(ori,inc)
+  \brief cheks if there still memory enough to add \a inc chars 
+*/
 #define check_len(ori,inc) (c - *ori + inc < lmax)
 
 /*!
@@ -386,7 +390,7 @@ char * print_synop_sec3 (char **sec3, size_t lmax, struct synop_chunks *syn)
  \brief prints a synop into a string
  \param report target string
  \param lmax max size of string
- \param syn pointer to a struct \ref synop_chuncks with the result of parse tasks
+ \param syn pointer to a struct \ref synop_chunks with the result of parse tasks
 
  returns 0 if all went right
 */
@@ -422,7 +426,7 @@ int print_synop ( char *report, size_t lmax, struct synop_chunks *syn )
 /*!
   \fn char * print_buoy_sec0 (char **sec0, size_t lmax, struct buoy_chunks *b)
   \brief Prints the buoy section 1
-  \param sec3 the pointer where to print section
+  \param sec0 the pointer where to print section
   \param lmax max length permited
   \param b pointer to s atruct \ref buoy_chunks where the parse results are set
 */
@@ -486,7 +490,7 @@ char * print_buoy_sec0 (char **sec0, size_t lmax, struct buoy_chunks *b)
 /*!
   \fn char * print_buoy_sec1 (char **sec1, size_t lmax, struct buoy_chunks *b)
   \brief Prints the buoy section 1
-  \param sec3 the pointer where to print section
+  \param sec1 the pointer where to print section
   \param lmax max length permited
   \param b pointer to s atruct \ref buoy_chunks where the parse results are set
 */
@@ -561,7 +565,7 @@ char * print_buoy_sec1 (char **sec1, size_t lmax, struct buoy_chunks *b)
 /*!
   \fn char * print_buoy_sec2 (char **sec2, size_t lmax, struct buoy_chunks *b)
   \brief Prints the buoy section 1
-  \param sec3 the pointer where to print section
+  \param sec2 the pointer where to print section
   \param lmax max length permited
   \param b pointer to s atruct \ref buoy_chunks where the parse results are set
 */
@@ -677,7 +681,7 @@ char * print_buoy_sec3 (char **sec3, size_t lmax, struct buoy_chunks *b)
 }
 
 /*!
- \fn int print_buoy(char *report, size_t lmax, struct buoy_chunks *syn)
+ \fn int print_buoy(char *report, size_t lmax, struct buoy_chunks *b)
  \brief prints a buoy into a string
  \param report target string
  \param lmax max size of string

@@ -148,10 +148,14 @@ struct bufr_atom_data {
   \brief Contains all the information for a subset in a expanded squence 
 */
 struct bufr_subset_sequence_data {
-   size_t nd; 
-   struct bufr_atom_data sequence[NMAXSEQ];
+   size_t nd; /*!< number of current amount of data in sequence */
+   struct bufr_atom_data sequence[NMAXSEQ]; /*!< the array of data associated to a expanded sequence */
 };
 
+/*!
+  \struct bufr_subset_state
+  \brief stores information needed to parse a sequential list of expanded descriptors for a subset
+*/
 struct bufr_subset_state {
    struct bufr_atom_data *a; /*!< the current struct \ref bufr_atom_data being parsed */
    size_t i; /*!< current index in array element */

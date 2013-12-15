@@ -78,7 +78,7 @@ int KSEC4[2]; /*!< array of 2 words containing Section 4 information.
    [0] Length of Section 4 in bytes
    [1] Reserved */
 
-int KEY[46];
+int KEY[46]; /*!< array needed for bufrdc optional sec 2 parse routines*/
 
 int KERR; /*!< An INTEGER containing an error code.*/
 
@@ -103,7 +103,7 @@ int SHOW_ECMWF_OUTPUT; /*!< Print original output from ECMWF library */
 int DEBUG; /*!< Show debug information */
 int NFILES; /*!< The amount of files processed  */
 size_t NLINES_TABLEC; /*!< current number of TABLE C file lines */
-char TYPE[8]; /*! Type of report being parsed  (code MMMM) */
+char TYPE[8]; /*!< Type of report being parsed  (code MMMM) */
 char TABLEC[MAXLINES_TABLEC][92]; /*!< Here is where store the lines from table C file*/
 char REPORT[2048]; /*!< string to set the report */
 char LINAUX[2048]; /*!< auxiliar output line string */

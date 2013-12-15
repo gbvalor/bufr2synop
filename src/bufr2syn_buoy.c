@@ -19,7 +19,7 @@
  ***************************************************************************/
 /*!
  \file bufr2syn_buoy.c
- \brief file with the code to parse buoy squences
+ \brief file with the code to parse buoy FM-18 sequences
  */
 #include "bufr2synop.h"
 

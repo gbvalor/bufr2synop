@@ -21,7 +21,7 @@
  ***************************************************************************/
 /*! 
    \file metsynop.h
-   Main header file for synop related tasks in metdecoder library
+   \brief Main header file for synop related tasks 
 */
 #ifndef METSYNOP_H
 #define METSYNOP_H

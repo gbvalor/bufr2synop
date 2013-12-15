@@ -21,7 +21,7 @@
  ***************************************************************************/
 /*! 
    \file metbuoy.h
-   Main header file for buoy related tasks in metdecoder library
+   \brief Main header file for buoy related tasks 
 */
 #ifndef METBUOY_H
 #define METBUOY_H
@@ -105,7 +105,7 @@ struct buoy_sec1
 };
 
 /*! \struct buoy_sec2
-    \brief contains all possible substrings from section 1 when a report is parsed with success
+    \brief contains all possible substrings from section 2 when a report is parsed with success
 */
 struct buoy_sec2
 {
@@ -140,7 +140,7 @@ struct b_sec3_layer2 {
 };
 
 /*! \struct buoy_sec3
-    \brief contains all possible substrings from section 1 when a report is parsed with success
+    \brief contains all possible substrings from section 3 when a report is parsed with success
 */
 struct buoy_sec3
 {
@@ -169,4 +169,3 @@ struct buoy_chunks
 };
 
 #endif
- 

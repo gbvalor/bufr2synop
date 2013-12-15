@@ -156,8 +156,23 @@ int read_arguments(int _argc, char * _argv[])
 
 
 /*!
-  
+  \fn char * get_bufrfile_path( char *filename, char *err)
+  \brief Get bufr file names to parse
+  \param filename string where the file is on output
+  \param err string where to set the error if any
 
+  If success, it returns a pointer to filename. If there is no more files 
+  to parse, or error returns NULL.
+
+  This routine is also opens the file with file list and close it when no more 
+  file available in list
+
+  The content format in LISTOFFILES is compatible with 'ls -1'. Example assume we
+  want to parse all *.bufr files in current directory, we can do
+
+  \code
+  ls -1 *.bufr > list_file && bufr2synop -I list_file
+  \endcode 
 */
 char * get_bufrfile_path( char *filename, char *err)
 {

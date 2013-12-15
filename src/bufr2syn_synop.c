@@ -19,7 +19,7 @@
  ***************************************************************************/
 /*!
  \file bufr2syn_synop.c
- \brief file with the code to parse a sequence as a SYNOP FM-12
+ \brief file with the code to parse a sequence as a SYNOP FM-12, FM-13 and FM-14
  */
 #include "bufr2synop.h"
 
