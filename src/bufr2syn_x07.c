@@ -63,6 +63,14 @@ int buoy_parse_x07 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
 
   switch ( s->a->desc.y )
     {
+      case 62:
+      case 63: // 0 07 063 Profundity below sea/water level
+        if (s->k_rep == (s->i - 1) ) // Case of first layer after a replicator
+           s->layer = 0;
+        else 
+           (s->layer)++;
+        s->deep = (int)(s->val + 0.5);
+        break;
       default:
       break;
     }

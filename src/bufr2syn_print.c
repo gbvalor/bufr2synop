@@ -627,6 +627,52 @@ char * print_buoy_sec2 (char **sec2, size_t lmax, struct buoy_chunks *b)
 */
 char * print_buoy_sec3 (char **sec3, size_t lmax, struct buoy_chunks *b)
 {
+  char *c = *sec3;
+  size_t l;
+
+  if (b->mask & BUOY_SEC3)
+    {
+      c += sprintf(c, " 333%s%s", b->s3.Qd1, b->s3.Qd2);
+
+      // check if has 8887k2
+      l = 0;
+      while (b->s3.l1[l].zzzz[0] && l < 32)
+        {
+          if (l == 0)
+            c += sprintf(c, " 8887%s", b->s3.k2);
+          c += sprintf(c,  " 2%s", b->s3.l1[l].zzzz);
+
+          if (b->s3.l1[l].TTTT[0])
+            c += sprintf(c,  " 3%s", b->s3.l1[l].TTTT);
+
+          if (b->s3.l1[l].SSSS[0])
+            c += sprintf(c,  " 4%s", b->s3.l1[l].SSSS);
+          l++;
+        }
+
+      l = 0;
+      while (b->s3.l2[l].zzzz[0] && l < 32)
+        {
+          if (l == 0)
+            c += sprintf(c, " 66%s9%s", b->s3.k6, b->s3.k3);
+          c += sprintf(c,  " 2%s", b->s3.l2[l].zzzz);
+
+          if (b->s3.l2[l].dd[0] || b->s3.l2[l].ccc[0])
+            {
+              if (b->s3.l2[l].dd[0])
+                c += sprintf(c,  " %s", b->s3.l2[l].dd);
+              else
+                c += sprintf(c,  " //");
+              if (b->s3.l2[l].ccc[0])
+                c += sprintf(c,  "%s", b->s3.l2[l].ccc);
+              else
+                c += sprintf(c,  "///");
+            }
+          l++;
+        }
+    }
+
+  *sec3 = c;
   return *sec3;
 }
 
@@ -641,7 +687,6 @@ char * print_buoy_sec3 (char **sec3, size_t lmax, struct buoy_chunks *b)
 */
 int print_buoy ( char *report, size_t lmax, struct buoy_chunks *b )
 {
-  size_t i;
   char *c;
 
   c = report;

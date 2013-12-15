@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
       kelem = KELEM;
       kvals = KVALS;
       length = BUFR_LEN;
-
+      printf("%s\n",  INPUTFILE);
       /* Read in bufr messages */
       //status = readbufr ( fp, &BUFR_MESSAGE, &length );
       if ((status = read_bufr(BUFR_MESSAGE, INPUTFILE, &length)))
@@ -493,10 +493,7 @@ int main(int argc, char *argv[])
         }
 
       NFILES ++;
-    }
-
-  if (LISTOFFILES[0])
-    fclose(FL);
+    } // End of big loop parsing files
 
   return KERR;
 

@@ -154,6 +154,11 @@ int read_arguments(int _argc, char * _argv[])
   return 0;
 }
 
+
+/*!
+  
+
+*/
 char * get_bufrfile_path( char *filename, char *err)
 {
    char aux[256], *c;
@@ -184,5 +189,8 @@ char * get_bufrfile_path( char *filename, char *err)
       return filename;
    }
    else
-     return NULL;
+   {
+      fclose(FL);
+      return NULL;
+   }
 }

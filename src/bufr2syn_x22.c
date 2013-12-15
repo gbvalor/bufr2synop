@@ -23,6 +23,7 @@
 */
 #include "bufr2synop.h"
 
+
 /*!
   \fn int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
   \brief Parse a expanded descriptor with X = 01
@@ -139,6 +140,20 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
 
   switch ( s->a->desc.y )
     {
+    case 4: // 0 22 004 Direction of current
+       if(s->layer < 32) // only 32 max layers
+       { 
+         if(b->s3.l2[s->layer].dd[0] == 0)
+         {
+            sprintf(b->s3.l2[s->layer].dd, "%02d", (int)(s->val + 5.0)/ 10) ;
+            b->mask |= BUOY_SEC3; 
+         }
+         if (b->s3.l2[s->layer].zzzz[0] == 0) // also stores pendent deep
+         {
+            sprintf(b->s3.l2[s->layer].zzzz, "%04d", s->deep);
+            b->mask |= BUOY_SEC3;
+         }
+       } 
     case 12: // 0 22 012 wind wave period in seconds
       if (b->s2.PwaPwa[0] == 0)
         {
@@ -160,9 +175,50 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
           sprintf(b->s2.HwaHwaHwa, "%03d", (int)(s->val * 10.0 + 0.01));  // 0.1 m units
           b->mask |= BUOY_SEC2; // have sec2 data
         }
+      break; 
+    case 31: // 0 22 033 current speed
+       if(s->layer < 32) // only 32 max layers
+       { 
+         if(b->s3.l2[s->layer].dd[0] == 0)
+         {
+            sprintf(b->s3.l2[s->layer].dd, "%03d", (int)(s->val * 100.0 + 0.5)) ;
+            b->mask |= BUOY_SEC3; 
+         }
+         if (b->s3.l2[s->layer].zzzz[0] == 0) // also stores pendent deep
+         {
+            sprintf(b->s3.l2[s->layer].zzzz, "%04d", s->deep);
+            b->mask |= BUOY_SEC3;
+         }
+       } 
       break;
     case 42:
     case 43:
+      if (s->deep == 0)
+        {
+          if (b->s2.TwTwTw[0] == 0)
+            {
+              if (kelvin_to_snTTT ( aux, s->val ))
+                {
+                  b->s2.sn[0] = aux[0];
+                  strcpy ( b->s2.TwTwTw, aux + 1 );
+                  b->mask |= BUOY_SEC2; // have sec2 data
+                }
+            }
+        }
+       if(s->layer < 32) // only 32 max layers
+       { 
+         if(b->s3.l1[s->layer].TTTT[0] == 0)
+         {
+            kelvin_to_TTTT(b->s3.l1[s->layer].TTTT, s->val);
+            b->mask |= BUOY_SEC3; 
+         }
+         if (b->s3.l1[s->layer].zzzz[0] == 0) // also stores pendent deep
+         {
+            sprintf(b->s3.l1[s->layer].zzzz, "%04d", s->deep);
+            b->mask |= BUOY_SEC3;
+         }
+       } 
+      break;
     case 45:
     case 49: // 0 22 049 Sea surface temperature
       if (b->s2.TwTwTw[0] == 0)
@@ -174,6 +230,21 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
               b->mask |= BUOY_SEC2; // have sec2 data
             }
         }
+      break;
+    case 62: // 0 22 062 Salinity
+       if(s->layer < 32) // only 32 max layers
+       { 
+         if(b->s3.l1[s->layer].SSSS[0] == 0)
+         {
+            sprintf(b->s3.l1[s->layer].SSSS, "%04d", (int)(s->val * 100.0 + 0.5));
+            b->mask |= BUOY_SEC3; 
+         }
+         if (b->s3.l1[s->layer].zzzz[0] == 0) // also stores pendent deep
+         {
+            sprintf(b->s3.l1[s->layer].zzzz, "%04d", s->deep);
+            b->mask |= BUOY_SEC3;
+         }
+       }
       break;
     default:
       break;

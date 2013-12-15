@@ -77,8 +77,18 @@ int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
       else
         strcpy ( b->s0.iw, "1" );
       break;
+    case 31: // 0 02 031
+      if (b->s3.k3[0] == 0 && s->ival < 10)
+        sprintf(b->s3.k3 ,"%d",s->ival);
+      b->mask |= BUOY_SEC3;
+      break;
     case 33: // 0 02 033
       sprintf(b->s3.k2 ,"%d",s->ival);
+      b->mask |= BUOY_SEC3;
+      break;
+    case 40: // 0 02 040
+      if (b->s3.k6[0] == 0)
+        sprintf(b->s3.k6 ,"%d",s->ival);
       b->mask |= BUOY_SEC3;
       break;
       default:

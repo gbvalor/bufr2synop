@@ -76,7 +76,7 @@ int parse_subset_as_buoy( struct buoy_chunks *b, struct bufr_subset_sequence_dat
 {
   int ival; // integer value for a descriptor
   double val; // double value for a descriptor
-  size_t is; 
+  size_t is;
   int disp; // time displacement in seconds
   time_t tt, itval;
   struct tm tim;
@@ -89,10 +89,10 @@ int parse_subset_as_buoy( struct buoy_chunks *b, struct bufr_subset_sequence_dat
 
   // reject if still not coded type
   if (strcmp(TYPE,"ZZYY"))
-  {
-    sprintf(err,"%: '%s' report still not decoded in this software", SELF, TYPE);
-    return 1;
-  }
+    {
+      sprintf(err,"%: '%s' report still not decoded in this software", SELF, TYPE);
+      return 1;
+    }
 
   strcpy(b->s0.MiMi, "ZZ");
   strcpy(b->s0.MjMj, "YY");
@@ -131,6 +131,10 @@ int parse_subset_as_buoy( struct buoy_chunks *b, struct bufr_subset_sequence_dat
 
         case 6: // Horizontal Position -2
           buoy_parse_x06 ( b, &s, err );
+          break;
+
+        case 7: // Vertical Position 
+          buoy_parse_x07 ( b, &s, err );
           break;
 
         case 10: // Air Pressure descriptors
@@ -187,35 +191,44 @@ int parse_subset_as_buoy( struct buoy_chunks *b, struct bufr_subset_sequence_dat
   buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( b );
   b->mask |= BUOY_EXT;
 
-  // check if set both LaLaLa and LoLoLoLo to set Qc 
+  // check if set both LaLaLa and LoLoLoLo to set Qc
   if ((b->s0.Qc[0] == 0) && b->s0.LaLaLaLaLa[0] && b->s0.LoLoLoLoLoLo[0])
-  {
-    if (s.mask & SUBSET_MASK_LATITUDE_SOUTH)
     {
-       if (s.mask & SUBSET_MASK_LONGITUDE_WEST)
-         strcpy(b->s0.Qc, "5");
-       else
-         strcpy(b->s0.Qc, "3");
+      if (s.mask & SUBSET_MASK_LATITUDE_SOUTH)
+        {
+          if (s.mask & SUBSET_MASK_LONGITUDE_WEST)
+            strcpy(b->s0.Qc, "5");
+          else
+            strcpy(b->s0.Qc, "3");
+        }
+      else
+        {
+          if (s.mask & SUBSET_MASK_LONGITUDE_WEST)
+            strcpy(b->s0.Qc, "7");
+          else
+            strcpy(b->s0.Qc, "1");
+        }
     }
-    else
-    {
-       if (s.mask & SUBSET_MASK_LONGITUDE_WEST)
-         strcpy(b->s0.Qc, "7");
-       else
-        strcpy(b->s0.Qc, "1");
-    }
-  }
 
   // check Qx
+  if (b->s2.Qd[0] ==  0)
+    b->s2.Qd[0] = '0';
+  if (b->s3.k2[0] == 0)
+    b->s3.k2[0] = '0';
   if (b->s1.Qx[0] == 0 && b->s1.Qd[0])
-     b->s1.Qx[0] = '9';
+    b->s1.Qx[0] = '9';
   if (b->s2.Qx[0] == 0 && b->s2.Qd[0])
-     b->s2.Qx[0] = '9';
+    b->s2.Qx[0] = '9';
 
   if (b->s3.Qd1[0] ==  0)
-    b->s3.Qd1[0] == '0'; 
+    b->s3.Qd1[0] = '0';
   if (b->s3.Qd2[0] ==  0)
-    b->s3.Qd2[0] == '0'; 
+    b->s3.Qd2[0] = '0';
+
+  if (b->s3.k3[0] == 0)
+    b->s3.k3[0] = '/';
+  if (b->s3.k6[0] == 0)
+    b->s3.k6[0] = '/';
 
   return 0;
 }

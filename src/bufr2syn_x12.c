@@ -35,11 +35,14 @@ char * kelvin_to_snTTT ( char *target, double T )
   if ( T < 150.0 || T > 340.0)
     return NULL;
   ic = ( int ) (100.0 * T + 0.001) - 27315;
-  ic /= 10;
   if ( ic < 0 )
-    sprintf ( target, "1%03d", -ic );
+  {
+    sprintf ( target, "1%03d",(-ic + 5)/10 );
+  }
   else
-    sprintf ( target, "%04d", ic );
+  {
+    sprintf ( target, "%04d", (ic  + 5)/10);
+  }
   return target;
 }
 
@@ -82,6 +85,28 @@ char * kelvin_to_TT ( char *target, double T )
     sprintf ( target, "%02d", ic );
   return target;
 }
+
+/*!
+  \fn char * kelvin_to_TTTT ( char *target, double T )
+  \brief converts a kelvin temperature value into a TTTT string
+  \param T the temperature ( Kelvin )
+  \param target string with the result
+*/
+char * kelvin_to_TTTT ( char *target, double T )
+{
+  int ic;
+  if ( T < 150.0 || T > 340.0)
+    return NULL;
+
+  ic = ( int ) (100.0 * T + 0.001) - 27315;
+  if (ic < 0)
+    ic = 5000 - ic; 
+  sprintf ( target, "%04d", ic );
+  return target;
+}
+
+
+
 
 /*!
   \fn int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )

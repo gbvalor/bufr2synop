@@ -118,7 +118,6 @@
 #define SUBSET_MASK_HAVE_ALTITUDE 256
 
 
-
 /*!
   \struct bufr_descriptor
   \brief BUFR descriptor
@@ -166,6 +165,7 @@ struct bufr_subset_state {
    size_t k_jtval; /*!< index in array of time prior to latest displacemet descriptor */
    int type; /*!< type of station */
    int layer; /*!< Layer/level of data when parsing Buoy report*/
+   int deep; /*!< Latest parsed deep in meters of a layer */ 
    double lat; /*!< Latitude of station */
    double lon; /*!< longitude of station */
    int mask; /*!< mask which contain several information from the subset data taken at the moment */
@@ -233,6 +233,7 @@ int find_descriptor(int *haystack, size_t nlst, int needle);
 int find_descriptor_interval(int *haystack, size_t nlst, int needlemin, int needlemax);
 
 char * latlon_to_MMM(char *target, double lat, double lon);
+char * kelvin_to_TTTT ( char *target, double T );
 char * kelvin_to_snTTT ( char *target, double T );
 char * kelvin_to_snTT ( char *target, double T );
 char * kelvin_to_TT ( char *target, double T );
