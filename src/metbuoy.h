@@ -113,10 +113,10 @@ struct buoy_sec2
    char Qx[2]; /*!< Indicator of position of group (Regulation 18.3.3) */
    char sn[2]; /*!< Sign of temperature (Code table 3845) */
    char TwTwTw[4]; /*!< Sea surfacer temperature, in tenths of a degree Celsius, its sign being given by sn. */
-   char PwaPwa[4]; /*!< Period of waves, in seconds */
+   char PwaPwa[4]; /*!< Period of waves, obtained by instrumental methods, in seconds. */
    char HwaHwa[4]; /*!< heigh of waves, in units of 0.5 metre */
-   char PwaPwaPwa[4]; /*!< Period of waves, in tenths of a second */
-   char HwaHwaHwa[4]; /*!< heigh of waves, in tenths of metre */
+   char PwaPwaPwa[6]; /*!< Period of waves, obtained by instrumental methods, in tenths of a second.*/
+   char HwaHwaHwa[6]; /*!< heigh of waves, in tenths of metre */
 };
 
 /*!

@@ -144,23 +144,23 @@ struct synop_sec2
 {
    char Ds[2]; /*!< True direction of resultant displacement of the ship during the three hours preceding the time of observation. (Code table 0700) */
    char vs[2]; /*!< Ship’s average speed made good during the three hours preceding the time of observation. (Code table 4451) */
-   char ss[2]; /*!< Sign of Sea Surface Temperature */
-   char TwTwTw[6]; /*!< Sea surfacec temperature in tenths of degree */
-   char PwaPwa[4];
-   char HwaHwa[4];
-   char PwPw[4];
-   char HwHw[4];
-   char dw1dw1[4];
-   char dw2dw2[4];
-   char Pw1Pw1[4];
-   char Hw1Hw1[4];
-   char Pw2Pw2[4];
-   char Hw2Hw2[4];
-   char ICING[32];
-   char HwaHwaHwa[6];
-   char sw[2];
-   char TbTbTb[6];
-   char ICE[32];
+   char ss[2]; /*!< Sign of Sea-surface temperature */
+   char TwTwTw[6]; /*!< Sea-surface temperature, in tenths of degrees Celsius, its sign being given by ss.*/
+   char PwaPwa[4]; /*!< Period of wind waves, obtained by instrumental methods, in seconds. */
+   char HwaHwa[4]; /*!< Heigh of wind waves, in units of 0.5 metre. */
+   char PwPw[4]; /*!< Period of waves, in seconds. */
+   char HwHw[4]; /*!< Height of waves, in units of 0.5 metre.*/
+   char dw1dw1[4]; /*!< Direction of swell waves, in units of 0.5 metre.*/
+   char dw2dw2[4]; /*!< Direction of swell waves, in units of 0.5 metre.*/
+   char Pw1Pw1[4]; /*!< Period of swell waves, in seconds.*/
+   char Hw1Hw1[4]; /*!< Height of swell waves, in units of 0.5 metre. */
+   char Pw2Pw2[4]; /*!< Period of swell waves, in seconds. */
+   char Hw2Hw2[4]; /*!< Height of swell waves, in units of 0.5 metre. */
+   char ICING[32]; /*!< String with icing description in clear text */
+   char HwaHwaHwa[6];  /*!< heigh of wind waves, in tenths of metre */
+   char sw[2]; /*!< Sign of wet bulb temperature */
+   char TbTbTb[6]; /*!< Wet-bulb temperature, in tenths of degrees Celsius, its sign being given by sw. */
+   char ICE[32]; /*!< String with ice description in clear text */
 };
 
 /*!
