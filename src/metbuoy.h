@@ -153,6 +153,39 @@ struct buoy_sec3
    struct b_sec3_layer2 l2[32]; /*!< Array of direction and speed for layers */
 };
 
+/*! \struct buoy_sec4
+    \brief contains all possible substrings from section 4 when a report is parsed with success
+*/
+struct buoy_sec4
+{
+    char Qp[2]; /*!< Quality of the pressure measurement. (Code table 3315) */
+    char Q2[2]; /*!<   */
+    char QTW[2]; /*!< Quality of the measurement of the water-surface temperature. (Code table 3319)(FM 18)  */
+    char Q4[2]; /*!<  */
+    char QN[2]; /*!< Quality of the buoy satellite transmission. (Code table 3313) */
+    char QL[2]; /*!< Quality of location.(Code table 3311)  */
+    char QA[2]; /*!< Location quality class (Code table 3302)  */
+    char Qz[2]; /*!< Indicator of depth correction (indication whetherprobe depths are corrected using hydrostatic pressure or not). (Code table 3318)  */
+    char Qc[2]; /*!< Quadrant of the globe. (Code table 3333)  */
+    char LaLaLaLaLa[8]; /*!<  Latitude, in thousandths of a degree. */
+    char LoLoLoLoLoLo[8]; /*!< Longitude, in thousandths of a degree. */
+    char YY[4]; /*!< Day of the month (UTC), with 01 indicating the first day, 02 the second day, etc. */
+    char MM[4]; /*!< Month of the year (UTC), i.e. 01 = January; 02 = February, etc.  */
+    char J[2]; /*!<  Units digit of the year (UTC), i.e. 1974 = 4.  */
+    char GGgg[8]; /*!< Time of observation, in hours and minutes UTC. */
+    char ZhZhZhZh[6]; /*!< Hydrostatic pressure of lower end of cable, in kPa.  */
+    char ZcZcZcZc[6]; /*!< Length of cable, in metres (thermistor strings). */
+    char BtBt[4]; /*!<   */
+    char XtXt[4]; /*!< Typeof drogue. Code table 4780) */
+    char AhAhAh[6]; /*!< Anemometer height expressed in decimetres. */
+    char AN[2]; /*!< Type of anemometer. (Code table 0114)  */
+    char VBVB[4]; /*!< Drifting speed, in cm s–1, of the buoy at the last known position of the buoy given in the groups YYMMJ GGgg/  */
+    char dBdB[4]; /*!< Drift direction of the buoy, expressed in tens of degrees, at the last known position of the
+  buoy given in the groups YYMMJ GGgg/ */
+    char ViViViVi[6]; /*!< Information on the engineering status of the buoy. */
+    char ZdZdZd[6]; /*!< Length of the cable at which the drogue is attached, in metres. */
+};
+
 
 /*! \struct buoy_chunks
     \brief contains all possible substrings from a synop report is parsed with success
@@ -164,7 +197,8 @@ struct buoy_chunks
    struct buoy_sec0 s0; /*!< struct with parsed header and section 0 */
    struct buoy_sec1 s1; /*!< struct with parsed section 1 */
    struct buoy_sec2 s2; /*!< struct with parsed section 2 if present */
-   struct buoy_sec3 s3; /*!< struct with parsed section 2 if present */
+   struct buoy_sec3 s3; /*!< struct with parsed section 3 if present */
+   struct buoy_sec4 s4; /*!< struct with parsed section 2 if present */
    char error[128]; /*!< string with error code if a wrong synop report is found */
 };
 

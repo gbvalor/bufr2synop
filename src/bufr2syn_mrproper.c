@@ -131,6 +131,15 @@ void clean_buoy_sec3(struct buoy_sec3 *s)
   memset(s, 0, sizeof(struct buoy_sec3));
 }
 
+/*! \fn void clean_buoy_sec4(struct buoy_sec4 *s)
+    \brief clean a buoy_sec4 struct
+    \param s pointer to the buoy_sec3 struct
+*/
+void clean_buoy_sec4(struct buoy_sec4 *s)
+{
+  memset(s, 0, sizeof(struct buoy_sec4));
+}
+
 /*!
   \fn void clean_buoy_chunks( struct buoy_chunks *syn)
   \brief cleans a \ref buoy_chunks struct
@@ -144,6 +153,7 @@ void clean_buoy_chunks( struct buoy_chunks *b)
   clean_buoy_sec1( &(b->s1));
   clean_buoy_sec2( &(b->s2));
   clean_buoy_sec3( &(b->s3));
+  clean_buoy_sec4( &(b->s4));
 
   b->error[0] = '\0';
 }

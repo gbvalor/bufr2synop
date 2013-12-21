@@ -216,6 +216,10 @@ extern char REPORT[2048];
 extern FILE * FL;
 extern struct bufr_subset_sequence_data SUBSET;
 
+/* Functions definitions */
+
+void clean_buoy_chunks( struct buoy_chunks *b);
+void clean_synop_chunks( struct synop_chunks *s);
 
 int set_environment(void);
 int integer_to_descriptor(struct bufr_descriptor *d, int id);
