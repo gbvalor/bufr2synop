@@ -42,6 +42,10 @@ int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
       sprintf(b->s0.Qt, "%d", s->ival);
       b->mask |= BUOY_SEC1;
       break;
+    case 21:
+      sprintf(b->s4.Qp, "%d", s->ival);
+      b->mask |= BUOY_SEC1;
+      break;
     case 22:
       if (s->ival == 0)
         {
@@ -64,9 +68,11 @@ int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
       break;
     case 23:
       sprintf(b->s0.Ql, "%d", s->ival);
+      sprintf(b->s4.QL, "%d", s->ival);
       break;
     case 27:
       sprintf(b->s0.QA, "%d", s->ival);
+      sprintf(b->s4.QA, "%d", s->ival);
       break;
     default:
       break;

@@ -63,15 +63,16 @@ int find_descriptor_interval(int *haystack, size_t nlst, int needlemin, int need
 }
 
 /*!
-  \fn int parse_subset_sequence(struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err)
-  \brief Parse a sequence of expanded descriptors for a subset 
+  \fn int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err)
+  \brief Parse a sequence of expanded descriptors for a subset
+  \param m pointer to a struct \ref metreport where to set the data  
   \param sq pointer to a struct \ref bufr_subset_sequence_data where the values for sequence of descriptors for a subset has been decoded
   \param kdtlst array of integers with descriptors
   \param nlst number of descriptors in \a kdtlst
   \param ksec1 array of auxiliar integers decoded by bufrdc ECMWF library
   \param err string where to write errors if any
 */
-int parse_subset_sequence(struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err)
+int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err)
 {
   /* First task to do is figure out the type of report */
 
@@ -121,14 +122,14 @@ int parse_subset_sequence(struct bufr_subset_sequence_data *sq, int *kdtlst, siz
   if (strcmp(TYPE,"AAXX") == 0 || strcmp(TYPE,"BBXX") == 0 || strcmp(TYPE,"OOXX") == 0)
   {
     parse_subset_as_synop(&SYNOP, TYPE, sq, kdtlst, nlst, ksec1, err);
-    if (print_synop(REPORT, 2048, &SYNOP) == 0)
-      printf("%s\n", REPORT);
+    if (print_synop(m->alphanum, 2048, &SYNOP) == 0)
+      printf("%s\n", m->alphanum);
   }
   else if (strcmp(TYPE,"ZZYY") == 0)
   {
     parse_subset_as_buoy(&BUOY, sq, kdtlst, nlst, ksec1, err);
-    if (print_buoy(REPORT, 2048, &BUOY) == 0)
-      printf("%s\n", REPORT);
+    if (print_buoy(m->alphanum, 2048, &BUOY) == 0)
+      printf("%s\n", m->alphanum);
   }
 
   return 0;

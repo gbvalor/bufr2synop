@@ -175,6 +175,53 @@ struct bufr_subset_state {
    int mask; /*!< mask which contain several information from the subset data taken at the moment */
 };
 
+/*!
+  \struct gts_header
+  \brief stores WMO GTS header info
+*/
+struct gts_header {
+   char bname[16]; /*!< Name of bulletin, as 'SNAU48' */
+   char center[8]; /*!< Release center name, as 'EGRR' */
+   char dtrel[16]; /*!< Date and time of release (format DDHHmm) */
+   char order[8]; /*!< sequence, as 'BBB' , 'RRA' 'CCA' ... */
+};
+
+/*!
+   \struct met_datetime 
+   \brief stores date and time reference of a report, commonly the observation time
+*/
+struct met_datetime {
+   time_t t; /*!< Unix instant for report date/time reference */
+   struct tm tim;  /*!<  struct tm with report date/time info (UTC) */ 
+   char datime[16]; /*!< date/time reference (UTC) as string with YYYYMMDDHHmm format */ 
+};
+
+/*!
+   \struct met_geo
+   \brief Geographic meta information 
+*/
+struct met_geo {
+   char index[16]; /*!< The index indetifier of place, if any */
+   char name[80]; /*!< The common name of place */
+   char country[80]; /*!< The country name, if known */
+   double lat; /*!< Latitude in degrees. North positive */
+   double lon; /*!< Longitude in degrees. East positive */
+   double alt; /*!< Altitude in metres */
+};
+
+/*!
+   \struct metreport
+   \brief all the information for a meteorological report in WMO ascii format  
+*/
+struct metreport {
+    struct gts_header *h; /*!< A pointer to a GTS Header Bulletin */
+    struct met_datetime t; /*!< The date/time information for report */
+    struct met_geo g; /*!< The geographical info */
+    char type[8]; /*!< The type of report as MiMiMjMj */
+    char alphanum[2048]; /*!< The alphanumeric report */
+};
+
+
 extern unsigned char BUFR_MESSAGE[BUFR_LEN]; 
 extern char CNAMES[KELEM][64]; 
 extern char CUNITS[KELEM][24]; 
@@ -212,7 +259,8 @@ extern size_t NLINES_TABLEC;
 extern char TABLEC[MAXLINES_TABLEC][92];
 extern char DEFAULT_BUFRTABLES[];
 extern char TYPE[8];
-extern char REPORT[2048];
+extern struct metreport REPORT;
+extern struct gts_header HEADER;
 extern FILE * FL;
 extern struct bufr_subset_sequence_data SUBSET;
 
@@ -236,7 +284,7 @@ int synop_YYYYMMDDHHmm_to_YYGG(struct synop_chunks *syn);
 int buoy_YYYYMMDDHHmm_to_JMMYYGGgg(struct buoy_chunks *b);
 char * guess_WMO_region(struct synop_chunks *syn);
 
-int parse_subset_sequence(struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err);
+int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err);
 int find_descriptor(int *haystack, size_t nlst, int needle);
 int find_descriptor_interval(int *haystack, size_t nlst, int needlemin, int needlemax);
 

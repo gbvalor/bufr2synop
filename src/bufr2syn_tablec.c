@@ -77,6 +77,7 @@ int read_table_c(void)
     }
   fclose(t);
   NLINES_TABLEC = i;
+  //printf("file='%s', NLINES_TABLEC=%d\n", file,NLINES_TABLEC);
   return i;
 }
 

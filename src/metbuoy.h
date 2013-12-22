@@ -159,9 +159,10 @@ struct buoy_sec3
 struct buoy_sec4
 {
     char Qp[2]; /*!< Quality of the pressure measurement. (Code table 3315) */
-    char Q2[2]; /*!<   */
+    char Q2[2]; /*!< Quality of the housekeeping parameter (second word in first block of ARGOS platform
+transmitters terminal sensor data). (Code table 3363) */
     char QTW[2]; /*!< Quality of the measurement of the water-surface temperature. (Code table 3319)(FM 18)  */
-    char Q4[2]; /*!<  */
+    char Q4[2]; /*!< Quality of the measurement of air temperature. (Code table 3363) */
     char QN[2]; /*!< Quality of the buoy satellite transmission. (Code table 3313) */
     char QL[2]; /*!< Quality of location.(Code table 3311)  */
     char QA[2]; /*!< Location quality class (Code table 3302)  */

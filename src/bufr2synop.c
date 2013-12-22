@@ -104,8 +104,9 @@ int DEBUG; /*!< Show debug information */
 int NFILES; /*!< The amount of files processed  */
 size_t NLINES_TABLEC; /*!< current number of TABLE C file lines */
 char TYPE[8]; /*!< Type of report being parsed  (code MMMM) */
-char TABLEC[MAXLINES_TABLEC][92]; /*!< Here is where store the lines from table C file*/
-char REPORT[2048]; /*!< string to set the report */
+char TABLEC[MAXLINES_TABLEC][92]; /*!< Here is where store the lines from table C file */
+struct gts_header HEADER; /*!< The GTS header */
+struct metreport REPORT; /*!< stuct to set the parsed report */
 char LINAUX[2048]; /*!< auxiliar output line string */
 FILE *FL; /*!< Buffer to read the list of files */
 
@@ -156,7 +157,8 @@ int main(int argc, char *argv[])
       kelem = KELEM;
       kvals = KVALS;
       length = BUFR_LEN;
-      printf("%s\n",  INPUTFILE);
+      if (DEBUG)
+        printf("# Parsing file '%s'\n",  INPUTFILE);
       /* Read in bufr messages */
       //status = readbufr ( fp, &BUFR_MESSAGE, &length );
       if ((status = read_bufr(BUFR_MESSAGE, INPUTFILE, &length)))
@@ -341,7 +343,11 @@ int main(int argc, char *argv[])
         {
           nsub1 = nsub + 1;
 
+          // clean sequence
           memset(&SUBSET, 0, sizeof( struct bufr_subset_sequence_data));
+
+          // clean REPORT
+          memset(&REPORT, 0, sizeof(struct metreport));
 
           /*
              Expand the descriptors for a subset
@@ -437,7 +443,7 @@ int main(int argc, char *argv[])
             }
 
           /**** the call to parse the sequence and transform to solicited asciicode, if possible *****/
-          if (parse_subset_sequence(&SUBSET, KTDLST, ktdlen, KSEC1, ERR) && DEBUG)
+          if (parse_subset_sequence(&REPORT, &SUBSET, KTDLST, ktdlen, KSEC1, ERR) && DEBUG)
             {
               fprintf(stderr, "#%s\n", ERR);
             }
