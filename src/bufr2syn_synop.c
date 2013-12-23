@@ -136,8 +136,9 @@ char *guess_WMO_region(struct synop_chunks *syn)
 
 
 /*!
-  \fn int parse_subset_as_synop(struct synop_chunks *syn, char *type, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err)
+  \fn int parse_subset_as_synop(struct metreport *m, struct synop_chunks *syn, char *type, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err)
   \brief parses a subset sequence as an Land fixed SYNOP FM-12, SHIP FM-13 or SYNOP-mobil FM-14 report
+  \param m pointer to a struct \ref metreport where set some results
   \param syn pointer to a struct \ref synop_chunks where set the results
   \param type strint with MiMiMjMj to choose the type pf synop (AAXX, BBXX ...) (synop, ship or synop-mobil)
   \param sq pointer to a struct \ref bufr_subset_sequence_data with the parsed sequence on input
@@ -148,7 +149,7 @@ char *guess_WMO_region(struct synop_chunks *syn)
 
   It return 0 if all is OK. Otherwise it also fills the \a err string
 */
-int parse_subset_as_synop ( struct synop_chunks *syn, char *type, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err )
+int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, char *type, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err )
 {
   int ival; // integer value for a descriptor
   double val; // double value for a descriptor
@@ -174,6 +175,8 @@ int parse_subset_as_synop ( struct synop_chunks *syn, char *type, struct bufr_su
   syn->s0.MiMi[1] = type[1];
   syn->s0.MjMj[0] = type[2];
   syn->s0.MjMj[1] = type[3];
+
+  strcpy(m->type, type);
 
   /**** First pass, sequential analysis *****/
   for ( is = 0, itval = 0; is < sq->nd; is++ )
@@ -206,6 +209,10 @@ int parse_subset_as_synop ( struct synop_chunks *syn, char *type, struct bufr_su
 
         case 6: // Horizontal Position -2
           syn_parse_x06 ( syn, &s, err );
+          break;
+
+        case 7: // Vertical position
+          syn_parse_x07 ( syn, &s, err );
           break;
 
         case 10: // Air Pressure descriptors
@@ -300,6 +307,22 @@ int parse_subset_as_synop ( struct synop_chunks *syn, char *type, struct bufr_su
       strcpy ( syn->s1.gg, syn->e.mm );
     }
   syn->mask |= SYNOP_EXT;
+
+  // Fill some metreport fields
+  if (s.mask & SUBSET_MASK_HAVE_LATITUDE)
+    m->g.lat = s.lat;
+  if (s.mask & SUBSET_MASK_HAVE_LONGITUDE)
+    m->g.lon = s.lon;
+  if (s.mask & SUBSET_MASK_HAVE_ALTITUDE)
+    m->g.alt = s.alt;
+  if (s.mask & SUBSET_MASK_HAVE_NAME)
+    strcpy(m->g.name, s.name);
+  if (s.mask & SUBSET_MASK_HAVE_COUNTRY)
+    strcpy(m->g.country, s.country);
+
+  sprintf ( aux,"%s%s%s%s%s", syn->e.YYYY, syn->e.MM, syn->e.DD, syn->e.HH, syn->e.mm );
+  YYYYMMDDHHmm_to_met_datetime(&m->t, aux);
+
   return 0;
 }
 

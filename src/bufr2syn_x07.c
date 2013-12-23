@@ -38,9 +38,16 @@ int syn_parse_x07 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
   switch ( s->a->desc.y )
     {
     case 1: // 0 07 001
+    case 30:
+    case 31:
       if (syn->s0.h0h0h0h0[0] == 0)
-        sprintf(syn->s0.h0h0h0h0, "%s", s->ival); 
+      {
+        sprintf(syn->s0.h0h0h0h0, "%04d", s->ival); 
         syn->s0.im[0] = '1';// set unit as m
+        s->mask |= SUBSET_MASK_HAVE_ALTITUDE;
+      }
+      s->alt = s->val;
+     break;
     default:
       break;
     }

@@ -27,15 +27,16 @@
 void print_usage(void)
 {
   printf("Usage: \n");
-  printf("  bufr2synop [-i input] [-I list_of_files [-t bufrtable_dir][-o output][-s][-v]\n");
+  printf("  bufr2synop [-i input] [-I list_of_files] [-t bufrtable_dir][-o output][-s][-v]\n");
   printf("       -e Print some original output from ECMWF library\n");
+  printf("       -h. Show this help\n");
   printf("       -i input. Pathname of the file with the bufr message to parse\n");
   printf("       -I list_of_files. Pathname of a file with the list of files to parse, one filename per line\n");
   printf("       -o output. Pathname of output file. Default is standar output\n");
   printf("       -s prints a long output with explained sequence of descriptors\n");
   printf("       -t bufrtable_dir. Pathname of bufr tables directory. Ended with '/'\n");
   printf("       -v. Verbose output\n");
-  printf("       -h. Show this help\n");
+  printf("       -x. The output is in xml format\n");
 }
 
 /*!
@@ -104,10 +105,12 @@ int read_arguments(int _argc, char * _argv[])
   SHOW_ECMWF_OUTPUT = 0;
   DEBUG = 0;
   NFILES = 0;
+  XML = 0;
+
   /*
    Read input arguments using getop library
    */
-  while ((iopt = getopt(_argc, _argv, "Dehi:I:o:st:v")) != -1)
+  while ((iopt = getopt(_argc, _argv, "Dehi:I:o:st:vx")) != -1)
     switch (iopt)
       {
       case 'i':
@@ -139,6 +142,9 @@ int read_arguments(int _argc, char * _argv[])
         break;
       case 's':
         SHOW_SEQUENCE = 1;
+        break;
+      case 'x':
+        XML = 1;
         break;
       case 'h':
       default:

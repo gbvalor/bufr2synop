@@ -34,7 +34,7 @@
 */
 int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
 {
-  char aux[16];
+  char aux[80];
 
   switch ( s->a->desc.y )
     {
@@ -72,6 +72,24 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
             strcpy( syn->s0.D_D, aux);
         }
       break;
+    case 15: // 0 01 015
+      if (strlen(s->a->cval) <= 80)
+        {
+          strcpy(aux, s->a->cval);
+          adjust_string(aux);
+          strcpy(s->name, aux);
+          s->mask |= SUBSET_MASK_HAVE_NAME;
+        }
+      break;
+    case 101: // 0 01 101
+      if (strlen(s->a->ctable) <= 256)
+        {
+          strcpy(aux, s->a->ctable);
+          adjust_string(aux);
+          strcpy(s->country, aux);
+          s->mask |= SUBSET_MASK_HAVE_COUNTRY;
+        }
+      break;
     default:
       break;
     }
@@ -89,7 +107,7 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
 */
 int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err )
 {
-  char aux[16];
+  char aux[80];
 
   switch ( s->a->desc.y )
     {
@@ -109,6 +127,24 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
         sprintf(b->s0.nbnbnb, "%03d", s->ival);
       else
         sprintf(b->s0.nbnbnb, "%05d", s->ival); // note this is a nnnnn extension 
+      break;
+    case 15: // 0 01 015
+      if (strlen(s->a->cval) <= 80)
+        {
+          strcpy(aux, s->a->cval);
+          adjust_string(aux);
+          strcpy(s->name, aux);
+          s->mask |= SUBSET_MASK_HAVE_NAME;
+        }
+      break;
+    case 101: // 0 01 101
+      if (strlen(s->a->ctable) <= 80)
+        {
+          strcpy(aux, s->a->ctable);
+          adjust_string(aux);
+          strcpy(s->name, aux);
+          s->mask |= SUBSET_MASK_HAVE_COUNTRY;
+        }
       break;
     default:
       break;

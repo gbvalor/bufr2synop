@@ -41,10 +41,18 @@
 */
 char * get_ecmwf_tablename(char *target, char type)
 {
-  if (KSEC1[13] != 0) // case of not WMO tables
-    sprintf(target,"%s%c%03d%05d%05d%03d%03d.TXT", BUFRTABLES_DIR, type, KSEC1[13], KSEC1[15], KSEC1[2], KSEC1[14], KSEC1[7]);
+  if (0)
+    {
+      if (KSEC1[13] != 0) // case of not WMO tables
+        sprintf(target,"%s%c%03d%05d%05d%03d%03d.TXT", BUFRTABLES_DIR, type, KSEC1[13], KSEC1[15], KSEC1[2], KSEC1[14], KSEC1[7]);
+      else
+        sprintf(target,"%s%c000%05d00000%03d%03d.TXT", BUFRTABLES_DIR, type, KSEC1[15], KSEC1[14], KSEC1[7]);
+    }
   else
-    sprintf(target,"%s%c000%05d00000%03d%03d.TXT", BUFRTABLES_DIR, type, KSEC1[15], KSEC1[14], KSEC1[7]);
+    {
+      //FIXME Some countries uses latest C tables instead of the version they said in bufr
+      sprintf(target,"%s%c0000000000000019000.TXT", BUFRTABLES_DIR, type);
+    }
   return target;
 }
 
@@ -214,7 +222,7 @@ char * get_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d,
           v = strtol(&TABLEC[i][12], &c, 10); // v is the bit number
           j++;
 
-          // case 0 with meaning 
+          // case 0 with meaning
           if (v == 0)
             {
               test0 = 1;

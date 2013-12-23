@@ -46,6 +46,7 @@ int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
       ia = (int) (fabs(s->val) * 10.0 + 0.5);
       sprintf(syn->s0.LaLaLa, "%03d",ia);
       syn->s0.Ula[0] = syn->s0.LaLaLa[1];
+      s->lat = s->val;
     break;
     case 11: // 0 05 001
     case 12: // 0 05 002
@@ -55,6 +56,7 @@ int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
       ia = (int) (fabs(s->val) * 10.0 + 0.5);
       sprintf(syn->s0.LoLoLoLo, "%04d",ia);
       syn->s0.Ulo[0] = syn->s0.LoLoLoLo[2];
+      s->lon = s->val;
     break;
     default:
       break;
@@ -110,6 +112,7 @@ int buoy_parse_x05 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
       s->mask |= SUBSET_MASK_HAVE_LATITUDE;
       ia = (int) (fabs(s->val) * 1000.0 + 0.5);
       sprintf(b->s0.LaLaLaLaLa, "%05d",ia);
+      s->lat = s->val;
       break;
     case 11: // 0 05 001
     case 12: // 0 05 002
@@ -118,6 +121,7 @@ int buoy_parse_x05 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
       s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
       ia = (int) (fabs(s->val) * 1000.0 + 0.5);
       sprintf(b->s0.LoLoLoLoLoLo, "%06d",ia);
+      s->lon = s->val;
     break;
     default:
       break;

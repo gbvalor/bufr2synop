@@ -116,6 +116,8 @@
 #define SUBSET_MASK_HAVE_LATITUDE 64
 #define SUBSET_MASK_HAVE_LONGITUDE 128
 #define SUBSET_MASK_HAVE_ALTITUDE 256
+#define SUBSET_MASK_HAVE_NAME 512
+#define SUBSET_MASK_HAVE_COUNTRY 1024
 
 
 /*!
@@ -136,7 +138,7 @@ struct bufr_descriptor {
 struct bufr_atom_data {
    struct bufr_descriptor desc; /*!< struct \ref bufr_descriptor */
    int mask; /*!< Mask with for the type */
-   char name[92]; /*!< String with the name of descriptir */
+   char name[92]; /*!< String with the name of descriptor */
    char unit[32]; /*!< String with the name of units */
    double val; /*!< Value for the bufr descriptor */
    char cval[128]; /*!< String value for the bufr descriptor */
@@ -172,6 +174,10 @@ struct bufr_subset_state {
    int deep; /*!< Latest parsed deep in meters of a layer */ 
    double lat; /*!< Latitude of station */
    double lon; /*!< longitude of station */
+   double alt; /*!< Altitude (m)*/
+   char name[80]; /*!< Name of observatory, if any */
+   char country[80]; /*!< Name of state/country if known */ 
+   time_t tobs; /*!< Unix time of observation */
    int mask; /*!< mask which contain several information from the subset data taken at the moment */
 };
 
@@ -184,6 +190,8 @@ struct gts_header {
    char center[8]; /*!< Release center name, as 'EGRR' */
    char dtrel[16]; /*!< Date and time of release (format DDHHmm) */
    char order[8]; /*!< sequence, as 'BBB' , 'RRA' 'CCA' ... */
+   char filename[256]; /*!< filename of Bufr file */
+   char timestamp[16]; /*!< String with timestamp (UTC) of file in GTS. Format YYYYMMDDHHmmss */ 
 };
 
 /*!
@@ -214,6 +222,7 @@ struct met_geo {
    \brief all the information for a meteorological report in WMO ascii format  
 */
 struct metreport {
+    char source[256];/*!< The bufr source filename */
     struct gts_header *h; /*!< A pointer to a GTS Header Bulletin */
     struct met_datetime t; /*!< The date/time information for report */
     struct met_geo g; /*!< The geographical info */
@@ -251,6 +260,8 @@ extern int SHOW_SEQUENCE;
 extern int SHOW_ECMWF_OUTPUT;
 extern int DEBUG;
 extern int NFILES;
+extern int GTS_HEADER;
+extern int XML;
 
 extern struct synop_chunks SYNOP;
 extern struct buoy_chunks BUOY;
@@ -278,8 +289,9 @@ char * get_explained_table_val(char *expl, size_t dim, struct bufr_descriptor *d
 char * get_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d, unsigned long ival);
 char * get_ecmwf_tablename(char *target, char TYPE);
 char * get_bufrfile_path( char *filename, char *err);
-int parse_subset_as_aaxx(struct synop_chunks *syn, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, 
-                          int *ksec1, char *err);
+int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err );
+int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, char *type, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err );
+int YYYYMMDDHHmm_to_met_datetime(struct met_datetime *t, const char *source);
 int synop_YYYYMMDDHHmm_to_YYGG(struct synop_chunks *syn);
 int buoy_YYYYMMDDHHmm_to_JMMYYGGgg(struct buoy_chunks *b);
 char * guess_WMO_region(struct synop_chunks *syn);

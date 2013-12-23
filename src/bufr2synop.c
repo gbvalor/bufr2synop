@@ -102,6 +102,8 @@ int SHOW_SEQUENCE; /*!< Output explained sequence */
 int SHOW_ECMWF_OUTPUT; /*!< Print original output from ECMWF library */
 int DEBUG; /*!< Show debug information */
 int NFILES; /*!< The amount of files processed  */
+int GTS_HEADER; /*!< If == 1 GTS header have been guessed from filename */
+int XML; /*!< If == 1 then output is in xml format */
 size_t NLINES_TABLEC; /*!< current number of TABLE C file lines */
 char TYPE[8]; /*!< Type of report being parsed  (code MMMM) */
 char TABLEC[MAXLINES_TABLEC][92]; /*!< Here is where store the lines from table C file */
@@ -159,6 +161,12 @@ int main(int argc, char *argv[])
       length = BUFR_LEN;
       if (DEBUG)
         printf("# Parsing file '%s'\n",  INPUTFILE);
+
+      /* Try to guess a GTS header from filename*/
+      GTS_HEADER = guess_gts_header(&HEADER, INPUTFILE);
+      if (GTS_HEADER && DEBUG)
+        printf("#%s %s %s %s %s\n", HEADER.timestamp, HEADER.bname, HEADER.center, HEADER.dtrel, HEADER.order);
+
       /* Read in bufr messages */
       //status = readbufr ( fp, &BUFR_MESSAGE, &length );
       if ((status = read_bufr(BUFR_MESSAGE, INPUTFILE, &length)))
@@ -349,6 +357,10 @@ int main(int argc, char *argv[])
           // clean REPORT
           memset(&REPORT, 0, sizeof(struct metreport));
 
+          // sets GTS header, common for all subsets in a bufr file
+          if (GTS_HEADER)
+            REPORT.h = &HEADER;
+
           /*
              Expand the descriptors for a subset
 
@@ -386,43 +398,35 @@ int main(int argc, char *argv[])
                     {
                       SUBSET.sequence[j].mask |= DESCRIPTOR_IS_CODE_TABLE;
                       SUBSET.sequence[j].val = VALUES[i];
-                      if (VERBOSE)
+                      if (get_explained_table_val (SUBSET.sequence[j].ctable, 256, &SUBSET.sequence[j].desc, (int) VALUES[i]) != NULL)
                         {
-                          if (get_explained_table_val (SUBSET.sequence[j].ctable, 256, &SUBSET.sequence[j].desc, (int) VALUES[i]) != NULL)
-                            {
-                              SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_CODE_TABLE_STRING;
-                              c += sprintf(c, "%9d : '%s'", (int)VALUES[i], SUBSET.sequence[j].ctable);
-                            }
-                          else
-                            {
-                              c += sprintf(c,"%9d : 'NOT FOUND'", (int)VALUES[i]);
-                            }
+                          SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_CODE_TABLE_STRING;
+                          if (VERBOSE)
+                            c += sprintf(c, "%9d : '%s'", (int)VALUES[i], SUBSET.sequence[j].ctable);
+                        }
+                      else if (VERBOSE)
+                        {
+                          c += sprintf(c,"%9d : 'NOT FOUND'", (int)VALUES[i]);
                         }
                       else
-                        {
-                          c += sprintf(c, "%9d", (int)VALUES[i]);
-                        }
+                        c += sprintf(c, "%9d", (int)VALUES[i]);
                     }
                   else if (strstr(SUBSET.sequence[j].unit,"FLAG") == SUBSET.sequence[j].unit)
                     {
                       SUBSET.sequence[j].mask |= DESCRIPTOR_IS_FLAG_TABLE;
                       SUBSET.sequence[j].val = VALUES[i];
-                      if (VERBOSE)
+                      if (get_explained_flag_val (SUBSET.sequence[j].ctable, 256, &SUBSET.sequence[j].desc, (unsigned long) VALUES[i]) != NULL)
                         {
-                          if (get_explained_flag_val (SUBSET.sequence[j].ctable, 256, &SUBSET.sequence[j].desc, (unsigned long) VALUES[i]) != NULL)
-                            {
-                              SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_FLAG_TABLE_STRING;
-                              c += sprintf(c, "%9d : '%s'", (int)VALUES[i], SUBSET.sequence[j].ctable);
-                            }
-                          else
-                            {
-                              c += sprintf(c, "%9d : 'NOT FOUND'", (int)VALUES[i]);
-                            }
+                          SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_FLAG_TABLE_STRING;
+                          if (VERBOSE)
+                            c += sprintf(c, "%9d : '%s'", (int)VALUES[i], SUBSET.sequence[j].ctable);
+                        }
+                      else if (VERBOSE)
+                        {
+                          c += sprintf(c, "%9d : 'NOT FOUND'", (int)VALUES[i]);
                         }
                       else
-                        {
-                          c += sprintf(c, "%9d", (int)VALUES[i]);
-                        }
+                        c += sprintf(c, "%9d", (int)VALUES[i]);
                     }
                   else
                     {
@@ -447,6 +451,14 @@ int main(int argc, char *argv[])
             {
               fprintf(stderr, "#%s\n", ERR);
             }
+          else if (XML)
+            {
+              if (nsub == 0)
+                fprintf(stdout, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+              print_xml(stdout, &REPORT);
+            }
+          else
+            fprintf(stdout, "%s\n", REPORT.alphanum);
         }
 
 

@@ -58,11 +58,10 @@ int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b )
   return 0;
 }
 
-
-
 /*!
-  \fn int parse_subset_as_buoy(struct buoy_chunks *b, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err)
+  \fn int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err)
   \brief parses a subset sequence as an Buoy SYNOP FM-18 report
+  \param m pointer to a struct \ref metreport where set some results
   \param b pointer to a struct \ref buoy_chunks where set the results
   \param sq pointer to a struct \ref bufr_subset_sequence_data with the parsed sequence on input
   \param kdtlst array of descriptors (as integers) from the non-expanded bufr list
@@ -72,7 +71,7 @@ int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b )
 
   It return 0 if all is OK. Otherwise it also fills the \a err string
 */
-int parse_subset_as_buoy( struct buoy_chunks *b, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err )
+int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err )
 {
   int ival; // integer value for a descriptor
   double val; // double value for a descriptor
@@ -191,6 +190,19 @@ int parse_subset_as_buoy( struct buoy_chunks *b, struct bufr_subset_sequence_dat
   buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( b );
   b->mask |= BUOY_EXT;
 
+  // Fill some metreport fields
+  if (s.mask & SUBSET_MASK_HAVE_LATITUDE)
+    m->g.lat = s.lat;
+  if (s.mask & SUBSET_MASK_HAVE_LONGITUDE)
+    m->g.lon = s.lon;
+  if (s.mask & SUBSET_MASK_HAVE_ALTITUDE)
+    m->g.alt = s.alt;
+  if (s.mask & SUBSET_MASK_HAVE_NAME)
+    strcpy(m->g.name, s.name);
+  sprintf ( aux,"%s%s%s%s%s", b->e.YYYY, b->e.MM, b->e.DD, b->e.HH, b->e.mm );
+  YYYYMMDDHHmm_to_met_datetime(&m->t, aux);
+
+  
   // check if set both LaLaLa and LoLoLoLo to set Qc
   if ((b->s0.Qc[0] == 0) && b->s0.LaLaLaLaLa[0] && b->s0.LoLoLoLoLoLo[0])
     {

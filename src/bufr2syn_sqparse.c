@@ -121,16 +121,14 @@ int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data 
   // Parse FM-12, FM-13 and FM-14
   if (strcmp(TYPE,"AAXX") == 0 || strcmp(TYPE,"BBXX") == 0 || strcmp(TYPE,"OOXX") == 0)
   {
-    parse_subset_as_synop(&SYNOP, TYPE, sq, kdtlst, nlst, ksec1, err);
-    if (print_synop(m->alphanum, 2048, &SYNOP) == 0)
-      printf("%s\n", m->alphanum);
+    parse_subset_as_synop(m, &SYNOP, TYPE, sq, kdtlst, nlst, ksec1, err);
+    return print_synop(m->alphanum, 2048, &SYNOP);
   }
   else if (strcmp(TYPE,"ZZYY") == 0)
   {
-    parse_subset_as_buoy(&BUOY, sq, kdtlst, nlst, ksec1, err);
-    if (print_buoy(m->alphanum, 2048, &BUOY) == 0)
-      printf("%s\n", m->alphanum);
+    parse_subset_as_buoy(m, &BUOY, sq, kdtlst, nlst, ksec1, err);
+    return print_buoy(m->alphanum, 2048, &BUOY);
   }
 
-  return 0;
+  return 1;
 }
