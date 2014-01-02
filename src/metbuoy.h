@@ -1,9 +1,9 @@
 /* $Id$ */
 /***************************************************************************
- *   Copyright (C) 2004-2013 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2004-2014 by Guillermo Ballester Valor                  *
  *   gbv@oxixares.com                                                      *
  *                                                                         *
- *   This file is part of Ogimet                                           *
+ *   This file is part of bufr2synop                                       *
  *                                                                         *
  *   Ogimet is free software; you can redistribute it and/or modify        *
  *   it under the terms of the GNU General Public License as published by  *
