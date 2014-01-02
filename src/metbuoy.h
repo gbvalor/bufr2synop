@@ -199,7 +199,7 @@ struct buoy_chunks
    struct buoy_sec1 s1; /*!< struct with parsed section 1 */
    struct buoy_sec2 s2; /*!< struct with parsed section 2 if present */
    struct buoy_sec3 s3; /*!< struct with parsed section 3 if present */
-   struct buoy_sec4 s4; /*!< struct with parsed section 2 if present */
+   struct buoy_sec4 s4; /*!< struct with parsed section 4 if present */
    char error[128]; /*!< string with error code if a wrong synop report is found */
 };
 
