@@ -309,6 +309,20 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, char *
   syn->mask |= SYNOP_EXT;
 
   // Fill some metreport fields
+  if (strlen(syn->s0.II))
+  {
+    strcpy(m->g.index, syn->s0.II);
+    strcat(m->g.index, syn->s0.iii);
+  }
+  else if (strlen(syn->s0.D_D))
+  {
+    strcpy(m->g.index, syn->s0.D_D);
+  }
+  else if (strlen(syn->s0.IIIII))
+  {
+    strcpy(m->g.index, syn->s0.IIIII);
+  }
+
   if (s.mask & SUBSET_MASK_HAVE_LATITUDE)
     m->g.lat = s.lat;
   if (s.mask & SUBSET_MASK_HAVE_LONGITUDE)
