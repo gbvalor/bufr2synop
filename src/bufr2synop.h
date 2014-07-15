@@ -169,6 +169,7 @@ struct bufr_subset_state {
    size_t k_itval; /*!< index in array of latest time displacemet descriptor */
    int jtval; /*!< Prior to Latest parsed time displacement in seconds */
    size_t k_jtval; /*!< index in array of time prior to latest displacemet descriptor */
+   int isq; /*!< if 1, the current atom data is in a Significant qualifier squence, and not computed */
    int type; /*!< type of station */
    int layer; /*!< Layer/level of data when parsing Buoy report*/
    int deep; /*!< Latest parsed deep in meters of a layer */ 
@@ -331,6 +332,8 @@ int syn_parse_x02 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
 int syn_parse_x04 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x06 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
+int syn_parse_x07 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
+int syn_parse_x08 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x10 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
@@ -344,6 +347,8 @@ int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
 int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err );
 int buoy_parse_x05 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err );
 int buoy_parse_x06 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err );
+int buoy_parse_x07 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err );
+int buoy_parse_x08 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err );
 int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err );
 int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err );
 int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err );

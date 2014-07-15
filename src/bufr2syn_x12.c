@@ -157,7 +157,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
     case 111: // 0 12 115
     case 114: // 0 12 114
     case 116: // 0 12 116
-      if (syn->s3.TxTxTx[0] == 0)
+      if (syn->s3.TxTxTx[0] == 0 && (s->itval % (3*3600)) == 0) // only for 3, 6 ... hours
         {
           if (kelvin_to_snTTT ( aux, s->val ))
             {
@@ -173,7 +173,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
     case 112: // 0 12 115
     case 115: // 0 12 115
     case 117: // 0 12 117
-      if (syn->s3.TnTnTn[0] == 0)
+      if (syn->s3.TnTnTn[0] == 0 && (s->itval % (3*3600)) == 0) // only for 3, 6 ... hours 
         {
           if (kelvin_to_snTTT ( aux, s->val ))
             {

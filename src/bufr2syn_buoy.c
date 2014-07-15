@@ -101,8 +101,19 @@ int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr
   /**** First pass, sequential analysis *****/
   for ( is = 0, itval = 0; is < sq->nd; is++ )
     {
-      if ( sq->sequence[is].mask & DESCRIPTOR_VALUE_MISSING )
+      // check if is a significance qualifier
+      if (sq->sequence[is].desc.x == 8)
+      {
+        s.i = is;
+        s.a = &sq->sequence[is];
+        buoy_parse_x08 ( b, &s, err );
+      }
+
+      if ( sq->sequence[is].mask & DESCRIPTOR_VALUE_MISSING ||
+           s.isq   // case of an significance qualifier
+         )
         continue;
+
       s.i = is;
       s.ival = ( int ) sq->sequence[is].val;
       ival = ival;
