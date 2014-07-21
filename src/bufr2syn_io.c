@@ -31,6 +31,7 @@ void print_usage(void)
   printf("       -e Print some original output from ECMWF library\n");
   printf("       -h. Show this help\n");
   printf("       -i input. Pathname of the file with the bufr message to parse\n");
+  printf("       -j. The output is in json format\n");
   printf("       -I list_of_files. Pathname of a file with the list of files to parse, one filename per line\n");
   printf("       -o output. Pathname of output file. Default is standar output\n");
   printf("       -s prints a long output with explained sequence of descriptors\n");
@@ -106,16 +107,20 @@ int read_arguments(int _argc, char * _argv[])
   DEBUG = 0;
   NFILES = 0;
   XML = 0;
+  JSON = 0;
 
   /*
    Read input arguments using getop library
    */
-  while ((iopt = getopt(_argc, _argv, "Dehi:I:o:st:vx")) != -1)
+  while ((iopt = getopt(_argc, _argv, "Dehi:jI:o:st:vx")) != -1)
     switch (iopt)
       {
       case 'i':
         if (strlen(optarg) < 256)
           strcpy(INPUTFILE, optarg);
+        break;
+      case 'j':
+        JSON = 1;
         break;
       case 'I':
         if (strlen(optarg) < 256)

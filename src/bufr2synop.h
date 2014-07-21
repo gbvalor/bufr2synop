@@ -263,6 +263,7 @@ extern int DEBUG;
 extern int NFILES;
 extern int GTS_HEADER;
 extern int XML;
+extern int JSON;
 
 extern struct synop_chunks SYNOP;
 extern struct buoy_chunks BUOY;
@@ -326,6 +327,8 @@ char * print_buoy_sec1 (char **sec1, size_t lmax, struct buoy_chunks *syn);
 char * print_buoy_sec2 (char **sec2, size_t lmax, struct buoy_chunks *syn);
 char * print_buoy_sec3 (char **sec3, size_t lmax, struct buoy_chunks *syn);
 
+int print_json(FILE *f, struct metreport *m);
+int print_xml(FILE *f, struct metreport *m);
 
 int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );
 int syn_parse_x02 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err );

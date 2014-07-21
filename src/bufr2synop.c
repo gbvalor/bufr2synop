@@ -104,6 +104,7 @@ int DEBUG; /*!< Show debug information */
 int NFILES; /*!< The amount of files processed  */
 int GTS_HEADER; /*!< If == 1 GTS header have been guessed from filename */
 int XML; /*!< If == 1 then output is in xml format */
+int JSON; /*!< If == 1 then output is in json format */
 size_t NLINES_TABLEC; /*!< current number of TABLE C file lines */
 char TYPE[8]; /*!< Type of report being parsed  (code MMMM) */
 char TABLEC[MAXLINES_TABLEC][92]; /*!< Here is where store the lines from table C file */
@@ -456,6 +457,10 @@ int main(int argc, char *argv[])
               if (nsub == 0)
                 fprintf(stdout, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
               print_xml(stdout, &REPORT);
+            }
+          else if (JSON)
+            {
+              print_json(stdout, &REPORT);
             }
           else
             fprintf(stdout, "%s\n", REPORT.alphanum);
