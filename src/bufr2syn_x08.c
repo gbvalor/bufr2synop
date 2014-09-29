@@ -40,6 +40,16 @@ int syn_parse_x08 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
 {
   switch ( s->a->desc.y )
     {
+    case 2:
+      if (s->ival == 21)
+        s->clayer = 1; // first cloud layer
+      else if (s->ival == 22)
+        s->clayer = 2; // second cloud layer
+      else if (s->ival == 23)
+        s->clayer = 3; // third cloud layer
+      else if (s->ival == 24)
+        s->clayer = 4; // fourth cloud layer
+      break;
     case 22:
     case 23:
     case 24:

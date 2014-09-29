@@ -27,7 +27,7 @@
   \fn char * percent_to_okta ( char *target, double perc )
   \brief Converts percent cloud cover into okta
   \param perc the precent cloud cover
-  \param target the resulting okta string 
+  \param target the resulting okta string
 */
 char * percent_to_okta ( char *target, double perc )
 {
@@ -56,7 +56,7 @@ char * percent_to_okta ( char *target, double perc )
 
 /*!
   \fn char * m_to_h ( char *target, double h )
-  \brief converts the altitude of cloud layer into h string code 
+  \brief converts the altitude of cloud layer into h string code
   \param h the altitude in meters
   \param target the resulting h coded string
 */
@@ -87,6 +87,35 @@ char * m_to_h ( char *target, double h )
 }
 
 /*!
+  \fn char * m_to_hh ( char *target, double h )
+  \brief converts the altitude of cloud layer into hh string code
+  \param h the altitude in meters
+  \param target the resulting h coded string
+*/
+char * m_to_hh ( char *target, double h )
+{
+  int ih = (int)h;
+
+  if ( ih <= 1500 )
+  {
+    sprintf(target, "%02d", ih / 30);
+  }
+  else if ( ih <= 9000 )
+  { 
+    sprintf(target, "%2d", (ih / 300) + 50);
+  }
+  else if (ih <= 21000 )
+  {
+    sprintf(target, "%2d", (ih / 500) + 50);
+  }
+  else
+    strcpy ( target,"89" );
+  return target;
+
+}
+
+
+/*!
   \fn char * vism_to_VV ( char *target, double V )
   \brief Convert horizontal visibilty in meters to a VV string
   \param V the visibility (m)
@@ -112,7 +141,7 @@ char * vism_to_VV ( char *target, double V )
   \brief Parse a expanded descriptor with X = 20
   \param syn pointer to a struct \ref synop_chunks where to set the results
   \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
-  \param err string with optional error 
+  \param err string with optional error
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
@@ -157,7 +186,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         }
       else if (s->ival == 10)
         {
-           s->mask |= SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1;
+          s->mask |= SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1;
         }
       else
         {
@@ -177,7 +206,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         }
       else if (s->ival == 10)
         {
-           s->mask |= SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2;
+          s->mask |= SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2;
         }
       else
         {
@@ -191,33 +220,61 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
       percent_to_okta ( syn->s1.N, s->val );
       break;
     case 11: // 0 20 011
-      if ( s->ival <= 8 )
-        sprintf ( syn->s1.Nh, "%1d", s->ival );
-      else if ( s->ival <= 10 )
-        sprintf ( syn->s1.Nh, "9", s->ival );
-      else if ( s->ival == 15 )
-        sprintf ( syn->s1.Nh, "/");
-      syn->mask |= SYNOP_SEC1;
+      if (s->clayer == 0)
+        {
+          if ( s->ival <= 8 )
+            sprintf ( syn->s1.Nh, "%1d", s->ival );
+          else if ( s->ival <= 10 )
+            sprintf ( syn->s1.Nh, "9", s->ival );
+          else if ( s->ival == 15 )
+            sprintf ( syn->s1.Nh, "/");
+          syn->mask |= SYNOP_SEC1;
+        }
+      else
+        {
+          if ( s->ival <= 8 )
+            sprintf ( syn->s3.nub[s->clayer - 1].Ns, "%1d", s->ival );
+          else if ( s->ival <= 10 )
+            sprintf ( syn->s3.nub[s->clayer - 1].Ns, "9", s->ival );
+          else if ( s->ival == 15 )
+            sprintf ( syn->s3.nub[s->clayer - 1].Ns, "/");
+          syn->mask |= SYNOP_SEC3;
+        }
       break;
     case 12: // 0 20 012
-      if (s->ival >= 10 && s->ival < 20)
-        sprintf( syn->s1.Ch, "%1d", s->ival % 10);
-      else if (s->ival >= 20 && s->ival < 30)
-        sprintf( syn->s1.Cm, "%1d", s->ival % 10);
-      else if (s->ival >= 30 && s->ival < 40)
-        sprintf( syn->s1.Cl, "%1d", s->ival % 10);
-      else if (s->ival == 59)
-        sprintf( syn->s1.Nh, "/");
-      else if (s->ival == 60)
-        sprintf( syn->s1.Ch, "/");
-      else if (s->ival == 61)
-        sprintf( syn->s1.Cm, "/");
-      else if (s->ival == 62)
-        sprintf( syn->s1.Cl, "/");
-      syn->mask |= SYNOP_SEC1;
+      if (s->clayer == 0)
+        {
+          if (s->ival >= 10 && s->ival < 20)
+            sprintf( syn->s1.Ch, "%1d", s->ival % 10);
+          else if (s->ival >= 20 && s->ival < 30)
+            sprintf( syn->s1.Cm, "%1d", s->ival % 10);
+          else if (s->ival >= 30 && s->ival < 40)
+            sprintf( syn->s1.Cl, "%1d", s->ival % 10);
+          else if (s->ival == 59)
+            sprintf( syn->s1.Nh, "/");
+          else if (s->ival == 60)
+            sprintf( syn->s1.Ch, "/");
+          else if (s->ival == 61)
+            sprintf( syn->s1.Cm, "/");
+          else if (s->ival == 62)
+            sprintf( syn->s1.Cl, "/");
+          syn->mask |= SYNOP_SEC1;
+        }
+      else
+        {
+          if (s->ival == 59)
+            sprintf( syn->s3.nub[s->clayer - 1].C, "/");
+          else
+            sprintf( syn->s3.nub[s->clayer - 1].C, "%1d", s->ival % 10);
+          syn->mask |= SYNOP_SEC3;
+        }
+
       break;
     case 13: // 0 20 013
-      m_to_h( syn->s1.h, s->val );
+      if (s->clayer == 0) // fisrt layer is for sec1
+        m_to_h( syn->s1.h, s->val );
+      else
+        m_to_hh(syn->s3.nub[s->clayer - 1].hshs, s->val);
       break;
     case 62: // 0 20 062
       if ( s->ival < 10)
@@ -243,7 +300,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
       syn->s1.W1[0] = 0;
       syn->s1.W2[0] = 0;
       if (syn->s1.ix[0] == '1')
-       syn->s1.ix[0] = '2';
+        syn->s1.ix[0] = '2';
     }
 
   return 0;
@@ -254,7 +311,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
   \brief Parse a expanded descriptor with X = 20
   \param b pointer to a struct \ref buoy_chunks where to set the results
   \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
-  \param err string with optional error 
+  \param err string with optional error
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
@@ -264,7 +321,7 @@ int buoy_parse_x20 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
 
   switch ( s->a->desc.y )
     {
-      default:
+    default:
       break;
     }
   return 0;

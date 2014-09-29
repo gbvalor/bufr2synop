@@ -171,6 +171,7 @@ struct bufr_subset_state {
    size_t k_jtval; /*!< index in array of time prior to latest displacemet descriptor */
    int isq; /*!< if 1, the current atom data is in a Significant qualifier squence, and not computed */
    int type; /*!< type of station */
+   int clayer; /*!< cloud layer being parsed */
    int layer; /*!< Layer/level of data when parsing Buoy report*/
    int deep; /*!< Latest parsed deep in meters of a layer */ 
    double lat; /*!< Latitude of station */
@@ -309,6 +310,7 @@ char * kelvin_to_snTTT ( char *target, double T );
 char * kelvin_to_snTT ( char *target, double T );
 char * kelvin_to_TT ( char *target, double T );
 char * m_to_h ( char *target, double h );
+char * m_to_hh ( char *target, double h );
 char * pascal_to_ppp ( char *target, double P );
 char * pascal_to_PPPP ( char *target, double P );
 char * percent_to_okta ( char *target, double perc );

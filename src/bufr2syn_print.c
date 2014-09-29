@@ -163,10 +163,10 @@ char * print_synop_sec1 (char **sec1, size_t lmax, struct synop_chunks *syn)
           c += sprintf ( c, " 7%s%s%s", syn->s1.ww, syn->s1.W1, syn->s1.W2 );
         }
 
-      if ( check_len(sec1,6) && ((syn->s1.Nh[0] && syn->s1.Nh[0] != '0') ||
-                                 (syn->s1.Cl[0] && syn->s1.Cl[0] != '0') ||
-                                 (syn->s1.Cm[0] && syn->s1.Cm[0] != '0') ||
-                                 (syn->s1.Ch[0] && syn->s1.Ch[0] != '0')))
+      if ( check_len(sec1,6) && ((syn->s1.Nh[0] && syn->s1.Nh[0] != '0' && syn->s1.Nh[0] != '/') ||
+                                 (syn->s1.Cl[0] && syn->s1.Cl[0] != '0' && syn->s1.Cl[0] != '/') ||
+                                 (syn->s1.Cm[0] && syn->s1.Cm[0] != '0' && syn->s1.Cm[0] != '/') ||
+                                 (syn->s1.Ch[0] && syn->s1.Ch[0] != '0' && syn->s1.Ch[0] != '/')))
         {
           if ( syn->s1.Nh[0] == 0 )
             strcpy ( syn->s1.Nh, "/" );
@@ -380,6 +380,13 @@ char * print_synop_sec3 (char **sec3, size_t lmax, struct synop_chunks *syn)
       if ( check_len(sec3,6) && syn->s3.RRRR24[0] )
         c += sprintf ( c, " 7%s", syn->s3.RRRR24);
 
+      // additional cloud layers
+      i = 0;
+      while (i < 4 && syn->s3.nub[i].hshs[0])
+      {
+        c += sprintf ( c, " 8%s%s%s", syn->s3.nub[i].Ns, syn->s3.nub[i].C, syn->s3.nub[i].hshs);
+        i++;
+      }
     }
   *sec3 = c;
   return *sec3;

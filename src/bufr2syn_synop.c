@@ -186,6 +186,8 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, char *
       {
         s.i = is;
         s.a = &sq->sequence[is];
+        s.ival = ( int ) sq->sequence[is].val;
+        s.val = sq->sequence[is].val;
         syn_parse_x08 ( syn, &s, err );
       }
 
