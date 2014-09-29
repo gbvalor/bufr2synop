@@ -11,7 +11,7 @@ AM_PROG_LIBTOOL
 
 # Checks for libraries.
 # 
-AC_CHECK_LIB([bufr], [bufrex_])
+AC_CHECK_LIB([bufr], [bufrread], , [AC_MSG_ERROR("You must install ECMWF bufrdc library")])
 
 
 AC_OUTPUT(Makefile src/Makefile)
