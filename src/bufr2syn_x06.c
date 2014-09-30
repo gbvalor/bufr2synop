@@ -21,7 +21,7 @@
  \file bufr2syn_x06.c
  \brief decodes the descriptors with X = 06 (Horizontal Position-2)
  */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 
 /*!

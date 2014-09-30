@@ -24,7 +24,7 @@
   As there is no significance information in synop we use this descriptors as
   off/on interruptor.
 */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 
 /*!

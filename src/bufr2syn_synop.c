@@ -21,7 +21,7 @@
  \file bufr2syn_synop.c
  \brief file with the code to parse a sequence as a SYNOP FM-12, FM-13 and FM-14
  */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 /*!
   \fn int synop_YYYYMMDDHHmm_to_YYGG(struct synop_chunks *syn)
@@ -149,7 +149,7 @@ char *guess_WMO_region(struct synop_chunks *syn)
 
   It return 0 if all is OK. Otherwise it also fills the \a err string
 */
-int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, char *type, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err )
+int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err )
 {
   int ival; // integer value for a descriptor
   double val; // double value for a descriptor
@@ -157,26 +157,25 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, char *
   int disp; // time displacement in seconds
   time_t tt, itval;
   struct tm tim;
-  struct bufr_subset_state s; // stores util data when parsing sequence
   char aux[16];
 
   // clean data
   clean_synop_chunks ( syn );
-  memset(&s, 0, sizeof(struct bufr_subset_state));
+  memset(s, 0, sizeof(struct bufr_subset_state));
 
   // reject if still not coded type
-  if (strcmp(TYPE,"AAXX") && strcmp(TYPE,"BBXX"))
+  if (strcmp(s->type_report,"AAXX") && strcmp(s->type_report,"BBXX"))
   {
-    sprintf(err,"%: '%s' reports still not decoded in this software", SELF, TYPE);
+    sprintf(err,"bufr2syn: '%s' reports still not decoded in this software", s->type_report);
     return 1;
   }
 
-  syn->s0.MiMi[0] = type[0];
-  syn->s0.MiMi[1] = type[1];
-  syn->s0.MjMj[0] = type[2];
-  syn->s0.MjMj[1] = type[3];
+  syn->s0.MiMi[0] = s->type_report[0];
+  syn->s0.MiMi[1] = s->type_report[1];
+  syn->s0.MjMj[0] = s->type_report[2];
+  syn->s0.MjMj[1] = s->type_report[3];
 
-  strcpy(m->type, type);
+  strcpy(m->type, s->type_report);
 
   /**** First pass, sequential analysis *****/
   for ( is = 0, itval = 0; is < sq->nd; is++ )
@@ -184,80 +183,80 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, char *
       // check if is a significance qualifier
       if (sq->sequence[is].desc.x == 8)
       {
-        s.i = is;
-        s.a = &sq->sequence[is];
-        s.ival = ( int ) sq->sequence[is].val;
-        s.val = sq->sequence[is].val;
-        syn_parse_x08 ( syn, &s, err );
+        s->i = is;
+        s->a = &sq->sequence[is];
+        s->ival = ( int ) sq->sequence[is].val;
+        s->val = sq->sequence[is].val;
+        syn_parse_x08 ( syn, s, err );
       }
 
       if ( sq->sequence[is].mask & DESCRIPTOR_VALUE_MISSING ||
-           s.isq   // case of an significance qualifier
+           s->isq   // case of an significance qualifier
          )
         continue;
 
-      s.i = is;
-      s.ival = ( int ) sq->sequence[is].val;
+      s->i = is;
+      s->ival = ( int ) sq->sequence[is].val;
       ival = ival;
-      s.val = sq->sequence[is].val;
-      val = s.val;
-      s.a = &sq->sequence[is];
+      s->val = sq->sequence[is].val;
+      val = s->val;
+      s->a = &sq->sequence[is];
       switch ( sq->sequence[is].desc.x )
         {
         case 1: //localization descriptors
-          syn_parse_x01 ( syn, &s, err );
+          syn_parse_x01 ( syn, s, err );
           break;
 
         case 2: //Date time descriptors
-          syn_parse_x02 ( syn, &s, err );
+          syn_parse_x02 ( syn, s, err );
           break;
 
         case 4: //Date time descriptors
-          syn_parse_x04 ( syn, &s, err );
+          syn_parse_x04 ( syn, s, err );
           break;
 
         case 5: //Position
-          syn_parse_x05 ( syn, &s, err );
+          syn_parse_x05 ( syn, s, err );
           break;
 
         case 6: // Horizontal Position -2
-          syn_parse_x06 ( syn, &s, err );
+          syn_parse_x06 ( syn, s, err );
           break;
 
         case 7: // Vertical position
-          syn_parse_x07 ( syn, &s, err );
+          syn_parse_x07 ( syn, s, err );
           break;
 
         case 10: // Air Pressure descriptors
-          syn_parse_x10 ( syn, &s, err );
+          syn_parse_x10 ( syn, s, err );
           break;
 
         case 11: // wind  data
-          syn_parse_x11 ( syn, &s, err );
+          syn_parse_x11 ( syn, s, err );
           break;
 
         case 12: //Temperature descriptors
-          syn_parse_x12 ( syn, &s, err );
+          syn_parse_x12 ( syn, s, err );
           break;
 
         case 13: // Humidity and precipitation data
-          syn_parse_x13 ( syn, &s, err );
+          syn_parse_x13 ( syn, s, err );
           break;
 
         case 14: // Radiation
-          syn_parse_x14 ( syn, &s, err );
+          syn_parse_x14 ( syn, s, err );
           break;
 
         case 20: // Cloud data
-          syn_parse_x20 ( syn, &s, err );
+          syn_parse_x20 ( syn, s, err );
           break;
 
         case 22: // Oceanographic data
-          syn_parse_x22 ( syn, &s, err );
+          syn_parse_x22 ( syn, s, err );
           break;
 
         case 31: // Replicators
-          syn_parse_x31 ( syn, &s, err );
+          syn_parse_x31 ( syn, s, err );
           break;
 
 
@@ -289,24 +288,24 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, char *
   // adjust ix
   if (syn->s1.ix[0] == '/' && syn->s1.ww[0] == 0)
     {
-      if ((s.mask & SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW) &&
-          (s.mask & SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1) &&
-          (s.mask & SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2)
+      if ((s->mask & SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW) &&
+          (s->mask & SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1) &&
+          (s->mask & SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2)
          )
         {
-          if (s.mask & SUBSET_MASK_HAVE_TYPE_STATION)
+          if (s->mask & SUBSET_MASK_HAVE_TYPE_STATION)
             {
-              if (s.type == 1 || s.type == 2)
+              if (s->type == 1 || s->type == 2)
                 strcpy(syn->s1.ix,"2");
-              else if (s.type == 0)
+              else if (s->type == 0)
                 strcpy(syn->s1.ix,"5");
             }
         }
-      else if (s.mask & SUBSET_MASK_HAVE_TYPE_STATION)
+      else if (s->mask & SUBSET_MASK_HAVE_TYPE_STATION)
         {
-          if (s.type == 1)
+          if (s->type == 1)
             strcpy(syn->s1.ix,"3");
-          else if (s.type == 0)
+          else if (s->type == 0)
             strcpy(syn->s1.ix,"6");
         }
     }
@@ -336,16 +335,16 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, char *
     strcpy(m->g.index, syn->s0.IIIII);
   }
 
-  if (s.mask & SUBSET_MASK_HAVE_LATITUDE)
-    m->g.lat = s.lat;
-  if (s.mask & SUBSET_MASK_HAVE_LONGITUDE)
-    m->g.lon = s.lon;
-  if (s.mask & SUBSET_MASK_HAVE_ALTITUDE)
-    m->g.alt = s.alt;
-  if (s.mask & SUBSET_MASK_HAVE_NAME)
-    strcpy(m->g.name, s.name);
-  if (s.mask & SUBSET_MASK_HAVE_COUNTRY)
-    strcpy(m->g.country, s.country);
+  if (s->mask & SUBSET_MASK_HAVE_LATITUDE)
+    m->g.lat = s->lat;
+  if (s->mask & SUBSET_MASK_HAVE_LONGITUDE)
+    m->g.lon = s->lon;
+  if (s->mask & SUBSET_MASK_HAVE_ALTITUDE)
+    m->g.alt = s->alt;
+  if (s->mask & SUBSET_MASK_HAVE_NAME)
+    strcpy(m->g.name, s->name);
+  if (s->mask & SUBSET_MASK_HAVE_COUNTRY)
+    strcpy(m->g.country, s->country);
 
   sprintf ( aux,"%s%s%s%s%s", syn->e.YYYY, syn->e.MM, syn->e.DD, syn->e.HH, syn->e.mm );
   YYYYMMDDHHmm_to_met_datetime(&m->t, aux);

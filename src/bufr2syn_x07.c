@@ -21,7 +21,7 @@
  \file bufr2syn_x07.c
  \brief decodes the descriptors with X = 07 (Vertical Position)
  */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 /*!
   \fn int syn_parse_x07 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )

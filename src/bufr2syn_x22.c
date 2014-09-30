@@ -21,7 +21,7 @@
  \file bufr2syn_x22.c
  \brief decodes the descriptors with X = 22 (oceanographic data)
 */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 
 /*!

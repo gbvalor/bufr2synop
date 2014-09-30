@@ -21,7 +21,7 @@
  \file bufr2syn_x14.c
  \brief decodes the descriptors with X = 14 (Radiation)
  */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 /*!
   \fn int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )

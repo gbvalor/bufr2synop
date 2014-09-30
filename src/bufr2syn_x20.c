@@ -21,7 +21,7 @@
  \file bufr2syn_x20.c
  \brief decodes the descriptors with X = 20
  */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 /*!
   \fn char * percent_to_okta ( char *target, double perc )

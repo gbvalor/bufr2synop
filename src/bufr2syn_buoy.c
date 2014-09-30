@@ -21,7 +21,7 @@
  \file bufr2syn_buoy.c
  \brief file with the code to parse buoy FM-18 sequences
  */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 /*!
   \fn int buoy_YYYYMMDDHHmm_to_YYGG(struct synop_chunks *syn)
@@ -71,7 +71,7 @@ int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b )
 
   It return 0 if all is OK. Otherwise it also fills the \a err string
 */
-int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err )
+int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err )
 {
   int ival; // integer value for a descriptor
   double val; // double value for a descriptor
@@ -79,17 +79,16 @@ int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr
   int disp; // time displacement in seconds
   time_t tt, itval;
   struct tm tim;
-  struct bufr_subset_state s; // stores util data when parsing sequence
   char aux[16];
 
   // clean data
   clean_buoy_chunks ( b );
-  memset(&s, 0, sizeof(struct bufr_subset_state));
+  memset(s, 0, sizeof(struct bufr_subset_state));
 
   // reject if still not coded type
-  if (strcmp(TYPE,"ZZYY"))
+  if (strcmp(s->type_report,"ZZYY"))
     {
-      sprintf(err,"%: '%s' report still not decoded in this software", SELF, TYPE);
+      sprintf(err,"bufr2syn: '%s' report still not decoded in this software", s->type_report);
       return 1;
     }
 
@@ -104,84 +103,84 @@ int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr
       // check if is a significance qualifier
       if (sq->sequence[is].desc.x == 8)
       {
-        s.i = is;
-        s.a = &sq->sequence[is];
-        buoy_parse_x08 ( b, &s, err );
+        s->i = is;
+        s->a = &sq->sequence[is];
+        buoy_parse_x08 ( b, s, err );
       }
 
       if ( sq->sequence[is].mask & DESCRIPTOR_VALUE_MISSING ||
-           s.isq   // case of an significance qualifier
+           s->isq   // case of an significance qualifier
          )
         continue;
 
-      s.i = is;
-      s.ival = ( int ) sq->sequence[is].val;
+      s->i = is;
+      s->ival = ( int ) sq->sequence[is].val;
       ival = ival;
-      s.val = sq->sequence[is].val;
-      val = s.val;
-      s.a = &sq->sequence[is];
+      s->val = sq->sequence[is].val;
+      val = s->val;
+      s->a = &sq->sequence[is];
       switch ( sq->sequence[is].desc.x )
         {
 
         case 1: //localization descriptors
-          buoy_parse_x01 ( b, &s, err );
+          buoy_parse_x01 ( b, s, err );
           break;
 
         case 2: //Date time descriptors
-          buoy_parse_x02 ( b, &s, err );
+          buoy_parse_x02 ( b, s, err );
           break;
 
         case 4: //Date time descriptors
-          buoy_parse_x04 ( b, &s, err );
+          buoy_parse_x04 ( b, s, err );
           break;
 
         case 5: //Position
-          buoy_parse_x05 ( b, &s, err );
+          buoy_parse_x05 ( b, s, err );
           break;
 
         case 6: // Horizontal Position -2
-          buoy_parse_x06 ( b, &s, err );
+          buoy_parse_x06 ( b, s, err );
           break;
 
         case 7: // Vertical Position 
-          buoy_parse_x07 ( b, &s, err );
+          buoy_parse_x07 ( b, s, err );
           break;
 
         case 10: // Air Pressure descriptors
-          buoy_parse_x10 ( b, &s, err );
+          buoy_parse_x10 ( b, s, err );
           break;
 
         case 11: // wind  data
-          buoy_parse_x11 ( b, &s, err );
+          buoy_parse_x11 ( b, s, err );
           break;
 
         case 12: //Temperature descriptors
-          buoy_parse_x12 ( b, &s, err );
+          buoy_parse_x12 ( b, s, err );
           break;
 
         case 13: // Humidity and precipitation data
-          buoy_parse_x13 ( b, &s, err );
+          buoy_parse_x13 ( b, s, err );
           break;
 
         case 14: // Radiation
-          buoy_parse_x14 ( b, &s, err );
+          buoy_parse_x14 ( b, s, err );
           break;
 
         case 20: // Cloud data
-          buoy_parse_x20 ( b, &s, err );
+          buoy_parse_x20 ( b, s, err );
           break;
 
         case 22: // Oceanographic data
-          buoy_parse_x22 ( b, &s, err );
+          buoy_parse_x22 ( b, s, err );
           break;
 
         case 31: // Replicators
-          buoy_parse_x31 ( b, &s, err );
+          buoy_parse_x31 ( b, s, err );
           break;
 
 
         case 33: // Quality data
-          buoy_parse_x33 ( b, &s, err );
+          buoy_parse_x33 ( b, s, err );
           break;
 
 
@@ -202,14 +201,14 @@ int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr
   b->mask |= BUOY_EXT;
 
   // Fill some metreport fields
-  if (s.mask & SUBSET_MASK_HAVE_LATITUDE)
-    m->g.lat = s.lat;
-  if (s.mask & SUBSET_MASK_HAVE_LONGITUDE)
-    m->g.lon = s.lon;
-  if (s.mask & SUBSET_MASK_HAVE_ALTITUDE)
-    m->g.alt = s.alt;
-  if (s.mask & SUBSET_MASK_HAVE_NAME)
-    strcpy(m->g.name, s.name);
+  if (s->mask & SUBSET_MASK_HAVE_LATITUDE)
+    m->g.lat = s->lat;
+  if (s->mask & SUBSET_MASK_HAVE_LONGITUDE)
+    m->g.lon = s->lon;
+  if (s->mask & SUBSET_MASK_HAVE_ALTITUDE)
+    m->g.alt = s->alt;
+  if (s->mask & SUBSET_MASK_HAVE_NAME)
+    strcpy(m->g.name, s->name);
   sprintf ( aux,"%s%s%s%s%s", b->e.YYYY, b->e.MM, b->e.DD, b->e.HH, b->e.mm );
   YYYYMMDDHHmm_to_met_datetime(&m->t, aux);
 
@@ -217,16 +216,16 @@ int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr
   // check if set both LaLaLa and LoLoLoLo to set Qc
   if ((b->s0.Qc[0] == 0) && b->s0.LaLaLaLaLa[0] && b->s0.LoLoLoLoLoLo[0])
     {
-      if (s.mask & SUBSET_MASK_LATITUDE_SOUTH)
+      if (s->mask & SUBSET_MASK_LATITUDE_SOUTH)
         {
-          if (s.mask & SUBSET_MASK_LONGITUDE_WEST)
+          if (s->mask & SUBSET_MASK_LONGITUDE_WEST)
             strcpy(b->s0.Qc, "5");
           else
             strcpy(b->s0.Qc, "3");
         }
       else
         {
-          if (s.mask & SUBSET_MASK_LONGITUDE_WEST)
+          if (s->mask & SUBSET_MASK_LONGITUDE_WEST)
             strcpy(b->s0.Qc, "7");
           else
             strcpy(b->s0.Qc, "1");

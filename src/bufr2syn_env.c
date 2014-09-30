@@ -21,7 +21,7 @@
  \file bufr2syn_env.c
  \brief file with the code to set environments 
  */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 /*!
   \fn int set_environment(void)
@@ -35,17 +35,17 @@
 
   Then we set the proper environment here 
 */
-int set_environment(void)
+int set_environment(char *default_bufrtables, char *bufrtables_dir)
 {
    int i;
    char aux[256], *c;
    struct stat s;
 
-   i = stat(DEFAULT_BUFRTABLES, &s);
+   i = stat(default_bufrtables, &s);
 
    if (putenv("PRINT_TABLE_NAMES=false") || putenv("USE_TABLE_C=true"))
     {
-      fprintf(stderr, "%s: Failure setting the environment\n", SELF);
+      fprintf(stderr, "bufr2syn: Failure setting the environment\n");
       exit (EXIT_FAILURE);
     }
 
@@ -53,26 +53,26 @@ int set_environment(void)
       Default path for Bufr Tables is hard coded in the software. To change the path set environmental variable
       BUFR_TABLES . The path must end with '/'
     */
-    if (BUFRTABLES_DIR[0])
+    if (bufrtables_dir[0])
     {
-        sprintf(aux,"BUFR_TABLES=%s", BUFRTABLES_DIR);
+        sprintf(aux,"BUFR_TABLES=%s", bufrtables_dir);
         if (putenv(aux))
         {
-           fprintf(stderr, "%s: Failure setting the environment\n", SELF);
+           fprintf(stderr, "bufr2syn: Failure setting the environment\n");
            exit (EXIT_FAILURE);
         }
     }
     else if ((c = getenv("BUFR_TABLES")) != NULL)
     {
-       strcpy(BUFRTABLES_DIR, c); // otherwise check if BUFRRABLES_DIR if is on environment
+       strcpy(bufrtables_dir, c); // otherwise check if BUFRRABLES_DIR if is on environment
     }
     else if (i == 0 && S_ISDIR(s.st_mode)) // last chance, the default dir
     {  
-        strcpy(BUFRTABLES_DIR, DEFAULT_BUFRTABLES);
-        sprintf(aux,"BUFR_TABLES=%s", BUFRTABLES_DIR);
+        strcpy(bufrtables_dir, default_bufrtables);
+        sprintf(aux,"BUFR_TABLES=%s", bufrtables_dir);
         if (putenv(aux))
         {
-           fprintf(stderr, "%s: Failure setting the environment\n", SELF);
+           fprintf(stderr, "bufr2syn: Failure setting the environment\n");
            exit (EXIT_FAILURE);
         }
     }

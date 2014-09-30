@@ -21,7 +21,7 @@
  \file bufr2syn_x02.c
  \brief decodes the descriptors with X = 02
  */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 /*!
   \fn int syn_parse_x02 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )

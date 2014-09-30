@@ -21,7 +21,7 @@
  \file bufr2syn_json.c
  \brief Output a struct \ref metreport in json form
 */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 /*!
   \fn int print_json(FILE *f, struct metreport *m)

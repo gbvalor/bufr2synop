@@ -21,7 +21,7 @@
  \file bufr2syn_mrproper.c
  \brief file with the code to clean and init structures
  */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 /*! \fn void clean_syn_sec0(struct synop_sec0 *s)
     \brief clean a synop_sec0 struct

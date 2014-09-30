@@ -21,7 +21,7 @@
   \file bufr2syn_utils.c
   \brief file with the utility routines for binary bufr2synop 
 */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 
 /*!

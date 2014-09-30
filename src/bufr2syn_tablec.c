@@ -21,10 +21,10 @@
  \file bufr2syn_tablec.c
  \brief file with the code to read table C data (code and flag tables)
  */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 /*!
-  \fn char * get_ecmwf_tablename(char *target, char type)
+  \fn char * get_ecmwf_tablename(char *target, char type, char *bufrtables_dir, int ksec1[40])
   \brief Get the complete pathname of a table file needed by a bufr message
   \param target the resulting name
   \param type a char with type, i.e, 'B', 'C', or 'D'
@@ -39,19 +39,19 @@
 
   If standard WMO tables are used, the Originating centre xxxxx will be set to
 */
-char * get_ecmwf_tablename(char *target, char type)
+char * get_ecmwf_tablename(char *target, char type, char *bufrtables_dir, int ksec1[40])
 {
   if (0)
     {
-      if (KSEC1[13] != 0) // case of not WMO tables
-        sprintf(target,"%s%c%03d%05d%05d%03d%03d.TXT", BUFRTABLES_DIR, type, KSEC1[13], KSEC1[15], KSEC1[2], KSEC1[14], KSEC1[7]);
+      if (ksec1[13] != 0) // case of not WMO tables
+        sprintf(target,"%s%c%03d%05d%05d%03d%03d.TXT", bufrtables_dir, type, ksec1[13], ksec1[15], ksec1[2], ksec1[14], ksec1[7]);
       else
-        sprintf(target,"%s%c000%05d00000%03d%03d.TXT", BUFRTABLES_DIR, type, KSEC1[15], KSEC1[14], KSEC1[7]);
+        sprintf(target,"%s%c000%05d00000%03d%03d.TXT", bufrtables_dir, type, ksec1[15], ksec1[14], ksec1[7]);
     }
   else
     {
       //FIXME Some countries uses latest C tables instead of the version they said in bufr
-      sprintf(target,"%s%c0000000000000019000.TXT", BUFRTABLES_DIR, type);
+      sprintf(target,"%s%c0000000000000019000.TXT", bufrtables_dir, type);
     }
   return target;
 }
@@ -60,15 +60,15 @@ char * get_ecmwf_tablename(char *target, char type)
   \fn int read_table_c(void)
   \brief read a Table C file with code TABLE and flag descriptors
 */
-int read_table_c(void)
+int read_table_c(char tablec[MAXLINES_TABLEC][92], size_t *nlines_tablec, char *bufrtables_dir, int ksec1[40])
 {
   char *c, file[256];
   FILE *t;
   size_t i = 0;
 
-  NLINES_TABLEC = 0;
+  *nlines_tablec = 0;
 
-  get_ecmwf_tablename(&file[0], 'C');
+  get_ecmwf_tablename(&file[0], 'C', bufrtables_dir, ksec1);
 
   if ((t = fopen(file, "r")) == NULL)
     {
@@ -76,15 +76,15 @@ int read_table_c(void)
       return 0;
     }
 
-  while (fgets(TABLEC[i], 90, t) != NULL && i < MAXLINES_TABLEC)
+  while (fgets(tablec[i], 90, t) != NULL && i < MAXLINES_TABLEC)
     {
       // supress the newline
-      if ((c = strrchr(TABLEC[i],'\n')) != NULL)
+      if ((c = strrchr(tablec[i],'\n')) != NULL)
         *c = '\0';
       i++;
     }
   fclose(t);
-  NLINES_TABLEC = i;
+  *nlines_tablec = i;
   //printf("file='%s', NLINES_TABLEC=%d\n", file,NLINES_TABLEC);
   return i;
 }
@@ -99,27 +99,27 @@ int read_table_c(void)
 
   If something went wrong, it returns NULL . Otherwise it returns \a expl
 */
-char * get_explained_table_val(char *expl, size_t dim, struct bufr_descriptor *d, int ival)
+char * get_explained_table_val(char *expl, size_t dim, char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec, struct bufr_descriptor *d, int ival)
 {
   char *c;
   long nv, v,  nl;
   size_t i, j;
 
   // Find first line for descriptor
-  for (i = 0; i <  NLINES_TABLEC; i++)
+  for (i = 0; i <  nlines_tablec; i++)
     {
-      if (TABLEC[i][0] != d->c[0] ||
-          TABLEC[i][1] != d->c[1] ||
-          TABLEC[i][2] != d->c[2] ||
-          TABLEC[i][3] != d->c[3] ||
-          TABLEC[i][4] != d->c[4] ||
-          TABLEC[i][5] != d->c[5])
+      if (tablec[i][0] != d->c[0] ||
+          tablec[i][1] != d->c[1] ||
+          tablec[i][2] != d->c[2] ||
+          tablec[i][3] != d->c[3] ||
+          tablec[i][4] != d->c[4] ||
+          tablec[i][5] != d->c[5])
         continue;
       else
         break;
     }
 
-  if (i == NLINES_TABLEC)
+  if (i == nlines_tablec)
     {
       //printf("Descriptor %s No encontrado\n", d->c);
       return NULL;
@@ -127,17 +127,17 @@ char * get_explained_table_val(char *expl, size_t dim, struct bufr_descriptor *d
   //printf("Descriptor %s en linea %d\n", d->c, i);
 
   // reads the amount of possible values
-  if (TABLEC[i][7] != ' ')
-    nv = strtol(&TABLEC[i][7], &c, 10);
+  if (tablec[i][7] != ' ')
+    nv = strtol(&tablec[i][7], &c, 10);
   else
     return NULL;
 
   // read a value
-  for (j = 0; j < nv && i < NLINES_TABLEC ; i++)
+  for (j = 0; j < nv && i < nlines_tablec ; i++)
     {
-      if (TABLEC[i][12] != ' ')
+      if (tablec[i][12] != ' ')
         {
-          v = strtol(&TABLEC[i][12], &c, 10);
+          v = strtol(&tablec[i][12], &c, 10);
           j++;
           if (v != ival)
             continue;
@@ -145,20 +145,20 @@ char * get_explained_table_val(char *expl, size_t dim, struct bufr_descriptor *d
         }
     }
 
-  if (j == nv || i == NLINES_TABLEC)
+  if (j == nv || i == nlines_tablec)
     return NULL; // Value not found
 
   // read how many lines for the descriptors
-  nl = strtol(&TABLEC[i][21], &c, 10);
+  nl = strtol(&tablec[i][21], &c, 10);
 
 
   // if match then we have finished the search
-  strcpy(expl, &TABLEC[i][24]);
+  strcpy(expl, &tablec[i][24]);
   if (nl > 1)
     {
       for (nv = 1 ; nv < nl; nv++)
-        if ((strlen(expl) + strlen(&TABLEC[i + nv][22])) < dim)
-          strcat(expl, &TABLEC[i + nv][22]);
+        if ((strlen(expl) + strlen(&tablec[i + nv][22])) < dim)
+          strcat(expl, &tablec[i + nv][22]);
     }
 
   return expl;
@@ -177,7 +177,7 @@ char * get_explained_table_val(char *expl, size_t dim, struct bufr_descriptor *d
 
   If something went wrong, it returns NULL . Otherwise it returns \a expl
 */
-char * get_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d, unsigned long ival)
+char * get_explained_flag_val(char *expl, size_t dim, char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec, struct bufr_descriptor *d, unsigned long ival)
 {
   char *c, *s;
   unsigned long test, test0;
@@ -185,20 +185,20 @@ char * get_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d,
   size_t i, j;
 
   // Find first line for descriptor
-  for (i = 0; i <  NLINES_TABLEC; i++)
+  for (i = 0; i <  nlines_tablec; i++)
     {
-      if (TABLEC[i][0] != d->c[0] ||
-          TABLEC[i][1] != d->c[1] ||
-          TABLEC[i][2] != d->c[2] ||
-          TABLEC[i][3] != d->c[3] ||
-          TABLEC[i][4] != d->c[4] ||
-          TABLEC[i][5] != d->c[5])
+      if (tablec[i][0] != d->c[0] ||
+          tablec[i][1] != d->c[1] ||
+          tablec[i][2] != d->c[2] ||
+          tablec[i][3] != d->c[3] ||
+          tablec[i][4] != d->c[4] ||
+          tablec[i][5] != d->c[5])
         continue;
       else
         break;
     }
 
-  if (i == NLINES_TABLEC)
+  if (i == nlines_tablec)
     {
       //printf("Descriptor %s No encontrado\n", d->c);
       return NULL;
@@ -206,8 +206,8 @@ char * get_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d,
   //printf("Descriptor %s en linea %d\n", d->c, i);
 
   // reads the amount of possible bits
-  if (TABLEC[i][7] != ' ')
-    nb = strtol(&TABLEC[i][7], &c, 10);
+  if (tablec[i][7] != ' ')
+    nb = strtol(&tablec[i][7], &c, 10);
   else
     return NULL;
 
@@ -215,11 +215,11 @@ char * get_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d,
   s = expl;
   s[0] = '\0';
 
-  for (j = 0, test0 = 2; j < nb && i < NLINES_TABLEC ; i++)
+  for (j = 0, test0 = 2; j < nb && i < nlines_tablec ; i++)
     {
-      if (TABLEC[i][12] != ' ')
+      if (tablec[i][12] != ' ')
         {
-          v = strtol(&TABLEC[i][12], &c, 10); // v is the bit number
+          v = strtol(&tablec[i][12], &c, 10); // v is the bit number
           j++;
 
           // case 0 with meaning
@@ -228,16 +228,16 @@ char * get_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d,
               test0 = 1;
               if (ival == 0)
                 {
-                  nl = strtol(&TABLEC[i][21], &c, 10);
+                  nl = strtol(&tablec[i][21], &c, 10);
                   if (strlen(expl) && (strlen(expl) + 1) < dim)
                     s += sprintf(s, "|");
-                  s += sprintf(s,"%s", &TABLEC[i][24]);
+                  s += sprintf(s,"%s", &tablec[i][24]);
                   if (nl > 1)
                     {
                       for (nx = 1 ; nx < nl; nx++)
-                        if ((strlen(expl) + strlen(&TABLEC[i + nx][22]))  < dim)
+                        if ((strlen(expl) + strlen(&tablec[i + nx][22]))  < dim)
                           {
-                            s += sprintf(s, "%s", &TABLEC[i + nx][22]);
+                            s += sprintf(s, "%s", &tablec[i + nx][22]);
                           }
                     }
                   return expl;
@@ -250,16 +250,16 @@ char * get_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d,
             {
               // bit match
               // read how many lines for the descriptors
-              nl = strtol(&TABLEC[i][21], &c, 10);
+              nl = strtol(&tablec[i][21], &c, 10);
               if (strlen(expl) && (strlen(expl) + 1) < dim)
                 s += sprintf(s, "|");
-              s += sprintf(s,"%s", &TABLEC[i][24]);
+              s += sprintf(s,"%s", &tablec[i][24]);
               if (nl > 1)
                 {
                   for (nx = 1 ; nx < nl; nx++)
-                    if ((strlen(expl) + strlen(&TABLEC[i + nx][22]))  < dim)
+                    if ((strlen(expl) + strlen(&tablec[i + nx][22]))  < dim)
                       {
-                        s += sprintf(s, "%s", &TABLEC[i + nx][22]);
+                        s += sprintf(s, "%s", &tablec[i + nx][22]);
                       }
                 }
 

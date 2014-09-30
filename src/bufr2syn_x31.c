@@ -21,7 +21,7 @@
  \file bufr2syn_x31.c
  \brief decodes the descriptors with X = 31 (Control)
 */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 
 /*!

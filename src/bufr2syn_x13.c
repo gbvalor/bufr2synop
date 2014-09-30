@@ -21,7 +21,7 @@
  \file bufr2syn_x13.c
  \brief decodes the descriptors with X = 13 . Precipitation and hidrology
  */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 /*!
   \fn char * prec_to_RRR ( char *target, double r )

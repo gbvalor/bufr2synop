@@ -21,7 +21,7 @@
  \file bufr2syn_xml.c
  \brief Output a struct \ref metreport in xml form
 */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 /*!
   \fn int print_xml(FILE *f, struct metreport *m)

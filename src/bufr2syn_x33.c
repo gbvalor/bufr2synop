@@ -21,7 +21,7 @@
  \file bufr2syn_x33.c
  \brief decodes the descriptors with X = 33 (Quality data)
 */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 /*!
   \fn int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err )

@@ -21,7 +21,7 @@
  \file bufr2syn_print.c
  \brief file with the code to print the results
  */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 /*!
   \def check_len(ori,inc)

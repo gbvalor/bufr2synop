@@ -115,6 +115,7 @@ char LINAUX[2048]; /*!< auxiliar output line string */
 FILE *FL; /*!< Buffer to read the list of files */
 
 struct bufr_subset_sequence_data SUBSET; /*!< ALl data decoded for a subset*/
+struct bufr_subset_state STATE; /*!< Includes the info when parsing a subset sequence */
 
 //struct synop_chunks SYN;
 
@@ -153,7 +154,7 @@ int main(int argc, char *argv[])
     }
 
   // set needed enviroment before use bufr library
-  set_environment();
+  set_environment(DEFAULT_BUFRTABLES, BUFRTABLES_DIR);
 
   /**** Big loop. a cycle per file ****/
   while (get_bufrfile_path( INPUTFILE, ERR))
@@ -332,7 +333,7 @@ int main(int argc, char *argv[])
       */
       if (VERBOSE)
         {
-          if (read_table_c() == 0)
+          if (read_table_c(TABLEC, &NLINES_TABLEC, BUFRTABLES_DIR, KSEC1) == 0)
             {
               fprintf(stderr,"Cannot read C Table  File\n");
               exit(EXIT_FAILURE);
@@ -400,7 +401,7 @@ int main(int argc, char *argv[])
                     {
                       SUBSET.sequence[j].mask |= DESCRIPTOR_IS_CODE_TABLE;
                       SUBSET.sequence[j].val = VALUES[i];
-                      if (get_explained_table_val (SUBSET.sequence[j].ctable, 256, &SUBSET.sequence[j].desc, (int) VALUES[i]) != NULL)
+                      if (get_explained_table_val (SUBSET.sequence[j].ctable, 256, TABLEC, NLINES_TABLEC, &SUBSET.sequence[j].desc, (int) VALUES[i]) != NULL)
                         {
                           SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_CODE_TABLE_STRING;
                           if (VERBOSE)
@@ -417,7 +418,7 @@ int main(int argc, char *argv[])
                     {
                       SUBSET.sequence[j].mask |= DESCRIPTOR_IS_FLAG_TABLE;
                       SUBSET.sequence[j].val = VALUES[i];
-                      if (get_explained_flag_val (SUBSET.sequence[j].ctable, 256, &SUBSET.sequence[j].desc, (unsigned long) VALUES[i]) != NULL)
+                      if (get_explained_flag_val (SUBSET.sequence[j].ctable, 256, TABLEC, NLINES_TABLEC, &SUBSET.sequence[j].desc, (unsigned long) VALUES[i]) != NULL)
                         {
                           SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_FLAG_TABLE_STRING;
                           if (VERBOSE)
@@ -449,7 +450,7 @@ int main(int argc, char *argv[])
             }
 
           /**** the call to parse the sequence and transform to solicited asciicode, if possible *****/
-          if (parse_subset_sequence(&REPORT, &SUBSET, KTDLST, ktdlen, KSEC1, ERR) && DEBUG)
+          if (parse_subset_sequence(&REPORT, &SUBSET, &STATE, &SYNOP, &BUOY, KTDLST, ktdlen, KSEC1, ERR) && DEBUG)
             {
               fprintf(stderr, "#%s\n", ERR);
             }

@@ -21,7 +21,7 @@
  \file bufr2syn_x10.c
  \brief decodes the descriptors with X = 10
  */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 /*!
   \fn char * pascal_to_ppp ( char *target, double P )

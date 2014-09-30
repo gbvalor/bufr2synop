@@ -21,7 +21,7 @@
  \file bufr2syn_sqparse.c
  \brief file with the code to parse a sequence of descriptors for a subset
  */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 /*!
   \fn int find_descriptor(int *haystack, size_t nlst, int needle)
@@ -63,20 +63,21 @@ int find_descriptor_interval(int *haystack, size_t nlst, int needlemin, int need
 }
 
 /*!
-  \fn int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err)
+  \fn int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr_subset_state *st, int *kdtlst, size_t nlst, int *ksec1, char *err)
   \brief Parse a sequence of expanded descriptors for a subset
   \param m pointer to a struct \ref metreport where to set the data  
   \param sq pointer to a struct \ref bufr_subset_sequence_data where the values for sequence of descriptors for a subset has been decoded
+  \param st pointer to a struct \ref bufr_subset_state 
   \param kdtlst array of integers with descriptors
   \param nlst number of descriptors in \a kdtlst
   \param ksec1 array of auxiliar integers decoded by bufrdc ECMWF library
   \param err string where to write errors if any
 */
-int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err)
+int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr_subset_state *st, struct synop_chunks *synop, struct buoy_chunks *buoy, int *kdtlst, size_t nlst, int *ksec1, char *err)
 {
   /* First task to do is figure out the type of report */
 
-  TYPE[0] = '\0'; // clean type
+  st->type_report[0] = '\0'; // clean type
   switch (ksec1[5])
     {
     case 0:
@@ -84,50 +85,50 @@ int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data 
           find_descriptor(kdtlst, nlst,307091) ||
           find_descriptor(kdtlst, nlst,307096) || 
           ksec1[6] == 0 || ksec1[6] == 1 || ksec1[6] == 2)
-        strcpy(TYPE,"AAXX"); // FM-12 synop
+        strcpy(st->type_report,"AAXX"); // FM-12 synop
       else if (find_descriptor(kdtlst, nlst,307090)
          || ksec1[6] == 3 || ksec1[6] == 4 || ksec1[6] == 5 )
-        strcpy(TYPE,"OOXX"); // FM-14 synop-mobil
+        strcpy(st->type_report,"OOXX"); // FM-14 synop-mobil
       break;
     case 1:
       if (find_descriptor_interval(kdtlst, nlst, 308004, 308005) ||
           find_descriptor(kdtlst, nlst,308009))
-        strcpy(TYPE,"BBXX"); // FM-13 ship
+        strcpy(st->type_report,"BBXX"); // FM-13 ship
       else if (find_descriptor_interval(kdtlst, nlst, 308001, 308003) ||
         find_descriptor(kdtlst, nlst,1005) ||
         find_descriptor(kdtlst, nlst,2036) ||
         find_descriptor(kdtlst, nlst,2149) ||
         ksec1[6] == 25)
-        strcpy(TYPE,"ZZYY"); // FM-18 buoy
+        strcpy(st->type_report,"ZZYY"); // FM-18 buoy
       break;
     case 2:
       if (find_descriptor_interval(kdtlst, nlst, 309050, 309052))
-        strcpy(TYPE,"TTXX"); // FM-13 ship 
+        strcpy(st->type_report,"TTXX"); // FM-13 ship 
       break;
     default:
       sprintf(err, "The data category %d is not parsed at the moment");
       return 1;
     }
 
-  if (TYPE[0] == '\0')
+  if (st->type_report[0] == '\0')
   {
     sprintf(err, "Cannot find the report type\n");
     return 1;
   }
 
-  if(DEBUG) 
-    printf("Going to parse a %s report\n", TYPE);
+  //if(DEBUG) 
+  //  printf("Going to parse a %s report\n", st->type_report);
   
   // Parse FM-12, FM-13 and FM-14
-  if (strcmp(TYPE,"AAXX") == 0 || strcmp(TYPE,"BBXX") == 0 || strcmp(TYPE,"OOXX") == 0)
+  if (strcmp(st->type_report,"AAXX") == 0 || strcmp(st->type_report,"BBXX") == 0 || strcmp(st->type_report,"OOXX") == 0)
   {
-    parse_subset_as_synop(m, &SYNOP, TYPE, sq, kdtlst, nlst, ksec1, err);
-    return print_synop(m->alphanum, 2048, &SYNOP);
+    parse_subset_as_synop(m, synop, st, sq, kdtlst, nlst, ksec1, err);
+    return print_synop(m->alphanum, 2048, synop);
   }
-  else if (strcmp(TYPE,"ZZYY") == 0)
+  else if (strcmp(st->type_report,"ZZYY") == 0)
   {
-    parse_subset_as_buoy(m, &BUOY, sq, kdtlst, nlst, ksec1, err);
-    return print_buoy(m->alphanum, 2048, &BUOY);
+    parse_subset_as_buoy(m, buoy, st, sq, kdtlst, nlst, ksec1, err);
+    return print_buoy(m->alphanum, 2048, buoy);
   }
 
   return 1;

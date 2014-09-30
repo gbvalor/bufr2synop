@@ -21,7 +21,7 @@
  \file bufr2syn_csv.c
  \brief Output a struct \ref metreport in csv labeled form
 */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 /*!
   \fn int print_csv(FILE *f, struct metreport *m)

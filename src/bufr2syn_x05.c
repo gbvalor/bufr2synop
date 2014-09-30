@@ -21,7 +21,7 @@
  \file bufr2syn_x05.c
  \brief decodes the descriptors with X = 05 (Position)
  */
-#include "bufr2synop.h"
+#include "bufr2syn.h"
 
 
 /*!
