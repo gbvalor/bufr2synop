@@ -19,69 +19,72 @@
  ***************************************************************************/
 /*!
  \file bufr2syn_env.c
- \brief file with the code to set environments 
+ \brief file with the code to set environments
  */
 #include "bufr2syn.h"
 
 /*!
-  \fn int set_environment(void)
+  \fn int bufr_set_environment(char *default_bufrtables, char *bufrtables_dir)
   \brief set the environment vars needed to work properly with ECMWF bufrdc library
+  \param default_bufrtables defaut bufr tables dir. ususally '/usr/local/lib/bufrtables/'
+  \param bufrtables_dir alternative char with bufr tables dir
+
 
   During decoding Bufr table path and the names are printed. If user doeas not want that, set: VARIABLE
     PRINT_TABLE_NAMES=false
 
-  During decoding code/flag tables could be read if code figure meaning is needed. If user want to use 
+  During decoding code/flag tables could be read if code figure meaning is needed. If user want to use
   code and flag tables set: VARIABLE USE TABLE C=true
 
-  Then we set the proper environment here 
+  Then we set the proper environment here
 */
-int set_environment(char *default_bufrtables, char *bufrtables_dir)
+int bufr_set_environment(char *default_bufrtables, char *bufrtables_dir)
 {
-   int i;
-   char aux[256], *c;
-   struct stat s;
+  int i;
+  char aux[256], *c;
+  struct stat s;
 
-   i = stat(default_bufrtables, &s);
+  i = stat(default_bufrtables, &s);
 
-   if (putenv("PRINT_TABLE_NAMES=false") || putenv("USE_TABLE_C=true"))
+  if (putenv("PRINT_TABLE_NAMES=false") || putenv("USE_TABLE_C=true"))
     {
       fprintf(stderr, "bufr2syn: Failure setting the environment\n");
       exit (EXIT_FAILURE);
     }
 
-    /*
-      Default path for Bufr Tables is hard coded in the software. To change the path set environmental variable
-      BUFR_TABLES . The path must end with '/'
-    */
-    if (bufrtables_dir[0])
+  /*
+    Default path for Bufr Tables is hard coded in the software. To change the path set environmental variable
+    BUFR_TABLES . The path must end with '/'
+  */
+  if (bufrtables_dir[0])
     {
-        sprintf(aux,"BUFR_TABLES=%s", bufrtables_dir);
-        if (putenv(aux))
+      sprintf(aux,"BUFR_TABLES=%s", bufrtables_dir);
+      if (putenv(aux))
         {
-           fprintf(stderr, "bufr2syn: Failure setting the environment\n");
-           exit (EXIT_FAILURE);
-        }
-    }
-    else if ((c = getenv("BUFR_TABLES")) != NULL)
-    {
-       strcpy(bufrtables_dir, c); // otherwise check if BUFRRABLES_DIR if is on environment
-    }
-    else if (i == 0 && S_ISDIR(s.st_mode)) // last chance, the default dir
-    {  
-        strcpy(bufrtables_dir, default_bufrtables);
-        sprintf(aux,"BUFR_TABLES=%s", bufrtables_dir);
-        if (putenv(aux))
-        {
-           fprintf(stderr, "bufr2syn: Failure setting the environment\n");
-           exit (EXIT_FAILURE);
-        }
-    }
-    else 
-       {
-          fprintf(stderr,"%s: Unable to find bufrtables directory\n");
-          fprintf(stderr,"    Please set the proper enviromnet 'BUFR_TABLES=my_bufrtables_dir' or\n");
-          fprintf(stderr,"    use '-t' argument . i. e.'-t my_bufrtables_dir/'\n");
+          fprintf(stderr, "bufr2syn: Failure setting the environment\n");
           exit (EXIT_FAILURE);
-       }
-    return 0;
+        }
+    }
+  else if ((c = getenv("BUFR_TABLES")) != NULL)
+    {
+      strcpy(bufrtables_dir, c); // otherwise check if BUFRRABLES_DIR if is on environment
+    }
+  else if (i == 0 && S_ISDIR(s.st_mode)) // last chance, the default dir
+    {
+      strcpy(bufrtables_dir, default_bufrtables);
+      sprintf(aux,"BUFR_TABLES=%s", bufrtables_dir);
+      if (putenv(aux))
+        {
+          fprintf(stderr, "bufr2syn: Failure setting the environment\n");
+          exit (EXIT_FAILURE);
+        }
+    }
+  else
+    {
+      fprintf(stderr,"%s: Unable to find bufrtables directory\n");
+      fprintf(stderr,"    Please set the proper enviromnet 'BUFR_TABLES=my_bufrtables_dir' or\n");
+      fprintf(stderr,"    use '-t' argument . i. e.'-t my_bufrtables_dir/'\n");
+      exit (EXIT_FAILURE);
+    }
+  return 0;
 }

@@ -75,9 +75,11 @@ int find_descriptor_interval(int *haystack, size_t nlst, int needlemin, int need
 */
 int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr_subset_state *st, struct synop_chunks *synop, struct buoy_chunks *buoy, int *kdtlst, size_t nlst, int *ksec1, char *err)
 {
-  /* First task to do is figure out the type of report */
 
-  st->type_report[0] = '\0'; // clean type
+  /* Clean the state */
+  memset(st, 0, sizeof(struct bufr_subset_state));
+
+  /* First task to do is figure out the type of report */
   switch (ksec1[5])
     {
     case 0:

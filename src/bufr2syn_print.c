@@ -387,6 +387,13 @@ char * print_synop_sec3 (char **sec3, size_t lmax, struct synop_chunks *syn)
         c += sprintf ( c, " 8%s%s%s", syn->s3.nub[i].Ns, syn->s3.nub[i].C, syn->s3.nub[i].hshs);
         i++;
       }
+
+      // additional info
+      for (i = 0; i < syn->s3.d9.n ; i++)
+      {
+        c += sprintf(c, " %s%s", syn->s3.d9.misc[i].SpSp, syn->s3.d9.misc[i].spsp);
+      }
+
     }
   *sec3 = c;
   return *sec3;

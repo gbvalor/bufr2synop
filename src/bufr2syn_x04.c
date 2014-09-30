@@ -37,42 +37,84 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
   switch ( s->a->desc.y )
     {
     case 1: // 0 04 001
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        return 0;
       sprintf ( syn->e.YYYY, "%04d", s->ival );
       break;
     case 2: // 0 04 002
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        return 0;
       sprintf ( syn->e.MM, "%02d", s->ival );
       break;
     case 3: // 0 04 003
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        return 0;
       sprintf ( syn->e.DD, "%02d", s->ival );
       //sprintf(syn->s0.YY, "%02d", (int) sq->sequence[is].val);
       break;
     case 4: // 0 04 004
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        return 0;
       sprintf ( syn->e.HH, "%02d", s->ival );
       //sprintf(syn->s0.GG, "%02d", (int) sq->sequence[is].val);
       break;
     case 5: // 0 04 005
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        return 0;
       sprintf ( syn->e.mm, "%02d", s->ival );
       break;
       // store latest displacement in seconds
     case 23: // 0 04 023
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+      {
+        s->k_jtval = s->k_itval;
+        s->jtval = s->itval;
+        s->k_itval = s->i;
+        s->itval = 0;
+        return 0;
+      }
       s->k_jtval = s->k_itval;
       s->jtval = s->itval;
       s->k_itval = s->i;
       s->itval = s->ival * 86400;
       break;
     case 24: // 0 04 024
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+      {
+        s->k_jtval = s->k_itval;
+        s->jtval = s->itval;
+        s->k_itval = s->i;
+        s->itval = 0;
+        return 0;
+      }
       s->k_jtval = s->k_itval;
       s->jtval = s->itval;
       s->k_itval = s->i;
       s->itval = s->ival * 3600;
       break;
     case 25: // 0 04 025
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+      {
+        s->k_jtval = s->k_itval;
+        s->jtval = s->itval;
+        s->k_itval = s->i;
+        s->itval = 0;
+        return 0;
+      }
       s->k_jtval = s->k_itval;
       s->jtval = s->itval;
       s->k_itval = s->i;
       s->itval = s->ival * 60;
       break;
     case 26: // 0 04 026
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+      {
+        s->k_jtval = s->k_itval;
+        s->jtval = s->itval;
+        s->k_itval = s->i;
+        s->itval = 0;
+        return 0;
+      }
       s->k_jtval = s->k_itval;
       s->jtval = s->itval;
       s->k_itval = s->i;
@@ -100,47 +142,89 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
   switch ( s->a->desc.y )
     {
     case 1: // 0 04 001
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        return 0;
       if (b->e.YYYY[0] == 0)
         sprintf ( b->e.YYYY, "%04d", s->ival );
       break;
     case 2: // 0 04 002
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        return 0;
       if (b->e.MM[0] == 0)
         sprintf ( b->e.MM, "%02d", s->ival );
       break;
     case 3: // 0 04 003
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        return 0;
       if (b->e.DD[0] == 0)
         sprintf ( b->e.DD, "%02d", s->ival );
       //sprintf(b->s0.YY, "%02d", (int) sq->sequence[is].val);
       break;
     case 4: // 0 04 004
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        return 0;
       if (b->e.HH[0] == 0)
         sprintf ( b->e.HH, "%02d", s->ival );
       //sprintf(b->s0.GG, "%02d", (int) sq->sequence[is].val);
       break;
     case 5: // 0 04 005
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        return 0;
       if (b->e.mm[0] == 0)
         sprintf ( b->e.mm, "%02d", s->ival );
       break;
       // store latest displacement in seconds
     case 23: // 0 04 023
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+      {
+        s->k_jtval = s->k_itval;
+        s->jtval = s->itval;
+        s->k_itval = s->i;
+        s->itval = 0;
+        return 0;
+      }
       s->k_jtval = s->k_itval;
       s->jtval = s->itval;
       s->k_itval = s->i;
       s->itval = s->ival * 86400;
       break;
     case 24: // 0 04 024
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+      {
+        s->k_jtval = s->k_itval;
+        s->jtval = s->itval;
+        s->k_itval = s->i;
+        s->itval = 0;
+        return 0;
+      }
       s->k_jtval = s->k_itval;
       s->jtval = s->itval;
       s->k_itval = s->i;
       s->itval = s->ival * 3600;
       break;
     case 25: // 0 04 025
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+      {
+        s->k_jtval = s->k_itval;
+        s->jtval = s->itval;
+        s->k_itval = s->i;
+        s->itval = 0;
+        return 0;
+      }
       s->k_jtval = s->k_itval;
       s->jtval = s->itval;
       s->k_itval = s->i;
       s->itval = s->ival * 60;
       break;
     case 26: // 0 04 026
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+      {
+        s->k_jtval = s->k_itval;
+        s->jtval = s->itval;
+        s->k_itval = s->i;
+        s->itval = 0;
+        return 0;
+      }
       s->k_jtval = s->k_itval;
       s->jtval = s->itval;
       s->k_itval = s->i;

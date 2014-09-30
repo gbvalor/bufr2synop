@@ -161,7 +161,6 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct
 
   // clean data
   clean_synop_chunks ( syn );
-  memset(s, 0, sizeof(struct bufr_subset_state));
 
   // reject if still not coded type
   if (strcmp(s->type_report,"AAXX") && strcmp(s->type_report,"BBXX"))
@@ -190,9 +189,7 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct
         syn_parse_x08 ( syn, s, err );
       }
 
-      if ( sq->sequence[is].mask & DESCRIPTOR_VALUE_MISSING ||
-           s->isq   // case of an significance qualifier
-         )
+      if ( s->isq)   // case of an significance qualifier
         continue;
 
       s->i = is;

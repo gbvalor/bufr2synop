@@ -377,6 +377,7 @@ char * pascal_to_PPPP ( char *target, double P );
 char * percent_to_okta ( char *target, double perc );
 char * prec_to_RRR ( char *target, double r );
 char * prec_to_RRRR24 ( char *target, double r );
+char * secs_to_tt(char *tt, int secs);
 char * vism_to_VV ( char *target, double V );
 
 int print_synop ( char *report, size_t lmax, struct synop_chunks *syn );

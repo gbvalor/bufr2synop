@@ -83,7 +83,6 @@ int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr
 
   // clean data
   clean_buoy_chunks ( b );
-  memset(s, 0, sizeof(struct bufr_subset_state));
 
   // reject if still not coded type
   if (strcmp(s->type_report,"ZZYY"))

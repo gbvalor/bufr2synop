@@ -68,6 +68,10 @@ char * latlon_to_MMM(char *target, double lat, double lon)
 int syn_parse_x06 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
 {
   int ia;
+
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+    return 0;
+
   switch ( s->a->desc.y )
     {
     case 1: // 0 06 001
@@ -125,6 +129,9 @@ int buoy_parse_x06 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
 {
   char aux[16];
   int ia;
+
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+    return 0;
 
   switch ( s->a->desc.y )
     {

@@ -121,6 +121,9 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
 {
   char aux[16];
 
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+    return 0;
+
   switch ( s->a->desc.y )
     {
     case 1: // 0 12 001
@@ -238,6 +241,9 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
 int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err )
 {
   char aux[16];
+
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+    return 0;
 
   switch ( s->a->desc.y )
     {

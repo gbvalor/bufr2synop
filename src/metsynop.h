@@ -51,6 +51,16 @@
 */
 #define SYNOP_EXT 16
 
+/*! \def SYNOP_NNUB 
+    \brief number of optional nub3 struct to store the parsed results of 8.... groups 
+*/
+#define SYNOP_NNUB 6
+
+/*! \def SYNOP_NMISC 
+    \brief number of misc3 struct to store the parsed results of 9SpSpspsp groups 
+*/
+#define SYNOP_NMISC 8
+
 
 /*! \struct report_date_ext
     \brief contains extensions, not in wmo. Date/time UTC information
@@ -184,17 +194,11 @@ struct misc3
    char spsp[4]; /*!< Supplementary information. (Code table 3778) */
 };
 
-
-/*! \def SYNOP_NNUB 
-    \brief number of optional nub3 struct to store the parsed results of 8.... groups 
-*/
-#define SYNOP_NNUB 6
-
-/*! \def SYNOP_NMISC 
-    \brief number of misc3 struct to store the parsed results of 9SpSpspsp groups 
-*/
-#define SYNOP_NMISC 8
-
+struct data9
+{
+   size_t n; /*!< amount of used structs in array */
+   struct misc3 misc[SYNOP_NMISC]; /*!< array of optional \ref misc3 struct */
+};
 
 /*! 
     \struct synop_sec3
@@ -242,7 +246,7 @@ ture change. */
    char tr[2]; /*!< Duration of period of reference for amount of precipitation, ending at the time of the report. (Code table 4019)  */
    char RRRR24[6]; /*!< Total amount of precipitation during the 24-hour period ending at the time of observation, in tenths of a millimetre. */
    struct nub3 nub[SYNOP_NNUB]; /*!< array of optional nub3 structs  */
-   struct misc3 misc[SYNOP_NMISC]; /*!< array of optional misc3 struct */
+   struct data9 d9; /*!< struct with optional 9SpSpss items */
 };
 
 /*! \struct synop_chunks

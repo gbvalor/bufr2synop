@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
     }
 
   // set needed enviroment before use bufr library
-  set_environment(DEFAULT_BUFRTABLES, BUFRTABLES_DIR);
+  bufr_set_environment(DEFAULT_BUFRTABLES, BUFRTABLES_DIR);
 
   /**** Big loop. a cycle per file ****/
   while (get_bufrfile_path( INPUTFILE, ERR))

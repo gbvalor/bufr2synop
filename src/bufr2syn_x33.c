@@ -36,6 +36,10 @@ int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
 {
   char aux[16];
 
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+    return 0;
+
+
   switch ( s->a->desc.y )
     {
     case 20:

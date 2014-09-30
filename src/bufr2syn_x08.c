@@ -38,6 +38,9 @@
 */
 int syn_parse_x08 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
 {
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+    return 0;
+
   switch ( s->a->desc.y )
     {
     case 2:
@@ -75,6 +78,9 @@ int syn_parse_x08 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
 */
 int buoy_parse_x08 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err )
 {
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+    return 0;
+
   switch ( s->a->desc.y )
     {
     case 22:
