@@ -1,4 +1,3 @@
-INCLUDES = 
 METASOURCES = AUTO
 
 # set the include path found by configure

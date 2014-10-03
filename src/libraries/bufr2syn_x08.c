@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 /*!
- \file bufr2syn_x07.c
+ \file bufr2syn_x08.c
  \brief decodes the descriptors with X = 08 (Significance Qualifiers)
 
   As there is no significance information in synop we use this descriptors as
