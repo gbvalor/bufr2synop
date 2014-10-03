@@ -27,11 +27,11 @@
       <terminal>true</terminal>
       <runarguments>
         <bufr_decode/>
-        <bufr2synop></bufr2synop>
+        <bufr2synop/>
       </runarguments>
       <debugarguments>
         <bufr_decode/>
-        <bufr2synop></bufr2synop>
+        <bufr2synop/>
       </debugarguments>
       <cwd>
         <bufr_decode>/home/gbv/bufr2synop/./src</bufr_decode>

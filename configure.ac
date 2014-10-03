@@ -1,5 +1,5 @@
 AC_INIT([bufr2synop], 0.4)
-AC_CONFIG_SRCDIR([src/bufr2synop.c])
+AC_CONFIG_SRCDIR([src/apps/bufr2synop.c])
 AM_INIT_AUTOMAKE
 
 AM_CONFIG_HEADER(config.h)
@@ -14,4 +14,4 @@ AM_PROG_LIBTOOL
 AC_CHECK_LIB([bufr], [bufrread], , [AC_MSG_ERROR("You must install ECMWF bufrdc library")])
 
 
-AC_OUTPUT(Makefile src/Makefile)
+AC_OUTPUT(Makefile src/Makefile src/apps/Makefile src/libraries/Makefile)
