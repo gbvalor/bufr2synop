@@ -24,9 +24,9 @@
 #include "bufr2syn.h"
 
 /*!
-  \fn int buoy_YYYYMMDDHHmm_to_YYGG(struct synop_chunks *syn)
+  \fn int buoy_YYYYMMDDHHmm_to_JMMYYGGgg(struct buoy_chunks *b)
   \brief Sets YYGG from YYYYMMDDHHmm extended group
-  \param syn pointer to the target struct \ref synop_chunks
+  \param b pointer to the target struct \ref buoy_chunks
 */
 int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b )
 {

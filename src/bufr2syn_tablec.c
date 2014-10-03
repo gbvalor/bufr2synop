@@ -28,7 +28,8 @@
   \brief Get the complete pathname of a table file needed by a bufr message
   \param target the resulting name
   \param type a char with type, i.e, 'B', 'C', or 'D'
-
+  \param bufrtables_dir string with path to bufr file tables dir
+  \param ksec1 array of integer processed prevoiously by ecmwf bufr library
   In ECMWF library the name of a table file is Kssswwwwwxxxxxyyyzzz.TXT , where
        - K - type of table, i.e, 'B', 'C', or 'D'
        - sss - Master table number (zero for WMO meteorological tables)

@@ -135,7 +135,7 @@
 #define DESCRIPTOR_HAVE_FLAG_TABLE_STRING (32)
 
 /*!
- \def DESCRIPTOR_IS_FLAG_TABLE_STRING
+ \def DESCRIPTOR_IS_FLAG_TABLE
  \brief Bit mask for a flag table in a struct \ref bufr_atom_data
 */
 #define DESCRIPTOR_IS_FLAG_TABLE (64)
@@ -144,72 +144,72 @@
  \def DESCRIPTOR_IS_A_REPLICATOR
  \brief Bit mask for a flag table string in a struct \ref bufr_atom_data
 */
-#define DESCRIPTIR_IS_A_REPLICATOR (128)
+#define DESCRIPTOR_IS_A_REPLICATOR (128)
 
 
 /*!
  \def SUBSET_MASK_LATITUDE_SOUTH
- \brief Bit mask to mark a struct \ref bufr_sequence_data with south latitude
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data with south latitude
 */
 #define SUBSET_MASK_LATITUDE_SOUTH (1)
 
 /*!
  \def SUBSET_MASK_LONGITUDE_WEST
- \brief Bit mask to mark a struct \ref bufr_sequence_data with west longitude
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data with west longitude
 */
 #define SUBSET_MASK_LONGITUDE_WEST (2)
 
 /*!
  \def SUBSET_MASK_HAVE_TYPE_STATION
- \brief Bit mask to mark a struct \ref bufr_sequence_data having type station information
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having type station information
 */
 #define SUBSET_MASK_HAVE_TYPE_STATION (4)
 
 /*!
  \def SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW
- \brief Bit mask to mark a struct \ref bufr_sequence_data without WW information
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data without WW information
 */
 #define SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW (8)
 
 /*!
  \def SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1
- \brief Bit mask to mark a struct \ref bufr_sequence_data without W1 information
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data without W1 information
 */
 #define SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1 (16)
 
 /*!
  \def SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2
- \brief Bit mask to mark a struct \ref bufr_sequence_data without W1 information
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data without W1 information
 */
 #define SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2 (32)
 
 /*!
  \def SUBSET_MASK_HAVE_LATITUDE
- \brief Bit mask to mark a struct \ref bufr_sequence_data having latitude
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having latitude
 */
 #define SUBSET_MASK_HAVE_LATITUDE (64)
 
 /*!
  \def SUBSET_MASK_HAVE_LONGITUDE
- \brief Bit mask to mark a struct \ref bufr_sequence_data having longitude
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having longitude
 */
 #define SUBSET_MASK_HAVE_LONGITUDE (128)
 
 /*!
  \def SUBSET_MASK_HAVE_ALTITUDE
- \brief Bit mask to mark a struct \ref bufr_sequence_data having altitude
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having altitude
 */
 #define SUBSET_MASK_HAVE_ALTITUDE (256)
 
 /*!
  \def SUBSET_MASK_HAVE_NAME
- \brief Bit mask to mark a struct \ref bufr_sequence_data having station name
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having station name
 */
 #define SUBSET_MASK_HAVE_NAME (512)
 
 /*!
  \def SUBSET_MASK_HAVE_COUNTRY
- \brief Bit mask to mark a struct \ref bufr_sequence_data having country name
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having country name
 */
 #define SUBSET_MASK_HAVE_COUNTRY (1024)
 
@@ -385,6 +385,8 @@ char * print_synop_sec0 (char **sec0, size_t lmax, struct synop_chunks *syn);
 char * print_synop_sec1 (char **sec1, size_t lmax, struct synop_chunks *syn);
 char * print_synop_sec2 (char **sec2, size_t lmax, struct synop_chunks *syn);
 char * print_synop_sec3 (char **sec3, size_t lmax, struct synop_chunks *syn);
+
+int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b );
 
 int print_buoy ( char *report, size_t lmax, struct buoy_chunks *syn );
 char * print_buoy_sec0 (char **sec0, size_t lmax, struct buoy_chunks *syn);

@@ -141,9 +141,9 @@ void clean_buoy_sec4(struct buoy_sec4 *s)
 }
 
 /*!
-  \fn void clean_buoy_chunks( struct buoy_chunks *syn)
+  \fn void clean_buoy_chunks( struct buoy_chunks *b)
   \brief cleans a \ref buoy_chunks struct
-  \param syn pointer to the struct to clean
+  \param b pointer to the struct to clean
 */
 void clean_buoy_chunks( struct buoy_chunks *b)
 {

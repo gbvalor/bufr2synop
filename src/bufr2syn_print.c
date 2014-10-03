@@ -91,9 +91,9 @@ char * print_synop_sec0 (char **sec0, size_t lmax, struct synop_chunks *syn)
 }
 
 /*!
-  \fn char * print_synop_sec1 (char **sec0, size_t lmax, struct synop_chunks *syn)
+  \fn char * print_synop_sec1 (char **sec1, size_t lmax, struct synop_chunks *syn)
   \brief Prints the synop section 1
-  \param sec0 the pointer where to print section
+  \param sec1 the pointer where to print section
   \param lmax max length permited
   \param syn pointer to s atruct \ref synop_chunks where the parse results are set
 */
@@ -699,7 +699,7 @@ char * print_buoy_sec3 (char **sec3, size_t lmax, struct buoy_chunks *b)
  \brief prints a buoy into a string
  \param report target string
  \param lmax max size of string
- \param syn pointer to a struct \ref buoy_chuncks with the result of parse tasks
+ \param b pointer to a struct \ref buoy_chunks with the result of parse tasks
 
  returns 0 if all went right
 */
