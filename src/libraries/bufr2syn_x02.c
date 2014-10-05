@@ -35,16 +35,21 @@
 int syn_parse_x02 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
 {
 
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
-    return 0;
 
   switch ( s->a->desc.y )
     {
     case 1: // 0 02 001
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+      {
+        strcpy (syn->s1.ix,"/");
+        return 0;
+      }
       s->type = s->ival;
       s->mask |= SUBSET_MASK_HAVE_TYPE_STATION;
       break;
     case 2: // 0 02 002
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        return 0;
       if ( s->ival & 4 )
         strcpy ( syn->s0.iw, "4" );
       else
@@ -70,7 +75,7 @@ int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
   char aux[16];
 
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
-    return 0;
+   return 0;
 
   switch ( s->a->desc.y )
     {

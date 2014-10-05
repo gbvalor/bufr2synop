@@ -104,7 +104,7 @@ char * print_synop_sec1 (char **sec1, size_t lmax, struct synop_chunks *syn)
 
   if (syn->mask & SYNOP_SEC1)
     {
-      // printf Nddff
+      // printf irixhVV
       if (check_len(sec1,6))
         c += sprintf ( c, " %s%s%s%s", syn->s1.ir, syn->s1.ix, syn->s1.h, syn->s1.VV );
 
@@ -309,11 +309,15 @@ char * print_synop_sec2 (char **sec2, size_t lmax, struct synop_chunks *syn)
 char * print_synop_sec3 (char **sec3, size_t lmax, struct synop_chunks *syn)
 {
   size_t i;
-  char *c = *sec3;
+  char *c = *sec3, *c0;
   if ( syn->mask & SYNOP_SEC3 )
     {
       if (check_len(sec3,4))
         c += sprintf ( c, " 333" );
+
+      // init point to write info.
+      // in case we finally write nothing in this section 
+      c0 = c;
 
       // printf 1snxTxTxTx
       if (check_len(sec3,6) && syn->s3.XoXoXoXo[0])
@@ -346,7 +350,7 @@ char * print_synop_sec3 (char **sec3, size_t lmax, struct synop_chunks *syn)
       /**** Radiation Sunshine gropus ***/
 
       // print 55SSS
-      if (check_len(sec3,6) && syn->s3.SSS[0])
+      if (check_len(sec3,6) && syn->s3.SSS[0] && strcmp(syn->s3.SSS,"///"))
         {
           c += sprintf(c, " 55%s", syn->s3.SSS);
           for (i = 0; i < 7; i++)
@@ -357,7 +361,7 @@ char * print_synop_sec3 (char **sec3, size_t lmax, struct synop_chunks *syn)
         }
 
       // print 553SS
-      if (check_len(sec3,6) && syn->s3.SS[0])
+      if (check_len(sec3,6) && syn->s3.SS[0] && strcmp(syn->s3.SS,"//"))
         {
           c += sprintf(c, " 553%s", syn->s3.SS);
           for (i = 0; i < 7; i++)
@@ -395,7 +399,8 @@ char * print_synop_sec3 (char **sec3, size_t lmax, struct synop_chunks *syn)
       }
 
     }
-  *sec3 = c;
+  if (c != c0)
+    *sec3 = c;
   return *sec3;
 }
 

@@ -38,7 +38,7 @@ int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
        strlen ( syn->e.MM ) &&
        strlen ( syn->e.DD ) &&
        strlen ( syn->e.HH ) &&
-       strlen ( syn->e.MM ) )
+       strlen ( syn->e.mm ) )
     sprintf ( aux,"%s%s%s%s%s", syn->e.YYYY, syn->e.MM, syn->e.DD, syn->e.HH, syn->e.mm );
 
   if ( strlen ( aux ) != 12 )
@@ -283,7 +283,7 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct
     syn->s0.iw[0] = '1';
 
   // adjust ix
-  if (syn->s1.ix[0] == '/' && syn->s1.ww[0] == 0)
+  if (syn->s1.ix[0] == '/' /*&& syn->s1.ww[0] == 0*/)
     {
       if ((s->mask & SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW) &&
           (s->mask & SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1) &&
@@ -297,6 +297,8 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct
               else if (s->type == 0)
                 strcpy(syn->s1.ix,"5");
             }
+          else
+            strcpy(syn->s1.ix,"6"); //NOTE: here we assume an automatic station without W data
         }
       else if (s->mask & SUBSET_MASK_HAVE_TYPE_STATION)
         {
@@ -305,6 +307,8 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct
           else if (s->type == 0)
             strcpy(syn->s1.ix,"6");
         }
+      else
+        strcpy(syn->s1.ix,"6"); //NOTE: here we assume an automatic station without W data
     }
 
   /****** Final Adjust ***********/

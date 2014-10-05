@@ -147,15 +147,20 @@ char * vism_to_VV ( char *target, double V )
 */
 int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
 {
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
-    return 0;
 
   switch ( s->a->desc.y )
     {
     case 1: // 0 20 001
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        return 0;
       vism_to_VV ( syn->s1.VV, s->val );
       break;
     case 3: // 0 20 003
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+          {
+            s->mask |=  (SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW | SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1 | SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2);
+            return 0;
+          }
       if ( s->ival < 100 )
         {
           if ( syn->s1.ix[0] == '/' )
@@ -180,6 +185,11 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         }
       break;
     case 4: // 0 20 004
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        {
+          s->mask |=  SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1;
+          return 0;
+        }
       if ( s->ival < 10 )
         {
           if ( syn->s1.ix[0] == '/' )
@@ -199,7 +209,12 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
           syn->mask |= SYNOP_SEC1;
         }
       break;
-    case 5: // 0 20 004
+    case 5: // 0 20 005
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        {
+          s->mask |=  SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2;
+          return 0;
+        }
       if ( s->ival < 10 )
         {
           if ( syn->s1.ix[0] == '/' )
@@ -220,9 +235,13 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         }
       break;
     case 10: // 0 20 010
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        return 0;
       percent_to_okta ( syn->s1.N, s->val );
       break;
     case 11: // 0 20 011
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        return 0;
       if (s->clayer == 0)
         {
           if ( s->ival <= 8 )
@@ -245,6 +264,8 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         }
       break;
     case 12: // 0 20 012
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        return 0;
       if (s->clayer == 0)
         {
           if (s->ival >= 10 && s->ival < 20)
@@ -274,12 +295,16 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
 
       break;
     case 13: // 0 20 013
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        return 0;
       if (s->clayer == 0) // fisrt layer is for sec1
         m_to_h( syn->s1.h, s->val );
       else
         m_to_hh(syn->s3.nub[s->clayer - 1].hshs, s->val);
       break;
     case 62: // 0 20 062
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        return 0;
       if ( s->ival < 10)
         sprintf(syn->s3.E,"%d", s->ival);
       else if (s->ival < 20)
