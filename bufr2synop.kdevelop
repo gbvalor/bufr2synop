@@ -14,8 +14,8 @@
     <projectname>bufr2synop</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description/>
-    <defaultencoding/>
+    <description></description>
+    <defaultencoding></defaultencoding>
   </general>
   <kdevautoproject>
     <general>
@@ -26,12 +26,12 @@
       <mainprogram>src/bufr2synop</mainprogram>
       <terminal>true</terminal>
       <runarguments>
-        <bufr_decode></bufr_decode>
-        <bufr2synop></bufr2synop>
+        <bufr_decode/>
+        <bufr2synop/>
       </runarguments>
       <debugarguments>
-        <bufr_decode></bufr_decode>
-        <bufr2synop></bufr2synop>
+        <bufr_decode/>
+        <bufr2synop/>
       </debugarguments>
       <cwd>
         <bufr_decode>/home/gbv/bufr2synop/./src</bufr_decode>
@@ -186,7 +186,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet/>
+      <prefixGet></prefixGet>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -207,11 +207,11 @@
   </cppsupportpart>
   <kdevdebugger>
     <general>
-      <gdbpath/>
+      <gdbpath></gdbpath>
       <dbgshell>libtool</dbgshell>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>

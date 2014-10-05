@@ -213,6 +213,36 @@
 */
 #define SUBSET_MASK_HAVE_COUNTRY (1024)
 
+/*!
+ \def SUBSET_MASK_HAVE_YEAR
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having observation year
+*/
+#define SUBSET_MASK_HAVE_YEAR (2048)
+
+/*!
+ \def SUBSET_MASK_HAVE_MONTH
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having observation month
+*/
+#define SUBSET_MASK_HAVE_MONTH (4096)
+
+/*!
+ \def SUBSET_MASK_HAVE_DAY
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having observation day in a month
+*/
+#define SUBSET_MASK_HAVE_DAY (8192)
+
+/*!
+ \def SUBSET_MASK_HAVE_HOUR
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having observation hour 
+*/
+#define SUBSET_MASK_HAVE_HOUR (16384)
+
+/*!
+ \def SUBSET_MASK_HAVE_MINUTE
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having observation minute 
+*/
+#define SUBSET_MASK_HAVE_MINUTE (32768)
+
 
 /*!
   \struct bufr_descriptor

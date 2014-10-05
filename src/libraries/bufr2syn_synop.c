@@ -147,7 +147,7 @@ char *guess_WMO_region(struct synop_chunks *syn)
   \param ksec1 array of integers set by ECMWF bufrdc library
   \param err string with detected errors, if any
 
-  It return 0 if all is OK. Otherwise it also fills the \a err string
+  It return 0 if all is OK. Otherwise returns 1 and it also fills the \a err string
 */
 int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err )
 {
@@ -165,7 +165,7 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct
   // reject if still not coded type
   if (strcmp(s->type_report,"AAXX") && strcmp(s->type_report,"BBXX"))
   {
-    sprintf(err,"bufr2syn: '%s' reports still not decoded in this software", s->type_report);
+    sprintf(err,"bufr2syn: parse_subset_as_synop(): '%s' reports still not decoded in this software", s->type_report);
     return 1;
   }
 
@@ -262,6 +262,20 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct
         }
 
     }
+
+  /* Check about needed descriptors */
+  if (((s->mask & SUBSET_MASK_HAVE_LATITUDE) == 0) ||
+      ((s->mask & SUBSET_MASK_HAVE_LONGITUDE) == 0) ||
+      ((s->mask & SUBSET_MASK_HAVE_NAME) == 0) ||
+      ((s->mask & SUBSET_MASK_HAVE_YEAR) == 0) ||
+      ((s->mask & SUBSET_MASK_HAVE_MONTH) == 0) ||
+      ((s->mask & SUBSET_MASK_HAVE_DAY) == 0) ||
+      ((s->mask & SUBSET_MASK_HAVE_HOUR) == 0) ||
+      ((s->mask & SUBSET_MASK_HAVE_NAME) == 0) )
+      {
+        sprintf(err,"bufr2syn: parse_subset_as_synop(): lack of mandatory descriptor in sequence");
+        return 1;
+      }
 
   /****** Second pass. Global results and consistence analysis ************/
   // set ir

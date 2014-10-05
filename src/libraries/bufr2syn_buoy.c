@@ -189,6 +189,19 @@ int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr
 
     }
 
+  if (((s->mask & SUBSET_MASK_HAVE_LATITUDE) == 0) ||
+      ((s->mask & SUBSET_MASK_HAVE_LONGITUDE) == 0) ||
+      ((s->mask & SUBSET_MASK_HAVE_NAME) == 0) ||
+      ((s->mask & SUBSET_MASK_HAVE_YEAR) == 0) ||
+      ((s->mask & SUBSET_MASK_HAVE_MONTH) == 0) ||
+      ((s->mask & SUBSET_MASK_HAVE_DAY) == 0) ||
+      ((s->mask & SUBSET_MASK_HAVE_HOUR) == 0))
+      {
+        sprintf(err,"bufr2syn: parse_subset_as_buoy(): lack of mandatory descriptor in sequence");
+        return 1;
+      }
+
+
   /****** Second pass. Global results and consistence analysis ************/
 
   // adjust iw

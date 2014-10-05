@@ -19,7 +19,7 @@
  ***************************************************************************/
 /*!
  \file bufr2syn_x02.c
- \brief decodes the descriptors with X = 02
+ \brief decodes the descriptors with X = 02 (intrumentation and station type)
  */
 #include "bufr2syn.h"
 

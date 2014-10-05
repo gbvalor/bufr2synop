@@ -131,7 +131,7 @@ struct buoy_chunks BUOY; /*!< struct where to set chunks of buoys taken from a b
   \param argv the array of strings with the arguents
 
 */
-int main(int argc, char *argv[])
+int main ( int argc, char *argv[] )
 {
 
   FILE *fp;
@@ -141,78 +141,78 @@ int main(int argc, char *argv[])
   unsigned int *kbuff;
   char aux[256]; // auxiliar string
   char *c; // auxiliar pointer for sprintf tasks
-  int i, j, k,nsub, nsub1;
+  int i, j, k, nsub, nsub1;
   int kelem, kvals;
   int icode = 0, ktdlen, ktdexl;
   int current_ss;
   char cunits[26], cnames[66],cvals[82];
 
-  if (read_arguments(argc, argv))
+  if ( read_arguments ( argc, argv ) )
     {
-      fprintf(stderr, "%s: error geting arguments\n", SELF);
-      return (EXIT_FAILURE);
+      fprintf ( stderr, "%s: error geting arguments\n", SELF );
+      return ( EXIT_FAILURE );
     }
 
   // set needed enviroment before use bufr library
-  bufr_set_environment(DEFAULT_BUFRTABLES, BUFRTABLES_DIR);
+  bufr_set_environment ( DEFAULT_BUFRTABLES, BUFRTABLES_DIR );
 
   /**** Big loop. a cycle per file ****/
-  while (get_bufrfile_path( INPUTFILE, ERR))
+  while ( get_bufrfile_path ( INPUTFILE, ERR ) )
     {
       kelem = KELEM;
       kvals = KVALS;
       length = BUFR_LEN;
-      if (DEBUG)
-        printf("# Parsing file '%s'\n",  INPUTFILE);
+      if ( DEBUG )
+        printf ( "# Parsing file '%s'\n",  INPUTFILE );
 
       /* Try to guess a GTS header from filename*/
-      GTS_HEADER = guess_gts_header(&HEADER, INPUTFILE);
-      if (GTS_HEADER && DEBUG)
-        printf("#%s %s %s %s %s\n", HEADER.timestamp, HEADER.bname, HEADER.center, HEADER.dtrel, HEADER.order);
+      GTS_HEADER = guess_gts_header ( &HEADER, INPUTFILE );
+      if ( GTS_HEADER && DEBUG )
+        printf ( "#%s %s %s %s %s\n", HEADER.timestamp, HEADER.bname, HEADER.center, HEADER.dtrel, HEADER.order );
 
       /* Read in bufr messages */
       //status = readbufr ( fp, &BUFR_MESSAGE, &length );
-      if ((status = read_bufr(BUFR_MESSAGE, INPUTFILE, &length)))
+      if ( ( status = read_bufr ( BUFR_MESSAGE, INPUTFILE, &length ) ) )
         {
-          if (status == -1)
-            fprintf(stderr, "File '%s' do not begin with 'BUFR'.\n", INPUTFILE);
-          else if (status == -2)
-            fprintf(stderr, "FILE '%s' do not end with '7777'.\n", INPUTFILE);
-          else if (status == -3)
-            fprintf(stderr, "FILE '%s' has different size than expected.\n",
-                    INPUTFILE);
-          else if (status == -4)
-            fprintf(stderr, "Too small input FILE.\n");
-          exit(EXIT_FAILURE);
+          if ( status == -1 )
+            fprintf ( stderr, "File '%s' do not begin with 'BUFR'.\n", INPUTFILE );
+          else if ( status == -2 )
+            fprintf ( stderr, "FILE '%s' do not end with '7777'.\n", INPUTFILE );
+          else if ( status == -3 )
+            fprintf ( stderr, "FILE '%s' has different size than expected.\n",
+                      INPUTFILE );
+          else if ( status == -4 )
+            fprintf ( stderr, "Too small input FILE.\n" );
+          exit ( EXIT_FAILURE );
         }
-      else if (DEBUG)
+      else if ( DEBUG )
         {
-          printf("#It is OK.\n");
-          printf("#message read ");
-          printf("%d\n", length);
-          printf("#%s\n", &BUFR_MESSAGE[0]); // print the string 'BUFR'
+          printf ( "#It is OK.\n" );
+          printf ( "#message read " );
+          printf ( "%d\n", length );
+          printf ( "#%s\n", &BUFR_MESSAGE[0] ); // print the string 'BUFR'
         }
 
       /* Fortran routines works with 4-bytes words, so the readed file byte-oriented
        is redefined as an array of unsigned int
        */
-      kbuff = (unsigned int *) BUFR_MESSAGE;
+      kbuff = ( unsigned int * ) BUFR_MESSAGE;
       length /= 4; // Now length is sized in words
 
-      if (SHOW_ECMWF_OUTPUT)
+      if ( SHOW_ECMWF_OUTPUT )
         {
 
-          bus012_(&length, kbuff, KSUP, KSEC0, KSEC1, KSEC2, &KERR);
-          buprs0_(KSEC0);
-          buprs1_(KSEC1);
+          bus012_ ( &length, kbuff, KSUP, KSEC0, KSEC1, KSEC2, &KERR );
+          buprs0_ ( KSEC0 );
+          buprs1_ ( KSEC1 );
 
           // KSUP[5] is the number of subsets
-          if (KSUP[5] > 1)
+          if ( KSUP[5] > 1 )
             kelem = kvals / KSUP[5];
           else
             kelem = KELEM;
 
-          if (kelem > KELEM)
+          if ( kelem > KELEM )
             kelem = KELEM;
         }
 
@@ -289,32 +289,32 @@ int main(int argc, char *argv[])
        */
 
       KERR = 0;
-      bufrex_(&length, (int *) kbuff, KSUP, KSEC0, KSEC1, KSEC2, KSEC3, KSEC4,
-              &kelem, (char **) CNAMES, (char **) CUNITS, &kvals, VALUES,
-              (char **) CVALS, &KERR);
+      bufrex_ ( &length, ( int * ) kbuff, KSUP, KSEC0, KSEC1, KSEC2, KSEC3, KSEC4,
+                &kelem, ( char ** ) CNAMES, ( char ** ) CUNITS, &kvals, VALUES,
+                ( char ** ) CVALS, &KERR );
 
-      if (KERR)
+      if ( KERR )
         {
-          printf("KERR=%d\n", KERR);
+          printf ( "KERR=%d\n", KERR );
           KERR = 0;
         }
 
       // Check about the WMO master table
-      if (KSEC1[13])
+      if ( KSEC1[13] )
         {
-          fprintf(stderr,"Sorry, we only accept WMO BUFR master Table\n");
-          exit(EXIT_FAILURE);
+          fprintf ( stderr,"Sorry, we only accept WMO BUFR master Table\n" );
+          exit ( EXIT_FAILURE );
         }
 
-      if (KSEC1[5] != 0 && KSEC1[5] != 1 && KSEC1[5] != 2 && KSEC1[5] !=  7)
+      if ( KSEC1[5] != 0 && KSEC1[5] != 1 && KSEC1[5] != 2 && KSEC1[5] !=  7 )
         {
-          fprintf(stderr,"The data category %d is not parsed at the moment");
-          exit(EXIT_FAILURE);
+          fprintf ( stderr,"The data category %d is not parsed at the moment" );
+          exit ( EXIT_FAILURE );
         }
 
-      if (KSUP[5] > KSUBS)
+      if ( KSUP[5] > KSUBS )
         {
-          fprintf(stderr,"%s: Warning, not all the %d subsets for this file can be managed, just %d\n", SELF, KSUP[5], KSUBS);
+          fprintf ( stderr,"%s: Warning, not all the %d subsets for this file can be managed, just %d\n", SELF, KSUP[5], KSUBS );
         }
 
       /*
@@ -326,42 +326,42 @@ int main(int argc, char *argv[])
        KTDEXP - An INTEGER array containing the list of KTDEXL data descriptors
        KERR - An INTEGER containing error code.
       */
-      busel_(&ktdlen, KTDLST, &ktdexl, KTDEXP, &KERR);
+      busel_ ( &ktdlen, KTDLST, &ktdexl, KTDEXP, &KERR );
 
       /*
        read table C if VERBOSE
       */
-      if (VERBOSE)
+      if ( VERBOSE )
         {
-          if (read_table_c(TABLEC, &NLINES_TABLEC, BUFRTABLES_DIR, KSEC1) == 0)
+          if ( read_table_c ( TABLEC, &NLINES_TABLEC, BUFRTABLES_DIR, KSEC1 ) == 0 )
             {
-              fprintf(stderr,"Cannot read C Table  File\n");
-              exit(EXIT_FAILURE);
+              fprintf ( stderr,"Cannot read C Table  File\n" );
+              exit ( EXIT_FAILURE );
             }
         }
 
-      if (DEBUG)
+      if ( DEBUG )
         {
-          for (i = 0; i < ktdlen; i++)
+          for ( i = 0; i < ktdlen; i++ )
             {
-              integer_to_descriptor(&d, KTDLST[i]);
-              printf("#KTDLST[%03d]=%d %02d %03d\n", i, d.f, d.x, d.y);
+              integer_to_descriptor ( &d, KTDLST[i] );
+              printf ( "#KTDLST[%03d]=%d %02d %03d\n", i, d.f, d.x, d.y );
             }
         }
 
       // loop for every subset
-      for (nsub = 0; nsub < KSUP[5]; nsub++)
+      for ( nsub = 0; nsub < KSUP[5]; nsub++ )
         {
           nsub1 = nsub + 1;
 
           // clean sequence
-          memset(&SUBSET, 0, sizeof( struct bufr_subset_sequence_data));
+          memset ( &SUBSET, 0, sizeof ( struct bufr_subset_sequence_data ) );
 
           // clean REPORT
-          memset(&REPORT, 0, sizeof(struct metreport));
+          memset ( &REPORT, 0, sizeof ( struct metreport ) );
 
           // sets GTS header, common for all subsets in a bufr file
-          if (GTS_HEADER)
+          if ( GTS_HEADER )
             REPORT.h = &HEADER;
 
           /*
@@ -372,155 +372,156 @@ int main(int argc, char *argv[])
 
              Also NOTE that all integers must be called by reference
           */
-          busel2_(&nsub1, &kelem, &ktdlen, (char **)KTDLST, &ktdexl, (char **)KTDEXP, (char **)CNAMES, (char **)CUNITS, &KERR);
+          busel2_ ( &nsub1, &kelem, &ktdlen, ( char ** ) KTDLST, &ktdexl, ( char ** ) KTDEXP, ( char ** ) CNAMES, ( char ** ) CUNITS, &KERR );
 
-          if (KERR)
+          if ( KERR )
             continue;
 
-          for (j = 0 ; j < ktdexl && j < KSUBS ; j++)
+          for ( j = 0 ; j < ktdexl && j < KSUBS ; j++ )
             {
               i = nsub * KELEM + j;
               LINAUX[0] = '\0'; // clean the output line
               c = LINAUX;
-              charray_to_string(SUBSET.sequence[j].name, CNAMES[j], 64);
-              charray_to_string(SUBSET.sequence[j].unit, CUNITS[j], 24);
-              integer_to_descriptor(&SUBSET.sequence[j].desc, KTDEXP[j]);
+              charray_to_string ( SUBSET.sequence[j].name, CNAMES[j], 64 );
+              charray_to_string ( SUBSET.sequence[j].unit, CUNITS[j], 24 );
+              integer_to_descriptor ( &SUBSET.sequence[j].desc, KTDEXP[j] );
 
-              c += sprintf(c, "KTDEXP[%03d]=%s |%03d |", j, SUBSET.sequence[j].desc.c, nsub);
-              c += sprintf(c, "'%s'|", SUBSET.sequence[j].name);
-              if (VALUES[i] != MISSING_REAL)
+              c += sprintf ( c, "KTDEXP[%03d]=%s |%03d |", j, SUBSET.sequence[j].desc.c, nsub );
+              c += sprintf ( c, "'%s'|", SUBSET.sequence[j].name );
+              if ( VALUES[i] != MISSING_REAL )
                 {
-                  if (strstr(SUBSET.sequence[j].unit,"CCITTIA5") != NULL)
+                  if ( strstr ( SUBSET.sequence[j].unit,"CCITTIA5" ) != NULL )
                     {
                       SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_STRING_VALUE;
-                      k = ((int)VALUES[i]) % 1000;
-                      charray_to_string(SUBSET.sequence[j].cval, CVALS[(int)(VALUES[i]/1000.0) - 1], k);
-                      c += sprintf(c, "'%s'", SUBSET.sequence[j].cval);
+                      k = ( ( int ) VALUES[i] ) % 1000;
+                      charray_to_string ( SUBSET.sequence[j].cval, CVALS[ ( int ) ( VALUES[i]/1000.0 ) - 1], k );
+                      c += sprintf ( c, "'%s'", SUBSET.sequence[j].cval );
                     }
-                  else if (strstr(SUBSET.sequence[j].unit,"CODE TABLE") == SUBSET.sequence[j].unit)
+                  else if ( strstr ( SUBSET.sequence[j].unit,"CODE TABLE" ) == SUBSET.sequence[j].unit )
                     {
                       SUBSET.sequence[j].mask |= DESCRIPTOR_IS_CODE_TABLE;
                       SUBSET.sequence[j].val = VALUES[i];
-                      if (get_explained_table_val (SUBSET.sequence[j].ctable, 256, TABLEC, NLINES_TABLEC, &SUBSET.sequence[j].desc, (int) VALUES[i]) != NULL)
+                      if ( get_explained_table_val ( SUBSET.sequence[j].ctable, 256, TABLEC, NLINES_TABLEC, &SUBSET.sequence[j].desc, ( int ) VALUES[i] ) != NULL )
                         {
                           SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_CODE_TABLE_STRING;
-                          if (VERBOSE)
-                            c += sprintf(c, "%9d : '%s'", (int)VALUES[i], SUBSET.sequence[j].ctable);
+                          if ( VERBOSE )
+                            c += sprintf ( c, "%9d : '%s'", ( int ) VALUES[i], SUBSET.sequence[j].ctable );
                         }
-                      else if (VERBOSE)
+                      else if ( VERBOSE )
                         {
-                          c += sprintf(c,"%9d : 'NOT FOUND'", (int)VALUES[i]);
+                          c += sprintf ( c,"%9d : 'NOT FOUND'", ( int ) VALUES[i] );
                         }
                       else
-                        c += sprintf(c, "%9d", (int)VALUES[i]);
+                        c += sprintf ( c, "%9d", ( int ) VALUES[i] );
                     }
-                  else if (strstr(SUBSET.sequence[j].unit,"FLAG") == SUBSET.sequence[j].unit)
+                  else if ( strstr ( SUBSET.sequence[j].unit,"FLAG" ) == SUBSET.sequence[j].unit )
                     {
                       SUBSET.sequence[j].mask |= DESCRIPTOR_IS_FLAG_TABLE;
                       SUBSET.sequence[j].val = VALUES[i];
-                      if (get_explained_flag_val (SUBSET.sequence[j].ctable, 256, TABLEC, NLINES_TABLEC, &SUBSET.sequence[j].desc, (unsigned long) VALUES[i]) != NULL)
+                      if ( get_explained_flag_val ( SUBSET.sequence[j].ctable, 256, TABLEC, NLINES_TABLEC, &SUBSET.sequence[j].desc, ( unsigned long ) VALUES[i] ) != NULL )
                         {
                           SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_FLAG_TABLE_STRING;
-                          if (VERBOSE)
-                            c += sprintf(c, "%9d : '%s'", (int)VALUES[i], SUBSET.sequence[j].ctable);
+                          if ( VERBOSE )
+                            c += sprintf ( c, "%9d : '%s'", ( int ) VALUES[i], SUBSET.sequence[j].ctable );
                         }
-                      else if (VERBOSE)
+                      else if ( VERBOSE )
                         {
-                          c += sprintf(c, "%9d : 'NOT FOUND'", (int)VALUES[i]);
+                          c += sprintf ( c, "%9d : 'NOT FOUND'", ( int ) VALUES[i] );
                         }
                       else
-                        c += sprintf(c, "%9d", (int)VALUES[i]);
+                        c += sprintf ( c, "%9d", ( int ) VALUES[i] );
                     }
                   else
                     {
                       SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_REAL_VALUE;
                       SUBSET.sequence[j].val = VALUES[i];
-                      c += sprintf(c, "%14.4lf %s ", VALUES[i], SUBSET.sequence[j].unit);
+                      c += sprintf ( c, "%14.4lf %s ", VALUES[i], SUBSET.sequence[j].unit );
                     }
                 }
               else
                 {
                   SUBSET.sequence[j].mask |= DESCRIPTOR_VALUE_MISSING;
-                  c += sprintf(c, "   MISSING     %s ", SUBSET.sequence[j].unit);
+                  c += sprintf ( c, "   MISSING     %s ", SUBSET.sequence[j].unit );
                 }
               SUBSET.nd = j;
-              c += sprintf(c, "\n");
-              if (SHOW_SEQUENCE && strlen(LINAUX))
-                printf("#%s", LINAUX);
+              c += sprintf ( c, "\n" );
+              if ( SHOW_SEQUENCE && strlen ( LINAUX ) )
+                printf ( "#%s", LINAUX );
             }
 
           /**** the call to parse the sequence and transform to solicited asciicode, if possible *****/
-          if (parse_subset_sequence(&REPORT, &SUBSET, &STATE, &SYNOP, &BUOY, KTDLST, ktdlen, KSEC1, ERR) && DEBUG)
+          if (parse_subset_sequence ( &REPORT, &SUBSET, &STATE, &SYNOP, &BUOY, KTDLST, ktdlen, KSEC1, ERR ) )
             {
-              fprintf(stderr, "#%s\n", ERR);
+              if (DEBUG)
+                fprintf ( stderr, "#%s\n", ERR );
             }
-          else if (XML)
+          else if ( XML )
             {
-              if (nsub == 0)
-                fprintf(stdout, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-              print_xml(stdout, &REPORT);
+              if ( nsub == 0 )
+                fprintf ( stdout, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
+              print_xml ( stdout, &REPORT );
             }
-          else if (JSON)
+          else if ( JSON )
             {
-              print_json(stdout, &REPORT);
+              print_json ( stdout, &REPORT );
             }
-          else if (CSV)
+          else if ( CSV )
             {
-              if (nsub == 0)
-                fprintf(stdout, "TYPE,FILE,DATETIME,INDEX,NAME,COUNTRY,LATITUDE,LONGITUDE,ALTITUDE,REPORT\n");
-              print_csv(stdout, &REPORT);
+              if ( nsub == 0 )
+                fprintf ( stdout, "TYPE,FILE,DATETIME,INDEX,NAME,COUNTRY,LATITUDE,LONGITUDE,ALTITUDE,REPORT\n" );
+              print_csv ( stdout, &REPORT );
             }
           else
-            fprintf(stdout, "%s\n", REPORT.alphanum);
+            fprintf ( stdout, "%s\n", REPORT.alphanum );
         }
 
 
-      if (SHOW_ECMWF_OUTPUT)
+      if ( SHOW_ECMWF_OUTPUT )
         {
           /* Section 2 of the Bufr message is an optional section and every ADP centre can pack
            any information in this section. The Bufr software decodes this local information
            and stores it into KSEC2 array. ECMWF is storing RDB key in the Section 2 of the Bufr
            messages. To print content of the Section 2, subroutine BUUKEY must be called before
            the BUPRS2 routine. */
-          if (KSEC1[4])
-            buukey_(KSEC1, KSEC2, KEY, KSUP, &KERR);
+          if ( KSEC1[4] )
+            buukey_ ( KSEC1, KSEC2, KEY, KSUP, &KERR );
 
           /* Returns lists of unexpanded and expanded data descriptors from the Bufr message.
            The lists contains Bufr Table D sequence numbers, and the Bufr Table B reference numbers. */
 
-          busel_(&ktdlen, KTDLST, &ktdexl, KTDEXP, &KERR);
+          busel_ ( &ktdlen, KTDLST, &ktdexl, KTDEXP, &KERR );
 
           /* Prints section 3.
            Prior to calling the BUPRS3 routine, the BUSEL or BUSEL2 routine has to be called to get lists
            of unexpanded and fully expanded Data descriptors. In the case of multi-subset uncompressed bufr
            data the expanded list of descriptors might be different for different subsets. */
-          buprs3_(KSEC3, &ktdlen, KTDLST, &ktdexl, KTDEXP, &kelem,
-                  (char **) CNAMES);
+          buprs3_ ( KSEC3, &ktdlen, KTDLST, &ktdexl, KTDEXP, &kelem,
+                    ( char ** ) CNAMES );
 
           /* Print data */
           icode = 0;
           current_ss = 1;
-          buprt_(&icode, &current_ss, &KSEC3[2], &kelem, (char **) CNAMES,
-                 (char **) CUNITS, (char **) CVALS, &kvals, VALUES, KSUP, KSEC1,
-                 &KERR);
+          buprt_ ( &icode, &current_ss, &KSEC3[2], &kelem, ( char ** ) CNAMES,
+                   ( char ** ) CUNITS, ( char ** ) CVALS, &kvals, VALUES, KSUP, KSEC1,
+                   &KERR );
         }
 
-      if (DEBUG)
+      if ( DEBUG )
         {
-          for (i = 0; i < 3 ; i++)
-            printf("#KSEC0[%d] = %d\n", i,  KSEC0[i]);
-          for (i = 0; i < 40 ; i++)
-            printf("#KSEC1[%d] = %d\n", i, KSEC1[i]);
-          if (KSEC1[4])
+          for ( i = 0; i < 3 ; i++ )
+            printf ( "#KSEC0[%d] = %d\n", i,  KSEC0[i] );
+          for ( i = 0; i < 40 ; i++ )
+            printf ( "#KSEC1[%d] = %d\n", i, KSEC1[i] );
+          if ( KSEC1[4] )
             {
-              for (i = 0; i < 4096; i++)
-                printf("#KSEC2[%d] = %d\n", i, KSEC2[i]);
+              for ( i = 0; i < 4096; i++ )
+                printf ( "#KSEC2[%d] = %d\n", i, KSEC2[i] );
             }
-          for (i = 0; i < 4; i++)
-            printf("#KSEC3[%d] = %d\n", i, KSEC3[i]);
+          for ( i = 0; i < 4; i++ )
+            printf ( "#KSEC3[%d] = %d\n", i, KSEC3[i] );
 
-          for (i = 0; i < 9; i++)
-            printf("#KSUP[%d] = %d\n", i, KSUP[i]);
+          for ( i = 0; i < 9; i++ )
+            printf ( "#KSUP[%d] = %d\n", i, KSUP[i] );
         }
 
       NFILES ++;

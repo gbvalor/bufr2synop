@@ -19,7 +19,7 @@
  ***************************************************************************/
 /*!
  \file bufr2syn_x01.c
- \brief decodes the descriptors with X = 01
+ \brief decodes the descriptors with X = 01 (station index, name and country)
 */
 #include "bufr2syn.h"
 

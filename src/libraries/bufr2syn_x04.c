@@ -19,7 +19,7 @@
  ***************************************************************************/
 /*!
  \file bufr2syn_x04.c
- \brief decodes the descriptors with X = 04
+ \brief decodes the descriptors with X = 04 (date and time)
  */
 #include "bufr2syn.h"
 
@@ -40,28 +40,33 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
         return 0;
       sprintf ( syn->e.YYYY, "%04d", s->ival );
+      s->mask |= SUBSET_MASK_HAVE_YEAR;
       break;
     case 2: // 0 04 002
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
         return 0;
       sprintf ( syn->e.MM, "%02d", s->ival );
+      s->mask |= SUBSET_MASK_HAVE_MONTH;
       break;
     case 3: // 0 04 003
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
         return 0;
       sprintf ( syn->e.DD, "%02d", s->ival );
+      s->mask |= SUBSET_MASK_HAVE_DAY;
       //sprintf(syn->s0.YY, "%02d", (int) sq->sequence[is].val);
       break;
     case 4: // 0 04 004
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
         return 0;
       sprintf ( syn->e.HH, "%02d", s->ival );
+      s->mask |= SUBSET_MASK_HAVE_HOUR;
       //sprintf(syn->s0.GG, "%02d", (int) sq->sequence[is].val);
       break;
     case 5: // 0 04 005
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
         return 0;
       sprintf ( syn->e.mm, "%02d", s->ival );
+      s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
       // store latest displacement in seconds
     case 23: // 0 04 023
@@ -146,18 +151,21 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
         return 0;
       if (b->e.YYYY[0] == 0)
         sprintf ( b->e.YYYY, "%04d", s->ival );
+      s->mask |= SUBSET_MASK_HAVE_YEAR;
       break;
     case 2: // 0 04 002
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
         return 0;
       if (b->e.MM[0] == 0)
         sprintf ( b->e.MM, "%02d", s->ival );
+      s->mask |= SUBSET_MASK_HAVE_MONTH;
       break;
     case 3: // 0 04 003
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
         return 0;
       if (b->e.DD[0] == 0)
         sprintf ( b->e.DD, "%02d", s->ival );
+      s->mask |= SUBSET_MASK_HAVE_DAY;
       //sprintf(b->s0.YY, "%02d", (int) sq->sequence[is].val);
       break;
     case 4: // 0 04 004
@@ -165,6 +173,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
         return 0;
       if (b->e.HH[0] == 0)
         sprintf ( b->e.HH, "%02d", s->ival );
+      s->mask |= SUBSET_MASK_HAVE_HOUR;
       //sprintf(b->s0.GG, "%02d", (int) sq->sequence[is].val);
       break;
     case 5: // 0 04 005
@@ -172,6 +181,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *e
         return 0;
       if (b->e.mm[0] == 0)
         sprintf ( b->e.mm, "%02d", s->ival );
+      s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
       // store latest displacement in seconds
     case 23: // 0 04 023
