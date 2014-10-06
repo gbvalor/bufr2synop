@@ -26,7 +26,6 @@
 */
 #include "bufr2syn.h"
 
-
 /*!
   \fn int syn_parse_x08 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
   \brief Parse a expanded descriptor with X = 08

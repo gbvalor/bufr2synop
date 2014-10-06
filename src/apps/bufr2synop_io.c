@@ -49,7 +49,6 @@ void print_usage(void)
 int read_arguments(int _argc, char * _argv[])
 {
   int iopt;
-  char aux[256];
 
   // Initial and default values
   INPUTFILE[0] = '\0';
