@@ -191,7 +191,7 @@ int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr
 
   if (((s->mask & SUBSET_MASK_HAVE_LATITUDE) == 0) ||
       ((s->mask & SUBSET_MASK_HAVE_LONGITUDE) == 0) ||
-      ((s->mask & SUBSET_MASK_HAVE_NAME) == 0) ||
+      //((s->mask & SUBSET_MASK_HAVE_NAME) == 0) ||
       ((s->mask & SUBSET_MASK_HAVE_YEAR) == 0) ||
       ((s->mask & SUBSET_MASK_HAVE_MONTH) == 0) ||
       ((s->mask & SUBSET_MASK_HAVE_DAY) == 0) ||
@@ -224,7 +224,12 @@ int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr
   sprintf ( aux,"%s%s%s%s%s", b->e.YYYY, b->e.MM, b->e.DD, b->e.HH, b->e.mm );
   YYYYMMDDHHmm_to_met_datetime(&m->t, aux);
 
-  
+  // Fill some metreport fields
+  if (b->s0.A1[0] && b->s0.bw[0] && b->s0.nbnbnb[0])
+    {
+      sprintf ( m->g.index, "%s%s%s", b->s0.A1, b->s0.bw, b->s0.nbnbnb);
+    }
+
   // check if set both LaLaLa and LoLoLoLo to set Qc
   if ((b->s0.Qc[0] == 0) && b->s0.LaLaLaLaLa[0] && b->s0.LoLoLoLoLoLo[0])
     {

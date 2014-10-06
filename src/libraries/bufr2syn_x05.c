@@ -52,8 +52,8 @@ int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
       syn->s0.Ula[0] = syn->s0.LaLaLa[1];
       s->lat = s->val;
     break;
-    case 11: // 0 05 001
-    case 12: // 0 05 002
+    case 11: // 0 05 011
+    case 12: // 0 05 012
       if (s->val < 0.0)
         s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
       s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
