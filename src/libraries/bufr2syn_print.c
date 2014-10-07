@@ -405,6 +405,49 @@ char * print_synop_sec3 (char **sec3, size_t lmax, struct synop_chunks *syn)
 }
 
 /*!
+  \fn char * print_synop_sec5 (char **sec5, size_t lmax, struct synop_chunks *syn)
+  \brief Prints the synop section 5
+  \param sec5 the pointer where to print section
+  \param lmax max length permited
+  \param syn pointer to s atruct \ref synop_chunks where the parse results are set
+*/
+char * print_synop_sec5 (char **sec5, size_t lmax, struct synop_chunks *syn)
+{
+  size_t i;
+  char *c = *sec5, *c0;
+
+  if ( syn->mask & SYNOP_SEC5 )
+    {
+      if (check_len(sec5,4))
+        c += sprintf ( c, " 555" );
+
+      // init point to write info.
+      // in case we finally write nothing in this section 
+      c0 = c;
+
+      // printf 6RRRtr
+      if (check_len(sec5,6) && ( syn->s5.tr[0] || syn->s5.RRR[0]) )
+        {
+          if ( syn->s5.tr[0] == 0 )
+            syn->s5.tr[0] = '/';
+          if ( syn->s5.RRR[0] == 0 )
+            strcpy ( syn->s5.RRR, "///" );
+          c += sprintf ( c, " 6%s%s", syn->s5.RRR ,syn->s5.tr);
+        }
+
+      // additional info
+      for (i = 0; i < syn->s5.d9.n ; i++)
+      {
+        c += sprintf(c, " %s%s", syn->s5.d9.misc[i].SpSp, syn->s5.d9.misc[i].spsp);
+      }
+
+    }
+  if (c != c0)
+    *sec5 = c;
+  return *sec5;
+}
+
+/*!
  \fn int print_synop(char *report, size_t lmax, struct synop_chunks *syn)
  \brief prints a synop into a string
  \param report target string
@@ -426,13 +469,15 @@ int print_synop ( char *report, size_t lmax, struct synop_chunks *syn )
 
   print_synop_sec0(&c, lmax, syn);
 
-  if (syn->mask & (SYNOP_SEC1 | SYNOP_SEC2 | SYNOP_SEC3))
+  if (syn->mask & (SYNOP_SEC1 | SYNOP_SEC2 | SYNOP_SEC3 | SYNOP_SEC5))
     {
       print_synop_sec1(&c, lmax - strlen(report), syn);
 
       print_synop_sec2(&c, lmax - strlen(report), syn);
 
       print_synop_sec3(&c, lmax - strlen(report), syn);
+
+      print_synop_sec5(&c, lmax - strlen(report), syn);
     }
   else
     c += sprintf(c, " NIL");

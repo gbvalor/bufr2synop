@@ -42,13 +42,13 @@
   \def KELEM
   \brief max dimension of elements for a single report
 */
-#define KELEM 16384
+#define KELEM (8192)
 
 /*!
   \def KVALS
   \brief dimension of arrays of doubles. It must store all the data for all subset
 */
-#define KVALS 16384000
+#define KVALS (32768 * 512)
 
 /*!
   \def KSUBS
@@ -242,6 +242,12 @@
  \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having observation minute 
 */
 #define SUBSET_MASK_HAVE_MINUTE (32768)
+
+/*!
+ \def SUBSET_MASK_HAVE_GUST
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having wind gust observation other than 10 minutes
+*/
+#define SUBSET_MASK_HAVE_GUST (65536)
 
 
 /*!

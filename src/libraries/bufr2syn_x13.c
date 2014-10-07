@@ -89,6 +89,8 @@ char * prec_to_RRRR24 ( char *target, double r )
 */
 int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
 {
+  char aux[8];
+
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
     return 0;
 
@@ -102,6 +104,12 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
               syn->s3.tr[0] = '5'; // 1 hour
               prec_to_RRR ( syn->s3.RRR, s->val );
               syn->mask |= SYNOP_SEC3;
+            }
+          else if (syn->s5.RRR[0] == 0)
+            {
+              syn->s5.tr[0] = '5'; // 1 hour
+              prec_to_RRR ( syn->s5.RRR, s->val );
+              syn->mask |= SYNOP_SEC5;
             }
         }
       else if ( s->itval == -7200 )
@@ -121,6 +129,21 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
               prec_to_RRR ( syn->s3.RRR, s->val );
               syn->mask |= SYNOP_SEC3;
             }
+          else if (syn->s5.RRR[0] == 0)
+            {
+              syn->s5.tr[0] = '7'; // 3 hour
+              prec_to_RRR ( syn->s5.RRR, s->val );
+              // in case tr = 5 in sec 3 we interchange groups
+              if (syn->s3.tr[0] == '5')
+              {
+                 strcpy(aux, syn->s3.RRR);
+                 strcpy(syn->s3.RRR, syn->s5.RRR);
+                 strcpy(syn->s5.RRR, aux);
+                 syn->s3.tr[0] = '7';
+                 syn->s5.tr[0] = '5';
+              }
+              syn->mask |= SYNOP_SEC5;
+            }
         }
       else if ( s->itval == - ( 6 * 3600 ) )
         {
@@ -139,6 +162,12 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
               prec_to_RRR ( syn->s3.RRR, s->val );
               syn->mask |= SYNOP_SEC3;
             }
+          else if (syn->s5.RRR[0] == 0)
+            {
+              syn->s5.tr[0] = '8'; // 9 hour
+              prec_to_RRR ( syn->s5.RRR, s->val );
+              syn->mask |= SYNOP_SEC5;
+            }
         }
       else if ( s->itval == - ( 12 * 3600 ) )
         {
@@ -156,6 +185,12 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
               syn->s3.tr[0] = '9'; // 15 hour
               prec_to_RRR ( syn->s3.RRR, s->val );
               syn->mask |= SYNOP_SEC3;
+            }
+          else if (syn->s5.RRR[0] == 0)
+            {
+              syn->s5.tr[0] = '9'; // 15 hour
+              prec_to_RRR ( syn->s5.RRR, s->val );
+              syn->mask |= SYNOP_SEC5;
             }
         }
       else if ( s->itval == - ( 18 * 3600 ) )
@@ -189,6 +224,12 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
           prec_to_RRR ( syn->s3.RRR, s->val );
           syn->mask |= SYNOP_SEC3;
         }
+      else if (syn->s5.RRR[0] == 0)
+        {
+          syn->s5.tr[0] = '5'; // 1 hour
+          prec_to_RRR ( syn->s5.RRR, s->val );
+          syn->mask |= SYNOP_SEC5;
+        }
       break;
     case 20: // 0 13 020
       if (syn->s3.RRR[0] == 0)
@@ -196,6 +237,21 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
           syn->s3.tr[0] = '7'; // 3 hour
           prec_to_RRR ( syn->s3.RRR, s->val );
           syn->mask |= SYNOP_SEC3;
+        }
+      else if (syn->s5.RRR[0] == 0)
+        {
+          syn->s5.tr[0] = '7'; // 3 hour
+          prec_to_RRR ( syn->s5.RRR, s->val );
+          // in case tr = 5 in sec 3 we interchange groups
+          if (syn->s3.tr[0] == '5')
+            {
+              strcpy(aux, syn->s3.RRR);
+              strcpy(syn->s3.RRR, syn->s5.RRR);
+              strcpy(syn->s5.RRR, aux);
+              syn->s3.tr[0] = '7';
+              syn->s5.tr[0] = '5';
+            }
+          syn->mask |= SYNOP_SEC5;
         }
       break;
     case 21: // 0 13 021

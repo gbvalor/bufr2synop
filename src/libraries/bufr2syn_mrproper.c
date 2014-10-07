@@ -59,6 +59,16 @@ void clean_syn_sec3(struct synop_sec3 *s)
   memset(s, 0, sizeof(struct synop_sec3));
 }
 
+/*! \fn void clean_syn_sec5(struct synop_sec5 *s)
+    \brief clean a synop_sec5 struct
+    \param s pointer to the synop_sec5 struct
+*/
+void clean_syn_sec5(struct synop_sec5 *s)
+{
+  memset(s, 0, sizeof(struct synop_sec5));
+}
+
+
 /*! \fn void clean_report_date_ext(struct report_date_ext *s)
     \brief clean a synop_ext struct
     \param s pointer to the synop_ext struct
@@ -81,6 +91,7 @@ void clean_synop_chunks( struct synop_chunks *syn)
   clean_syn_sec1( &(syn->s1));
   clean_syn_sec2( &(syn->s2));
   clean_syn_sec3( &(syn->s3));
+  clean_syn_sec5( &(syn->s5));
 
   // default
   strcpy(syn->s0.iw,"/");

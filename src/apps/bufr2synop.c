@@ -200,7 +200,7 @@ int main ( int argc, char *argv[] )
   int icode = 0, ktdlen, ktdexl;
   int current_ss;
   char cunits[26], cnames[66],cvals[82];
-
+  
   if ( read_arguments ( argc, argv ) )
     {
       fprintf ( stderr, "%s: error geting arguments\n", SELF );

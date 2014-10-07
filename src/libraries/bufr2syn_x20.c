@@ -264,10 +264,10 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         }
       break;
     case 12: // 0 20 012
-      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
-        return 0;
       if (s->clayer == 0)
         {
+          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+            return 0;
           if (s->ival >= 10 && s->ival < 20)
             sprintf( syn->s1.Ch, "%1d", s->ival % 10);
           else if (s->ival >= 20 && s->ival < 30)
@@ -286,6 +286,11 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         }
       else
         {
+          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+          {
+            sprintf( syn->s3.nub[s->clayer - 1].C, "/");
+            return 0;
+          }
           if (s->ival == 59)
             sprintf( syn->s3.nub[s->clayer - 1].C, "/");
           else

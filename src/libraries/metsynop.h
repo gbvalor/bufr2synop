@@ -46,10 +46,16 @@
 */
 #define SYNOP_SEC3 8
 
+/*! \def SYNOP_SEC5 
+    \brief mask bit meaning section 5 or synop is solicited to or parsed with success
+*/
+#define SYNOP_SEC5 16
+
+
 /*! \def SYNOP_EXT 
     \brief mask bit meaning date extension is parsed with success
 */
-#define SYNOP_EXT 16
+#define SYNOP_EXT 32
 
 /*! \def SYNOP_NNUB 
     \brief number of optional nub3 struct to store the parsed results of 8.... groups 
@@ -249,6 +255,20 @@ ture change. */
    struct data9 d9; /*!< struct with optional 9SpSpss items */
 };
 
+/*! 
+    \struct synop_sec5
+    \brief contains some of substrings from section 5 when a report is parsed with success
+
+    To check if a substring has been parsed after a succeeded return we need to compute the
+    lengh of the corresponding member. If zero the it is not parsed. 
+*/
+struct synop_sec5
+{
+   char RRR[4]; /*!< Amount of precipitation which has fallen during the period preceding the time of observation, as indicated by tR. (Code table 3590) */
+   char tr[2]; /*!< Duration of period of reference for amount of precipitation, ending at the time of the report. (Code table 4019)  */
+   struct data9 d9; /*!< struct with optional 9SpSpss items */
+};
+
 /*! \struct synop_chunks
     \brief contains all possible substrings from a synop report is parsed with success
 */
@@ -260,6 +280,7 @@ struct synop_chunks
    struct synop_sec1 s1; /*!< struct with parsed section 1 */
    struct synop_sec2 s2; /*!< struct with parsed section 2 if present */
    struct synop_sec3 s3; /*!< struct with parsed section 3 if present */
+   struct synop_sec5 s5; /*!< struct with parsed section 5 if present */
    char error[128]; /*!< string with error code if a wrong synop report is found */
 };
 
@@ -280,6 +301,7 @@ void clean_syn_sec0(struct synop_sec0 *s);
 void clean_syn_sec1(struct synop_sec1 *s);
 void clean_syn_sec2(struct synop_sec2 *s);
 void clean_syn_sec3(struct synop_sec3 *s);
+void clean_syn_sec5(struct synop_sec5 *s);
 
 extern struct synop_chunks SYNOP;
 

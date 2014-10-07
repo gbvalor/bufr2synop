@@ -103,22 +103,47 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
         }
       else if (s->itval)
         {
-          sprintf( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "907");
-          secs_to_tt(syn->s3.d9.misc[syn->s3.d9.n].spsp, s->itval);
-          syn->s3.d9.n++;
-          sprintf( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "911");
-          if ( syn->s0.iw[0] == '4' )
-            s->val *= 1.94384449;
-          if ( s->val < 100.0 )
-            sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%02d", ( int ) ( s->val + 0.5 ) );
+          if (s->mask & SUBSET_MASK_HAVE_GUST)
+            {
+              sprintf( syn->s5.d9.misc[syn->s5.d9.n].SpSp, "907");
+              secs_to_tt(syn->s5.d9.misc[syn->s5.d9.n].spsp, s->itval);
+              syn->s5.d9.n++;
+              sprintf( syn->s5.d9.misc[syn->s5.d9.n].SpSp, "911");
+              if ( syn->s0.iw[0] == '4' )
+                s->val *= 1.94384449;
+              if ( s->val < 100.0 )
+                sprintf ( syn->s5.d9.misc[syn->s5.d9.n].spsp, "%02d", ( int ) ( s->val + 0.5 ) );
+              else
+                {
+                  sprintf ( syn->s5.d9.misc[syn->s5.d9.n].spsp,"99" );
+                  syn->s5.d9.n++;
+                  sprintf( syn->s5.d9.misc[syn->s5.d9.n].SpSp, "%00");
+                  sprintf ( syn->s5.d9.misc[syn->s5.d9.n].spsp, "%03d", ( int ) ( s->val + 0.5 ) );
+                }
+              syn->s5.d9.n++;
+              syn->mask |= SYNOP_SEC5;
+            }
           else
             {
-              sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp,"99" );
+              sprintf( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "907");
+              secs_to_tt(syn->s3.d9.misc[syn->s3.d9.n].spsp, s->itval);
               syn->s3.d9.n++;
-              sprintf( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "%00");
-              sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%03d", ( int ) ( s->val + 0.5 ) );
+              sprintf( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "911");
+              if ( syn->s0.iw[0] == '4' )
+                s->val *= 1.94384449;
+              if ( s->val < 100.0 )
+                sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%02d", ( int ) ( s->val + 0.5 ) );
+              else
+                {
+                  sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp,"99" );
+                  syn->s3.d9.n++;
+                  sprintf( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "%00");
+                  sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%03d", ( int ) ( s->val + 0.5 ) );
+                }
+              syn->s3.d9.n++;
+              syn->mask |= SYNOP_SEC3;
+              s->mask |= SUBSET_MASK_HAVE_GUST;
             }
-          syn->s3.d9.n++;
         }
       break;
     case 43: // max wind gust direction

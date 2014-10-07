@@ -42,6 +42,7 @@ extern int KERR;
 extern char CVALS[KVALS][80]; /*!< array of strings with value of data */
 
 extern double VALUES[KVALS], VALS[KVALS];
+
 extern int KTDLST[KELEM], KTDEXP[KELEM];
 
 extern char INPUTFILE[256];
