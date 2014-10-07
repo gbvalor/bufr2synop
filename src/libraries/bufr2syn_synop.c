@@ -266,12 +266,11 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct
   /* Check about needed descriptors */
   if (((s->mask & SUBSET_MASK_HAVE_LATITUDE) == 0) ||
       ((s->mask & SUBSET_MASK_HAVE_LONGITUDE) == 0) ||
-      ((s->mask & SUBSET_MASK_HAVE_NAME) == 0) ||
       ((s->mask & SUBSET_MASK_HAVE_YEAR) == 0) ||
       ((s->mask & SUBSET_MASK_HAVE_MONTH) == 0) ||
       ((s->mask & SUBSET_MASK_HAVE_DAY) == 0) ||
-      ((s->mask & SUBSET_MASK_HAVE_HOUR) == 0) ||
-      ((s->mask & SUBSET_MASK_HAVE_NAME) == 0) )
+      ((s->mask & SUBSET_MASK_HAVE_HOUR) == 0) 
+      )
       {
         sprintf(err,"bufr2syn: parse_subset_as_synop(): lack of mandatory descriptor in sequence");
         return 1;

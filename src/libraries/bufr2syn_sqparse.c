@@ -94,7 +94,7 @@ int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data 
       break;
     case 1:
       if (find_descriptor_interval(kdtlst, nlst, 308004, 308005) ||
-          find_descriptor(kdtlst, nlst,308009))
+          find_descriptor(kdtlst, nlst,308009) || find_descriptor(kdtlst, nlst,1011))
         strcpy(st->type_report,"BBXX"); // FM-13 ship
       else if (find_descriptor_interval(kdtlst, nlst, 308001, 308003) ||
         find_descriptor(kdtlst, nlst,1005) ||

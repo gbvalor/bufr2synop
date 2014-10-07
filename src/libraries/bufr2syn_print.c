@@ -465,6 +465,9 @@ char * print_buoy_sec0 (char **sec0, size_t lmax, struct buoy_chunks *b)
     {
       c += sprintf ( c, " %s%s%s", b->s0.A1, b->s0.bw, b->s0.nbnbnb);
     }
+  else if (check_len(sec0, 10) && b->s0.D_D)
+    c += sprintf ( c, " %s", b->s0.D_D );
+
 
   if (check_len(sec0,6))
     c += sprintf(c, " %s%s%s", b->s0.YY, b->s0.MM, b->s0.J);
