@@ -59,26 +59,19 @@ int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b )
 }
 
 /*!
-  \fn int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err)
+  \fn int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr_subset_sequence_data *sq, char *err)
   \brief parses a subset sequence as an Buoy SYNOP FM-18 report
   \param m pointer to a struct \ref metreport where set some results
   \param b pointer to a struct \ref buoy_chunks where set the results
   \param sq pointer to a struct \ref bufr_subset_sequence_data with the parsed sequence on input
-  \param kdtlst array of descriptors (as integers) from the non-expanded bufr list
-  \param nlst size of kdtlst array
-  \param ksec1 array of integers set by ECMWF bufrdc library
   \param err string with detected errors, if any
 
   It return 0 if all is OK. Otherwise it also fills the \a err string
 */
-int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err )
+int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
 {
   int ival; // integer value for a descriptor
-  double val; // double value for a descriptor
   size_t is;
-  int disp; // time displacement in seconds
-  time_t tt, itval;
-  struct tm tim;
   char aux[16];
 
   // clean data
@@ -97,14 +90,14 @@ int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr
   b->mask = BUOY_SEC0;
 
   /**** First pass, sequential analysis *****/
-  for ( is = 0, itval = 0; is < sq->nd; is++ )
+  for ( is = 0; is < sq->nd; is++ )
     {
       // check if is a significance qualifier
       if (sq->sequence[is].desc.x == 8)
       {
         s->i = is;
         s->a = &sq->sequence[is];
-        buoy_parse_x08 ( b, s, err );
+        buoy_parse_x08 ( b, s );
       }
 
       if ( sq->sequence[is].mask & DESCRIPTOR_VALUE_MISSING ||
@@ -116,70 +109,69 @@ int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr
       s->ival = ( int ) sq->sequence[is].val;
       ival = ival;
       s->val = sq->sequence[is].val;
-      val = s->val;
       s->a = &sq->sequence[is];
       switch ( sq->sequence[is].desc.x )
         {
 
         case 1: //localization descriptors
-          buoy_parse_x01 ( b, s, err );
+          buoy_parse_x01 ( b, s );
           break;
 
         case 2: //Date time descriptors
-          buoy_parse_x02 ( b, s, err );
+          buoy_parse_x02 ( b, s );
           break;
 
         case 4: //Date time descriptors
-          buoy_parse_x04 ( b, s, err );
+          buoy_parse_x04 ( b, s );
           break;
 
         case 5: //Position
-          buoy_parse_x05 ( b, s, err );
+          buoy_parse_x05 ( b, s );
           break;
 
         case 6: // Horizontal Position -2
-          buoy_parse_x06 ( b, s, err );
+          buoy_parse_x06 ( b, s );
           break;
 
         case 7: // Vertical Position 
-          buoy_parse_x07 ( b, s, err );
+          buoy_parse_x07 ( b, s );
           break;
 
         case 10: // Air Pressure descriptors
-          buoy_parse_x10 ( b, s, err );
+          buoy_parse_x10 ( b, s );
           break;
 
         case 11: // wind  data
-          buoy_parse_x11 ( b, s, err );
+          buoy_parse_x11 ( b, s );
           break;
 
         case 12: //Temperature descriptors
-          buoy_parse_x12 ( b, s, err );
+          buoy_parse_x12 ( b, s );
           break;
 
         case 13: // Humidity and precipitation data
-          buoy_parse_x13 ( b, s, err );
+          buoy_parse_x13 ( b, s );
           break;
 
         case 14: // Radiation
-          buoy_parse_x14 ( b, s, err );
+          buoy_parse_x14 ( b, s );
           break;
 
         case 20: // Cloud data
-          buoy_parse_x20 ( b, s, err );
+          buoy_parse_x20 ( b, s );
           break;
 
         case 22: // Oceanographic data
-          buoy_parse_x22 ( b, s, err );
+          buoy_parse_x22 ( b, s );
           break;
 
         case 31: // Replicators
-          buoy_parse_x31 ( b, s, err );
+          buoy_parse_x31 ( b, s );
           break;
 
 
         case 33: // Quality data
-          buoy_parse_x33 ( b, s, err );
+          buoy_parse_x33 ( b, s );
           break;
 
 
@@ -191,7 +183,6 @@ int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr
 
   if (((s->mask & SUBSET_MASK_HAVE_LATITUDE) == 0) ||
       ((s->mask & SUBSET_MASK_HAVE_LONGITUDE) == 0) ||
-      //((s->mask & SUBSET_MASK_HAVE_NAME) == 0) ||
       ((s->mask & SUBSET_MASK_HAVE_YEAR) == 0) ||
       ((s->mask & SUBSET_MASK_HAVE_MONTH) == 0) ||
       ((s->mask & SUBSET_MASK_HAVE_DAY) == 0) ||

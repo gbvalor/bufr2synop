@@ -134,7 +134,7 @@ char * get_explained_table_val(char *expl, size_t dim, char tablec[MAXLINES_TABL
     return NULL;
 
   // read a value
-  for (j = 0; j < nv && i < nlines_tablec ; i++)
+  for (j = 0; (long)j < nv && i < nlines_tablec ; i++)
     {
       if (tablec[i][12] != ' ')
         {
@@ -146,7 +146,7 @@ char * get_explained_table_val(char *expl, size_t dim, char tablec[MAXLINES_TABL
         }
     }
 
-  if (j == nv || i == nlines_tablec)
+  if ((long)j == nv || i == nlines_tablec)
     return NULL; // Value not found
 
   // read how many lines for the descriptors

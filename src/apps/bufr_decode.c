@@ -94,6 +94,16 @@ char cvals[KVALS][80]; /*!< array of strings with value of data */
 double values[KVALS],vals[KVALS];
 int ktdlst[KELEM], ktdexp[KELEM];
 
+/*! Added to avoid C compiler warnings */
+int bus012_ ( int *, unsigned int *, int *, int *, int *, int *, int *);
+int buprs0_ (int *);
+int buprs1_ (int *);
+int buprs3_ (int *, int *, int *, int *, int *, int *, char **);
+int bufrex_ (int *, int *, int *, int *, int *, int *, int *, int *, int *, char **, char **, int *, double *, char **,                int *);
+int busel_ (int *, int *, int *, int *, int *);
+int busel2_ ( int *, int *, int *,  char **, int *, char **, char **, char **, int * );
+int buukey_ (int *, int *, int *, int *, int *);
+int buprt_ ( int *, int *, int *, int *, char **, char **, char **, int *, double *, int *, int *, int * );
 
 int main(int argc, char *argv[])
 {
@@ -113,7 +123,6 @@ int main(int argc, char *argv[])
   int key[46];
   int kerr;
 
-  int i;
   int kelem = KELEM, kvals = KVALS;
   int icode = 0, ktdlen, ktdexl;
   int current_ss;

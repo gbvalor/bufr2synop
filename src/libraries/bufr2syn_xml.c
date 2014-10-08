@@ -55,4 +55,5 @@ int print_xml(FILE *f, struct metreport *m)
   fprintf(f, " </geo>\n");
   fprintf(f, " <report>%s</report>\n", m->alphanum);
   fprintf(f, "</metreport>\n");
+  return 0;
 }

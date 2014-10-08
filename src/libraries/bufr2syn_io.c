@@ -44,7 +44,7 @@ int read_bufr(unsigned char *bufr, char *filename, int *length)
       exit(EXIT_FAILURE);
     }
 
-  while ((aux = fgetc(fp)) != EOF && n < *length)
+  while ((aux = fgetc(fp)) != EOF && (int)n < *length)
     bufr[n++] = aux;
   *length = n;
 

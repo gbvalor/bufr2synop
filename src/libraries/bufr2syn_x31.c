@@ -25,7 +25,7 @@
 
 
 /*!
-  \fn int syn_parse_x31 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
+  \fn int syn_parse_x31 ( struct synop_chunks *syn, struct bufr_subset_state *s )
   \brief Parse a expanded descriptor with X = 31
   \param syn pointer to a struct \ref synop_chunks where to set the results
   \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
@@ -33,12 +33,13 @@
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int syn_parse_x31 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
+int syn_parse_x31 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 {
-  char aux[16];
-
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
     return 0;
+
+  if (syn == NULL)
+    return 1;
 
   switch ( s->a->desc.y )
     {
@@ -54,7 +55,7 @@ int syn_parse_x31 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
 
 
 /*!
-  \fn int buoy_parse_x31 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err )
+  \fn int buoy_parse_x31 ( struct buoy_chunks *b, struct bufr_subset_state *s )
   \brief Parse a expanded descriptor with X = 31
   \param b pointer to a struct \ref buoy_chunks where to set the results
   \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
@@ -62,12 +63,13 @@ int syn_parse_x31 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int buoy_parse_x31 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err )
+int buoy_parse_x31 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 {
-  char aux[16];
-
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
     return 0;
+
+  if (b == NULL)
+    return 1;
 
   switch ( s->a->desc.y )
     {

@@ -50,4 +50,5 @@ int print_json(FILE *f, struct metreport *m)
   fprintf(f, "  \"report\": \"%s\"\n", m->alphanum);
   fprintf(f, "  }\n");
   fprintf(f, "}\n");
+  return 0;
 }

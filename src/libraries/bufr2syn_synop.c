@@ -136,27 +136,20 @@ char *guess_WMO_region(struct synop_chunks *syn)
 
 
 /*!
-  \fn int parse_subset_as_synop(struct metreport *m, struct synop_chunks *syn, char *type, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err)
+  \fn int parse_subset_as_synop(struct metreport *m, struct synop_chunks *syn, char *type, struct bufr_subset_sequence_data *sq, char *err)
   \brief parses a subset sequence as an Land fixed SYNOP FM-12, SHIP FM-13 or SYNOP-mobil FM-14 report
   \param m pointer to a struct \ref metreport where set some results
   \param syn pointer to a struct \ref synop_chunks where set the results
   \param type strint with MiMiMjMj to choose the type pf synop (AAXX, BBXX ...) (synop, ship or synop-mobil)
   \param sq pointer to a struct \ref bufr_subset_sequence_data with the parsed sequence on input
-  \param kdtlst array of descriptors (as integers) from the non-expanded bufr list
-  \param nlst size of kdtlst array
-  \param ksec1 array of integers set by ECMWF bufrdc library
   \param err string with detected errors, if any
 
   It return 0 if all is OK. Otherwise returns 1 and it also fills the \a err string
 */
-int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, int *kdtlst, size_t nlst, int *ksec1, char *err )
+int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
 {
   int ival; // integer value for a descriptor
-  double val; // double value for a descriptor
   size_t is; 
-  int disp; // time displacement in seconds
-  time_t tt, itval;
-  struct tm tim;
   char aux[16];
 
   // clean data
@@ -177,7 +170,7 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct
   strcpy(m->type, s->type_report);
 
   /**** First pass, sequential analysis *****/
-  for ( is = 0, itval = 0; is < sq->nd; is++ )
+  for ( is = 0; is < sq->nd; is++ )
     {
       // check if is a significance qualifier
       if (sq->sequence[is].desc.x == 8)
@@ -186,7 +179,7 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct
         s->a = &sq->sequence[is];
         s->ival = ( int ) sq->sequence[is].val;
         s->val = sq->sequence[is].val;
-        syn_parse_x08 ( syn, s, err );
+        syn_parse_x08 ( syn, s);
       }
 
       if ( s->isq)   // case of an significance qualifier
@@ -196,64 +189,63 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct
       s->ival = ( int ) sq->sequence[is].val;
       ival = ival;
       s->val = sq->sequence[is].val;
-      val = s->val;
       s->a = &sq->sequence[is];
       switch ( sq->sequence[is].desc.x )
         {
         case 1: //localization descriptors
-          syn_parse_x01 ( syn, s, err );
+          syn_parse_x01 ( syn, s);
           break;
 
         case 2: //Date time descriptors
-          syn_parse_x02 ( syn, s, err );
+          syn_parse_x02 ( syn, s);
           break;
 
         case 4: //Date time descriptors
-          syn_parse_x04 ( syn, s, err );
+          syn_parse_x04 ( syn, s);
           break;
 
         case 5: //Position
-          syn_parse_x05 ( syn, s, err );
+          syn_parse_x05 ( syn, s);
           break;
 
         case 6: // Horizontal Position -2
-          syn_parse_x06 ( syn, s, err );
+          syn_parse_x06 ( syn, s);
           break;
 
         case 7: // Vertical position
-          syn_parse_x07 ( syn, s, err );
+          syn_parse_x07 ( syn, s);
           break;
 
         case 10: // Air Pressure descriptors
-          syn_parse_x10 ( syn, s, err );
+          syn_parse_x10 ( syn, s);
           break;
 
         case 11: // wind  data
-          syn_parse_x11 ( syn, s, err );
+          syn_parse_x11 ( syn, s);
           break;
 
         case 12: //Temperature descriptors
-          syn_parse_x12 ( syn, s, err );
+          syn_parse_x12 ( syn, s);
           break;
 
         case 13: // Humidity and precipitation data
-          syn_parse_x13 ( syn, s, err );
+          syn_parse_x13 ( syn, s);
           break;
 
         case 14: // Radiation
-          syn_parse_x14 ( syn, s, err );
+          syn_parse_x14 ( syn, s);
           break;
 
         case 20: // Cloud data
-          syn_parse_x20 ( syn, s, err );
+          syn_parse_x20 ( syn, s);
           break;
 
         case 22: // Oceanographic data
-          syn_parse_x22 ( syn, s, err );
+          syn_parse_x22 ( syn, s);
           break;
 
         case 31: // Replicators
-          syn_parse_x31 ( syn, s, err );
+          syn_parse_x31 ( syn, s);
           break;
 
 
@@ -275,6 +267,13 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct
         sprintf(err,"bufr2syn: parse_subset_as_synop(): lack of mandatory descriptor in sequence");
         return 1;
       }
+
+  if (strcmp(s->type_report, "AAXX") == 0 && (syn->s0.II[0] == 0 || syn->s0.iii[0] == 0))
+    {
+       sprintf(err,"bufr2syn: parse_subset_as_synop(): lack of mandatory index station for AAXX report");
+       return 1;
+    }
+
 
   /****** Second pass. Global results and consistence analysis ************/
   // set ir

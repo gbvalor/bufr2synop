@@ -81,7 +81,7 @@ int bufr_set_environment(char *default_bufrtables, char *bufrtables_dir)
     }
   else
     {
-      fprintf(stderr,"%s: Unable to find bufrtables directory\n");
+      fprintf(stderr,"bufr2syn: Unable to find bufrtables directory\n");
       fprintf(stderr,"    Please set the proper enviromnet 'BUFR_TABLES=my_bufrtables_dir' or\n");
       fprintf(stderr,"    use '-t' argument . i. e.'-t my_bufrtables_dir/'\n");
       exit (EXIT_FAILURE);

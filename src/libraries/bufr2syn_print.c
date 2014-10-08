@@ -27,7 +27,7 @@
   \def check_len(ori,inc)
   \brief cheks if there still memory enough to add \a inc chars 
 */
-#define check_len(ori,inc) (c - *ori + inc < lmax)
+#define check_len(ori,inc) (c - *ori + inc < (int)lmax)
 
 /*!
   \fn char * print_synop_sec0 (char **sec0, size_t lmax, struct synop_chunks *syn)
@@ -38,7 +38,6 @@
 */
 char * print_synop_sec0 (char **sec0, size_t lmax, struct synop_chunks *syn)
 {
-  size_t i;
   char *c = *sec0;
 
   if (check_len(sec0,12))
@@ -99,7 +98,6 @@ char * print_synop_sec0 (char **sec0, size_t lmax, struct synop_chunks *syn)
 */
 char * print_synop_sec1 (char **sec1, size_t lmax, struct synop_chunks *syn)
 {
-  size_t i;
   char *c = *sec1;
 
   if (syn->mask & SYNOP_SEC1)
@@ -133,7 +131,7 @@ char * print_synop_sec1 (char **sec1, size_t lmax, struct synop_chunks *syn)
         c += sprintf ( c, " 4%s", syn->s1.PPPP );
 
       // printf 5appp
-      if ( check_len(sec1,6) && syn->s1.a[0] || syn->s1.ppp[0] )
+      if ( check_len(sec1,6) && (syn->s1.a[0] || syn->s1.ppp[0]))
         {
           if ( syn->s1.a[0] == 0 )
             syn->s1.a[0] = '/';
@@ -196,7 +194,6 @@ char * print_synop_sec1 (char **sec1, size_t lmax, struct synop_chunks *syn)
 */
 char * print_synop_sec2 (char **sec2, size_t lmax, struct synop_chunks *syn)
 {
-  size_t i;
   char *c = *sec2;
   if ( syn->mask & SYNOP_SEC2 )
     {
@@ -398,9 +395,9 @@ char * print_synop_sec3 (char **sec3, size_t lmax, struct synop_chunks *syn)
         c += sprintf(c, " %s%s", syn->s3.d9.misc[i].SpSp, syn->s3.d9.misc[i].spsp);
       }
 
+      if (c != c0)
+        *sec3 = c;
     }
-  if (c != c0)
-    *sec3 = c;
   return *sec3;
 }
 
@@ -441,9 +438,9 @@ char * print_synop_sec5 (char **sec5, size_t lmax, struct synop_chunks *syn)
         c += sprintf(c, " %s%s", syn->s5.d9.misc[i].SpSp, syn->s5.d9.misc[i].spsp);
       }
 
+      if (c != c0)
+        *sec5 = c;
     }
-  if (c != c0)
-    *sec5 = c;
   return *sec5;
 }
 
@@ -458,7 +455,6 @@ char * print_synop_sec5 (char **sec5, size_t lmax, struct synop_chunks *syn)
 */
 int print_synop ( char *report, size_t lmax, struct synop_chunks *syn )
 {
-  size_t i;
   char *c;
 
   c = report;
@@ -496,7 +492,6 @@ int print_synop ( char *report, size_t lmax, struct synop_chunks *syn )
 */
 char * print_buoy_sec0 (char **sec0, size_t lmax, struct buoy_chunks *b)
 {
-  size_t i;
   char *c = *sec0;
 
   if (check_len(sec0,12))
@@ -615,7 +610,7 @@ char * print_buoy_sec1 (char **sec1, size_t lmax, struct buoy_chunks *b)
         c += sprintf ( c, " 4%s", b->s1.PPPP );
 
       // printf 5appp
-      if ( check_len(sec1,6) && b->s1.a[0] || b->s1.ppp[0] )
+      if ( check_len(sec1,6) && (b->s1.a[0] || b->s1.ppp[0]))
         {
           if ( b->s1.a[0] == 0 )
             b->s1.a[0] = '/';
@@ -701,7 +696,7 @@ char * print_buoy_sec3 (char **sec3, size_t lmax, struct buoy_chunks *b)
   char *c = *sec3;
   size_t l;
 
-  if (b->mask & BUOY_SEC3)
+  if (check_len(sec3,6) && (b->mask & BUOY_SEC3))
     {
       c += sprintf(c, " 333%s%s", b->s3.Qd1, b->s3.Qd2);
 

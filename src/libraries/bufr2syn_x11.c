@@ -50,7 +50,7 @@ char * secs_to_tt(char *tt, int secs)
 }
 
 /*!
-  \fn int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
+  \fn int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s )
   \brief Parse a expanded descriptor with X = 11
   \param syn pointer to a struct \ref synop_chunks where to set the results
   \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
@@ -58,7 +58,7 @@ char * secs_to_tt(char *tt, int secs)
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
+int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 {
 
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
@@ -96,7 +96,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
             {
               sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp,"99" );
               syn->s3.d9.n++;
-              sprintf( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "%00");
+              sprintf( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "00");
               sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%03d", ( int ) ( s->val + 0.5 ) );
             }
           syn->s3.d9.n++;
@@ -117,7 +117,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
                 {
                   sprintf ( syn->s5.d9.misc[syn->s5.d9.n].spsp,"99" );
                   syn->s5.d9.n++;
-                  sprintf( syn->s5.d9.misc[syn->s5.d9.n].SpSp, "%00");
+                  sprintf( syn->s5.d9.misc[syn->s5.d9.n].SpSp, "00");
                   sprintf ( syn->s5.d9.misc[syn->s5.d9.n].spsp, "%03d", ( int ) ( s->val + 0.5 ) );
                 }
               syn->s5.d9.n++;
@@ -137,7 +137,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
                 {
                   sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp,"99" );
                   syn->s3.d9.n++;
-                  sprintf( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "%00");
+                  sprintf( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "00");
                   sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%03d", ( int ) ( s->val + 0.5 ) );
                 }
               syn->s3.d9.n++;
@@ -155,7 +155,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
 }
 
 /*!
-  \fn int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err )
+  \fn int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr_subset_state *s )
   \brief Parse a expanded descriptor with X = 11
   \param b pointer to a struct \ref buoy_chunks where to set the results
   \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
@@ -163,9 +163,8 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err )
+int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 {
-  char aux[16];
 
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
     return 0;

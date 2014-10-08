@@ -109,7 +109,7 @@ char * kelvin_to_TTTT ( char *target, double T )
 
 
 /*!
-  \fn int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
+  \fn int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s )
   \brief Parse a expanded descriptor with X = 12
   \param syn pointer to a struct \ref synop_chunks where to set the results
   \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
@@ -117,7 +117,7 @@ char * kelvin_to_TTTT ( char *target, double T )
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char *err )
+int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 {
   char aux[16];
 
@@ -230,7 +230,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
 }
 
 /*!
-  \fn int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err )
+  \fn int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr_subset_state *s )
   \brief Parse a expanded descriptor with X = 12
   \param b pointer to a struct \ref buoy_chunks where to set the results
   \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
@@ -238,7 +238,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s, char 
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr_subset_state *s, char *err )
+int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 {
   char aux[16];
 

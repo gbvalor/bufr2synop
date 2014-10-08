@@ -108,7 +108,7 @@ int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data 
         strcpy(st->type_report,"TTXX"); // FM-13 ship 
       break;
     default:
-      sprintf(err, "The data category %d is not parsed at the moment");
+      sprintf(err, "The data category %d is not parsed at the moment", ksec1[5]);
       return 1;
     }
 
@@ -124,12 +124,12 @@ int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data 
   // Parse FM-12, FM-13 and FM-14
   if (strcmp(st->type_report,"AAXX") == 0 || strcmp(st->type_report,"BBXX") == 0 || strcmp(st->type_report,"OOXX") == 0)
   {
-    if (parse_subset_as_synop(m, synop, st, sq, kdtlst, nlst, ksec1, err) == 0)
+    if (parse_subset_as_synop(m, synop, st, sq, err) == 0)
       return print_synop(m->alphanum, 2048, synop);
   }
   else if (strcmp(st->type_report,"ZZYY") == 0)
   {
-    if (parse_subset_as_buoy(m, buoy, st, sq, kdtlst, nlst, ksec1, err) == 0)
+    if (parse_subset_as_buoy(m, buoy, st, sq, err) == 0)
       return print_buoy(m->alphanum, 2048, buoy);
   }
 

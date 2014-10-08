@@ -17,3 +17,4 @@ bufr2synop_SOURCES = bufr2synop.c bufr2synop_io.c
 bufr2synop_LDADD = $(top_builddir)/src/libraries/libbufr2syn.la -lbufr \
 	-lgfortran -lm
 
+AM_CFLAGS = -W -Wall
