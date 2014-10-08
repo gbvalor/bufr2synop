@@ -220,7 +220,7 @@ int main(int argc, char *argv[])
   gettimeofday( &tini, NULL);
 
   // read args from stdio
-  if (lee_argumentos( argc, argv) < 0)
+  if (read_args( argc, argv) < 0)
     {
       exit(EXIT_FAILURE);
     }
