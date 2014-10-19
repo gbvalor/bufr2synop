@@ -77,6 +77,7 @@ or
 
 
 A EXAMPLE OF USE
+----------------
 
 In a working dir we want to get a BUFR archive from NOAA GTS and see the reports we can to extract
 from it.
@@ -88,7 +89,7 @@ dir.
   wget http://weather.noaa.gov/pub/SL.us008001/DF.bf/DC.intl/sn.0000.bin
 
 2) Then use 'bufrnoaa' to get a lot of files. Every file is a bufr report. We do not want all kind of 
-bufr reports, just surface observations (land and oceanograpic). We can just do
+bufr reports, just surface observations (land and oceanographic). We can just do
 
    bufrnoaa  -f -T SO -S ACIMNSVW -O B -i sn.0000.txt
 
@@ -107,5 +108,5 @@ There are some more options for bufrnoaa and bufr2synop. You can see a list usin
 
 or
 
-   bufr2synop
+   bufr2synop -h
 
