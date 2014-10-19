@@ -26,7 +26,7 @@
   \section Introduction
   This is a package to make the transition to bufr reports from alphanumeric text easiest as possible. 
 
-  A lot of software is coded asuming that the primary source of meteorological reports is in alphanumeric format. Decode libraries are expecting this. But time is changing, meteorological services are migrating to bufr and other binary formats. Most decode sofware have to be changed.
+  A lot of software is coded assuming that the primary source of meteorological reports is in alphanumeric format. Decode libraries are expecting this. But time is changing, meteorological services are migrating to bufr and other binary formats. Most decode sofware have to be changed.
 
   This is a software to get meteorological reports in old alphanumeric format from bufr files. At the moment includes the following reports:
 
