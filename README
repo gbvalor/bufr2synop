@@ -1,42 +1,111 @@
-This is a package to make the transition to bufr reports from alphanumeric text easiest as possible. The intial 
-commit is contributed from ogimet.com
+INTRODUCTION
+------------
 
-A lot of software is coded asuming that the primary source of meteorological reports is in alphanumeric format. 
-Decode libraries are expecting this. But time is changing, meteorological services are migrating to bufr and 
-other binary formats. Most decode software have to be changed.
+This is a package to make the transition to bufr reports from alphanumeric text easiest as 
+possible. The intial commit is contributed from ogimet.com
 
-This is a software to get meteorological reports in old alphanumeric format from bufr files. At the moment includes the following 
-reports:
+A lot of software is coded asuming that the primary source of meteorological reports is in 
+alphanumeric format.  Decode libraries are expecting this. But time is changing, 
+meteorological services are migrating to BUFR and other binary formats. Most decode software 
+have to be changed.
+
+This is a software to get meteorological reports in old alphanumeric format from BUFR files. 
+At the moment includes the following reports:
 
   - FM 12-XIV SYNOP
   - FM 13-XIV SHIP
   - FM 14-XIV SYNOP MOBIL
   - FM 18-XII BUOY
 
-The software is based in bufrdc library from ECMWF.  *It have to be installed*. In that package there is a synop2bufr 
-application doing just the reverse task. You can grab this library from 
+The software is based in bufrdc library from ECMWF.  *It have to be installed*. In that package
+there is a synop2bufr application doing just the reverse task. You can grab this library from 
 
 http://old.ecmwf.int/products/data/software/bufr.html
 
 Follow the instructions to build and install bufrdc library. Then, you can use this package.
 
-Note that the results from this library is not intended to match at %100 level to original alphanumeric reports. 
-It cannot. Some variables in alphanumeric code rules can be coded in several ways, and there is not a regional 
-even national decision about them. As example, the 'hshs' item (table code 1617) for synop FM-12 can be coded 
-using 00-80 range or 90-99 one. A numeric value for heigh of base clouds can be coded in two ways. And there some 
-few more examples.
+Note that the results from this library is not intended to match at %100 level to original
+alphanumeric reports. It cannot. Some variables in alphanumeric code rules can be coded in
+several ways, and there is not a regional even national decision about them. As example, the
+'hshs' item (table code 1617) for synop FM-12 can be coded using 00-80 range or 90-99 one. 
+A numeric value for heigh of base clouds can be coded in two ways. And there some few more
+examples.
+
 
 BUILD
+-----
 
-If you uses git repository, first time you clone the code you need to set the autotools files. To achieve this just 
+If you uses git repository, first time you clone the code you need to set the autotools files. 
+To achieve this just from bufr2synop directory
 
    make -f Makefile.cvs
 
-If you get the package from a tarball then, from package directory to configure
+After this first task, you have to configure and make to build the package. Also if you get the 
+package from a tarball you must do configure and make. From bufr2synop directory
 
   ./configure
-  
+
 and to build the package
 
   make
+
+Assume you built the package. you will have three binaries
+
+- bufr2synop . 
+    Main binary to extract alphanumeric reports.
+- bufr_decode . 
+    A binary extracted and adapted from ECMWF bufrdc library. Is an example of use for 
+    bufrdc library
+- bufrnoaa
+    An utility to extract and select bufr files from NOAA bin archives.
+
+And also a library
+- libbufr2syn  Used by bufr2synop
+
+INSTALL
+-------
+
+See 'INSTALL' file in this package to get details. If you use default settings, then install will 
+install all the files in '/usr/local' directory. So you will need root privileges. As example
+
+  sudo make install
+
+or
+
+  su -c "make install"
+
+
+
+A EXAMPLE OF USE
+
+In a working dir we want to get a BUFR archive from NOAA GTS and see the reports we can to extract
+from it.
+
+1) Get a bufr bin file from NOAA. Is a cyclic directory file, with file names in the form sn.NNNN.bin 
+NNNN varying from 0000 to 0120. We choose first one. Don't worry, the file is also included in examples
+dir.
+
+  wget http://weather.noaa.gov/pub/SL.us008001/DF.bf/DC.intl/sn.0000.bin
+
+2) Then use 'bufrnoaa' to get a lot of files. Every file is a bufr report. We do not want all kind of 
+bufr reports, just surface observations (land and oceanograpic). We can just do
+
+   bufrnoaa  -f -T SO -S ACIMNSVW -O B -i sn.0000.txt
+
+If we did this with examples/sn.0000.bin file we got 171 bufr files selected from 571 in the archive 
+sn.0000.bin. Let choose one bufr file '20141018211119_ISIN03_EGRR_182100.bufr' (also in examples dir) 
+
+To see the 'emulated' synop reports from this bufr 
+
+   bufr2synop -i 20141018211119_ISIN03_EGRR_182100.bufr
+
+We will get a list of 58 synops to stdout.
+
+There are some more options for bufrnoaa and bufr2synop. You can see a list using 
+
+   bufrnoaa -h
+
+or
+
+   bufr2synop
 
