@@ -24,3 +24,18 @@ It cannot. Some variables in alphanumeric code rules can be coded in several way
 even national decision about them. As example, the 'hshs' item (table code 1617) for synop FM-12 can be coded 
 using 00-80 range or 90-99 one. A numeric value for heigh of base clouds can be coded in two ways. And there some 
 few more examples.
+
+BUILD
+
+If you uses git repository, first time you clone the code you need to set the autotools files. To achieve this just 
+
+   make -f Makefile.cvs
+
+If you get the package from a tarball then, from package directory to configure
+
+  ./configure
+  
+and to build the package
+
+  make
+
