@@ -1,4 +1,5 @@
-This is a package to make the transition to bufr reports from alphanumeric text easiest as possible. 
+This is a package to make the transition to bufr reports from alphanumeric text easiest as possible. The intial 
+commit is contributed from ogimet.com
 
 A lot of software is coded asuming that the primary source of meteorological reports is in alphanumeric format. 
 Decode libraries are expecting this. But time is changing, meteorological services are migrating to bufr and 
