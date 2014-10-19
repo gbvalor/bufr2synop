@@ -1,0 +1,26 @@
+This is a package to make the transition to bufr reports from alphanumeric text easiest as possible. 
+
+A lot of software is coded asuming that the primary source of meteorological reports is in alphanumeric format. 
+Decode libraries are expecting this. But time is changing, meteorological services are migrating to bufr and 
+other binary formats. Most decode software have to be changed.
+
+This is a software to get meteorological reports in old alphanumeric format from bufr files. At the moment includes the following 
+reports:
+
+  - FM 12-XIV SYNOP
+  - FM 13-XIV SHIP
+  - FM 14-XIV SYNOP MOBIL
+  - FM 18-XII BUOY
+
+The software is based in bufrdc library from ECMWF.  *It have to be installed*. In that package there is a synop2bufr 
+application doing just the reverse task. You can grab this library from 
+
+http://old.ecmwf.int/products/data/software/bufr.html
+
+Follow the instructions to build and install bufrdc library. Then, you can use this package.
+
+Note that the results from this library is not intended to match at %100 level to original alphanumeric reports. 
+It cannot. Some variables in alphanumeric code rules can be coded in several ways, and there is not a regional 
+even national decision about them. As example, the 'hshs' item (table code 1617) for synop FM-12 can be coded 
+using 00-80 range or 90-99 one. A numeric value for heigh of base clouds can be coded in two ways. And there some 
+few more examples.
