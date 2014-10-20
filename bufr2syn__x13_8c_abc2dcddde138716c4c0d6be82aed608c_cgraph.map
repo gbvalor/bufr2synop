@@ -1,0 +1,4 @@
+<map id="syn_parse_x13" name="syn_parse_x13">
+<area shape="rect" id="node3" href="$bufr2syn_8h.html#ad4866c80b103fa5cceabab14d1d8fcad" title="converts a precipitation in Kg/m2 into a RRR string " alt="" coords="172,5,271,32"/>
+<area shape="rect" id="node5" href="$bufr2syn_8h.html#a345a4f6854624a9f1c40020af8fbfb5d" title="converts a precipitation in Kg/m2 into a RRRR24 string " alt="" coords="160,56,283,83"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="syn_parse_x20" name="syn_parse_x20">
+<area shape="rect" id="node3" href="$bufr2syn_8h.html#adaedba1439baa9937e6c9ed31a81ae32" title="converts the altitude of cloud layer into h string code " alt="" coords="185,5,250,32"/>
+<area shape="rect" id="node5" href="$bufr2syn_8h.html#abbbc0055c4b6240f13adfc9e9352eb70" title="converts the altitude of cloud layer into hh string code " alt="" coords="181,56,253,83"/>
+<area shape="rect" id="node7" href="$bufr2syn_8h.html#a669bfe9135eb72f151cddd3bd48d281b" title="Converts percent cloud cover into okta. " alt="" coords="160,107,275,133"/>
+<area shape="rect" id="node9" href="$bufr2syn_8h.html#a6e72e844da96f21ef1bc57451503cb02" title="Convert horizontal visibilty in meters to a VV string. " alt="" coords="173,157,262,184"/>
+</map>

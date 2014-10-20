@@ -1,0 +1,34 @@
+<map id="src/libraries/metbuoy.h" name="src/libraries/metbuoy.h">
+<area shape="rect" id="node3" href="$bufr2syn_8h.html" title="src/libraries/bufr2syn.h" alt="" coords="2404,80,2552,107"/>
+<area shape="rect" id="node5" href="$bufr2synop_8h.html" title="Include header file for binary bufr2synop. " alt="" coords="95,163,241,189"/>
+<area shape="rect" id="node11" href="$bufr2syn__buoy_8c.html" title="file with the code to parse buoy FM&#45;18 sequences " alt="" coords="265,155,404,197"/>
+<area shape="rect" id="node13" href="$bufr2syn__csv_8c.html" title="Output a struct metreport in csv labeled form. " alt="" coords="428,155,567,197"/>
+<area shape="rect" id="node15" href="$bufr2syn__env_8c.html" title="file with the code to set environments " alt="" coords="591,155,729,197"/>
+<area shape="rect" id="node17" href="$bufr2syn__io_8c.html" title="file with the i/o code for binary bufr2synop " alt="" coords="754,163,920,189"/>
+<area shape="rect" id="node19" href="$bufr2syn__json_8c.html" title="Output a struct metreport in json form. " alt="" coords="945,155,1084,197"/>
+<area shape="rect" id="node21" href="$bufr2syn__mrproper_8c.html" title="file with the code to clean and init structures " alt="" coords="1108,155,1247,197"/>
+<area shape="rect" id="node23" href="$bufr2syn__print_8c.html" title="file with the code to print the results " alt="" coords="1271,155,1409,197"/>
+<area shape="rect" id="node25" href="$bufr2syn__sqparse_8c.html" title="file with the code to parse a sequence of descriptors for a subset " alt="" coords="1433,155,1572,197"/>
+<area shape="rect" id="node27" href="$bufr2syn__synop_8c.html" title="file with the code to parse a sequence as a SYNOP FM&#45;12, FM&#45;13 and FM&#45;14 " alt="" coords="1596,155,1735,197"/>
+<area shape="rect" id="node29" href="$bufr2syn__tablec_8c.html" title="file with the code to read table C data (code and flag tables) " alt="" coords="1759,155,1897,197"/>
+<area shape="rect" id="node31" href="$bufr2syn__utils_8c.html" title="file with the utility routines for binary bufr2synop " alt="" coords="1921,155,2060,197"/>
+<area shape="rect" id="node33" href="$bufr2syn__x01_8c.html" title="decodes the descriptors with X = 01 (station index, name and country) " alt="" coords="2084,155,2223,197"/>
+<area shape="rect" id="node35" href="$bufr2syn__x02_8c.html" title="decodes the descriptors with X = 02 (intrumentation and station type) " alt="" coords="2247,155,2385,197"/>
+<area shape="rect" id="node37" href="$bufr2syn__x04_8c.html" title="decodes the descriptors with X = 04 (date and time) " alt="" coords="2409,155,2548,197"/>
+<area shape="rect" id="node39" href="$bufr2syn__x05_8c.html" title="decodes the descriptors with X = 05 (Position) " alt="" coords="2572,155,2711,197"/>
+<area shape="rect" id="node41" href="$bufr2syn__x06_8c.html" title="decodes the descriptors with X = 06 (Horizontal Position&#45;2) " alt="" coords="2735,155,2873,197"/>
+<area shape="rect" id="node43" href="$bufr2syn__x07_8c.html" title="decodes the descriptors with X = 07 (Vertical Position) " alt="" coords="2897,155,3036,197"/>
+<area shape="rect" id="node45" href="$bufr2syn__x08_8c.html" title="decodes the descriptors with X = 08 (Significance Qualifiers) " alt="" coords="3060,155,3199,197"/>
+<area shape="rect" id="node47" href="$bufr2syn__x10_8c.html" title="decodes the descriptors with X = 10 " alt="" coords="3223,155,3361,197"/>
+<area shape="rect" id="node49" href="$bufr2syn__x11_8c.html" title="decodes the descriptors with X = 11 " alt="" coords="3385,155,3524,197"/>
+<area shape="rect" id="node51" href="$bufr2syn__x12_8c.html" title="decodes the descriptors with X = 12 " alt="" coords="3548,155,3687,197"/>
+<area shape="rect" id="node53" href="$bufr2syn__x13_8c.html" title="decodes the descriptors with X = 13 . Precipitation and hidrology " alt="" coords="3711,155,3849,197"/>
+<area shape="rect" id="node55" href="$bufr2syn__x14_8c.html" title="decodes the descriptors with X = 14 (Radiation) " alt="" coords="3873,155,4012,197"/>
+<area shape="rect" id="node57" href="$bufr2syn__x20_8c.html" title="decodes the descriptors with X = 20 " alt="" coords="4036,155,4175,197"/>
+<area shape="rect" id="node59" href="$bufr2syn__x22_8c.html" title="decodes the descriptors with X = 22 (oceanographic data) " alt="" coords="4199,155,4337,197"/>
+<area shape="rect" id="node61" href="$bufr2syn__x31_8c.html" title="decodes the descriptors with X = 31 (Control) " alt="" coords="4361,155,4500,197"/>
+<area shape="rect" id="node63" href="$bufr2syn__x33_8c.html" title="decodes the descriptors with X = 33 (Quality data) " alt="" coords="4524,155,4663,197"/>
+<area shape="rect" id="node65" href="$bufr2syn__xml_8c.html" title="Output a struct metreport in xml form. " alt="" coords="4687,155,4825,197"/>
+<area shape="rect" id="node7" href="$bufr2synop_8c.html" title="decodes a bufr file using ECMWF bufr library and tries to pass the decoded reports to synop&#45;format ..." alt="" coords="5,245,152,272"/>
+<area shape="rect" id="node9" href="$bufr2synop__io_8c.html" title="src/apps/bufr2synop_io.c" alt="" coords="176,245,339,272"/>
+</map>

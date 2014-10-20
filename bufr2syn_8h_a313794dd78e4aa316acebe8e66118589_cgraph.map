@@ -1,0 +1,6 @@
+<map id="syn_parse_x12" name="syn_parse_x12">
+<area shape="rect" id="node3" href="$bufr2syn_8h.html#a199d59109b11da26f3efa398f6c4d918" title="Try to find WMO region if it is not already set and WMO Block and number index are known..." alt="" coords="161,5,298,32"/>
+<area shape="rect" id="node5" href="$bufr2syn_8h.html#ae98152f1dba7076d6a5e40bcd01f0e3b" title="converts a kelvin temperature value into a snTT string " alt="" coords="175,56,284,83"/>
+<area shape="rect" id="node7" href="$bufr2syn_8h.html#ad9180c6833f9d5c360f7981ebcc08933" title="converts a kelvin temperature value into a snTTT string " alt="" coords="171,107,288,133"/>
+<area shape="rect" id="node9" href="$bufr2syn_8h.html#adb80f64380bb5c8f7ede9a8c361f3190" title="converts a kelvin temperature value into a TT string " alt="" coords="181,157,277,184"/>
+</map>
