@@ -4,9 +4,9 @@ INTRODUCTION
 This is a package to make the transition to bufr reports from alphanumeric text easiest as 
 possible. The intial commit is contributed from ogimet.com
 
-A lot of software is coded asuming that the primary source of meteorological reports is in 
-alphanumeric format.  Decode libraries are expecting this. But time is changing, 
-meteorological services are migrating to BUFR and other binary formats. Most decode software 
+A lot of software is coded assuming that the primary source of meteorological reports is in 
+alphanumeric format. Decode libraries are expecting this. But time is changing, 
+meteorological services are migrating to BUFR and other binary formats. A lot of decode software 
 have to be changed.
 
 This is a software to get meteorological reports in old alphanumeric format from BUFR files. 
@@ -49,7 +49,7 @@ and to build the package
 
   make
 
-Assume you built the package. you will have three binaries
+Assume you built the package. you will have three binaries:
 
 - bufr2synop . 
     Main binary to extract alphanumeric reports.
@@ -59,8 +59,10 @@ Assume you built the package. you will have three binaries
 - bufrnoaa
     An utility to extract and select bufr files from NOAA bin archives.
 
-And also a library
+And also a library:
+
 - libbufr2syn  Used by bufr2synop
+
 
 INSTALL
 -------
@@ -76,15 +78,16 @@ or
 
 
 
-A EXAMPLE OF USE
-----------------
+AN EXAMPLE OF USE
+-----------------
 
-In a working dir we want to get a BUFR archive from NOAA GTS and see the reports we can to extract
+In a working dir we want to get a BUFR archive from NOAA GTS and see the reports we can extract
 from it.
 
 1) Get a bufr bin file from NOAA. Is a cyclic directory file, with file names in the form sn.NNNN.bin 
 NNNN varying from 0000 to 0120. We choose first one. Don't worry, the file is also included in examples
-dir.
+dir. (The file you can download is different for sure, the example in package is from Saturday 
+Oct 18 2014).
 
   wget http://weather.noaa.gov/pub/SL.us008001/DF.bf/DC.intl/sn.0000.bin
 
@@ -93,10 +96,10 @@ bufr reports, just surface observations (land and oceanographic). We can just do
 
    bufrnoaa  -f -T SO -S ACIMNSVW -O B -i sn.0000.txt
 
-If we did this with examples/sn.0000.bin file we got 171 bufr files selected from 571 in the archive 
+If we did this with examples 'sn.0000.bin' file we got 171 bufr files selected from 571 in the archive 
 sn.0000.bin. Let choose one bufr file '20141018211119_ISIN03_EGRR_182100.bufr' (also in examples dir) 
 
-To see the 'emulated' synop reports from this bufr 
+To see the 'emulated' synop reports from this bufr file 
 
    bufr2synop -i 20141018211119_ISIN03_EGRR_182100.bufr
 
@@ -110,3 +113,8 @@ or
 
    bufr2synop -h
 
+And you also can read the doc pages at
+
+   http://gbvalor.github.io/bufr2synop
+   
+   
