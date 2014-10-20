@@ -20,8 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 /*!
-   \file bufrfil.h
-   \brief fichero de inclusion del binario bufrfil
+   \file bufrnoaa.h
+   \brief inclusion file for binary bufrnoaa
 */
 #include <stdio.h>
 #include <stdlib.h>
