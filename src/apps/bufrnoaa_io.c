@@ -26,7 +26,7 @@
 void print_usage(void)
 {
   printf("Usage: \n");
-  printf("bufrnoaa -i input_file [-h][-f][-l][-F prefix][-T T1_selection][-O selo][-S sels][-U selu]\n");
+  printf("bufrnoaa -i input_file [-h][-f][-l][-F prefix][-T T2_selection][-O selo][-S sels][-U selu]\n");
   printf("   -h Print this help\n");
   printf("   -i Input file. Complete input path file for NOAA *.bin bufr archive file\n");
   printf("   -l list the names of reports in input file\n");
@@ -38,7 +38,7 @@ void print_usage(void)
   printf("      If no -F option no archive bin file is created.\n");
   printf("      If no message is selected, the a void file is created.\n");
   printf("      File timestamp is the same than input file\n");
-  printf("   -T selectio. A string with selection. A character per type (T2 code)\n");
+  printf("   -T T2_selection. A string with selection. A character per type (T2 code)\n");
   printf("      'S' = Surface . 'O'= Oceanographic. 'U'= upper air\n");
   printf("      If no -T argument then nothing is selected\n");
   printf("   -S sels. String with selection for A1 when T2='S'\n");
