@@ -338,7 +338,7 @@ int main(int argc, char *argv[])
                   //printf("Name: '%s'\n",name);
                 }
               else if (b[0] == ' ')
-                name[nx++] = '_';
+                name[nx++] = '_'; // substitute a space by '_'
               else
                 name[nx++] = b[0];
               break;

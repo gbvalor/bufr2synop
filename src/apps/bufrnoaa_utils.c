@@ -23,6 +23,13 @@
 */
 #include "bufrnoaa.h"
 
+/*!
+  \fn int is_bufr(unsigned char *b)
+  \brief checks if an unsigned char from an array is the first char of 'BUFR' 
+  \param b pointer to unsigned char to check
+
+  Returns 1 if success, 0 othewise
+*/
 int is_bufr(unsigned char *b)
 {
   if (b[0] == 'R' && b[1] == 'F' && b[2] == 'U' && b[3] == 'B')
@@ -30,6 +37,13 @@ int is_bufr(unsigned char *b)
   return 0;
 }
 
+/*!
+ \fn int is_head(unsigned char *b)
+ \brief checks if an unsigned char from an array is the first char of '****' 
+ \param b pointer to unsigned char to check
+
+  Returns 1 if success, 0 othewise
+*/
 int is_head(unsigned char *b)
 {
   if (b[0] == '*' && b[1] == '*' && b[2] == '*' && b[3] == '*')
@@ -37,6 +51,13 @@ int is_head(unsigned char *b)
   return 0;
 }
 
+/*!
+ \fn int is_endb(unsigned char *b)
+ \brief checks if an unsigned char from an array is the first char of '7777' 
+ \param b pointer to unsigned char to check
+
+  Returns 1 if success, 0 othewise
+*/
 int is_endb(unsigned char *b)
 {
   if (b[0] == '7' && b[1] == '7' && b[2] == '7' && b[3] == '7')
@@ -44,8 +65,13 @@ int is_endb(unsigned char *b)
   return 0;
 }
 
-/* Subtract the `struct timeval' values X and Y,
-   storing the result in RESULT.
+/*! 
+   \fn int timeval_substract (struct timeval *result, struct timeval *x, struct timeval *y)
+   \brief Subtract the `struct timeval' values X and Y,  storing the result in RESULT.
+   \param result pointer to a struct timeval where to set the result
+   \param x pointer to struct timeval as X in (X - Y) 
+   \param y pointer to struct timeval as Y in (X - Y)
+
    Return 1 if the difference is negative, otherwise 0.
 */
 
@@ -76,7 +102,9 @@ int timeval_substract (struct timeval *result, struct timeval *x,
 }
 
 /*!
+  \fn int bufr_is_selected(char *name)
   \brief returns 1 if selected message 0 otherwise
+  \param name string with name to check
 */
 int bufr_is_selected(char *name)
 {
@@ -111,6 +139,12 @@ int bufr_is_selected(char *name)
    return 1;
 }
 
+/*!
+  \fn nt date_mtime_from_stat(char *date, struct stat *st)
+  \brief get a string with date and time from a struct stat 
+  \param date string wuth the result
+  \param st pointer to a strucr stat
+*/
 int date_mtime_from_stat(char *date, struct stat *st)
 {
    struct tm tim;
@@ -120,6 +154,12 @@ int date_mtime_from_stat(char *date, struct stat *st)
    return 1; 
 }
 
+/*!
+ \fn int mtime_from_stat(char *filename, struct stat *st)
+ \brief modifies a file update time from a struct stat 
+ \param filename string with the pathname of file to modify
+ \param st pointer to a struct stat as reference
+*/
 int mtime_from_stat(char *filename, struct stat *st)
 {
    struct utimbuf ut;

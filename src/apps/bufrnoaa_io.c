@@ -49,7 +49,14 @@ void print_usage(void)
   printf("      By default all A1 are selected\n");
 }
 
-// read the arguments from stdio
+/*!
+  \fn int read_args( int _argc, char * _argv[])
+  \brief read the arguments from stdio
+  \param _argc number of arguments passed
+  \param _argv array of arguments
+
+  Returns 1 if succcess, -1 othewise 
+*/
 int read_args( int _argc, char * _argv[])
 {
   int iopt;
