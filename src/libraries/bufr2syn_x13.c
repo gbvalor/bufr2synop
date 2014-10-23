@@ -78,7 +78,7 @@ char * prec_to_RRRR24 ( char *target, double r )
 }
 
 /*!
-  \fn char * prec_to_RRRR24 ( char *target, double r )
+  \fn char * recent_snow_to_ss( char *target, double r )
   \brief converts recent snow in m to ss (code table 3870)
   \param r recent snow depth in meters
   \param target the resulting string
