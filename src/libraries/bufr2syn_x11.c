@@ -84,6 +84,8 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s )
       syn->mask |= SYNOP_SEC1;
       break;
     case 41: // max wind gust speed
+      if (syn->s3.d9.n == SYNOP_NMISC)
+        return 0;
       if (s->itval == -600)
         {
           sprintf( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "910");
@@ -160,6 +162,8 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s )
       syn->mask |= SYNOP_SEC1;
       break;
     case 86: // Max wind speed in knots
+      if (syn->s3.d9.n == SYNOP_NMISC)
+        return 0;
       if (s->itval == -600)
         {
           sprintf( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "910");
