@@ -19,7 +19,7 @@
  ***************************************************************************/
 /*!
  \file bufr2syn_x12.c
- \brief decodes the descriptors with X = 12
+ \brief decodes the descriptors with X = 12 (Temperature)
  */
 #include "bufr2syn.h"
 

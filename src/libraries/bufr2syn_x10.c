@@ -19,7 +19,7 @@
  ***************************************************************************/
 /*!
  \file bufr2syn_x10.c
- \brief decodes the descriptors with X = 10
+ \brief decodes the descriptors with X = 10 (air pressure)
  */
 #include "bufr2syn.h"
 

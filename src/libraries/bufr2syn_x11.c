@@ -19,7 +19,7 @@
  ***************************************************************************/
 /*!
  \file bufr2syn_x11.c
- \brief decodes the descriptors with X = 11
+ \brief decodes the descriptors with X = 11 (wind)
  */
 #include "bufr2syn.h"
 
@@ -147,6 +147,80 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s )
       break;
     case 43: // max wind gust direction
       break;
+    case 84: // wind speed in knots
+      if ( syn->s0.iw[0] == '1' )
+        s->val /= 1.94384449;
+      if ( s->val < 100.0 )
+        sprintf ( syn->s1.ff, "%02d", ( int ) ( s->val + 0.5 ) );
+      else
+        {
+          sprintf ( syn->s1.ff,"99" );
+          sprintf ( syn->s1.fff, "%03d", ( int ) ( s->val + 0.5 ) );
+        }
+      syn->mask |= SYNOP_SEC1;
+      break;
+    case 86: // Max wind speed in knots
+      if (s->itval == -600)
+        {
+          sprintf( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "910");
+          if ( syn->s0.iw[0] == '1' )
+            s->val /= 1.94384449;
+          if ( s->val < 100.0 )
+            sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%02d", ( int ) ( s->val + 0.5 ) );
+          else
+            {
+              sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp,"99" );
+              syn->s3.d9.n++;
+              sprintf( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "00");
+              sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%03d", ( int ) ( s->val + 0.5 ) );
+            }
+          syn->s3.d9.n++;
+        }
+      else if (s->itval)
+        {
+          if (s->mask & SUBSET_MASK_HAVE_GUST)
+            {
+              sprintf( syn->s5.d9.misc[syn->s5.d9.n].SpSp, "907");
+              secs_to_tt(syn->s5.d9.misc[syn->s5.d9.n].spsp, s->itval);
+              syn->s5.d9.n++;
+              sprintf( syn->s5.d9.misc[syn->s5.d9.n].SpSp, "911");
+              if ( syn->s0.iw[0] == '1' )
+                s->val /= 1.94384449;
+              if ( s->val < 100.0 )
+                sprintf ( syn->s5.d9.misc[syn->s5.d9.n].spsp, "%02d", ( int ) ( s->val + 0.5 ) );
+              else
+                {
+                  sprintf ( syn->s5.d9.misc[syn->s5.d9.n].spsp,"99" );
+                  syn->s5.d9.n++;
+                  sprintf( syn->s5.d9.misc[syn->s5.d9.n].SpSp, "00");
+                  sprintf ( syn->s5.d9.misc[syn->s5.d9.n].spsp, "%03d", ( int ) ( s->val + 0.5 ) );
+                }
+              syn->s5.d9.n++;
+              syn->mask |= SYNOP_SEC5;
+            }
+          else
+            {
+              sprintf( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "907");
+              secs_to_tt(syn->s3.d9.misc[syn->s3.d9.n].spsp, s->itval);
+              syn->s3.d9.n++;
+              sprintf( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "911");
+              if ( syn->s0.iw[0] == '1' )
+                s->val /= 1.94384449;
+              if ( s->val < 100.0 )
+                sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%02d", ( int ) ( s->val + 0.5 ) );
+              else
+                {
+                  sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp,"99" );
+                  syn->s3.d9.n++;
+                  sprintf( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "00");
+                  sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%03d", ( int ) ( s->val + 0.5 ) );
+                }
+              syn->s3.d9.n++;
+              syn->mask |= SYNOP_SEC3;
+              s->mask |= SUBSET_MASK_HAVE_GUST;
+            }
+        }
+      break;
     default:
       break;
     }
@@ -178,6 +252,18 @@ int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr_subset_state *s )
     case 12: // 0 11 012
       if ( b->s0.iw[0] == '4' )
         s->val *= 1.94384449;
+      if ( s->val < 100.0 )
+        sprintf ( b->s1.ff, "%02d", ( int ) ( s->val + 0.5 ) );
+      else
+        {
+          sprintf ( b->s1.ff,"99" );
+          sprintf ( b->s1.fff, "%03d", ( int ) ( s->val + 0.5 ) );
+        }
+      b->mask |= BUOY_SEC1;
+      break;
+    case 84: // 0 11 084  (wind in knots)
+      if ( b->s0.iw[0] == '1' )
+        s->val /= 1.94384449;
       if ( s->val < 100.0 )
         sprintf ( b->s1.ff, "%02d", ( int ) ( s->val + 0.5 ) );
       else
