@@ -90,7 +90,7 @@ struct synop_sec0
    char A1[2]; /*!< A1 item. WMO region */
    char bw[2]; /*!< bw item. WMO subregion */
    char nbnbnb[4]; /*!< kins and serial number for buoy */
-   char D_D[10]; /*!< Ship signal*/
+   char D_D[10]; /*!< Ship signal or mobile land station indentifier*/
    char YY[4]; /*!< Day (UTC) of observation */
    char GG[4]; /*!< Hour (UTC) of observation */
    char iw[2]; /*!< Indicator for source and units used in speed wind data */
