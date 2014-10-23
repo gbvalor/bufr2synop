@@ -422,6 +422,7 @@ char * prec_to_RRR ( char *target, double r );
 char * prec_to_RRRR24 ( char *target, double r );
 char * secs_to_tt(char *tt, int secs);
 char * vism_to_VV ( char *target, double V );
+char * recent_snow_to_ss( char *target, double r );
 
 int print_synop ( char *report, size_t lmax, struct synop_chunks *syn );
 char * print_synop_sec0 (char **sec0, size_t lmax, struct synop_chunks *syn);

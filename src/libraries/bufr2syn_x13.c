@@ -77,6 +77,33 @@ char * prec_to_RRRR24 ( char *target, double r )
   return target;
 }
 
+/*!
+  \fn char * prec_to_RRRR24 ( char *target, double r )
+  \brief converts recent snow in m to ss (code table 3870)
+  \param r recent snow depth in meters
+  \param target the resulting string
+*/
+char * recent_snow_to_ss( char *target, double r )
+{
+   int i;
+   i = (int)(r * 1000.0); // convert to mm
+
+   if ( i == 0)
+    sprintf ( target,"00");
+   else if ( i < 0)
+    sprintf ( target,"97");
+   else if ( i < 7)
+    sprintf ( target,"%02d", i + 90);
+   else if (i < 600)
+    sprintf ( target,"%02d", i / 10);
+   else if (i <= 4000)
+    sprintf ( target,"%02d", 50 + i/100);
+   else if (i > 4000)
+    sprintf ( target,"98");
+   else
+    sprintf ( target,"99");
+   return target;
+}
 
 /*!
   \fn int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s )
@@ -281,6 +308,13 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s )
           prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
           syn->mask |= SYNOP_SEC3;
         }
+      break;
+     case 118: // 0 13 118 Recent snow depth
+      if (syn->s3.d9.n < SYNOP_NMISC)
+      {
+        sprintf( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "931%s", recent_snow_to_ss( aux, s->val));
+        (syn->s3.d9.n)++;
+      }
       break;
     default:
       break;
