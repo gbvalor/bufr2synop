@@ -43,9 +43,9 @@ int syn_parse_x07 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 
   switch ( s->a->desc.y )
     {
-    case 1: // 0 07 001
-    case 30:
-    case 31:
+    case 1: // 0 07 001 . Heigh of station
+    case 30: // 0 07 030 . Height of station ground above msl
+    case 31: // 0 07 031 . Height of barometer above msl
       if (syn->s0.h0h0h0h0[0] == 0)
       {
         sprintf(syn->s0.h0h0h0h0, "%04d", s->ival); 

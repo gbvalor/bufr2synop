@@ -40,13 +40,13 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 
   switch ( s->a->desc.y )
     {
-    case 1: // 0 01 001
+    case 1: // 0 01 001 . WMO block number
       sprintf ( syn->s0.II, "%02d", s->ival );
       break;
-    case 2: // 0 01 002
+    case 2: // 0 01 002 . WMO station number
       sprintf ( syn->s0.iii, "%03d", s->ival );
       break;
-    case 3: // 0 01 003
+    case 3: // 0 01 003 . WMO Region 
       sprintf ( syn->s0.A1, "%d", s->ival );
       if (strcmp(syn->s0.A1, "1") == 0)
         strcpy(syn->s0.Reg, "I");
@@ -61,11 +61,11 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s )
       else if (strcmp(syn->s0.A1, "6") == 0)
         strcpy(syn->s0.Reg, "VI");
       break;
-    case 4: // 0 01 004
-    case 20: // 0 01 004
+    case 4: // 0 01 004 . WMO Subarea
+    case 20: // 0 01 020 . WMO region subarea
       sprintf ( syn->s0.bw, "%d", s->ival );
       break;
-    case 11: // 0 01 011
+    case 11: // 0 01 011. Ship or mobile land station index
       if (strlen(s->a->cval) < 16)
         {
           strcpy(aux, s->a->cval);
@@ -74,7 +74,9 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s )
             strcpy( syn->s0.D_D, aux);
         }
       break;
-    case 15: // 0 01 015
+    case 15: // 0 01 015 . Station or site name
+    case 18: // 0 01 018 . Short station or site name
+    case 19: // 0 01 019 . Long station or site name
       if (strlen(s->a->cval) <= 80)
         {
           strcpy(aux, s->a->cval);
@@ -83,7 +85,7 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s )
           s->mask |= SUBSET_MASK_HAVE_NAME;
         }
       break;
-    case 101: // 0 01 101
+    case 101: // 0 01 101 . State identifier
       if (strlen(s->a->ctable) <= 256)
         {
           strcpy(aux, s->a->ctable);

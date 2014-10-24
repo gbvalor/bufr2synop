@@ -156,7 +156,7 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct
   clean_synop_chunks ( syn );
 
   // reject if still not coded type
-  if (strcmp(s->type_report,"AAXX") && strcmp(s->type_report,"BBXX"))
+  if (strcmp(s->type_report,"AAXX") && strcmp(s->type_report,"BBXX") && strcmp(s->type_report,"OOXX"))
   {
     sprintf(err,"bufr2syn: parse_subset_as_synop(): '%s' reports still not decoded in this software", s->type_report);
     return 1;

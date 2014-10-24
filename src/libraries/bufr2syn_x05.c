@@ -41,8 +41,8 @@ int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 
   switch ( s->a->desc.y )
     {
-    case 1: // 0 05 001
-    case 2: // 0 05 002
+    case 1: // 0 05 001 . Latitude (High accuracy)
+    case 2: // 0 05 002 . Latitude (Coarse accuracy)
       if (s->val < 0.0)
         s->mask |= SUBSET_MASK_LATITUDE_SOUTH; // Sign for latitude
       s->mask |= SUBSET_MASK_HAVE_LATITUDE;
@@ -51,8 +51,8 @@ int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s )
       syn->s0.Ula[0] = syn->s0.LaLaLa[1];
       s->lat = s->val;
     break;
-    case 11: // 0 05 011
-    case 12: // 0 05 012
+    case 11: // 0 05 011 . Longitude (High accuracy)
+    case 12: // 0 05 012 . Longitude (Coarse accuracy)
       if (s->val < 0.0)
         s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
       s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
@@ -84,10 +84,10 @@ int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s )
     }
   }
 
-  // check if about MMM
+  // check about Mardsen square
   if ((syn->s0.MMM[0] == 0) && syn->s0.LaLaLa[0] && syn->s0.LoLoLoLo[0])
   {
-     latlon_to_MMM(syn->s0.MMM, s->lat, s->lon);
+     latlon_to_MMM(syn->s0.MMM, s->lat, s->lon); // compute it
   }
   return 0;
 }
@@ -109,8 +109,8 @@ int buoy_parse_x05 ( struct buoy_chunks *b, struct bufr_subset_state *s )
  
   switch ( s->a->desc.y )
     {
-    case 1: // 0 05 001
-    case 2: // 0 05 002
+    case 1: // 0 05 001 . Latitude (High accuracy)
+    case 2: // 0 05 002 . Latitude (Coarse accuracy)
       if (s->val < 0.0)
         s->mask |= SUBSET_MASK_LATITUDE_SOUTH; // Sign for latitude
       s->mask |= SUBSET_MASK_HAVE_LATITUDE;
@@ -118,8 +118,8 @@ int buoy_parse_x05 ( struct buoy_chunks *b, struct bufr_subset_state *s )
       sprintf(b->s0.LaLaLaLaLa, "%05d",ia);
       s->lat = s->val;
       break;
-    case 11: // 0 05 001
-    case 12: // 0 05 002
+    case 11: // 0 05 001 . Longitude (High accuracy)
+    case 12: // 0 05 002 . Longitude (Coarse accuracy)
       if (s->val < 0.0)
         s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
       s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
