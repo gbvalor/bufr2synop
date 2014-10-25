@@ -303,7 +303,5 @@ void clean_syn_sec2(struct synop_sec2 *s);
 void clean_syn_sec3(struct synop_sec3 *s);
 void clean_syn_sec5(struct synop_sec5 *s);
 
-extern struct synop_chunks SYNOP;
-
 #endif 
 
