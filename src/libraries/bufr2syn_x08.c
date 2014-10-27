@@ -44,7 +44,7 @@ int syn_parse_x08 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 
   switch ( s->a->desc.y )
     {
-    case 2:
+    case 2: // 0 08 002 . Vertical significance (surface observations)
       if (s->ival == 21)
         s->clayer = 1; // first cloud layer
       else if (s->ival == 22)
@@ -54,9 +54,9 @@ int syn_parse_x08 ( struct synop_chunks *syn, struct bufr_subset_state *s )
       else if (s->ival == 24)
         s->clayer = 4; // fourth cloud layer
       break;
-    case 22:
-    case 23:
-    case 24:
+    case 22:  // 0 08 022 . Total number
+    case 23:  // 0 08 023 . First-order statistics
+    case 24:  // 0 08 024 . Difference statistics
       if (s->isq)
         s->isq = 0;
       else
@@ -86,9 +86,9 @@ int buoy_parse_x08 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 
   switch ( s->a->desc.y )
     {
-    case 22:
-    case 23:
-    case 24:
+    case 22:  // 0 08 022 . Total number
+    case 23:  // 0 08 023 . First-order statistics
+    case 24:  // 0 08 024 . Difference statistics
       if (s->isq)
         s->isq = 0;
       else

@@ -23,6 +23,14 @@
  */
 #include "bufr2syn.h"
 
+/*!
+  \fn char * secs_to_tt(char *tt, int secs)
+  \brief get tt code from seconds
+  \param tt string with the resulting table code
+  \param secs second
+
+  returns the pointer to \a tt
+*/
 char * secs_to_tt(char *tt, int secs)
 {
   int i;
@@ -65,13 +73,13 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 
   switch ( s->a->desc.y )
     {
-    case 1: // 0 11 001
-    case 11: // 0 11 011
+    case 1: // 0 11 001 . Wind direction
+    case 11: // 0 11 011 . Wind direction at 10 meters
       sprintf ( syn->s1.dd, "%02d", ( s->ival + 5 ) / 10 );
       syn->mask |= SYNOP_SEC1;
       break;
-    case 2: // 0 11 002
-    case 12: // 0 11 012
+    case 2: // 0 11 002 . Wind speed
+    case 12: // 0 11 012 . Wind speed at 10 meters
       if ( syn->s0.iw[0] == '4' )
         s->val *= 1.94384449;
       if ( s->val < 100.0 )
@@ -83,7 +91,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s )
         }
       syn->mask |= SYNOP_SEC1;
       break;
-    case 41: // max wind gust speed
+    case 41: // 0 11 041 . Max wind gust speed
       if (syn->s3.d9.n == SYNOP_NMISC)
         return 0;
       if (s->itval == -600)
@@ -147,9 +155,9 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s )
             }
         }
       break;
-    case 43: // max wind gust direction
+    case 43: // 0 11 043 . Max wind gust direction
       break;
-    case 84: // wind speed in knots
+    case 84: // 0 11 084 . Wind speed in knots
       if ( syn->s0.iw[0] == '1' )
         s->val /= 1.94384449;
       if ( s->val < 100.0 )
@@ -161,7 +169,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s )
         }
       syn->mask |= SYNOP_SEC1;
       break;
-    case 86: // Max wind speed in knots
+    case 86: // 0 11 086 . Max wind speed in knots
       if (syn->s3.d9.n == SYNOP_NMISC)
         return 0;
       if (s->itval == -600)
@@ -247,13 +255,13 @@ int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 
   switch ( s->a->desc.y )
     {
-    case 1: // 0 11 001
-    case 11: // 0 11 011
+    case 1: // 0 11 001 . Wind direction
+    case 11: // 0 11 011 . Wind direction at 10m
       sprintf ( b->s1.dd, "%02d", ( s->ival + 5 ) / 10 );
       b->mask |= BUOY_SEC1;
       break;
-    case 2: // 0 11 002
-    case 12: // 0 11 012
+    case 2: // 0 11 002 . Wind speed
+    case 12: // 0 11 012 . Wind speed at 10 meters
       if ( b->s0.iw[0] == '4' )
         s->val *= 1.94384449;
       if ( s->val < 100.0 )

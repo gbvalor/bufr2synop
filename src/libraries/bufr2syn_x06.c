@@ -74,7 +74,7 @@ int syn_parse_x06 ( struct synop_chunks *syn, struct bufr_subset_state *s )
   switch ( s->a->desc.y )
     {
     case 1: // 0 06 001 . Longitude (High accuracy)
-    case 2: // 0 06 002 . Longitude (High accuracy)
+    case 2: // 0 06 002 . Longitude (Coarse)
       if (s->val < 0.0)
         s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
       s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
@@ -132,8 +132,8 @@ int buoy_parse_x06 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 
   switch ( s->a->desc.y )
     {
-    case 1: // 0 06 001
-    case 2: // 0 06 002
+    case 1: // 0 06 001 . Longitude (High accuracy)
+    case 2: // 0 06 002 . Longitude (Coarse accuracy)
       if (s->val < 0.0)
         s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
       s->mask |= SUBSET_MASK_HAVE_LONGITUDE;

@@ -72,21 +72,21 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 
   switch ( s->a->desc.y )
     {
-    case 4: // 0 10 004
+    case 4: // 0 10 004 . Pressure
       pascal_to_PPPP ( aux, s->val );
       strcpy ( syn->s1.PoPoPoPo, aux );
       syn->mask |= SYNOP_SEC1;
       break;
-    case 51: // 0 10 051
+    case 51: // 0 10 051 . Pressure reduced to mean sea level
       pascal_to_PPPP ( aux, s->val );
       strcpy ( syn->s1.PPPP, aux );
       syn->mask |= SYNOP_SEC1;
       break;
-    case 63: // 0 10 063
+    case 63: // 0 10 063 . Characteristic of pressure tendency
       sprintf ( syn->s1.a, "%1d",s->ival );
       syn->mask |= SYNOP_SEC1;
       break;
-    case 61: // 0 10 061
+    case 61: // 0 10 061 . 3-hour pressure change
       pascal_to_ppp ( aux, s->val );
       sprintf ( syn->s1.ppp, "%s", aux );
       syn->mask |= SYNOP_SEC1;
@@ -115,21 +115,21 @@ int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr_subset_state *s )
   switch ( s->a->desc.y )
     {
 
-    case 4: // 0 10 004
+    case 4: // 0 10 004 . Pressure
       pascal_to_PPPP ( aux, s->val );
       strcpy ( b->s1.PoPoPoPo, aux );
       b->mask |= BUOY_SEC1;
       break;
-    case 51: // 0 10 051
+    case 51: // 0 10 051 . Pressure reduced to mean sea level
       pascal_to_PPPP ( aux, s->val );
       strcpy ( b->s1.PPPP, aux );
       b->mask |= BUOY_SEC1;
       break;
-    case 63: // 0 10 063
+    case 63: // 0 10 063 . Characteristic of pressure tendency
       sprintf ( b->s1.a, "%1d",s->ival );
       b->mask |= BUOY_SEC1;
       break;
-    case 61: // 0 10 061
+    case 61: // 0 10 061 . 3-hour pressure change
       pascal_to_ppp ( aux, s->val );
       sprintf ( b->s1.ppp, "%s", aux );
       b->mask |= BUOY_SEC1;

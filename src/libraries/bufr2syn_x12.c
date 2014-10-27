@@ -125,10 +125,10 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 
   switch ( s->a->desc.y )
     {
-    case 1: // 0 12 001
-    case 4: // 0 12 004
-    case 101: // 0 12 101
-    case 104: // 0 12 104
+    case 1: // 0 12 001 . Air temperature
+    case 4: // 0 12 004 . Air temperatura at 2 m
+    case 101: // 0 12 101 . Air temperature
+    case 104: // 0 12 104 . Air temperature at 2 m
       if (syn->s1.TTT[0] == 0)
         {
           if (kelvin_to_snTTT ( aux, s->val ))
@@ -139,10 +139,10 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s )
             }
         }
       break;
-    case 3: // 0 12 003
-    case 5: // 0 12 006
-    case 103: // 0 12 103
-    case 106: // 0 12 106
+    case 3: // 0 12 003 . Dewpoint temperature
+    case 6: // 0 12 006 . Dewpoint temperature at 2 m
+    case 103: // 0 12 103 . Dewpoint temperature
+    case 106: // 0 12 106 . Dewpoint temperature at 2 m
       if (syn->s1.TdTdTd[0] == 0)
         {
           if (kelvin_to_snTTT ( aux, s->val ))
@@ -153,12 +153,12 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s )
             }
         }
       break;
-    case 11: // 0 12 011
-    case 14: // 0 12 014
-    case 21: // 0 12 021
-    case 111: // 0 12 115
-    case 114: // 0 12 114
-    case 116: // 0 12 116
+    case 11: // 0 12 011 . Maximum temperature at heigh and over the period specified
+    case 14: // 0 12 014 . Maximum temperature at 2 m , past 12 hours
+    case 21: // 0 12 021 . Maximum temperature. 
+    case 111: // 0 12 111 . Maximum temperature at heigh and over the period specified
+    case 114: // 0 12 114 . Maximum temperature at 2 m , past 12 hours
+    case 116: // 0 12 116 . Maximum temperature at 2 m , past 24 hours
       if (syn->s3.TxTxTx[0] == 0 && (s->itval % (3*3600)) == 0) // only for 3, 6 ... hours
         {
           if (kelvin_to_snTTT ( aux, s->val ))
@@ -169,12 +169,12 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s )
             }
         }
       break;
-    case 12: // 0 12 012
-    case 15: // 0 12 015
-    case 22: // 0 12 022
-    case 112: // 0 12 115
-    case 115: // 0 12 115
-    case 117: // 0 12 117
+    case 12: // 0 12 012 . Minimum temperature at heigh and over the period specified
+    case 15: // 0 12 015 . Minimum temperature at 2 m , past 12 hours
+    case 22: // 0 12 022 . Minimum temperature.
+    case 112: // 0 12 112 . Minimum temperature at heigh and over the period specified
+    case 115: // 0 12 115 . Minimum temperature at 2 m , past 12 hours
+    case 117: // 0 12 117 . Minimum temperature at 2 m , past 24 hours
       if (syn->s3.TnTnTn[0] == 0 && (s->itval % (3*3600)) == 0) // only for 3, 6 ... hours 
         {
           if (kelvin_to_snTTT ( aux, s->val ))
@@ -185,10 +185,10 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s )
             }
         }
       break;
-    case 2:
-    case 6:
-    case 102:
-    case 105: // 0 12 105 Wet bulb temperature 
+    case 2: // 0 12 002 . Wet bulb temperature
+    case 5: // 0 12 005 . Wet bulb temperature at 2 m
+    case 102: // 0 12 102 . Wet bulb temperature
+    case 105: // 0 12 105 . Wet bulb temperature at 2 m
       if (syn->s2.TbTbTb[0] == 0)
         {
           if (kelvin_to_snTTT ( aux, s->val ))
@@ -199,7 +199,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s )
             }
         }
       break;
-    case 113:
+    case 113: // 0 12 113 . Ground minimum temperature, past 12 hours
       if (strcmp("6", guess_WMO_region(syn)) == 0) // region VI
         {
           if (kelvin_to_snTT ( aux, s->val ))
@@ -245,10 +245,10 @@ int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 
   switch ( s->a->desc.y )
     {
-    case 1: // 0 12 001
-    case 4: // 0 12 004
-    case 101: // 0 12 101
-    case 104: // 0 12 104
+    case 1: // 0 12 001 . Air temperature
+    case 4: // 0 12 004 . Air temperatura at 2 m
+    case 101: // 0 12 101 . Air temperature
+    case 104: // 0 12 104 . Air temperature at 2 m
       if (b->s1.TTT[0] == 0)
         {
           if (kelvin_to_snTTT ( aux, s->val ))
@@ -259,10 +259,10 @@ int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr_subset_state *s )
             }
         }
       break;
-    case 3: // 0 12 003
-    case 5: // 0 12 006
-    case 103: // 0 12 103
-    case 106: // 0 12 106
+    case 3: // 0 12 003 . Dewpoint temperature
+    case 6: // 0 12 006 . Dewpoint temperature at 2 m
+    case 103: // 0 12 103 . Dewpoint temperature
+    case 106: // 0 12 106 . Dewpoint temperature at 2 m
       if (b->s1.TdTdTd[0] == 0)
         {
           if (kelvin_to_snTTT ( aux, s->val ))

@@ -37,7 +37,7 @@ int syn_parse_x02 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 
   switch ( s->a->desc.y )
     {
-    case 1: // 0 02 001
+    case 1: // 0 02 001 Type of station
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
       {
         strcpy (syn->s1.ix,"/");
@@ -46,7 +46,7 @@ int syn_parse_x02 ( struct synop_chunks *syn, struct bufr_subset_state *s )
       s->type = s->ival;
       s->mask |= SUBSET_MASK_HAVE_TYPE_STATION;
       break;
-    case 2: // 0 02 002
+    case 2: // 0 02 002 . Type of instrumentation for wind measurement
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
         return 0;
       if ( s->ival & 4 )
@@ -75,26 +75,26 @@ int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 
   switch ( s->a->desc.y )
     {
-    case 1: // 0 02 001
+    case 1: // 0 02 001 . Type of station
       s->type = s->ival;
       s->mask |= SUBSET_MASK_HAVE_TYPE_STATION;
       break;
-    case 2: // 0 02 002
+    case 2: // 0 02 002 . Type of instrumentation for wind measurement
       if ( s->ival & 4 )
         strcpy ( b->s0.iw, "4" );
       else
         strcpy ( b->s0.iw, "1" );
       break;
-    case 31: // 0 02 031
+    case 31: // 0 02 031 . Duration and time of current measurement
       if (b->s3.k3[0] == 0 && s->ival < 10)
         sprintf(b->s3.k3 ,"%d",s->ival);
       b->mask |= BUOY_SEC3;
       break;
-    case 33: // 0 02 033
+    case 33: // 0 02 033 . Method of salinity depth measure
       sprintf(b->s3.k2 ,"%d",s->ival);
       b->mask |= BUOY_SEC3;
       break;
-    case 40: // 0 02 040
+    case 40: // 0 02 040 .Method of removing velocity and motion of platform from current
       if (b->s3.k6[0] == 0)
         sprintf(b->s3.k6 ,"%d",s->ival);
       b->mask |= BUOY_SEC3;

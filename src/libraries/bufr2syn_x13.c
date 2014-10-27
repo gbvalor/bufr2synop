@@ -122,7 +122,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 
   switch ( s->a->desc.y )
     {
-    case 11: // 0 13 011
+    case 11: // 0 13 011 . Total precipitaction
       if ( s->itval ==  -3600 )
         {
           if (syn->s3.RRR[0] == 0)
@@ -243,7 +243,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s )
             }
         }
       break;
-    case 19: // 0 13 019
+    case 19: // 0 13 019 . Total precipitaction past 1 hour
       if (syn->s3.RRR[0] == 0)
         {
           syn->s3.tr[0] = '5'; // 1 hour
@@ -257,7 +257,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s )
           syn->mask |= SYNOP_SEC5;
         }
       break;
-    case 20: // 0 13 020
+    case 20: // 0 13 020 . Total precipitation past 3 hours
       if (syn->s3.RRR[0] == 0)
         {
           syn->s3.tr[0] = '7'; // 3 hour
@@ -280,7 +280,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s )
           syn->mask |= SYNOP_SEC5;
         }
       break;
-    case 21: // 0 13 021
+    case 21: // 0 13 021 . Total precipitation past 6 hours
       if (syn->s1.RRR[0] == 0)
         {
           syn->s1.tr[0] = '1'; // 6 hour
@@ -288,7 +288,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s )
           syn->mask |= SYNOP_SEC1;
         }
       break;
-    case 22: // 0 13 022
+    case 22: // 0 13 022 . Total precipitation past 12 hours
       if (syn->s1.RRR[0] == 0 || syn->s1.tr[0] == '4')
         {
           syn->s1.tr[0] = '2'; // 12 hour
@@ -296,7 +296,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s )
           syn->mask |= SYNOP_SEC1;
         }
       break;
-    case 23: // 0 13 023
+    case 23: // 0 13 023 . Total precipitaction past 24 hours
       if (syn->s1.RRR[0] == 0)
         {
           syn->s1.tr[0] = '4'; // 24 hour
@@ -309,7 +309,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s )
           syn->mask |= SYNOP_SEC3;
         }
       break;
-     case 118: // 0 13 118 Recent snow depth
+     case 118: // 0 13 118 . Recent snow depth
       if (syn->s3.d9.n < SYNOP_NMISC)
       {
         sprintf( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "931%s", recent_snow_to_ss( aux, s->val));

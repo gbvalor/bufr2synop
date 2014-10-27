@@ -35,40 +35,40 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 {
   switch ( s->a->desc.y )
     {
-    case 1: // 0 04 001
+    case 1: // 0 04 001 .Year
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
         return 0;
       sprintf ( syn->e.YYYY, "%04d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_YEAR;
       break;
-    case 2: // 0 04 002
+    case 2: // 0 04 002 . Month
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
         return 0;
       sprintf ( syn->e.MM, "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_MONTH;
       break;
-    case 3: // 0 04 003
+    case 3: // 0 04 003 . Day of month
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
         return 0;
       sprintf ( syn->e.DD, "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_DAY;
       //sprintf(syn->s0.YY, "%02d", (int) sq->sequence[is].val);
       break;
-    case 4: // 0 04 004
+    case 4: // 0 04 004 . Hour
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
         return 0;
       sprintf ( syn->e.HH, "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_HOUR;
       //sprintf(syn->s0.GG, "%02d", (int) sq->sequence[is].val);
       break;
-    case 5: // 0 04 005
+    case 5: // 0 04 005 . Minute
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
         return 0;
       sprintf ( syn->e.mm, "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
       // store latest displacement in seconds
-    case 23: // 0 04 023
+    case 23: // 0 04 023 . Time period of displacement (days)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
       {
         s->k_jtval = s->k_itval;
@@ -82,7 +82,7 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr_subset_state *s )
       s->k_itval = s->i;
       s->itval = s->ival * 86400;
       break;
-    case 24: // 0 04 024
+    case 24: // 0 04 024 .  Time period of displacement (hours)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
       {
         s->k_jtval = s->k_itval;
@@ -96,7 +96,7 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr_subset_state *s )
       s->k_itval = s->i;
       s->itval = s->ival * 3600;
       break;
-    case 25: // 0 04 025
+    case 25: // 0 04 025  Time period of displacement (minutes)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
       {
         s->k_jtval = s->k_itval;
@@ -110,7 +110,7 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr_subset_state *s )
       s->k_itval = s->i;
       s->itval = s->ival * 60;
       break;
-    case 26: // 0 04 026
+    case 26: // 0 04 026 .  Time period of displacement (seconds)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
       {
         s->k_jtval = s->k_itval;
@@ -143,21 +143,21 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 
   switch ( s->a->desc.y )
     {
-    case 1: // 0 04 001
+    case 1: // 0 04 001 . Year
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
         return 0;
       if (b->e.YYYY[0] == 0)
         sprintf ( b->e.YYYY, "%04d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_YEAR;
       break;
-    case 2: // 0 04 002
+    case 2: // 0 04 002 . Month
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
         return 0;
       if (b->e.MM[0] == 0)
         sprintf ( b->e.MM, "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_MONTH;
       break;
-    case 3: // 0 04 003
+    case 3: // 0 04 003 . Day of month
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
         return 0;
       if (b->e.DD[0] == 0)
@@ -165,7 +165,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr_subset_state *s )
       s->mask |= SUBSET_MASK_HAVE_DAY;
       //sprintf(b->s0.YY, "%02d", (int) sq->sequence[is].val);
       break;
-    case 4: // 0 04 004
+    case 4: // 0 04 004 . Hour
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
         return 0;
       if (b->e.HH[0] == 0)
@@ -173,7 +173,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr_subset_state *s )
       s->mask |= SUBSET_MASK_HAVE_HOUR;
       //sprintf(b->s0.GG, "%02d", (int) sq->sequence[is].val);
       break;
-    case 5: // 0 04 005
+    case 5: // 0 04 005 . Minute
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
         return 0;
       if (b->e.mm[0] == 0)
@@ -181,7 +181,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr_subset_state *s )
       s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
       // store latest displacement in seconds
-    case 23: // 0 04 023
+    case 23: // 0 04 023 . Time period of displacement (days)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
       {
         s->k_jtval = s->k_itval;
@@ -195,7 +195,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr_subset_state *s )
       s->k_itval = s->i;
       s->itval = s->ival * 86400;
       break;
-    case 24: // 0 04 024
+    case 24: // 0 04 024 . Time period of displacement (hours)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
       {
         s->k_jtval = s->k_itval;
@@ -209,7 +209,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr_subset_state *s )
       s->k_itval = s->i;
       s->itval = s->ival * 3600;
       break;
-    case 25: // 0 04 025
+    case 25: // 0 04 025 . Time period of displacement (minutes)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
       {
         s->k_jtval = s->k_itval;
@@ -223,7 +223,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr_subset_state *s )
       s->k_itval = s->i;
       s->itval = s->ival * 60;
       break;
-    case 26: // 0 04 026
+    case 26: // 0 04 026 .  Time period of displacement (seconds)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
       {
         s->k_jtval = s->k_itval;
