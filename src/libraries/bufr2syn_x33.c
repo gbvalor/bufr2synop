@@ -40,15 +40,15 @@ int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 
   switch ( s->a->desc.y )
     {
-    case 20:
+    case 20: // 0 33 020. Quality control indication of followinf value
       sprintf(b->s0.Qt, "%d", s->ival);
       b->mask |= BUOY_SEC1;
       break;
-    case 21:
+    case 21: // 0 33 021. Quality control of following value
       sprintf(b->s4.Qp, "%d", s->ival);
       b->mask |= BUOY_SEC1;
       break;
-    case 22:
+    case 22: // 0 33 022. Quality of buoy satellite transmission
       if (s->ival == 0)
         {
           if ( b->s0.Qt[0] == 0)
@@ -68,11 +68,11 @@ int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr_subset_state *s )
             sprintf(b->s2.Qd, "3");
         }
       break;
-    case 23:
+    case 23: // 0 33 023 . Quality of buoy location
       sprintf(b->s0.Ql, "%d", s->ival);
       sprintf(b->s4.QL, "%d", s->ival);
       break;
-    case 27:
+    case 27: // 0 33 027. Location quality class (range of ratiuos of 66% confidence)
       sprintf(b->s0.QA, "%d", s->ival);
       sprintf(b->s4.QA, "%d", s->ival);
       break;

@@ -41,8 +41,8 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 
   switch ( s->a->desc.y )
     {
-    case 1: // 0 22 001
-    case 3: // 0 22 003 wind direction
+    case 1: // 0 22 001 Direction of waves
+    case 3: // 0 22 003 Direction of swell waves 
       if (syn->s2.dw1dw1[0] == 0)
         {
           sprintf(syn->s2.dw1dw1, "%02d", (s->ival + 5)/10);
