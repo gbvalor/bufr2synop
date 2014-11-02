@@ -39,7 +39,7 @@
 // project includes
 #include "metsynop.h"
 #include "metbuoy.h"
-
+#include "mettemp.h"
 //#define DEBUG
 
 /*!

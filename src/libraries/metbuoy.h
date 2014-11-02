@@ -1,7 +1,7 @@
 /* $Id$ */
 /***************************************************************************
  *   Copyright (C) 2004-2014 by Guillermo Ballester Valor                  *
- *   gbv@oxixares.com                                                      *
+ *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This file is part of bufr2synop                                       *
  *                                                                         *

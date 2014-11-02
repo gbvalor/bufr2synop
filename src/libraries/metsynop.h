@@ -1,7 +1,7 @@
 /* $Id$ */
 /***************************************************************************
  *   Copyright (C) 2004-2014 by Guillermo Ballester Valor                  *
- *   gbv@oxixares.com                                                      *
+ *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This file is part of bufr2synop                                       *
  *                                                                         *
@@ -67,7 +67,6 @@
 */
 #define SYNOP_NMISC 8
 
-
 /*! \struct report_date_ext
     \brief contains extensions, not in wmo. Date/time UTC information
 */
@@ -79,6 +78,7 @@ struct report_date_ext
    char HH[4]; /*!< Hour (UTC) 00..23 */
    char mm[4]; /*!< Minute 00..59 */
 };
+
 
 /*! \struct synop_sec0
     \brief contains all possible substrings from section 0 when a report is parsed with success
