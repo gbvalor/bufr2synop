@@ -237,13 +237,13 @@
 
 /*!
  \def SUBSET_MASK_HAVE_HOUR
- \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having observation hour 
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having observation hour
 */
 #define SUBSET_MASK_HAVE_HOUR (16384)
 
 /*!
  \def SUBSET_MASK_HAVE_MINUTE
- \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having observation minute 
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having observation minute
 */
 #define SUBSET_MASK_HAVE_MINUTE (32768)
 
@@ -373,12 +373,19 @@ struct metreport
     struct met_geo g; /*!< The geographical info */
     char type[8]; /*!< The type of report as MiMiMjMj */
     char alphanum[2048]; /*!< The alphanumeric report */
+    char type2[8]; /*!< The type of report of part 2 as MiMiMjMj */
+    char alphanum2[2048]; /*!< The alphanumeric report, part 2 */
+    char type3[8]; /*!< The type of report of part 3 as MiMiMjMj */
+    char alphanum3[2048]; /*!< The alphanumeric report, part 3 */
+    char type4[8]; /*!< The type of report of part 4 as MiMiMjMj */
+    char alphanum4[2048]; /*!< The alphanumeric report, part 4 */
   };
 
 /* Functions definitions */
 
 void clean_buoy_chunks( struct buoy_chunks *b);
 void clean_synop_chunks( struct synop_chunks *s);
+void clean_temp_chunks( struct temp_chunks *t);
 
 int set_environment(char *default_bufrtables, char *bufrtables_dir);
 int integer_to_descriptor(struct bufr_descriptor *d, int id);
@@ -395,13 +402,16 @@ int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr
                          struct bufr_subset_sequence_data *sq, char *err );
 int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct bufr_subset_state *s,
                            struct bufr_subset_sequence_data *sq, char *err );
+int parse_subset_as_temp (struct metreport *m, struct temp_chunks *t, struct bufr_subset_state *s,
+                          struct bufr_subset_sequence_data *sq, char *err );
 int YYYYMMDDHHmm_to_met_datetime(struct met_datetime *t, const char *source);
 int synop_YYYYMMDDHHmm_to_YYGG(struct synop_chunks *syn);
 int buoy_YYYYMMDDHHmm_to_JMMYYGGgg(struct buoy_chunks *b);
 char * guess_WMO_region(struct synop_chunks *syn);
 int read_table_c(char tablec[MAXLINES_TABLEC][92], size_t *nlines_tablec, char *bufrtables_dir, int ksec1[40]);
 int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr_subset_state *st,
-                          struct synop_chunks *synop, struct buoy_chunks *buoy, int *kdtlst, size_t nlst, int *ksec1, char *err);
+                          struct synop_chunks *synop, struct buoy_chunks *buoy, struct temp_chunks *t, int *kdtlst,
+                          size_t nlst, int *ksec1, char *err);
 int find_descriptor(int *haystack, size_t nlst, int needle);
 int find_descriptor_interval(int *haystack, size_t nlst, int needlemin, int needlemax);
 int bufr_set_environment(char *default_bufrtables, char *bufrtables_dir);

@@ -169,3 +169,12 @@ void clean_buoy_chunks( struct buoy_chunks *b)
   b->error[0] = '\0';
 }
 
+/*!
+  \fn void clean_temp_chunks( struct temp_chunks *t)
+  \brief cleans a \ref buoy_chunks struct
+  \param t pointer to the struct to clean
+*/
+void clean_temp_chunks( struct temp_chunks *t)
+{
+  memset(&t, 0, sizeof(struct temp_chunks));
+}

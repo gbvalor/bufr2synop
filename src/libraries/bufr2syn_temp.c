@@ -18,64 +18,37 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 /*!
- \file bufr2synop.h
- \brief Include header file for binary bufr2synop 
-*/
-
+ \file bufr2syn_temp.c
+ \brief file with the code to parse a sequence as a FM-35 TEMP, FM-36 TEMP SHIP, FM-37 TEMP DROP, FM-38 TEMP MOBIL
+ */
 #include "bufr2syn.h"
 
-// Global vars
-extern unsigned char BUFR_MESSAGE[BUFR_LEN]; 
-extern char CNAMES[KELEM][64]; 
-extern char CUNITS[KELEM][24]; 
-
-extern int KSUP[9]; /*!< array containing supplementary information */
-extern int KSEC0[3];
-extern int KSEC1[40];
-extern int KSEC2[4096];
-extern int KSEC3[4];
-extern int KSEC4[2];
-extern int KEY[46];
-extern int KERR;
 
 
-extern char CVALS[KVALS][80]; /*!< array of strings with value of data */
+/*!
+  \fn int parse_subset_as_temp(struct metreport *m, struct temp_chunks *t, char *type, struct bufr_subset_sequence_data *sq, char *err)
+  \brief parses a subset sequence as an Land fixed SYNOP FM-12, SHIP FM-13 or SYNOP-mobil FM-14 report
+  \param m pointer to a struct \ref metreport where set some results
+  \param t pointer to a struct \ref temp_chunks where set the results
+  \param type strint with MiMiMjMj to choose the type of temp, temp ship, temp drop or temp mobil)
+  \param sq pointer to a struct \ref bufr_subset_sequence_data with the parsed sequence on input
+  \param err string with detected errors, if any
 
-extern double VALUES[KVALS], VALS[KVALS];
+  It return 0 if all is OK. Otherwise returns 1 and it also fills the \a err string
+*/
+int parse_subset_as_temp (struct metreport *m, struct temp_chunks *t, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
+{
 
-extern int KTDLST[KELEM], KTDEXP[KELEM];
+  // clean data
+  clean_temp_chunks ( t );
 
-extern char INPUTFILE[256];
-extern char OUTPUTFILE[256];
-extern char BUFRTABLES_DIR[256];
-extern char LISTOFFILES[256];
-extern char SELF[];
-extern int VERBOSE;
-extern int SHOW_SEQUENCE;
-extern int SHOW_ECMWF_OUTPUT;
-extern int DEBUG;
-extern int NFILES;
-extern int GTS_HEADER;
-extern int XML;
-extern int JSON;
-extern int CSV;
-
-extern struct synop_chunks SYNOP;
-extern struct buoy_chunks BUOY;
-extern struct temp_chunks TEMP;
-
-extern size_t NLINES_TABLEC; 
-extern char TABLEC[MAXLINES_TABLEC][92];
-extern char DEFAULT_BUFRTABLES[];
-extern char TYPE[8];
-extern struct metreport REPORT;
-extern struct gts_header HEADER;
-extern FILE * FL;
-extern struct bufr_subset_sequence_data SUBSET;
-extern struct bufr_subset_state STATE;
+  // reject if still not coded type
+  if (strcmp(s->type_report,"TTXX"))
+    {
+      sprintf(err,"bufr2syn: parse_subset_as_temp(): '%s' reports still not decoded in this software", s->type_report);
+      return 1;
+    }
 
 
-// functions
-void print_usage(void);
-int read_arguments(int _argc, char * _argv[]);
-char * get_bufrfile_path( char *filename, char *err);
+  return 0;
+}

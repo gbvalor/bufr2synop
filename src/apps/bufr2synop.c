@@ -177,6 +177,8 @@ char DEFAULT_BUFRTABLES[] = "/usr/local/lib/bufrtables/"; /*!< Default bufr tabl
 
 struct synop_chunks SYNOP; /*!< struct where to set chunks of synops taken from a bufr subset */
 struct buoy_chunks BUOY; /*!< struct where to set chunks of buoys taken from a bufr subset */
+struct temp_chunks TEMP; /*!< struct where to set chunks of TEMP taken from a bufr subset */
+
 
 /*!
   \fn int main(int argc, char *argv[])
@@ -501,7 +503,7 @@ int main ( int argc, char *argv[] )
             }
 
           /**** the call to parse the sequence and transform to solicited asciicode, if possible *****/
-          if (parse_subset_sequence ( &REPORT, &SUBSET, &STATE, &SYNOP, &BUOY, KTDLST, ktdlen, KSEC1, ERR ) )
+          if (parse_subset_sequence ( &REPORT, &SUBSET, &STATE, &SYNOP, &BUOY, &TEMP, KTDLST, ktdlen, KSEC1, ERR ) )
             {
               if (DEBUG)
                 fprintf ( stderr, "#%s\n", ERR );
