@@ -169,7 +169,7 @@ struct temp_wind_point {
    char fnfnfn[4]; /*!< Wind speed */
 };
 
-struct temp_ac_sec1 {
+struct temp_acd_sec1 {
    char MiMi[4]; /*!< MiMi item. (Code table 2582) */
    char MjMj[4]; /*!< MjMj item. (Code table 2582) */
    char A1[2]; /*!< A1 item. WMO region */
@@ -190,7 +190,7 @@ struct temp_ac_sec1 {
    char Ulo[2]; /*!< Units digit in the reported longitude. */
    char h0h0h0h0[6]; /*!< Elevation of a mobile land station  */
    char im[2]; /*!< Indicator for units of elevation, and confidence factor for accuracy of elevation. (Code table 1845) */
-}; /*!< Section 1 for a part A or C of a TEMP report */
+}; /*!< Section 1 for a part A, C or D of a TEMP report */
 
 struct temp_b_sec1 {
    char MiMi[4]; /*!< MiMi item. (Code table 2582) */
@@ -227,13 +227,13 @@ struct temp_c_sec2 {
    struct temp_std_level_data std[TEMP_NSTAND_MAX]; /*!< Array with data at standard levels */
 }; /*!< Section 2 for a part A of a TEMP report */
 
-struct temp_a_sec3 {
+struct temp_ac_sec3 {
    struct temp_main_level_data trop; /*!< data at starting tropopause */
-}; /*!< Section 3 for a part A of a TEMP report */
+}; /*!< Section 3 for a part A and C of a TEMP report */
 
-struct temp_a_sec4 {
+struct temp_ac_sec4 {
    struct temp_max_wind_data windx[TEMP_NMAXWIND_MAX];
-}; /*!< Section 4 for a part A of TEMP report */
+}; /*!< Section 4 for a part A and C of TEMP report */
 
 struct temp_sec7 {
    char sr[2]; /*!< Solar radiation correction (code table 3849)*/
@@ -245,15 +245,16 @@ struct temp_sec7 {
    char TwTwTw[4]; /*!< Sea-surface temperature, in tenths of a degree Celsius, its sign being given by sn.*/
 }; /*!< Section 7 for a part of TEMP report */
 
-struct temp_b_sec5 {
+struct temp_bd_sec5 {
   int n; /*!< current number of points */
   struct temp_th_point th[TEMP_NMAX_POINTS]; /*!< Significant th points for sec 5 for a part B */
-};/*!< Section 5 for a part B of TEMP report */
+};/*!< Section 5 for a part B or D of TEMP report */
 
-struct temp_b_sec6 {
+struct temp_bd_sec6 {
   int n; /*!< current number of points */
   struct temp_wind_point wd[TEMP_NMAX_POINTS]; /*!< Significant wind points for sec 6 for a part B */
-};/*!< Section 6 for a part B of TEMP report */
+};/*!< Section 6 for a part B or D of TEMP report */
+
 
 struct temp_b_sec8 {
    char Nh[2]; /*!< Amount of all the CL cloud present or, if no CL cloud is present, the amount of all the CM cloud present. (Code table 2700) */
@@ -266,10 +267,10 @@ struct temp_b_sec8 {
 struct temp_a {
   int mask; /*!< Bit mask about parsed sections */
   struct report_date_ext e; /*!< report extension date/time */
-  struct temp_ac_sec1 s1; /*!< section 1 for part A */
+  struct temp_acd_sec1 s1; /*!< section 1 for part A */
   struct temp_a_sec2 s2; /*!< section 2 for part A */
-  struct temp_a_sec3 s3; /*!< section 3 for part A */
-  struct temp_a_sec4 s4; /*!< section 4 for part A */
+  struct temp_ac_sec3 s3; /*!< section 3 for part A */
+  struct temp_ac_sec4 s4; /*!< section 4 for part A */
   struct temp_sec7 s7; /*!< section 7 for part A */
 }; /*!< Contains part A of a TEMP REPORT */
 
@@ -277,8 +278,8 @@ struct temp_b {
   int mask; /*!< Bit mask about parsed sections */
   struct report_date_ext e; /*!< report extension date/time */
   struct temp_b_sec1 s1; /*!< section 1 for part B */
-  struct temp_b_sec5 s5; /*!< section 5 for part B */
-  struct temp_b_sec6 s6; /*!< section 6 for part B */
+  struct temp_bd_sec5 s5; /*!< section 5 for part B */
+  struct temp_bd_sec6 s6; /*!< section 6 for part B */
   struct temp_sec7 s7; /*!< section 7 for part B */
   struct temp_b_sec8 s8; /*!< section 8 for part B */
 }; /*!< Contains part B of a TEMP REPORT */
@@ -286,14 +287,19 @@ struct temp_b {
 struct temp_c {
   int mask; /*!< Bit mask about parsed sections */
   struct report_date_ext e; /*!< report extension date/time */
-  struct temp_ac_sec1 s1; /*!< section 1 for part C */
+  struct temp_acd_sec1 s1; /*!< section 1 for part C */
   struct temp_c_sec2 s2; /*!< section 2 for part C */
+  struct temp_ac_sec3 s3; /*!< section 3 for part C */
+  struct temp_ac_sec4 s4; /*!< section 4 for part C */
   struct temp_sec7 s7; /*!< section 7 for part C */
 }; /*!< Contains part C of a TEMP REPORT */
 
 struct temp_d {
   int mask; /*!< Bit mask about parsed sections */
   struct report_date_ext e; /*!< report extension date/time */
+  struct temp_acd_sec1 s1; /*!< section 1 for part D */
+  struct temp_bd_sec5 s5; /*!< section 5 for part D */
+  struct temp_bd_sec6 s6; /*!< section 6 for part D */
   struct temp_sec7 s7; /*!< section 7 for part D */
 }; /*!< Contains part D of a TEMP REPORT */
 
