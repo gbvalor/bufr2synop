@@ -53,7 +53,7 @@ int print_xml(FILE *f, struct metreport *m)
   fprintf(f, "  <longitude>%.6lf</longitude>\n", m->g.lon);
   fprintf(f, "  <altitude>%.1lf</altitude>\n", m->g.alt);
   fprintf(f, " </geo>\n");
-  fprintf(f, " <report>%s</report>\n", m->alphanum);
+  fprintf(f, " <report>%s=</report>\n", m->alphanum);
   fprintf(f, "</metreport>\n");
   return 0;
 }

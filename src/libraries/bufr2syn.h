@@ -363,7 +363,7 @@ struct met_geo
 
 /*!
    \struct metreport
-   \brief all the information for a meteorological report in WMO ascii format
+   \brief all the information for a meteorological report in WMO text format from a BUFR file
 */
 struct metreport
   {
@@ -371,6 +371,9 @@ struct metreport
     struct gts_header *h; /*!< A pointer to a GTS Header Bulletin */
     struct met_datetime t; /*!< The date/time information for report */
     struct met_geo g; /*!< The geographical info */
+    struct synop_chunks synop; /*!< The possible parsed synop */
+    struct buoy_chunks buoy; /*!< The possible parsed buoy */
+    struct temp_chunks temp; /*!< The possible parsed temp */
     char type[8]; /*!< The type of report as MiMiMjMj */
     char alphanum[2048]; /*!< The alphanumeric report */
     char type2[8]; /*!< The type of report of part 2 as MiMiMjMj */
@@ -398,20 +401,21 @@ char * get_explained_flag_val(char *expl, size_t dim, char tablec[MAXLINES_TABLE
                               struct bufr_descriptor *d, unsigned long ival);
 char * get_ecmwf_tablename(char *target, char type, char *bufrtables_dir, int ksec1[40]);
 char * get_bufrfile_path( char *filename, char *err);
-int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr_subset_state *s,
-                         struct bufr_subset_sequence_data *sq, char *err );
-int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct bufr_subset_state *s,
-                           struct bufr_subset_sequence_data *sq, char *err );
-int parse_subset_as_temp (struct metreport *m, struct temp_chunks *t, struct bufr_subset_state *s,
-                          struct bufr_subset_sequence_data *sq, char *err );
+int parse_subset_as_buoy(struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq,
+                         char *err );
+int parse_subset_as_synop (struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq,
+                           char *err );
+int parse_subset_as_temp (struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq,
+                          char *err );
 int YYYYMMDDHHmm_to_met_datetime(struct met_datetime *t, const char *source);
 int synop_YYYYMMDDHHmm_to_YYGG(struct synop_chunks *syn);
 int buoy_YYYYMMDDHHmm_to_JMMYYGGgg(struct buoy_chunks *b);
-char * guess_WMO_region(struct synop_chunks *syn);
+char *guess_WMO_region(char *A1, char *Reg, const char *II, const char *iii);
+char * guess_WMO_region_synop(struct synop_chunks *syn);
+char *guess_WMO_region_temp(struct temp_chunks *temp);
 int read_table_c(char tablec[MAXLINES_TABLEC][92], size_t *nlines_tablec, char *bufrtables_dir, int ksec1[40]);
 int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr_subset_state *st,
-                          struct synop_chunks *synop, struct buoy_chunks *buoy, struct temp_chunks *t, int *kdtlst,
-                          size_t nlst, int *ksec1, char *err);
+                          int *kdtlst, size_t nlst, int *ksec1, char *err);
 int find_descriptor(int *haystack, size_t nlst, int needle);
 int find_descriptor_interval(int *haystack, size_t nlst, int needlemin, int needlemax);
 int bufr_set_environment(char *default_bufrtables, char *bufrtables_dir);

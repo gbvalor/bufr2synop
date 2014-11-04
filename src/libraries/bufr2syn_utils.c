@@ -139,6 +139,87 @@ int YYYYMMDDHHmm_to_met_datetime(struct met_datetime *t, const char *source)
   return 0;
 } 
 
+/*!
+  \fn char *guess_WMO_region(char *A1, char *Reg, const char *II, const char *iii)
+  \brief get WMO region A1 and Reg items from II and iii (WMO index)
+  \param A1 string woth resulting A1
+  \param Reg string with resulting Reg
+  \param II WMO block number
+  \param iii WMO number 
+*/
+char *guess_WMO_region(char *A1, char *Reg, const char *II, const char *iii)
+{
+  char aux[8];
+
+  // filter bad inputs
+  if (II == NULL || iii == NULL)
+    return NULL;
+
+  if (II[0] == 0 || iii[0] == 0)
+    return NULL;
+
+  // aux string
+  sprintf(aux,"%s%s", II, iii);
+
+  if ((II[0] == '0' && (strstr(aux,"042") != aux) && (strstr(aux,"043") != aux)  &&
+       (strstr(aux,"044") != aux)  && (strstr(aux,"0858") != aux) &&  (strstr(aux,"0859") != aux)) ||
+      II[0] == '1' || (strstr(aux,"201") == aux) ||
+      strcmp(II,"22") == 0 || strcmp(II,"26") == 0 || strcmp(II,"27") == 0 ||
+      strcmp(II,"33") == 0 || strcmp(II,"34") == 0 || strcmp(II,"22") == 0 ||
+      (strstr(aux,"201") == aux))
+    {
+      // Reg 6. Europe
+      A1[0] = '6';
+      strcpy(Reg,"VI");
+    }
+  else if (II[0] == '6' || (strstr(aux,"0858") == aux) ||  (strstr(aux,"0859") == aux))
+    {
+      // Reg 1. Africa
+      A1[0] = '1';
+      strcpy(Reg,"I");
+    }
+  else if (II[0] == '5' || (strcmp(II,"49") == 0) || (strcmp(II,"21") == 0) ||
+           (strcmp(II,"23") == 0) || (strcmp(II,"24") == 0) || (strcmp(II,"25") == 0) ||
+           (strcmp(II,"28") == 0) || (strcmp(II,"29") == 0) || (strcmp(II,"30") == 0) ||
+           (strcmp(II,"31") == 0) || (strcmp(II,"32") == 0) || (strcmp(II,"38") == 0) ||
+           (strcmp(II,"35") == 0) || (strcmp(II,"36") == 0) || (strcmp(II,"39") == 0) ||
+           (strcmp(aux, "20200") >= 0 && strcmp(aux, "20999") <= 0) ||
+           (strcmp(aux, "40000") >= 0 && strcmp(aux, "48599") <= 0) ||
+           (strcmp(aux, "48800") >= 0 && strcmp(aux, "49999") <= 0))
+    {
+      // Reg 2. Asia
+      A1[0] = '2';
+      strcpy(Reg,"II");
+    }
+  else if (strcmp(aux, "80000") >= 0 && strcmp(aux, "88999") <= 0)
+    {
+      // Reg 3. South america
+      A1[0] = '3';
+      strcpy(Reg,"III");
+    }
+  else if (II[0] == '7' || strstr(aux,"042") == aux ||
+           strstr(aux,"043") == aux  || strstr(aux,"044") == aux)
+    {
+      // Reg 4. North and central america
+      A1[0] = '4';
+      strcpy(Reg,"IV");
+    }
+  else if ((strcmp(aux, "48600") >= 0 && strcmp(aux, "48799") <= 0) ||
+           (strcmp(aux, "90000") >= 0 && strcmp(aux, "98999") <= 0))
+    {
+      // Reg 5. Pacific South
+      A1[0] = '4';
+      strcpy(Reg,"IV");
+    }
+  else if (strcmp(II,"89") == 0)
+    {
+      // Reg 0. Antarctica
+      A1[0] = '0';
+      strcpy(Reg,"0");
+    }
+  return A1;
+}
+
 
 /*!
   \fn int guess_gts_header(struct gts_header *h, const char *f)

@@ -59,20 +59,23 @@ int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b )
 }
 
 /*!
-  \fn int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr_subset_sequence_data *sq, char *err)
+  \fn int parse_subset_as_buoy(struct metreport *m, struct bufr_subset_sequence_data *sq, char *err)
   \brief parses a subset sequence as an Buoy SYNOP FM-18 report
   \param m pointer to a struct \ref metreport where set some results
-  \param b pointer to a struct \ref buoy_chunks where set the results
   \param sq pointer to a struct \ref bufr_subset_sequence_data with the parsed sequence on input
   \param err string with detected errors, if any
 
   It return 0 if all is OK. Otherwise it also fills the \a err string
 */
-int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
+int parse_subset_as_buoy(struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
 {
   int ival; // integer value for a descriptor
   size_t is;
   char aux[16];
+  struct buoy_chunks *b;
+
+  //
+  b = &m->buoy;
 
   // clean data
   clean_buoy_chunks ( b );

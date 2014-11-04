@@ -55,16 +55,14 @@ int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
 }
 
 /*!
-  \fn char *guess_WMO_region(struct synop_chunks *syn)
+  \fn char *guess_WMO_region_synop(struct synop_chunks *syn)
   \brief Try to find WMO region if it is not already set and WMO Block and number index are known
   \param syn pointer to the struct \ref synop_chunks with all known data for a synop
 
   It returns a pointer to the string with WMO region
 */
-char *guess_WMO_region(struct synop_chunks *syn)
+char *guess_WMO_region_synop(struct synop_chunks *syn)
 {
-  char aux[8];
-
   if (syn->s0.A1[0])
     {
       return syn->s0.A1;
@@ -73,84 +71,29 @@ char *guess_WMO_region(struct synop_chunks *syn)
   if (syn->s0.II[0] == 0  || syn->s0.iii[0] == 0)
     return syn->s0.A1;
 
-  sprintf(aux,"%s%s",syn->s0.II, syn->s0.iii);
-
-  if ((syn->s0.II[0] == '0' && (strstr(aux,"042") != aux) && (strstr(aux,"043") != aux)  &&
-       (strstr(aux,"044") != aux)  && (strstr(aux,"0858") != aux) &&  (strstr(aux,"0859") != aux)) ||
-      syn->s0.II[0] == '1' || (strstr(aux,"201") == aux) ||
-      strcmp(syn->s0.II,"22") == 0 || strcmp(syn->s0.II,"26") == 0 || strcmp(syn->s0.II,"27") == 0 ||
-      strcmp(syn->s0.II,"33") == 0 || strcmp(syn->s0.II,"34") == 0 || strcmp(syn->s0.II,"22") == 0 ||
-      (strstr(aux,"201") == aux))
-    {
-      // Reg 6. Europe
-      syn->s0.A1[0] = '6';
-      strcpy(syn->s0.Reg,"VI");
-    }
-  else if (syn->s0.II[0] == '6' || (strstr(aux,"0858") == aux) ||  (strstr(aux,"0859") == aux))
-    {
-      // Reg 1. Africa
-      syn->s0.A1[0] = '1';
-      strcpy(syn->s0.Reg,"I");
-    }
-  else if (syn->s0.II[0] == '5' || (strcmp(syn->s0.II,"49") == 0) || (strcmp(syn->s0.II,"21") == 0) ||
-           (strcmp(syn->s0.II,"23") == 0) || (strcmp(syn->s0.II,"24") == 0) || (strcmp(syn->s0.II,"25") == 0) ||
-           (strcmp(syn->s0.II,"28") == 0) || (strcmp(syn->s0.II,"29") == 0) || (strcmp(syn->s0.II,"30") == 0) ||
-           (strcmp(syn->s0.II,"31") == 0) || (strcmp(syn->s0.II,"32") == 0) || (strcmp(syn->s0.II,"38") == 0) ||
-           (strcmp(syn->s0.II,"35") == 0) || (strcmp(syn->s0.II,"36") == 0) || (strcmp(syn->s0.II,"39") == 0) ||
-           (strcmp(aux, "20200") >= 0 && strcmp(aux, "20999") <= 0) ||
-           (strcmp(aux, "40000") >= 0 && strcmp(aux, "48599") <= 0) ||
-           (strcmp(aux, "48800") >= 0 && strcmp(aux, "49999") <= 0))
-    {
-      // Reg 2. Asia
-      syn->s0.A1[0] = '2';
-      strcpy(syn->s0.Reg,"II");
-    }
-  else if (strcmp(aux, "80000") >= 0 && strcmp(aux, "88999") <= 0)
-    {
-      // Reg 3. South america
-      syn->s0.A1[0] = '3';
-      strcpy(syn->s0.Reg,"III");
-    }
-  else if (syn->s0.II[0] == '7' || strstr(aux,"042") == aux ||
-           strstr(aux,"043") == aux  || strstr(aux,"044") == aux)
-    {
-      // Reg 4. North and central america
-      syn->s0.A1[0] = '4';
-      strcpy(syn->s0.Reg,"IV");
-    }
-  else if ((strcmp(aux, "48600") >= 0 && strcmp(aux, "48799") <= 0) ||
-           (strcmp(aux, "90000") >= 0 && strcmp(aux, "98999") <= 0))
-    {
-      // Reg 5. Pacific South
-      syn->s0.A1[0] = '4';
-      strcpy(syn->s0.Reg,"IV");
-    }
-  else if (strcmp(syn->s0.II,"89") == 0)
-    {
-      // Reg 0. Antarctica
-      syn->s0.A1[0] = '0';
-      strcpy(syn->s0.Reg,"0");
-    }
-  return syn->s0.A1;
+  return guess_WMO_region(syn->s0.A1, syn->s0.Reg, syn->s0.II, syn->s0.iii);
 }
 
 
 /*!
-  \fn int parse_subset_as_synop(struct metreport *m, struct synop_chunks *syn, char *type, struct bufr_subset_sequence_data *sq, char *err)
+  \fn int parse_subset_as_synop (struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
   \brief parses a subset sequence as an Land fixed SYNOP FM-12, SHIP FM-13 or SYNOP-mobil FM-14 report
   \param m pointer to a struct \ref metreport where set some results
-  \param syn pointer to a struct \ref synop_chunks where set the results
-  \param type strint with MiMiMjMj to choose the type pf synop (AAXX, BBXX ...) (synop, ship or synop-mobil)
+  \param s pointer to a struct \ref bufr_subset_state 
   \param sq pointer to a struct \ref bufr_subset_sequence_data with the parsed sequence on input
   \param err string with detected errors, if any
 
   It return 0 if all is OK. Otherwise returns 1 and it also fills the \a err string
 */
-int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
+int parse_subset_as_synop (struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
 {
   int ival; // integer value for a descriptor
   size_t is; 
   char aux[16];
+  struct synop_chunks *syn;
+
+  // An auxiliar pointer
+  syn = &m->synop;
 
   // clean data
   clean_synop_chunks ( syn );

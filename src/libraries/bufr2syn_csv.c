@@ -63,6 +63,6 @@ int print_csv(FILE *f, struct metreport *m)
   fprintf(f, "%.6lf,", m->g.lat);
   fprintf(f, "%.6lf,", m->g.lon);
   fprintf(f, "%.1lf,", m->g.alt);
-  fprintf(f, "\"%s\"\n", m->alphanum);
+  fprintf(f, "\"%s=\"\n", m->alphanum);
   return 0;
 }

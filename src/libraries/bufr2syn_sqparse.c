@@ -63,22 +63,18 @@ int find_descriptor_interval(int *haystack, size_t nlst, int needlemin, int need
 }
 
 /*!
-  \fn int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr_subset_state *st, struct synop_chunks *synop, struct buoy_chunks *buoy, struct temp_chunks *temp, int *kdtlst, size_t nlst, int *ksec1, char *err)
+  \fn int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr_subset_state *st,  int *kdtlst, size_t nlst, int *ksec1, char *err)
   \brief Parse a sequence of expanded descriptors for a subset
   \param m pointer to a struct \ref metreport where to set the data  
   \param sq pointer to a struct \ref bufr_subset_sequence_data where the values for sequence of descriptors for a subset has been decoded
   \param st pointer to a struct \ref bufr_subset_state 
-  \param synop pointer to a struct \ref synop_chunks
-  \param buoy pointer to a struct \ref buoy_chunks
-  \param temp pointer to a struct \ref temp_chunks
   \param kdtlst array of integers with descriptors
   \param nlst number of descriptors in \a kdtlst
   \param ksec1 array of auxiliar integers decoded by bufrdc ECMWF library
   \param err string where to write errors if any
 */
-int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr_subset_state *st, struct synop_chunks *synop, struct buoy_chunks *buoy, struct temp_chunks *temp, int *kdtlst, size_t nlst, int *ksec1, char *err)
+int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr_subset_state *st,  int *kdtlst, size_t nlst, int *ksec1, char *err)
 {
-
   /* Clean the state */
   memset(st, 0, sizeof(struct bufr_subset_state));
 
@@ -131,17 +127,17 @@ int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data 
   
   if (strcmp(st->type_report,"AAXX") == 0 || strcmp(st->type_report,"BBXX") == 0 || strcmp(st->type_report,"OOXX") == 0)
   { // Parse FM-12, FM-13 and FM-14
-    if (parse_subset_as_synop(m, synop, st, sq, err) == 0)
-      return print_synop(m->alphanum, 2048, synop);
+    if (parse_subset_as_synop(m, st, sq, err) == 0)
+      return print_synop(m->alphanum, 2048, &m->synop);
   }
   else if (strcmp(st->type_report,"ZZYY") == 0)
   { // parse BUOY
-    if (parse_subset_as_buoy(m, buoy, st, sq, err) == 0)
-      return print_buoy(m->alphanum, 2048, buoy);
+    if (parse_subset_as_buoy(m, st, sq, err) == 0)
+      return print_buoy(m->alphanum, 2048, &m->buoy);
   }
   else if (strcmp(st->type_report,"TTXX") == 0)
   {  // psrse TEMP
-    if (parse_subset_as_temp(m, temp, st, sq, err) == 0)
+    if (parse_subset_as_temp(m, st, sq, err) == 0)
       return 0; // FIXME
   }
 
