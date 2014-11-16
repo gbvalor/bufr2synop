@@ -313,8 +313,8 @@ struct bufr_subset_state
     int clayer; /*!< cloud layer being parsed */
     int layer; /*!< Layer/level of data when parsing Buoy report*/
     int deep; /*!< Latest parsed deep in meters of a layer */
-    double lat; /*!< Latitude of station */
-    double lon; /*!< longitude of station */
+    double lat; /*!< Latitude of station. Sexagesimal degree. North positive */
+    double lon; /*!< longitude of station. Sexagesimal degree. South positive */
     double alt; /*!< Altitude (m)*/
     char name[80]; /*!< Name of observatory, if any */
     char country[80]; /*!< Name of state/country if known */

@@ -196,19 +196,19 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct
           syn_parse_x01 ( syn, s);
           break;
 
-        case 2: //Date time descriptors
+        case 2: //Type of station descriptors
           syn_parse_x02 ( syn, s);
           break;
 
-        case 4: //Date time descriptors
+        case 4: //Date and time descriptors
           syn_parse_x04 ( syn, s);
           break;
 
-        case 5: //Position
+        case 5: // Horizontal position. Latitude 
           syn_parse_x05 ( syn, s);
           break;
 
-        case 6: // Horizontal Position -2
+        case 6: // Horizontal position. Longitude
           syn_parse_x06 ( syn, s);
           break;
 
@@ -349,9 +349,19 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct
   }
 
   if (s->mask & SUBSET_MASK_HAVE_LATITUDE)
-    m->g.lat = s->lat;
+  {
+    if (fabs(s->lat) <= 90.0)
+      m->g.lat = s->lat;
+    else
+      return 1; // Bad latitude. Fatal error
+  }
   if (s->mask & SUBSET_MASK_HAVE_LONGITUDE)
-    m->g.lon = s->lon;
+  {
+    if (fabs(s->lon) <= 180.0)
+      m->g.lon = s->lon;
+    else
+      return 1; // bad longitude. Fatal error
+  }
   if (s->mask & SUBSET_MASK_HAVE_ALTITUDE)
     m->g.alt = s->alt;
   if (s->mask & SUBSET_MASK_HAVE_NAME)
