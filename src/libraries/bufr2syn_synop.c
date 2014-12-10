@@ -54,6 +54,7 @@ int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
   return 0;
 }
 
+
 /*!
   \fn char *guess_WMO_region(struct synop_chunks *syn)
   \brief Try to find WMO region if it is not already set and WMO Block and number index are known
@@ -370,8 +371,13 @@ int parse_subset_as_synop (struct metreport *m, struct synop_chunks *syn, struct
     strcpy(m->g.country, s->country);
 
   sprintf ( aux,"%s%s%s%s%s", syn->e.YYYY, syn->e.MM, syn->e.DD, syn->e.HH, syn->e.mm );
+
   YYYYMMDDHHmm_to_met_datetime(&m->t, aux);
 
+  if (check_date_from_future(m))
+     return 1; // Bad date/time . Is a report from future!
+
+  // If finally we arrive here, It succeded
   return 0;
 }
 

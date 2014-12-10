@@ -139,6 +139,25 @@ int YYYYMMDDHHmm_to_met_datetime(struct met_datetime *t, const char *source)
   return 0;
 } 
 
+/*!
+   \fn int check_date_from_future(struct metreport *m)
+   \brief Check a estructure \ref met_report not from future
+   \param m pointer to a struct metreport to check about date and time
+
+   It resturns 1 if date/time is from future, and likely wrong
+   Returns 0 otherwise
+*/
+int check_date_from_future(struct metreport *m)
+{
+   time_t now;
+
+   now = time(NULL);
+   if (m->t.t > (now + 1800)) // Still 1/2 hour courtesy
+      return 1;
+   else
+      return 0;
+}
+
 
 /*!
   \fn int guess_gts_header(struct gts_header *h, const char *f)
