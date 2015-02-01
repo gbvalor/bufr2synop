@@ -1,6 +1,6 @@
 /* $Id$ */
 /***************************************************************************
- *   Copyright (C) 2004-2014 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2004-2015 by Guillermo Ballester Valor                  *
  *   gbv@oxixares.com                                                      *
  *                                                                         *
  *   This file is part of bufr2synop                                       *
