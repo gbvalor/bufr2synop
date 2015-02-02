@@ -313,8 +313,8 @@ struct bufr_subset_state
     int clayer; /*!< cloud layer being parsed */
     int layer; /*!< Layer/level of data when parsing Buoy report*/
     int deep; /*!< Latest parsed deep in meters of a layer */
-    double lat; /*!< Latitude of station */
-    double lon; /*!< longitude of station */
+    double lat; /*!< Latitude of station. Sexagesimal degree. North positive */
+    double lon; /*!< longitude of station. Sexagesimal degree. South positive */
     double alt; /*!< Altitude (m)*/
     char name[80]; /*!< Name of observatory, if any */
     char country[80]; /*!< Name of state/country if known */
@@ -375,7 +375,7 @@ struct metreport
     struct buoy_chunks buoy; /*!< The possible parsed buoy */
     struct temp_chunks temp; /*!< The possible parsed temp */
     char type[8]; /*!< The type of report as MiMiMjMj */
-    char alphanum[2048]; /*!< The alphanumeric report */
+    ºchar alphanum[2048]; /*!< The alphanumeric report */
     char type2[8]; /*!< The type of report of part 2 as MiMiMjMj */
     char alphanum2[2048]; /*!< The alphanumeric report, part 2 */
     char type3[8]; /*!< The type of report of part 3 as MiMiMjMj */
@@ -415,7 +415,8 @@ char * guess_WMO_region_synop(struct synop_chunks *syn);
 char *guess_WMO_region_temp(struct temp_chunks *temp);
 int read_table_c(char tablec[MAXLINES_TABLEC][92], size_t *nlines_tablec, char *bufrtables_dir, int ksec1[40]);
 int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr_subset_state *st,
-                          int *kdtlst, size_t nlst, int *ksec1, char *err);
+                          struct synop_chunks *synop, struct buoy_chunks *buoy, int *kdtlst, size_t nlst, int *ksec1, char *err);
+int check_date_from_future(struct metreport *m);
 int find_descriptor(int *haystack, size_t nlst, int needle);
 int find_descriptor_interval(int *haystack, size_t nlst, int needlemin, int needlemax);
 int bufr_set_environment(char *default_bufrtables, char *bufrtables_dir);

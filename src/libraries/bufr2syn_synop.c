@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2014 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2015 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -53,6 +53,7 @@ int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
   sprintf ( syn->s0.GG, "%02d", tim.tm_hour );
   return 0;
 }
+
 
 /*!
   \fn char *guess_WMO_region_synop(struct synop_chunks *syn)
@@ -139,19 +140,19 @@ int parse_subset_as_synop (struct metreport *m, struct bufr_subset_state *s, str
           syn_parse_x01 ( syn, s);
           break;
 
-        case 2: //Date time descriptors
+        case 2: //Type of station descriptors
           syn_parse_x02 ( syn, s);
           break;
 
-        case 4: //Date time descriptors
+        case 4: //Date and time descriptors
           syn_parse_x04 ( syn, s);
           break;
 
-        case 5: //Position
+        case 5: // Horizontal position. Latitude 
           syn_parse_x05 ( syn, s);
           break;
 
-        case 6: // Horizontal Position -2
+        case 6: // Horizontal position. Longitude
           syn_parse_x06 ( syn, s);
           break;
 
@@ -292,9 +293,19 @@ int parse_subset_as_synop (struct metreport *m, struct bufr_subset_state *s, str
   }
 
   if (s->mask & SUBSET_MASK_HAVE_LATITUDE)
-    m->g.lat = s->lat;
+  {
+    if (fabs(s->lat) <= 90.0)
+      m->g.lat = s->lat;
+    else
+      return 1; // Bad latitude. Fatal error
+  }
   if (s->mask & SUBSET_MASK_HAVE_LONGITUDE)
-    m->g.lon = s->lon;
+  {
+    if (fabs(s->lon) <= 180.0)
+      m->g.lon = s->lon;
+    else
+      return 1; // bad longitude. Fatal error
+  }
   if (s->mask & SUBSET_MASK_HAVE_ALTITUDE)
     m->g.alt = s->alt;
   if (s->mask & SUBSET_MASK_HAVE_NAME)
@@ -303,8 +314,13 @@ int parse_subset_as_synop (struct metreport *m, struct bufr_subset_state *s, str
     strcpy(m->g.country, s->country);
 
   sprintf ( aux,"%s%s%s%s%s", syn->e.YYYY, syn->e.MM, syn->e.DD, syn->e.HH, syn->e.mm );
+
   YYYYMMDDHHmm_to_met_datetime(&m->t, aux);
 
+  if (check_date_from_future(m))
+     return 1; // Bad date/time . Is a report from future!
+
+  // If finally we arrive here, It succeded
   return 0;
 }
 

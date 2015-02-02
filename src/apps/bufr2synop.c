@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2014 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2015 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -355,7 +355,7 @@ int main ( int argc, char *argv[] )
       // Check about the WMO master table
       if ( KSEC1[13] )
         {
-          fprintf ( stderr,"Sorry, we only accept WMO BUFR master Table\n" );
+          fprintf ( stderr,"Sorry, we only accept WMO BUFR master Table. sss = %d instead of 0\n" , KSEC1[13]);
           exit ( EXIT_FAILURE );
         }
 
