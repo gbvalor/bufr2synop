@@ -20,7 +20,7 @@
 /*! \file bufrnoaa.c
     \brief This file includes the code to extract BUFR messages from NOAA bin files
 
-    <pre> 
+    <pre>
     *.bin files have the following sequence
     header: in the form '****NNNNNNN****
     new line
@@ -32,10 +32,10 @@
     First, it parses bufr reports from file with path included with argument -i
 
     Then for every report several decisions are taken depending on arguments
-      1) Select or discard depending on the type of BUFR 
-         To select we have to set our choice with the aid of argument -T. 
+      1) Select or discard depending on the type of BUFR
+         To select we have to set our choice with the aid of argument -T.
          The argument supplied with '-t' will have one or more chars matching with T2 indexes (see below).
-         As example, '-T USO' will select all the BUFR messages with T2 as U (upper level), S (surface) or 
+         As example, '-T USO' will select all the BUFR messages with T2 as U (upper level), S (surface) or
          O (oceanographic)
          If no '-t' argument is set it means NO SELECCTION i.e. we almost do nothing
 
@@ -43,13 +43,13 @@
          - To write individual files, one per bufr message, with names as 'YYYYMMDDHHmmss_ISIE06_SBBR_012100_RRB.bufr'.
            Date and time are source file timestamp and other items from bufr header.
            To do this we have to use '-f' option.
-         - To write an archive file as the original NOAA bin file, but just with selected messages. The option 
+         - To write an archive file as the original NOAA bin file, but just with selected messages. The option
            is '-F prefix' where prefix is the string to add. Resulting file names are in the form prefix_original_nane
            if no -F option then no archive bin file is generated. timestamp of resulting file is the same than the input
            file. In case of no bufr selected it just create a void file.
 
     Second item of resulting name file is 6 characters long:
- 
+
     For observed data T1 is 'I'
 
     Possible values for T2 when T1 = 'I'
@@ -157,7 +157,7 @@
        IO W   Sea surface waves WAVEOB 031/002
        IO X   Other sea environmental
 
-    About A2 
+    About A2
 
        A	 0 - 90W northern hemisphere
        B	 90W - 180 northern hemisphere
@@ -194,7 +194,7 @@ int  LISTF; /*!< if != then a list of messages in bin file is generated */
 unsigned char BUFR[BUFRLEN];
 unsigned char BUF[BLEN];
 char ENTRADA[256];
-char SEL[64]; /*!< Selection string for argument -T according with T1 */ 
+char SEL[64]; /*!< Selection string for argument -T according with T1 */
 char SELS[64]; /*!< Selection string for A1 when T2='S' (argument -S)   */
 char SELU[64]; /*!< Selection string for A1 when T2='U' (argument -U)   */
 char SELO[64]; /*!< Selection string for A1 when T2='O' (argument -O) */
@@ -205,7 +205,7 @@ char OWN[] = "bufrnoaa";
 char SEP[] = "\r\r\n";
 
 
-int main(int argc, char *argv[])
+int main ( int argc, char *argv[] )
 {
   size_t nb = 0, nc, nx = 0, nbuf = 0, nsel = 0, nerr = 0, i, nh = 0, nw;
   FILE* ficin;
@@ -217,52 +217,52 @@ int main(int argc, char *argv[])
   struct timeval tini, tfin, tt;
 
   // Initial time
-  gettimeofday( &tini, NULL);
+  gettimeofday ( &tini, NULL );
 
   // read args from stdio
-  if (read_args( argc, argv) < 0)
+  if ( read_args ( argc, argv ) < 0 )
     {
-      exit(EXIT_FAILURE);
+      exit ( EXIT_FAILURE );
     }
 
   // Check input
-  if (stat(ENTRADA, &INSTAT))
+  if ( stat ( ENTRADA, &INSTAT ) )
     {
-      printf("%s: Cannot stat  %s\n", OWN, ENTRADA);
-      exit (EXIT_FAILURE);
+      printf ( "%s: Cannot stat  %s\n", OWN, ENTRADA );
+      exit ( EXIT_FAILURE );
     }
 
   // Open output file
-  if ((ficin = fopen(ENTRADA,"r")) == NULL)
+  if ( ( ficin = fopen ( ENTRADA,"r" ) ) == NULL )
     {
-      printf("%s: Cannot open %s\n", OWN, ENTRADA);
-      exit (EXIT_FAILURE);
+      printf ( "%s: Cannot open %s\n", OWN, ENTRADA );
+      exit ( EXIT_FAILURE );
     }
 
-  if (COLECT)
+  if ( COLECT )
     {
       // To make an archive
- 
+
       // build a name
-      strcpy(namec, PREFIX);
-      strcat(namec, ENTRADA);
+      strcpy ( namec, PREFIX );
+      strcat ( namec, ENTRADA );
 
       // open the file
-      if ((ficol = fopen(namec, "w")) == NULL)
+      if ( ( ficol = fopen ( namec, "w" ) ) == NULL )
         {
-          printf("%s: Cannot open %s\n", OWN, namec);
-          exit (EXIT_FAILURE);
+          printf ( "%s: Cannot open %s\n", OWN, namec );
+          exit ( EXIT_FAILURE );
         }
     }
 
 
   STAGE = 0;
 
-  memset(&b, 0, 4 * sizeof(unsigned char));
+  memset ( &b, 0, 4 * sizeof ( unsigned char ) );
 
-  while ( (nc = fread(&BUF[0], sizeof(unsigned char), BLEN, ficin)) > 0)
+  while ( ( nc = fread ( &BUF[0], sizeof ( unsigned char ), BLEN, ficin ) ) > 0 )
     {
-      for (i = 0; i < nc ; i++)
+      for ( i = 0; i < nc ; i++ )
         {
           // ingest a byte
           b[3] = b[2];
@@ -270,12 +270,12 @@ int main(int argc, char *argv[])
           b[1] = b[0];
           b[0] = BUF[i];
 
-          switch (STAGE)
+          switch ( STAGE )
             {
             case 0: // begining, searching header init
-              if (is_head(&b[0]))
+              if ( is_head ( &b[0] ) )
                 {
-                  memset(&header[0], 0, 64 * sizeof(unsigned char));
+                  memset ( &header[0], 0, 64 * sizeof ( unsigned char ) );
                   header[0] = '*';
                   header[1] = '*';
                   header[2] = '*';
@@ -285,7 +285,7 @@ int main(int argc, char *argv[])
                 }
               break;
             case 1: // header found, filling
-              if (nh < 255)
+              if ( nh < 255 )
                 header[nh++] = b[0];
               else
                 {
@@ -293,7 +293,7 @@ int main(int argc, char *argv[])
                   nerr++;
                   break;
                 }
-              if (is_head(&b[0]))
+              if ( is_head ( &b[0] ) )
                 {
                   STAGE = 2;
                   //header[nh++] = '\0';
@@ -301,7 +301,7 @@ int main(int argc, char *argv[])
                 }
               break;
             case 2: // header already finished
-              if (nh < 255)
+              if ( nh < 255 )
                 header[nh++] = b[0];
               else
                 {
@@ -309,16 +309,16 @@ int main(int argc, char *argv[])
                   nerr++;
                   break;
                 }
-              if (b[0] != 0x0a && b[0] != 0x0d)
+              if ( b[0] != 0x0a && b[0] != 0x0d )
                 {
                   STAGE = 3;
-                  memset(&name[0], 0, 128 * sizeof(unsigned char));
+                  memset ( &name[0], 0, 128 * sizeof ( unsigned char ) );
                   name[0] = b[0];
                   nx = 1;
                 }
               break;
             case 3: // name already inited
-              if (nh < 255)
+              if ( nh < 255 )
                 header[nh++] = b[0];
               else
                 {
@@ -326,24 +326,24 @@ int main(int argc, char *argv[])
                   nerr++;
                   break;
                 }
-              if (nx >= 255)
+              if ( nx >= 255 )
                 {
-                      STAGE = 0;
-                      break;
+                  STAGE = 0;
+                  break;
                 }
-              if (b[0] == 0x01a || b[0] == 0x0d)
+              if ( b[0] == 0x01a || b[0] == 0x0d )
                 {
                   STAGE = 4;
                   name[nx++] = '\0';
                   //printf("Name: '%s'\n",name);
                 }
-              else if (b[0] == ' ')
+              else if ( b[0] == ' ' )
                 name[nx++] = '_'; // substitute a space by '_'
               else
                 name[nx++] = b[0];
               break;
             case 4: // Waiting BUFR message begin
-              if (nh < 255)
+              if ( nh < 255 )
                 header[nh++] = b[0];
               else
                 {
@@ -351,11 +351,11 @@ int main(int argc, char *argv[])
                   nerr++;
                   break;
                 }
-              if (is_bufr(&b[0]))
+              if ( is_bufr ( &b[0] ) )
                 {
                   STAGE = 5;
                   // printf("Leyendo BUFR\n");
-                  memset(&BUFR[0], 0, BUFRLEN);
+                  memset ( &BUFR[0], 0, BUFRLEN );
                   nb = 4;
                   BUFR[0]='B';
                   BUFR[1]='U';
@@ -366,74 +366,74 @@ int main(int argc, char *argv[])
                 }
               break;
             case 5: // Filling BUFR message till final '7777'
-              if (nb < (BUFRLEN - 1))
+              if ( nb < ( BUFRLEN - 1 ) )
                 BUFR[nb++] = b[0];
               else
                 {
-                  printf("Error: Bufr message length > %d", BUFRLEN);
-                  fclose(ficin);
-                  exit(EXIT_FAILURE);
+                  printf ( "Error: Bufr message length > %d", BUFRLEN );
+                  fclose ( ficin );
+                  exit ( EXIT_FAILURE );
                 }
-              if (is_endb(&b[0]))
+              if ( is_endb ( &b[0] ) )
                 {
                   STAGE = 0;
                   nbuf++;
-                  if (LISTF)
-                    printf("%s\n", name);
-                  if (bufr_is_selected(name))
+                  if ( LISTF )
+                    printf ( "%s\n", name );
+                  if ( bufr_is_selected ( name ) )
                     {
                       nsel++;
-                      if (INDIVIDUAL)
+                      if ( INDIVIDUAL )
                         {
                           // prefix with input file timestamp
-                          date_mtime_from_stat(namex, &INSTAT);
-                          strcat(namex,"_");
-                          strcat(namex, name);
-                          strcat(namex, ".bufr");
-                          if ((ficout = fopen(namex, "w")) == NULL)
+                          date_mtime_from_stat ( namex, &INSTAT );
+                          strcat ( namex,"_" );
+                          strcat ( namex, name );
+                          strcat ( namex, ".bufr" );
+                          if ( ( ficout = fopen ( namex, "w" ) ) == NULL )
                             {
-                              printf("Error: cannot open %s\n", name);
-                              fclose(ficin);
-                              exit(EXIT_FAILURE);
+                              printf ( "Error: cannot open %s\n", name );
+                              fclose ( ficin );
+                              exit ( EXIT_FAILURE );
                             }
-                          if ( (nw = fwrite(&BUFR[0], sizeof(unsigned char), nb, ficout)) != nb)
+                          if ( ( nw = fwrite ( &BUFR[0], sizeof ( unsigned char ), nb, ficout ) ) != nb )
                             {
-                              printf("Error: Writen %lu bytes instead of %lu in %s file\n", nw, nb, namex);
-                              fclose(ficin);
-                              fclose(ficout);
-                              exit(EXIT_FAILURE);
+                              printf ( "Error: Writen %lu bytes instead of %lu in %s file\n", nw, nb, namex );
+                              fclose ( ficin );
+                              fclose ( ficout );
+                              exit ( EXIT_FAILURE );
                             }
                           // close an individual file
-                          fclose(ficout);
+                          fclose ( ficout );
                           // change individual file timestamp
-                          mtime_from_stat(namex, &INSTAT);
+                          mtime_from_stat ( namex, &INSTAT );
                         }
-                      if (COLECT)
+                      if ( COLECT )
                         {
                           // first write header
-                          if ( (nw = fwrite(&header[0], sizeof(char), nh, ficol)) != nh)
+                          if ( ( nw = fwrite ( &header[0], sizeof ( char ), nh, ficol ) ) != nh )
                             {
-                              printf("%s: Error: Writen %lu bytes instead of %lu in %s file\n", OWN, nw, nh, namec);
-                              fclose(ficin);
-                              fclose(ficol);
-                              exit(EXIT_FAILURE);
+                              printf ( "%s: Error: Writen %lu bytes instead of %lu in %s file\n", OWN, nw, nh, namec );
+                              fclose ( ficin );
+                              fclose ( ficol );
+                              exit ( EXIT_FAILURE );
                             }
 
                           // then bufr message
-                          if ( (nw = fwrite(&BUFR[0], sizeof(unsigned char), nb, ficol)) != nb)
+                          if ( ( nw = fwrite ( &BUFR[0], sizeof ( unsigned char ), nb, ficol ) ) != nb )
                             {
-                              printf("%s: Error: Writen %lu bytes instead of %lu in %s file\n", OWN, nw, nb, namex);
-                              fclose(ficin);
-                              fclose(ficout);
-                              exit(EXIT_FAILURE);
+                              printf ( "%s: Error: Writen %lu bytes instead of %lu in %s file\n", OWN, nw, nb, namex );
+                              fclose ( ficin );
+                              fclose ( ficout );
+                              exit ( EXIT_FAILURE );
                             }
                           // finally \r\r\n
-                          if ( (nw = fwrite(&SEP[0], sizeof(char), 3, ficol)) != 3)
+                          if ( ( nw = fwrite ( &SEP[0], sizeof ( char ), 3, ficol ) ) != 3 )
                             {
-                              printf("%s: Error: Writen %lu bytes instead of 3 chars separing messages in %s\n", OWN, nw, namex);
-                              fclose(ficin);
-                              fclose(ficout);
-                              exit(EXIT_FAILURE);
+                              printf ( "%s: Error: Writen %lu bytes instead of 3 chars separing messages in %s\n", OWN, nw, namex );
+                              fclose ( ficin );
+                              fclose ( ficout );
+                              exit ( EXIT_FAILURE );
                             }
                         }
                     }
@@ -442,29 +442,29 @@ int main(int argc, char *argv[])
         }
     }
 
-  if (COLECT)
+  if ( COLECT )
     {
-      fclose(ficol);
+      fclose ( ficol );
       // change archive file timestamp
-      mtime_from_stat(namec, &INSTAT);
+      mtime_from_stat ( namec, &INSTAT );
     }
 
   // Final time
-  gettimeofday( &tfin, NULL);
-  fclose(ficin);
+  gettimeofday ( &tfin, NULL );
+  fclose ( ficin );
 
   // A brief stat output
-  if (VERBOSE)
-  {
-    printf("Found %lu bufr reports. Selected: %lu. Wrong: %lu\n", nbuf, nsel, nerr);
-    timeval_substract(&tt, &tfin, &tini);
-    tx = (double) tt.tv_sec + (double) tt.tv_usec *1e-6;
-    printf("%lf seg.  ", tx);
-    if (nbuf && tx != 0.0)
-      printf("%lf reports/sec.\n", (double) nbuf / tx );
-    else
-      printf("\n");
-  }
-  exit(EXIT_SUCCESS);
+  if ( VERBOSE )
+    {
+      printf ( "Found %lu bufr reports. Selected: %lu. Wrong: %lu\n", nbuf, nsel, nerr );
+      timeval_substract ( &tt, &tfin, &tini );
+      tx = ( double ) tt.tv_sec + ( double ) tt.tv_usec *1e-6;
+      printf ( "%lf seg.  ", tx );
+      if ( nbuf && tx != 0.0 )
+        printf ( "%lf reports/sec.\n", ( double ) nbuf / tx );
+      else
+        printf ( "\n" );
+    }
+  exit ( EXIT_SUCCESS );
 }
 

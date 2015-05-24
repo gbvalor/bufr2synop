@@ -6,3 +6,5 @@ AUTOMAKE_OPTIONS = foreign 1.4
 AM_CPPFLAGS= $(all_includes)
 
 SUBDIRS = libraries apps
+
+EXTRA_DIST = CMakeLists.txt

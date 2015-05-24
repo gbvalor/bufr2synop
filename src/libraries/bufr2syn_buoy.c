@@ -51,41 +51,44 @@ int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b )
   gmtime_r ( &t, &tim );
   sprintf ( b->s0.YY, "%02d", tim.tm_mday );
   sprintf ( b->s0.GG, "%02d", tim.tm_hour );
-  sprintf ( b->s0.MM, "%02d", tim.tm_mon + 1);
-  sprintf ( b->s0.J, "%d", tim.tm_year % 10);
-  sprintf ( b->s0.gg, "%02d", tim.tm_min);
+  sprintf ( b->s0.MM, "%02d", tim.tm_mon + 1 );
+  sprintf ( b->s0.J, "%d", tim.tm_year % 10 );
+  sprintf ( b->s0.gg, "%02d", tim.tm_min );
 
   return 0;
 }
 
 /*!
-  \fn int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr_subset_sequence_data *sq, char *err)
+  \fn int parse_subset_as_buoy(struct metreport *m, struct bufr_subset_sequence_data *sq, char *err)
   \brief parses a subset sequence as an Buoy SYNOP FM-18 report
   \param m pointer to a struct \ref metreport where set some results
-  \param b pointer to a struct \ref buoy_chunks where set the results
   \param sq pointer to a struct \ref bufr_subset_sequence_data with the parsed sequence on input
   \param err string with detected errors, if any
 
   It return 0 if all is OK. Otherwise it also fills the \a err string
 */
-int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
+int parse_subset_as_buoy ( struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
 {
   int ival; // integer value for a descriptor
   size_t is;
   char aux[16];
+  struct buoy_chunks *b;
+
+  //
+  b = &m->buoy;
 
   // clean data
   clean_buoy_chunks ( b );
 
   // reject if still not coded type
-  if (strcmp(s->type_report,"ZZYY"))
+  if ( strcmp ( s->type_report,"ZZYY" ) )
     {
-      sprintf(err,"bufr2syn: '%s' report still not decoded in this software", s->type_report);
+      sprintf ( err,"bufr2syn: '%s' report still not decoded in this software", s->type_report );
       return 1;
     }
 
-  strcpy(b->s0.MiMi, "ZZ");
-  strcpy(b->s0.MjMj, "YY");
+  strcpy ( b->s0.MiMi, "ZZ" );
+  strcpy ( b->s0.MjMj, "YY" );
 
   b->mask = BUOY_SEC0;
 
@@ -93,12 +96,12 @@ int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr
   for ( is = 0; is < sq->nd; is++ )
     {
       // check if is a significance qualifier
-      if (sq->sequence[is].desc.x == 8)
-      {
-        s->i = is;
-        s->a = &sq->sequence[is];
-        buoy_parse_x08 ( b, s );
-      }
+      if ( sq->sequence[is].desc.x == 8 )
+        {
+          s->i = is;
+          s->a = &sq->sequence[is];
+          buoy_parse_x08 ( b, s );
+        }
 
       if ( sq->sequence[is].mask & DESCRIPTOR_VALUE_MISSING ||
            s->isq   // case of an significance qualifier
@@ -133,7 +136,7 @@ int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr
           buoy_parse_x06 ( b, s );
           break;
 
-        case 7: // Vertical Position 
+        case 7: // Vertical Position
           buoy_parse_x07 ( b, s );
           break;
 
@@ -181,16 +184,16 @@ int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr
 
     }
 
-  if (((s->mask & SUBSET_MASK_HAVE_LATITUDE) == 0) ||
-      ((s->mask & SUBSET_MASK_HAVE_LONGITUDE) == 0) ||
-      ((s->mask & SUBSET_MASK_HAVE_YEAR) == 0) ||
-      ((s->mask & SUBSET_MASK_HAVE_MONTH) == 0) ||
-      ((s->mask & SUBSET_MASK_HAVE_DAY) == 0) ||
-      ((s->mask & SUBSET_MASK_HAVE_HOUR) == 0))
-      {
-        sprintf(err,"bufr2syn: parse_subset_as_buoy(): lack of mandatory descriptor in sequence");
-        return 1;
-      }
+  if ( ( ( s->mask & SUBSET_MASK_HAVE_LATITUDE ) == 0 ) ||
+       ( ( s->mask & SUBSET_MASK_HAVE_LONGITUDE ) == 0 ) ||
+       ( ( s->mask & SUBSET_MASK_HAVE_YEAR ) == 0 ) ||
+       ( ( s->mask & SUBSET_MASK_HAVE_MONTH ) == 0 ) ||
+       ( ( s->mask & SUBSET_MASK_HAVE_DAY ) == 0 ) ||
+       ( ( s->mask & SUBSET_MASK_HAVE_HOUR ) == 0 ) )
+    {
+      sprintf ( err,"bufr2syn: parse_subset_as_buoy(): lack of mandatory descriptor in sequence" );
+      return 1;
+    }
 
 
   /****** Second pass. Global results and consistence analysis ************/
@@ -204,6 +207,7 @@ int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr
   b->mask |= BUOY_EXT;
 
   // Fill some metreport fields
+<<<<<<< HEAD
   if (s->mask & SUBSET_MASK_HAVE_LATITUDE)
    {
     if (fabs(s->lat) <= 90.0)
@@ -219,55 +223,62 @@ int parse_subset_as_buoy(struct metreport *m, struct buoy_chunks *b, struct bufr
       return 1; // bad longitude. Fatal error
   }
   if (s->mask & SUBSET_MASK_HAVE_ALTITUDE)
+=======
+  if ( s->mask & SUBSET_MASK_HAVE_LATITUDE )
+    m->g.lat = s->lat;
+  if ( s->mask & SUBSET_MASK_HAVE_LONGITUDE )
+    m->g.lon = s->lon;
+  if ( s->mask & SUBSET_MASK_HAVE_ALTITUDE )
+>>>>>>> testing
     m->g.alt = s->alt;
-  if (s->mask & SUBSET_MASK_HAVE_NAME)
-    strcpy(m->g.name, s->name);
+  if ( s->mask & SUBSET_MASK_HAVE_NAME )
+    strcpy ( m->g.name, s->name );
   sprintf ( aux,"%s%s%s%s%s", b->e.YYYY, b->e.MM, b->e.DD, b->e.HH, b->e.mm );
-  YYYYMMDDHHmm_to_met_datetime(&m->t, aux);
+  YYYYMMDDHHmm_to_met_datetime ( &m->t, aux );
 
   // Fill some metreport fields
-  if (b->s0.A1[0] && b->s0.bw[0] && b->s0.nbnbnb[0])
+  if ( b->s0.A1[0] && b->s0.bw[0] && b->s0.nbnbnb[0] )
     {
-      sprintf ( m->g.index, "%s%s%s", b->s0.A1, b->s0.bw, b->s0.nbnbnb);
+      sprintf ( m->g.index, "%s%s%s", b->s0.A1, b->s0.bw, b->s0.nbnbnb );
     }
 
   // check if set both LaLaLa and LoLoLoLo to set Qc
-  if ((b->s0.Qc[0] == 0) && b->s0.LaLaLaLaLa[0] && b->s0.LoLoLoLoLoLo[0])
+  if ( ( b->s0.Qc[0] == 0 ) && b->s0.LaLaLaLaLa[0] && b->s0.LoLoLoLoLoLo[0] )
     {
-      if (s->mask & SUBSET_MASK_LATITUDE_SOUTH)
+      if ( s->mask & SUBSET_MASK_LATITUDE_SOUTH )
         {
-          if (s->mask & SUBSET_MASK_LONGITUDE_WEST)
-            strcpy(b->s0.Qc, "5");
+          if ( s->mask & SUBSET_MASK_LONGITUDE_WEST )
+            strcpy ( b->s0.Qc, "5" );
           else
-            strcpy(b->s0.Qc, "3");
+            strcpy ( b->s0.Qc, "3" );
         }
       else
         {
-          if (s->mask & SUBSET_MASK_LONGITUDE_WEST)
-            strcpy(b->s0.Qc, "7");
+          if ( s->mask & SUBSET_MASK_LONGITUDE_WEST )
+            strcpy ( b->s0.Qc, "7" );
           else
-            strcpy(b->s0.Qc, "1");
+            strcpy ( b->s0.Qc, "1" );
         }
     }
 
   // check Qx
-  if (b->s2.Qd[0] ==  0)
+  if ( b->s2.Qd[0] ==  0 )
     b->s2.Qd[0] = '0';
-  if (b->s3.k2[0] == 0)
+  if ( b->s3.k2[0] == 0 )
     b->s3.k2[0] = '0';
-  if (b->s1.Qx[0] == 0 && b->s1.Qd[0])
+  if ( b->s1.Qx[0] == 0 && b->s1.Qd[0] )
     b->s1.Qx[0] = '9';
-  if (b->s2.Qx[0] == 0 && b->s2.Qd[0])
+  if ( b->s2.Qx[0] == 0 && b->s2.Qd[0] )
     b->s2.Qx[0] = '9';
 
-  if (b->s3.Qd1[0] ==  0)
+  if ( b->s3.Qd1[0] ==  0 )
     b->s3.Qd1[0] = '0';
-  if (b->s3.Qd2[0] ==  0)
+  if ( b->s3.Qd2[0] ==  0 )
     b->s3.Qd2[0] = '0';
 
-  if (b->s3.k3[0] == 0)
+  if ( b->s3.k3[0] == 0 )
     b->s3.k3[0] = '/';
-  if (b->s3.k6[0] == 0)
+  if ( b->s3.k6[0] == 0 )
     b->s3.k6[0] = '/';
 
   return 0;

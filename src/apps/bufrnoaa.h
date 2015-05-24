@@ -46,15 +46,15 @@ extern char SEL[64], SELS[64], SELO[64], SELU[64];
 extern char OWN[];
 
 // Functions
-int is_bufr(unsigned char *b);
-int is_endb(unsigned char *b);
-int is_head(unsigned char *b);
-int timeval_substract (struct timeval *result, struct timeval *x, struct timeval *y);
-int read_args( int _argc, char * _argv[]);
-void print_usage(void);
-int bufr_is_selected(char *name);
-int date_mtime_from_stat(char *date, struct stat *st);
-int mtime_from_stat(char *filename, struct stat *st);
+int is_bufr ( unsigned char *b );
+int is_endb ( unsigned char *b );
+int is_head ( unsigned char *b );
+int timeval_substract ( struct timeval *result, struct timeval *x, struct timeval *y );
+int read_args ( int _argc, char * _argv[] );
+void print_usage ( void );
+int bufr_is_selected ( char *name );
+int date_mtime_from_stat ( char *date, struct stat *st );
+int mtime_from_stat ( char *filename, struct stat *st );
 
 
 

@@ -19,3 +19,5 @@ bufr2synop_LDADD = $(top_builddir)/src/libraries/libbufr2syn.la -lbufr \
 
 AM_CFLAGS = -W -Wall
 bufrnoaa_SOURCES = bufrnoaa.c bufrnoaa_io.c bufrnoaa_utils.c
+
+EXTRA_DIST = CMakeLists.txt

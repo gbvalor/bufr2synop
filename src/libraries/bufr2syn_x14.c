@@ -38,102 +38,102 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s )
     {
     case 1: // 0 14 001 long-wave radiation 24 hours
     case 11:
-      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         return 0;
-      if (syn->s3.SSS[0])
+      if ( syn->s3.SSS[0] )
         {
-          strcpy(syn->s3.j524[4], "4");
-          sprintf(syn->s3.FFFF24[4], "%04d", s->ival / 10000);
+          strcpy ( syn->s3.j524[4], "4" );
+          sprintf ( syn->s3.FFFF24[4], "%04d", s->ival / 10000 );
           syn->mask |= SYNOP_SEC3;
         }
       break;
     case 2: // 0 14 002 Long-wave radiation
     case 12:
-      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         return 0;
-      if (s->itval == (-24 * 3600))
+      if ( s->itval == ( -24 * 3600 ) )
         {
-          if (syn->s3.SSS[0])
+          if ( syn->s3.SSS[0] )
             {
-              strcpy(syn->s3.j524[4], "4");
-              sprintf(syn->s3.FFFF24[4], "%04d", s->ival / 10000);
+              strcpy ( syn->s3.j524[4], "4" );
+              sprintf ( syn->s3.FFFF24[4], "%04d", s->ival / 10000 );
               syn->mask |= SYNOP_SEC3;
             }
         }
-      else if (s->itval == -3600)
+      else if ( s->itval == -3600 )
         {
-          if (syn->s3.SS[0])
+          if ( syn->s3.SS[0] )
             {
-              strcpy(syn->s3.j5[4], "4");
-              sprintf(syn->s3.FFFF[4], "%04d", s->ival / 1000);
+              strcpy ( syn->s3.j5[4], "4" );
+              sprintf ( syn->s3.FFFF[4], "%04d", s->ival / 1000 );
             }
         }
       syn->mask |= SYNOP_SEC3;
       break;
     case 3: // 0 14 001 short-wave radiation 24 hours
     case 13:
-      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         return 0;
-      if (syn->s3.SSS[0])
+      if ( syn->s3.SSS[0] )
         {
-          strcpy(syn->s3.j524[6], "6");
-          sprintf(syn->s3.FFFF24[6], "%04d", s->ival / 10000);
+          strcpy ( syn->s3.j524[6], "6" );
+          sprintf ( syn->s3.FFFF24[6], "%04d", s->ival / 10000 );
           syn->mask |= SYNOP_SEC3;
         }
       break;
     case 4: // 0 14 002 short-wave radiation
     case 14:
-      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         return 0;
-      if (s->itval == (-24 * 3600))
+      if ( s->itval == ( -24 * 3600 ) )
         {
-          if (syn->s3.SSS[0])
+          if ( syn->s3.SSS[0] )
             {
-              strcpy(syn->s3.j524[6], "6");
-              sprintf(syn->s3.FFFF24[6], "%04d", s->ival / 10000);
+              strcpy ( syn->s3.j524[6], "6" );
+              sprintf ( syn->s3.FFFF24[6], "%04d", s->ival / 10000 );
             }
         }
-      else if (s->itval == -3600)
+      else if ( s->itval == -3600 )
         {
-          if (syn->s3.SS[0])
+          if ( syn->s3.SS[0] )
             {
-              strcpy(syn->s3.j5[6], "6");
-              sprintf(syn->s3.FFFF[6], "%04d", s->ival / 1000);
+              strcpy ( syn->s3.j5[6], "6" );
+              sprintf ( syn->s3.FFFF[6], "%04d", s->ival / 1000 );
             }
         }
       syn->mask |= SYNOP_SEC3;
       break;
     case 31: // 0 14 031 Total sunshine
-      if (s->itval == (-24 * 3600))
+      if ( s->itval == ( -24 * 3600 ) )
         {
-          if (s->a->mask & DESCRIPTOR_VALUE_MISSING) 
-            sprintf(syn->s3.SSS, "///");
+          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+            sprintf ( syn->s3.SSS, "///" );
           else
-            sprintf(syn->s3.SSS, "%03d", s->ival / 6);
+            sprintf ( syn->s3.SSS, "%03d", s->ival / 6 );
         }
-      else if (s->itval == -3600)
+      else if ( s->itval == -3600 )
         {
-          if (s->a->mask & DESCRIPTOR_VALUE_MISSING) 
-            sprintf(syn->s3.SS, "//");
+          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+            sprintf ( syn->s3.SS, "//" );
           else
-            sprintf(syn->s3.SS, "%02d", s->ival / 6);
+            sprintf ( syn->s3.SS, "%02d", s->ival / 6 );
         }
       syn->mask |= SYNOP_SEC3;
       break;
     case 32: // 0 14 032 Total sunshine (hours)
-      if (s->itval == (-24 * 3600))
+      if ( s->itval == ( -24 * 3600 ) )
         {
-          if (s->a->mask & DESCRIPTOR_VALUE_MISSING) 
-            sprintf(syn->s3.SSS, "///");
+          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+            sprintf ( syn->s3.SSS, "///" );
           else
-            sprintf(syn->s3.SSS, "%03d", s->ival * 10);
+            sprintf ( syn->s3.SSS, "%03d", s->ival * 10 );
         }
-      else if (s->itval == -3600)
+      else if ( s->itval == -3600 )
         {
-          if (s->a->mask & DESCRIPTOR_VALUE_MISSING) 
-            sprintf(syn->s3.SS, "//");
+          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+            sprintf ( syn->s3.SS, "//" );
           else
-            sprintf(syn->s3.SS, "%02d", s->ival * 10);
+            sprintf ( syn->s3.SS, "%02d", s->ival * 10 );
         }
       syn->mask |= SYNOP_SEC3;
       break;
@@ -154,15 +154,15 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 */
 int buoy_parse_x14 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 {
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
     return 0;
 
-  if (b == NULL)
+  if ( b == NULL )
     return 1;
 
   switch ( s->a->desc.y )
     {
-      default:
+    default:
       break;
     }
   return 0;
