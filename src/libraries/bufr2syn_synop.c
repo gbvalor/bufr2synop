@@ -140,7 +140,6 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr_subset_state *s, st
           syn_parse_x01 ( syn, s );
           break;
 
-<<<<<<< HEAD
         case 2: //Type of station descriptors
           syn_parse_x02 ( syn, s);
           break;
@@ -155,22 +154,6 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr_subset_state *s, st
 
         case 6: // Horizontal position. Longitude
           syn_parse_x06 ( syn, s);
-=======
-        case 2: //Date time descriptors
-          syn_parse_x02 ( syn, s );
-          break;
-
-        case 4: //Date time descriptors
-          syn_parse_x04 ( syn, s );
-          break;
-
-        case 5: //Position
-          syn_parse_x05 ( syn, s );
-          break;
-
-        case 6: // Horizontal Position -2
-          syn_parse_x06 ( syn, s );
->>>>>>> testing
           break;
 
         case 7: // Vertical position
@@ -295,37 +278,6 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr_subset_state *s, st
   syn->mask |= SYNOP_EXT;
 
   // Fill some metreport fields
-<<<<<<< HEAD
-  if (strlen(syn->s0.II))
-  {
-    strcpy(m->g.index, syn->s0.II);
-    strcat(m->g.index, syn->s0.iii);
-  }
-  else if (strlen(syn->s0.D_D))
-  {
-    strcpy(m->g.index, syn->s0.D_D);
-  }
-  else if (strlen(syn->s0.IIIII))
-  {
-    strcpy(m->g.index, syn->s0.IIIII);
-  }
-
-  if (s->mask & SUBSET_MASK_HAVE_LATITUDE)
-  {
-    if (fabs(s->lat) <= 90.0)
-      m->g.lat = s->lat;
-    else
-      return 1; // Bad latitude. Fatal error
-  }
-  if (s->mask & SUBSET_MASK_HAVE_LONGITUDE)
-  {
-    if (fabs(s->lon) <= 180.0)
-      m->g.lon = s->lon;
-    else
-      return 1; // bad longitude. Fatal error
-  }
-  if (s->mask & SUBSET_MASK_HAVE_ALTITUDE)
-=======
   if ( strlen ( syn->s0.II ) )
     {
       strcpy ( m->g.index, syn->s0.II );
@@ -345,7 +297,6 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr_subset_state *s, st
   if ( s->mask & SUBSET_MASK_HAVE_LONGITUDE )
     m->g.lon = s->lon;
   if ( s->mask & SUBSET_MASK_HAVE_ALTITUDE )
->>>>>>> testing
     m->g.alt = s->alt;
   if ( s->mask & SUBSET_MASK_HAVE_NAME )
     strcpy ( m->g.name, s->name );
@@ -353,12 +304,7 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr_subset_state *s, st
     strcpy ( m->g.country, s->country );
 
   sprintf ( aux,"%s%s%s%s%s", syn->e.YYYY, syn->e.MM, syn->e.DD, syn->e.HH, syn->e.mm );
-<<<<<<< HEAD
-
-  YYYYMMDDHHmm_to_met_datetime(&m->t, aux);
-=======
   YYYYMMDDHHmm_to_met_datetime ( &m->t, aux );
->>>>>>> testing
 
   if (check_date_from_future(m))
      return 1; // Bad date/time . Is a report from future!

@@ -207,7 +207,6 @@ int parse_subset_as_buoy ( struct metreport *m, struct bufr_subset_state *s, str
   b->mask |= BUOY_EXT;
 
   // Fill some metreport fields
-<<<<<<< HEAD
   if (s->mask & SUBSET_MASK_HAVE_LATITUDE)
    {
     if (fabs(s->lat) <= 90.0)
@@ -223,13 +222,6 @@ int parse_subset_as_buoy ( struct metreport *m, struct bufr_subset_state *s, str
       return 1; // bad longitude. Fatal error
   }
   if (s->mask & SUBSET_MASK_HAVE_ALTITUDE)
-=======
-  if ( s->mask & SUBSET_MASK_HAVE_LATITUDE )
-    m->g.lat = s->lat;
-  if ( s->mask & SUBSET_MASK_HAVE_LONGITUDE )
-    m->g.lon = s->lon;
-  if ( s->mask & SUBSET_MASK_HAVE_ALTITUDE )
->>>>>>> testing
     m->g.alt = s->alt;
   if ( s->mask & SUBSET_MASK_HAVE_NAME )
     strcpy ( m->g.name, s->name );
