@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2014 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2015 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,7 +19,7 @@
  ***************************************************************************/
 /*!
   \file bufr2syn_utils.c
-  \brief file with the utility routines for binary bufr2synop 
+  \brief file with the utility routines for binary bufr2synop
 */
 #include "bufr2syn.h"
 
@@ -28,9 +28,9 @@
   \fn three_bytes_to_uint(const unsigned char *source)
   \brief returns the integer value from an array of three bytes, most significant first
 */
-unsigned int three_bytes_to_uint(const unsigned char *source)
+unsigned int three_bytes_to_uint ( const unsigned char *source )
 {
-   return  (source[2] + source[1] * 256 + source[0] * 65536);
+  return ( source[2] + source[1] * 256 + source[0] * 65536 );
 }
 
 /*!
@@ -39,15 +39,15 @@ unsigned int three_bytes_to_uint(const unsigned char *source)
   \param d pointer to a struct \ref bufr_descriptor where to set the result on output
   \param id integer with the descriptor from ewcwf
 */
-int integer_to_descriptor(struct bufr_descriptor *d, int id)
+int integer_to_descriptor ( struct bufr_descriptor *d, int id )
 {
-   if (d == NULL)
-     return 1;
-   d->f = id / 100000;
-   d->x = (id % 100000) / 1000;
-   d->y = id % 1000;
-   sprintf(d->c, "%06d", id);
-   return 0;
+  if ( d == NULL )
+    return 1;
+  d->f = id / 100000;
+  d->x = ( id % 100000 ) / 1000;
+  d->y = id % 1000;
+  sprintf ( d->c, "%06d", id );
+  return 0;
 }
 
 /*!
@@ -57,13 +57,13 @@ int integer_to_descriptor(struct bufr_descriptor *d, int id)
   \param buf pointer to first element in array
   \param size number of chars in array
 */
-char * charray_to_string(char *s, unsigned char *buf, size_t size)
+char * charray_to_string ( char *s, unsigned char *buf, size_t size )
 {
-   // copy
-   memcpy(s , buf, size);
-   // add final string mark
-   s[size] = '\0';
-   return s;
+  // copy
+  memcpy ( s , buf, size );
+  // add final string mark
+  s[size] = '\0';
+  return s;
 }
 
 /*!
@@ -71,19 +71,19 @@ char * charray_to_string(char *s, unsigned char *buf, size_t size)
   \brief Supress trailing blanks of a string
   \param s string to process
 */
-char * adjust_string(char *s)
+char * adjust_string ( char *s )
 {
-   size_t l;
-   l = strlen(s);
-   while (l && s[--l] == ' ') 
-     s[l] = '\0';
-   return s;
+  size_t l;
+  l = strlen ( s );
+  while ( l && s[--l] == ' ' )
+    s[l] = '\0';
+  return s;
 }
 
 /*! \fn int tokenize_string(char *tk[], size_t ntk, char *target, size_t len, char *blanks)
         \brief Split the report string into tokens
         \param tk array of strings. Memory have to be allocated previously by caller
-        \param ntk max amount of elements in tk array. 
+        \param ntk max amount of elements in tk array.
         \param target string which is the report to split
         \param len lenght of \a target string
         \param blanks string with the character considered as blanks. If null
@@ -93,30 +93,30 @@ char * adjust_string(char *s)
         NOTE: \a target is changed after calling this routine. In fact, the pointers
         in \a tk[] are linking to some char in string \a target
 */
-size_t tokenize_string(char *tk[], size_t ntk, char *target, size_t len, char *blanks)
+size_t tokenize_string ( char *tk[], size_t ntk, char *target, size_t len, char *blanks )
 {
   size_t i = 1, n;
   char d[] = " =\n\r\v\t", *b, *aux;
 
   // set the blanks array
-  if (blanks == NULL) 
+  if ( blanks == NULL )
     b = &d[0];
-  else 
+  else
     b = blanks;
 
-  // check target string limits 
-  n = strlen(target);
-  if (n == 0 || n > len)
+  // check target string limits
+  n = strlen ( target );
+  if ( n == 0 || n > len )
     return 0;
 
-  // the split loop 
-  tk[0] = strtok_r(target, b, &aux);
-  while (i < ntk &&
-         ((tk[i] = strtok_r(NULL, b, &aux)) != NULL ) &&
-         strlen(tk[i]) > 2 &&
-         strlen(tk[i]) < 10)
+  // the split loop
+  tk[0] = strtok_r ( target, b, &aux );
+  while ( i < ntk &&
+          ( ( tk[i] = strtok_r ( NULL, b, &aux ) ) != NULL ) &&
+          strlen ( tk[i] ) > 2 &&
+          strlen ( tk[i] ) < 10 )
     i++;
-  if (i < ntk)
+  if ( i < ntk )
     return i;
   else
     return ntk - 1;
@@ -128,16 +128,16 @@ size_t tokenize_string(char *tk[], size_t ntk, char *target, size_t len, char *b
   \param source string with date in YYYYMMDDHHmm format
   \param t pointer to a struct \ref met_datetime where to set the results
 */
-int YYYYMMDDHHmm_to_met_datetime(struct met_datetime *t, const char *source)
+int YYYYMMDDHHmm_to_met_datetime ( struct met_datetime *t, const char *source )
 {
-  if (strlen(source) != 12)
+  if ( strlen ( source ) != 12 )
     return 1;
   memset ( &t->tim, 0, sizeof ( struct tm ) );
-  strptime (source, "%Y%m%d%H%M", &t->tim );
-  strcpy(t->datime, source);
-  t->t = mktime(&t->tim);
+  strptime ( source, "%Y%m%d%H%M", &t->tim );
+  strcpy ( t->datime, source );
+  t->t = mktime ( &t->tim );
   return 0;
-} 
+}
 
 /*!
   \fn char *guess_WMO_region(char *A1, char *Reg, const char *II, const char *iii)
@@ -145,77 +145,77 @@ int YYYYMMDDHHmm_to_met_datetime(struct met_datetime *t, const char *source)
   \param A1 string woth resulting A1
   \param Reg string with resulting Reg
   \param II WMO block number
-  \param iii WMO number 
+  \param iii WMO number
 */
-char *guess_WMO_region(char *A1, char *Reg, const char *II, const char *iii)
+char *guess_WMO_region ( char *A1, char *Reg, const char *II, const char *iii )
 {
   char aux[8];
 
   // filter bad inputs
-  if (II == NULL || iii == NULL)
+  if ( II == NULL || iii == NULL )
     return NULL;
 
-  if (II[0] == 0 || iii[0] == 0)
+  if ( II[0] == 0 || iii[0] == 0 )
     return NULL;
 
   // aux string
-  sprintf(aux,"%s%s", II, iii);
+  sprintf ( aux,"%s%s", II, iii );
 
-  if ((II[0] == '0' && (strstr(aux,"042") != aux) && (strstr(aux,"043") != aux)  &&
-       (strstr(aux,"044") != aux)  && (strstr(aux,"0858") != aux) &&  (strstr(aux,"0859") != aux)) ||
-      II[0] == '1' || (strstr(aux,"201") == aux) ||
-      strcmp(II,"22") == 0 || strcmp(II,"26") == 0 || strcmp(II,"27") == 0 ||
-      strcmp(II,"33") == 0 || strcmp(II,"34") == 0 || strcmp(II,"22") == 0 ||
-      (strstr(aux,"201") == aux))
+  if ( ( II[0] == '0' && ( strstr ( aux,"042" ) != aux ) && ( strstr ( aux,"043" ) != aux )  &&
+         ( strstr ( aux,"044" ) != aux )  && ( strstr ( aux,"0858" ) != aux ) && ( strstr ( aux,"0859" ) != aux ) ) ||
+       II[0] == '1' || ( strstr ( aux,"201" ) == aux ) ||
+       strcmp ( II,"22" ) == 0 || strcmp ( II,"26" ) == 0 || strcmp ( II,"27" ) == 0 ||
+       strcmp ( II,"33" ) == 0 || strcmp ( II,"34" ) == 0 || strcmp ( II,"22" ) == 0 ||
+       ( strstr ( aux,"201" ) == aux ) )
     {
       // Reg 6. Europe
       A1[0] = '6';
-      strcpy(Reg,"VI");
+      strcpy ( Reg,"VI" );
     }
-  else if (II[0] == '6' || (strstr(aux,"0858") == aux) ||  (strstr(aux,"0859") == aux))
+  else if ( II[0] == '6' || ( strstr ( aux,"0858" ) == aux ) || ( strstr ( aux,"0859" ) == aux ) )
     {
       // Reg 1. Africa
       A1[0] = '1';
-      strcpy(Reg,"I");
+      strcpy ( Reg,"I" );
     }
-  else if (II[0] == '5' || (strcmp(II,"49") == 0) || (strcmp(II,"21") == 0) ||
-           (strcmp(II,"23") == 0) || (strcmp(II,"24") == 0) || (strcmp(II,"25") == 0) ||
-           (strcmp(II,"28") == 0) || (strcmp(II,"29") == 0) || (strcmp(II,"30") == 0) ||
-           (strcmp(II,"31") == 0) || (strcmp(II,"32") == 0) || (strcmp(II,"38") == 0) ||
-           (strcmp(II,"35") == 0) || (strcmp(II,"36") == 0) || (strcmp(II,"39") == 0) ||
-           (strcmp(aux, "20200") >= 0 && strcmp(aux, "20999") <= 0) ||
-           (strcmp(aux, "40000") >= 0 && strcmp(aux, "48599") <= 0) ||
-           (strcmp(aux, "48800") >= 0 && strcmp(aux, "49999") <= 0))
+  else if ( II[0] == '5' || ( strcmp ( II,"49" ) == 0 ) || ( strcmp ( II,"21" ) == 0 ) ||
+            ( strcmp ( II,"23" ) == 0 ) || ( strcmp ( II,"24" ) == 0 ) || ( strcmp ( II,"25" ) == 0 ) ||
+            ( strcmp ( II,"28" ) == 0 ) || ( strcmp ( II,"29" ) == 0 ) || ( strcmp ( II,"30" ) == 0 ) ||
+            ( strcmp ( II,"31" ) == 0 ) || ( strcmp ( II,"32" ) == 0 ) || ( strcmp ( II,"38" ) == 0 ) ||
+            ( strcmp ( II,"35" ) == 0 ) || ( strcmp ( II,"36" ) == 0 ) || ( strcmp ( II,"39" ) == 0 ) ||
+            ( strcmp ( aux, "20200" ) >= 0 && strcmp ( aux, "20999" ) <= 0 ) ||
+            ( strcmp ( aux, "40000" ) >= 0 && strcmp ( aux, "48599" ) <= 0 ) ||
+            ( strcmp ( aux, "48800" ) >= 0 && strcmp ( aux, "49999" ) <= 0 ) )
     {
       // Reg 2. Asia
       A1[0] = '2';
-      strcpy(Reg,"II");
+      strcpy ( Reg,"II" );
     }
-  else if (strcmp(aux, "80000") >= 0 && strcmp(aux, "88999") <= 0)
+  else if ( strcmp ( aux, "80000" ) >= 0 && strcmp ( aux, "88999" ) <= 0 )
     {
       // Reg 3. South america
       A1[0] = '3';
-      strcpy(Reg,"III");
+      strcpy ( Reg,"III" );
     }
-  else if (II[0] == '7' || strstr(aux,"042") == aux ||
-           strstr(aux,"043") == aux  || strstr(aux,"044") == aux)
+  else if ( II[0] == '7' || strstr ( aux,"042" ) == aux ||
+            strstr ( aux,"043" ) == aux  || strstr ( aux,"044" ) == aux )
     {
       // Reg 4. North and central america
       A1[0] = '4';
-      strcpy(Reg,"IV");
+      strcpy ( Reg,"IV" );
     }
-  else if ((strcmp(aux, "48600") >= 0 && strcmp(aux, "48799") <= 0) ||
-           (strcmp(aux, "90000") >= 0 && strcmp(aux, "98999") <= 0))
+  else if ( ( strcmp ( aux, "48600" ) >= 0 && strcmp ( aux, "48799" ) <= 0 ) ||
+            ( strcmp ( aux, "90000" ) >= 0 && strcmp ( aux, "98999" ) <= 0 ) )
     {
       // Reg 5. Pacific South
       A1[0] = '4';
-      strcpy(Reg,"IV");
+      strcpy ( Reg,"IV" );
     }
-  else if (strcmp(II,"89") == 0)
+  else if ( strcmp ( II,"89" ) == 0 )
     {
       // Reg 0. Antarctica
       A1[0] = '0';
-      strcpy(Reg,"0");
+      strcpy ( Reg,"0" );
     }
   return A1;
 }
@@ -233,13 +233,13 @@ char *guess_WMO_region(char *A1, char *Reg, const char *II, const char *iii)
   <pre>
   This routine assume the filename format of a bufr file is
 
-    YYYYMMDDHHmmss_BULLNN_ICAO_YYGGgg_ORD.bufr 
+    YYYYMMDDHHmmss_BULLNN_ICAO_YYGGgg_ORD.bufr
 
-  where 
+  where
 
-   YYYYMMDDHHmmss 
+   YYYYMMDDHHmmss
 
-  is the timestamp (UTC) of the file in GTS (as example, in NOAA gateway) 
+  is the timestamp (UTC) of the file in GTS (as example, in NOAA gateway)
 
   BULLNN is the bulletin identifier in GTS. It is a six chars lenght in the form T1 T2 A1 A2 N1 N2
 
@@ -350,7 +350,7 @@ char *guess_WMO_region(char *A1, char *Reg, const char *II, const char *iii)
        IO W   Sea surface waves WAVEOB 031/002
        IO X   Other sea environmental
 
-    About A2 
+    About A2
        A	 0 - 90W northern hemisphere
        B	 90W - 180 northern hemisphere
        C	 180 - 90E northern hemisphere
@@ -383,62 +383,62 @@ char *guess_WMO_region(char *A1, char *Reg, const char *II, const char *iii)
    ORD is the order sequence as RRA, RRB, CCA .... is optional
   </pre>
 */
-int guess_gts_header(struct gts_header *h, const char *f)
+int guess_gts_header ( struct gts_header *h, const char *f )
 {
-   size_t nt;
-   char aux[256], *tk[16], *c;
+  size_t nt;
+  char aux[256], *tk[16], *c;
 
-   // parse file name
-   strcpy(h->filename, f);
-   strcpy(aux, f);
- 
-   // check latest '/' in filename
-   if ((c = strrchr(aux,'/')) == NULL)
-     c = &aux[0];
-   else
-     c++;
+  // parse file name
+  strcpy ( h->filename, f );
+  strcpy ( aux, f );
 
-   nt = tokenize_string(tk, 16, aux, strlen(c), "_.");
-   // parse filenames with format as example 'AAAAMMDDHHmmss_ISIE06_SBBR_012100_RRB.bufr'
+  // check latest '/' in filename
+  if ( ( c = strrchr ( aux,'/' ) ) == NULL )
+    c = &aux[0];
+  else
+    c++;
 
-   // 5 or 6 items 
-   if ( nt < 5 || nt > 6)
-     return 0;
+  nt = tokenize_string ( tk, 16, aux, strlen ( c ), "_." );
+  // parse filenames with format as example 'AAAAMMDDHHmmss_ISIE06_SBBR_012100_RRB.bufr'
 
-   // extension bufr
-   if (strcmp(tk[nt - 1],"bufr"))
-     return 0;
+  // 5 or 6 items
+  if ( nt < 5 || nt > 6 )
+    return 0;
 
-   // item 0 the timestamp of file in NOAA GTS gateway
-   if (strlen(tk[0]) != 14 || strspn(tk[0], "0123456789") != 14)
-     return 0;
-   strcpy(h->timestamp, tk[0]);
+  // extension bufr
+  if ( strcmp ( tk[nt - 1],"bufr" ) )
+    return 0;
 
-   // item 1 
-   if (strlen(tk[1]) != 6 || strspn(&tk[1][4],"0123456789") != 2)
-     return 0;
-   strcpy(h->bname, tk[1]);
+  // item 0 the timestamp of file in NOAA GTS gateway
+  if ( strlen ( tk[0] ) != 14 || strspn ( tk[0], "0123456789" ) != 14 )
+    return 0;
+  strcpy ( h->timestamp, tk[0] );
 
-   // item 2
-   if (strlen(tk[2]) != 4)
-     return 0;
-   strcpy(h->center, tk[2]);
+  // item 1
+  if ( strlen ( tk[1] ) != 6 || strspn ( &tk[1][4],"0123456789" ) != 2 )
+    return 0;
+  strcpy ( h->bname, tk[1] );
 
-   if (strlen(tk[3]) != 6 || strspn(tk[3], "0123456789") != 6)
-     return 0;
-   strcpy(h->dtrel, tk[3]);
+  // item 2
+  if ( strlen ( tk[2] ) != 4 )
+    return 0;
+  strcpy ( h->center, tk[2] );
 
-   if (nt == 5)
-   {
-      strcpy(h->order, "BBB");
-   }
-   else
-   {
-     if (strlen(tk[4]) == 3)
-      strcpy(h->order, tk[4]);
-     else
-      return 0;
-   }
+  if ( strlen ( tk[3] ) != 6 || strspn ( tk[3], "0123456789" ) != 6 )
+    return 0;
+  strcpy ( h->dtrel, tk[3] );
+
+  if ( nt == 5 )
+    {
+      strcpy ( h->order, "BBB" );
+    }
+  else
+    {
+      if ( strlen ( tk[4] ) == 3 )
+        strcpy ( h->order, tk[4] );
+      else
+        return 0;
+    }
 
   return 1;
 }

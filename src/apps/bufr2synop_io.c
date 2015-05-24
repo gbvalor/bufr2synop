@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2014 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2015 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,21 +24,21 @@
 
 #include "bufr2synop.h"
 
-void print_usage(void)
+void print_usage ( void )
 {
-  printf("Usage: \n");
-  printf("  bufr2synop [-i input] [-I list_of_files] [-t bufrtable_dir][-o output][-s][-v][-j][-x][-c]\n");
-  printf("       -e Print some original output from ECMWF library\n");
-  printf("       -h. Show this help\n");
-  printf("       -i input. Pathname of the file with the bufr message to parse\n");
-  printf("       -j. The output is in json format\n");
-  printf("       -c. The output is in csv format\n");
-  printf("       -I list_of_files. Pathname of a file with the list of files to parse, one filename per line\n");
-  printf("       -o output. Pathname of output file. Default is standar output\n");
-  printf("       -s prints a long output with explained sequence of descriptors\n");
-  printf("       -t bufrtable_dir. Pathname of bufr tables directory. Ended with '/'\n");
-  printf("       -v. Verbose output\n");
-  printf("       -x. The output is in xml format\n");
+  printf ( "Usage: \n" );
+  printf ( "  bufr2synop [-i input] [-I list_of_files] [-t bufrtable_dir][-o output][-s][-v][-j][-x][-c]\n" );
+  printf ( "       -e Print some original output from ECMWF library\n" );
+  printf ( "       -h. Show this help\n" );
+  printf ( "       -i input. Pathname of the file with the bufr message to parse\n" );
+  printf ( "       -j. The output is in json format\n" );
+  printf ( "       -c. The output is in csv format\n" );
+  printf ( "       -I list_of_files. Pathname of a file with the list of files to parse, one filename per line\n" );
+  printf ( "       -o output. Pathname of output file. Default is standar output\n" );
+  printf ( "       -s prints a long output with explained sequence of descriptors\n" );
+  printf ( "       -t bufrtable_dir. Pathname of bufr tables directory. Ended with '/'\n" );
+  printf ( "       -v. Verbose output\n" );
+  printf ( "       -x. The output is in xml format\n" );
 }
 
 
@@ -46,7 +46,7 @@ void print_usage(void)
  \fn int read_arguments( int _argc, char * _argv[])
  \brief read input arguments with the aid of getopt
  */
-int read_arguments(int _argc, char * _argv[])
+int read_arguments ( int _argc, char * _argv[] )
 {
   int iopt;
 
@@ -67,28 +67,28 @@ int read_arguments(int _argc, char * _argv[])
   /*
    Read input arguments using getop library
    */
-  while ((iopt = getopt(_argc, _argv, "cDehi:jI:o:st:vx")) != -1)
-    switch (iopt)
+  while ( ( iopt = getopt ( _argc, _argv, "cDehi:jI:o:st:vx" ) ) != -1 )
+    switch ( iopt )
       {
       case 'i':
-        if (strlen(optarg) < 256)
-          strcpy(INPUTFILE, optarg);
+        if ( strlen ( optarg ) < 256 )
+          strcpy ( INPUTFILE, optarg );
         break;
       case 'j':
         JSON = 1;
         break;
       case 'I':
-        if (strlen(optarg) < 256)
-          strcpy(LISTOFFILES, optarg);
+        if ( strlen ( optarg ) < 256 )
+          strcpy ( LISTOFFILES, optarg );
         break;
       case 'o':
-        if (strlen(optarg) < 256)
-          strcpy(OUTPUTFILE, optarg);
+        if ( strlen ( optarg ) < 256 )
+          strcpy ( OUTPUTFILE, optarg );
         break;
       case 't':
-        if (strlen(optarg) < 256)
+        if ( strlen ( optarg ) < 256 )
           {
-            strcpy(BUFRTABLES_DIR, optarg);
+            strcpy ( BUFRTABLES_DIR, optarg );
           }
         break;
       case 'D':
@@ -112,10 +112,10 @@ int read_arguments(int _argc, char * _argv[])
       case 'h':
       default:
         print_usage();
-        exit(EXIT_SUCCESS);
+        exit ( EXIT_SUCCESS );
       }
 
-  if (INPUTFILE[0] == 0 && LISTOFFILES[0] == 0)
+  if ( INPUTFILE[0] == 0 && LISTOFFILES[0] == 0 )
     {
       print_usage();
       return 1;
@@ -130,10 +130,10 @@ int read_arguments(int _argc, char * _argv[])
   \param filename string where the file is on output
   \param err string where to set the error if any
 
-  If success, it returns a pointer to filename. If there is no more files 
+  If success, it returns a pointer to filename. If there is no more files
   to parse, or error returns NULL.
 
-  This routine is also opens the file with file list and close it when no more 
+  This routine is also opens the file with file list and close it when no more
   file available in list
 
   The content format in LISTOFFILES is compatible with 'ls -1'. Example assume we
@@ -141,40 +141,40 @@ int read_arguments(int _argc, char * _argv[])
 
   \code
   ls -1 *.bufr > list_file && bufr2synop -I list_file
-  \endcode 
+  \endcode
 */
-char * get_bufrfile_path( char *filename, char *err)
+char * get_bufrfile_path ( char *filename, char *err )
 {
-   char aux[256], *c;
-   if (LISTOFFILES[0] == 0) 
-   {
-      if (NFILES == 0)
-      {
-         strcpy(filename, INPUTFILE);
-         return filename;
-      }
+  char aux[256], *c;
+  if ( LISTOFFILES[0] == 0 )
+    {
+      if ( NFILES == 0 )
+        {
+          strcpy ( filename, INPUTFILE );
+          return filename;
+        }
       else
-         return 0;
-   }
-   else if (NFILES == 0)
-   {
-     if ((FL = fopen(LISTOFFILES,"r")) == NULL)
-     {
-        sprintf(err,"Cannot open '%s'", LISTOFFILES);
-        return NULL;
-     }
-   }
-   if (fgets(aux, 256, FL))
-   {
-      c =  strrchr(aux,'\n');
-      if (c)
-       *c = 0;
-      strcpy(filename, aux);
+        return 0;
+    }
+  else if ( NFILES == 0 )
+    {
+      if ( ( FL = fopen ( LISTOFFILES,"r" ) ) == NULL )
+        {
+          sprintf ( err,"Cannot open '%s'", LISTOFFILES );
+          return NULL;
+        }
+    }
+  if ( fgets ( aux, 256, FL ) )
+    {
+      c =  strrchr ( aux,'\n' );
+      if ( c )
+        *c = 0;
+      strcpy ( filename, aux );
       return filename;
-   }
-   else
-   {
-      fclose(FL);
+    }
+  else
+    {
+      fclose ( FL );
       return NULL;
-   }
+    }
 }

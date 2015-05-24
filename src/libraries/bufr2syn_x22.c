@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2014 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2015 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -36,75 +36,75 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 {
   char aux[16];
 
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
     return 0;
 
   switch ( s->a->desc.y )
     {
     case 1: // 0 22 001 Direction of waves
-    case 3: // 0 22 003 Direction of swell waves 
-      if (syn->s2.dw1dw1[0] == 0)
+    case 3: // 0 22 003 Direction of swell waves
+      if ( syn->s2.dw1dw1[0] == 0 )
         {
-          sprintf(syn->s2.dw1dw1, "%02d", (s->ival + 5)/10);
+          sprintf ( syn->s2.dw1dw1, "%02d", ( s->ival + 5 ) /10 );
         }
-      else if (syn->s2.dw2dw2[0] == 0)
+      else if ( syn->s2.dw2dw2[0] == 0 )
         {
-          sprintf(syn->s2.dw2dw2, "%02d", (s->ival + 5)/10);
+          sprintf ( syn->s2.dw2dw2, "%02d", ( s->ival + 5 ) /10 );
         }
       syn->mask |= SYNOP_SEC2; // have sec2 data
       break;
     case 11: // 0 22 011 wind period in seconds
-      if (syn->s2.PwPw[0] == 0)
+      if ( syn->s2.PwPw[0] == 0 )
         {
-          sprintf(syn->s2.PwPw, "%02d", (int)(s->val));
+          sprintf ( syn->s2.PwPw, "%02d", ( int ) ( s->val ) );
           syn->mask |= SYNOP_SEC2; // have sec2 data
         }
       break;
     case 12: // 0 22 012 wind wave period in seconds
-      if (syn->s2.PwaPwa[0] == 0)
+      if ( syn->s2.PwaPwa[0] == 0 )
         {
-          sprintf(syn->s2.PwaPwa, "%02d", (int)(s->val));
+          sprintf ( syn->s2.PwaPwa, "%02d", ( int ) ( s->val ) );
           syn->mask |= SYNOP_SEC2; // have sec2 data
         }
       break;
     case 13: // 0 22 013 swell wave period in seconds
-      if (syn->s2.Pw1Pw1[0] == 0)
+      if ( syn->s2.Pw1Pw1[0] == 0 )
         {
-          sprintf(syn->s2.Pw1Pw1, "%02d", (int)(s->val));
+          sprintf ( syn->s2.Pw1Pw1, "%02d", ( int ) ( s->val ) );
         }
-      else if (syn->s2.Pw2Pw2[0] == 0)
+      else if ( syn->s2.Pw2Pw2[0] == 0 )
         {
-          sprintf(syn->s2.Pw2Pw2, "%02d", (int)(s->val));
+          sprintf ( syn->s2.Pw2Pw2, "%02d", ( int ) ( s->val ) );
         }
       syn->mask |= SYNOP_SEC2; // have sec2 data
       break;
     case 21: // 0 22 021  wind wave heigh in m
-      if (syn->s2.HwHw[0] == 0)
+      if ( syn->s2.HwHw[0] == 0 )
         {
-          sprintf(syn->s2.HwHw, "%02d", (int)(s->val * 2.0 + 0.01));
+          sprintf ( syn->s2.HwHw, "%02d", ( int ) ( s->val * 2.0 + 0.01 ) );
           syn->mask |= SYNOP_SEC2; // have sec2 data
         }
       break;
     case 22: // 0 22 022 wind wave heigh in meters
-      if (syn->s2.HwaHwa[0] == 0)
+      if ( syn->s2.HwaHwa[0] == 0 )
         {
-          sprintf(syn->s2.HwaHwa, "%02d", (int)(s->val * 2.0 + 0.01));  // 0.5 m units
+          sprintf ( syn->s2.HwaHwa, "%02d", ( int ) ( s->val * 2.0 + 0.01 ) ); // 0.5 m units
           syn->mask |= SYNOP_SEC2; // have sec2 data
         }
-      if (syn->s2.HwaHwaHwa[0] == 0)
+      if ( syn->s2.HwaHwaHwa[0] == 0 )
         {
-          sprintf(syn->s2.HwaHwaHwa, "%03d", (int)(s->val * 10.0 + 0.5));  // 0.1 m units
+          sprintf ( syn->s2.HwaHwaHwa, "%03d", ( int ) ( s->val * 10.0 + 0.5 ) ); // 0.1 m units
           syn->mask |= SYNOP_SEC2; // have sec2 data
         }
       break;
     case 23: // 0 22 023 swell wave heigh in meters
-      if (syn->s2.Hw1Hw1[0] == 0)
+      if ( syn->s2.Hw1Hw1[0] == 0 )
         {
-          sprintf(syn->s2.Hw1Hw1, "%02d", (int)(s->val * 2.0 + 0.01));
+          sprintf ( syn->s2.Hw1Hw1, "%02d", ( int ) ( s->val * 2.0 + 0.01 ) );
         }
-      else if (syn->s2.Hw2Hw2[0] == 0)
+      else if ( syn->s2.Hw2Hw2[0] == 0 )
         {
-          sprintf(syn->s2.Hw2Hw2, "%02d",(int)(s->val * 2.0 + 0.01));
+          sprintf ( syn->s2.Hw2Hw2, "%02d", ( int ) ( s->val * 2.0 + 0.01 ) );
         }
       syn->mask |= SYNOP_SEC2; // have sec2 data
       break;
@@ -112,9 +112,9 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s )
     case 43:
     case 45:
     case 49: // 0 22 049 Sea surface temperature
-      if (syn->s2.TwTwTw[0] == 0)
+      if ( syn->s2.TwTwTw[0] == 0 )
         {
-          if (kelvin_to_snTTT ( aux, s->val ))
+          if ( kelvin_to_snTTT ( aux, s->val ) )
             {
               syn->s2.ss[0] = aux[0];
               strcpy ( syn->s2.TwTwTw, aux + 1 );
@@ -140,69 +140,69 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 {
   char aux[16];
 
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
     return 0;
 
   switch ( s->a->desc.y )
     {
     case 4: // 0 22 004 Direction of current
-       if(s->layer < 32) // only 32 max layers
-       { 
-         if(b->s3.l2[s->layer].dd[0] == 0)
-         {
-            sprintf(b->s3.l2[s->layer].dd, "%02d", (int)(s->val + 5.0)/ 10) ;
-            b->mask |= BUOY_SEC3; 
-         }
-         if (b->s3.l2[s->layer].zzzz[0] == 0) // also stores pendent deep
-         {
-            sprintf(b->s3.l2[s->layer].zzzz, "%04d", s->deep);
-            b->mask |= BUOY_SEC3;
-         }
-       } 
-    case 12: // 0 22 012 wind wave period in seconds
-      if (b->s2.PwaPwa[0] == 0)
+      if ( s->layer < 32 ) // only 32 max layers
         {
-          sprintf(b->s2.PwaPwa, "%02d", (int)(s->val));
+          if ( b->s3.l2[s->layer].dd[0] == 0 )
+            {
+              sprintf ( b->s3.l2[s->layer].dd, "%02d", ( int ) ( s->val + 5.0 ) / 10 ) ;
+              b->mask |= BUOY_SEC3;
+            }
+          if ( b->s3.l2[s->layer].zzzz[0] == 0 ) // also stores pendent deep
+            {
+              sprintf ( b->s3.l2[s->layer].zzzz, "%04d", s->deep );
+              b->mask |= BUOY_SEC3;
+            }
+        }
+    case 12: // 0 22 012 wind wave period in seconds
+      if ( b->s2.PwaPwa[0] == 0 )
+        {
+          sprintf ( b->s2.PwaPwa, "%02d", ( int ) ( s->val ) );
           b->mask |= BUOY_SEC2; // have sec2 data
-          if (b->s2.PwaPwaPwa[0] == 0)
-            sprintf(b->s2.PwaPwaPwa, "%03d", (int)(s->val * 10 + 0.5));
+          if ( b->s2.PwaPwaPwa[0] == 0 )
+            sprintf ( b->s2.PwaPwaPwa, "%03d", ( int ) ( s->val * 10 + 0.5 ) );
 
         }
       break;
     case 22: // 0 22 022 wind wave heigh in meters
-      if (b->s2.HwaHwa[0] == 0)
+      if ( b->s2.HwaHwa[0] == 0 )
         {
-          sprintf(b->s2.HwaHwa, "%02d", (int)(s->val * 2.0 + 0.01));  // 0.5 m units
+          sprintf ( b->s2.HwaHwa, "%02d", ( int ) ( s->val * 2.0 + 0.01 ) ); // 0.5 m units
           b->mask |= BUOY_SEC2; // have sec2 data
         }
-      if (b->s2.HwaHwaHwa[0] == 0)
+      if ( b->s2.HwaHwaHwa[0] == 0 )
         {
-          sprintf(b->s2.HwaHwaHwa, "%03d", (int)(s->val * 10.0 + 0.01));  // 0.1 m units
+          sprintf ( b->s2.HwaHwaHwa, "%03d", ( int ) ( s->val * 10.0 + 0.01 ) ); // 0.1 m units
           b->mask |= BUOY_SEC2; // have sec2 data
         }
-      break; 
+      break;
     case 31: // 0 22 033 current speed
-       if(s->layer < 32) // only 32 max layers
-       { 
-         if(b->s3.l2[s->layer].dd[0] == 0)
-         {
-            sprintf(b->s3.l2[s->layer].dd, "%03d", (int)(s->val * 100.0 + 0.5)) ;
-            b->mask |= BUOY_SEC3; 
-         }
-         if (b->s3.l2[s->layer].zzzz[0] == 0) // also stores pendent deep
-         {
-            sprintf(b->s3.l2[s->layer].zzzz, "%04d", s->deep);
-            b->mask |= BUOY_SEC3;
-         }
-       } 
+      if ( s->layer < 32 ) // only 32 max layers
+        {
+          if ( b->s3.l2[s->layer].dd[0] == 0 )
+            {
+              sprintf ( b->s3.l2[s->layer].dd, "%03d", ( int ) ( s->val * 100.0 + 0.5 ) ) ;
+              b->mask |= BUOY_SEC3;
+            }
+          if ( b->s3.l2[s->layer].zzzz[0] == 0 ) // also stores pendent deep
+            {
+              sprintf ( b->s3.l2[s->layer].zzzz, "%04d", s->deep );
+              b->mask |= BUOY_SEC3;
+            }
+        }
       break;
     case 42:
     case 43:
-      if (s->deep == 0)
+      if ( s->deep == 0 )
         {
-          if (b->s2.TwTwTw[0] == 0)
+          if ( b->s2.TwTwTw[0] == 0 )
             {
-              if (kelvin_to_snTTT ( aux, s->val ))
+              if ( kelvin_to_snTTT ( aux, s->val ) )
                 {
                   b->s2.sn[0] = aux[0];
                   strcpy ( b->s2.TwTwTw, aux + 1 );
@@ -210,25 +210,25 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr_subset_state *s )
                 }
             }
         }
-       if(s->layer < 32) // only 32 max layers
-       { 
-         if(b->s3.l1[s->layer].TTTT[0] == 0)
-         {
-            kelvin_to_TTTT(b->s3.l1[s->layer].TTTT, s->val);
-            b->mask |= BUOY_SEC3; 
-         }
-         if (b->s3.l1[s->layer].zzzz[0] == 0) // also stores pendent deep
-         {
-            sprintf(b->s3.l1[s->layer].zzzz, "%04d", s->deep);
-            b->mask |= BUOY_SEC3;
-         }
-       } 
+      if ( s->layer < 32 ) // only 32 max layers
+        {
+          if ( b->s3.l1[s->layer].TTTT[0] == 0 )
+            {
+              kelvin_to_TTTT ( b->s3.l1[s->layer].TTTT, s->val );
+              b->mask |= BUOY_SEC3;
+            }
+          if ( b->s3.l1[s->layer].zzzz[0] == 0 ) // also stores pendent deep
+            {
+              sprintf ( b->s3.l1[s->layer].zzzz, "%04d", s->deep );
+              b->mask |= BUOY_SEC3;
+            }
+        }
       break;
     case 45:
     case 49: // 0 22 049 Sea surface temperature
-      if (b->s2.TwTwTw[0] == 0)
+      if ( b->s2.TwTwTw[0] == 0 )
         {
-          if (kelvin_to_snTTT ( aux, s->val ))
+          if ( kelvin_to_snTTT ( aux, s->val ) )
             {
               b->s2.sn[0] = aux[0];
               strcpy ( b->s2.TwTwTw, aux + 1 );
@@ -237,19 +237,19 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr_subset_state *s )
         }
       break;
     case 62: // 0 22 062 Salinity
-       if(s->layer < 32) // only 32 max layers
-       { 
-         if(b->s3.l1[s->layer].SSSS[0] == 0)
-         {
-            sprintf(b->s3.l1[s->layer].SSSS, "%04d", (int)(s->val * 100.0 + 0.5));
-            b->mask |= BUOY_SEC3; 
-         }
-         if (b->s3.l1[s->layer].zzzz[0] == 0) // also stores pendent deep
-         {
-            sprintf(b->s3.l1[s->layer].zzzz, "%04d", s->deep);
-            b->mask |= BUOY_SEC3;
-         }
-       }
+      if ( s->layer < 32 ) // only 32 max layers
+        {
+          if ( b->s3.l1[s->layer].SSSS[0] == 0 )
+            {
+              sprintf ( b->s3.l1[s->layer].SSSS, "%04d", ( int ) ( s->val * 100.0 + 0.5 ) );
+              b->mask |= BUOY_SEC3;
+            }
+          if ( b->s3.l1[s->layer].zzzz[0] == 0 ) // also stores pendent deep
+            {
+              sprintf ( b->s3.l1[s->layer].zzzz, "%04d", s->deep );
+              b->mask |= BUOY_SEC3;
+            }
+        }
       break;
     default:
       break;

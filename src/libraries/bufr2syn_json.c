@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2014 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2015 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -27,28 +27,28 @@
   \fn int print_json(FILE *f, struct metreport *m)
   \brief prints a struct \ref metreport in json format
   \param f pointer to a file already open by caller routine
-  \param m pointer to a struct \ref metreport containing the data to print 
+  \param m pointer to a struct \ref metreport containing the data to print
 */
-int print_json(FILE *f, struct metreport *m)
+int print_json ( FILE *f, struct metreport *m )
 {
-  fprintf(f, "{\"metreport\" : { \n");
-  fprintf(f, "  \"type\": \"%s\",\n", m->type);
-  fprintf(f, "  \"bufrfile\": \"%s\",\n", m->h->filename);
-  fprintf(f, "  \"gts_header\": \"%s %s %s %s\",\n", m->h->bname, m->h->center, m->h->dtrel, m->h->order); 
-  fprintf(f, "  \"observation_datetime\": \"%s\",\n", m->t.datime);
-  fprintf(f, "  \"geo\": { \n");
-  if (strlen(m->g.index))
-    fprintf(f, "    \"index\": \"%s\",\n", m->g.index);
-  if (strlen(m->g.name))
-    fprintf(f, "    \"name\": \"%s\",\n", m->g.name);
-  if (strlen(m->g.country))
-    fprintf(f, "    \"country\": \"%s\",\n", m->g.country);
-  fprintf(f, "    \"latitude\": %.6lf,\n", m->g.lat);
-  fprintf(f, "    \"longitude\": %.6lf,\n", m->g.lon);
-  fprintf(f, "    \"altitude\": %.1lf\n", m->g.alt);
-  fprintf(f, "    },\n");
-  fprintf(f, "  \"report\": \"%s\"\n", m->alphanum);
-  fprintf(f, "  }\n");
-  fprintf(f, "}\n");
+  fprintf ( f, "{\"metreport\" : { \n" );
+  fprintf ( f, "  \"type\": \"%s\",\n", m->type );
+  fprintf ( f, "  \"bufrfile\": \"%s\",\n", m->h->filename );
+  fprintf ( f, "  \"gts_header\": \"%s %s %s %s\",\n", m->h->bname, m->h->center, m->h->dtrel, m->h->order );
+  fprintf ( f, "  \"observation_datetime\": \"%s\",\n", m->t.datime );
+  fprintf ( f, "  \"geo\": { \n" );
+  if ( strlen ( m->g.index ) )
+    fprintf ( f, "    \"index\": \"%s\",\n", m->g.index );
+  if ( strlen ( m->g.name ) )
+    fprintf ( f, "    \"name\": \"%s\",\n", m->g.name );
+  if ( strlen ( m->g.country ) )
+    fprintf ( f, "    \"country\": \"%s\",\n", m->g.country );
+  fprintf ( f, "    \"latitude\": %.6lf,\n", m->g.lat );
+  fprintf ( f, "    \"longitude\": %.6lf,\n", m->g.lon );
+  fprintf ( f, "    \"altitude\": %.1lf\n", m->g.alt );
+  fprintf ( f, "    },\n" );
+  fprintf ( f, "  \"report\": \"%s\"\n", m->alphanum );
+  fprintf ( f, "  }\n" );
+  fprintf ( f, "}\n" );
   return 0;
 }

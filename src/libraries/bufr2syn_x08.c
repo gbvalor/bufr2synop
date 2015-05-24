@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2014 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2015 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -36,28 +36,28 @@
 */
 int syn_parse_x08 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 {
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
     return 0;
 
-  if (syn == NULL)
+  if ( syn == NULL )
     return 1;
 
   switch ( s->a->desc.y )
     {
     case 2: // 0 08 002 . Vertical significance (surface observations)
-      if (s->ival == 21)
+      if ( s->ival == 21 )
         s->clayer = 1; // first cloud layer
-      else if (s->ival == 22)
+      else if ( s->ival == 22 )
         s->clayer = 2; // second cloud layer
-      else if (s->ival == 23)
+      else if ( s->ival == 23 )
         s->clayer = 3; // third cloud layer
-      else if (s->ival == 24)
+      else if ( s->ival == 24 )
         s->clayer = 4; // fourth cloud layer
       break;
     case 22:  // 0 08 022 . Total number
     case 23:  // 0 08 023 . First-order statistics
     case 24:  // 0 08 024 . Difference statistics
-      if (s->isq)
+      if ( s->isq )
         s->isq = 0;
       else
         s->isq = 1;
@@ -78,10 +78,10 @@ int syn_parse_x08 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 */
 int buoy_parse_x08 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 {
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
     return 0;
 
-  if (b == NULL)
+  if ( b == NULL )
     return 1;
 
   switch ( s->a->desc.y )
@@ -89,7 +89,7 @@ int buoy_parse_x08 ( struct buoy_chunks *b, struct bufr_subset_state *s )
     case 22:  // 0 08 022 . Total number
     case 23:  // 0 08 023 . First-order statistics
     case 24:  // 0 08 024 . Difference statistics
-      if (s->isq)
+      if ( s->isq )
         s->isq = 0;
       else
         s->isq = 1;

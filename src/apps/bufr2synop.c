@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2014 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2015 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -22,9 +22,9 @@
  \brief decodes a bufr file using ECMWF bufr library and tries to pass the decoded reports to synop-format
 
   \mainpage Bufr to alphanumeric
-  
+
   \section Introduction
-  This is a package to make the transition to bufr reports from alphanumeric text easiest as possible. 
+  This is a package to make the transition to bufr reports from alphanumeric text easiest as possible.
 
   A lot of software is coded assuming that the primary source of meteorological reports is in alphanumeric format. Decode libraries are expecting this. But time is changing, meteorological services are migrating to bufr and other binary formats. Most decode sofware have to be changed.
 
@@ -41,13 +41,13 @@
 
   \section Install
 
-  Remember you have to download and install bufrdc library from ECMWF 
+  Remember you have to download and install bufrdc library from ECMWF
 
   http://old.ecmwf.int/products/data/software/bufr.html
 
   You also will need a Fortran and C compilers in your system and the usual development packages. GNU gcc and gfortran compilers are ok.
 
-  Then, to install bufr2synop, download the tarball and uncompress it 
+  Then, to install bufr2synop, download the tarball and uncompress it
 
   \code
   tar -xvzf bufr2synop-X.Y.tar.gz
@@ -55,7 +55,7 @@
 
   Where X.Y is the current version. This will create the directory \a bufr2synop-X.Y
 
-  You then have to configure 
+  You then have to configure
 
   \code
   cd bufr2synop-X.Y
@@ -199,7 +199,7 @@ int main ( int argc, char *argv[] )
   int kelem, kvals;
   int icode = 0, ktdlen, ktdexl;
   int current_ss;
-  
+
   if ( read_arguments ( argc, argv ) )
     {
       fprintf ( stderr, "%s: error geting arguments\n", SELF );
@@ -361,7 +361,7 @@ int main ( int argc, char *argv[] )
 
       if ( KSEC1[5] != 0 && KSEC1[5] != 1 && KSEC1[5] != 2 && KSEC1[5] !=  7 )
         {
-          fprintf ( stderr,"The data category %d is not parsed at the moment" , KSEC1[5]);
+          fprintf ( stderr,"The data category %d is not parsed at the moment" , KSEC1[5] );
           exit ( EXIT_FAILURE );
         }
 
@@ -435,8 +435,8 @@ int main ( int argc, char *argv[] )
               i = nsub * KELEM + j;
               LINAUX[0] = '\0'; // clean the output line
               c = LINAUX;
-              charray_to_string ( SUBSET.sequence[j].name, (unsigned char *)CNAMES[j], 64 );
-              charray_to_string ( SUBSET.sequence[j].unit, (unsigned char *)CUNITS[j], 24 );
+              charray_to_string ( SUBSET.sequence[j].name, ( unsigned char * ) CNAMES[j], 64 );
+              charray_to_string ( SUBSET.sequence[j].unit, ( unsigned char * ) CUNITS[j], 24 );
               integer_to_descriptor ( &SUBSET.sequence[j].desc, KTDEXP[j] );
 
               c += sprintf ( c, "KTDEXP[%03d]=%s |%03d |", j, SUBSET.sequence[j].desc.c, nsub );
@@ -447,7 +447,7 @@ int main ( int argc, char *argv[] )
                     {
                       SUBSET.sequence[j].mask |= DESCRIPTOR_HAVE_STRING_VALUE;
                       k = ( ( int ) VALUES[i] ) % 1000;
-                      charray_to_string ( SUBSET.sequence[j].cval, (unsigned char *)CVALS[ ( int ) ( VALUES[i]/1000.0 ) - 1], k );
+                      charray_to_string ( SUBSET.sequence[j].cval, ( unsigned char * ) CVALS[ ( int ) ( VALUES[i]/1000.0 ) - 1], k );
                       c += sprintf ( c, "'%s'", SUBSET.sequence[j].cval );
                     }
                   else if ( strstr ( SUBSET.sequence[j].unit,"CODE TABLE" ) == SUBSET.sequence[j].unit )
@@ -503,9 +503,9 @@ int main ( int argc, char *argv[] )
             }
 
           /**** the call to parse the sequence and transform to solicited asciicode, if possible *****/
-          if (parse_subset_sequence ( &REPORT, &SUBSET, &STATE, KTDLST, ktdlen, KSEC1, ERR ) )
+          if ( parse_subset_sequence ( &REPORT, &SUBSET, &STATE, KTDLST, ktdlen, KSEC1, ERR ) )
             {
-              if (DEBUG)
+              if ( DEBUG )
                 fprintf ( stderr, "#%s\n", ERR );
             }
           else if ( XML )

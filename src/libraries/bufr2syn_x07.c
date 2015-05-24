@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2014 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2015 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -34,11 +34,11 @@
 int syn_parse_x07 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 {
 
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
     return 0;
 
-  // this is to avoid warning 
-  if (syn == NULL)
+  // this is to avoid warning
+  if ( syn == NULL )
     return 1;
 
   switch ( s->a->desc.y )
@@ -46,14 +46,14 @@ int syn_parse_x07 ( struct synop_chunks *syn, struct bufr_subset_state *s )
     case 1: // 0 07 001 . Heigh of station
     case 30: // 0 07 030 . Height of station ground above msl
     case 31: // 0 07 031 . Height of barometer above msl
-      if (syn->s0.h0h0h0h0[0] == 0)
-      {
-        sprintf(syn->s0.h0h0h0h0, "%04d", s->ival); 
-        syn->s0.im[0] = '1';// set unit as m
-        s->mask |= SUBSET_MASK_HAVE_ALTITUDE;
-      }
+      if ( syn->s0.h0h0h0h0[0] == 0 )
+        {
+          sprintf ( syn->s0.h0h0h0h0, "%04d", s->ival );
+          syn->s0.im[0] = '1';// set unit as m
+          s->mask |= SUBSET_MASK_HAVE_ALTITUDE;
+        }
       s->alt = s->val;
-     break;
+      break;
     default:
       break;
     }
@@ -72,23 +72,23 @@ int syn_parse_x07 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 int buoy_parse_x07 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 {
 
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
     return 0;
 
-  if (b == NULL)
+  if ( b == NULL )
     return 1;
 
   switch ( s->a->desc.y )
     {
-      case 62: // 0 07 062 Depth below sea/water surface
-      case 63: // 0 07 063 Profundity below sea/water level
-        if (s->k_rep == (s->i - 1) ) // Case of first layer after a replicator
-           s->layer = 0;
-        else 
-           (s->layer)++;
-        s->deep = (int)(s->val + 0.5);
-        break;
-      default:
+    case 62: // 0 07 062 Depth below sea/water surface
+    case 63: // 0 07 063 Profundity below sea/water level
+      if ( s->k_rep == ( s->i - 1 ) ) // Case of first layer after a replicator
+        s->layer = 0;
+      else
+        ( s->layer ) ++;
+      s->deep = ( int ) ( s->val + 0.5 );
+      break;
+    default:
       break;
     }
   return 0;
