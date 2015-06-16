@@ -375,17 +375,16 @@ int main ( int argc, char *argv[] )
                   exit ( EXIT_FAILURE );
                 }
               // Has been detected some void and fakes bufr
-              if ( nb == 7 )
+              if ( b[0] == '*' &&
+                   b[1] == '*' &&
+                   b[2] == '*'
+                 )
                 {
-                  if ( BUFR[4] == '\r' &&
-                       BUFR[5] == '\r' &&
-                       BUFR[6] == '\n' )
-                    {
-                      // Ooops. a fake bufr
-                      STAGE = 0;
-                      nerr++;
-                      break;
-                    }
+                  // Ooops. a fake bufr
+                  // it seems a new header has been found before '7777'
+                  STAGE = 0;
+                  nerr++;
+                  break;
                 }
               if ( is_endb ( &b[0] ) )
                 {
@@ -416,7 +415,7 @@ int main ( int argc, char *argv[] )
                               fclose ( ficout );
                               exit ( EXIT_FAILURE );
                             }
-                          // close an individual file
+                          // close an individual fileq
                           fclose ( ficout );
                           // change individual file timestamp
                           mtime_from_stat ( namex, &INSTAT );
