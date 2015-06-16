@@ -374,6 +374,19 @@ int main ( int argc, char *argv[] )
                   fclose ( ficin );
                   exit ( EXIT_FAILURE );
                 }
+              // Has been detected some void and fakes bufr
+              if ( nb == 7 )
+                {
+                  if ( BUFR[4] == '\r' &&
+                       BUFR[5] == '\r' &&
+                       BUFR[6] == '\n' )
+                    {
+                      // Ooops. a fake bufr
+                      STAGE = 0;
+                      nerr++;
+                      break;
+                    }
+                }
               if ( is_endb ( &b[0] ) )
                 {
                   STAGE = 0;
