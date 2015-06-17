@@ -35,7 +35,7 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 {
   char aux[80];
 
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
     return 0;
 
   switch ( s->a->desc.y )
@@ -46,51 +46,51 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s )
     case 2: // 0 01 002 . WMO station number
       sprintf ( syn->s0.iii, "%03d", s->ival );
       break;
-    case 3: // 0 01 003 . WMO Region 
+    case 3: // 0 01 003 . WMO Region
       sprintf ( syn->s0.A1, "%d", s->ival );
-      if (strcmp(syn->s0.A1, "1") == 0)
-        strcpy(syn->s0.Reg, "I");
-      else if (strcmp(syn->s0.A1, "2") == 0)
-        strcpy(syn->s0.Reg, "II");
-      else if (strcmp(syn->s0.A1, "3") == 0)
-        strcpy(syn->s0.Reg, "III");
-      else if (strcmp(syn->s0.A1, "4") == 0)
-        strcpy(syn->s0.Reg, "IV");
-      else if (strcmp(syn->s0.A1, "5") == 0)
-        strcpy(syn->s0.Reg, "V");
-      else if (strcmp(syn->s0.A1, "6") == 0)
-        strcpy(syn->s0.Reg, "VI");
+      if ( strcmp ( syn->s0.A1, "1" ) == 0 )
+        strcpy ( syn->s0.Reg, "I" );
+      else if ( strcmp ( syn->s0.A1, "2" ) == 0 )
+        strcpy ( syn->s0.Reg, "II" );
+      else if ( strcmp ( syn->s0.A1, "3" ) == 0 )
+        strcpy ( syn->s0.Reg, "III" );
+      else if ( strcmp ( syn->s0.A1, "4" ) == 0 )
+        strcpy ( syn->s0.Reg, "IV" );
+      else if ( strcmp ( syn->s0.A1, "5" ) == 0 )
+        strcpy ( syn->s0.Reg, "V" );
+      else if ( strcmp ( syn->s0.A1, "6" ) == 0 )
+        strcpy ( syn->s0.Reg, "VI" );
       break;
     case 4: // 0 01 004 . WMO Subarea
     case 20: // 0 01 020 . WMO region subarea
       sprintf ( syn->s0.bw, "%d", s->ival );
       break;
     case 11: // 0 01 011. Ship or mobile land station index
-      if (strlen(s->a->cval) < 16)
+      if ( strlen ( s->a->cval ) < 16 )
         {
-          strcpy(aux, s->a->cval);
-          adjust_string(aux);
-          if (strlen(aux) < 10)
-            strcpy( syn->s0.D_D, aux);
+          strcpy ( aux, s->a->cval );
+          adjust_string ( aux );
+          if ( strlen ( aux ) < 10 )
+            strcpy ( syn->s0.D_D, aux );
         }
       break;
     case 15: // 0 01 015 . Station or site name
     case 18: // 0 01 018 . Short station or site name
     case 19: // 0 01 019 . Long station or site name
-      if (strlen(s->a->cval) <= 80)
+      if ( strlen ( s->a->cval ) <= 80 )
         {
-          strcpy(aux, s->a->cval);
-          adjust_string(aux);
-          strcpy(s->name, aux);
+          strcpy ( aux, s->a->cval );
+          adjust_string ( aux );
+          strcpy ( s->name, aux );
           s->mask |= SUBSET_MASK_HAVE_NAME;
         }
       break;
     case 101: // 0 01 101 . State identifier
-      if (strlen(s->a->ctable) <= 256)
+      if ( strlen ( s->a->ctable ) <= 256 )
         {
-          strcpy(aux, s->a->ctable);
-          adjust_string(aux);
-          strcpy(s->country, aux);
+          strcpy ( aux, s->a->ctable );
+          adjust_string ( aux );
+          strcpy ( s->country, aux );
           s->mask |= SUBSET_MASK_HAVE_COUNTRY;
         }
       break;
@@ -112,16 +112,16 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 {
   char aux[80];
 
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
     return 0;
 
   switch ( s->a->desc.y )
     {
     case 3: // 0 01 003
-      if (s->ival > 0)
+      if ( s->ival > 0 )
         sprintf ( b->s0.A1, "%d", s->ival );
-      else if (s->ival == 0)
-        sprintf ( b->s0.A1, "7");
+      else if ( s->ival == 0 )
+        sprintf ( b->s0.A1, "7" );
       break;
 
     case 4: // 0 01 004
@@ -129,26 +129,26 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr_subset_state *s )
       sprintf ( b->s0.bw, "%d", s->ival );
       break;
     case 5: // 0 01 005
-      if ( s->ival < 1000)
-        sprintf(b->s0.nbnbnb, "%03d", s->ival);
+      if ( s->ival < 1000 )
+        sprintf ( b->s0.nbnbnb, "%03d", s->ival );
       else
-        sprintf(b->s0.nbnbnb, "%05d", s->ival); // note this is a nnnnn extension 
+        sprintf ( b->s0.nbnbnb, "%05d", s->ival ); // note this is a nnnnn extension
       break;
     case 15: // 0 01 015
-      if (strlen(s->a->cval) <= 80)
+      if ( strlen ( s->a->cval ) <= 80 )
         {
-          strcpy(aux, s->a->cval);
-          adjust_string(aux);
-          strcpy(s->name, aux);
+          strcpy ( aux, s->a->cval );
+          adjust_string ( aux );
+          strcpy ( s->name, aux );
           s->mask |= SUBSET_MASK_HAVE_NAME;
         }
       break;
     case 101: // 0 01 101
-      if (strlen(s->a->ctable) <= 80)
+      if ( strlen ( s->a->ctable ) <= 80 )
         {
-          strcpy(aux, s->a->ctable);
-          adjust_string(aux);
-          strcpy(s->name, aux);
+          strcpy ( aux, s->a->ctable );
+          adjust_string ( aux );
+          strcpy ( s->name, aux );
           s->mask |= SUBSET_MASK_HAVE_COUNTRY;
         }
       break;

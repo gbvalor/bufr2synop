@@ -31,29 +31,29 @@
   \param lon longitude (degree, E positive)
   \param target resulting MMM string
 */
-char * latlon_to_MMM(char *target, double lat, double lon)
+char * latlon_to_MMM ( char *target, double lat, double lon )
 {
-   int col, row, ori = 0;
+  int col, row, ori = 0;
 
-   if (lon < 0.0)
-      col = (int)(-lat * 0.1) + 1;
-   else
-      col = 36 - (int)(lat * 0.1);
+  if ( lon < 0.0 )
+    col = ( int ) ( -lat * 0.1 ) + 1;
+  else
+    col = 36 - ( int ) ( lat * 0.1 );
 
-  
-   if (lat >= 80.0)
-      row = 25;
-   else if (lat >=  0.0)
-      row = (int)(lat * 0.1);
-   else
-   {
+
+  if ( lat >= 80.0 )
+    row = 25;
+  else if ( lat >=  0.0 )
+    row = ( int ) ( lat * 0.1 );
+  else
+    {
       ori = 299;
-      row = (int)(-lat * 0.1);
-   }
+      row = ( int ) ( -lat * 0.1 );
+    }
 
-   sprintf(target,"%03d", col + ori + row * 36);
+  sprintf ( target,"%03d", col + ori + row * 36 );
 
-   return target;
+  return target;
 }
 
 /*!
@@ -68,18 +68,18 @@ int syn_parse_x06 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 {
   int ia;
 
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
     return 0;
 
   switch ( s->a->desc.y )
     {
     case 1: // 0 06 001 . Longitude (High accuracy)
     case 2: // 0 06 002 . Longitude (Coarse)
-      if (s->val < 0.0)
+      if ( s->val < 0.0 )
         s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
       s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
-      ia = (int) (fabs(s->val) * 10.0 + 0.5);
-      sprintf(syn->s0.LoLoLoLo, "%04d",ia);
+      ia = ( int ) ( fabs ( s->val ) * 10.0 + 0.5 );
+      sprintf ( syn->s0.LoLoLoLo, "%04d",ia );
       syn->s0.Ulo[0] = syn->s0.LoLoLoLo[2];
       s->lon = s->val;
       break;
@@ -88,29 +88,29 @@ int syn_parse_x06 ( struct synop_chunks *syn, struct bufr_subset_state *s )
     }
 
   // check if set both LaLaLa and LoLoLoLo to set Qc
-  if ((syn->s0.Qc[0] == 0) && syn->s0.LaLaLa[0] && syn->s0.LoLoLoLo[0])
+  if ( ( syn->s0.Qc[0] == 0 ) && syn->s0.LaLaLa[0] && syn->s0.LoLoLoLo[0] )
     {
-      if (s->mask & SUBSET_MASK_LATITUDE_SOUTH)
+      if ( s->mask & SUBSET_MASK_LATITUDE_SOUTH )
         {
-          if (s->mask & SUBSET_MASK_LONGITUDE_WEST)
-            strcpy(syn->s0.Qc, "5");
+          if ( s->mask & SUBSET_MASK_LONGITUDE_WEST )
+            strcpy ( syn->s0.Qc, "5" );
           else
-            strcpy(syn->s0.Qc, "3");
+            strcpy ( syn->s0.Qc, "3" );
         }
       else
         {
-          if (s->mask & SUBSET_MASK_LONGITUDE_WEST)
-            strcpy(syn->s0.Qc, "7");
+          if ( s->mask & SUBSET_MASK_LONGITUDE_WEST )
+            strcpy ( syn->s0.Qc, "7" );
           else
-            strcpy(syn->s0.Qc, "1");
+            strcpy ( syn->s0.Qc, "1" );
         }
     }
 
   // check if about MMM
-  if ((syn->s0.MMM[0] == 0) && syn->s0.LaLaLa[0] && syn->s0.LoLoLoLo[0])
-  {
-     latlon_to_MMM(syn->s0.MMM, s->lat, s->lon);
-  }
+  if ( ( syn->s0.MMM[0] == 0 ) && syn->s0.LaLaLa[0] && syn->s0.LoLoLoLo[0] )
+    {
+      latlon_to_MMM ( syn->s0.MMM, s->lat, s->lon );
+    }
 
   return 0;
 }
@@ -127,21 +127,21 @@ int buoy_parse_x06 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 {
   int ia;
 
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
     return 0;
 
   switch ( s->a->desc.y )
     {
     case 1: // 0 06 001 . Longitude (High accuracy)
     case 2: // 0 06 002 . Longitude (Coarse accuracy)
-      if (s->val < 0.0)
+      if ( s->val < 0.0 )
         s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
       s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
       s->lon = s->val;
-      ia = (int) (fabs(s->val) * 1000.0 + 0.5);
-      sprintf(b->s0.LoLoLoLoLoLo, "%06d",ia);
+      ia = ( int ) ( fabs ( s->val ) * 1000.0 + 0.5 );
+      sprintf ( b->s0.LoLoLoLoLoLo, "%06d",ia );
       break;
-      default:
+    default:
       break;
     }
   return 0;

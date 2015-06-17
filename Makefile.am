@@ -4,3 +4,5 @@ AUTOMAKE_OPTIONS = foreign 1.4
 
 SUBDIRS = src examples
 AM_CFLAGS = -Wall
+
+EXTRA_DIST = CMakeLists.txt

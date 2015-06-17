@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2014 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2015 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -31,27 +31,27 @@
 
   It returns a pointer to the string with WMO region
 */
-char *guess_WMO_region_temp(struct temp_chunks *temp)
+char *guess_WMO_region_temp ( struct temp_chunks *temp )
 {
-  if (temp->a.s1.A1[0])
+  if ( temp->a.s1.A1[0] )
     {
       return temp->a.s1.A1;
     }
 
-  if (temp->a.s1.II[0] == 0  || temp->a.s1.iii[0] == 0)
+  if ( temp->a.s1.II[0] == 0  || temp->a.s1.iii[0] == 0 )
     return temp->a.s1.A1;
 
-  if (guess_WMO_region(temp->a.s1.A1, temp->a.s1.Reg, temp->a.s1.II, temp->a.s1.iii) != NULL)
-  {
-    // copy the results in part A to parts A,B and C
-    strcpy(temp->b.s1.A1, temp->a.s1.A1);
-    strcpy(temp->c.s1.A1, temp->a.s1.A1);
-    strcpy(temp->d.s1.A1, temp->a.s1.A1);
-    strcpy(temp->b.s1.Reg, temp->a.s1.Reg);
-    strcpy(temp->c.s1.Reg, temp->a.s1.Reg);
-    strcpy(temp->d.s1.Reg, temp->a.s1.A1);
-    return temp->a.s1.A1;
-  }
+  if ( guess_WMO_region ( temp->a.s1.A1, temp->a.s1.Reg, temp->a.s1.II, temp->a.s1.iii ) != NULL )
+    {
+      // copy the results in part A to parts A,B and C
+      strcpy ( temp->b.s1.A1, temp->a.s1.A1 );
+      strcpy ( temp->c.s1.A1, temp->a.s1.A1 );
+      strcpy ( temp->d.s1.A1, temp->a.s1.A1 );
+      strcpy ( temp->b.s1.Reg, temp->a.s1.Reg );
+      strcpy ( temp->c.s1.Reg, temp->a.s1.Reg );
+      strcpy ( temp->d.s1.Reg, temp->a.s1.A1 );
+      return temp->a.s1.A1;
+    }
   else
     return NULL;
 }
@@ -68,7 +68,7 @@ char *guess_WMO_region_temp(struct temp_chunks *temp)
 
   It return 0 if all is OK. Otherwise returns 1 and it also fills the \a err string
 */
-int parse_subset_as_temp (struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
+int parse_subset_as_temp ( struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
 {
   struct temp_chunks *t;
 
@@ -78,9 +78,9 @@ int parse_subset_as_temp (struct metreport *m, struct bufr_subset_state *s, stru
   clean_temp_chunks ( t );
 
   // reject if still not coded type
-  if (strcmp(s->type_report,"TTXX"))
+  if ( strcmp ( s->type_report,"TTXX" ) )
     {
-      sprintf(err,"bufr2syn: parse_subset_as_temp(): '%s' reports still not decoded in this software", s->type_report);
+      sprintf ( err,"bufr2syn: parse_subset_as_temp(): '%s' reports still not decoded in this software", s->type_report );
       return 1;
     }
 

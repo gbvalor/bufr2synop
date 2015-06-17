@@ -31,41 +31,41 @@
   \param filename string with complete pathname of bufr file to read
   \param length On input max length allocated by caller. On output real length of bufr
 */
-int read_bufr(unsigned char *bufr, char *filename, int *length)
+int read_bufr ( unsigned char *bufr, char *filename, int *length )
 {
   int aux;
   size_t n = 0;
   FILE *fp;
 
   /* Open input file */
-  if ((fp = fopen(filename, "r")) == NULL )
+  if ( ( fp = fopen ( filename, "r" ) ) == NULL )
     {
-      fprintf(stderr, "cannot open file '%s'\n", filename);
-      exit(EXIT_FAILURE);
+      fprintf ( stderr, "cannot open file '%s'\n", filename );
+      exit ( EXIT_FAILURE );
     }
 
-  while ((aux = fgetc(fp)) != EOF && (int)n < *length)
+  while ( ( aux = fgetc ( fp ) ) != EOF && ( int ) n < *length )
     bufr[n++] = aux;
   *length = n;
 
   // close the file
-  fclose(fp);
+  fclose ( fp );
 
-  if (n < 8) // we need at least 8 bytes
+  if ( n < 8 ) // we need at least 8 bytes
     return -4;
 
   // check if begins with BUFR
-  if (bufr[0] != 'B' || bufr[1] != 'U' || bufr[2] != 'F' || bufr[3] != 'R')
+  if ( bufr[0] != 'B' || bufr[1] != 'U' || bufr[2] != 'F' || bufr[3] != 'R' )
     return -1;
 
   // check if end with '7777'
-  if (bufr[n - 4] != '7' || bufr[n - 3] != '7' || bufr[n - 2] != '7'
-      || bufr[n - 1] != '7')
+  if ( bufr[n - 4] != '7' || bufr[n - 3] != '7' || bufr[n - 2] != '7'
+       || bufr[n - 1] != '7' )
     return -2;
 
   //printf("%d %d\n", n, three_bytes_to_uint(bufr + 4));
   // check about the expected size
-  if (n != three_bytes_to_uint(bufr + 4))
+  if ( n != three_bytes_to_uint ( bufr + 4 ) )
     return -3;
 
   return 0;

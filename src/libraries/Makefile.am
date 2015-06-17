@@ -16,3 +16,4 @@ libbufr2syn_la_SOURCES = bufr2syn_buoy.c bufr2syn_csv.c bufr2syn_env.c \
 libbufr2syn_la_LIBADD = -lbufr -lgfortran -lm
 AM_CFLAGS = -W -Wall
 
+EXTRA_DIST = CMakeLists.txt

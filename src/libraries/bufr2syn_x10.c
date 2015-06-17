@@ -67,7 +67,7 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 {
   char aux[16];
 
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
     return 0;
 
   switch ( s->a->desc.y )
@@ -109,7 +109,7 @@ int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 {
   char aux[16];
 
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING)
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
     return 0;
 
   switch ( s->a->desc.y )

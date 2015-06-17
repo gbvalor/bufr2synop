@@ -95,17 +95,17 @@ double values[KVALS],vals[KVALS];
 int ktdlst[KELEM], ktdexp[KELEM];
 
 /*! Added to avoid C compiler warnings */
-int bus012_ ( int *, unsigned int *, int *, int *, int *, int *, int *);
-int buprs0_ (int *);
-int buprs1_ (int *);
-int buprs3_ (int *, int *, int *, int *, int *, int *, char **);
-int bufrex_ (int *, int *, int *, int *, int *, int *, int *, int *, int *, char **, char **, int *, double *, char **,                int *);
-int busel_ (int *, int *, int *, int *, int *);
+int bus012_ ( int *, unsigned int *, int *, int *, int *, int *, int * );
+int buprs0_ ( int * );
+int buprs1_ ( int * );
+int buprs3_ ( int *, int *, int *, int *, int *, int *, char ** );
+int bufrex_ ( int *, int *, int *, int *, int *, int *, int *, int *, int *, char **, char **, int *, double *, char **,                int * );
+int busel_ ( int *, int *, int *, int *, int * );
 int busel2_ ( int *, int *, int *,  char **, int *, char **, char **, char **, int * );
-int buukey_ (int *, int *, int *, int *, int *);
+int buukey_ ( int *, int *, int *, int *, int * );
 int buprt_ ( int *, int *, int *, int *, char **, char **, char **, int *, double *, int *, int *, int * );
 
-int main(int argc, char *argv[])
+int main ( int argc, char *argv[] )
 {
 
   FILE *fp;
@@ -130,87 +130,87 @@ int main(int argc, char *argv[])
   /*     Get input and output file name.  */
   /*     -------------------------------  */
 
-  if (argc != 3)
+  if ( argc != 3 )
     {
-      printf("Usage: bufr_decode -i infile \n");
-      printf("Please try again. \n");
-      exit(1);
+      printf ( "Usage: bufr_decode -i infile \n" );
+      printf ( "Please try again. \n" );
+      exit ( 1 );
     }
 
-  printf("%c",argc);
+  printf ( "%c",argc );
 
-  if (!strcmp(argv[1],"-i")) strcpy(filename,argv[2]);
+  if ( !strcmp ( argv[1],"-i" ) ) strcpy ( filename,argv[2] );
   else
     {
-      printf("Usage: bufr_decode -i infile \n");
-      exit(1);
+      printf ( "Usage: bufr_decode -i infile \n" );
+      exit ( 1 );
     }
 
   /*     Open input file       */
   /*     ---------------       */
 
-  if ((fp = fopen(filename,"r")) == NULL)
+  if ( ( fp = fopen ( filename,"r" ) ) == NULL )
     {
-      printf("cannot open file\n");
-      exit(1);
+      printf ( "cannot open file\n" );
+      exit ( 1 );
     }
 
   /*     Read in bufr messages */
   /*     --------------------- */
 
-  while (status >= 0)
+  while ( status >= 0 )
     {
-      status = readbufr( fp,&bufr_message,&length);
+      status = readbufr ( fp,&bufr_message,&length );
 
-      if (     status == -1 ) printf("End of file.\n");
-      else if (status == -2 ) printf("Error in file handling\n");
-      else if (status == -3 ) printf("Too small input array.\n");
-      else if (status == -4 ) printf("Too small input array.\n");
+      if ( status == -1 ) printf ( "End of file.\n" );
+      else if ( status == -2 ) printf ( "Error in file handling\n" );
+      else if ( status == -3 ) printf ( "Too small input array.\n" );
+      else if ( status == -4 ) printf ( "Too small input array.\n" );
       else
         {
-          printf("It is OK.\n");
-          printf("message read ");
-          printf("%d\n",length);
-          printf("%s\n",&bufr_message[0]);
+          printf ( "It is OK.\n" );
+          printf ( "message read " );
+          printf ( "%d\n",length );
+          printf ( "%s\n",&bufr_message[0] );
         }
       status=-1;
 
       /* Expand bufr message calling fortran program */
-      kbuff = (unsigned int *) bufr_message;
+      kbuff = ( unsigned int * ) bufr_message;
       length /= 4; // Now length is sized in words
 
-      bus012_(&length, kbuff , ksup, ksec0, ksec1, ksec2,  &kerr) ;
-      buprs0_(ksec0);
-      buprs1_(ksec1);
+      bus012_ ( &length, kbuff , ksup, ksec0, ksec1, ksec2,  &kerr ) ;
+      buprs0_ ( ksec0 );
+      buprs1_ ( ksec1 );
 
-      if (ksup[5] > 1)
+      if ( ksup[5] > 1 )
         kelem = kvals/ksup[5];
       else
         kelem = KELEM;
 
       if ( kelem > KELEM ) kelem = KELEM;
       kerr = 0;
-      bufrex_(&length,(int *)kbuff,ksup,ksec0,ksec1,ksec2,ksec3,ksec4,
-              &kelem,(char **)cnames,(char **)cunits,&kvals,
-              values,(char **)cvals,&kerr);
+      bufrex_ ( &length, ( int * ) kbuff,ksup,ksec0,ksec1,ksec2,ksec3,ksec4,
+                &kelem, ( char ** ) cnames, ( char ** ) cunits,&kvals,
+                values, ( char ** ) cvals,&kerr );
       if ( kerr )
         {
           kerr = 0;
         }
-     
-      /* NOTE the differences between array indexes in fortran and C 
-         so fortran KSEC3[3] is C ksec3[2]  */
-      printf("ksec3[3]=%d\n", ksec3[2]);
-      buukey_(ksec1,ksec2,key,ksup,&kerr);
 
-      busel_(&ktdlen,ktdlst,&ktdexl,ktdexp,&kerr);
-      buprs3_(ksec3,&ktdlen,ktdlst,&ktdexl,ktdexp,&kelem,(char **)cnames);
+      /* NOTE the differences between array indexes in fortran and C
+         so fortran KSEC3[3] is C ksec3[2]  */
+      printf ( "ksec3[3]=%d\n", ksec3[2] );
+      buukey_ ( ksec1,ksec2,key,ksup,&kerr );
+
+      busel_ ( &ktdlen,ktdlst,&ktdexl,ktdexp,&kerr );
+      buprs3_ ( ksec3,&ktdlen,ktdlst,&ktdexl,ktdexp,&kelem, ( char ** ) cnames );
 
       icode = 0;
       current_ss = 1;
-      buprt_(&icode,&current_ss,&ksec3[2],&kelem,(char **)cnames,
-             (char **)cunits,(char **)cvals,
-             &kvals,values,ksup,ksec1,&kerr);
+      buprt_ ( &icode,&current_ss,&ksec3[2],&kelem, ( char ** ) cnames,
+               ( char ** ) cunits, ( char ** ) cvals,
+               &kvals,values,ksup,ksec1,&kerr );
 
     }
 

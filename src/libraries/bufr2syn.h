@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2014 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2015 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -259,171 +259,170 @@
   \brief BUFR descriptor
 */
 struct bufr_descriptor
-  {
-    unsigned char f; /*!< F part of descriptor, 2 bits */
-    unsigned char x; /*!< X part of descriptor, 6 bits */
-    unsigned char y; /*!< Y part of descriptor, 8 bits */
-    char c[8]; /*!< string with whole descriptor (6 decimal digits plus the 0x00 as the end of string */
-  };
+{
+  unsigned char f; /*!< F part of descriptor, 2 bits */
+  unsigned char x; /*!< X part of descriptor, 6 bits */
+  unsigned char y; /*!< Y part of descriptor, 8 bits */
+  char c[8]; /*!< string with whole descriptor (6 decimal digits plus the 0x00 as the end of string */
+};
 
 /*!
   \struct bufr_atom_data
   \brief Contains all the information for a single descriptor in a expanded squence
 */
 struct bufr_atom_data
-  {
-    struct bufr_descriptor desc; /*!< struct \ref bufr_descriptor */
-    int mask; /*!< Mask with for the type */
-    char name[92]; /*!< String with the name of descriptor */
-    char unit[32]; /*!< String with the name of units */
-    double val; /*!< Value for the bufr descriptor */
-    char cval[128]; /*!< String value for the bufr descriptor */
-    char ctable[256]; /*!< Explained meaning for a code table */
-  };
+{
+  struct bufr_descriptor desc; /*!< struct \ref bufr_descriptor */
+  int mask; /*!< Mask with for the type */
+  char name[92]; /*!< String with the name of descriptor */
+  char unit[32]; /*!< String with the name of units */
+  double val; /*!< Value for the bufr descriptor */
+  char cval[128]; /*!< String value for the bufr descriptor */
+  char ctable[256]; /*!< Explained meaning for a code table */
+};
 
 /*!
   \struct bufr_subset_sequence_data
   \brief Contains all the information for a subset in a expanded squence
 */
 struct bufr_subset_sequence_data
-  {
-    size_t nd; /*!< number of current amount of data in sequence */
-    struct bufr_atom_data sequence[NMAXSEQ]; /*!< the array of data associated to a expanded sequence */
-  };
+{
+  size_t nd; /*!< number of current amount of data in sequence */
+  struct bufr_atom_data sequence[NMAXSEQ]; /*!< the array of data associated to a expanded sequence */
+};
 
 /*!
   \struct bufr_subset_state
   \brief stores information needed to parse a sequential list of expanded descriptors for a subset
 */
 struct bufr_subset_state
-  {
-    char type_report[8]; /*!< The type of report to decode (MMMM) */
-    struct bufr_atom_data *a; /*!< the current struct \ref bufr_atom_data being parsed */
-    size_t i; /*!< current index in array element */
-    int rep;  /*!< Latest delayed replicator */
-    size_t k_rep;  /*!< Index of latest delayed replicator */
-    int ival; /*!< the integer value in the descritor */
-    double val; /*!< the float value in the descriptor */
-    int itval; /*!< Latest parsed time displacement in seconds */
-    size_t k_itval; /*!< index in array of latest time displacemet descriptor */
-    int jtval; /*!< Prior to Latest parsed time displacement in seconds */
-    size_t k_jtval; /*!< index in array of time prior to latest displacemet descriptor */
-    int isq; /*!< if 1, the current atom data is in a Significant qualifier squence, and not computed */
-    int type; /*!< type of station */
-    int clayer; /*!< cloud layer being parsed */
-    int layer; /*!< Layer/level of data when parsing Buoy report*/
-    int deep; /*!< Latest parsed deep in meters of a layer */
-    double lat; /*!< Latitude of station. Sexagesimal degree. North positive */
-    double lon; /*!< longitude of station. Sexagesimal degree. South positive */
-    double alt; /*!< Altitude (m)*/
-    char name[80]; /*!< Name of observatory, if any */
-    char country[80]; /*!< Name of state/country if known */
-    time_t tobs; /*!< Unix time of observation */
-    int mask; /*!< mask which contain several information from the subset data taken at the moment */
-  };
+{
+  char type_report[8]; /*!< The type of report to decode (MMMM) */
+  struct bufr_atom_data *a; /*!< the current struct \ref bufr_atom_data being parsed */
+  size_t i; /*!< current index in array element */
+  int rep;  /*!< Latest delayed replicator */
+  size_t k_rep;  /*!< Index of latest delayed replicator */
+  int ival; /*!< the integer value in the descritor */
+  double val; /*!< the float value in the descriptor */
+  int itval; /*!< Latest parsed time displacement in seconds */
+  size_t k_itval; /*!< index in array of latest time displacemet descriptor */
+  int jtval; /*!< Prior to Latest parsed time displacement in seconds */
+  size_t k_jtval; /*!< index in array of time prior to latest displacemet descriptor */
+  int isq; /*!< if 1, the current atom data is in a Significant qualifier squence, and not computed */
+  int type; /*!< type of station */
+  int clayer; /*!< cloud layer being parsed */
+  int layer; /*!< Layer/level of data when parsing Buoy report*/
+  int deep; /*!< Latest parsed deep in meters of a layer */
+  double lat; /*!< Latitude of station */
+  double lon; /*!< longitude of station */
+  double alt; /*!< Altitude (m)*/
+  char name[80]; /*!< Name of observatory, if any */
+  char country[80]; /*!< Name of state/country if known */
+  time_t tobs; /*!< Unix time of observation */
+  int mask; /*!< mask which contain several information from the subset data taken at the moment */
+};
 
 /*!
   \struct gts_header
   \brief stores WMO GTS header info
 */
 struct gts_header
-  {
-    char bname[16]; /*!< Name of bulletin, as 'SNAU48' */
-    char center[8]; /*!< Release center name, as 'EGRR' */
-    char dtrel[16]; /*!< Date and time of release (format DDHHmm) */
-    char order[8]; /*!< sequence, as 'BBB' , 'RRA' 'CCA' ... */
-    char filename[256]; /*!< filename of Bufr file */
-    char timestamp[16]; /*!< String with timestamp (UTC) of file in GTS. Format YYYYMMDDHHmmss */
-  };
+{
+  char bname[16]; /*!< Name of bulletin, as 'SNAU48' */
+  char center[8]; /*!< Release center name, as 'EGRR' */
+  char dtrel[16]; /*!< Date and time of release (format DDHHmm) */
+  char order[8]; /*!< sequence, as 'BBB' , 'RRA' 'CCA' ... */
+  char filename[256]; /*!< filename of Bufr file */
+  char timestamp[16]; /*!< String with timestamp (UTC) of file in GTS. Format YYYYMMDDHHmmss */
+};
 
 /*!
    \struct met_datetime
    \brief stores date and time reference of a report, commonly the observation time
 */
 struct met_datetime
-  {
-    time_t t; /*!< Unix instant for report date/time reference */
-    struct tm tim;  /*!<  struct tm with report date/time info (UTC) */
-    char datime[16]; /*!< date/time reference (UTC) as string with YYYYMMDDHHmm format */
-  };
+{
+  time_t t; /*!< Unix instant for report date/time reference */
+  struct tm tim;  /*!<  struct tm with report date/time info (UTC) */
+  char datime[16]; /*!< date/time reference (UTC) as string with YYYYMMDDHHmm format */
+};
 
 /*!
    \struct met_geo
    \brief Geographic meta information
 */
 struct met_geo
-  {
-    char index[16]; /*!< The index indetifier of place, if any */
-    char name[80]; /*!< The common name of place */
-    char country[80]; /*!< The country name, if known */
-    double lat; /*!< Latitude in degrees. North positive */
-    double lon; /*!< Longitude in degrees. East positive */
-    double alt; /*!< Altitude in metres */
-  };
+{
+  char index[16]; /*!< The index indetifier of place, if any */
+  char name[80]; /*!< The common name of place */
+  char country[80]; /*!< The country name, if known */
+  double lat; /*!< Latitude in degrees. North positive */
+  double lon; /*!< Longitude in degrees. East positive */
+  double alt; /*!< Altitude in metres */
+};
 
 /*!
    \struct metreport
    \brief all the information for a meteorological report in WMO text format from a BUFR file
 */
 struct metreport
-  {
-    char source[256];/*!< The bufr source filename */
-    struct gts_header *h; /*!< A pointer to a GTS Header Bulletin */
-    struct met_datetime t; /*!< The date/time information for report */
-    struct met_geo g; /*!< The geographical info */
-    struct synop_chunks synop; /*!< The possible parsed synop */
-    struct buoy_chunks buoy; /*!< The possible parsed buoy */
-    struct temp_chunks temp; /*!< The possible parsed temp */
-    char type[8]; /*!< The type of report as MiMiMjMj */
-    ºchar alphanum[2048]; /*!< The alphanumeric report */
-    char type2[8]; /*!< The type of report of part 2 as MiMiMjMj */
-    char alphanum2[2048]; /*!< The alphanumeric report, part 2 */
-    char type3[8]; /*!< The type of report of part 3 as MiMiMjMj */
-    char alphanum3[2048]; /*!< The alphanumeric report, part 3 */
-    char type4[8]; /*!< The type of report of part 4 as MiMiMjMj */
-    char alphanum4[2048]; /*!< The alphanumeric report, part 4 */
-  };
+{
+  char source[256];/*!< The bufr source filename */
+  struct gts_header *h; /*!< A pointer to a GTS Header Bulletin */
+  struct met_datetime t; /*!< The date/time information for report */
+  struct met_geo g; /*!< The geographical info */
+  struct synop_chunks synop; /*!< The possible parsed synop */
+  struct buoy_chunks buoy; /*!< The possible parsed buoy */
+  struct temp_chunks temp; /*!< The possible parsed temp */
+  char type[8]; /*!< The type of report as MiMiMjMj */
+  char alphanum[2048]; /*!< The alphanumeric report */
+  char type2[8]; /*!< The type of report of part 2 as MiMiMjMj */
+  char alphanum2[2048]; /*!< The alphanumeric report, part 2 */
+  char type3[8]; /*!< The type of report of part 3 as MiMiMjMj */
+  char alphanum3[2048]; /*!< The alphanumeric report, part 3 */
+  char type4[8]; /*!< The type of report of part 4 as MiMiMjMj */
+  char alphanum4[2048]; /*!< The alphanumeric report, part 4 */
+};
 
 /* Functions definitions */
 
-void clean_buoy_chunks( struct buoy_chunks *b);
-void clean_synop_chunks( struct synop_chunks *s);
-void clean_temp_chunks( struct temp_chunks *t);
+void clean_buoy_chunks ( struct buoy_chunks *b );
+void clean_synop_chunks ( struct synop_chunks *s );
+void clean_temp_chunks ( struct temp_chunks *t );
 
-int set_environment(char *default_bufrtables, char *bufrtables_dir);
-int integer_to_descriptor(struct bufr_descriptor *d, int id);
-unsigned int three_bytes_to_uint(const unsigned char *source);
-char * charray_to_string(char *s, unsigned char *buf, size_t size);
-char * adjust_string(char *s);
-char * get_explained_table_val(char *expl, size_t dim, char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec,
-                               struct bufr_descriptor *d, int ival);
-char * get_explained_flag_val(char *expl, size_t dim, char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec,
-                              struct bufr_descriptor *d, unsigned long ival);
-char * get_ecmwf_tablename(char *target, char type, char *bufrtables_dir, int ksec1[40]);
-char * get_bufrfile_path( char *filename, char *err);
-int parse_subset_as_buoy(struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq,
-                         char *err );
-int parse_subset_as_synop (struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq,
+int set_environment ( char *default_bufrtables, char *bufrtables_dir );
+int integer_to_descriptor ( struct bufr_descriptor *d, int id );
+unsigned int three_bytes_to_uint ( const unsigned char *source );
+char * charray_to_string ( char *s, unsigned char *buf, size_t size );
+char * adjust_string ( char *s );
+char * get_explained_table_val ( char *expl, size_t dim, char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec,
+                                 struct bufr_descriptor *d, int ival );
+char * get_explained_flag_val ( char *expl, size_t dim, char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec,
+                                struct bufr_descriptor *d, unsigned long ival );
+char * get_ecmwf_tablename ( char *target, char type, char *bufrtables_dir, int ksec1[40] );
+char * get_bufrfile_path ( char *filename, char *err );
+int parse_subset_as_buoy ( struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq,
                            char *err );
-int parse_subset_as_temp (struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq,
-                          char *err );
-int YYYYMMDDHHmm_to_met_datetime(struct met_datetime *t, const char *source);
-int synop_YYYYMMDDHHmm_to_YYGG(struct synop_chunks *syn);
-int buoy_YYYYMMDDHHmm_to_JMMYYGGgg(struct buoy_chunks *b);
-char *guess_WMO_region(char *A1, char *Reg, const char *II, const char *iii);
-char * guess_WMO_region_synop(struct synop_chunks *syn);
-char *guess_WMO_region_temp(struct temp_chunks *temp);
-int read_table_c(char tablec[MAXLINES_TABLEC][92], size_t *nlines_tablec, char *bufrtables_dir, int ksec1[40]);
-int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr_subset_state *st,
-                          struct synop_chunks *synop, struct buoy_chunks *buoy, int *kdtlst, size_t nlst, int *ksec1, char *err);
-int check_date_from_future(struct metreport *m);
-int find_descriptor(int *haystack, size_t nlst, int needle);
-int find_descriptor_interval(int *haystack, size_t nlst, int needlemin, int needlemax);
-int bufr_set_environment(char *default_bufrtables, char *bufrtables_dir);
-int guess_gts_header(struct gts_header *h, const char *f);
-int read_bufr(unsigned char *bufr, char *filename, int *length);
+int parse_subset_as_synop ( struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq,
+                            char *err );
+int parse_subset_as_temp ( struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq,
+                           char *err );
+int YYYYMMDDHHmm_to_met_datetime ( struct met_datetime *t, const char *source );
+int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn );
+int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b );
+char *guess_WMO_region ( char *A1, char *Reg, const char *II, const char *iii );
+char * guess_WMO_region_synop ( struct synop_chunks *syn );
+char *guess_WMO_region_temp ( struct temp_chunks *temp );
+int read_table_c ( char tablec[MAXLINES_TABLEC][92], size_t *nlines_tablec, char *bufrtables_dir, int ksec1[40] );
+int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr_subset_state *st,
+                            int *kdtlst, size_t nlst, int *ksec1, char *err );
+int find_descriptor ( int *haystack, size_t nlst, int needle );
+int find_descriptor_interval ( int *haystack, size_t nlst, int needlemin, int needlemax );
+int bufr_set_environment ( char *default_bufrtables, char *bufrtables_dir );
+int guess_gts_header ( struct gts_header *h, const char *f );
+int read_bufr ( unsigned char *bufr, char *filename, int *length );
 
-char * latlon_to_MMM(char *target, double lat, double lon);
+char * latlon_to_MMM ( char *target, double lat, double lon );
 char * kelvin_to_TTTT ( char *target, double T );
 char * kelvin_to_snTTT ( char *target, double T );
 char * kelvin_to_snTT ( char *target, double T );
@@ -435,73 +434,71 @@ char * pascal_to_PPPP ( char *target, double P );
 char * percent_to_okta ( char *target, double perc );
 char * prec_to_RRR ( char *target, double r );
 char * prec_to_RRRR24 ( char *target, double r );
-char * secs_to_tt(char *tt, int secs);
+char * secs_to_tt ( char *tt, int secs );
 char * vism_to_VV ( char *target, double V );
-char * recent_snow_to_ss( char *target, double r );
+char * recent_snow_to_ss ( char *target, double r );
 
 int print_synop ( char *report, size_t lmax, struct synop_chunks *syn );
-char * print_synop_sec0 (char **sec0, size_t lmax, struct synop_chunks *syn);
-char * print_synop_sec1 (char **sec1, size_t lmax, struct synop_chunks *syn);
-char * print_synop_sec2 (char **sec2, size_t lmax, struct synop_chunks *syn);
-char * print_synop_sec3 (char **sec3, size_t lmax, struct synop_chunks *syn);
+char * print_synop_sec0 ( char **sec0, size_t lmax, struct synop_chunks *syn );
+char * print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn );
+char * print_synop_sec2 ( char **sec2, size_t lmax, struct synop_chunks *syn );
+char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn );
 
 int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b );
 
 int print_buoy ( char *report, size_t lmax, struct buoy_chunks *syn );
-char * print_buoy_sec0 (char **sec0, size_t lmax, struct buoy_chunks *syn);
-char * print_buoy_sec1 (char **sec1, size_t lmax, struct buoy_chunks *syn);
-char * print_buoy_sec2 (char **sec2, size_t lmax, struct buoy_chunks *syn);
-char * print_buoy_sec3 (char **sec3, size_t lmax, struct buoy_chunks *syn);
+char * print_buoy_sec0 ( char **sec0, size_t lmax, struct buoy_chunks *syn );
+char * print_buoy_sec1 ( char **sec1, size_t lmax, struct buoy_chunks *syn );
+char * print_buoy_sec2 ( char **sec2, size_t lmax, struct buoy_chunks *syn );
+char * print_buoy_sec3 ( char **sec3, size_t lmax, struct buoy_chunks *syn );
 
-int print_csv(FILE *f, struct metreport *m);
-int print_json(FILE *f, struct metreport *m);
-int print_xml(FILE *f, struct metreport *m);
+int print_csv ( FILE *f, struct metreport *m );
+int print_json ( FILE *f, struct metreport *m );
+int print_xml ( FILE *f, struct metreport *m );
 
-int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s);
-int syn_parse_x02 ( struct synop_chunks *syn, struct bufr_subset_state *s);
-int syn_parse_x04 ( struct synop_chunks *syn, struct bufr_subset_state *s);
-int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s);
-int syn_parse_x06 ( struct synop_chunks *syn, struct bufr_subset_state *s);
-int syn_parse_x07 ( struct synop_chunks *syn, struct bufr_subset_state *s);
-int syn_parse_x08 ( struct synop_chunks *syn, struct bufr_subset_state *s);
-int syn_parse_x10 ( struct synop_chunks *syn, struct bufr_subset_state *s);
-int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s);
-int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s);
-int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s);
-int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s);
-int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s);
-int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s);
-int syn_parse_x31 ( struct synop_chunks *syn, struct bufr_subset_state *s);
+int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s );
+int syn_parse_x02 ( struct synop_chunks *syn, struct bufr_subset_state *s );
+int syn_parse_x04 ( struct synop_chunks *syn, struct bufr_subset_state *s );
+int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s );
+int syn_parse_x06 ( struct synop_chunks *syn, struct bufr_subset_state *s );
+int syn_parse_x07 ( struct synop_chunks *syn, struct bufr_subset_state *s );
+int syn_parse_x08 ( struct synop_chunks *syn, struct bufr_subset_state *s );
+int syn_parse_x10 ( struct synop_chunks *syn, struct bufr_subset_state *s );
+int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s );
+int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s );
+int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s );
+int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s );
+int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s );
+int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s );
+int syn_parse_x31 ( struct synop_chunks *syn, struct bufr_subset_state *s );
 
-int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr_subset_state *s);
-int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr_subset_state *s);
-int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr_subset_state *s);
-int buoy_parse_x05 ( struct buoy_chunks *b, struct bufr_subset_state *s);
-int buoy_parse_x06 ( struct buoy_chunks *b, struct bufr_subset_state *s);
-int buoy_parse_x07 ( struct buoy_chunks *b, struct bufr_subset_state *s);
-int buoy_parse_x08 ( struct buoy_chunks *b, struct bufr_subset_state *s);
-int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr_subset_state *s);
-int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr_subset_state *s);
-int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr_subset_state *s);
-int buoy_parse_x13 ( struct buoy_chunks *b, struct bufr_subset_state *s);
-int buoy_parse_x14 ( struct buoy_chunks *b, struct bufr_subset_state *s);
-int buoy_parse_x20 ( struct buoy_chunks *b, struct bufr_subset_state *s);
-int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr_subset_state *s);
-int buoy_parse_x31 ( struct buoy_chunks *b, struct bufr_subset_state *s);
-int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr_subset_state *s);
+int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr_subset_state *s );
+int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr_subset_state *s );
+int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr_subset_state *s );
+int buoy_parse_x05 ( struct buoy_chunks *b, struct bufr_subset_state *s );
+int buoy_parse_x06 ( struct buoy_chunks *b, struct bufr_subset_state *s );
+int buoy_parse_x07 ( struct buoy_chunks *b, struct bufr_subset_state *s );
+int buoy_parse_x08 ( struct buoy_chunks *b, struct bufr_subset_state *s );
+int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr_subset_state *s );
+int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr_subset_state *s );
+int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr_subset_state *s );
+int buoy_parse_x13 ( struct buoy_chunks *b, struct bufr_subset_state *s );
+int buoy_parse_x14 ( struct buoy_chunks *b, struct bufr_subset_state *s );
+int buoy_parse_x20 ( struct buoy_chunks *b, struct bufr_subset_state *s );
+int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr_subset_state *s );
+int buoy_parse_x31 ( struct buoy_chunks *b, struct bufr_subset_state *s );
+int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr_subset_state *s );
 
 // These are prototypes for used ecmwf bufr library functions
-int bus012_ ( int *, unsigned int *, int *, int *, int *, int *, int *);
-int buprs0_ (int *);
-int buprs1_ (int *);
-int buprs3_ (int *, int *, int *, int *, int *, int *, char **);
-int bufrex_ (int *, int *, int *, int *, int *, int *, int *, int *, int *, char **, char **, int *, double *, char **,                int *);
-int busel_ (int *, int *, int *, int *, int *);
+int bus012_ ( int *, unsigned int *, int *, int *, int *, int *, int * );
+int buprs0_ ( int * );
+int buprs1_ ( int * );
+int buprs3_ ( int *, int *, int *, int *, int *, int *, char ** );
+int bufrex_ ( int *, int *, int *, int *, int *, int *, int *, int *, int *, char **, char **, int *, double *, char **,                int * );
+int busel_ ( int *, int *, int *, int *, int * );
 int busel2_ ( int *, int *, int *,  char **, int *, char **, char **, char **, int * );
-int buukey_ (int *, int *, int *, int *, int *);
+int buukey_ ( int *, int *, int *, int *, int * );
 int buprt_ ( int *, int *, int *, int *, char **, char **, char **, int *, double *, int *, int *, int * );
-
-
 
 
 
