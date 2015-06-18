@@ -94,7 +94,7 @@ Oct 18 2014).
 2) Then use 'bufrnoaa' to get a lot of files. Every file is a bufr report. We do not want all kind of 
 bufr reports, just surface observations (land and oceanographic). We can just do
 
-   bufrnoaa  -f -T SO -S ACIMNSVW -O B -i sn.0000.txt
+   bufrnoaa  -f -T SO -S ACIMNSVW -O B -i sn.0000.bin
 
 If we did this with examples 'sn.0000.bin' file we got 171 bufr files selected from 571 in the archive 
 sn.0000.bin. Let choose one bufr file '20141018211119_ISIN03_EGRR_182100.bufr' (also in examples dir) 
