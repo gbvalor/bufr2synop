@@ -40,6 +40,7 @@
 #include "metsynop.h"
 #include "metbuoy.h"
 #include "mettemp.h"
+#include "metclimat.h"
 //#define DEBUG
 
 /*!
@@ -374,6 +375,7 @@ struct metreport
   struct synop_chunks synop; /*!< The possible parsed synop */
   struct buoy_chunks buoy; /*!< The possible parsed buoy */
   struct temp_chunks temp; /*!< The possible parsed temp */
+  struct climat_chunks climat; /*!< The pssible parsed climat */
   char type[8]; /*!< The type of report as MiMiMjMj */
   char alphanum[2048]; /*!< The alphanumeric report */
   char type2[8]; /*!< The type of report of part 2 as MiMiMjMj */

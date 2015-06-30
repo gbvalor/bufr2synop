@@ -178,3 +178,67 @@ void clean_temp_chunks ( struct temp_chunks *t )
 {
   memset ( &t, 0, sizeof ( struct temp_chunks ) );
 }
+
+/*! \fn void clean_climat_sec0(struct climat_sec0 *s)
+    \brief clean a climat_sec0 struct
+    \param s pointer to the climat_sec0 struct
+*/
+void clean_climat_sec0 ( struct climat_sec0 *s )
+{
+  memset ( s, 0, sizeof ( struct climat_sec0 ) );
+}
+
+/*! \fn void clean_climat_sec1(struct climat_sec1 *s)
+    \brief clean a climat_sec1 struct
+    \param s pointer to the climat_sec1 struct
+*/
+void clean_climat_sec1 ( struct climat_sec1 *s )
+{
+  memset ( s, 0, sizeof ( struct climat_sec1 ) );
+}
+
+/*! \fn void clean_climat_sec2(struct climat_sec2 *s)
+    \brief clean a climat_sec2 struct
+    \param s pointer to the climat_sec2 struct
+*/
+void clean_climat_sec2 ( struct climat_sec2 *s )
+{
+  memset ( s, 0, sizeof ( struct climat_sec2 ) );
+}
+
+/*! \fn void clean_climat_sec3(struct climat_sec3 *s)
+    \brief clean a climat_sec3 struct
+    \param s pointer to the climat_sec3 struct
+*/
+void clean_climat_sec3 ( struct climat_sec3 *s )
+{
+  memset ( s, 0, sizeof ( struct climat_sec3 ) );
+}
+
+/*! \fn void clean_climat_sec4(struct climat_sec4 *s)
+    \brief clean a climat_sec4 struct
+    \param s pointer to the climat_sec4 struct
+*/
+void clean_climat_sec4 ( struct climat_sec4 *s )
+{
+  memset ( s, 0, sizeof ( struct climat_sec4 ) );
+}
+
+
+/*!
+  \fn void clean_climat_chunks( struct climat_chunks *b)
+  \brief cleans a \ref climat_chunks struct
+  \param b pointer to the struct to clean
+*/
+void clean_climat_chunks ( struct climat_chunks *c )
+{
+  c->mask = 0;
+  clean_report_date_ext ( & ( c->e ) );
+  clean_climat_sec0 ( & ( c->s0 ) );
+  clean_climat_sec1 ( & ( c->s1 ) );
+  clean_climat_sec2 ( & ( c->s2 ) );
+  clean_climat_sec3 ( & ( c->s3 ) );
+  clean_climat_sec4 ( & ( c->s4 ) );
+
+  c->error[0] = '\0';
+}
