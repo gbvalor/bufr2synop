@@ -88,7 +88,6 @@ char *guess_WMO_region_synop ( struct synop_chunks *syn )
 */
 int parse_subset_as_synop ( struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
 {
-  int ival; // integer value for a descriptor
   size_t is;
   char aux[16];
   struct synop_chunks *syn;
@@ -126,12 +125,11 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr_subset_state *s, st
           syn_parse_x08 ( syn, s );
         }
 
-      if ( s->isq )  // case of an significance qualifier
+      if ( s->isq )  // case of a significance qualifier
         continue;
 
       s->i = is;
       s->ival = ( int ) sq->sequence[is].val;
-      ival = ival;
       s->val = sq->sequence[is].val;
       s->a = &sq->sequence[is];
       switch ( sq->sequence[is].desc.x )

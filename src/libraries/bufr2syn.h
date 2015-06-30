@@ -298,7 +298,7 @@ struct bufr_subset_sequence_data
 */
 struct bufr_subset_state
 {
-  char type_report[8]; /*!< The type of report to decode (MMMM) */
+  char type_report[16]; /*!< The type of report to decode (MMMM) */
   struct bufr_atom_data *a; /*!< the current struct \ref bufr_atom_data being parsed */
   size_t i; /*!< current index in array element */
   int rep;  /*!< Latest delayed replicator */
@@ -391,6 +391,7 @@ struct metreport
 void clean_buoy_chunks ( struct buoy_chunks *b );
 void clean_synop_chunks ( struct synop_chunks *s );
 void clean_temp_chunks ( struct temp_chunks *t );
+void clean_climat_chunks ( struct climat_chunks *c );
 
 int set_environment ( char *default_bufrtables, char *bufrtables_dir );
 int integer_to_descriptor ( struct bufr_descriptor *d, int id );
@@ -408,6 +409,8 @@ int parse_subset_as_buoy ( struct metreport *m, struct bufr_subset_state *s, str
 int parse_subset_as_synop ( struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq,
                             char *err );
 int parse_subset_as_temp ( struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq,
+                           char *err );
+int parse_subset_as_climat ( struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq,
                            char *err );
 int YYYYMMDDHHmm_to_met_datetime ( struct met_datetime *t, const char *source );
 int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn );
@@ -490,6 +493,9 @@ int buoy_parse_x20 ( struct buoy_chunks *b, struct bufr_subset_state *s );
 int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr_subset_state *s );
 int buoy_parse_x31 ( struct buoy_chunks *b, struct bufr_subset_state *s );
 int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr_subset_state *s );
+
+int climat_parse_x08 ( struct climat_chunks *c, struct bufr_subset_state *s );
+
 
 // These are prototypes for used ecmwf bufr library functions
 int bus012_ ( int *, unsigned int *, int *, int *, int *, int *, int * );

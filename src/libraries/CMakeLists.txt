@@ -6,7 +6,7 @@ add_library(bufr2syn bufr2syn_buoy.c bufr2syn_csv.c bufr2syn_env.c
 	bufr2syn_x02.c bufr2syn_x04.c bufr2syn_x05.c bufr2syn_x06.c bufr2syn_x07.c 
 	bufr2syn_x08.c bufr2syn_x10.c bufr2syn_x11.c bufr2syn_x12.c bufr2syn_x13.c 
 	bufr2syn_x14.c bufr2syn_x20.c bufr2syn_x22.c bufr2syn_x31.c bufr2syn_x33.c 
-	bufr2syn_xml.c)
+	bufr2syn_xml.c bufr2syn_climat.c)
 target_link_libraries(bufr2syn m gfortran)
 
 INSTALL(FILES bufr2syn.h metbuoy.h metsynop.h mettemp.h 

@@ -18,49 +18,16 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 /*!
- \file bufr2syn_temp.c
- \brief file with the code to parse a sequence as a FM-35 TEMP, FM-36 TEMP SHIP, FM-37 TEMP DROP, FM-38 TEMP MOBIL
+ \file bufr2syn_climat.c
+ \brief file with the code to parse a sequence as a FM-71 XII CLIMAT and FM-72 XII CLIMAT SHIP
  */
 #include "bufr2syn.h"
 
 
-/*!
-  \fn char *guess_WMO_region_synop(struct synop_chunks *syn)
-  \brief Try to find WMO region if it is not already set and WMO Block and number index are known
-  \param syn pointer to the struct \ref synop_chunks with all known data for a synop
-
-  It returns a pointer to the string with WMO region
-*/
-char *guess_WMO_region_temp ( struct temp_chunks *temp )
-{
-  if ( temp->a.s1.A1[0] )
-    {
-      return temp->a.s1.A1;
-    }
-
-  if ( temp->a.s1.II[0] == 0  || temp->a.s1.iii[0] == 0 )
-    return temp->a.s1.A1;
-
-  if ( guess_WMO_region ( temp->a.s1.A1, temp->a.s1.Reg, temp->a.s1.II, temp->a.s1.iii ) != NULL )
-    {
-      // copy the results in part A to parts A,B and C
-      strcpy ( temp->b.s1.A1, temp->a.s1.A1 );
-      strcpy ( temp->c.s1.A1, temp->a.s1.A1 );
-      strcpy ( temp->d.s1.A1, temp->a.s1.A1 );
-      strcpy ( temp->b.s1.Reg, temp->a.s1.Reg );
-      strcpy ( temp->c.s1.Reg, temp->a.s1.Reg );
-      strcpy ( temp->d.s1.Reg, temp->a.s1.A1 );
-      return temp->a.s1.A1;
-    }
-  else
-    return NULL;
-}
-
-
 
 /*!
-  \fn int parse_subset_as_temp(struct metreport *m, char *type, struct bufr_subset_sequence_data *sq, char *err)
-  \brief parses a subset sequence as an Land fixed SYNOP FM-12, SHIP FM-13 or SYNOP-mobil FM-14 report
+  \fn int parse_subset_as_climat(struct metreport *m, char *type, struct bufr_subset_sequence_data *sq, char *err)
+  \brief parses a subset sequence as an Land fixed CLIMAT FM-71 report
   \param m pointer to a struct \ref metreport where set some results
   \param type strint with MiMiMjMj to choose the type of temp, temp ship, temp drop or temp mobil)
   \param sq pointer to a struct \ref bufr_subset_sequence_data with the parsed sequence on input
@@ -68,22 +35,58 @@ char *guess_WMO_region_temp ( struct temp_chunks *temp )
 
   It return 0 if all is OK. Otherwise returns 1 and it also fills the \a err string
 */
-int parse_subset_as_temp ( struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
+int parse_subset_as_climat ( struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
 {
-  struct temp_chunks *t;
+  size_t is;
+  char aux[16];
+  struct climat_chunks *c;
 
-  t = &m->temp;
+  c = &m->climat;
 
   // clean data
-  clean_temp_chunks ( t );
+  clean_climat_chunks ( c );
 
   // reject if still not coded type
-  if ( strcmp ( s->type_report,"TTXX" ) == 0)
+  if ( strcmp ( s->type_report,"CLIMAT" ) == 0 ) //FIXME
     {
-      sprintf ( err,"bufr2syn: parse_subset_as_temp(): '%s' reports still not decoded in this software", s->type_report );
+      sprintf ( err,"bufr2syn: parse_subset_as_climat(): '%s' reports still not decoded in this software", s->type_report );
       return 1;
     }
 
+  strcpy ( m->type, s->type_report );
+
+  /**** First pass, sequential analysis *****/
+  for ( is = 0; is < sq->nd; is++ )
+    {
+      // check if is a significance qualifier
+      if ( sq->sequence[is].desc.x == 8 )
+        {
+          s->i = is;
+          s->a = &sq->sequence[is];
+          s->ival = ( int ) sq->sequence[is].val;
+          s->val = sq->sequence[is].val;
+          climat_parse_x08 ( c, s );
+        }
+
+
+      switch ( s->a->desc.y )
+        {
+        case 23:  // 0 08 023 . First-order statistics
+          if ( s->isq )
+            {
+              s->isq = 0;
+            }
+          else
+            {
+              s->isq = 1;
+            }
+          break;
+        default:
+          break;
+        }
+
+      return 0;
+    }
 
   return 0;
 }

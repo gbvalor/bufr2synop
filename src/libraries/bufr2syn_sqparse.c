@@ -91,7 +91,9 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
                 find_descriptor ( kdtlst, nlst,301092 ) ||
                 ksec1[6] == 3 || ksec1[6] == 4 || ksec1[6] == 5 )
         strcpy ( st->type_report,"OOXX" ); // FM-14 synop-mobil
-      break;
+      else if ( find_descriptor_interval(kdtlst, nlst, 307071, 307073) )
+	strcpy (st->type_report, "CLIMAT"); // FM-71 CLIMAT
+	break;
     case 1:
       if ( find_descriptor_interval ( kdtlst, nlst, 308004, 308005 ) ||
            find_descriptor ( kdtlst, nlst,301093 ) ||
@@ -103,6 +105,8 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
                 find_descriptor ( kdtlst, nlst,2149 ) ||
                 ksec1[6] == 25 )
         strcpy ( st->type_report,"ZZYY" ); // FM-18 buoy
+      else if ( find_descriptor_interval(kdtlst, nlst, 308011, 308013) )
+	strcpy (st->type_report, "CLIMAT SHIP"); // FM-71 CLIMAT SHIP
       break;
     case 2:
       if ( find_descriptor_interval ( kdtlst, nlst, 309050, 309051 ) )
@@ -141,6 +145,12 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
     {
       // psrse TEMP
       if ( parse_subset_as_temp ( m, st, sq, err ) == 0 )
+        return 0; // FIXME
+    }
+  else if ( strcmp ( st->type_report,"CLIMAT" ) == 0 )
+    {
+      // psrse CLIMAT
+      if ( parse_subset_as_climat ( m, st, sq, err ) == 0 )
         return 0; // FIXME
     }
 
