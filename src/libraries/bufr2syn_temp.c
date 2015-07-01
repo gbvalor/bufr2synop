@@ -72,6 +72,9 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr_subset_state *s, str
 {
   struct temp_chunks *t;
 
+  if (sq == NULL)
+    return 1;
+  
   t = &m->temp;
 
   // clean data

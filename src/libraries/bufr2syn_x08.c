@@ -116,5 +116,11 @@ int climat_parse_x08 ( struct climat_chunks *c, struct bufr_subset_state *s )
   if ( c == NULL )
     return 1;
   
+  switch (s->a->desc.y)
+  {
+    default:
+      break;
+  }
+  
   return 0;
 }

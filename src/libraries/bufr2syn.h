@@ -319,7 +319,9 @@ struct bufr_subset_state
   double alt; /*!< Altitude (m)*/
   char name[80]; /*!< Name of observatory, if any */
   char country[80]; /*!< Name of state/country if known */
-  time_t tobs; /*!< Unix time of observation */
+  time_t tobs; /*!< Unix time reference*/
+  int dift; /*!< UTC - LST , in hours */
+  int nday; /*!< period (days) */
   int mask; /*!< mask which contain several information from the subset data taken at the moment */
 };
 
@@ -494,7 +496,22 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr_subset_state *s );
 int buoy_parse_x31 ( struct buoy_chunks *b, struct bufr_subset_state *s );
 int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr_subset_state *s );
 
+int climat_parse_x01 ( struct climat_chunks *c, struct bufr_subset_state *s );
+int climat_parse_x02 ( struct climat_chunks *c, struct bufr_subset_state *s );
+int climat_parse_x04 ( struct climat_chunks *c, struct bufr_subset_state *s );
+int climat_parse_x05 ( struct climat_chunks *c, struct bufr_subset_state *s );
+int climat_parse_x06 ( struct climat_chunks *c, struct bufr_subset_state *s );
+int climat_parse_x07 ( struct climat_chunks *c, struct bufr_subset_state *s );
 int climat_parse_x08 ( struct climat_chunks *c, struct bufr_subset_state *s );
+int climat_parse_x10 ( struct climat_chunks *c, struct bufr_subset_state *s );
+int climat_parse_x11 ( struct climat_chunks *c, struct bufr_subset_state *s );
+int climat_parse_x12 ( struct climat_chunks *c, struct bufr_subset_state *s );
+int climat_parse_x13 ( struct climat_chunks *c, struct bufr_subset_state *s );
+int climat_parse_x14 ( struct climat_chunks *c, struct bufr_subset_state *s );
+int climat_parse_x20 ( struct climat_chunks *c, struct bufr_subset_state *s );
+int climat_parse_x22 ( struct climat_chunks *c, struct bufr_subset_state *s );
+int climat_parse_x31 ( struct climat_chunks *c, struct bufr_subset_state *s );
+int climat_parse_x33 ( struct climat_chunks *c, struct bufr_subset_state *s );
 
 
 // These are prototypes for used ecmwf bufr library functions

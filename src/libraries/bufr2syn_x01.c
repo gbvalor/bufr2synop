@@ -157,3 +157,63 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr_subset_state *s )
     }
   return 0;
 }
+
+/*!
+  \fn int climat_parse_x01 ( struct climat_chunks *c, struct bufr_subset_state *s )
+  \brief Parse a expanded descriptor with X = 01
+  \param b pointer to a struct \ref synop_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
+int climat_parse_x01 ( struct climat_chunks *c, struct bufr_subset_state *s )
+{
+  char aux[80];
+
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+    return 0;
+
+  switch ( s->a->desc.y )
+    {
+
+    case 1: // 0 01 001 . WMO block number
+      sprintf ( c->s0.II, "%02d", s->ival );
+      break;
+
+    case 2: // 0 01 002 . WMO station number
+      sprintf ( c->s0.iii, "%03d", s->ival );
+      break;
+
+    case 3: // 0 01 003 . WMO Region
+      if ( s->ival == 1 )
+        strcpy ( c->s0.Reg, "I" );
+      else if ( s->ival == 2 )
+        strcpy ( c->s0.Reg, "II" );
+      else if ( s->ival == 3 )
+        strcpy ( c->s0.Reg, "III" );
+      else if ( s->ival == 4 )
+        strcpy ( c->s0.Reg, "IV" );
+      else if ( s->ival == 5 )
+        strcpy ( c->s0.Reg, "V" );
+      else if ( s->ival == 6 )
+        strcpy ( c->s0.Reg, "VI" );
+      break;
+
+    case 15: // 0 01 015 . Station or site name
+    case 18: // 0 01 018 . Short station or site name
+    case 19: // 0 01 019 . Long station or site name
+      if ( strlen ( s->a->cval ) <= 80 )
+        {
+          strcpy ( aux, s->a->cval );
+          adjust_string ( aux );
+          strcpy ( s->name, aux );
+          s->mask |= SUBSET_MASK_HAVE_NAME;
+        }
+      break;
+
+
+    default:
+      break;
+    }
+  return 0;
+}

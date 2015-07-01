@@ -38,7 +38,7 @@
 int parse_subset_as_climat ( struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
 {
   size_t is;
-  char aux[16];
+  //char aux[16];
   struct climat_chunks *c;
 
   c = &m->climat;
@@ -68,19 +68,39 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr_subset_state *s, s
           climat_parse_x08 ( c, s );
         }
 
+      if ( s->isq )  // case of a significance qualifier
+        continue;
 
-      switch ( s->a->desc.y )
+      s->i = is;
+      s->ival = ( int ) sq->sequence[is].val;
+      s->val = sq->sequence[is].val;
+      s->a = &sq->sequence[is];
+      switch ( sq->sequence[is].desc.x )
         {
-        case 23:  // 0 08 023 . First-order statistics
-          if ( s->isq )
-            {
-              s->isq = 0;
-            }
-          else
-            {
-              s->isq = 1;
-            }
+        case 1: //localization descriptors
+          climat_parse_x01 ( c, s );
           break;
+
+        case 2: //Type of station descriptors
+          climat_parse_x02 ( c, s );
+          break;
+
+        case 4: //Date and time descriptors
+          climat_parse_x04 ( c, s );
+          break;
+
+        case 5: // Horizontal position. Latitude
+          climat_parse_x05 ( c, s );
+          break;
+
+        case 6: // Horizontal position. Longitude
+          climat_parse_x06 ( c, s);
+          break;
+
+        case 7: // Vertical position
+          climat_parse_x07 ( c, s );
+          break;
+ 
         default:
           break;
         }

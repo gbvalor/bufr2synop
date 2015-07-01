@@ -93,3 +93,35 @@ int buoy_parse_x07 ( struct buoy_chunks *b, struct bufr_subset_state *s )
     }
   return 0;
 }
+
+/*!
+  \fn int climat_parse_x07 ( struct synop_chunks *c, struct bufr_subset_state *s )
+  \brief Parse a expanded descriptor with X = 07
+  \param c pointer to a struct \ref climat_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
+int climat_parse_x07 ( struct climat_chunks *c, struct bufr_subset_state *s )
+{
+
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+    return 0;
+
+  // this is to avoid warning
+  if ( c == NULL )
+    return 1;
+
+  switch ( s->a->desc.y )
+    {
+    case 1: // 0 07 001 . Heigh of station
+    case 30: // 0 07 030 . Height of station ground above msl
+    case 31: // 0 07 031 . Height of barometer above msl
+      s->alt = s->val;
+      break;
+    default:
+      break;
+    }
+
+  return 0;
+}

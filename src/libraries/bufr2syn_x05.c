@@ -133,3 +133,42 @@ int buoy_parse_x05 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 
   return 0;
 }
+
+/*!
+  \fn int climat_parse_x05 ( struct climat_chunks *syn, struct bufr_subset_state *s )
+  \brief Parse a expanded descriptor with X = 05
+  \param syn pointer to a struct \ref climat_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
+int climat_parse_x05 ( struct climat_chunks *c, struct bufr_subset_state *s )
+{
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+    return 0;
+
+  // this is to avoid warning
+  if ( c == NULL )
+    return 1;
+  
+  switch ( s->a->desc.y )
+    {
+    case 1: // 0 05 001 . Latitude (High accuracy)
+    case 2: // 0 05 002 . Latitude (Coarse accuracy)
+      if ( s->val < 0.0 )
+        s->mask |= SUBSET_MASK_LATITUDE_SOUTH; // Sign for latitude
+      s->mask |= SUBSET_MASK_HAVE_LATITUDE;
+      s->lat = s->val;
+      break;
+    case 11: // 0 05 011 . Longitude (High accuracy)
+    case 12: // 0 05 012 . Longitude (Coarse accuracy)
+      if ( s->val < 0.0 )
+        s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
+      s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
+      s->lon = s->val;
+      break;
+    default:
+      break;
+    }
+return 0;
+}
