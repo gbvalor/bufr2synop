@@ -118,6 +118,8 @@ int climat_parse_x08 ( struct climat_chunks *c, struct bufr_subset_state *s )
   
   switch (s->a->desc.y)
   {
+    case 23: // 0 08 023 . First-order statistics. 
+      break;
     default:
       break;
   }

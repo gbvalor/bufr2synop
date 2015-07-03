@@ -69,12 +69,18 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr_subset_state *s, s
         }
 
       if ( s->isq )  // case of a significance qualifier
-        continue;
+        {
+          continue;
+        }
 
       s->i = is;
       s->ival = ( int ) sq->sequence[is].val;
       s->val = sq->sequence[is].val;
       s->a = &sq->sequence[is];
+      if ( is > 0 )
+        {
+          s->a1 = &sq->sequence[is - 1];
+        }
       switch ( sq->sequence[is].desc.x )
         {
         case 1: //localization descriptors
@@ -94,18 +100,25 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr_subset_state *s, s
           break;
 
         case 6: // Horizontal position. Longitude
-          climat_parse_x06 ( c, s);
+          climat_parse_x06 ( c, s );
           break;
 
         case 7: // Vertical position
           climat_parse_x07 ( c, s );
           break;
- 
+
+        case 8: // significance qualifier
+          climat_parse_x08 ( c, s );
+          break;
+
+        case 10: // Air pressure
+          climat_parse_x10 ( c, s );
+          break;
+
         default:
           break;
         }
 
-      return 0;
     }
 
   return 0;

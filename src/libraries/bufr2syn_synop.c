@@ -39,10 +39,14 @@ int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
        strlen ( syn->e.DD ) &&
        strlen ( syn->e.HH ) &&
        strlen ( syn->e.mm ) )
-    sprintf ( aux,"%s%s%s%s%s", syn->e.YYYY, syn->e.MM, syn->e.DD, syn->e.HH, syn->e.mm );
+    {
+      sprintf ( aux,"%s%s%s%s%s", syn->e.YYYY, syn->e.MM, syn->e.DD, syn->e.HH, syn->e.mm );
+    }
 
   if ( strlen ( aux ) != 12 )
-    return 1;
+    {
+      return 1;
+    }
 
   memset ( &tim, 0, sizeof ( struct tm ) );
   strptime ( aux, "%Y%m%d%H%M", &tim );
@@ -70,7 +74,9 @@ char *guess_WMO_region_synop ( struct synop_chunks *syn )
     }
 
   if ( syn->s0.II[0] == 0  || syn->s0.iii[0] == 0 )
-    return syn->s0.A1;
+    {
+      return syn->s0.A1;
+    }
 
   return guess_WMO_region ( syn->s0.A1, syn->s0.Reg, syn->s0.II, syn->s0.iii );
 }
@@ -126,12 +132,19 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr_subset_state *s, st
         }
 
       if ( s->isq )  // case of a significance qualifier
-        continue;
+        {
+          continue;
+        }
 
       s->i = is;
       s->ival = ( int ) sq->sequence[is].val;
       s->val = sq->sequence[is].val;
       s->a = &sq->sequence[is];
+      if ( is > 0 )
+        {
+          s->a1 = &sq->sequence[is - 1];
+        }
+
       switch ( sq->sequence[is].desc.x )
         {
         case 1: //localization descriptors
@@ -139,19 +152,19 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr_subset_state *s, st
           break;
 
         case 2: //Type of station descriptors
-          syn_parse_x02 ( syn, s);
+          syn_parse_x02 ( syn, s );
           break;
 
         case 4: //Date and time descriptors
-          syn_parse_x04 ( syn, s);
+          syn_parse_x04 ( syn, s );
           break;
 
-        case 5: // Horizontal position. Latitude 
-          syn_parse_x05 ( syn, s);
+        case 5: // Horizontal position. Latitude
+          syn_parse_x05 ( syn, s );
           break;
 
         case 6: // Horizontal position. Longitude
-          syn_parse_x06 ( syn, s);
+          syn_parse_x06 ( syn, s );
           break;
 
         case 7: // Vertical position
@@ -225,16 +238,24 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr_subset_state *s, st
       syn->s1.ir[0] = '4';
     }
   else if ( syn->s1.RRR[0] == 0 && syn->s3.RRR[0] != 0 )
-    syn->s1.ir[0] = '2';
+    {
+      syn->s1.ir[0] = '2';
+    }
   else if ( syn->s1.RRR[0] != 0 && syn->s3.RRR[0] == 0 )
-    syn->s1.ir[0] = '1';
+    {
+      syn->s1.ir[0] = '1';
+    }
   else
-    syn->s1.ir[0] = '0';
+    {
+      syn->s1.ir[0] = '0';
+    }
 
 
   // adjust iw
   if ( syn->s0.iw[0] == '/' && syn->s1.ff[0] != '/' )
-    syn->s0.iw[0] = '1';
+    {
+      syn->s0.iw[0] = '1';
+    }
 
   // adjust ix
   if ( syn->s1.ix[0] == '/' /*&& syn->s1.ww[0] == 0*/ )
@@ -247,22 +268,34 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr_subset_state *s, st
           if ( s->mask & SUBSET_MASK_HAVE_TYPE_STATION )
             {
               if ( s->type == 1 || s->type == 2 )
-                strcpy ( syn->s1.ix,"2" );
+                {
+                  strcpy ( syn->s1.ix,"2" );
+                }
               else if ( s->type == 0 )
-                strcpy ( syn->s1.ix,"5" );
+                {
+                  strcpy ( syn->s1.ix,"5" );
+                }
             }
           else
-            strcpy ( syn->s1.ix,"6" ); //NOTE: here we assume an automatic station without W data
+            {
+              strcpy ( syn->s1.ix,"6" );  //NOTE: here we assume an automatic station without W data
+            }
         }
       else if ( s->mask & SUBSET_MASK_HAVE_TYPE_STATION )
         {
           if ( s->type == 1 )
-            strcpy ( syn->s1.ix,"3" );
+            {
+              strcpy ( syn->s1.ix,"3" );
+            }
           else if ( s->type == 0 )
-            strcpy ( syn->s1.ix,"6" );
+            {
+              strcpy ( syn->s1.ix,"6" );
+            }
         }
       else
-        strcpy ( syn->s1.ix,"6" ); //NOTE: here we assume an automatic station without W data
+        {
+          strcpy ( syn->s1.ix,"6" );  //NOTE: here we assume an automatic station without W data
+        }
     }
 
   /****** Final Adjust ***********/
@@ -291,21 +324,33 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr_subset_state *s, st
     }
 
   if ( s->mask & SUBSET_MASK_HAVE_LATITUDE )
-    m->g.lat = s->lat;
+    {
+      m->g.lat = s->lat;
+    }
   if ( s->mask & SUBSET_MASK_HAVE_LONGITUDE )
-    m->g.lon = s->lon;
+    {
+      m->g.lon = s->lon;
+    }
   if ( s->mask & SUBSET_MASK_HAVE_ALTITUDE )
-    m->g.alt = s->alt;
+    {
+      m->g.alt = s->alt;
+    }
   if ( s->mask & SUBSET_MASK_HAVE_NAME )
-    strcpy ( m->g.name, s->name );
+    {
+      strcpy ( m->g.name, s->name );
+    }
   if ( s->mask & SUBSET_MASK_HAVE_COUNTRY )
-    strcpy ( m->g.country, s->country );
+    {
+      strcpy ( m->g.country, s->country );
+    }
 
   sprintf ( aux,"%s%s%s%s%s", syn->e.YYYY, syn->e.MM, syn->e.DD, syn->e.HH, syn->e.mm );
   YYYYMMDDHHmm_to_met_datetime ( &m->t, aux );
 
-  if (check_date_from_future(m))
-     return 1; // Bad date/time . Is a report from future!
+  if ( check_date_from_future ( m ) )
+    {
+      return 1;  // Bad date/time . Is a report from future!
+    }
 
   // If finally we arrive here, It succeded
   return 0;

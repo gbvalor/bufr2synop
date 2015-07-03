@@ -300,6 +300,7 @@ struct bufr_subset_state
 {
   char type_report[16]; /*!< The type of report to decode (MMMM) */
   struct bufr_atom_data *a; /*!< the current struct \ref bufr_atom_data being parsed */
+  struct bufr_atom_data *a1; /*!< the prior struct \ref bufr_atom_data being parsed */
   size_t i; /*!< current index in array element */
   int rep;  /*!< Latest delayed replicator */
   size_t k_rep;  /*!< Index of latest delayed replicator */
@@ -321,7 +322,9 @@ struct bufr_subset_state
   char country[80]; /*!< Name of state/country if known */
   time_t tobs; /*!< Unix time reference*/
   int dift; /*!< UTC - LST , in hours */
-  int nday; /*!< period (days) */
+  int nday; /*!< period (days) in some reports */
+  int month; /*!< month for some normal values */
+  int is_normal; /*!< if 1, the values are normal of a defined period */
   int mask; /*!< mask which contain several information from the subset data taken at the moment */
 };
 
@@ -417,6 +420,7 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr_subset_state *s, s
 int YYYYMMDDHHmm_to_met_datetime ( struct met_datetime *t, const char *source );
 int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn );
 int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b );
+int check_date_from_future(struct metreport *m);
 char *guess_WMO_region ( char *A1, char *Reg, const char *II, const char *iii );
 char * guess_WMO_region_synop ( struct synop_chunks *syn );
 char *guess_WMO_region_temp ( struct temp_chunks *temp );

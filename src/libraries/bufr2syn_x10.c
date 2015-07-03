@@ -33,9 +33,13 @@ char * pascal_to_ppp ( char *target, double P )
 {
   int ic;
   if ( P > 0 )
-    ic = ( int ) ( P * 0.1 );
+    {
+      ic = ( int ) ( P * 0.1 );
+    }
   else
-    ic = ( int ) ( -P * 0.1 );
+    {
+      ic = ( int ) ( -P * 0.1 );
+    }
   sprintf ( target, "%03d", ic % 1000 );
   return target;
 }
@@ -68,7 +72,9 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr_subset_state *s )
   char aux[16];
 
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    return 0;
+    {
+      return 0;
+    }
 
   switch ( s->a->desc.y )
     {
@@ -110,7 +116,9 @@ int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr_subset_state *s )
   char aux[16];
 
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    return 0;
+    {
+      return 0;
+    }
 
   switch ( s->a->desc.y )
     {
@@ -137,6 +145,49 @@ int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 
     default:
       break;
+    }
+  return 0;
+}
+
+
+/*!
+  \fn int climat_parse_x10 ( struct climat_chunks *c, struct bufr_subset_state *s )
+  \brief Parse a expanded descriptor with X = 10
+  \param c pointer to a struct \ref climat_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
+int climat_parse_x10 ( struct climat_chunks *c, struct bufr_subset_state *s )
+{
+  char aux[16];
+
+  if ( c == NULL || s == NULL )
+    {
+      return 1;
+    }
+
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+    {
+      return 0;
+    }
+
+  switch ( s->a->desc.y )
+    {
+    case 4: // 0 10 004 . Pressure
+      pascal_to_PPPP ( aux, s->val );
+      strcpy ( c->s1.PoPoPoPo, aux );
+      c->mask |= CLIMAT_SEC1;
+      break;
+    case 51: // 0 10 051 . Pressure reduced to mean sea level
+      pascal_to_PPPP ( aux, s->val );
+      strcpy ( c->s1.PPPP, aux );
+      c->mask |= CLIMAT_SEC1;
+      break;
+
+    default:
+      break;
+
     }
   return 0;
 }

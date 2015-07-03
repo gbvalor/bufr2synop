@@ -39,10 +39,14 @@ int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b )
        strlen ( b->e.DD ) &&
        strlen ( b->e.HH ) &&
        strlen ( b->e.MM ) )
-    sprintf ( aux,"%s%s%s%s%s", b->e.YYYY, b->e.MM, b->e.DD, b->e.HH, b->e.mm );
+    {
+      sprintf ( aux,"%s%s%s%s%s", b->e.YYYY, b->e.MM, b->e.DD, b->e.HH, b->e.mm );
+    }
 
   if ( strlen ( aux ) != 12 )
-    return 1;
+    {
+      return 1;
+    }
 
   memset ( &tim, 0, sizeof ( struct tm ) );
   strptime ( aux, "%Y%m%d%H%M", &tim );
@@ -105,12 +109,19 @@ int parse_subset_as_buoy ( struct metreport *m, struct bufr_subset_state *s, str
       if ( sq->sequence[is].mask & DESCRIPTOR_VALUE_MISSING ||
            s->isq   // case of an significance qualifier
          )
-        continue;
+        {
+          continue;
+        }
 
       s->i = is;
       s->ival = ( int ) sq->sequence[is].val;
       s->val = sq->sequence[is].val;
       s->a = &sq->sequence[is];
+      if ( is > 0 )
+        {
+          s->a1 = &sq->sequence[is - 1];
+        }
+
       switch ( sq->sequence[is].desc.x )
         {
 
@@ -198,31 +209,45 @@ int parse_subset_as_buoy ( struct metreport *m, struct bufr_subset_state *s, str
 
   // adjust iw
   if ( b->s0.iw[0] == '/' && b->s1.ff[0] != '/' )
-    b->s0.iw[0] = '1';
+    {
+      b->s0.iw[0] = '1';
+    }
 
   // fill date fields YYYYMMDDHHmm
   buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( b );
   b->mask |= BUOY_EXT;
 
   // Fill some metreport fields
-  if (s->mask & SUBSET_MASK_HAVE_LATITUDE)
-   {
-    if (fabs(s->lat) <= 90.0)
-      m->g.lat = s->lat;
-    else
-      return 1; // Bad latitude. Fatal error
-  }
-  if (s->mask & SUBSET_MASK_HAVE_LONGITUDE)
-  {
-    if (fabs(s->lon) <= 180.0)
-      m->g.lon = s->lon;
-    else
-      return 1; // bad longitude. Fatal error
-  }
-  if (s->mask & SUBSET_MASK_HAVE_ALTITUDE)
-    m->g.alt = s->alt;
+  if ( s->mask & SUBSET_MASK_HAVE_LATITUDE )
+    {
+      if ( fabs ( s->lat ) <= 90.0 )
+        {
+          m->g.lat = s->lat;
+        }
+      else
+        {
+          return 1;  // Bad latitude. Fatal error
+        }
+    }
+  if ( s->mask & SUBSET_MASK_HAVE_LONGITUDE )
+    {
+      if ( fabs ( s->lon ) <= 180.0 )
+        {
+          m->g.lon = s->lon;
+        }
+      else
+        {
+          return 1;  // bad longitude. Fatal error
+        }
+    }
+  if ( s->mask & SUBSET_MASK_HAVE_ALTITUDE )
+    {
+      m->g.alt = s->alt;
+    }
   if ( s->mask & SUBSET_MASK_HAVE_NAME )
-    strcpy ( m->g.name, s->name );
+    {
+      strcpy ( m->g.name, s->name );
+    }
   sprintf ( aux,"%s%s%s%s%s", b->e.YYYY, b->e.MM, b->e.DD, b->e.HH, b->e.mm );
   YYYYMMDDHHmm_to_met_datetime ( &m->t, aux );
 
@@ -238,38 +263,62 @@ int parse_subset_as_buoy ( struct metreport *m, struct bufr_subset_state *s, str
       if ( s->mask & SUBSET_MASK_LATITUDE_SOUTH )
         {
           if ( s->mask & SUBSET_MASK_LONGITUDE_WEST )
-            strcpy ( b->s0.Qc, "5" );
+            {
+              strcpy ( b->s0.Qc, "5" );
+            }
           else
-            strcpy ( b->s0.Qc, "3" );
+            {
+              strcpy ( b->s0.Qc, "3" );
+            }
         }
       else
         {
           if ( s->mask & SUBSET_MASK_LONGITUDE_WEST )
-            strcpy ( b->s0.Qc, "7" );
+            {
+              strcpy ( b->s0.Qc, "7" );
+            }
           else
-            strcpy ( b->s0.Qc, "1" );
+            {
+              strcpy ( b->s0.Qc, "1" );
+            }
         }
     }
 
   // check Qx
   if ( b->s2.Qd[0] ==  0 )
-    b->s2.Qd[0] = '0';
+    {
+      b->s2.Qd[0] = '0';
+    }
   if ( b->s3.k2[0] == 0 )
-    b->s3.k2[0] = '0';
+    {
+      b->s3.k2[0] = '0';
+    }
   if ( b->s1.Qx[0] == 0 && b->s1.Qd[0] )
-    b->s1.Qx[0] = '9';
+    {
+      b->s1.Qx[0] = '9';
+    }
   if ( b->s2.Qx[0] == 0 && b->s2.Qd[0] )
-    b->s2.Qx[0] = '9';
+    {
+      b->s2.Qx[0] = '9';
+    }
 
   if ( b->s3.Qd1[0] ==  0 )
-    b->s3.Qd1[0] = '0';
+    {
+      b->s3.Qd1[0] = '0';
+    }
   if ( b->s3.Qd2[0] ==  0 )
-    b->s3.Qd2[0] = '0';
+    {
+      b->s3.Qd2[0] = '0';
+    }
 
   if ( b->s3.k3[0] == 0 )
-    b->s3.k3[0] = '/';
+    {
+      b->s3.k3[0] = '/';
+    }
   if ( b->s3.k6[0] == 0 )
-    b->s3.k6[0] = '/';
+    {
+      b->s3.k6[0] = '/';
+    }
 
   return 0;
 }
