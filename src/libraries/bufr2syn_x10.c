@@ -175,14 +175,51 @@ int climat_parse_x10 ( struct climat_chunks *c, struct bufr_subset_state *s )
   switch ( s->a->desc.y )
     {
     case 4: // 0 10 004 . Pressure
-      pascal_to_PPPP ( aux, s->val );
-      strcpy ( c->s1.PoPoPoPo, aux );
-      c->mask |= CLIMAT_SEC1;
+      if ( s->isq_val == 4 )
+        {
+          pascal_to_PPPP ( aux, s->val );
+          if ( s->is_normal == 0 )
+            {
+              strcpy ( c->s1.PoPoPoPo, aux );
+              c->mask |= CLIMAT_SEC1;
+            }
+          else
+            {
+              strcpy ( c->s2.PoPoPoPo, aux );
+              c->mask |= CLIMAT_SEC2;
+            }
+        }
+      break;
+    case 9: // 0 10 009 . Heigh of geopotential 
+     if ( s->isq_val == 4 )
+        {
+          if ( s->is_normal == 0 )
+            {
+              sprintf ( c->s1.PPPP, "%04d", s->ival );
+              c->mask |= CLIMAT_SEC1;
+            }
+          else
+            {
+              sprintf ( c->s1.PPPP, "%04d", s->ival );
+              c->mask |= CLIMAT_SEC2;
+            }
+        }
       break;
     case 51: // 0 10 051 . Pressure reduced to mean sea level
-      pascal_to_PPPP ( aux, s->val );
-      strcpy ( c->s1.PPPP, aux );
-      c->mask |= CLIMAT_SEC1;
+      if ( s->isq_val == 4 )
+        {
+          pascal_to_PPPP ( aux, s->val );
+          if ( s->is_normal == 0 )
+            {
+              strcpy ( c->s1.PPPP, aux );
+              c->mask |= CLIMAT_SEC1;
+            }
+          else
+            {
+              strcpy ( c->s2.PPPP, aux );
+              c->mask |= CLIMAT_SEC2;
+            }
+        }
       break;
 
     default:

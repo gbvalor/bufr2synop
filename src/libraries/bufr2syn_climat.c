@@ -58,21 +58,6 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr_subset_state *s, s
   /**** First pass, sequential analysis *****/
   for ( is = 0; is < sq->nd; is++ )
     {
-      // check if is a significance qualifier
-      if ( sq->sequence[is].desc.x == 8 )
-        {
-          s->i = is;
-          s->a = &sq->sequence[is];
-          s->ival = ( int ) sq->sequence[is].val;
-          s->val = sq->sequence[is].val;
-          climat_parse_x08 ( c, s );
-        }
-
-      if ( s->isq )  // case of a significance qualifier
-        {
-          continue;
-        }
-
       s->i = is;
       s->ival = ( int ) sq->sequence[is].val;
       s->val = sq->sequence[is].val;
@@ -81,6 +66,7 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr_subset_state *s, s
         {
           s->a1 = &sq->sequence[is - 1];
         }
+
       switch ( sq->sequence[is].desc.x )
         {
         case 1: //localization descriptors
@@ -113,6 +99,18 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr_subset_state *s, s
 
         case 10: // Air pressure
           climat_parse_x10 ( c, s );
+          break;
+
+        case 12: // Temperature
+          climat_parse_x12 ( c, s );
+          break;
+
+        case 13: // Humidity and precipitation data
+          climat_parse_x13 ( c, s );
+          break;
+
+        case 14: // Radiation
+          climat_parse_x14 ( c, s );
           break;
 
         default:

@@ -106,19 +106,19 @@ int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 }
 
 /*!
-  \fn int climat_parse_x02 ( struct climat_chunks *b, struct bufr_subset_state *s )
+  \fn int climat_parse_x02 ( struct climat_chunks *c, struct bufr_subset_state *s )
   \brief Parse a expanded descriptor with X = 02
-  \param b pointer to a struct \ref climat_chunks where to set the results
+  \param c pointer to a struct \ref climat_chunks where to set the results
   \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int climat_parse_x02 ( struct climat_chunks *b, struct bufr_subset_state *s )
+int climat_parse_x02 ( struct climat_chunks *c, struct bufr_subset_state *s )
 {
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
     return 0;
 
-  if ( b == NULL)
+  if ( c == NULL)
     return 1;
   
   switch ( s->a->desc.y )
@@ -126,6 +126,11 @@ int climat_parse_x02 ( struct climat_chunks *b, struct bufr_subset_state *s )
     case 1: // 0 02 001 . Type of station
       s->type = s->ival;
       s->mask |= SUBSET_MASK_HAVE_TYPE_STATION;
+      break;
+      
+    case 51: // 0 02 051 . Observing method for extreme temperatures
+      sprintf(c->s4.iy,"%d",s->ival);
+      c->mask |= CLIMAT_SEC4;
       break;
     default:
       break;

@@ -37,33 +37,43 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr_subset_state *s )
     {
     case 1: // 0 04 001 .Year
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
       sprintf ( syn->e.YYYY, "%04d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_YEAR;
       break;
     case 2: // 0 04 002 . Month
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
       sprintf ( syn->e.MM, "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_MONTH;
       break;
     case 3: // 0 04 003 . Day of month
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
       sprintf ( syn->e.DD, "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_DAY;
       //sprintf(syn->s0.YY, "%02d", (int) sq->sequence[is].val);
       break;
     case 4: // 0 04 004 . Hour
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
       sprintf ( syn->e.HH, "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_HOUR;
       //sprintf(syn->s0.GG, "%02d", (int) sq->sequence[is].val);
       break;
     case 5: // 0 04 005 . Minute
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
       sprintf ( syn->e.mm, "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
@@ -145,39 +155,59 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr_subset_state *s )
     {
     case 1: // 0 04 001 . Year
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
       if ( b->e.YYYY[0] == 0 )
-        sprintf ( b->e.YYYY, "%04d", s->ival );
+        {
+          sprintf ( b->e.YYYY, "%04d", s->ival );
+        }
       s->mask |= SUBSET_MASK_HAVE_YEAR;
       break;
     case 2: // 0 04 002 . Month
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
       if ( b->e.MM[0] == 0 )
-        sprintf ( b->e.MM, "%02d", s->ival );
+        {
+          sprintf ( b->e.MM, "%02d", s->ival );
+        }
       s->mask |= SUBSET_MASK_HAVE_MONTH;
       break;
     case 3: // 0 04 003 . Day of month
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
       if ( b->e.DD[0] == 0 )
-        sprintf ( b->e.DD, "%02d", s->ival );
+        {
+          sprintf ( b->e.DD, "%02d", s->ival );
+        }
       s->mask |= SUBSET_MASK_HAVE_DAY;
       //sprintf(b->s0.YY, "%02d", (int) sq->sequence[is].val);
       break;
     case 4: // 0 04 004 . Hour
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
       if ( b->e.HH[0] == 0 )
-        sprintf ( b->e.HH, "%02d", s->ival );
+        {
+          sprintf ( b->e.HH, "%02d", s->ival );
+        }
       s->mask |= SUBSET_MASK_HAVE_HOUR;
       //sprintf(b->s0.GG, "%02d", (int) sq->sequence[is].val);
       break;
     case 5: // 0 04 005 . Minute
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
       if ( b->e.mm[0] == 0 )
-        sprintf ( b->e.mm, "%02d", s->ival );
+        {
+          sprintf ( b->e.mm, "%02d", s->ival );
+        }
       s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
       // store latest displacement in seconds
@@ -254,76 +284,117 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 int climat_parse_x04 ( struct climat_chunks *c, struct bufr_subset_state *s )
 {
   if ( c == NULL )
-    return 1;
+    {
+      return 1;
+    }
 
-  
+
   switch ( s->a->desc.y )
     {
     case 1: // 0 04 001 .Year
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
-      if (s->i && (s->a1->desc.x == 4) && (s->a1->desc.y == 1))
-      {
-	// this is the final year of a normal period
-	s->is_normal = 1;
-        sprintf ( c->s2.YcYc, "%02d", s->ival );
-	c->mask |= CLIMAT_SEC2;
-      }
-      sprintf ( c->e.YYYY, "%04d", s->ival );
-      s->mask |= SUBSET_MASK_HAVE_YEAR;
-      sprintf(c->s0.JJJ, "%03d", s->ival % 1000);
+        {
+          return 0;
+        }
+      if ( s->i && ( s->a1->desc.x == 4 ) && ( s->a1->desc.y == 1 ) )
+        {
+          // this is the final year of a normal period
+          s->is_normal = 1;
+          sprintf ( c->s2.YcYc, "%02d", s->ival );
+          c->mask |= CLIMAT_SEC2;
+          // then we fill the begin from tatest descriptor
+          sprintf ( c->s2.YbYb, "%02d", ( int ) s->a1->val );
+        }
+      else if ( c->e.YYYY[0] == '\0' )
+        {
+          sprintf ( c->e.YYYY, "%04d", s->ival );
+          s->mask |= SUBSET_MASK_HAVE_YEAR;
+          sprintf ( c->s0.JJJ, "%03d", s->ival % 1000 );
+        }
       break;
-      
+
     case 2: // 0 04 002 . Month
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
       sprintf ( c->e.MM, "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_MONTH;
-      sprintf(c->s0.MM, "%02d", s->ival);
+      sprintf ( c->s0.MM, "%02d", s->ival );
       break;
-      
+
     case 3: // 0 04 003 . Day of month
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
       sprintf ( c->e.DD, "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_DAY;
       break;
-      
+
     case 4: // 0 04 004 . Hour
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
       sprintf ( c->e.HH, "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_HOUR;
       break;
-      
+
     case 5: // 0 04 005 . Minute
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
       sprintf ( c->e.mm, "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
 
     case 22: // 0 04 022 . Num month. Case of sec2 with normals
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
       s->month = s->ival;
       break;
 
     case 23: // 0 04 023 . Num days in month
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
       s->nday = s->ival;
       break;
-      
-    case 74: // 0 04 005 . (UTC - LST)
+
+    case 51: // 0 04 051 . Principal time of daily reading of maximum
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
+      sprintf ( c->s4.GxGx, "%02d", s->ival );
+      s->mask |= CLIMAT_SEC4;
+      break;
+
+    case 52: // 0 04 052 . Principal time of daily reading of minimum
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      sprintf ( c->s4.GnGn, "%02d", s->ival );
+      s->mask |= CLIMAT_SEC4;
+      break;
+
+    case 74: // 0 04 074 . (UTC - LST)
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
       s->dift = s->ival;
       break;
-      
-      
+
+
     default:
       break;
     }
-    return 0;
+  return 0;
 }

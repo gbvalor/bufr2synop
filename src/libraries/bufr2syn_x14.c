@@ -39,7 +39,9 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s )
     case 1: // 0 14 001 long-wave radiation 24 hours
     case 11:
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
       if ( syn->s3.SSS[0] )
         {
           strcpy ( syn->s3.j524[4], "4" );
@@ -50,7 +52,9 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s )
     case 2: // 0 14 002 Long-wave radiation
     case 12:
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
       if ( s->itval == ( -24 * 3600 ) )
         {
           if ( syn->s3.SSS[0] )
@@ -73,7 +77,9 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s )
     case 3: // 0 14 001 short-wave radiation 24 hours
     case 13:
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
       if ( syn->s3.SSS[0] )
         {
           strcpy ( syn->s3.j524[6], "6" );
@@ -84,7 +90,9 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s )
     case 4: // 0 14 002 short-wave radiation
     case 14:
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
+        {
+          return 0;
+        }
       if ( s->itval == ( -24 * 3600 ) )
         {
           if ( syn->s3.SSS[0] )
@@ -107,16 +115,24 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s )
       if ( s->itval == ( -24 * 3600 ) )
         {
           if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-            sprintf ( syn->s3.SSS, "///" );
+            {
+              sprintf ( syn->s3.SSS, "///" );
+            }
           else
-            sprintf ( syn->s3.SSS, "%03d", s->ival / 6 );
+            {
+              sprintf ( syn->s3.SSS, "%03d", s->ival / 6 );
+            }
         }
       else if ( s->itval == -3600 )
         {
           if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-            sprintf ( syn->s3.SS, "//" );
+            {
+              sprintf ( syn->s3.SS, "//" );
+            }
           else
-            sprintf ( syn->s3.SS, "%02d", s->ival / 6 );
+            {
+              sprintf ( syn->s3.SS, "%02d", s->ival / 6 );
+            }
         }
       syn->mask |= SYNOP_SEC3;
       break;
@@ -124,16 +140,24 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s )
       if ( s->itval == ( -24 * 3600 ) )
         {
           if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-            sprintf ( syn->s3.SSS, "///" );
+            {
+              sprintf ( syn->s3.SSS, "///" );
+            }
           else
-            sprintf ( syn->s3.SSS, "%03d", s->ival * 10 );
+            {
+              sprintf ( syn->s3.SSS, "%03d", s->ival * 10 );
+            }
         }
       else if ( s->itval == -3600 )
         {
           if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-            sprintf ( syn->s3.SS, "//" );
+            {
+              sprintf ( syn->s3.SS, "//" );
+            }
           else
-            sprintf ( syn->s3.SS, "%02d", s->ival * 10 );
+            {
+              sprintf ( syn->s3.SS, "%02d", s->ival * 10 );
+            }
         }
       syn->mask |= SYNOP_SEC3;
       break;
@@ -155,13 +179,63 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 int buoy_parse_x14 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 {
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    return 0;
+    {
+      return 0;
+    }
 
   if ( b == NULL )
-    return 1;
+    {
+      return 1;
+    }
 
   switch ( s->a->desc.y )
     {
+    default:
+      break;
+    }
+  return 0;
+}
+
+/*!
+  \fn int climat_parse_x14 ( struct climat_chunks *c, struct bufr_subset_state *s )
+  \brief Parse a expanded descriptor with X = 14
+  \param b pointer to a struct \ref climat_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
+int climat_parse_x14 ( struct climat_chunks *c, struct bufr_subset_state *s )
+{
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+    {
+      return 0;
+    }
+
+  if ( c == NULL )
+    {
+      return 1;
+    }
+
+  switch ( s->a->desc.y )
+    {
+    case 32: // 0 14 032 . Total sunshine
+      if ( s->is_normal == 0 )
+        {
+          sprintf ( c->s1.S1S1S1, "%03d", s->ival );
+          c->mask |= CLIMAT_SEC1;
+        }
+      else
+        {
+          sprintf ( c->s2.S1S1S1, "%03d", s->ival );
+          c->mask |= CLIMAT_SEC2;
+        }
+      break;
+
+    case 33: // 0 14 033 . total sunshine percentage
+      sprintf ( c->s1.pspsps, "%03d", s->ival );
+      c->mask |= CLIMAT_SEC1;
+      break;
+
     default:
       break;
     }

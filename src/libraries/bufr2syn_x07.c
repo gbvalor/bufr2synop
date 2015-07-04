@@ -35,11 +35,15 @@ int syn_parse_x07 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 {
 
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    return 0;
+    {
+      return 0;
+    }
 
   // this is to avoid warning
   if ( syn == NULL )
-    return 1;
+    {
+      return 1;
+    }
 
   switch ( s->a->desc.y )
     {
@@ -73,19 +77,27 @@ int buoy_parse_x07 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 {
 
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    return 0;
+    {
+      return 0;
+    }
 
   if ( b == NULL )
-    return 1;
+    {
+      return 1;
+    }
 
   switch ( s->a->desc.y )
     {
     case 62: // 0 07 062 Depth below sea/water surface
     case 63: // 0 07 063 Profundity below sea/water level
       if ( s->k_rep == ( s->i - 1 ) ) // Case of first layer after a replicator
-        s->layer = 0;
+        {
+          s->layer = 0;
+        }
       else
-        ( s->layer ) ++;
+        {
+          ( s->layer ) ++;
+        }
       s->deep = ( int ) ( s->val + 0.5 );
       break;
     default:
@@ -104,13 +116,16 @@ int buoy_parse_x07 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 */
 int climat_parse_x07 ( struct climat_chunks *c, struct bufr_subset_state *s )
 {
-
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    return 0;
+    {
+      return 0;
+    }
 
   // this is to avoid warning
   if ( c == NULL )
-    return 1;
+    {
+      return 1;
+    }
 
   switch ( s->a->desc.y )
     {
@@ -118,6 +133,14 @@ int climat_parse_x07 ( struct climat_chunks *c, struct bufr_subset_state *s )
     case 30: // 0 07 030 . Height of station ground above msl
     case 31: // 0 07 031 . Height of barometer above msl
       s->alt = s->val;
+      break;
+
+    case 32: // 0 07 032 . Pressure of standard level
+      // Not a useful value for alphanumeric climat
+      break;
+
+    case 4: // Pressure of standard level
+      // Not a useful value for alphanumeric climat
       break;
     default:
       break;

@@ -32,13 +32,21 @@
 char * prec_to_RRR ( char *target, double r )
 {
   if ( r == 0.0 )
-    strcpy ( target,"000" );
+    {
+      strcpy ( target,"000" );
+    }
   else if ( r < 0.1 )
-    strcpy ( target,"990" );
+    {
+      strcpy ( target,"990" );
+    }
   else if ( r < 1.0 )
-    sprintf ( target, "99%d", ( int ) ( r * 10.0 ) );
+    {
+      sprintf ( target, "99%d", ( int ) ( r * 10.0 ) );
+    }
   else
-    sprintf ( target, "%03d", ( int ) ( r ) );
+    {
+      sprintf ( target, "%03d", ( int ) ( r ) );
+    }
   return target;
 
 }
@@ -52,11 +60,17 @@ char * prec_to_RRR ( char *target, double r )
 char * prec_to_RRRR ( char *target, double r )
 {
   if ( r < 0.0|| ( r > 0.0 && r < 0.1 ) )
-    strcpy ( target,"9999" );
+    {
+      strcpy ( target,"9999" );
+    }
   else if ( r <= 999.8 )
-    sprintf ( target,"%04d", ( int ) ( r * 10.0 ) );
+    {
+      sprintf ( target,"%04d", ( int ) ( r * 10.0 ) );
+    }
   else
-    strcpy ( target,"9998" );
+    {
+      strcpy ( target,"9998" );
+    }
   return target;
 }
 
@@ -69,11 +83,17 @@ char * prec_to_RRRR ( char *target, double r )
 char * prec_to_RRRR24 ( char *target, double r )
 {
   if ( r < 0.0 || ( r > 0.0 && r < 0.1 ) )
-    strcpy ( target,"9999" );
+    {
+      strcpy ( target,"9999" );
+    }
   else if ( r <= 999.8 )
-    sprintf ( target,"%04d", ( int ) ( r * 10.0 ) );
+    {
+      sprintf ( target,"%04d", ( int ) ( r * 10.0 ) );
+    }
   else
-    strcpy ( target,"9998" );
+    {
+      strcpy ( target,"9998" );
+    }
   return target;
 }
 
@@ -89,19 +109,33 @@ char * recent_snow_to_ss ( char *target, double r )
   i = ( int ) ( r * 1000.0 ); // convert to mm
 
   if ( i == 0 )
-    sprintf ( target,"00" );
+    {
+      sprintf ( target,"00" );
+    }
   else if ( i < 0 )
-    sprintf ( target,"97" );
+    {
+      sprintf ( target,"97" );
+    }
   else if ( i < 7 )
-    sprintf ( target,"%02d", i + 90 );
+    {
+      sprintf ( target,"%02d", i + 90 );
+    }
   else if ( i < 600 )
-    sprintf ( target,"%02d", i / 10 );
+    {
+      sprintf ( target,"%02d", i / 10 );
+    }
   else if ( i <= 4000 )
-    sprintf ( target,"%02d", 50 + i/100 );
+    {
+      sprintf ( target,"%02d", 50 + i/100 );
+    }
   else if ( i > 4000 )
-    sprintf ( target,"98" );
+    {
+      sprintf ( target,"98" );
+    }
   else
-    sprintf ( target,"99" );
+    {
+      sprintf ( target,"99" );
+    }
   return target;
 }
 
@@ -118,7 +152,9 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s )
   char aux[8];
 
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    return 0;
+    {
+      return 0;
+    }
 
   switch ( s->a->desc.y )
     {
@@ -334,10 +370,14 @@ int buoy_parse_x13 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 {
 
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    return 0;
+    {
+      return 0;
+    }
 
   if ( b == NULL )
-    return 1;
+    {
+      return 1;
+    }
 
 
   switch ( s->a->desc.y )
@@ -347,3 +387,46 @@ int buoy_parse_x13 ( struct buoy_chunks *b, struct bufr_subset_state *s )
     }
   return 0;
 }
+
+/*!
+  \fn int climat_parse_x13 ( struct climat_chunks *c, struct bufr_subset_state *s )
+  \brief Parse a expanded descriptor with X = 13
+  \param c pointer to a struct \ref climat_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
+int climat_parse_x13 ( struct climat_chunks *c, struct bufr_subset_state *s )
+{
+
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+    {
+      return 0;
+    }
+
+  if ( c == NULL )
+    {
+      return 1;
+    }
+
+
+  switch ( s->a->desc.y )
+    {
+    case 4: // 0 13 004 . Mean vapor pressure in tenths of hectopascal
+      if ( s->is_normal == 0 )
+        {
+          sprintf ( c->s1.eee,"%03d", s->ival );
+          c->mask |= CLIMAT_SEC1;
+        }
+      else
+        {
+          sprintf ( c->s2.eee,"%03d", s->ival );
+          c->mask |= CLIMAT_SEC2;
+        }
+      break;
+    default:
+      break;
+    }
+  return 0;
+}
+

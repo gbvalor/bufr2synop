@@ -311,6 +311,7 @@ struct bufr_subset_state
   int jtval; /*!< Prior to Latest parsed time displacement in seconds */
   size_t k_jtval; /*!< index in array of time prior to latest displacemet descriptor */
   int isq; /*!< if 1, the current atom data is in a Significant qualifier squence, and not computed */
+  int isq_val; /*!< Value of a significant qualifier */
   int type; /*!< type of station */
   int clayer; /*!< cloud layer being parsed */
   int layer; /*!< Layer/level of data when parsing Buoy report*/

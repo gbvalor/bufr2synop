@@ -33,7 +33,9 @@ char * kelvin_to_snTTT ( char *target, double T )
 {
   int ic;
   if ( T < 150.0 || T > 340.0 )
-    return NULL;
+    {
+      return NULL;
+    }
   ic = ( int ) ( 100.0 * T + 0.001 ) - 27315;
   if ( ic < 0 )
     {
@@ -56,13 +58,19 @@ char * kelvin_to_snTT ( char *target, double T )
 {
   int ic;
   if ( T < 150.0 || T > 340.0 )
-    return NULL;
+    {
+      return NULL;
+    }
   ic = ( int ) ( 100.0 * T + 0.001 ) - 27315;
   ic /= 100;
   if ( ic < 0 )
-    sprintf ( target, "1%02d", -ic );
+    {
+      sprintf ( target, "1%02d", -ic );
+    }
   else
-    sprintf ( target, "%03d", ic );
+    {
+      sprintf ( target, "%03d", ic );
+    }
   return target;
 }
 
@@ -76,13 +84,19 @@ char * kelvin_to_TT ( char *target, double T )
 {
   int ic;
   if ( T < 150.0 || T > 340.0 )
-    return NULL;
+    {
+      return NULL;
+    }
   ic = ( int ) ( 100.0 * T + 0.001 ) - 27315;
   ic /= 100;
   if ( ic < 0 )
-    sprintf ( target, "%02d", 50 - ic );
+    {
+      sprintf ( target, "%02d", 50 - ic );
+    }
   else
-    sprintf ( target, "%02d", ic );
+    {
+      sprintf ( target, "%02d", ic );
+    }
   return target;
 }
 
@@ -96,11 +110,15 @@ char * kelvin_to_TTTT ( char *target, double T )
 {
   int ic;
   if ( T < 150.0 || T > 340.0 )
-    return NULL;
+    {
+      return NULL;
+    }
 
   ic = ( int ) ( 100.0 * T + 0.001 ) - 27315;
   if ( ic < 0 )
-    ic = 5000 - ic;
+    {
+      ic = 5000 - ic;
+    }
   sprintf ( target, "%04d", ic );
   return target;
 }
@@ -121,7 +139,9 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s )
   char aux[16];
 
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    return 0;
+    {
+      return 0;
+    }
 
   switch ( s->a->desc.y )
     {
@@ -215,9 +235,13 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s )
               syn->s3.XoXoXoXo[0] = aux[0];
               syn->s3.XoXoXoXo[1] = aux[1];
               if ( syn->s3.XoXoXoXo[2] == 0 )
-                syn->s3.XoXoXoXo[2] = '/';
+                {
+                  syn->s3.XoXoXoXo[2] = '/';
+                }
               if ( syn->s3.XoXoXoXo[3] == 0 )
-                syn->s3.XoXoXoXo[3] = '/';
+                {
+                  syn->s3.XoXoXoXo[3] = '/';
+                }
               syn->mask |= SYNOP_SEC3;
             }
         }
@@ -241,7 +265,9 @@ int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr_subset_state *s )
   char aux[16];
 
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    return 0;
+    {
+      return 0;
+    }
 
   switch ( s->a->desc.y )
     {
@@ -271,6 +297,145 @@ int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr_subset_state *s )
               strcpy ( b->s1.TdTdTd, aux + 1 );
               b->mask |= BUOY_SEC1;
             }
+        }
+      break;
+
+    default:
+      break;
+    }
+  return 0;
+}
+
+/*!
+  \fn int climat_parse_x12 ( struct climat_chunks *c, struct bufr_subset_state *s )
+  \brief Parse a expanded descriptor with X = 12
+  \param c pointer to a struct \ref climat_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
+int climat_parse_x12 ( struct climat_chunks *c, struct bufr_subset_state *s )
+{
+  char aux[16];
+
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+    {
+      return 0;
+    }
+
+  if ( c == NULL )
+    {
+      return 1;
+    }
+
+  switch ( s->a->desc.y )
+    {
+    case 101:
+      if ( s->is_normal == 0 )
+        {
+          if ( c->s1.TTT[0] == 0 )
+            {
+              if ( kelvin_to_snTTT ( aux, s->val ) )
+                {
+                  c->s1.s[0] = aux[0];
+                  strcpy ( c->s1.TTT, aux + 1 );
+                  c->mask |= SYNOP_SEC1;
+                }
+            }
+        }
+      else
+        {
+          if ( c->s2.TTT[0] == 0 )
+            {
+              if ( kelvin_to_snTTT ( aux, s->val ) )
+                {
+                  c->s2.s[0] = aux[0];
+                  strcpy ( c->s2.TTT, aux + 1 );
+                  c->mask |= SYNOP_SEC2;
+                }
+            }
+
+        }
+      break;
+
+    case 118: // 0 12 118 . Maximum temperature at heigh specified, past 24 h
+      if ( s->is_normal == 0 )
+        {
+          if ( c->s1.TxTxTx[0] == 0 )
+            {
+              if ( kelvin_to_snTTT ( aux, s->val ) )
+                {
+                  c->s1.sx[0] = aux[0];
+                  strcpy ( c->s1.TxTxTx, aux + 1 );
+                  c->mask |= CLIMAT_SEC1;
+                }
+            }
+        }
+      else
+        {
+          if ( c->s2.TxTxTx[0] == 0 )
+            {
+              if ( kelvin_to_snTTT ( aux, s->val ) )
+                {
+                  c->s2.sx[0] = aux[0];
+                  strcpy ( c->s2.TxTxTx, aux + 1 );
+                  c->mask |= CLIMAT_SEC2;
+                }
+            }
+        }
+      break;
+
+    case 119: // 0 12 119 . Minimum temperature at heigh specified, past 24 h
+      if ( s->is_normal == 0 )
+        {
+          if ( c->s1.TnTnTn[0] == 0 )
+            {
+              if ( kelvin_to_snTTT ( aux, s->val ) )
+                {
+                  c->s1.sn[0] = aux[0];
+                  strcpy ( c->s1.TnTnTn, aux + 1 );
+                  c->mask |= CLIMAT_SEC1;
+                }
+            }
+        }
+      else
+        {
+          if ( c->s2.TnTnTn[0] == 0 )
+            {
+              if ( kelvin_to_snTTT ( aux, s->val ) )
+                {
+                  c->s2.sn[0] = aux[0];
+                  strcpy ( c->s2.TnTnTn, aux + 1 );
+                  c->mask |= CLIMAT_SEC2;
+                }
+            }
+        }
+      break;
+
+    case 151: // 0 12 151 . Standard deviation of daily mean temperature
+      sprintf ( aux, "%03d", ( int ) ( s->val + 0.5 ) / 10 );
+      if ( s->is_normal == 0 )
+        {
+          strcpy ( c->s1.ststst, aux );
+          c->mask |= CLIMAT_SEC1;
+        }
+      else
+        {
+          strcpy ( c->s2.ststst, aux );
+          c->mask |= CLIMAT_SEC2;
+        }
+      break;
+
+    case 152: // 0 12 152 . Highest daily mean temperature
+      if ( s->a1->desc.x == 4 && s->a1->desc.y == 3 )
+        {
+          if ( kelvin_to_snTTT ( aux, s->val ) )
+            {
+              c->s4.sx[0] = aux[0];
+              strcpy ( c->s4.Txd, aux + 1 );
+            }
+          sprintf(c->s4.yx, "%02d", (int) s->a1->val);
+          c->mask |= CLIMAT_SEC4;
         }
       break;
 
