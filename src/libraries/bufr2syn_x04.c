@@ -310,6 +310,7 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr_subset_state *s )
           sprintf ( c->e.YYYY, "%04d", s->ival );
           s->mask |= SUBSET_MASK_HAVE_YEAR;
           sprintf ( c->s0.JJJ, "%03d", s->ival % 1000 );
+          c->mask |= CLIMAT_SEC0;
         }
       break;
 
@@ -321,6 +322,7 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr_subset_state *s )
       sprintf ( c->e.MM, "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_MONTH;
       sprintf ( c->s0.MM, "%02d", s->ival );
+      c->mask |= CLIMAT_SEC0;
       break;
 
     case 3: // 0 04 003 . Day of month
@@ -328,7 +330,11 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr_subset_state *s )
         {
           return 0;
         }
-      sprintf ( c->e.DD, "%02d", s->ival );
+      if ( c->e.DD[0] == 0 )
+        {
+          sprintf ( c->e.DD, "%02d", s->ival );
+        }
+      s->day = s->ival;
       s->mask |= SUBSET_MASK_HAVE_DAY;
       break;
 
@@ -337,7 +343,10 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr_subset_state *s )
         {
           return 0;
         }
-      sprintf ( c->e.HH, "%02d", s->ival );
+      if ( c->e.HH[0] == 0 )
+        {
+          sprintf ( c->e.HH, "%02d", s->ival );
+        }
       s->mask |= SUBSET_MASK_HAVE_HOUR;
       break;
 
@@ -346,7 +355,10 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr_subset_state *s )
         {
           return 0;
         }
-      sprintf ( c->e.mm, "%02d", s->ival );
+      if ( c->e.mm[0] == 0 )
+        {
+          sprintf ( c->e.mm, "%02d", s->ival );
+        }
       s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
 
@@ -363,7 +375,10 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr_subset_state *s )
         {
           return 0;
         }
-      s->nday = s->ival;
+      if ( s->nday == 0 )
+        {
+          s->nday = s->ival;
+        }
       break;
 
     case 51: // 0 04 051 . Principal time of daily reading of maximum
@@ -383,6 +398,16 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr_subset_state *s )
       sprintf ( c->s4.GnGn, "%02d", s->ival );
       s->mask |= CLIMAT_SEC4;
       break;
+
+    case 53: // 0 04 053 . Number of days with precipitation equal to or more than 1 mm
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      sprintf ( c->s1.nrnr, "%02d", s->ival );
+      s->mask |= CLIMAT_SEC1;
+      break;
+
 
     case 74: // 0 04 074 . (UTC - LST)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )

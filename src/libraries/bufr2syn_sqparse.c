@@ -36,7 +36,9 @@ int find_descriptor ( int *haystack, size_t nlst, int needle )
 {
   size_t i = 0;
   while ( haystack[i] != needle && i < nlst )
-    i++;
+    {
+      i++;
+    }
   return ( i < nlst );
 }
 
@@ -58,7 +60,9 @@ int find_descriptor_interval ( int *haystack, size_t nlst, int needlemin, int ne
 {
   size_t i = 0;
   while ( ( haystack[i] > needlemax || haystack[i] < needlemin ) && i < nlst )
-    i++;
+    {
+      i++;
+    }
   return ( i < nlst );
 }
 
@@ -82,37 +86,53 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
   switch ( ksec1[5] )
     {
     case 0:
-      if ( find_descriptor_interval ( kdtlst, nlst, 307079, 307086 ) ||
-           find_descriptor ( kdtlst, nlst,307091 ) ||
-           find_descriptor ( kdtlst, nlst,307096 ) ||
-           ksec1[6] == 0 || ksec1[6] == 1 || ksec1[6] == 2 )
-        strcpy ( st->type_report,"AAXX" ); // FM-12 synop
+      if ( find_descriptor_interval ( kdtlst, nlst, 307071, 307073 ) )
+        {
+          strcpy ( st->type_report, "CLIMAT" );  // FM-71 CLIMAT
+        }
+      else if ( find_descriptor_interval ( kdtlst, nlst, 307079, 307086 ) ||
+                find_descriptor ( kdtlst, nlst,307091 ) ||
+                find_descriptor ( kdtlst, nlst,307096 ) ||
+                ksec1[6] == 0 || ksec1[6] == 1 || ksec1[6] == 2 )
+        {
+          strcpy ( st->type_report,"AAXX" );  // FM-12 synop
+        }
       else if ( find_descriptor ( kdtlst, nlst,307090 ) ||
                 find_descriptor ( kdtlst, nlst,301092 ) ||
                 ksec1[6] == 3 || ksec1[6] == 4 || ksec1[6] == 5 )
-        strcpy ( st->type_report,"OOXX" ); // FM-14 synop-mobil
-      else if ( find_descriptor_interval(kdtlst, nlst, 307071, 307073) )
-	strcpy (st->type_report, "CLIMAT"); // FM-71 CLIMAT
-	break;
+        {
+          strcpy ( st->type_report,"OOXX" );  // FM-14 synop-mobil
+        }
+      break;
     case 1:
       if ( find_descriptor_interval ( kdtlst, nlst, 308004, 308005 ) ||
            find_descriptor ( kdtlst, nlst,301093 ) ||
            find_descriptor ( kdtlst, nlst,308009 ) || find_descriptor ( kdtlst, nlst,1011 ) )
-        strcpy ( st->type_report,"BBXX" ); // FM-13 ship
+        {
+          strcpy ( st->type_report,"BBXX" );  // FM-13 ship
+        }
       else if ( find_descriptor_interval ( kdtlst, nlst, 308001, 308003 ) ||
                 find_descriptor ( kdtlst, nlst,1005 ) ||
                 find_descriptor ( kdtlst, nlst,2036 ) ||
                 find_descriptor ( kdtlst, nlst,2149 ) ||
                 ksec1[6] == 25 )
-        strcpy ( st->type_report,"ZZYY" ); // FM-18 buoy
-      else if ( find_descriptor_interval(kdtlst, nlst, 308011, 308013) )
-	strcpy (st->type_report, "CLIMAT SHIP"); // FM-71 CLIMAT SHIP
+        {
+          strcpy ( st->type_report,"ZZYY" );  // FM-18 buoy
+        }
+      else if ( find_descriptor_interval ( kdtlst, nlst, 308011, 308013 ) )
+        {
+          strcpy ( st->type_report, "CLIMAT SHIP" );  // FM-71 CLIMAT SHIP
+        }
       break;
     case 2:
       if ( find_descriptor_interval ( kdtlst, nlst, 309050, 309051 ) )
-        strcpy ( st->type_report,"PPXX" ); // PILOT, PILOT SHIP, PILOT DROP or PILOT MOBIL
+        {
+          strcpy ( st->type_report,"PPXX" );  // PILOT, PILOT SHIP, PILOT DROP or PILOT MOBIL
+        }
       else if ( find_descriptor ( kdtlst, nlst, 309052 ) )
-        strcpy ( st->type_report,"TTXX" ); // TEMP, TEMP SHIP, TEMP MOBIL
+        {
+          strcpy ( st->type_report,"TTXX" );  // TEMP, TEMP SHIP, TEMP MOBIL
+        }
       break;
     default:
       sprintf ( err, "The data category %d is not parsed at the moment", ksec1[5] );
@@ -133,25 +153,33 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
     {
       // Parse FM-12, FM-13 and FM-14
       if ( parse_subset_as_synop ( m, st, sq, err ) == 0 )
-        return print_synop ( m->alphanum, 2048, &m->synop );
+        {
+          return print_synop ( m->alphanum, 2048, &m->synop );
+        }
     }
   else if ( strcmp ( st->type_report,"ZZYY" ) == 0 )
     {
       // parse BUOY
       if ( parse_subset_as_buoy ( m, st, sq, err ) == 0 )
-        return print_buoy ( m->alphanum, 2048, &m->buoy );
+        {
+          return print_buoy ( m->alphanum, 2048, &m->buoy );
+        }
     }
   else if ( strcmp ( st->type_report,"TTXX" ) == 0 )
     {
       // psrse TEMP
       if ( parse_subset_as_temp ( m, st, sq, err ) == 0 )
-        return 0; // FIXME
+        {
+          return 0;  // FIXME
+        }
     }
   else if ( strcmp ( st->type_report,"CLIMAT" ) == 0 )
     {
       // psrse CLIMAT
       if ( parse_subset_as_climat ( m, st, sq, err ) == 0 )
-        return 0; // FIXME
+        {
+          return print_climat ( m->alphanum, 2048, &m->climat );
+        }
     }
 
   // when reached this point we have han error

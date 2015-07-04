@@ -37,23 +37,41 @@ char * secs_to_tt ( char *tt, int secs )
 
   i = ( -secs ) / 360;
   if ( i <= 60 )
-    sprintf ( tt, "%02d", i );
+    {
+      sprintf ( tt, "%02d", i );
+    }
   else if ( i < 700 )
-    sprintf ( tt, "61" );
+    {
+      sprintf ( tt, "61" );
+    }
   else if ( i < 800 )
-    sprintf ( tt, "62" );
+    {
+      sprintf ( tt, "62" );
+    }
   else if ( i < 900 )
-    sprintf ( tt, "63" );
+    {
+      sprintf ( tt, "63" );
+    }
   else if ( i < 1000 )
-    sprintf ( tt, "64" );
+    {
+      sprintf ( tt, "64" );
+    }
   else if ( i < 1100 )
-    sprintf ( tt, "65" );
+    {
+      sprintf ( tt, "65" );
+    }
   else if ( i < 1200 )
-    sprintf ( tt, "66" );
+    {
+      sprintf ( tt, "66" );
+    }
   else if ( i < 1800 )
-    sprintf ( tt, "67" );
+    {
+      sprintf ( tt, "67" );
+    }
   else
-    sprintf ( tt, "68" );
+    {
+      sprintf ( tt, "68" );
+    }
   return tt;
 }
 
@@ -69,7 +87,9 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 {
 
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    return 0;
+    {
+      return 0;
+    }
 
   switch ( s->a->desc.y )
     {
@@ -81,9 +101,13 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s )
     case 2: // 0 11 002 . Wind speed
     case 12: // 0 11 012 . Wind speed at 10 meters
       if ( syn->s0.iw[0] == '4' )
-        s->val *= 1.94384449;
+        {
+          s->val *= 1.94384449;
+        }
       if ( s->val < 100.0 )
-        sprintf ( syn->s1.ff, "%02d", ( int ) ( s->val + 0.5 ) );
+        {
+          sprintf ( syn->s1.ff, "%02d", ( int ) ( s->val + 0.5 ) );
+        }
       else
         {
           sprintf ( syn->s1.ff,"99" );
@@ -93,14 +117,20 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s )
       break;
     case 41: // 0 11 041 . Max wind gust speed
       if ( syn->s3.d9.n == SYNOP_NMISC )
-        return 0;
+        {
+          return 0;
+        }
       if ( s->itval == -600 )
         {
           sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "910" );
           if ( syn->s0.iw[0] == '4' )
-            s->val *= 1.94384449;
+            {
+              s->val *= 1.94384449;
+            }
           if ( s->val < 100.0 )
-            sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%02d", ( int ) ( s->val + 0.5 ) );
+            {
+              sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%02d", ( int ) ( s->val + 0.5 ) );
+            }
           else
             {
               sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp,"99" );
@@ -119,9 +149,13 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s )
               syn->s5.d9.n++;
               sprintf ( syn->s5.d9.misc[syn->s5.d9.n].SpSp, "911" );
               if ( syn->s0.iw[0] == '4' )
-                s->val *= 1.94384449;
+                {
+                  s->val *= 1.94384449;
+                }
               if ( s->val < 100.0 )
-                sprintf ( syn->s5.d9.misc[syn->s5.d9.n].spsp, "%02d", ( int ) ( s->val + 0.5 ) );
+                {
+                  sprintf ( syn->s5.d9.misc[syn->s5.d9.n].spsp, "%02d", ( int ) ( s->val + 0.5 ) );
+                }
               else
                 {
                   sprintf ( syn->s5.d9.misc[syn->s5.d9.n].spsp,"99" );
@@ -139,9 +173,13 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s )
               syn->s3.d9.n++;
               sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "911" );
               if ( syn->s0.iw[0] == '4' )
-                s->val *= 1.94384449;
+                {
+                  s->val *= 1.94384449;
+                }
               if ( s->val < 100.0 )
-                sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%02d", ( int ) ( s->val + 0.5 ) );
+                {
+                  sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%02d", ( int ) ( s->val + 0.5 ) );
+                }
               else
                 {
                   sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp,"99" );
@@ -159,9 +197,13 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s )
       break;
     case 84: // 0 11 084 . Wind speed in knots
       if ( syn->s0.iw[0] == '1' )
-        s->val /= 1.94384449;
+        {
+          s->val /= 1.94384449;
+        }
       if ( s->val < 100.0 )
-        sprintf ( syn->s1.ff, "%02d", ( int ) ( s->val + 0.5 ) );
+        {
+          sprintf ( syn->s1.ff, "%02d", ( int ) ( s->val + 0.5 ) );
+        }
       else
         {
           sprintf ( syn->s1.ff,"99" );
@@ -171,14 +213,20 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s )
       break;
     case 86: // 0 11 086 . Max wind speed in knots
       if ( syn->s3.d9.n == SYNOP_NMISC )
-        return 0;
+        {
+          return 0;
+        }
       if ( s->itval == -600 )
         {
           sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "910" );
           if ( syn->s0.iw[0] == '1' )
-            s->val /= 1.94384449;
+            {
+              s->val /= 1.94384449;
+            }
           if ( s->val < 100.0 )
-            sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%02d", ( int ) ( s->val + 0.5 ) );
+            {
+              sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%02d", ( int ) ( s->val + 0.5 ) );
+            }
           else
             {
               sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp,"99" );
@@ -197,9 +245,13 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s )
               syn->s5.d9.n++;
               sprintf ( syn->s5.d9.misc[syn->s5.d9.n].SpSp, "911" );
               if ( syn->s0.iw[0] == '1' )
-                s->val /= 1.94384449;
+                {
+                  s->val /= 1.94384449;
+                }
               if ( s->val < 100.0 )
-                sprintf ( syn->s5.d9.misc[syn->s5.d9.n].spsp, "%02d", ( int ) ( s->val + 0.5 ) );
+                {
+                  sprintf ( syn->s5.d9.misc[syn->s5.d9.n].spsp, "%02d", ( int ) ( s->val + 0.5 ) );
+                }
               else
                 {
                   sprintf ( syn->s5.d9.misc[syn->s5.d9.n].spsp,"99" );
@@ -217,9 +269,13 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s )
               syn->s3.d9.n++;
               sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "911" );
               if ( syn->s0.iw[0] == '1' )
-                s->val /= 1.94384449;
+                {
+                  s->val /= 1.94384449;
+                }
               if ( s->val < 100.0 )
-                sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%02d", ( int ) ( s->val + 0.5 ) );
+                {
+                  sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%02d", ( int ) ( s->val + 0.5 ) );
+                }
               else
                 {
                   sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp,"99" );
@@ -251,7 +307,9 @@ int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 {
 
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    return 0;
+    {
+      return 0;
+    }
 
   switch ( s->a->desc.y )
     {
@@ -263,9 +321,13 @@ int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr_subset_state *s )
     case 2: // 0 11 002 . Wind speed
     case 12: // 0 11 012 . Wind speed at 10 meters
       if ( b->s0.iw[0] == '4' )
-        s->val *= 1.94384449;
+        {
+          s->val *= 1.94384449;
+        }
       if ( s->val < 100.0 )
-        sprintf ( b->s1.ff, "%02d", ( int ) ( s->val + 0.5 ) );
+        {
+          sprintf ( b->s1.ff, "%02d", ( int ) ( s->val + 0.5 ) );
+        }
       else
         {
           sprintf ( b->s1.ff,"99" );
@@ -275,9 +337,13 @@ int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr_subset_state *s )
       break;
     case 84: // 0 11 084  (wind in knots)
       if ( b->s0.iw[0] == '1' )
-        s->val /= 1.94384449;
+        {
+          s->val /= 1.94384449;
+        }
       if ( s->val < 100.0 )
-        sprintf ( b->s1.ff, "%02d", ( int ) ( s->val + 0.5 ) );
+        {
+          sprintf ( b->s1.ff, "%02d", ( int ) ( s->val + 0.5 ) );
+        }
       else
         {
           sprintf ( b->s1.ff,"99" );
@@ -286,6 +352,42 @@ int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr_subset_state *s )
       b->mask |= BUOY_SEC1;
       break;
 
+    default:
+      break;
+    }
+  return 0;
+}
+
+/*!
+  \fn int climat_parse_x11 ( struct climat_chunks *b, struct bufr_subset_state *s )
+  \brief Parse a expanded descriptor with X = 11
+  \param b pointer to a struct \ref climat_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
+int climat_parse_x11 ( struct climat_chunks *c, struct bufr_subset_state *s )
+{
+
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+    {
+      return 0;
+    }
+
+  switch ( s->a->desc.y )
+    {
+    case 46: // 0 11 046 . Maximum wind speed
+      sprintf ( c->s4.fxfxfx, "%03d",  s->ival );
+      if ( s->isq_val == 0 )
+        {
+          sprintf ( c->s4.yfx, "%02d", s->day );
+        }
+      else
+        {
+          sprintf ( c->s4.yfx, "%02d", s->day + 50 );
+        }
+      c->mask |= CLIMAT_SEC4;
+      break;
     default:
       break;
     }

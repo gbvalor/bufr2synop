@@ -47,7 +47,7 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr_subset_state *s, s
   clean_climat_chunks ( c );
 
   // reject if still not coded type
-  if ( strcmp ( s->type_report,"CLIMAT" ) == 0 ) //FIXME
+  if ( strcmp ( s->type_report,"CLIMAT" ) ) 
     {
       sprintf ( err,"bufr2syn: parse_subset_as_climat(): '%s' reports still not decoded in this software", s->type_report );
       return 1;
@@ -99,6 +99,10 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr_subset_state *s, s
 
         case 10: // Air pressure
           climat_parse_x10 ( c, s );
+          break;
+
+        case 11: // Wind
+          climat_parse_x11 ( c, s );
           break;
 
         case 12: // Temperature

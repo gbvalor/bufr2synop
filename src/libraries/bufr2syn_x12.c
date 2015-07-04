@@ -333,13 +333,32 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr_subset_state *s )
     case 101:
       if ( s->is_normal == 0 )
         {
-          if ( c->s1.TTT[0] == 0 )
+          if ( s->isq_val == 4 ) // mean value
             {
               if ( kelvin_to_snTTT ( aux, s->val ) )
                 {
                   c->s1.s[0] = aux[0];
                   strcpy ( c->s1.TTT, aux + 1 );
-                  c->mask |= SYNOP_SEC1;
+                  c->mask |= CLIMAT_SEC1;
+                }
+            }
+          else if ( s->isq_val == 2 ) // maximum value
+            {
+              if ( kelvin_to_snTTT ( aux, s->val ) )
+                {
+                  c->s4.sax[0] = aux[0];
+                  strcpy ( c->s4.Tax, aux + 1 );
+                  c->mask |= CLIMAT_SEC4;
+                }
+
+            }
+          else if ( s->isq_val == 3 ) // minimum value
+            {
+              if ( kelvin_to_snTTT ( aux, s->val ) )
+                {
+                  c->s4.san[0] = aux[0];
+                  strcpy ( c->s4.Tan, aux + 1 );
+                  c->mask |= CLIMAT_SEC4;
                 }
             }
         }
@@ -351,7 +370,7 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr_subset_state *s )
                 {
                   c->s2.s[0] = aux[0];
                   strcpy ( c->s2.TTT, aux + 1 );
-                  c->mask |= SYNOP_SEC2;
+                  c->mask |= CLIMAT_SEC2;
                 }
             }
 
@@ -413,7 +432,7 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr_subset_state *s )
       break;
 
     case 151: // 0 12 151 . Standard deviation of daily mean temperature
-      sprintf ( aux, "%03d", ( int ) ( s->val + 0.5 ) / 10 );
+      sprintf ( aux, "%03d", ( int ) ( s->val * 10.0 + 0.5 ));
       if ( s->is_normal == 0 )
         {
           strcpy ( c->s1.ststst, aux );
@@ -434,7 +453,34 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr_subset_state *s )
               c->s4.sx[0] = aux[0];
               strcpy ( c->s4.Txd, aux + 1 );
             }
-          sprintf(c->s4.yx, "%02d", (int) s->a1->val);
+          if ( s->isq_val == 0 )
+            {
+              sprintf ( c->s4.yx, "%02d", s->day );
+            }
+          else
+            {
+              sprintf ( c->s4.yx, "%02d", s->day + 50 );
+            }
+          c->mask |= CLIMAT_SEC4;
+        }
+      break;
+
+    case 153: // 0 12 153 . Lowest daily mean temperature
+      if ( s->a1->desc.x == 4 && s->a1->desc.y == 3 )
+        {
+          if ( kelvin_to_snTTT ( aux, s->val ) )
+            {
+              c->s4.sn[0] = aux[0];
+              strcpy ( c->s4.Tnd, aux + 1 );
+            }
+          if ( s->isq_val == 0 )
+            {
+              sprintf ( c->s4.yn, "%02d", s->day );
+            }
+          else
+            {
+              sprintf ( c->s4.yn, "%02d", s->day + 50 );
+            }
           c->mask |= CLIMAT_SEC4;
         }
       break;

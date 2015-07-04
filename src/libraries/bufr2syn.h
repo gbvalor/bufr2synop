@@ -323,6 +323,7 @@ struct bufr_subset_state
   char country[80]; /*!< Name of state/country if known */
   time_t tobs; /*!< Unix time reference*/
   int dift; /*!< UTC - LST , in hours */
+  int day; /*!< Day of ephemerides in some reports */
   int nday; /*!< period (days) in some reports */
   int month; /*!< month for some normal values */
   int is_normal; /*!< if 1, the values are normal of a defined period */
@@ -463,6 +464,14 @@ char * print_buoy_sec0 ( char **sec0, size_t lmax, struct buoy_chunks *syn );
 char * print_buoy_sec1 ( char **sec1, size_t lmax, struct buoy_chunks *syn );
 char * print_buoy_sec2 ( char **sec2, size_t lmax, struct buoy_chunks *syn );
 char * print_buoy_sec3 ( char **sec3, size_t lmax, struct buoy_chunks *syn );
+
+int print_climat ( char *report, size_t lmax, struct climat_chunks *cl );
+char * print_climat_sec0 ( char **sec0, size_t lmax, struct climat_chunks *cl );
+char * print_climat_sec1 ( char **sec1, size_t lmax, struct climat_chunks *cl );
+char * print_climat_sec2 ( char **sec2, size_t lmax, struct climat_chunks *cl );
+char * print_climat_sec3 ( char **sec3, size_t lmax, struct climat_chunks *cl );
+char * print_climat_sec4 ( char **sec4, size_t lmax, struct climat_chunks *cl );
+
 
 int print_csv ( FILE *f, struct metreport *m );
 int print_json ( FILE *f, struct metreport *m );

@@ -41,47 +41,71 @@ char * print_synop_sec0 ( char **sec0, size_t lmax, struct synop_chunks *syn )
   char *c = *sec0;
 
   if ( check_len ( sec0,12 ) )
-    c += sprintf ( c, "%s%s%s%s%s", syn->e.YYYY, syn->e.MM, syn->e.DD, syn->e.HH, syn->e.mm );
+    {
+      c += sprintf ( c, "%s%s%s%s%s", syn->e.YYYY, syn->e.MM, syn->e.DD, syn->e.HH, syn->e.mm );
+    }
 
   // Print type
   if ( check_len ( sec0,5 ) )
-    c += sprintf ( c, " %s%s", syn->s0.MiMi, syn->s0.MjMj );
+    {
+      c += sprintf ( c, " %s%s", syn->s0.MiMi, syn->s0.MjMj );
+    }
 
   if ( check_len ( sec0,6 ) )
     {
       if ( syn->s0.D_D[0] )
-        c += sprintf ( c, " %s", syn->s0.D_D );
+        {
+          c += sprintf ( c, " %s", syn->s0.D_D );
+        }
       else if ( syn->s0.A1[0] && syn->s0.bw[0] && syn->s0.nbnbnb[0] )
-        c += sprintf ( c, " %s%s%s", syn->s0.A1, syn->s0.bw, syn->s0.nbnbnb );
+        {
+          c += sprintf ( c, " %s%s%s", syn->s0.A1, syn->s0.bw, syn->s0.nbnbnb );
+        }
 
     }
 
   // print YYGGiw
   if ( check_len ( sec0,6 ) )
-    c += sprintf ( c, " %s%s%s", syn->s0.YY, syn->s0.GG, syn->s0.iw );
+    {
+      c += sprintf ( c, " %s%s%s", syn->s0.YY, syn->s0.GG, syn->s0.iw );
+    }
 
   // print IIiii
   if ( check_len ( sec0,6 ) && syn->s0.II[0] )
-    c += sprintf ( c, " %s%s", syn->s0.II, syn->s0.iii );
+    {
+      c += sprintf ( c, " %s%s", syn->s0.II, syn->s0.iii );
+    }
   else
     {
       if ( syn->s0.LaLaLa[0] )
-        c += sprintf ( c, " 99%s", syn->s0.LaLaLa );
+        {
+          c += sprintf ( c, " 99%s", syn->s0.LaLaLa );
+        }
       else
-        c += sprintf ( c, " 99///" );
+        {
+          c += sprintf ( c, " 99///" );
+        }
 
       if ( syn->s0.Qc[0] && syn->s0.LoLoLoLo[0] )
-        c += sprintf ( c, " %s%s", syn->s0.Qc, syn->s0.LoLoLoLo );
+        {
+          c += sprintf ( c, " %s%s", syn->s0.Qc, syn->s0.LoLoLoLo );
+        }
       else
-        c += sprintf ( c, " /////" );
+        {
+          c += sprintf ( c, " /////" );
+        }
     }
 
   if ( strcmp ( syn->s0.MiMi, "OO" ) == 0 )
     {
       if ( syn->s0.MMM[0] && syn->s0.Ula && syn->s0.Ulo )
-        c += sprintf ( c, " %s%s%s", syn->s0.MMM, syn->s0.Ula, syn->s0.Ulo );
+        {
+          c += sprintf ( c, " %s%s%s", syn->s0.MMM, syn->s0.Ula, syn->s0.Ulo );
+        }
       if ( syn->s0.h0h0h0h0[0] )
-        c += sprintf ( c, " %s%s", syn->s0.h0h0h0h0, syn->s0.im );
+        {
+          c += sprintf ( c, " %s%s", syn->s0.h0h0h0h0, syn->s0.im );
+        }
 
     }
 
@@ -104,39 +128,57 @@ char * print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn )
     {
       // printf irixhVV
       if ( check_len ( sec1,6 ) )
-        c += sprintf ( c, " %s%s%s%s", syn->s1.ir, syn->s1.ix, syn->s1.h, syn->s1.VV );
+        {
+          c += sprintf ( c, " %s%s%s%s", syn->s1.ir, syn->s1.ix, syn->s1.h, syn->s1.VV );
+        }
 
       // printf Nddff
       if ( check_len ( sec1,6 ) )
-        c += sprintf ( c, " %s%s%s", syn->s1.N, syn->s1.dd, syn->s1.ff );
+        {
+          c += sprintf ( c, " %s%s%s", syn->s1.N, syn->s1.dd, syn->s1.ff );
+        }
 
       if ( check_len ( sec1,6 ) && strlen ( syn->s1.fff ) )
-        c += sprintf ( c, " 00%s", syn->s1.fff );
+        {
+          c += sprintf ( c, " 00%s", syn->s1.fff );
+        }
 
       // printf 1snTTT
 
       if ( check_len ( sec1,6 ) && syn->s1.TTT[0] )
-        c += sprintf ( c, " 1%s%s", syn->s1.sn1, syn->s1.TTT );
+        {
+          c += sprintf ( c, " 1%s%s", syn->s1.sn1, syn->s1.TTT );
+        }
 
       // printf 2snTdTdTd
       if ( check_len ( sec1,6 ) && syn->s1.TdTdTd[0] )
-        c += sprintf ( c, " 2%s%s", syn->s1.sn2, syn->s1.TdTdTd );
+        {
+          c += sprintf ( c, " 2%s%s", syn->s1.sn2, syn->s1.TdTdTd );
+        }
 
       // printf 3PoPoPoPo
       if ( check_len ( sec1,6 ) && syn->s1.PoPoPoPo[0] )
-        c += sprintf ( c, " 3%s", syn->s1.PoPoPoPo );
+        {
+          c += sprintf ( c, " 3%s", syn->s1.PoPoPoPo );
+        }
 
       // printf 4PPPP
       if ( check_len ( sec1,6 ) && syn->s1.PPPP[0] )
-        c += sprintf ( c, " 4%s", syn->s1.PPPP );
+        {
+          c += sprintf ( c, " 4%s", syn->s1.PPPP );
+        }
 
       // printf 5appp
       if ( check_len ( sec1,6 ) && ( syn->s1.a[0] || syn->s1.ppp[0] ) )
         {
           if ( syn->s1.a[0] == 0 )
-            syn->s1.a[0] = '/';
+            {
+              syn->s1.a[0] = '/';
+            }
           if ( syn->s1.ppp[0] == 0 )
-            strcpy ( syn->s1.ppp, "///" );
+            {
+              strcpy ( syn->s1.ppp, "///" );
+            }
           c += sprintf ( c, " 5%s%s", syn->s1.a, syn->s1.ppp );
         }
 
@@ -144,20 +186,30 @@ char * print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn )
       if ( check_len ( sec1,6 ) && ( syn->s1.tr[0] || syn->s1.RRR[0] ) )
         {
           if ( syn->s1.tr[0] == 0 )
-            syn->s1.tr[0] = '/';
+            {
+              syn->s1.tr[0] = '/';
+            }
           if ( syn->s1.RRR[0] == 0 )
-            strcpy ( syn->s1.RRR, "///" );
+            {
+              strcpy ( syn->s1.RRR, "///" );
+            }
           c += sprintf ( c, " 6%s%s", syn->s1.RRR, syn->s1.tr );
         }
 
       if ( check_len ( sec1,6 ) && ( syn->s1.ww[0] || syn->s1.W1[0] || syn->s1.W2[0] ) )
         {
           if ( syn->s1.ww[0] == 0 )
-            strcpy ( syn->s1.ww, "//" );
+            {
+              strcpy ( syn->s1.ww, "//" );
+            }
           if ( syn->s1.W1[0] == 0 )
-            strcpy ( syn->s1.W1, "/" );
+            {
+              strcpy ( syn->s1.W1, "/" );
+            }
           if ( syn->s1.W2[0] == 0 )
-            strcpy ( syn->s1.W2, "/" );
+            {
+              strcpy ( syn->s1.W2, "/" );
+            }
           c += sprintf ( c, " 7%s%s%s", syn->s1.ww, syn->s1.W1, syn->s1.W2 );
         }
 
@@ -167,18 +219,28 @@ char * print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn )
                                      ( syn->s1.Ch[0] && syn->s1.Ch[0] != '0' && syn->s1.Ch[0] != '/' ) ) )
         {
           if ( syn->s1.Nh[0] == 0 )
-            strcpy ( syn->s1.Nh, "/" );
+            {
+              strcpy ( syn->s1.Nh, "/" );
+            }
           if ( syn->s1.Cl[0] == 0 )
-            strcpy ( syn->s1.Cl, "/" );
+            {
+              strcpy ( syn->s1.Cl, "/" );
+            }
           if ( syn->s1.Cm[0] == 0 )
-            strcpy ( syn->s1.Cm, "/" );
+            {
+              strcpy ( syn->s1.Cm, "/" );
+            }
           if ( syn->s1.Ch[0] == 0 )
-            strcpy ( syn->s1.Ch, "/" );
+            {
+              strcpy ( syn->s1.Ch, "/" );
+            }
           c += sprintf ( c, " 8%s%s%s%s", syn->s1.Nh, syn->s1.Cl, syn->s1.Cm, syn->s1.Ch );
         }
 
       if ( check_len ( sec1,6 ) && syn->s1.GG[0] )
-        c+= sprintf ( c, " 9%s%s", syn->s1.GG, syn->s1.gg );
+        {
+          c+= sprintf ( c, " 9%s%s", syn->s1.GG, syn->s1.gg );
+        }
     }
   *sec1 = c;
   return *sec1;
@@ -202,84 +264,134 @@ char * print_synop_sec2 ( char **sec2, size_t lmax, struct synop_chunks *syn )
         {
           c += sprintf ( c, " 222" );
           if ( syn->s2.Ds[0] )
-            c += sprintf ( c, "%s", syn->s2.Ds );
+            {
+              c += sprintf ( c, "%s", syn->s2.Ds );
+            }
           else
-            c += sprintf ( c, "/" );
+            {
+              c += sprintf ( c, "/" );
+            }
 
           if ( syn->s2.vs[0] )
-            c += sprintf ( c, "%s", syn->s2.vs );
+            {
+              c += sprintf ( c, "%s", syn->s2.vs );
+            }
           else
-            c += sprintf ( c, "/" );
+            {
+              c += sprintf ( c, "/" );
+            }
         }
 
       // printf 0ssTwTwTw
       if ( check_len ( sec2,6 ) && syn->s2.TwTwTw[0] )
-        c += sprintf ( c, " 0%s%s", syn->s2.ss, syn->s2.TwTwTw );
+        {
+          c += sprintf ( c, " 0%s%s", syn->s2.ss, syn->s2.TwTwTw );
+        }
 
       if ( check_len ( sec2,6 ) && ( syn->s2.PwaPwa[0] || syn->s2.HwaHwa[0] ) )
         {
           if ( syn->s2.PwaPwa[0] )
-            c += sprintf ( c, " 1%s", syn->s2.PwaPwa );
+            {
+              c += sprintf ( c, " 1%s", syn->s2.PwaPwa );
+            }
           else
-            c += sprintf ( c, " 1//" );
+            {
+              c += sprintf ( c, " 1//" );
+            }
 
           if ( syn->s2.HwaHwa[0] )
-            c += sprintf ( c, "%s", syn->s2.HwaHwa );
+            {
+              c += sprintf ( c, "%s", syn->s2.HwaHwa );
+            }
           else
-            c += sprintf ( c, "//" );
+            {
+              c += sprintf ( c, "//" );
+            }
         }
 
       if ( check_len ( sec2,6 ) && ( syn->s2.PwPw[0] || syn->s2.HwHw[0] ) )
         {
           if ( syn->s2.PwPw[0] )
-            c += sprintf ( c, " 2%s", syn->s2.PwPw );
+            {
+              c += sprintf ( c, " 2%s", syn->s2.PwPw );
+            }
           else
-            c += sprintf ( c, " 2//" );
+            {
+              c += sprintf ( c, " 2//" );
+            }
 
           if ( syn->s2.HwHw[0] )
-            c += sprintf ( c, "%s", syn->s2.HwHw );
+            {
+              c += sprintf ( c, "%s", syn->s2.HwHw );
+            }
           else
-            c += sprintf ( c, "//" );
+            {
+              c += sprintf ( c, "//" );
+            }
         }
 
       if ( check_len ( sec2,6 ) && ( syn->s2.dw1dw1[0] || syn->s2.dw2dw2[0] ) )
         {
           if ( syn->s2.dw1dw1[0] )
-            c += sprintf ( c, " 3%s", syn->s2.dw1dw1 );
+            {
+              c += sprintf ( c, " 3%s", syn->s2.dw1dw1 );
+            }
           else
-            c += sprintf ( c, " 3//" );
+            {
+              c += sprintf ( c, " 3//" );
+            }
 
           if ( syn->s2.dw2dw2[0] )
-            c += sprintf ( c, "%s", syn->s2.dw2dw2 );
+            {
+              c += sprintf ( c, "%s", syn->s2.dw2dw2 );
+            }
           else
-            c += sprintf ( c, "//" );
+            {
+              c += sprintf ( c, "//" );
+            }
         }
 
       if ( check_len ( sec2,6 ) && ( syn->s2.Pw1Pw1[0] || syn->s2.Hw1Hw1[0] ) )
         {
           if ( syn->s2.Pw1Pw1[0] )
-            c += sprintf ( c, " 4%s", syn->s2.Pw1Pw1 );
+            {
+              c += sprintf ( c, " 4%s", syn->s2.Pw1Pw1 );
+            }
           else
-            c += sprintf ( c, " 4//" );
+            {
+              c += sprintf ( c, " 4//" );
+            }
 
           if ( syn->s2.Hw1Hw1[0] )
-            c += sprintf ( c, "%s", syn->s2.Hw1Hw1 );
+            {
+              c += sprintf ( c, "%s", syn->s2.Hw1Hw1 );
+            }
           else
-            c += sprintf ( c, "//" );
+            {
+              c += sprintf ( c, "//" );
+            }
         }
 
 
       if ( check_len ( sec2,6 ) && ( syn->s2.Pw2Pw2[0] || syn->s2.Hw2Hw2[0] ) )
         {
           if ( syn->s2.Pw2Pw2[0] )
-            c += sprintf ( c, " 5%s", syn->s2.Pw2Pw2 );
+            {
+              c += sprintf ( c, " 5%s", syn->s2.Pw2Pw2 );
+            }
           else
-            c += sprintf ( c, " 5//" );
+            {
+              c += sprintf ( c, " 5//" );
+            }
 
           if ( syn->s2.Hw2Hw2[0] )
-            c += sprintf ( c, "%s", syn->s2.Hw2Hw2 );
+            {
+              c += sprintf ( c, "%s", syn->s2.Hw2Hw2 );
+            }
           else
-            c += sprintf ( c, "//" );
+            {
+              c += sprintf ( c, "//" );
+            }
         }
 
       if ( check_len ( sec2,6 ) && syn->s2.HwaHwaHwa[0] )
@@ -289,7 +401,9 @@ char * print_synop_sec2 ( char **sec2, size_t lmax, struct synop_chunks *syn )
 
 
       if ( check_len ( sec2,6 ) && syn->s2.TbTbTb[0] )
-        c += sprintf ( c, " 8%s%s", syn->s2.sw, syn->s2.TbTbTb );
+        {
+          c += sprintf ( c, " 8%s%s", syn->s2.sw, syn->s2.TbTbTb );
+        }
 
     }
   *sec2 = c;
@@ -310,7 +424,9 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
   if ( syn->mask & SYNOP_SEC3 )
     {
       if ( check_len ( sec3,4 ) )
-        c += sprintf ( c, " 333" );
+        {
+          c += sprintf ( c, " 333" );
+        }
 
       // init point to write info.
       // in case we finally write nothing in this section
@@ -338,9 +454,13 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
       if ( check_len ( sec3,6 ) && ( syn->s3.E[0] || syn->s3.jjj[0] ) )
         {
           if ( syn->s3.E[0] == 0 )
-            syn->s3.E[0] = '/';
+            {
+              syn->s3.E[0] = '/';
+            }
           if ( syn->s3.jjj[0] == 0 )
-            strcpy ( syn->s3.jjj, "///" );
+            {
+              strcpy ( syn->s3.jjj, "///" );
+            }
           c += sprintf ( c, " 3%s%s", syn->s3.E, syn->s3.jjj );
         }
 
@@ -353,7 +473,9 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
           for ( i = 0; i < 7; i++ )
             {
               if ( syn->s3.j524[i][0] )
-                sprintf ( c, " %s%s", syn->s3.j524[i], syn->s3.FFFF24[i] );
+                {
+                  sprintf ( c, " %s%s", syn->s3.j524[i], syn->s3.FFFF24[i] );
+                }
             }
         }
 
@@ -364,7 +486,9 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
           for ( i = 0; i < 7; i++ )
             {
               if ( syn->s3.j5[i][0] )
-                sprintf ( c, " %s%s", syn->s3.j5[i], syn->s3.FFFF[i] );
+                {
+                  sprintf ( c, " %s%s", syn->s3.j5[i], syn->s3.FFFF[i] );
+                }
             }
 
         }
@@ -372,14 +496,20 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
       if ( check_len ( sec3,6 ) && ( syn->s3.tr[0] || syn->s3.RRR[0] ) )
         {
           if ( syn->s3.tr[0] == 0 )
-            syn->s3.tr[0] = '/';
+            {
+              syn->s3.tr[0] = '/';
+            }
           if ( syn->s3.RRR[0] == 0 )
-            strcpy ( syn->s3.RRR, "///" );
+            {
+              strcpy ( syn->s3.RRR, "///" );
+            }
           c += sprintf ( c, " 6%s%s", syn->s3.RRR ,syn->s3.tr );
         }
 
       if ( check_len ( sec3,6 ) && syn->s3.RRRR24[0] )
-        c += sprintf ( c, " 7%s", syn->s3.RRRR24 );
+        {
+          c += sprintf ( c, " 7%s", syn->s3.RRRR24 );
+        }
 
       // additional cloud layers
       i = 0;
@@ -396,7 +526,9 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
         }
 
       if ( c != c0 )
-        *sec3 = c;
+        {
+          *sec3 = c;
+        }
     }
   return *sec3;
 }
@@ -416,7 +548,9 @@ char * print_synop_sec5 ( char **sec5, size_t lmax, struct synop_chunks *syn )
   if ( syn->mask & SYNOP_SEC5 )
     {
       if ( check_len ( sec5,4 ) )
-        c += sprintf ( c, " 555" );
+        {
+          c += sprintf ( c, " 555" );
+        }
 
       // init point to write info.
       // in case we finally write nothing in this section
@@ -426,9 +560,13 @@ char * print_synop_sec5 ( char **sec5, size_t lmax, struct synop_chunks *syn )
       if ( check_len ( sec5,6 ) && ( syn->s5.tr[0] || syn->s5.RRR[0] ) )
         {
           if ( syn->s5.tr[0] == 0 )
-            syn->s5.tr[0] = '/';
+            {
+              syn->s5.tr[0] = '/';
+            }
           if ( syn->s5.RRR[0] == 0 )
-            strcpy ( syn->s5.RRR, "///" );
+            {
+              strcpy ( syn->s5.RRR, "///" );
+            }
           c += sprintf ( c, " 6%s%s", syn->s5.RRR ,syn->s5.tr );
         }
 
@@ -439,7 +577,9 @@ char * print_synop_sec5 ( char **sec5, size_t lmax, struct synop_chunks *syn )
         }
 
       if ( c != c0 )
-        *sec5 = c;
+        {
+          *sec5 = c;
+        }
     }
   return *sec5;
 }
@@ -461,7 +601,9 @@ int print_synop ( char *report, size_t lmax, struct synop_chunks *syn )
 
   // Needs time extension
   if ( syn->e.YYYY[0] == 0 )
-    return 1;
+    {
+      return 1;
+    }
 
   print_synop_sec0 ( &c, lmax, syn );
 
@@ -476,7 +618,9 @@ int print_synop ( char *report, size_t lmax, struct synop_chunks *syn )
       print_synop_sec5 ( &c, lmax - strlen ( report ), syn );
     }
   else
-    c += sprintf ( c, " NIL" );
+    {
+      c += sprintf ( c, " NIL" );
+    }
   c += sprintf ( c, "=" );
 
   return 0;
@@ -495,54 +639,82 @@ char * print_buoy_sec0 ( char **sec0, size_t lmax, struct buoy_chunks *b )
   char *c = *sec0;
 
   if ( check_len ( sec0,12 ) )
-    c += sprintf ( c, "%s%s%s%s%s", b->e.YYYY, b->e.MM, b->e.DD, b->e.HH, b->e.mm );
+    {
+      c += sprintf ( c, "%s%s%s%s%s", b->e.YYYY, b->e.MM, b->e.DD, b->e.HH, b->e.mm );
+    }
 
   // Print type
   if ( check_len ( sec0,5 ) )
-    c += sprintf ( c, " %s%s", b->s0.MiMi, b->s0.MjMj );
+    {
+      c += sprintf ( c, " %s%s", b->s0.MiMi, b->s0.MjMj );
+    }
 
   if ( check_len ( sec0,6 ) && b->s0.A1[0] && b->s0.bw[0] && b->s0.nbnbnb[0] )
     {
       c += sprintf ( c, " %s%s%s", b->s0.A1, b->s0.bw, b->s0.nbnbnb );
     }
   else if ( check_len ( sec0, 10 ) && b->s0.D_D )
-    c += sprintf ( c, " %s", b->s0.D_D );
+    {
+      c += sprintf ( c, " %s", b->s0.D_D );
+    }
 
 
   if ( check_len ( sec0,6 ) )
-    c += sprintf ( c, " %s%s%s", b->s0.YY, b->s0.MM, b->s0.J );
+    {
+      c += sprintf ( c, " %s%s%s", b->s0.YY, b->s0.MM, b->s0.J );
+    }
 
   if ( check_len ( sec0,6 ) )
     {
       if ( b->s0.iw[0] )
-        c += sprintf ( c, " %s%s%s", b->s0.GG, b->s0.gg, b->s0.iw );
+        {
+          c += sprintf ( c, " %s%s%s", b->s0.GG, b->s0.gg, b->s0.iw );
+        }
       else
-        c += sprintf ( c, " %s%s/", b->s0.GG, b->s0.gg );
+        {
+          c += sprintf ( c, " %s%s/", b->s0.GG, b->s0.gg );
+        }
     }
 
   if ( check_len ( sec0,7 ) )
-    c += sprintf ( c, " %s%s", b->s0.Qc, b->s0.LaLaLaLaLa );
+    {
+      c += sprintf ( c, " %s%s", b->s0.Qc, b->s0.LaLaLaLaLa );
+    }
 
 
   if ( check_len ( sec0,7 ) )
-    c += sprintf ( c, " %s", b->s0.LoLoLoLoLoLo );
+    {
+      c += sprintf ( c, " %s", b->s0.LoLoLoLoLoLo );
+    }
 
   if ( b->s0.QA[0] || b->s0.Ql[0] || b->s0.Qt[0] )
     {
       if ( b->s0.Ql[0] )
-        c +=sprintf ( c, " 6%s", b->s0.Ql );
+        {
+          c +=sprintf ( c, " 6%s", b->s0.Ql );
+        }
       else
-        c +=sprintf ( c, " 6/" );
+        {
+          c +=sprintf ( c, " 6/" );
+        }
 
       if ( b->s0.Qt[0] )
-        c +=sprintf ( c, "%s", b->s0.Qt );
+        {
+          c +=sprintf ( c, "%s", b->s0.Qt );
+        }
       else
-        c +=sprintf ( c, "/" );
+        {
+          c +=sprintf ( c, "/" );
+        }
 
       if ( b->s0.QA[0] )
-        c +=sprintf ( c, "%s/", b->s0.QA );
+        {
+          c +=sprintf ( c, "%s/", b->s0.QA );
+        }
       else
-        c +=sprintf ( c, "//" );
+        {
+          c +=sprintf ( c, "//" );
+        }
     }
 
   *sec0 = c;
@@ -566,14 +738,22 @@ char * print_buoy_sec1 ( char **sec1, size_t lmax, struct buoy_chunks *b )
       c += sprintf ( c," 111" );
 
       if ( b->s1.Qd[0] )
-        c += sprintf ( c,"%s", b->s1.Qd );
+        {
+          c += sprintf ( c,"%s", b->s1.Qd );
+        }
       else
-        c += sprintf ( c,"/" );
+        {
+          c += sprintf ( c,"/" );
+        }
 
       if ( b->s1.Qx[0] )
-        c += sprintf ( c,"%s", b->s1.Qx );
+        {
+          c += sprintf ( c,"%s", b->s1.Qx );
+        }
       else
-        c += sprintf ( c,"/" );
+        {
+          c += sprintf ( c,"/" );
+        }
 
       // 0ddff
       if ( check_len ( sec1,6 ) )
@@ -582,40 +762,60 @@ char * print_buoy_sec1 ( char **sec1, size_t lmax, struct buoy_chunks *b )
             {
               c += sprintf ( c, " 0" );
               if ( b->s1.dd[0] )
-                c += sprintf ( c, "%s", b->s1.dd );
+                {
+                  c += sprintf ( c, "%s", b->s1.dd );
+                }
               else
-                c += sprintf ( c, "//" );
+                {
+                  c += sprintf ( c, "//" );
+                }
 
               if ( b->s1.ff[0] )
-                c += sprintf ( c, "%s", b->s1.ff );
+                {
+                  c += sprintf ( c, "%s", b->s1.ff );
+                }
               else
-                c += sprintf ( c, "//" );
+                {
+                  c += sprintf ( c, "//" );
+                }
             }
         }
 
       // 1snTTT
       if ( check_len ( sec1,6 ) && b->s1.TTT[0] )
-        c += sprintf ( c, " 1%s%s", b->s1.sn1, b->s1.TTT );
+        {
+          c += sprintf ( c, " 1%s%s", b->s1.sn1, b->s1.TTT );
+        }
 
       // 2snTdTdTd
       if ( check_len ( sec1,6 ) && b->s1.TdTdTd[0] )
-        c += sprintf ( c, " 2%s%s", b->s1.sn2, b->s1.TdTdTd );
+        {
+          c += sprintf ( c, " 2%s%s", b->s1.sn2, b->s1.TdTdTd );
+        }
 
       // 3PoPoPoPo
       if ( check_len ( sec1,6 ) && b->s1.PoPoPoPo[0] )
-        c += sprintf ( c, " 3%s", b->s1.PoPoPoPo );
+        {
+          c += sprintf ( c, " 3%s", b->s1.PoPoPoPo );
+        }
 
       // printf 4PPPP
       if ( check_len ( sec1,6 ) && b->s1.PPPP[0] )
-        c += sprintf ( c, " 4%s", b->s1.PPPP );
+        {
+          c += sprintf ( c, " 4%s", b->s1.PPPP );
+        }
 
       // printf 5appp
       if ( check_len ( sec1,6 ) && ( b->s1.a[0] || b->s1.ppp[0] ) )
         {
           if ( b->s1.a[0] == 0 )
-            b->s1.a[0] = '/';
+            {
+              b->s1.a[0] = '/';
+            }
           if ( b->s1.ppp[0] == 0 )
-            strcpy ( b->s1.ppp, "///" );
+            {
+              strcpy ( b->s1.ppp, "///" );
+            }
           c += sprintf ( c, " 5%s%s", b->s1.a, b->s1.ppp );
         }
     }
@@ -641,41 +841,63 @@ char * print_buoy_sec2 ( char **sec2, size_t lmax, struct buoy_chunks *b )
       c += sprintf ( c," 222" );
 
       if ( b->s2.Qd[0] )
-        c += sprintf ( c,"%s", b->s2.Qd );
+        {
+          c += sprintf ( c,"%s", b->s2.Qd );
+        }
       else
-        c += sprintf ( c,"/" );
+        {
+          c += sprintf ( c,"/" );
+        }
 
       if ( b->s2.Qx[0] )
-        c += sprintf ( c,"%s", b->s2.Qx );
+        {
+          c += sprintf ( c,"%s", b->s2.Qx );
+        }
       else
-        c += sprintf ( c,"/" );
+        {
+          c += sprintf ( c,"/" );
+        }
 
       // 0snTwTwTw
       if ( check_len ( sec2,6 ) && b->s2.TwTwTw[0] )
-        c += sprintf ( c, " 0%s%s", b->s2.sn, b->s2.TwTwTw );
+        {
+          c += sprintf ( c, " 0%s%s", b->s2.sn, b->s2.TwTwTw );
+        }
 
       // 1PwaPwaHwaHwa
       if ( check_len ( sec2,6 ) && ( b->s2.PwaPwa[0] || b->s2.HwaHwa[0] ) )
         {
           c += sprintf ( c, " 1" );
           if ( b->s2.PwaPwa[0] )
-            c += sprintf ( c,"%s", b->s2.PwaPwa );
+            {
+              c += sprintf ( c,"%s", b->s2.PwaPwa );
+            }
           else
-            c += sprintf ( c,"//" );
+            {
+              c += sprintf ( c,"//" );
+            }
 
           if ( b->s2.HwaHwa[0] )
-            c += sprintf ( c,"%s", b->s2.HwaHwa );
+            {
+              c += sprintf ( c,"%s", b->s2.HwaHwa );
+            }
           else
-            c += sprintf ( c,"//" );
+            {
+              c += sprintf ( c,"//" );
+            }
         }
 
       // 20PwaPwaPwa
       if ( check_len ( sec2,6 ) && b->s2.PwaPwaPwa[0] )
-        c += sprintf ( c, " 20%s", b->s2.PwaPwaPwa );
+        {
+          c += sprintf ( c, " 20%s", b->s2.PwaPwaPwa );
+        }
 
       // 21HwaHwaHwa
       if ( check_len ( sec2,6 ) && b->s2.HwaHwaHwa[0] )
-        c += sprintf ( c, " 21%s", b->s2.HwaHwaHwa );
+        {
+          c += sprintf ( c, " 21%s", b->s2.HwaHwaHwa );
+        }
 
 
     }
@@ -705,14 +927,20 @@ char * print_buoy_sec3 ( char **sec3, size_t lmax, struct buoy_chunks *b )
       while ( b->s3.l1[l].zzzz[0] && l < 32 )
         {
           if ( l == 0 )
-            c += sprintf ( c, " 8887%s", b->s3.k2 );
+            {
+              c += sprintf ( c, " 8887%s", b->s3.k2 );
+            }
           c += sprintf ( c,  " 2%s", b->s3.l1[l].zzzz );
 
           if ( b->s3.l1[l].TTTT[0] )
-            c += sprintf ( c,  " 3%s", b->s3.l1[l].TTTT );
+            {
+              c += sprintf ( c,  " 3%s", b->s3.l1[l].TTTT );
+            }
 
           if ( b->s3.l1[l].SSSS[0] )
-            c += sprintf ( c,  " 4%s", b->s3.l1[l].SSSS );
+            {
+              c += sprintf ( c,  " 4%s", b->s3.l1[l].SSSS );
+            }
           l++;
         }
 
@@ -720,19 +948,29 @@ char * print_buoy_sec3 ( char **sec3, size_t lmax, struct buoy_chunks *b )
       while ( b->s3.l2[l].zzzz[0] && l < 32 )
         {
           if ( l == 0 )
-            c += sprintf ( c, " 66%s9%s", b->s3.k6, b->s3.k3 );
+            {
+              c += sprintf ( c, " 66%s9%s", b->s3.k6, b->s3.k3 );
+            }
           c += sprintf ( c,  " 2%s", b->s3.l2[l].zzzz );
 
           if ( b->s3.l2[l].dd[0] || b->s3.l2[l].ccc[0] )
             {
               if ( b->s3.l2[l].dd[0] )
-                c += sprintf ( c,  " %s", b->s3.l2[l].dd );
+                {
+                  c += sprintf ( c,  " %s", b->s3.l2[l].dd );
+                }
               else
-                c += sprintf ( c,  " //" );
+                {
+                  c += sprintf ( c,  " //" );
+                }
               if ( b->s3.l2[l].ccc[0] )
-                c += sprintf ( c,  "%s", b->s3.l2[l].ccc );
+                {
+                  c += sprintf ( c,  "%s", b->s3.l2[l].ccc );
+                }
               else
-                c += sprintf ( c,  "///" );
+                {
+                  c += sprintf ( c,  "///" );
+                }
             }
           l++;
         }
@@ -759,7 +997,9 @@ int print_buoy ( char *report, size_t lmax, struct buoy_chunks *b )
 
   // Needs time extension
   if ( b->e.YYYY[0] == 0 )
-    return 1;
+    {
+      return 1;
+    }
 
   print_buoy_sec0 ( &c, lmax, b );
 
@@ -772,10 +1012,229 @@ int print_buoy ( char *report, size_t lmax, struct buoy_chunks *b )
       print_buoy_sec3 ( &c, lmax - strlen ( report ), b );
     }
   else
-    c+= sprintf ( c, " NIL" );
+    {
+      c+= sprintf ( c, " NIL" );
+    }
   c += sprintf ( c, "=" );
 
   return 0;
 }
 
 
+/*!
+  \fn char * print_climat_sec0 (char **sec0, size_t lmax, struct climat_chunks *cl)
+  \brief Prints the climat section 0 (header)
+  \param sec0 the pointer where to print section
+  \param lmax max length permited
+  \param cl pointer to s atruct \ref climat_chunks where the parse results are set
+*/
+char * print_climat_sec0 ( char **sec0, size_t lmax, struct climat_chunks *cl )
+{
+  char *c = *sec0;
+
+  if ( check_len ( sec0,12 ) )
+    {
+      c += sprintf ( c, "%s%s%s%s%s", cl->e.YYYY, cl->e.MM, cl->e.DD, cl->e.HH, cl->e.mm );
+    }
+
+  // Print type
+  if ( check_len ( sec0,6 ) )
+    {
+      c += sprintf ( c, " CLIMAT" );
+    }
+
+  // print MMJJJ
+  if ( check_len ( sec0,8 ) )
+    {
+      c += sprintf ( c, " %s%s\r\n", cl->s0.MM, cl->s0.JJJ );
+    }
+
+  // print IIiii
+  if ( check_len ( sec0,6 ) && cl->s0.II[0] )
+    {
+      c += sprintf ( c, "%s%s", cl->s0.II, cl->s0.iii );
+    }
+
+  *sec0 = c;
+  return *sec0;
+}
+
+/*!
+  \fn char * print_climat_sec1 (char **sec1, size_t lmax, struct climat_chunks *cl)
+  \brief Prints the climat section 1
+  \param sec1 the pointer where to print section
+  \param lmax max length permited
+  \param cl pointer to s atruct \ref climat_chunks where the parse results are set
+*/
+char * print_climat_sec1 ( char **sec1, size_t lmax, struct climat_chunks *cl )
+{
+  char *c = *sec1;
+
+  if ( cl->mask & SYNOP_SEC1 )
+    {
+      if ( check_len ( sec1,4 ) )
+        {
+          c += sprintf ( c, " 111" );
+        }
+
+      if ( check_len ( sec1,6 ) )
+        {
+          if ( cl->s1.PoPoPoPo[0] == 0 )
+            {
+              strcpy ( cl->s1.PoPoPoPo, "////" );
+            }
+          c += sprintf ( c, " 1%s", cl->s1.PoPoPoPo );
+        }
+
+      if ( check_len ( sec1,6 ) )
+        {
+          if ( cl->s1.PPPP[0] == 0 )
+            {
+              strcpy ( cl->s1.PPPP, "////" );
+            }
+          c += sprintf ( c, " 2%s", cl->s1.PPPP );
+        }
+
+      if ( check_len ( sec1,9 ) )
+        {
+          if ( cl->s1.TTT[0] == 0 )
+            {
+              strcpy ( cl->s1.s, "/" );
+              strcpy ( cl->s1.TTT, "///" );
+            }
+          if ( cl->s1.ststst[0] == 0 )
+            {
+              strcpy ( cl->s1.ststst, "///" );
+            }
+          c += sprintf ( c, " 3%s%s%s", cl->s1.s, cl->s1.TTT, cl->s1.ststst );
+        }
+
+      if ( check_len ( sec1,10 ) )
+        {
+          if ( cl->s1.TxTxTx[0] == 0 )
+            {
+              strcpy ( cl->s1.sx, "/" );
+              strcpy ( cl->s1.TxTxTx, "///" );
+            }
+          if ( cl->s1.TnTnTn[0] == 0 )
+            {
+              strcpy ( cl->s1.sn, "/" );
+              strcpy ( cl->s1.TnTnTn, "///" );
+            }
+          c += sprintf ( c, " 4%s%s%s%s", cl->s1.sx, cl->s1.TxTxTx, cl->s1.sn, cl->s1.TnTnTn );
+        }
+
+      if ( check_len ( sec1,5 ) )
+        {
+          if ( cl->s1.eee[0] == 0 )
+            {
+              strcpy ( cl->s1.eee, "///" );
+            }
+          c += sprintf ( c, " 5%s", cl->s1.eee );
+        }
+
+      if ( check_len ( sec1,9 ) )
+        {
+          if ( cl->s1.R1R1R1R1[0] == 0 )
+            {
+              strcpy ( cl->s1.R1R1R1R1, "////" );
+            }
+          if ( cl->s1.Rd[0] == 0 )
+            {
+              strcpy ( cl->s1.Rd, "/" );
+            }
+          if ( cl->s1.nrnr[0] == 0 )
+            {
+              strcpy ( cl->s1.nrnr, "//" );
+            }
+          c += sprintf ( c, " 6%s%s%s", cl->s1.R1R1R1R1, cl->s1.Rd, cl->s1.nrnr );
+        }
+
+      if ( check_len ( sec1,8 ) )
+        {
+          if ( cl->s1.S1S1S1[0] == 0 )
+            {
+              strcpy ( cl->s1.S1S1S1, "///" );
+            }
+          if ( cl->s1.pspsps[0] == 0 )
+            {
+              strcpy ( cl->s1.pspsps, "///" );
+            }
+          c += sprintf ( c, " 7%s%s", cl->s1.S1S1S1, cl->s1.pspsps );
+        }
+        
+      if ( check_len ( sec1,8 ) )
+        {
+          if ( cl->s1.mpmp[0] == 0 )
+            {
+              strcpy ( cl->s1.mpmp, "//" );
+            }
+          if ( cl->s1.mtmt[0] == 0 )
+            {
+              strcpy ( cl->s1.mtmt, "//" );
+            }
+          if ( cl->s1.mtx[0] == 0 )
+            {
+              strcpy ( cl->s1.mtx, "/" );
+            }
+          if ( cl->s1.mtn[0] == 0 )
+            {
+              strcpy ( cl->s1.mtn, "/" );
+            }
+          c += sprintf ( c, " 8%s%s%s%s", cl->s1.mpmp, cl->s1.mtmt, cl->s1.mtx, cl->s1.mtn );
+        }
+        
+      if ( check_len ( sec1,8 ) )
+        {
+          if ( cl->s1.meme[0] == 0 )
+            {
+              strcpy ( cl->s1.meme, "//" );
+            }
+          if ( cl->s1.mrmr[0] == 0 )
+            {
+              strcpy ( cl->s1.mrmr, "//" );
+            }
+          if ( cl->s1.msms[0] == 0 )
+            {
+              strcpy ( cl->s1.msms, "//" );
+            }
+          c += sprintf ( c, " 9%s%s%s", cl->s1.meme, cl->s1.mrmr, cl->s1.msms );
+        }
+        
+
+    }
+
+  *sec1 = c;
+  return *sec1;
+}
+
+
+/*!
+ \fn int print_climat(char *report, size_t lmax, struct climat_chunks *cl)
+ \brief prints a climat into a string
+ \param report target string
+ \param lmax max size of string
+ \param cl pointer to a struct \ref climat_chunks with the result of parse tasks
+
+ returns 0 if all went right
+*/
+int print_climat ( char *report, size_t lmax, struct climat_chunks *cl )
+{
+  char *c;
+
+  c = report;
+
+  // Needs time extension
+  if ( cl->e.YYYY[0] == 0 )
+    {
+      return 1;
+    }
+
+  print_climat_sec0 ( &c, lmax, cl );
+
+  print_climat_sec1 ( &c, lmax, cl );
+
+  c += sprintf ( c, "=" );
+  return 0;
+
+}

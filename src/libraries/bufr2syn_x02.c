@@ -128,6 +128,11 @@ int climat_parse_x02 ( struct climat_chunks *c, struct bufr_subset_state *s )
       s->mask |= SUBSET_MASK_HAVE_TYPE_STATION;
       break;
       
+    case 2: // 0 02 002 . Type of instrumentation for wind measurement
+      strcpy ( c->s4.iw, "1" ); // always to m/s because bufr date are in m/s
+      c->mask |= CLIMAT_SEC4;
+      break;
+  
     case 51: // 0 02 051 . Observing method for extreme temperatures
       sprintf(c->s4.iy,"%d",s->ival);
       c->mask |= CLIMAT_SEC4;

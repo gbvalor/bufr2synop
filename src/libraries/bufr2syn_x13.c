@@ -53,23 +53,23 @@ char * prec_to_RRR ( char *target, double r )
 
 /*!
   \fn char * prec_to_RRRR ( char *target, double r )
-  \brief converts a precipitation in Kg/m2 into a RRRR string
+  \brief converts a precipitation in Kg/m2 into a RRRR string (code table 3596)
   \param r the precipitation
   \param target the resulting string
 */
 char * prec_to_RRRR ( char *target, double r )
 {
-  if ( r < 0.0|| ( r > 0.0 && r < 0.1 ) )
+  if ( r < 0.0 || ( r > 0.0 && r < 0.1 ) )
     {
       strcpy ( target,"9999" );
     }
-  else if ( r <= 999.8 )
+  else if ( r <= 8899.0 )
     {
-      sprintf ( target,"%04d", ( int ) ( r * 10.0 ) );
+      sprintf ( target,"%04d", ( int ) ( r + 0.5 ) );
     }
   else
     {
-      strcpy ( target,"9998" );
+      strcpy ( target,"8899" );
     }
   return target;
 }
@@ -415,12 +415,32 @@ int climat_parse_x13 ( struct climat_chunks *c, struct bufr_subset_state *s )
     case 4: // 0 13 004 . Mean vapor pressure in tenths of hectopascal
       if ( s->is_normal == 0 )
         {
-          sprintf ( c->s1.eee,"%03d", s->ival );
+          sprintf ( c->s1.eee,"%03d", ( int ) ( s->val * 0.1 + 0.5 ) );
           c->mask |= CLIMAT_SEC1;
         }
       else
         {
-          sprintf ( c->s2.eee,"%03d", s->ival );
+          sprintf ( c->s2.eee,"%03d", ( int ) ( s->val * 0.1 + 0.5 ) );
+          c->mask |= CLIMAT_SEC2;
+        }
+      break;
+
+    case 51: // 0 13 051 . Frequency group precipitation
+      if ( s->ival >= 0 && s->ival <= 6 )
+        {
+          sprintf ( c->s1.Rd, "%d", s->ival );
+        }
+      break;
+
+    case 60: // 0 13 060 . Total acumulated precipitation
+      if ( s->is_normal == 0 )
+        {
+          prec_to_RRRR ( c->s1.R1R1R1R1, s->val );
+          c->mask |= CLIMAT_SEC1;
+        }
+      else
+        {
+          prec_to_RRRR ( c->s2.R1R1R1R1, s->val );
           c->mask |= CLIMAT_SEC2;
         }
       break;
