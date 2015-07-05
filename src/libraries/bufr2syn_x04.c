@@ -408,8 +408,16 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr_subset_state *s )
         {
           return 0;
         }
-      sprintf ( c->s1.nrnr, "%02d", s->ival );
-      s->mask |= CLIMAT_SEC1;
+      if (s->is_normal == 0)
+      {
+	sprintf ( c->s1.nrnr, "%02d", s->ival );
+        s->mask |= CLIMAT_SEC1;
+      }
+      else
+      {
+	sprintf ( c->s2.nrnr, "%02d", s->ival );
+        s->mask |= CLIMAT_SEC2;
+      }
       break;
 
 

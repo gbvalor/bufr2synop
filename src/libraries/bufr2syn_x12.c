@@ -43,7 +43,7 @@ char * kelvin_to_snTTT ( char *target, double T )
     }
   else
     {
-      sprintf ( target, "%04d", ( ic  + 5 ) /10 );
+      sprintf ( target, "%04d", ( ic  + 4 ) /10 );
     }
   return target;
 }

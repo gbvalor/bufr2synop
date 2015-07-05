@@ -1079,126 +1079,141 @@ char * print_climat_sec1 ( char **sec1, size_t lmax, struct climat_chunks *cl )
 
       if ( check_len ( sec1,6 ) )
         {
-          if ( cl->s1.PoPoPoPo[0] == 0 )
+          if ( cl->s1.PoPoPoPo[0] )
             {
-              strcpy ( cl->s1.PoPoPoPo, "////" );
+              c += sprintf ( c, " 1%s", cl->s1.PoPoPoPo );
             }
-          c += sprintf ( c, " 1%s", cl->s1.PoPoPoPo );
         }
 
       if ( check_len ( sec1,6 ) )
         {
-          if ( cl->s1.PPPP[0] == 0 )
+          if ( cl->s1.PPPP[0] )
             {
-              strcpy ( cl->s1.PPPP, "////" );
+              c += sprintf ( c, " 2%s", cl->s1.PPPP );
             }
-          c += sprintf ( c, " 2%s", cl->s1.PPPP );
         }
 
       if ( check_len ( sec1,9 ) )
         {
-          if ( cl->s1.TTT[0] == 0 )
+          if ( cl->s1.TTT[0] || cl->s1.ststst[0] )
             {
-              strcpy ( cl->s1.s, "/" );
-              strcpy ( cl->s1.TTT, "///" );
+              if ( cl->s1.TTT[0] == 0 )
+                {
+                  strcpy ( cl->s1.s, "/" );
+                  strcpy ( cl->s1.TTT, "///" );
+                }
+              if ( cl->s1.ststst[0] == 0 )
+                {
+                  strcpy ( cl->s1.ststst, "///" );
+                }
+              c += sprintf ( c, " 3%s%s%s", cl->s1.s, cl->s1.TTT, cl->s1.ststst );
             }
-          if ( cl->s1.ststst[0] == 0 )
-            {
-              strcpy ( cl->s1.ststst, "///" );
-            }
-          c += sprintf ( c, " 3%s%s%s", cl->s1.s, cl->s1.TTT, cl->s1.ststst );
         }
 
       if ( check_len ( sec1,10 ) )
         {
-          if ( cl->s1.TxTxTx[0] == 0 )
+          if ( cl->s1.TxTxTx[0] || cl->s1.TnTnTn[0] )
             {
-              strcpy ( cl->s1.sx, "/" );
-              strcpy ( cl->s1.TxTxTx, "///" );
+              if ( cl->s1.TxTxTx[0] == 0 )
+                {
+                  strcpy ( cl->s1.sx, "/" );
+                  strcpy ( cl->s1.TxTxTx, "///" );
+                }
+              if ( cl->s1.TnTnTn[0] == 0 )
+                {
+                  strcpy ( cl->s1.sn, "/" );
+                  strcpy ( cl->s1.TnTnTn, "///" );
+                }
+              c += sprintf ( c, " 4%s%s%s%s", cl->s1.sx, cl->s1.TxTxTx, cl->s1.sn, cl->s1.TnTnTn );
             }
-          if ( cl->s1.TnTnTn[0] == 0 )
-            {
-              strcpy ( cl->s1.sn, "/" );
-              strcpy ( cl->s1.TnTnTn, "///" );
-            }
-          c += sprintf ( c, " 4%s%s%s%s", cl->s1.sx, cl->s1.TxTxTx, cl->s1.sn, cl->s1.TnTnTn );
         }
 
       if ( check_len ( sec1,5 ) )
         {
-          if ( cl->s1.eee[0] == 0 )
+          if ( cl->s1.eee[0] )
             {
-              strcpy ( cl->s1.eee, "///" );
+              c += sprintf ( c, " 5%s", cl->s1.eee );
             }
-          c += sprintf ( c, " 5%s", cl->s1.eee );
         }
 
       if ( check_len ( sec1,9 ) )
         {
-          if ( cl->s1.R1R1R1R1[0] == 0 )
+          if ( cl->s1.R1R1R1R1[0] ||  cl->s1.Rd[0] ||  cl->s1.nrnr[0] )
             {
-              strcpy ( cl->s1.R1R1R1R1, "////" );
+              if ( cl->s1.R1R1R1R1[0] == 0 )
+                {
+                  strcpy ( cl->s1.R1R1R1R1, "////" );
+                }
+              if ( cl->s1.Rd[0] == 0 )
+                {
+                  strcpy ( cl->s1.Rd, "/" );
+                }
+              if ( cl->s1.nrnr[0] == 0 )
+                {
+                  strcpy ( cl->s1.nrnr, "//" );
+                }
+              c += sprintf ( c, " 6%s%s%s", cl->s1.R1R1R1R1, cl->s1.Rd, cl->s1.nrnr );
             }
-          if ( cl->s1.Rd[0] == 0 )
-            {
-              strcpy ( cl->s1.Rd, "/" );
-            }
-          if ( cl->s1.nrnr[0] == 0 )
-            {
-              strcpy ( cl->s1.nrnr, "//" );
-            }
-          c += sprintf ( c, " 6%s%s%s", cl->s1.R1R1R1R1, cl->s1.Rd, cl->s1.nrnr );
         }
 
       if ( check_len ( sec1,8 ) )
         {
-          if ( cl->s1.S1S1S1[0] == 0 )
+          if ( cl->s1.S1S1S1[0] ||  cl->s1.pspsps[0] )
             {
-              strcpy ( cl->s1.S1S1S1, "///" );
+              if ( cl->s1.S1S1S1[0] == 0 )
+                {
+                  strcpy ( cl->s1.S1S1S1, "///" );
+                }
+              if ( cl->s1.pspsps[0] == 0 )
+                {
+                  strcpy ( cl->s1.pspsps, "///" );
+                }
+              c += sprintf ( c, " 7%s%s", cl->s1.S1S1S1, cl->s1.pspsps );
             }
-          if ( cl->s1.pspsps[0] == 0 )
-            {
-              strcpy ( cl->s1.pspsps, "///" );
-            }
-          c += sprintf ( c, " 7%s%s", cl->s1.S1S1S1, cl->s1.pspsps );
         }
 
       if ( check_len ( sec1,8 ) )
         {
-          if ( cl->s1.mpmp[0] == 0 )
+          if ( cl->s1.mpmp[0] || cl->s1.mtmt[0] ||  cl->s1.mtx[0] ||  cl->s1.mtn[0] )
             {
-              strcpy ( cl->s1.mpmp, "//" );
+              if ( cl->s1.mpmp[0] == 0 )
+                {
+                  strcpy ( cl->s1.mpmp, "//" );
+                }
+              if ( cl->s1.mtmt[0] == 0 )
+                {
+                  strcpy ( cl->s1.mtmt, "//" );
+                }
+              if ( cl->s1.mtx[0] == 0 )
+                {
+                  strcpy ( cl->s1.mtx, "/" );
+                }
+              if ( cl->s1.mtn[0] == 0 )
+                {
+                  strcpy ( cl->s1.mtn, "/" );
+                }
+              c += sprintf ( c, " 8%s%s%s%s", cl->s1.mpmp, cl->s1.mtmt, cl->s1.mtx, cl->s1.mtn );
             }
-          if ( cl->s1.mtmt[0] == 0 )
-            {
-              strcpy ( cl->s1.mtmt, "//" );
-            }
-          if ( cl->s1.mtx[0] == 0 )
-            {
-              strcpy ( cl->s1.mtx, "/" );
-            }
-          if ( cl->s1.mtn[0] == 0 )
-            {
-              strcpy ( cl->s1.mtn, "/" );
-            }
-          c += sprintf ( c, " 8%s%s%s%s", cl->s1.mpmp, cl->s1.mtmt, cl->s1.mtx, cl->s1.mtn );
         }
 
       if ( check_len ( sec1,8 ) )
         {
-          if ( cl->s1.meme[0] == 0 )
+          if ( cl->s1.meme[0] || cl->s1.mrmr[0] || cl->s1.msms[0] )
             {
-              strcpy ( cl->s1.meme, "//" );
+              if ( cl->s1.meme[0] == 0 )
+                {
+                  strcpy ( cl->s1.meme, "//" );
+                }
+              if ( cl->s1.mrmr[0] == 0 )
+                {
+                  strcpy ( cl->s1.mrmr, "//" );
+                }
+              if ( cl->s1.msms[0] == 0 )
+                {
+                  strcpy ( cl->s1.msms, "//" );
+                }
+              c += sprintf ( c, " 9%s%s%s", cl->s1.meme, cl->s1.mrmr, cl->s1.msms );
             }
-          if ( cl->s1.mrmr[0] == 0 )
-            {
-              strcpy ( cl->s1.mrmr, "//" );
-            }
-          if ( cl->s1.msms[0] == 0 )
-            {
-              strcpy ( cl->s1.msms, "//" );
-            }
-          c += sprintf ( c, " 9%s%s%s", cl->s1.meme, cl->s1.mrmr, cl->s1.msms );
         }
 
     }
@@ -1216,11 +1231,16 @@ char * print_climat_sec1 ( char **sec1, size_t lmax, struct climat_chunks *cl )
 */
 char * print_climat_sec2 ( char **sec2, size_t lmax, struct climat_chunks *cl )
 {
-  char *c = *sec2;
+  char *c = *sec2, *c0 = *sec2;
 
   if ( cl->mask & SYNOP_SEC2 )
     {
       c += sprintf ( c, "\r\n      222" );
+
+      // init point to write info.
+      // in case we finally write nothing in this section
+      c0 = c;
+
       if ( check_len ( sec2,6 ) && ( cl->s2.YbYb[0] || cl->s2.YcYc[0] ) )
         {
           if ( cl->s2.YbYb[0] == 0 )
@@ -1345,7 +1365,10 @@ char * print_climat_sec2 ( char **sec2, size_t lmax, struct climat_chunks *cl )
 
     }
 
-  *sec2 = c;
+  if ( c != c0 )
+    {
+      *sec2 = c;
+    }
   return *sec2;
 
 }
@@ -1360,11 +1383,15 @@ char * print_climat_sec2 ( char **sec2, size_t lmax, struct climat_chunks *cl )
 */
 char * print_climat_sec3 ( char **sec3, size_t lmax, struct climat_chunks *cl )
 {
-  char *c = *sec3;
+  char *c = *sec3, *c0 = *sec3;
 
   if ( cl->mask & SYNOP_SEC3 )
     {
       c += sprintf ( c, "\r\n      333" );
+
+      // init point to write info.
+      // in case we finally write nothing in this section
+      c0 = c;
 
       if ( check_len ( sec3,8 ) &&
            (
@@ -1558,7 +1585,10 @@ char * print_climat_sec3 ( char **sec3, size_t lmax, struct climat_chunks *cl )
 
     }
 
-  *sec3 = c;
+  if ( c != c0 )
+    {
+      *sec3 = c;
+    }
   return *sec3;
 
 }
@@ -1572,11 +1602,15 @@ char * print_climat_sec3 ( char **sec3, size_t lmax, struct climat_chunks *cl )
 */
 char * print_climat_sec4 ( char **sec4, size_t lmax, struct climat_chunks *cl )
 {
-  char *c = *sec4;
+  char *c = *sec4, *c0 = *sec4;
 
   if ( cl->mask & CLIMAT_SEC4 )
     {
       c += sprintf ( c, "\r\n      444" );
+
+      // init point to write info.
+      // in case we finally write nothing in this section
+      c0 = c;
 
       if ( check_len ( sec4,8 ) && ( cl->s4.sx[0] || cl->s4.Txd[0] || cl->s4.yx[0] ) )
         {
@@ -1709,7 +1743,10 @@ char * print_climat_sec4 ( char **sec4, size_t lmax, struct climat_chunks *cl )
 
     }
 
-  *sec4 = c;
+  if ( c != c0 )
+    {
+      *sec4 = c;
+    }
   return *sec4;
 
 }

@@ -377,7 +377,14 @@ int climat_parse_x11 ( struct climat_chunks *c, struct bufr_subset_state *s )
   switch ( s->a->desc.y )
     {
     case 46: // 0 11 046 . Maximum wind speed
-      sprintf ( c->s4.fxfxfx, "%03d",  s->ival );
+      if ( c->s4.iw[0] == '4' )
+        {
+          sprintf ( c->s4.fxfxfx, "%03d", ( int ) ( s->val * 10.0 * 1.94384449 + 0.5 ) );
+        }
+      else
+        {
+          sprintf ( c->s4.fxfxfx, "%03d", ( int ) ( s->val * 10.0 + 0.5 ) );
+        }
       if ( s->isq_val == 0 )
         {
           sprintf ( c->s4.yfx, "%02d", s->day );

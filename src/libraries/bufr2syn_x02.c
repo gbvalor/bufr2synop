@@ -129,7 +129,11 @@ int climat_parse_x02 ( struct climat_chunks *c, struct bufr_subset_state *s )
       break;
       
     case 2: // 0 02 002 . Type of instrumentation for wind measurement
-      strcpy ( c->s4.iw, "1" ); // always to m/s because bufr date are in m/s
+       if ( s->ival & 4 )
+        strcpy ( c->s4.iw, "4" );
+      else
+        strcpy ( c->s4.iw, "1" );
+      break;
       c->mask |= CLIMAT_SEC4;
       break;
   
