@@ -348,6 +348,14 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr_subset_state *s )
                 {
                   c->s4.sax[0] = aux[0];
                   strcpy ( c->s4.Tax, aux + 1 );
+                  if ( s->more_days == 0 )
+                    {
+                      sprintf ( c->s4.yax, "%02d", s->day );
+                    }
+                  else
+                    {
+                      sprintf ( c->s4.yax, "%02d", s->day + 50 );
+                    }
                   c->mask |= CLIMAT_SEC4;
                 }
 
@@ -358,6 +366,14 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr_subset_state *s )
                 {
                   c->s4.san[0] = aux[0];
                   strcpy ( c->s4.Tan, aux + 1 );
+                  if ( s->more_days == 0 )
+                    {
+                      sprintf ( c->s4.yan, "%02d", s->day );
+                    }
+                  else
+                    {
+                      sprintf ( c->s4.yan, "%02d", s->day + 50 );
+                    }
                   c->mask |= CLIMAT_SEC4;
                 }
             }
@@ -432,7 +448,7 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr_subset_state *s )
       break;
 
     case 151: // 0 12 151 . Standard deviation of daily mean temperature
-      sprintf ( aux, "%03d", ( int ) ( s->val * 10.0 + 0.5 ));
+      sprintf ( aux, "%03d", ( int ) ( s->val * 10.0 + 0.5 ) );
       if ( s->is_normal == 0 )
         {
           strcpy ( c->s1.ststst, aux );

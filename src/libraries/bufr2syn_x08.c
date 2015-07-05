@@ -233,6 +233,10 @@ int climat_parse_x08 ( struct climat_chunks *c, struct bufr_subset_state *s )
       break;
 
     case 22:
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
       switch ( s->isq_val )
         {
         case 0:

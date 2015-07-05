@@ -300,10 +300,10 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr_subset_state *s )
         {
           // this is the final year of a normal period
           s->is_normal = 1;
-          sprintf ( c->s2.YcYc, "%02d", s->ival );
+          sprintf ( c->s2.YcYc, "%02d", s->ival % 100 );
           c->mask |= CLIMAT_SEC2;
           // then we fill the begin from tatest descriptor
-          sprintf ( c->s2.YbYb, "%02d", ( int ) s->a1->val );
+          sprintf ( c->s2.YbYb, "%02d", ( int ) s->a1->val % 100 );
         }
       else if ( c->e.YYYY[0] == '\0' )
         {
@@ -333,6 +333,10 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr_subset_state *s )
       if ( c->e.DD[0] == 0 )
         {
           sprintf ( c->e.DD, "%02d", s->ival );
+        }
+      if ( s->a1->desc.x == 8 && s->a1->desc.y == 53 )
+        {
+          s->more_days = s->isq_val;
         }
       s->day = s->ival;
       s->mask |= SUBSET_MASK_HAVE_DAY;

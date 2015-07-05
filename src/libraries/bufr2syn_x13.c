@@ -432,6 +432,19 @@ int climat_parse_x13 ( struct climat_chunks *c, struct bufr_subset_state *s )
         }
       break;
 
+    case 52: // 0 13 052 . Highest daily amount of precipitation
+      prec_to_RRRR ( c->s4.RxRxRxRx, s->val );
+      if ( s->more_days == 0 )
+        {
+          sprintf ( c->s4.yr, "%02d", s->day );
+        }
+      else
+        {
+          sprintf ( c->s4.yr, "%02d", s->day + 50 );
+        }
+      c->mask |= CLIMAT_SEC4;
+      break;
+
     case 60: // 0 13 060 . Total acumulated precipitation
       if ( s->is_normal == 0 )
         {

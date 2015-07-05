@@ -1162,7 +1162,7 @@ char * print_climat_sec1 ( char **sec1, size_t lmax, struct climat_chunks *cl )
             }
           c += sprintf ( c, " 7%s%s", cl->s1.S1S1S1, cl->s1.pspsps );
         }
-        
+
       if ( check_len ( sec1,8 ) )
         {
           if ( cl->s1.mpmp[0] == 0 )
@@ -1183,7 +1183,7 @@ char * print_climat_sec1 ( char **sec1, size_t lmax, struct climat_chunks *cl )
             }
           c += sprintf ( c, " 8%s%s%s%s", cl->s1.mpmp, cl->s1.mtmt, cl->s1.mtx, cl->s1.mtn );
         }
-        
+
       if ( check_len ( sec1,8 ) )
         {
           if ( cl->s1.meme[0] == 0 )
@@ -1200,7 +1200,6 @@ char * print_climat_sec1 ( char **sec1, size_t lmax, struct climat_chunks *cl )
             }
           c += sprintf ( c, " 9%s%s%s", cl->s1.meme, cl->s1.mrmr, cl->s1.msms );
         }
-        
 
     }
 
@@ -1208,6 +1207,512 @@ char * print_climat_sec1 ( char **sec1, size_t lmax, struct climat_chunks *cl )
   return *sec1;
 }
 
+/*!
+  \fn char * print_climat_sec2 (char **sec2, size_t lmax, struct climat_chunks *cl)
+  \brief Prints the climat section 2
+  \param sec2 the pointer where to print section
+  \param lmax max length permited
+  \param cl pointer to s atruct \ref climat_chunks where the parse results are set
+*/
+char * print_climat_sec2 ( char **sec2, size_t lmax, struct climat_chunks *cl )
+{
+  char *c = *sec2;
+
+  if ( cl->mask & SYNOP_SEC2 )
+    {
+      c += sprintf ( c, "\r\n      222" );
+      if ( check_len ( sec2,6 ) && ( cl->s2.YbYb[0] || cl->s2.YcYc[0] ) )
+        {
+          if ( cl->s2.YbYb[0] == 0 )
+            {
+              strcpy ( cl->s2.YbYb, "//" );
+            }
+          if ( cl->s2.YcYc[0] == 0 )
+            {
+              strcpy ( cl->s2.YcYc, "//" );
+            }
+          c += sprintf ( c, " 0%s%s", cl->s2.YbYb, cl->s2.YcYc );
+        }
+
+      if ( check_len ( sec2,6 ) && cl->s2.PoPoPoPo[0] )
+        {
+          c += sprintf ( c, " 1%s", cl->s2.PoPoPoPo );
+        }
+
+      if ( check_len ( sec2,6 ) && cl->s2.PPPP[0] )
+        {
+          c += sprintf ( c, " 2%s", cl->s2.PPPP );
+        }
+
+      if ( check_len ( sec2,9 ) && ( cl->s2.s[0] || cl->s2.TTT[0] || cl->s2.ststst[0] ) )
+        {
+          if ( cl->s2.s[0] == 0 )
+            {
+              strcpy ( cl->s2.s, "/" );
+            }
+          if ( cl->s2.TTT[0] == 0 )
+            {
+              strcpy ( cl->s2.TTT, "///" );
+            }
+          if ( cl->s2.ststst[0] == 0 )
+            {
+              strcpy ( cl->s2.ststst, "///" );
+            }
+
+          c += sprintf ( c, " 3%s%s%s", cl->s2.s, cl->s2.TTT, cl->s2.ststst );
+        }
+
+      if ( check_len ( sec2,10 ) && ( cl->s2.sx[0] || cl->s2.TxTxTx[0] || cl->s2.sn[0] || cl->s2.TnTnTn[0] ) )
+        {
+          if ( cl->s2.sx[0] == 0 )
+            {
+              strcpy ( cl->s2.sx, "/" );
+            }
+          if ( cl->s2.TxTxTx[0] == 0 )
+            {
+              strcpy ( cl->s2.TxTxTx, "///" );
+            }
+          if ( cl->s2.sn[0] == 0 )
+            {
+              strcpy ( cl->s2.sn, "/" );
+            }
+          if ( cl->s2.TnTnTn[0] == 0 )
+            {
+              strcpy ( cl->s2.TnTnTn, "///" );
+            }
+
+          c += sprintf ( c, " 4%s%s%s%s", cl->s2.sx, cl->s2.TxTxTx, cl->s2.sn, cl->s2.TnTnTn );
+        }
+
+      if ( check_len ( sec2,5 ) && cl->s2.eee[0] )
+        {
+          c += sprintf ( c, " 5%s", cl->s2.eee );
+        }
+
+      if ( check_len ( sec2,8 ) && ( cl->s2.R1R1R1R1[0] || cl->s2.nrnr[0] ) )
+        {
+          if ( cl->s2.R1R1R1R1[0] == 0 )
+            {
+              strcpy ( cl->s2.R1R1R1R1, "////" );
+            }
+          if ( cl->s2.nrnr[0] == 0 )
+            {
+              strcpy ( cl->s2.nrnr, "//" );
+            }
+          c += sprintf ( c, " 6%s%s", cl->s2.R1R1R1R1, cl->s2.nrnr );
+        }
+
+      if ( check_len ( sec2,5 ) && cl->s2.S1S1S1[0] )
+        {
+          c += sprintf ( c, " 7%s", cl->s2.S1S1S1 );
+        }
+
+      if ( check_len ( sec2,8 ) && ( cl->s2.ypyp[0] || cl->s2.ytyt[0] || cl->s2.ytxytx[0] ) )
+        {
+          if ( cl->s2.ypyp[0] == 0 )
+            {
+              strcpy ( cl->s2.ypyp, "//" );
+            }
+          if ( cl->s2.ytyt[0] == 0 )
+            {
+              strcpy ( cl->s2.ytyt, "//" );
+            }
+          if ( cl->s2.ytxytx[0] == 0 )
+            {
+              strcpy ( cl->s2.ytxytx, "//" );
+            }
+
+          c += sprintf ( c, " 8%s%s%s", cl->s2.ypyp, cl->s2.ytyt, cl->s2.ytxytx );
+        }
+
+      if ( check_len ( sec2,8 ) && ( cl->s2.yeye[0] || cl->s2.yryr[0] || cl->s2.ysys[0] ) )
+        {
+          if ( cl->s2.yeye[0] == 0 )
+            {
+              strcpy ( cl->s2.yeye, "//" );
+            }
+          if ( cl->s2.yryr[0] == 0 )
+            {
+              strcpy ( cl->s2.yryr, "//" );
+            }
+          if ( cl->s2.ysys[0] == 0 )
+            {
+              strcpy ( cl->s2.ysys, "//" );
+            }
+
+          c += sprintf ( c, " 9%s%s%s", cl->s2.yeye, cl->s2.yryr, cl->s2.ysys );
+        }
+
+    }
+
+  *sec2 = c;
+  return *sec2;
+
+}
+
+
+/*!
+  \fn char * print_climat_sec3 (char **sec3, size_t lmax, struct climat_chunks *cl)
+  \brief Prints the climat section 3
+  \param sec3 the pointer where to print section
+  \param lmax max length permited
+  \param cl pointer to s atruct \ref climat_chunks where the parse results are set
+*/
+char * print_climat_sec3 ( char **sec3, size_t lmax, struct climat_chunks *cl )
+{
+  char *c = *sec3;
+
+  if ( cl->mask & SYNOP_SEC3 )
+    {
+      c += sprintf ( c, "\r\n      333" );
+
+      if ( check_len ( sec3,8 ) &&
+           (
+             ( cl->s3.T25[0] && strcmp ( cl->s3.T25, "00" ) ) ||
+             ( cl->s3.T30[0] && strcmp ( cl->s3.T30, "00" ) )
+           )
+         )
+        {
+          if ( cl->s3.T25[0] == 0 )
+            {
+              strcpy ( cl->s3.T25,"//" );
+            }
+          if ( cl->s3.T30[0] == 0 )
+            {
+              strcpy ( cl->s3.T30,"//" );
+            }
+          c += sprintf ( c, " 0%s%s", cl->s3.T25, cl->s3.T30 );
+        }
+
+      if ( check_len ( sec3,8 ) &&
+           (
+             ( cl->s3.T35[0] && strcmp ( cl->s3.T35, "00" ) ) ||
+             ( cl->s3.T40[0] && strcmp ( cl->s3.T40, "00" ) )
+           )
+         )
+        {
+          if ( cl->s3.T35[0] == 0 )
+            {
+              strcpy ( cl->s3.T35,"//" );
+            }
+          if ( cl->s3.T40[0] == 0 )
+            {
+              strcpy ( cl->s3.T40,"//" );
+            }
+          c += sprintf ( c, " 1%s%s", cl->s3.T35, cl->s3.T40 );
+        }
+
+      if ( check_len ( sec3,8 ) &&
+           (
+             ( cl->s3.Tn0[0] && strcmp ( cl->s3.Tn0, "00" ) ) ||
+             ( cl->s3.Tx0[0] && strcmp ( cl->s3.Tx0, "00" ) )
+           )
+         )
+        {
+          if ( cl->s3.Tn0[0] == 0 )
+            {
+              strcpy ( cl->s3.Tn0,"//" );
+            }
+          if ( cl->s3.Tx0[0] == 0 )
+            {
+              strcpy ( cl->s3.Tx0,"//" );
+            }
+          c += sprintf ( c, " 2%s%s", cl->s3.Tn0, cl->s3.Tx0 );
+        }
+
+      if ( check_len ( sec3,8 ) &&
+           (
+             ( cl->s3.R01[0] && strcmp ( cl->s3.R01, "00" ) ) ||
+             ( cl->s3.R05[0] && strcmp ( cl->s3.R05, "00" ) )
+           )
+         )
+        {
+          if ( cl->s3.R01[0] == 0 )
+            {
+              strcpy ( cl->s3.R01,"//" );
+            }
+          if ( cl->s3.R05[0] == 0 )
+            {
+              strcpy ( cl->s3.R05,"//" );
+            }
+          c += sprintf ( c, " 3%s%s", cl->s3.R01, cl->s3.R05 );
+        }
+
+      if ( check_len ( sec3,8 ) &&
+           (
+             ( cl->s3.R10[0] && strcmp ( cl->s3.R10, "00" ) ) ||
+             ( cl->s3.R50[0] && strcmp ( cl->s3.R50, "00" ) )
+           )
+         )
+        {
+          if ( cl->s3.R10[0] == 0 )
+            {
+              strcpy ( cl->s3.R10,"//" );
+            }
+          if ( cl->s3.R50[0] == 0 )
+            {
+              strcpy ( cl->s3.R50,"//" );
+            }
+          c += sprintf ( c, " 4%s%s", cl->s3.R10, cl->s3.R50 );
+        }
+
+      if ( check_len ( sec3,8 ) &&
+           (
+             ( cl->s3.R100[0] && strcmp ( cl->s3.R100, "00" ) ) ||
+             ( cl->s3.R150[0] && strcmp ( cl->s3.R150, "00" ) )
+           )
+         )
+        {
+          if ( cl->s3.R100[0] == 0 )
+            {
+              strcpy ( cl->s3.R100,"//" );
+            }
+          if ( cl->s3.R150[0] == 0 )
+            {
+              strcpy ( cl->s3.R150,"//" );
+            }
+          c += sprintf ( c, " 5%s%s", cl->s3.R100, cl->s3.R150 );
+        }
+
+      if ( check_len ( sec3,8 ) &&
+           (
+             ( cl->s3.s00[0] && strcmp ( cl->s3.s00, "00" ) ) ||
+             ( cl->s3.s01[0] && strcmp ( cl->s3.s01, "00" ) )
+           )
+         )
+        {
+          if ( cl->s3.s00[0] == 0 )
+            {
+              strcpy ( cl->s3.s00,"//" );
+            }
+          if ( cl->s3.s01[0] == 0 )
+            {
+              strcpy ( cl->s3.s01,"//" );
+            }
+          c += sprintf ( c, " 6%s%s", cl->s3.s00, cl->s3.s01 );
+        }
+
+      if ( check_len ( sec3,8 ) &&
+           (
+             ( cl->s3.s10[0] && strcmp ( cl->s3.s10, "00" ) ) ||
+             ( cl->s3.s50[0] && strcmp ( cl->s3.s50, "00" ) )
+           )
+         )
+        {
+          if ( cl->s3.s10[0] == 0 )
+            {
+              strcpy ( cl->s3.s10,"//" );
+            }
+          if ( cl->s3.s50[0] == 0 )
+            {
+              strcpy ( cl->s3.s50,"//" );
+            }
+          c += sprintf ( c, " 7%s%s", cl->s3.s10, cl->s3.s50 );
+        }
+
+      if ( check_len ( sec3,10 ) &&
+           (
+             ( cl->s3.f10[0] && strcmp ( cl->s3.f10, "00" ) ) ||
+             ( cl->s3.f20[0] && strcmp ( cl->s3.f20, "00" ) ) ||
+             ( cl->s3.f30[0] && strcmp ( cl->s3.f30, "00" ) )
+           )
+         )
+        {
+          if ( cl->s3.f10[0] == 0 )
+            {
+              strcpy ( cl->s3.f10,"//" );
+            }
+          if ( cl->s3.f20[0] == 0 )
+            {
+              strcpy ( cl->s3.f20,"//" );
+            }
+          if ( cl->s3.f30[0] == 0 )
+            {
+              strcpy ( cl->s3.f30,"//" );
+            }
+          c += sprintf ( c, " 8%s%s%s", cl->s3.f10, cl->s3.f20, cl->s3.f30 );
+        }
+
+      if ( check_len ( sec3,10 ) &&
+           (
+             ( cl->s3.V1[0] && strcmp ( cl->s3.V1, "00" ) ) ||
+             ( cl->s3.V2[0] && strcmp ( cl->s3.V2, "00" ) ) ||
+             ( cl->s3.V3[0] && strcmp ( cl->s3.V3, "00" ) )
+           )
+         )
+        {
+          if ( cl->s3.V1[0] == 0 )
+            {
+              strcpy ( cl->s3.V1,"//" );
+            }
+          if ( cl->s3.V2[0] == 0 )
+            {
+              strcpy ( cl->s3.V2,"//" );
+            }
+          if ( cl->s3.V3[0] == 0 )
+            {
+              strcpy ( cl->s3.V3,"//" );
+            }
+          c += sprintf ( c, " 9%s%s%s", cl->s3.V1, cl->s3.V2, cl->s3.V3 );
+        }
+
+    }
+
+  *sec3 = c;
+  return *sec3;
+
+}
+
+/*!
+  \fn char * print_climat_sec4 (char **sec4, size_t lmax, struct climat_chunks *cl)
+  \brief Prints the climat section 4
+  \param sec4 the pointer where to print section
+  \param lmax max length permited
+  \param cl pointer to s atruct \ref climat_chunks where the parse results are set
+*/
+char * print_climat_sec4 ( char **sec4, size_t lmax, struct climat_chunks *cl )
+{
+  char *c = *sec4;
+
+  if ( cl->mask & CLIMAT_SEC4 )
+    {
+      c += sprintf ( c, "\r\n      444" );
+
+      if ( check_len ( sec4,8 ) && ( cl->s4.sx[0] || cl->s4.Txd[0] || cl->s4.yx[0] ) )
+        {
+          if ( cl->s4.sx[0] == 0 )
+            {
+              strcpy ( cl->s4.sx, "/" );
+            }
+          if ( cl->s4.Txd[0] == 0 )
+            {
+              strcpy ( cl->s4.Txd, "///" );
+            }
+          if ( cl->s4.yx[0] == 0 )
+            {
+              strcpy ( cl->s4.yx, "//" );
+            }
+          c += sprintf ( c, " 0%s%s%s", cl->s4.sx, cl->s4.Txd, cl->s4.yx );
+        }
+
+      if ( check_len ( sec4,8 ) && ( cl->s4.sn[0] || cl->s4.Tnd[0] || cl->s4.yn[0] ) )
+        {
+          if ( cl->s4.sn[0] == 0 )
+            {
+              strcpy ( cl->s4.sn, "/" );
+            }
+          if ( cl->s4.Tnd[0] == 0 )
+            {
+              strcpy ( cl->s4.Tnd, "///" );
+            }
+          if ( cl->s4.yn[0] == 0 )
+            {
+              strcpy ( cl->s4.yn, "//" );
+            }
+          c += sprintf ( c, " 1%s%s%s", cl->s4.sn, cl->s4.Tnd, cl->s4.yn );
+        }
+
+      if ( check_len ( sec4,8 ) && ( cl->s4.sax[0] || cl->s4.Tax[0] || cl->s4.yax[0] ) )
+        {
+          if ( cl->s4.sax[0] == 0 )
+            {
+              strcpy ( cl->s4.sax, "/" );
+            }
+          if ( cl->s4.Tax[0] == 0 )
+            {
+              strcpy ( cl->s4.Tax, "///" );
+            }
+          if ( cl->s4.yax[0] == 0 )
+            {
+              strcpy ( cl->s4.yax, "//" );
+            }
+          c += sprintf ( c, " 2%s%s%s", cl->s4.sax, cl->s4.Tax, cl->s4.yax );
+        }
+
+      if ( check_len ( sec4,8 ) && ( cl->s4.san[0] || cl->s4.Tan[0] || cl->s4.yan[0] ) )
+        {
+          if ( cl->s4.san[0] == 0 )
+            {
+              strcpy ( cl->s4.san, "/" );
+            }
+          if ( cl->s4.Tan[0] == 0 )
+            {
+              strcpy ( cl->s4.Tan, "///" );
+            }
+          if ( cl->s4.yan[0] == 0 )
+            {
+              strcpy ( cl->s4.yan, "//" );
+            }
+          c += sprintf ( c, " 3%s%s%s", cl->s4.san, cl->s4.Tan, cl->s4.yan );
+        }
+
+      if ( check_len ( sec4,8 ) && ( cl->s4.RxRxRxRx[0] || cl->s4.yr[0] ) )
+        {
+          if ( cl->s4.RxRxRxRx[0] == 0 )
+            {
+              strcpy ( cl->s4.RxRxRxRx, "////" );
+            }
+          if ( cl->s4.yx[0] == 0 )
+            {
+              strcpy ( cl->s4.Tan, "//" );
+            }
+          c += sprintf ( c, " 4%s%s", cl->s4.RxRxRxRx, cl->s4.yr );
+        }
+
+      if ( check_len ( sec4,8 ) && ( cl->s4.iw[0] || cl->s4.fxfxfx[0] || cl->s4.yfx[0] ) )
+        {
+          if ( cl->s4.iw[0] == 0 )
+            {
+              strcpy ( cl->s4.iw, "/" );
+            }
+          if ( cl->s4.fxfxfx[0] == 0 )
+            {
+              strcpy ( cl->s4.fxfxfx, "///" );
+            }
+          if ( cl->s4.yfx[0] == 0 )
+            {
+              strcpy ( cl->s4.yfx, "//" );
+            }
+          c += sprintf ( c, " 5%s%s%s", cl->s4.iw, cl->s4.fxfxfx, cl->s4.yfx );
+        }
+
+      if ( check_len ( sec4,8 ) && ( cl->s4.Dts[0] || cl->s4.Dgr[0] ) )
+        {
+          if ( cl->s4.Dts[0] == 0 )
+            {
+              strcpy ( cl->s4.Dts,"//" );
+            }
+          if ( cl->s4.Dgr[0] == 0 )
+            {
+              strcpy ( cl->s4.Dgr,"//" );
+            }
+          c += sprintf ( c, " 6%s%s", cl->s4.Dts, cl->s4.Dgr );
+        }
+
+      if ( check_len ( sec4,8 ) && ( cl->s4.iy[0] || cl->s4.GxGx[0] || cl->s4.GnGn[0] ) )
+        {
+          if ( cl->s4.iw[0] == 0 )
+            {
+              strcpy ( cl->s4.iy, "/" );
+            }
+          if ( cl->s4.GxGx[0] == 0 )
+            {
+              strcpy ( cl->s4.GxGx, "///" );
+            }
+          if ( cl->s4.GnGn[0] == 0 )
+            {
+              strcpy ( cl->s4.GnGn, "//" );
+            }
+          c += sprintf ( c, " 7%s%s%s", cl->s4.iy, cl->s4.GxGx, cl->s4.GnGn );
+        }
+
+
+    }
+
+  *sec4 = c;
+  return *sec4;
+
+}
 
 /*!
  \fn int print_climat(char *report, size_t lmax, struct climat_chunks *cl)
@@ -1232,7 +1737,21 @@ int print_climat ( char *report, size_t lmax, struct climat_chunks *cl )
 
   print_climat_sec0 ( &c, lmax, cl );
 
-  print_climat_sec1 ( &c, lmax, cl );
+  if ( cl->mask & ( CLIMAT_SEC1 | CLIMAT_SEC2 | CLIMAT_SEC3 | CLIMAT_SEC4 ) )
+    {
+      print_climat_sec1 ( &c, lmax - strlen ( report ), cl );
+
+      print_climat_sec2 ( &c, lmax - strlen ( report ), cl );
+
+      print_climat_sec3 ( &c, lmax - strlen ( report ), cl );
+
+      print_climat_sec4 ( &c, lmax - strlen ( report ), cl );
+    }
+  else
+    {
+      c += sprintf ( c, " NIL" );
+    }
+
 
   c += sprintf ( c, "=" );
   return 0;

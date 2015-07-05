@@ -324,6 +324,7 @@ struct bufr_subset_state
   time_t tobs; /*!< Unix time reference*/
   int dift; /*!< UTC - LST , in hours */
   int day; /*!< Day of ephemerides in some reports */
+  int more_days; /*!< If = 1 there are more than a day in ephemeride */
   int nday; /*!< period (days) in some reports */
   int month; /*!< month for some normal values */
   int is_normal; /*!< if 1, the values are normal of a defined period */
