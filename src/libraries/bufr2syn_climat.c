@@ -38,7 +38,7 @@
 int parse_subset_as_climat ( struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
 {
   size_t is;
-  //char aux[16];
+  char aux[16];
   struct climat_chunks *c;
 
   c = &m->climat;
@@ -123,5 +123,42 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr_subset_state *s, s
 
     }
 
+  // Fill some metreport fields
+  if ( strlen ( c->s0.II ) )
+    {
+      strcpy ( m->g.index, c->s0.II );
+      strcat ( m->g.index, c->s0.iii );
+    }
+
+  if ( s->mask & SUBSET_MASK_HAVE_LATITUDE )
+    {
+      m->g.lat = s->lat;
+    }
+  if ( s->mask & SUBSET_MASK_HAVE_LONGITUDE )
+    {
+      m->g.lon = s->lon;
+    }
+  if ( s->mask & SUBSET_MASK_HAVE_ALTITUDE )
+    {
+      m->g.alt = s->alt;
+    }
+  if ( s->mask & SUBSET_MASK_HAVE_NAME )
+    {
+      strcpy ( m->g.name, s->name );
+    }
+  if ( s->mask & SUBSET_MASK_HAVE_COUNTRY )
+    {
+      strcpy ( m->g.country, s->country );
+    }
+
+  sprintf ( aux,"%s%s%s%s%s", c->e.YYYY, c->e.MM, c->e.DD, c->e.HH, c->e.mm );
+  YYYYMMDDHHmm_to_met_datetime ( &m->t, aux );
+
+  if ( check_date_from_future ( m ) )
+    {
+      return 1;  // Bad date/time . Is a report from future!
+    }
+
+    
   return 0;
 }

@@ -1046,13 +1046,13 @@ char * print_climat_sec0 ( char **sec0, size_t lmax, struct climat_chunks *cl )
   // print MMJJJ
   if ( check_len ( sec0,8 ) )
     {
-      c += sprintf ( c, " %s%s\r\n", cl->s0.MM, cl->s0.JJJ );
+      c += sprintf ( c, " %s%s", cl->s0.MM, cl->s0.JJJ );
     }
 
   // print IIiii
   if ( check_len ( sec0,6 ) && cl->s0.II[0] )
     {
-      c += sprintf ( c, "%s%s", cl->s0.II, cl->s0.iii );
+      c += sprintf ( c, " %s%s", cl->s0.II, cl->s0.iii );
     }
 
   *sec0 = c;
@@ -1235,7 +1235,8 @@ char * print_climat_sec2 ( char **sec2, size_t lmax, struct climat_chunks *cl )
 
   if ( cl->mask & SYNOP_SEC2 )
     {
-      c += sprintf ( c, "\r\n      222" );
+      //c += sprintf ( c, "\r\n      222" );
+      c += sprintf ( c, " 222" );
 
       // init point to write info.
       // in case we finally write nothing in this section
@@ -1387,7 +1388,8 @@ char * print_climat_sec3 ( char **sec3, size_t lmax, struct climat_chunks *cl )
 
   if ( cl->mask & SYNOP_SEC3 )
     {
-      c += sprintf ( c, "\r\n      333" );
+      //c += sprintf ( c, "\r\n      333" );
+      c += sprintf ( c, " 333" );
 
       // init point to write info.
       // in case we finally write nothing in this section
@@ -1606,7 +1608,8 @@ char * print_climat_sec4 ( char **sec4, size_t lmax, struct climat_chunks *cl )
 
   if ( cl->mask & CLIMAT_SEC4 )
     {
-      c += sprintf ( c, "\r\n      444" );
+      //c += sprintf ( c, "\r\n      444" );
+      c += sprintf ( c, " 444" );
 
       // init point to write info.
       // in case we finally write nothing in this section
