@@ -34,6 +34,7 @@
   - FM 13-XIV SHIP
   - FM 14-XIV SYNOP MOBIL
   - FM 18-XII BUOY
+  - FM 71-XII CLIMAT
 
   The software is based in bufrdc library from ECMWF  It must to be installed. In that package there is a \a synop2bufr application doing just the reverse task.
 
@@ -43,7 +44,7 @@
 
   Remember you have to download and install bufrdc library from ECMWF
 
-  http://old.ecmwf.int/products/data/software/bufr.html
+  https://software.ecmwf.int/wiki/display/BUFR/Releases
 
   You also will need a Fortran and C compilers in your system and the usual development packages. GNU gcc and gfortran compilers are ok.
 
