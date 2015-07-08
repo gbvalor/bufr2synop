@@ -16,11 +16,12 @@ At the moment includes the following reports:
   - FM 13-XIV SHIP
   - FM 14-XIV SYNOP MOBIL
   - FM 18-XII BUOY
+  - FM 71-XII CLIMAT
 
 The software is based in bufrdc library from ECMWF.  *It have to be installed*. In that package
 there is a synop2bufr application doing just the reverse task. You can grab this library from 
 
-http://old.ecmwf.int/products/data/software/bufr.html
+https://software.ecmwf.int/wiki/display/BUFR/Releases
 
 Follow the instructions to build and install bufrdc library. Then, you can use this package.
 
