@@ -106,6 +106,12 @@ To see the 'emulated' synop reports from this bufr file
 
 We will get a list of 58 synops to stdout.
 
+And to see CLIMAT reports, we can try with another bufr file
+
+    bufr2synop -i 20150705121512_ISCD01_LIIB_050000.bufr 
+
+We will get 19 CLIMAT reports, some of them NIL reports.
+
 There are some more options for bufrnoaa and bufr2synop. You can see a list using 
 
    bufrnoaa -h
