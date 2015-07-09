@@ -1696,7 +1696,7 @@ char * print_climat_sec4 ( char **sec4, size_t lmax, struct climat_chunks *cl )
           c += sprintf ( c, " 4%s%s", cl->s4.RxRxRxRx, cl->s4.yr );
         }
 
-      if ( check_len ( sec4,8 ) && ( cl->s4.iw[0] || cl->s4.fxfxfx[0] || cl->s4.yfx[0] ) )
+      if ( check_len ( sec4,8 ) && ( cl->s4.fxfxfx[0] || cl->s4.yfx[0] ) )
         {
           if ( cl->s4.iw[0] == 0 )
             {

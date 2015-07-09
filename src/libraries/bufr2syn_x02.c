@@ -134,12 +134,9 @@ int climat_parse_x02 ( struct climat_chunks *c, struct bufr_subset_state *s )
       else
         strcpy ( c->s4.iw, "1" );
       break;
-      c->mask |= CLIMAT_SEC4;
-      break;
   
     case 51: // 0 02 051 . Observing method for extreme temperatures
       sprintf(c->s4.iy,"%d",s->ival);
-      c->mask |= CLIMAT_SEC4;
       break;
     default:
       break;

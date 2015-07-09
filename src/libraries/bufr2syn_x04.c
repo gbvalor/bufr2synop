@@ -301,7 +301,6 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr_subset_state *s )
           // this is the final year of a normal period
           s->is_normal = 1;
           sprintf ( c->s2.YcYc, "%02d", s->ival % 100 );
-          c->mask |= CLIMAT_SEC2;
           // then we fill the begin from tatest descriptor
           sprintf ( c->s2.YbYb, "%02d", ( int ) s->a1->val % 100 );
         }
