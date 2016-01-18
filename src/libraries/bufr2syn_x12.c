@@ -36,14 +36,16 @@ char * kelvin_to_snTTT ( char *target, double T )
     {
       return NULL;
     }
-  ic = ( int ) ( 100.0 * T + 0.001 ) - 27315;
+
+  // tenths of degree (Celsius)
+  ic = ( int ) ( floor(10.0 * (T - 273.15) + 0.5 ));
   if ( ic < 0 )
     {
-      sprintf ( target, "1%03d", ( -ic + 5 ) /10 );
+      sprintf ( target, "1%03d",  -ic );
     }
   else
     {
-      sprintf ( target, "%04d", ( ic  + 4 ) /10 );
+      sprintf ( target, "0%03d",  ic );
     }
   return target;
 }
@@ -61,8 +63,9 @@ char * kelvin_to_snTT ( char *target, double T )
     {
       return NULL;
     }
-  ic = ( int ) ( 100.0 * T + 0.001 ) - 27315;
-  ic /= 100;
+
+  // Whole degrees (Celsius)
+  ic = ( int ) ( floor((T - 273.15) + 0.5 ));
   if ( ic < 0 )
     {
       sprintf ( target, "1%02d", -ic );
@@ -87,8 +90,9 @@ char * kelvin_to_TT ( char *target, double T )
     {
       return NULL;
     }
-  ic = ( int ) ( 100.0 * T + 0.001 ) - 27315;
-  ic /= 100;
+
+  // Whole degrees (Celsius)
+  ic = ( int ) ( floor((T - 273.15) + 0.5 ));
   if ( ic < 0 )
     {
       sprintf ( target, "%02d", 50 - ic );
@@ -113,8 +117,8 @@ char * kelvin_to_TTTT ( char *target, double T )
     {
       return NULL;
     }
-
-  ic = ( int ) ( 100.0 * T + 0.001 ) - 27315;
+  // hundreth of degrees (Celsius)
+  ic = ( int ) ( floor(100.0 * (T - 273.15) + 0.5 ));
   if ( ic < 0 )
     {
       ic = 5000 - ic;
