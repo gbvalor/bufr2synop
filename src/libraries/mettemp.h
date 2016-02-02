@@ -128,9 +128,13 @@
 */
 #define TEMP_NMAX_POINTS (64)
 
+/*!
+  \struct temp_main_level_data
+  \brief It stores a main level data in a TEMP report
+*/
 struct temp_main_level_data
 {
-  char PnPnPn[4]; /*!< Pressure in hPa at evel omiting thousand unit */
+  char PnPnPn[4]; /*!< Pressure in hPa at level omiting thousand unit */
   char TnTn[4]; /*!< Temperature . Whole degrees */
   char Tan[2]; /*!< tenth and sign of temperature (Code Table 3931) */
   char DnDn[4]; /*!< Dewpoint depression . (Code table 0777) */
@@ -138,6 +142,10 @@ struct temp_main_level_data
   char fnfnfn[4]; /*!< Wind speed */
 }; /*!< Detailed data at a main level (surface, tropopause ...)*/
 
+/*!
+  \struct temp_std_level_data
+  \brief It stores a standard level data in TEMP report
+*/
 struct temp_std_level_data
 {
   char PnPn[4]; /*!< Pressure in hPa at standard level int tens of hPa. 1000 = '00' , 925 = '92' */
@@ -149,7 +157,10 @@ struct temp_std_level_data
   char fnfnfn[4]; /*!< Wind speed */
 };
 
-
+/*!
+  \struct temp_max_wind_data
+  \brief Store the data of a maximum wind level in a TEMP report
+*/
 struct temp_max_wind_data
 {
   char PmPmPm[4]; /*!< Pressure in hPa of wind maximum level */
@@ -159,6 +170,10 @@ struct temp_max_wind_data
   char vava[4]; /*!< Diference of winds . 1 km above */
 };
 
+/*!
+  \struct temp_th_point
+  \brief Store temperature and dewpoint depresion data in a TEMP report
+*/
 struct temp_th_point
 {
   char PnPnPn[4]; /*!< Pressure in hPa at evel omiting thousand unit */
@@ -167,6 +182,10 @@ struct temp_th_point
   char DnDn[4]; /*!< Dewpoint depression . (Code table 0777) */
 };
 
+/*!
+  \struct temp_wind_point
+  \brief Store wind data in a TEMP report
+*/
 struct temp_wind_point
 {
   char PnPnPn[4]; /*!< Pressure in hPa at evel omiting thousand unit */
@@ -174,6 +193,10 @@ struct temp_wind_point
   char fnfnfn[4]; /*!< Wind speed */
 };
 
+/*!
+  \struct temp_acd_sec1
+  \brief Stores section 1 for parts A, C and D of a TEMP report
+*/ 
 struct temp_acd_sec1
 {
   char MiMi[4]; /*!< MiMi item. (Code table 2582) */
@@ -196,8 +219,12 @@ struct temp_acd_sec1
   char Ulo[2]; /*!< Units digit in the reported longitude. */
   char h0h0h0h0[6]; /*!< Elevation of a mobile land station  */
   char im[2]; /*!< Indicator for units of elevation, and confidence factor for accuracy of elevation. (Code table 1845) */
-}; /*!< Section 1 for a part A, C or D of a TEMP report */
+};
 
+/*!
+  \struct temp_b_sec1
+  \brief Stores section 1 for parts B of a TEMP report
+*/ 
 struct temp_b_sec1
 {
   char MiMi[4]; /*!< MiMi item. (Code table 2582) */
@@ -220,32 +247,51 @@ struct temp_b_sec1
   char Ulo[2]; /*!< Units digit in the reported longitude. */
   char h0h0h0h0[6]; /*!< Elevation of a mobile land station  */
   char im[2]; /*!< Indicator for units of elevation, and confidence factor for accuracy of elevation. (Code table 1845) */
-}; /*!< Section 1 for a part A of a TEMP report */
+}; 
 
-
+/*!
+  \struct temp_a_sec2
+  \brief Section 2 for a part A of a TEMP report
+*/
 struct temp_a_sec2
 {
   int n; /*!< current number of standard levels */
   struct temp_main_level_data lev0; /*!< data at starting point */
   struct temp_std_level_data std[TEMP_NSTAND_MAX]; /*!< Array with data at standard levels */
-}; /*!< Section 2 for a part A of a TEMP report */
+}; 
 
+/*!
+  \struct temp_c_sec2
+  \brief Section 2 for a part C of a TEMP report
+*/
 struct temp_c_sec2
 {
   int n; /*!< current number of standard levels */
   struct temp_std_level_data std[TEMP_NSTAND_MAX]; /*!< Array with data at standard levels */
-}; /*!< Section 2 for a part A of a TEMP report */
+}; 
 
+/*!
+  \struct temp_ac_sec3
+  \brief Section 3 for parts A and C of a TEMP report
+*/
 struct temp_ac_sec3
 {
   struct temp_main_level_data trop; /*!< data at starting tropopause */
-}; /*!< Section 3 for a part A and C of a TEMP report */
+}; 
 
+/*!
+  \struct temp_ac_sec4
+  \brief Section 4 for parts A and C of a TEMP report
+*/
 struct temp_ac_sec4
 {
   struct temp_max_wind_data windx[TEMP_NMAXWIND_MAX];
-}; /*!< Section 4 for a part A and C of TEMP report */
+}; 
 
+/*!
+  \struct temp_sec7
+  \brief Section 7 for a part of TEMP report 
+*/ 
 struct temp_sec7
 {
   char sr[2]; /*!< Solar radiation correction (code table 3849)*/
@@ -255,21 +301,32 @@ struct temp_sec7
   char gg[4]; /*!< actual time of launching the radiosonde, minute */
   char sn[2];  /*!< Sign of temperature (Code table 3845) */
   char TwTwTw[4]; /*!< Sea-surface temperature, in tenths of a degree Celsius, its sign being given by sn.*/
-}; /*!< Section 7 for a part of TEMP report */
+};
 
+/*!
+  \struct temp_bd_sec5
+  \brief Section 5 for parts B and D of a TEMP report
+*/
 struct temp_bd_sec5
 {
   int n; /*!< current number of points */
   struct temp_th_point th[TEMP_NMAX_POINTS]; /*!< Significant th points for sec 5 for a part B */
-};/*!< Section 5 for a part B or D of TEMP report */
+};
 
+/*!
+  \struct temp_bd_sec6
+  \brief Section 6 for parts B and D of a TEMP report
+*/
 struct temp_bd_sec6
 {
   int n; /*!< current number of points */
   struct temp_wind_point wd[TEMP_NMAX_POINTS]; /*!< Significant wind points for sec 6 for a part B */
 };/*!< Section 6 for a part B or D of TEMP report */
 
-
+/*!
+  \struct temp_b_sec8
+  \brief Section 8 for part B a TEMP report
+*/
 struct temp_b_sec8
 {
   char Nh[2]; /*!< Amount of all the CL cloud present or, if no CL cloud is present, the amount of all the CM cloud present. (Code table 2700) */
@@ -279,6 +336,10 @@ struct temp_b_sec8
   char Ch[2]; /*!< Clouds of the genera Cirrus, Cirrocumulus and Cirrostratus. (Code table 0509)  */
 }; /*!< Section 8 for a part B of TEMP report */
 
+/*!
+  \struct temp_a
+  \brief Contains part A of a TEMP REPORT
+*/ 
 struct temp_a
 {
   int mask; /*!< Bit mask about parsed sections */
@@ -288,8 +349,12 @@ struct temp_a
   struct temp_ac_sec3 s3; /*!< section 3 for part A */
   struct temp_ac_sec4 s4; /*!< section 4 for part A */
   struct temp_sec7 s7; /*!< section 7 for part A */
-}; /*!< Contains part A of a TEMP REPORT */
+}; 
 
+/*!
+  \struct temp_b
+  \brief Contains part B of a TEMP REPORT
+*/ 
 struct temp_b
 {
   int mask; /*!< Bit mask about parsed sections */
@@ -299,8 +364,12 @@ struct temp_b
   struct temp_bd_sec6 s6; /*!< section 6 for part B */
   struct temp_sec7 s7; /*!< section 7 for part B */
   struct temp_b_sec8 s8; /*!< section 8 for part B */
-}; /*!< Contains part B of a TEMP REPORT */
+}; 
 
+/*!
+  \struct temp_c
+  \brief Contains part C of a TEMP REPORT
+*/ 
 struct temp_c
 {
   int mask; /*!< Bit mask about parsed sections */
@@ -310,8 +379,12 @@ struct temp_c
   struct temp_ac_sec3 s3; /*!< section 3 for part C */
   struct temp_ac_sec4 s4; /*!< section 4 for part C */
   struct temp_sec7 s7; /*!< section 7 for part C */
-}; /*!< Contains part C of a TEMP REPORT */
+};
 
+/*!
+  \struct temp_d
+  \brief Contains part D of a TEMP REPORT
+*/ 
 struct temp_d
 {
   int mask; /*!< Bit mask about parsed sections */
@@ -322,6 +395,10 @@ struct temp_d
   struct temp_sec7 s7; /*!< section 7 for part D */
 }; /*!< Contains part D of a TEMP REPORT */
 
+/*!
+  \struct temp_chunks
+  \brief Store the whole TEMP report
+*/
 struct temp_chunks
 {
   int mask; /*!< bit mask with parsed parts info */
