@@ -1,0 +1,41 @@
+/***************************************************************************
+ *   Copyright (C) 2004-2016 by Guillermo Ballester Valor                  *
+ *   gbv@ogimet.com                                                        *
+ *                                                                         *
+ *   This file is part of bufr2synop                                       *
+ *                                                                         *
+ *   Ogimet is free software; you can redistribute it and/or modify        *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   Ogimet is distributed in the hope that it will be useful,             *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, see <http://www.gnu.org/licenses/>.  *
+ *                                                                         *
+ ***************************************************************************/
+/*!
+   \file metcommon.h
+   \brief Main header file for common report structures 
+*/
+#ifndef METCOMMON_H
+#define METCOMMON_H
+
+/*! \struct report_date_ext
+    \brief contains extensions, not in wmo. Date/time UTC information
+*/
+struct report_date_ext
+{
+  char YYYY[6]; /*!< Year four digits */
+  char MM[4]; /*!< Month, two digits 01..12 */
+  char DD[4]; /*!< Day of the month, two digits 01..31 */
+  char HH[4]; /*!< Hour (UTC) 00..23 */
+  char mm[4]; /*!< Minute 00..59 */
+  char ss[4]; /*!< Second 00..59 */
+};
+
+#endif

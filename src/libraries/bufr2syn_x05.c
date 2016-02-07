@@ -19,7 +19,7 @@
  ***************************************************************************/
 /*!
  \file bufr2syn_x05.c
- \brief decodes the descriptors with X = 05 (Position)
+ \brief decodes the descriptors with X = 05 (Position-1)
  */
 #include "bufr2syn.h"
 
@@ -50,16 +50,6 @@ int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s )
       sprintf ( syn->s0.LaLaLa, "%03d",ia );
       syn->s0.Ula[0] = syn->s0.LaLaLa[1];
       s->lat = s->val;
-      break;
-    case 11: // 0 05 011 . Longitude (High accuracy)
-    case 12: // 0 05 012 . Longitude (Coarse accuracy)
-      if ( s->val < 0.0 )
-        s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
-      s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
-      ia = ( int ) ( fabs ( s->val ) * 10.0 + 0.5 );
-      sprintf ( syn->s0.LoLoLoLo, "%04d",ia );
-      syn->s0.Ulo[0] = syn->s0.LoLoLoLo[2];
-      s->lon = s->val;
       break;
     default:
       break;
@@ -118,15 +108,6 @@ int buoy_parse_x05 ( struct buoy_chunks *b, struct bufr_subset_state *s )
       sprintf ( b->s0.LaLaLaLaLa, "%05d",ia );
       s->lat = s->val;
       break;
-    case 11: // 0 05 001 . Longitude (High accuracy)
-    case 12: // 0 05 002 . Longitude (Coarse accuracy)
-      if ( s->val < 0.0 )
-        s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
-      s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
-      ia = ( int ) ( fabs ( s->val ) * 1000.0 + 0.5 );
-      sprintf ( b->s0.LoLoLoLoLoLo, "%06d",ia );
-      s->lon = s->val;
-      break;
     default:
       break;
     }
@@ -137,7 +118,7 @@ int buoy_parse_x05 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 /*!
   \fn int climat_parse_x05 ( struct climat_chunks *syn, struct bufr_subset_state *s )
   \brief Parse a expanded descriptor with X = 05
-  \param syn pointer to a struct \ref climat_chunks where to set the results
+  \param c pointer to a struct \ref climat_chunks where to set the results
   \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
@@ -150,7 +131,7 @@ int climat_parse_x05 ( struct climat_chunks *c, struct bufr_subset_state *s )
   // this is to avoid warning
   if ( c == NULL )
     return 1;
-  
+
   switch ( s->a->desc.y )
     {
     case 1: // 0 05 001 . Latitude (High accuracy)
@@ -160,15 +141,84 @@ int climat_parse_x05 ( struct climat_chunks *c, struct bufr_subset_state *s )
       s->mask |= SUBSET_MASK_HAVE_LATITUDE;
       s->lat = s->val;
       break;
-    case 11: // 0 05 011 . Longitude (High accuracy)
-    case 12: // 0 05 012 . Longitude (Coarse accuracy)
-      if ( s->val < 0.0 )
-        s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
-      s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
-      s->lon = s->val;
-      break;
     default:
       break;
     }
-return 0;
+  return 0;
+}
+
+/*!
+  \fn int temp_parse_x05 ( struct climat_chunks *syn, struct bufr_subset_state *s )
+  \brief Parse a expanded descriptor with X = 05
+  \param t pointer to a struct \ref climat_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
+int temp_parse_x05 ( struct temp_chunks *t, struct bufr_subset_state *s )
+{
+  int ia;
+
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+    return 0;
+
+  // this is to avoid warning
+  if ( t == NULL )
+    return 1;
+
+  switch ( s->a->desc.y )
+    {
+    case 1: // 0 05 001 . Latitude (High accuracy)
+    case 2: // 0 05 002 . Latitude (Coarse accuracy)
+      if ( s->val < 0.0 )
+        s->mask |= SUBSET_MASK_LATITUDE_SOUTH; // Sign for latitude
+      s->mask |= SUBSET_MASK_HAVE_LATITUDE;
+      s->lat = s->val;
+      ia = ( int ) ( fabs ( s->val ) * 10.0 + 0.5 );
+      sprintf ( t->a.s1.LaLaLa, "%03d",ia );
+      sprintf ( t->b.s1.LaLaLa, "%03d",ia );
+      sprintf ( t->c.s1.LaLaLa, "%03d",ia );
+      sprintf ( t->d.s1.LaLaLa, "%03d",ia );
+      t->a.s1.Ula[0] = t->a.s1.LaLaLa[1];
+      t->b.s1.Ula[0] = t->b.s1.LaLaLa[1];
+      t->c.s1.Ula[0] = t->c.s1.LaLaLa[1];
+      t->d.s1.Ula[0] = t->d.s1.LaLaLa[1];
+      break;
+
+    default:
+      break;
+    }
+
+  // check if set both LaLaLa and LoLoLoLo to set Qc
+  if ( ( t->a.s1.Qc[0] == 0 ) && t->a.s1.LaLaLa[0] && t->a.s1.LoLoLoLo[0] )
+    {
+      if ( s->mask & SUBSET_MASK_LATITUDE_SOUTH )
+        {
+          if ( s->mask & SUBSET_MASK_LONGITUDE_WEST )
+            strcpy ( t->a.s1.Qc, "5" );
+          else
+            strcpy ( t->a.s1.Qc, "3" );
+        }
+      else
+        {
+          if ( s->mask & SUBSET_MASK_LONGITUDE_WEST )
+            strcpy ( t->a.s1.Qc, "7" );
+          else
+            strcpy ( t->a.s1.Qc, "1" );
+        }
+      strcpy ( t->b.s1.Qc, t->a.s1.Qc );
+      strcpy ( t->c.s1.Qc, t->a.s1.Qc );
+      strcpy ( t->d.s1.Qc, t->a.s1.Qc );
+    }
+
+  // check if about MMM
+  if ( ( t->a.s1.MMM[0] == 0 ) && t->a.s1.LaLaLa[0] && t->a.s1.LoLoLoLo[0] )
+    {
+      latlon_to_MMM ( t->a.s1.MMM, s->lat, s->lon );
+      strcpy ( t->b.s1.MMM, t->a.s1.MMM );
+      strcpy ( t->c.s1.MMM, t->a.s1.MMM );
+      strcpy ( t->d.s1.MMM, t->a.s1.MMM );
+    }
+
+  return 0;
 }

@@ -249,10 +249,16 @@
 #define SUBSET_MASK_HAVE_MINUTE (32768)
 
 /*!
+ \def SUBSET_MASK_HAVE_SECOND
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having observation second
+*/
+#define SUBSET_MASK_HAVE_SECOND (65536)
+
+/*!
  \def SUBSET_MASK_HAVE_GUST
  \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having wind gust observation other than 10 minutes
 */
-#define SUBSET_MASK_HAVE_GUST (65536)
+#define SUBSET_MASK_HAVE_GUST (131072)
 
 
 /*!
@@ -304,7 +310,7 @@ struct bufr_subset_state
   size_t i; /*!< current index in array element */
   int rep;  /*!< Latest delayed replicator */
   size_t k_rep;  /*!< Index of latest delayed replicator */
-  int ival; /*!< the integer value in the descritor */
+  int ival; /*!< the integer value in the descriptor */
   double val; /*!< the float value in the descriptor */
   int itval; /*!< Latest parsed time displacement in seconds */
   size_t k_itval; /*!< index in array of latest time displacemet descriptor */
@@ -353,7 +359,7 @@ struct met_datetime
 {
   time_t t; /*!< Unix instant for report date/time reference */
   struct tm tim;  /*!<  struct tm with report date/time info (UTC) */
-  char datime[16]; /*!< date/time reference (UTC) as string with YYYYMMDDHHmm format */
+  char datime[16]; /*!< date/time reference (UTC) as string with YYYYMMDDHHmm[ss] format */
 };
 
 /*!
@@ -527,6 +533,11 @@ int climat_parse_x20 ( struct climat_chunks *c, struct bufr_subset_state *s );
 int climat_parse_x22 ( struct climat_chunks *c, struct bufr_subset_state *s );
 int climat_parse_x31 ( struct climat_chunks *c, struct bufr_subset_state *s );
 int climat_parse_x33 ( struct climat_chunks *c, struct bufr_subset_state *s );
+
+int temp_parse_x01 ( struct temp_chunks *t, struct bufr_subset_state *s );
+int temp_parse_x02 ( struct temp_chunks *t, struct bufr_subset_state *s );
+int temp_parse_x04 ( struct temp_chunks *t, struct bufr_subset_state *s );
+int temp_parse_x08 ( struct temp_chunks *t, struct bufr_subset_state *s );
 
 
 // These are prototypes for used ecmwf bufr library functions

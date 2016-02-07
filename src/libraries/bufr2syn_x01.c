@@ -217,3 +217,127 @@ int climat_parse_x01 ( struct climat_chunks *c, struct bufr_subset_state *s )
     }
   return 0;
 }
+
+/*!
+  \fn int temp_parse_x01 ( struct temp_chunks *temp, struct bufr_subset_state *s )
+  \brief Parse a expanded descriptor with X = 01
+  \param temp pointer to a struct \ref temp_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
+int temp_parse_x01 ( struct temp_chunks *t, struct bufr_subset_state *s )
+{
+  char aux[80];
+
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+    return 0;
+
+  switch ( s->a->desc.y )
+    {
+    case 1: // 0 01 001 . WMO block number
+      sprintf ( t->a.s1.II, "%02d", s->ival );
+      sprintf ( t->b.s1.II, "%02d", s->ival );
+      sprintf ( t->c.s1.II, "%02d", s->ival );
+      sprintf ( t->d.s1.II, "%02d", s->ival );
+      break;
+    case 2: // 0 01 002 . WMO station number
+      sprintf ( t->a.s1.iii, "%03d", s->ival );
+      sprintf ( t->b.s1.iii, "%03d", s->ival );
+      sprintf ( t->c.s1.iii, "%03d", s->ival );
+      sprintf ( t->d.s1.iii, "%03d", s->ival );
+      break;
+    case 3: // 0 01 003 . WMO Region
+      sprintf ( t->a.s1.A1, "%d", s->ival );
+      sprintf ( t->b.s1.A1, "%d", s->ival );
+      sprintf ( t->c.s1.A1, "%d", s->ival );
+      sprintf ( t->d.s1.A1, "%d", s->ival );
+      if ( strcmp ( t->a.s1.A1, "1" ) == 0 )
+      {
+        strcpy ( t->a.s1.Reg, "I" );
+        strcpy ( t->b.s1.Reg, "I" );
+        strcpy ( t->c.s1.Reg, "I" );
+        strcpy ( t->d.s1.Reg, "I" );
+      }
+      else if ( strcmp ( t->a.s1.A1, "2" ) == 0 )
+      {
+        strcpy ( t->a.s1.Reg, "II" );
+        strcpy ( t->b.s1.Reg, "II" );
+        strcpy ( t->c.s1.Reg, "II" );
+        strcpy ( t->d.s1.Reg, "II" );
+      }
+      else if ( strcmp ( t->a.s1.A1, "3" ) == 0 )
+      {
+        strcpy ( t->a.s1.Reg, "III" );
+        strcpy ( t->b.s1.Reg, "III" );
+        strcpy ( t->c.s1.Reg, "III" );
+        strcpy ( t->d.s1.Reg, "III" );
+      }
+      else if ( strcmp ( t->a.s1.A1, "4" ) == 0 )
+      {
+        strcpy ( t->a.s1.Reg, "IV" );
+        strcpy ( t->b.s1.Reg, "IV" );
+        strcpy ( t->c.s1.Reg, "IV" );
+        strcpy ( t->d.s1.Reg, "IV" );
+      }
+      else if ( strcmp ( t->a.s1.A1, "5" ) == 0 )
+      {
+        strcpy ( t->a.s1.Reg, "V" );
+        strcpy ( t->b.s1.Reg, "V" );
+        strcpy ( t->c.s1.Reg, "V" );
+        strcpy ( t->d.s1.Reg, "V" );
+      }
+      else if ( strcmp ( t->a.s1.A1, "6" ) == 0 )
+      {
+        strcpy ( t->a.s1.Reg, "VI" );
+        strcpy ( t->b.s1.Reg, "VI" );
+        strcpy ( t->c.s1.Reg, "VI" );
+        strcpy ( t->d.s1.Reg, "VI" );
+      }
+      break;
+    case 4: // 0 01 004 . WMO Subarea
+    case 20: // 0 01 020 . WMO region subarea
+      sprintf ( t->a.s1.bw, "%d", s->ival );
+      sprintf ( t->b.s1.bw, "%d", s->ival );
+      sprintf ( t->c.s1.bw, "%d", s->ival );
+      sprintf ( t->d.s1.bw, "%d", s->ival );
+      break;
+    case 11: // 0 01 011. Ship or mobile land station index
+      if ( strlen ( s->a->cval ) < 16 )
+        {
+          strcpy ( aux, s->a->cval );
+          adjust_string ( aux );
+          if ( strlen ( aux ) < 10 )
+	  {
+            strcpy ( t->a.s1.D_D, aux );
+            strcpy ( t->b.s1.D_D, aux );
+            strcpy ( t->c.s1.D_D, aux );
+            strcpy ( t->d.s1.D_D, aux );
+	  }
+        }
+      break;
+    case 15: // 0 01 015 . Station or site name
+    case 18: // 0 01 018 . Short station or site name
+    case 19: // 0 01 019 . Long station or site name
+      if ( strlen ( s->a->cval ) <= 80 )
+        {
+          strcpy ( aux, s->a->cval );
+          adjust_string ( aux );
+          strcpy ( s->name, aux );
+          s->mask |= SUBSET_MASK_HAVE_NAME;
+        }
+      break;
+    case 101: // 0 01 101 . State identifier
+      if ( strlen ( s->a->ctable ) <= 256 )
+        {
+          strcpy ( aux, s->a->ctable );
+          adjust_string ( aux );
+          strcpy ( s->country, aux );
+          s->mask |= SUBSET_MASK_HAVE_COUNTRY;
+        }
+      break;
+    default:
+      break;
+    }
+  return 0;
+}

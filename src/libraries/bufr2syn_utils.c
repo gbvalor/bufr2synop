@@ -124,18 +124,25 @@ size_t tokenize_string ( char *tk[], size_t ntk, char *target, size_t len, char 
 
 /*!
   \fn int YYYYMMDDHHmm_to_met_datetime(struct met_datetime *t, const char *source)
-  \brief Parse the string YYYYMMDDHHmm and set a struct \ref met_datetime
-  \param source string with date in YYYYMMDDHHmm format
+  \brief Parse the string YYYYMMDDHHmm[ss] and set a struct \ref met_datetime
+  \param source string with date in YYYYMMDDHHmm[ss] format
   \param t pointer to a struct \ref met_datetime where to set the results
 */
 int YYYYMMDDHHmm_to_met_datetime ( struct met_datetime *t, const char *source )
 {
-  if ( strlen ( source ) != 12 )
+  if ( strlen ( source ) != 12  && strlen ( source ) != 14 )
     return 1;
   memset ( &t->tim, 0, sizeof ( struct tm ) );
-  strptime ( source, "%Y%m%d%H%M", &t->tim );
-  strcpy ( t->datime, source );
-  t->t = mktime ( &t->tim );
+  if (strlen (source ) == 12)
+  {
+    strptime ( source, "%Y%m%d%H%M", &t->tim );
+  }
+  else
+  {
+    strptime ( source, "%Y%m%d%H%M%S", &t->tim );
+  }
+    strcpy ( t->datime, source );
+    t->t = mktime ( &t->tim );
   return 0;
 }
 

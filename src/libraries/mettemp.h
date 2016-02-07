@@ -25,6 +25,8 @@
 #ifndef METTEMP_H
 #define METTEMP_H
 
+#include "metcommon.h"
+
 /*!
   \def TEMP_PART_A
   \brief mask bit meaning part A of TEMP report is solicited to or parsed with success

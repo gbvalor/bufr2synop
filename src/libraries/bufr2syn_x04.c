@@ -434,3 +434,108 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr_subset_state *s )
     }
   return 0;
 }
+
+/*!
+  \fn int temp_parse_x04 ( struct temp_chunks *t, struct bufr_subset_state *s )
+  \brief Parse a expanded descriptor with X = 04
+  \param t pointer to a struct \ref temp_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
+int temp_parse_x04 ( struct temp_chunks *t, struct bufr_subset_state *s )
+{
+    switch ( s->a->desc.y )
+    {
+    case 1: // 0 04 001 . Year
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( t->a.e.YYYY[0] == 0 )
+        {
+          sprintf ( t->a.e.YYYY, "%04d", s->ival );
+          sprintf ( t->b.e.YYYY, "%04d", s->ival );
+          sprintf ( t->c.e.YYYY, "%04d", s->ival );
+          sprintf ( t->d.e.YYYY, "%04d", s->ival );
+        }
+      s->mask |= SUBSET_MASK_HAVE_YEAR;
+      break;
+    case 2: // 0 04 002 . Month
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( t->a.e.MM[0] == 0 )
+        {
+          sprintf ( t->a.e.MM, "%02d", s->ival );
+          sprintf ( t->b.e.MM, "%02d", s->ival );
+          sprintf ( t->c.e.MM, "%02d", s->ival );
+          sprintf ( t->d.e.MM, "%02d", s->ival );
+        }
+      s->mask |= SUBSET_MASK_HAVE_MONTH;
+      break;
+    case 3: // 0 04 003 . Day of month
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( t->a.e.DD[0] == 0 )
+        {
+          sprintf ( t->a.e.DD, "%02d", s->ival );
+          sprintf ( t->b.e.DD, "%02d", s->ival );
+          sprintf ( t->c.e.DD, "%02d", s->ival );
+          sprintf ( t->d.e.DD, "%02d", s->ival );
+        }
+      s->mask |= SUBSET_MASK_HAVE_DAY;
+      //sprintf(t->s0.YY, "%02d", (int) sq->sequence[is].val);
+      break;
+    case 4: // 0 04 004 . Hour
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( t->a.e.HH[0] == 0 )
+        {
+          sprintf ( t->a.e.HH, "%02d", s->ival );
+          sprintf ( t->b.e.HH, "%02d", s->ival );
+          sprintf ( t->c.e.HH, "%02d", s->ival );
+          sprintf ( t->d.e.HH, "%02d", s->ival );
+        }
+      s->mask |= SUBSET_MASK_HAVE_HOUR;
+      //sprintf(t->s0.GG, "%02d", (int) sq->sequence[is].val);
+      break;
+    case 5: // 0 04 005 . Minute
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( t->a.e.mm[0] == 0 )
+        {
+          sprintf ( t->a.e.mm, "%02d", s->ival );
+          sprintf ( t->b.e.mm, "%02d", s->ival );
+          sprintf ( t->c.e.mm, "%02d", s->ival );
+          sprintf ( t->d.e.mm, "%02d", s->ival );
+        }
+      s->mask |= SUBSET_MASK_HAVE_MINUTE;
+      break;
+    case 6: // 0 04 006 . Second
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( t->a.e.ss[0] == 0 )
+        {
+          sprintf ( t->a.e.ss, "%02d", s->ival );
+          sprintf ( t->b.e.ss, "%02d", s->ival );
+          sprintf ( t->c.e.ss, "%02d", s->ival );
+          sprintf ( t->d.e.ss, "%02d", s->ival );
+        }
+      s->mask |= SUBSET_MASK_HAVE_SECOND;
+      break;
+      
+    default:
+      break;
+    }
+  return 0;
+}

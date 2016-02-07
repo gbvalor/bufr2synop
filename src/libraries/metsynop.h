@@ -26,6 +26,8 @@
 #ifndef METSYNOP_H
 #define METSYNOP_H
 
+#include "metcommon.h"
+
 /*! \def SYNOP_SEC0
     \brief mask bit meaning section 0 or synop is solicited to or parsed with success
 */
@@ -66,19 +68,6 @@
     \brief number of misc3 struct to store the parsed results of 9SpSpspsp groups
 */
 #define SYNOP_NMISC 8
-
-/*! \struct report_date_ext
-    \brief contains extensions, not in wmo. Date/time UTC information
-*/
-struct report_date_ext
-{
-  char YYYY[6]; /*!< Year four digits */
-  char MM[4]; /*!< Month, two digits 01..12 */
-  char DD[4]; /*!< Day of the month, two digits 01..31 */
-  char HH[4]; /*!< Hour (UTC) 00..23 */
-  char mm[4]; /*!< Minute 00..59 */
-};
-
 
 /*! \struct synop_sec0
     \brief contains all possible substrings from section 0 when a report is parsed with success

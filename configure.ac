@@ -13,5 +13,20 @@ AM_PROG_LIBTOOL
 # 
 AC_CHECK_LIB([bufr], [bufrread], , [AC_MSG_ERROR("You must install ECMWF bufrdc library")])
 
+dnl
+dnl This block finds the compiler 
+dnl Default values for CFLAGS
+dnl 
+{ 
+case "${CC}" in
+        gcc*)
+                CFLAGS="-O2 -Wall -Wextra -W -g"
+                ;;
+        icc)
+                CFLAGS="-O2 -xHOST -Wall -g"
+                ;;
+esac
+}
+
 
 AC_OUTPUT(Makefile src/Makefile src/apps/Makefile src/libraries/Makefile examples/Makefile) 

@@ -87,7 +87,7 @@ int syn_parse_x08 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 /*!
   \fn int buoy_parse_x08 ( struct buoy_chunks *b, struct bufr_subset_state *s )
   \brief Parse a expanded descriptor with X = 08
-  \param b pointer to a struct \ref synop_chunks where to set the results
+  \param b pointer to a struct \ref buoy_chunks where to set the results
   \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
@@ -369,5 +369,38 @@ int climat_parse_x08 ( struct climat_chunks *c, struct bufr_subset_state *s )
       break;
     }
 
+  return 0;
+}
+
+/*!
+  \fn int temp_parse_x08 ( struct temp_chunks *b, struct bufr_subset_state *s )
+  \brief Parse a expanded descriptor with X = 08
+  \param t pointer to a struct \ref temp_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
+int temp_parse_x08 ( struct temp_chunks *t, struct bufr_subset_state *s )
+{
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+    {
+      return 0;
+    }
+
+  if ( t == NULL )
+    {
+      return 1;
+    }
+
+  switch ( s->a->desc.y )
+    {
+    case 21: // 0 08 021. Time significance
+      if ( s->ival != 18 )
+        return 1; // it should be 18 (launch date/time)
+      break;
+
+    default:
+      break;
+    }
   return 0;
 }
