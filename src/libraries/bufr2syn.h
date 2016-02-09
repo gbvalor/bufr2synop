@@ -537,8 +537,9 @@ int climat_parse_x33 ( struct climat_chunks *c, struct bufr_subset_state *s );
 int temp_parse_x01 ( struct temp_chunks *t, struct bufr_subset_state *s );
 int temp_parse_x02 ( struct temp_chunks *t, struct bufr_subset_state *s );
 int temp_parse_x04 ( struct temp_chunks *t, struct bufr_subset_state *s );
+int temp_parse_x07 ( struct temp_chunks *t, struct bufr_subset_state *s );
 int temp_parse_x08 ( struct temp_chunks *t, struct bufr_subset_state *s );
-
+int temp_parse_x33 ( struct temp_chunks *t, struct bufr_subset_state *s );
 
 // These are prototypes for used ecmwf bufr library functions
 int bus012_ ( int *, unsigned int *, int *, int *, int *, int *, int * );

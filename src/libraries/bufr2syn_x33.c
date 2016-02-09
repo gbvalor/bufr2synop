@@ -81,3 +81,41 @@ int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr_subset_state *s )
     }
   return 0;
 }
+
+/*!
+  \fn int temp_parse_x33 ( struct temp_chunks *b, struct bufr_subset_state *s )
+  \brief Parse a expanded descriptor with X = 33
+  \param t pointer to a struct \ref temp_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
+int temp_parse_x33 ( struct temp_chunks *t, struct bufr_subset_state *s )
+{
+
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+    return 0;
+
+
+  switch ( s->a->desc.y )
+    {
+    case 24: // 0 33 024. Station elevation quality mark (for mobile stations)
+      if ( s->ival >= 0 && s->ival < 9 )
+        {
+          sprintf ( t->a.s1.im, "%d", s->ival );
+          sprintf ( t->a.s1.im, "%d", s->ival );
+          sprintf ( t->a.s1.im, "%d", s->ival );
+          sprintf ( t->a.s1.im, "%d", s->ival );
+        }
+      else
+        {
+          strcpy ( t->a.s1.im, "/" );
+          strcpy ( t->b.s1.im, "/" );
+          strcpy ( t->c.s1.im, "/" );
+          strcpy ( t->d.s1.im, "/" );
+        }
+    default:
+      break;
+    }
+  return 0;
+}

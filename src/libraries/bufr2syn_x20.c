@@ -128,7 +128,7 @@ char * vism_to_VV ( char *target, double V )
   else if ( V <= 5000.0 )
     sprintf ( target, "%02d", ( int ) ( V + 0.1 ) / 100 );
   else if ( V < 6000.0)
-    sprintf ( target, "50");
+    sprintf ( target, "50"); // this is to avoid 51-55 range
   else if ( V <= 30000.0 )
     sprintf ( target, "%02d", ( int ) ( V + 0.1 ) / 1000 + 50 );
   else if ( V <= 70000.0 )
