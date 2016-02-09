@@ -131,6 +131,24 @@
 #define TEMP_NMAX_POINTS (64)
 
 /*!
+  \struct temp_raw_point_data
+  \brief Stores data of a sounding profile in raw format, as given in bufr 
+*/
+struct temp_raw_point_data
+{
+  int dt; /*!< seconds since release */
+  int flags; /*!< extended vertical sounding significance */
+  double p ; /*!< pressure (Pascal) */
+  double h ; /*!< heigh (geopotential meters) */
+  double dlat ; /*!< Latitude displacement (degrees) */
+  double dlon ; /*!< Longitude displacement (degrees) */
+  double T ; /*!< Temperature (Kelvin) */
+  double Td ; /*!< Dewpoint (kelvin) */
+  double dd ; /*!< Wind direction (true degrees) */
+  double ff ; /*!< Wind speed. (m/s) */
+};
+
+/*!
   \struct temp_main_level_data
   \brief It stores a main level data in a TEMP report
 */
