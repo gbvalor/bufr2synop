@@ -80,3 +80,52 @@ int buoy_parse_x31 ( struct buoy_chunks *b, struct bufr_subset_state *s )
     }
   return 0;
 }
+
+/*!
+  \fn int temp_parse_x31 ( struct temp_chunks *t, struct bufr_subset_state *s )
+  \brief Parse a expanded descriptor with X = 31
+  \param t pointer to a struct \ref temp_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
+int temp_parse_x31 ( struct temp_chunks *t, struct bufr_subset_state *s )
+{
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+    return 0;
+
+  if ( t == NULL )
+    return 1;
+
+  switch ( s->a->desc.y )
+    {
+    case 1: // 0 31 001 .  Replicator   
+      // It is the amount of points of wind shear data at pressure level
+      if (s->ival < TEMP_NMAX_POINTS)
+      {
+	s->itval = s->ival;
+	s->rep = 0;
+      }
+      else
+	return 1; // too much points
+      s->k_itval = s->i;
+      s->w->n = 0;
+      break;
+    case 2: // 0 31 002 . Extended replicatos
+      // IT is the amount of points of Temperature, dew-point and wind data at 
+      // a pressure level with radiosonde position
+      if (s->ival < (TEMP_NMAX_POINTS * 4))
+      {
+        s->rep = s->ival;
+	s->itval = 0;
+      }
+      else
+	return 1; // Too much points
+      s->k_rep = s->i;
+      s->r->n = 0;
+      break;
+    default:
+      break;
+    }
+  return 0;
+}

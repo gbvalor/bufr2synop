@@ -363,3 +363,58 @@ int buoy_parse_x20 ( struct buoy_chunks *b, struct bufr_subset_state *s )
     }
   return 0;
 }
+
+/*!
+  \fn int temp_parse_x20 ( struct temp_chunks *t, struct bufr_subset_state *s )
+  \brief Parse a expanded descriptor with X = 20
+  \param t pointer to a struct \ref temp_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
+int temp_parse_x20 ( struct temp_chunks *t, struct bufr_subset_state *s )
+{
+
+  switch ( s->a->desc.y )
+    {
+    case 11: // 0 20 011 . Cloud amount
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        return 0;
+          if ( s->ival <= 8 )
+            sprintf ( t->b.s8.Nh, "%1d", s->ival );
+          else if ( s->ival <= 10 )
+            sprintf ( t->b.s8.Nh, "9" );
+          else if ( s->ival == 15 )
+            sprintf ( t->b.s8.Nh, "/" );
+          t->b.mask |= TEMP_SEC_8;
+      break;
+    case 12: // 0 20 012 . Cloud type
+          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+            return 0;
+          if ( s->ival >= 10 && s->ival < 20 )
+            sprintf ( t->b.s8.Ch, "%1d", s->ival % 10 );
+          else if ( s->ival >= 20 && s->ival < 30 )
+            sprintf ( t->b.s8.Cm, "%1d", s->ival % 10 );
+          else if ( s->ival >= 30 && s->ival < 40 )
+            sprintf ( t->b.s8.Cl, "%1d", s->ival % 10 );
+          else if ( s->ival == 59 )
+            sprintf ( t->b.s8.Nh, "/" );
+          else if ( s->ival == 60 )
+            sprintf ( t->b.s8.Ch, "/" );
+          else if ( s->ival == 61 )
+            sprintf ( t->b.s8.Cm, "/" );
+          else if ( s->ival == 62 )
+            sprintf ( t->b.s8.Cl, "/" );
+          t->b.mask |= TEMP_SEC_8;
+      break;
+    case 13: // 0 20 013 . Height of base of cloud
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        return 0;
+        m_to_h ( t->b.s8.h, s->val );
+      break;
+      
+    default:
+      break;
+    }
+    return 0;
+}

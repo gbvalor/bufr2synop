@@ -130,6 +130,7 @@
 */
 #define TEMP_NMAX_POINTS (64)
 
+
 /*!
   \struct temp_raw_point_data
   \brief Stores data of a sounding profile in raw format, as given in bufr 
@@ -146,6 +147,41 @@ struct temp_raw_point_data
   double Td ; /*!< Dewpoint (kelvin) */
   double dd ; /*!< Wind direction (true degrees) */
   double ff ; /*!< Wind speed. (m/s) */
+};
+
+/*!
+  \struct  temp_raw_data
+  \brief Stores the array of all data profile points as it in bufr sequence 
+*/
+struct temp_raw_data 
+{
+  size_t n; /*!< Current number of elements */
+  struct temp_raw_point_data raw[TEMP_NMAX_POINTS * 4]; /*!< Array of raw data points */
+};
+
+/*!
+  \struct temp_raw_wind_shear_point
+  \brief Wind shear data point at a pressure level
+*/
+struct temp_raw_wind_shear_point
+{
+  int dt; /*!< seconds since release */
+  int flags; /*!< extended vertical sounding significance */
+  double p ; /*!< pressure (Pascal) */
+  double dlat ; /*!< Latitude displacement (degrees) */
+  double dlon ; /*!< Longitude displacement (degrees) */
+  double ws_blw; /*!< Wind shear 1 km below */
+  double ws_abv; /*!< Wind shear 1 km above */
+};
+
+/*!
+  \struct temp_raw_wind_shear_data 
+  \brief array of Wind shear data points at a pressure level
+ */
+struct temp_raw_wind_shear_data 
+{
+  size_t n; /*!< Current number of elements */
+  struct temp_raw_wind_shear_point raw[TEMP_NMAX_POINTS];
 };
 
 /*!

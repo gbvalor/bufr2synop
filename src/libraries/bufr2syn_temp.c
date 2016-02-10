@@ -73,20 +73,45 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr_subset_state *s, str
   size_t is;
   char aux[16];
   struct temp_chunks *t;
-
+  struct temp_raw_data *r;
+  struct temp_raw_wind_shear_data *w;
+  
   if (sq == NULL)
     return 1;
   
   t = &m->temp;
-
+  
   // clean data
   clean_temp_chunks ( t );
 
+  // clean r
+  memset(&r, 0, sizeof (struct temp_raw_point_data));
+  
+  // allocate memory for array of points in raw form
+  if ((r = calloc ( 1, sizeof (struct temp_raw_data))) == NULL)
+  {
+      sprintf ( err,"bufr2syn: parse_subset_as_temp(): Cannot allocate memory for raw data");
+      return 1;
+  }
+
+  if ((w = calloc ( 1, sizeof (struct temp_raw_wind_shear_data))) == NULL)
+  {
+      sprintf ( err,"bufr2syn: parse_subset_as_temp(): Cannot allocate memory for raw data");
+      free( (void *) (r));
+      return 1;
+  }
+
+  // set pointers
+  s->r = r;
+  s->w = w;
+  
   // reject if still not coded type
   if ( strcmp ( s->type_report,"TTXX" ) == 0)
     {
       // FIXME
       sprintf ( err,"bufr2syn: parse_subset_as_temp(): '%s' reports still not decoded in this software", s->type_report );
+      free( (void *) (r));
+      free( (void *) (w));
       return 1;
     }
 
@@ -144,6 +169,8 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr_subset_state *s, str
       )
     {
       sprintf ( err,"bufr2syn: parse_subset_as_temp(): lack of mandatory descriptor in sequence" );
+      free( (void *) (r));
+      free( (void *) (w));
       return 1;
     }
 
@@ -183,6 +210,8 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr_subset_state *s, str
   else
   {
     sprintf ( err,"bufr2syn: parse_subset_as_temp(): Unknown type TEMP report" );
+    free( (void *) (r));
+    free( (void *) (w));
     return 1;
   }
   sprintf(m->type, "%s%s" , t->a.s1.MiMi, t->a.s1.MjMj);
@@ -194,5 +223,7 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr_subset_state *s, str
   sprintf ( aux,"%s%s%s%s%s%s", t->a.e.YYYY, t->a.e.MM, t->a.e.DD, t->a.e.HH, t->a.e.mm, t->a.e.ss );
   YYYYMMDDHHmm_to_met_datetime ( &m->t, aux );
   
+  free( (void *) (r));
+  free( (void *) (w));
   return 0;
 }

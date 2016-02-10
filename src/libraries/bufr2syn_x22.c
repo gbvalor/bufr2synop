@@ -256,3 +256,42 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr_subset_state *s )
     }
   return 0;
 }
+
+/*!
+  \fn int temp_parse_x22 ( struct temp_chunks *b, struct bufr_subset_state *s )
+  \brief Parse a expanded descriptor with X = 22
+  \param t pointer to a struct \ref temp_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
+int temp_parse_x22 ( struct temp_chunks *t, struct bufr_subset_state *s )
+{
+  char aux[16];
+
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+    return 0;
+
+  switch ( s->a->desc.y )
+    {
+    case 43:
+      if ( kelvin_to_snTTT ( aux, s->val ) )
+        {
+          t->a.s7.sn[0] = aux[0];
+          t->b.s7.sn[0] = aux[0];
+          t->c.s7.sn[0] = aux[0];
+          t->d.s7.sn[0] = aux[0];
+          strcpy ( t->a.s7.TwTwTw, aux + 1 );
+          strcpy ( t->b.s7.TwTwTw, aux + 1 );
+          strcpy ( t->c.s7.TwTwTw, aux + 1 );
+          strcpy ( t->d.s7.TwTwTw, aux + 1 );
+          t->a.mask |= TEMP_SEC_7; // have sec7 data
+        }
+      break;
+      
+    default:
+      break;
+    }
+
+  return 0;
+}

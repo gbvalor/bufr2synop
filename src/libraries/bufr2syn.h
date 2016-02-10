@@ -335,6 +335,8 @@ struct bufr_subset_state
   int month; /*!< month for some normal values */
   int is_normal; /*!< if 1, the values are normal of a defined period */
   int mask; /*!< mask which contain several information from the subset data taken at the moment */
+  struct temp_raw_data *r; /*!< pointer to a struct where to set the data from a temp profile being parsed */
+  struct temp_raw_wind_shear_data *w; /*!< pointer to a struct where to set the data from a temp profile being parsed */
 };
 
 /*!
@@ -539,6 +541,8 @@ int temp_parse_x02 ( struct temp_chunks *t, struct bufr_subset_state *s );
 int temp_parse_x04 ( struct temp_chunks *t, struct bufr_subset_state *s );
 int temp_parse_x07 ( struct temp_chunks *t, struct bufr_subset_state *s );
 int temp_parse_x08 ( struct temp_chunks *t, struct bufr_subset_state *s );
+int temp_parse_x20 ( struct temp_chunks *t, struct bufr_subset_state *s );
+int temp_parse_x22 ( struct temp_chunks *t, struct bufr_subset_state *s );
 int temp_parse_x33 ( struct temp_chunks *t, struct bufr_subset_state *s );
 
 // These are prototypes for used ecmwf bufr library functions

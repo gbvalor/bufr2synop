@@ -172,6 +172,17 @@ int temp_parse_x07 ( struct temp_chunks *t, struct bufr_subset_state *s )
 
   switch ( s->a->desc.y )
     {
+    case 4:  // 0 07 004 . Pressure
+      if (s->rep > 0 && s->r->n > 0)
+      {
+	s->r->raw[s->r->n - 1].p = s->val;
+      }
+      else if (s->w->n > 0)
+      {
+	s->w->raw[s->w->n - 1].p = s->val;
+      }
+      
+      break;
     case 30: // 0 07 030 . Height of station ground above msl
       sprintf(t->a.s1.h0h0h0h0, "%04.0lf" , s->val);
       sprintf(t->b.s1.h0h0h0h0, "%04.0lf" , s->val);

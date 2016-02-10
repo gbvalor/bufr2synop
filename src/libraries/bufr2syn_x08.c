@@ -394,11 +394,28 @@ int temp_parse_x08 ( struct temp_chunks *t, struct bufr_subset_state *s )
 
   switch ( s->a->desc.y )
     {
+    case 2: // 0 08 002.
+      // this is to mark of the begining or end of cloud surface data
+      if (s->isq == 0)
+	s->isq = 1;
+      else
+	s->isq = 0;
+      break;
     case 21: // 0 08 021. Time significance
       if ( s->ival != 18 )
         return 1; // it should be 18 (launch date/time)
       break;
 
+    case 42: // 0 08 042. Extended vertical sounding significance
+      if (s->rep > 0 && s->r->n > 0)
+      {
+	s->r->raw[s->r->n - 1].flags = s->ival;
+      }
+      else if (s->w->n > 0)
+      { // wind shear case
+	s->w->raw[s->w->n - 1].flags = s->ival;
+      }
+      break;	
     default:
       break;
     }
