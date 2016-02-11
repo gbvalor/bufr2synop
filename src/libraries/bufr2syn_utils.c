@@ -133,16 +133,16 @@ int YYYYMMDDHHmm_to_met_datetime ( struct met_datetime *t, const char *source )
   if ( strlen ( source ) != 12  && strlen ( source ) != 14 )
     return 1;
   memset ( &t->tim, 0, sizeof ( struct tm ) );
-  if (strlen (source ) == 12)
-  {
-    strptime ( source, "%Y%m%d%H%M", &t->tim );
-  }
+  if ( strlen ( source ) == 12 )
+    {
+      strptime ( source, "%Y%m%d%H%M", &t->tim );
+    }
   else
-  {
-    strptime ( source, "%Y%m%d%H%M%S", &t->tim );
-  }
-    strcpy ( t->datime, source );
-    t->t = mktime ( &t->tim );
+    {
+      strptime ( source, "%Y%m%d%H%M%S", &t->tim );
+    }
+  strcpy ( t->datime, source );
+  t->t = mktime ( &t->tim );
   return 0;
 }
 
@@ -235,15 +235,15 @@ char *guess_WMO_region ( char *A1, char *Reg, const char *II, const char *iii )
    It resturns 1 if date/time is from future, and likely wrong
    Returns 0 otherwise
 */
-int check_date_from_future(struct metreport *m)
+int check_date_from_future ( struct metreport *m )
 {
-   time_t now;
+  time_t now;
 
-   now = time(NULL);
-   if (m->t.t > (now + 1800)) // Still 1/2 hour courtesy
-      return 1;
-   else
-      return 0;
+  now = time ( NULL );
+  if ( m->t.t > ( now + 1800 ) ) // Still 1/2 hour courtesy
+    return 1;
+  else
+    return 0;
 }
 
 
@@ -468,3 +468,4 @@ int guess_gts_header ( struct gts_header *h, const char *f )
 
   return 1;
 }
+

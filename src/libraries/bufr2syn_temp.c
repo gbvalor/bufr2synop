@@ -75,52 +75,52 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr_subset_state *s, str
   struct temp_chunks *t;
   struct temp_raw_data *r;
   struct temp_raw_wind_shear_data *w;
-  
-  if (sq == NULL)
+
+  if ( sq == NULL )
     return 1;
-  
+
   t = &m->temp;
-  
+
   // clean data
   clean_temp_chunks ( t );
 
   // clean r
-  memset(&r, 0, sizeof (struct temp_raw_point_data));
-  
-  // allocate memory for array of points in raw form
-  if ((r = calloc ( 1, sizeof (struct temp_raw_data))) == NULL)
-  {
-      sprintf ( err,"bufr2syn: parse_subset_as_temp(): Cannot allocate memory for raw data");
-      return 1;
-  }
+  memset ( &r, 0, sizeof ( struct temp_raw_point_data ) );
 
-  if ((w = calloc ( 1, sizeof (struct temp_raw_wind_shear_data))) == NULL)
-  {
-      sprintf ( err,"bufr2syn: parse_subset_as_temp(): Cannot allocate memory for raw data");
-      free( (void *) (r));
+  // allocate memory for array of points in raw form
+  if ( ( r = calloc ( 1, sizeof ( struct temp_raw_data ) ) ) == NULL )
+    {
+      sprintf ( err,"bufr2syn: parse_subset_as_temp(): Cannot allocate memory for raw data" );
       return 1;
-  }
+    }
+
+  if ( ( w = calloc ( 1, sizeof ( struct temp_raw_wind_shear_data ) ) ) == NULL )
+    {
+      sprintf ( err,"bufr2syn: parse_subset_as_temp(): Cannot allocate memory for raw data" );
+      free ( ( void * ) ( r ) );
+      return 1;
+    }
 
   // set pointers
   s->r = r;
   s->w = w;
-  
+
   // reject if still not coded type
-  if ( strcmp ( s->type_report,"TTXX" ) == 0)
+  if ( strcmp ( s->type_report,"TTXX" ) == 0  && 0)
     {
       // FIXME
       sprintf ( err,"bufr2syn: parse_subset_as_temp(): '%s' reports still not decoded in this software", s->type_report );
-      free( (void *) (r));
-      free( (void *) (w));
+      free ( ( void * ) ( r ) );
+      free ( ( void * ) ( w ) );
       return 1;
     }
 
   // Set the part. We are sure of this
-  strcpy(t->a.s1.MjMj, "AA");
-  strcpy(t->b.s1.MjMj, "BB");
-  strcpy(t->c.s1.MjMj, "CC");
-  strcpy(t->d.s1.MjMj, "DD");
-  
+  strcpy ( t->a.s1.MjMj, "AA" );
+  strcpy ( t->b.s1.MjMj, "BB" );
+  strcpy ( t->c.s1.MjMj, "CC" );
+  strcpy ( t->d.s1.MjMj, "DD" );
+
   /**** First pass, sequential analysis *****/
   for ( is = 0; is < sq->nd; is++ )
     {
@@ -137,9 +137,9 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr_subset_state *s, str
       if ( sq->sequence[is].desc.x == 8 )
         {
           temp_parse_x08 ( t, s );
-        }      
-      
-       switch ( sq->sequence[is].desc.x )
+        }
+
+      switch ( sq->sequence[is].desc.x )
         {
         case 1: //localization descriptors
           temp_parse_x01 ( t, s );
@@ -153,77 +153,120 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr_subset_state *s, str
           temp_parse_x04 ( t, s );
           break;
 
-	default:
+        case 5: // Horizontal position. Latitude
+          temp_parse_x05 ( t, s );
+          break;
+
+        case 6: // Horizontal position. Longitude
+          temp_parse_x06 ( t, s );
+          break;
+
+        case 7: // Vertical position
+          temp_parse_x07 ( t, s );
+          break;
+
+        case 10: // Air Pressure descriptors
+          temp_parse_x10 ( t, s );
+          break;
+
+        case 11: // wind  data
+          temp_parse_x11 ( t, s );
+          break;
+
+        case 12: //Temperature descriptors
+          temp_parse_x12 ( t, s );
+          break;
+
+        case 20: // Cloud data
+          temp_parse_x20 ( t, s );
+          break;
+
+        case 22: // Oceanographic data
+          temp_parse_x22 ( t, s );
+          break;
+
+        case 31: // Replicators
+          temp_parse_x31 ( t, s );
+          break;
+
+        case 33: // Quality data
+          temp_parse_x33 ( t, s );
+          break;
+
+        default:
           break;
         }
-    } 
-    
-   /* Check about needed descriptors */
+    }
+
+  /* Check about needed descriptors */
   if ( ( ( s->mask & SUBSET_MASK_HAVE_LATITUDE ) == 0 ) ||
        ( ( s->mask & SUBSET_MASK_HAVE_LONGITUDE ) == 0 ) ||
        ( ( s->mask & SUBSET_MASK_HAVE_YEAR ) == 0 ) ||
        ( ( s->mask & SUBSET_MASK_HAVE_MONTH ) == 0 ) ||
        ( ( s->mask & SUBSET_MASK_HAVE_DAY ) == 0 ) ||
        ( ( s->mask & SUBSET_MASK_HAVE_HOUR ) == 0 ) ||
-       ( ( s->mask & SUBSET_MASK_HAVE_SECOND ) == 0 ) 
-      )
+       ( ( s->mask & SUBSET_MASK_HAVE_SECOND ) == 0 )
+     )
     {
       sprintf ( err,"bufr2syn: parse_subset_as_temp(): lack of mandatory descriptor in sequence" );
-      free( (void *) (r));
-      free( (void *) (w));
+      free ( ( void * ) ( r ) );
+      free ( ( void * ) ( w ) );
       return 1;
     }
 
-  /* Guess the type of TEMP report according with data parsed */  
-  if (t->a.s1.II[0])
-  {
-    // it seems this is a TEMP report
-    strcpy( t->a.s1.MiMi, "TT");
-    strcpy( t->b.s1.MiMi, "TT");
-    strcpy( t->c.s1.MiMi, "TT");
-    strcpy( t->d.s1.MiMi, "TT");
-  }
-  else if (t->a.s1.h0h0h0h0[0])
-  {
-    // it seems this is a TEMP MOBIL report
-    strcpy( t->a.s1.MiMi, "II");
-    strcpy( t->b.s1.MiMi, "II");
-    strcpy( t->c.s1.MiMi, "II");
-    strcpy( t->d.s1.MiMi, "II");
-  }
-  else if (t->a.s1.D_D[0])
-  {
-    // it seems this is a TEMP SHIP report
-    strcpy( t->a.s1.MiMi, "UU");
-    strcpy( t->b.s1.MiMi, "UU");
-    strcpy( t->c.s1.MiMi, "UU");
-    strcpy( t->d.s1.MiMi, "UU");
-  }
-  else if (t->a.s1.Ula[0])
-  {
-    // it seems this is a TEMP DROP report
-    strcpy( t->a.s1.MiMi, "XX");
-    strcpy( t->b.s1.MiMi, "XX");
-    strcpy( t->c.s1.MiMi, "XX");
-    strcpy( t->d.s1.MiMi, "XX");
-  }
+  /* Guess the type of TEMP report according with data parsed */
+  if ( t->a.s1.II[0] )
+    {
+      // it seems this is a TEMP report
+      strcpy ( t->a.s1.MiMi, "TT" );
+      strcpy ( t->b.s1.MiMi, "TT" );
+      strcpy ( t->c.s1.MiMi, "TT" );
+      strcpy ( t->d.s1.MiMi, "TT" );
+    }
+  else if ( t->a.s1.h0h0h0h0[0] )
+    {
+      // it seems this is a TEMP MOBIL report
+      strcpy ( t->a.s1.MiMi, "II" );
+      strcpy ( t->b.s1.MiMi, "II" );
+      strcpy ( t->c.s1.MiMi, "II" );
+      strcpy ( t->d.s1.MiMi, "II" );
+    }
+  else if ( t->a.s1.D_D[0] )
+    {
+      // it seems this is a TEMP SHIP report
+      strcpy ( t->a.s1.MiMi, "UU" );
+      strcpy ( t->b.s1.MiMi, "UU" );
+      strcpy ( t->c.s1.MiMi, "UU" );
+      strcpy ( t->d.s1.MiMi, "UU" );
+    }
+  else if ( t->a.s1.Ula[0] )
+    {
+      // it seems this is a TEMP DROP report
+      strcpy ( t->a.s1.MiMi, "XX" );
+      strcpy ( t->b.s1.MiMi, "XX" );
+      strcpy ( t->c.s1.MiMi, "XX" );
+      strcpy ( t->d.s1.MiMi, "XX" );
+    }
   else
-  {
-    sprintf ( err,"bufr2syn: parse_subset_as_temp(): Unknown type TEMP report" );
-    free( (void *) (r));
-    free( (void *) (w));
-    return 1;
-  }
-  sprintf(m->type, "%s%s" , t->a.s1.MiMi, t->a.s1.MjMj);
-  sprintf(m->type2, "%s%s" , t->b.s1.MiMi, t->b.s1.MjMj);
-  sprintf(m->type3, "%s%s" , t->c.s1.MiMi, t->c.s1.MjMj);
-  sprintf(m->type4, "%s%s" , t->d.s1.MiMi, t->d.s1.MjMj);
-  
+    {
+      sprintf ( err,"bufr2syn: parse_subset_as_temp(): Unknown type TEMP report" );
+      free ( ( void * ) ( r ) );
+      free ( ( void * ) ( w ) );
+      return 1;
+    }
+  sprintf ( m->type, "%s%s" , t->a.s1.MiMi, t->a.s1.MjMj );
+  sprintf ( m->type2, "%s%s" , t->b.s1.MiMi, t->b.s1.MjMj );
+  sprintf ( m->type3, "%s%s" , t->c.s1.MiMi, t->c.s1.MjMj );
+  sprintf ( m->type4, "%s%s" , t->d.s1.MiMi, t->d.s1.MjMj );
+
   /****** Second pass. Global results and consistence analysis ************/
   sprintf ( aux,"%s%s%s%s%s%s", t->a.e.YYYY, t->a.e.MM, t->a.e.DD, t->a.e.HH, t->a.e.mm, t->a.e.ss );
   YYYYMMDDHHmm_to_met_datetime ( &m->t, aux );
+
+  print_temp_raw_data(r);
+  print_temp_raw_wind_shear_data(w);
   
-  free( (void *) (r));
-  free( (void *) (w));
+  free ( ( void * ) ( r ) );
+  free ( ( void * ) ( w ) );
   return 0;
 }

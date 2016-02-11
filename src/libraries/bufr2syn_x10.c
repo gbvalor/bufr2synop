@@ -228,3 +228,40 @@ int climat_parse_x10 ( struct climat_chunks *c, struct bufr_subset_state *s )
     }
   return 0;
 }
+
+/*!
+  \fn int temp_parse_x10 ( struct temp_chunks *c, struct bufr_subset_state *s )
+  \brief Parse a expanded descriptor with X = 10
+  \param c pointer to a struct \ref temp_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
+int temp_parse_x10 ( struct temp_chunks *t, struct bufr_subset_state *s )
+{
+  if ( t == NULL || s == NULL )
+    {
+      return 1;
+    }
+
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+    {
+      return 0;
+    }
+
+  switch ( s->a->desc.y )
+    {
+    case 9: // 0 10 009. geopotential
+      if ( s->rep > 0 && s->r->n > 0 )
+        {
+          s->r->raw[s->r->n - 1].h = s->val;
+        }
+      break;
+
+      break;
+      
+    default:
+      break;
+    }
+  return 0;
+}

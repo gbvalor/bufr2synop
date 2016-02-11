@@ -1797,3 +1797,39 @@ int print_climat ( char *report, size_t lmax, struct climat_chunks *cl )
   return 0;
 
 }
+
+/*!
+  \fn int print_temp_raw_data ( struct temp_raw_data *r )
+  \brief Prints for debug a struct \ref temp_raw_data
+  \param r the pointer of struct to print
+*/
+int print_temp_raw_data ( struct temp_raw_data *r )
+{
+  size_t i;
+
+  for ( i = 0; i < r->n ; i++ )
+    {
+      printf ( "i=%3ld, dt=%4d, flags=%08X, P=%6.1lf, h=%6.0lf, dlat=%7.4lf, dlon=%7.4lf, T=%6.1lf, Td=%6.1lf, dd=%03.0lf, ff=%5.1lf\n",
+               i, r->raw[i].dt, r->raw[i].flags, r->raw[i].p * 0.01, r->raw[i].h, r->raw[i].dlat, r->raw[i].dlon,
+               r->raw[i].T - 273.15, r->raw[i].Td - 273.15, r->raw[i].dd, r->raw[i].ff );
+    }
+  return 0;
+}
+
+/*!
+  \fn int print_temp_raw_wind_shear ( struct temp_raw_wind_shear_data *w )
+  \brief Prints for debug a struct \ref temp_raw_data
+  \param w the pointer of struct to print
+*/
+int print_temp_raw_wind_shear_data ( struct temp_raw_wind_shear_data *w )
+{
+  size_t i;
+
+  for ( i = 0; i < w->n ; i++ )
+    {
+      printf ( "i=%3ld, dt=%4d, flags=%08X, P=%6.1lf, dlat=%7.4lf, dlon=%7.4lf, ws_blw=%5.1lf, ws_abv=%5.1lf\n",
+               i, w->raw[i].dt, w->raw[i].flags, w->raw[i].p * 0.01, w->raw[i].dlat, w->raw[i].dlon,
+               w->raw[i].ws_abv, w->raw[i].ws_blw );
+    }
+  return 0;
+}

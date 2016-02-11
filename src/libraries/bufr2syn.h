@@ -481,6 +481,8 @@ char * print_climat_sec2 ( char **sec2, size_t lmax, struct climat_chunks *cl );
 char * print_climat_sec3 ( char **sec3, size_t lmax, struct climat_chunks *cl );
 char * print_climat_sec4 ( char **sec4, size_t lmax, struct climat_chunks *cl );
 
+int print_temp_raw_data ( struct temp_raw_data *r );
+int print_temp_raw_wind_shear_data ( struct temp_raw_wind_shear_data *w );
 
 int print_csv ( FILE *f, struct metreport *m );
 int print_json ( FILE *f, struct metreport *m );
@@ -539,10 +541,16 @@ int climat_parse_x33 ( struct climat_chunks *c, struct bufr_subset_state *s );
 int temp_parse_x01 ( struct temp_chunks *t, struct bufr_subset_state *s );
 int temp_parse_x02 ( struct temp_chunks *t, struct bufr_subset_state *s );
 int temp_parse_x04 ( struct temp_chunks *t, struct bufr_subset_state *s );
+int temp_parse_x05 ( struct temp_chunks *t, struct bufr_subset_state *s );
+int temp_parse_x06 ( struct temp_chunks *t, struct bufr_subset_state *s );
 int temp_parse_x07 ( struct temp_chunks *t, struct bufr_subset_state *s );
 int temp_parse_x08 ( struct temp_chunks *t, struct bufr_subset_state *s );
+int temp_parse_x10 ( struct temp_chunks *t, struct bufr_subset_state *s );
+int temp_parse_x11 ( struct temp_chunks *t, struct bufr_subset_state *s );
+int temp_parse_x12 ( struct temp_chunks *t, struct bufr_subset_state *s );
 int temp_parse_x20 ( struct temp_chunks *t, struct bufr_subset_state *s );
 int temp_parse_x22 ( struct temp_chunks *t, struct bufr_subset_state *s );
+int temp_parse_x31 ( struct temp_chunks *t, struct bufr_subset_state *s );
 int temp_parse_x33 ( struct temp_chunks *t, struct bufr_subset_state *s );
 
 // These are prototypes for used ecmwf bufr library functions

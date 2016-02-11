@@ -38,7 +38,7 @@ char * kelvin_to_snTTT ( char *target, double T )
     }
 
   // tenths of degree (Celsius)
-  ic = ( int ) ( floor(10.0 * (T - 273.15) + 0.5 ));
+  ic = ( int ) ( floor ( 10.0 * ( T - 273.15 ) + 0.5 ) );
   if ( ic < 0 )
     {
       sprintf ( target, "1%03d",  -ic );
@@ -65,7 +65,7 @@ char * kelvin_to_snTT ( char *target, double T )
     }
 
   // Whole degrees (Celsius)
-  ic = ( int ) ( floor((T - 273.15) + 0.5 ));
+  ic = ( int ) ( floor ( ( T - 273.15 ) + 0.5 ) );
   if ( ic < 0 )
     {
       sprintf ( target, "1%02d", -ic );
@@ -92,7 +92,7 @@ char * kelvin_to_TT ( char *target, double T )
     }
 
   // Whole degrees (Celsius)
-  ic = ( int ) ( floor((T - 273.15) + 0.5 ));
+  ic = ( int ) ( floor ( ( T - 273.15 ) + 0.5 ) );
   if ( ic < 0 )
     {
       sprintf ( target, "%02d", 50 - ic );
@@ -118,7 +118,7 @@ char * kelvin_to_TTTT ( char *target, double T )
       return NULL;
     }
   // hundreth of degrees (Celsius)
-  ic = ( int ) ( floor(100.0 * (T - 273.15) + 0.5 ));
+  ic = ( int ) ( floor ( 100.0 * ( T - 273.15 ) + 0.5 ) );
   if ( ic < 0 )
     {
       ic = 5000 - ic;
@@ -508,5 +508,48 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr_subset_state *s )
     default:
       break;
     }
+  return 0;
+}
+
+/*!
+  \fn int temp_parse_x12 ( struct temp_chunks *c, struct bufr_subset_state *s )
+  \brief Parse a expanded descriptor with X = 12
+  \param c pointer to a struct \ref temp_chunks where to set the results
+  \param s pointer to a struct \ref bufr_subset_state where is stored needed information in sequential analysis
+
+  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+*/
+int temp_parse_x12 ( struct temp_chunks *t, struct bufr_subset_state *s )
+{
+  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+    {
+      return 0;
+    }
+
+  if ( t == NULL )
+    {
+      return 1;
+    }
+
+  switch ( s->a->desc.y )
+    {
+    case 101: // 0 12 101. Temperature/dry-bulb temperature (scale 2)
+      if ( s->rep > 0 && s->r->n > 0 )
+        {
+          s->r->raw[s->r->n - 1].T = s->val;
+        }
+      break;
+      
+    case 103: // 0 12 103. Dew-point temperature (scale 2)
+      if ( s->rep > 0 && s->r->n > 0 )
+        {
+          s->r->raw[s->r->n - 1].Td = s->val;
+        }
+      break;
+      
+    default:
+      break;
+    }
+
   return 0;
 }

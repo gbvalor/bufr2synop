@@ -183,42 +183,53 @@ int temp_parse_x05 ( struct temp_chunks *t, struct bufr_subset_state *s )
       t->b.s1.Ula[0] = t->b.s1.LaLaLa[1];
       t->c.s1.Ula[0] = t->c.s1.LaLaLa[1];
       t->d.s1.Ula[0] = t->d.s1.LaLaLa[1];
+      // check if set both LaLaLa and LoLoLoLo to set Qc
+      if ( ( t->a.s1.Qc[0] == 0 ) && t->a.s1.LaLaLa[0] && t->a.s1.LoLoLoLo[0] )
+        {
+          if ( s->mask & SUBSET_MASK_LATITUDE_SOUTH )
+            {
+              if ( s->mask & SUBSET_MASK_LONGITUDE_WEST )
+                strcpy ( t->a.s1.Qc, "5" );
+              else
+                strcpy ( t->a.s1.Qc, "3" );
+            }
+          else
+            {
+              if ( s->mask & SUBSET_MASK_LONGITUDE_WEST )
+                strcpy ( t->a.s1.Qc, "7" );
+              else
+                strcpy ( t->a.s1.Qc, "1" );
+            }
+          strcpy ( t->b.s1.Qc, t->a.s1.Qc );
+          strcpy ( t->c.s1.Qc, t->a.s1.Qc );
+          strcpy ( t->d.s1.Qc, t->a.s1.Qc );
+        }
+
+      // check if about MMM
+      if ( ( t->a.s1.MMM[0] == 0 ) && t->a.s1.LaLaLa[0] && t->a.s1.LoLoLoLo[0] )
+        {
+          latlon_to_MMM ( t->a.s1.MMM, s->lat, s->lon );
+          strcpy ( t->b.s1.MMM, t->a.s1.MMM );
+          strcpy ( t->c.s1.MMM, t->a.s1.MMM );
+          strcpy ( t->d.s1.MMM, t->a.s1.MMM );
+        }
+      break;
+
+    case 15: // 0 05 015. Latitude displacement since launch site (high accuracy)
+      if ( s->rep > 0 && s->r->n > 0 )
+        {
+          s->r->raw[s->r->n - 1].dlat = s->val;
+        }
+      else if ( s->w->n > 0 )
+        {
+          s->w->raw[s->w->n - 1].dlat = s->val;
+        }
       break;
 
     default:
       break;
     }
 
-  // check if set both LaLaLa and LoLoLoLo to set Qc
-  if ( ( t->a.s1.Qc[0] == 0 ) && t->a.s1.LaLaLa[0] && t->a.s1.LoLoLoLo[0] )
-    {
-      if ( s->mask & SUBSET_MASK_LATITUDE_SOUTH )
-        {
-          if ( s->mask & SUBSET_MASK_LONGITUDE_WEST )
-            strcpy ( t->a.s1.Qc, "5" );
-          else
-            strcpy ( t->a.s1.Qc, "3" );
-        }
-      else
-        {
-          if ( s->mask & SUBSET_MASK_LONGITUDE_WEST )
-            strcpy ( t->a.s1.Qc, "7" );
-          else
-            strcpy ( t->a.s1.Qc, "1" );
-        }
-      strcpy ( t->b.s1.Qc, t->a.s1.Qc );
-      strcpy ( t->c.s1.Qc, t->a.s1.Qc );
-      strcpy ( t->d.s1.Qc, t->a.s1.Qc );
-    }
-
-  // check if about MMM
-  if ( ( t->a.s1.MMM[0] == 0 ) && t->a.s1.LaLaLa[0] && t->a.s1.LoLoLoLo[0] )
-    {
-      latlon_to_MMM ( t->a.s1.MMM, s->lat, s->lon );
-      strcpy ( t->b.s1.MMM, t->a.s1.MMM );
-      strcpy ( t->c.s1.MMM, t->a.s1.MMM );
-      strcpy ( t->d.s1.MMM, t->a.s1.MMM );
-    }
 
   return 0;
 }
