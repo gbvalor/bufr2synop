@@ -407,16 +407,16 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr_subset_state *s )
         {
           return 0;
         }
-      if (s->is_normal == 0)
-      {
-	sprintf ( c->s1.nrnr, "%02d", s->ival );
-        s->mask |= CLIMAT_SEC1;
-      }
+      if ( s->is_normal == 0 )
+        {
+          sprintf ( c->s1.nrnr, "%02d", s->ival );
+          s->mask |= CLIMAT_SEC1;
+        }
       else
-      {
-	sprintf ( c->s2.nrnr, "%02d", s->ival );
-        s->mask |= CLIMAT_SEC2;
-      }
+        {
+          sprintf ( c->s2.nrnr, "%02d", s->ival );
+          s->mask |= CLIMAT_SEC2;
+        }
       break;
 
 
@@ -445,7 +445,7 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr_subset_state *s )
 */
 int temp_parse_x04 ( struct temp_chunks *t, struct bufr_subset_state *s )
 {
-    switch ( s->a->desc.y )
+  switch ( s->a->desc.y )
     {
     case 1: // 0 04 001 . Year
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
@@ -501,6 +501,10 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr_subset_state *s )
           sprintf ( t->b.e.HH, "%02d", s->ival );
           sprintf ( t->c.e.HH, "%02d", s->ival );
           sprintf ( t->d.e.HH, "%02d", s->ival );
+          sprintf ( t->a.s7.GG, "%02d", s->ival );
+          sprintf ( t->b.s7.GG, "%02d", s->ival );
+          sprintf ( t->c.s7.GG, "%02d", s->ival );
+          sprintf ( t->d.s7.GG, "%02d", s->ival );
         }
       s->mask |= SUBSET_MASK_HAVE_HOUR;
       //sprintf(t->s0.GG, "%02d", (int) sq->sequence[is].val);
@@ -516,6 +520,10 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr_subset_state *s )
           sprintf ( t->b.e.mm, "%02d", s->ival );
           sprintf ( t->c.e.mm, "%02d", s->ival );
           sprintf ( t->d.e.mm, "%02d", s->ival );
+          sprintf ( t->a.s7.gg, "%02d", s->ival );
+          sprintf ( t->b.s7.gg, "%02d", s->ival );
+          sprintf ( t->c.s7.gg, "%02d", s->ival );
+          sprintf ( t->d.s7.gg, "%02d", s->ival );
         }
       s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
@@ -533,20 +541,22 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr_subset_state *s )
         }
       s->mask |= SUBSET_MASK_HAVE_SECOND;
       break;
-      
+
     case 86: // 0 04 086 . Long time period or displacement (since launch time)
-      if (s->rep > 0)
-      { // case of Temperature, humidty ... point
-	if ((int) s->r->n < s->rep)
-	   s->r->n += 1;
-	s->r->raw[s->r->n - 1].dt = s->ival; 
-      }
+      if ( s->rep > 0 )
+        {
+          // case of Temperature, humidty ... point
+          if ( ( int ) s->r->n < s->rep )
+            s->r->n += 1;
+          s->r->raw[s->r->n - 1].dt = s->ival;
+        }
       else
-      { // case of wind shear point
-	if ((int) s->w->n < s->itval) 
-	  s->w->n += 1;
-	s->w->raw[s->w->n - 1].dt = s->ival; 
-      }
+        {
+          // case of wind shear point
+          if ( ( int ) s->w->n < s->itval )
+            s->w->n += 1;
+          s->w->raw[s->w->n - 1].dt = s->ival;
+        }
       break;
     default:
       break;

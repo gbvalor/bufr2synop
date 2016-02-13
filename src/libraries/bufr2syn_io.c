@@ -69,5 +69,17 @@ int read_bufr ( unsigned char *bufr, char *filename, int *length )
     return -3;
 
   return 0;
-}
+} 
 
+int print_plain(FILE *f, struct metreport *m)
+{
+  if (m->alphanum[0])
+    fprintf(f, "%s\n", m->alphanum);
+  if (m->alphanum2[0])
+    fprintf(f, "%s\n", m->alphanum2);
+  if (m->alphanum3[0])
+    fprintf(f, "%s\n", m->alphanum3);
+  if (m->alphanum4[0])
+    fprintf(f, "%s\n", m->alphanum4);
+  return 0;
+}

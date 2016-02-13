@@ -128,7 +128,71 @@ char * kelvin_to_TTTT ( char *target, double T )
 }
 
 
+/*!
+  \fn char * kelvin_to_TTTa(char *target, double T)
+  \brief Set temperature TTTa
+  \param target result as string
+  \param T temperature (kelvin)
+*/
+char * kelvin_to_TTTa ( char *target, double T )
+{
+  int ix;
+  
+  if (T == MISSING_REAL)
+  {
+    sprintf(target, "///");
+    return target;
+  }
+  
+  ix = ( int ) ( 10.0 * ( T - 273.15 ) );
 
+  if ( ix >= 0 )
+    ix &= ~1;
+  else
+    {
+      ix = ( -ix );
+      ix |= 1;
+    }
+  sprintf ( target, "%03d", ix );
+  return target;
+}
+
+/*!
+  \fn  char * dewpoint_depression_to_DnDn ( char * target, double T, double Td )
+  \brief Set DnDn (dewpoint depression)
+  \param target string to set as result
+  \param dpd dewpoint depresion (celsius)
+*/
+char * dewpoint_depression_to_DnDn ( char * target, double T, double Td )
+{
+  int ix;
+  double dpd = T - Td;
+
+  if (T == MISSING_REAL || Td == MISSING_REAL)
+  {
+    strcpy( target, "//");
+    return target;
+  }
+  
+  if ( dpd < 0.0 )
+    return NULL;
+
+  if ( dpd > 50.0 )
+    {
+      strcpy ( target, "//" );
+      return target;
+    }
+
+  ix = ( int ) ( 10.0 * dpd );
+
+  if ( ix >= 55 )
+    {
+      ix = 50 + ( ix + 5 ) / 10;
+    }
+  sprintf ( target, "%02d", ix );
+
+  return target;
+}
 
 /*!
   \fn int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s )
@@ -521,11 +585,6 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr_subset_state *s )
 */
 int temp_parse_x12 ( struct temp_chunks *t, struct bufr_subset_state *s )
 {
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    {
-      return 0;
-    }
-
   if ( t == NULL )
     {
       return 1;
@@ -536,17 +595,27 @@ int temp_parse_x12 ( struct temp_chunks *t, struct bufr_subset_state *s )
     case 101: // 0 12 101. Temperature/dry-bulb temperature (scale 2)
       if ( s->rep > 0 && s->r->n > 0 )
         {
-          s->r->raw[s->r->n - 1].T = s->val;
+          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+            {
+              s->r->raw[s->r->n - 1].T = MISSING_REAL;
+            }
+          else
+            s->r->raw[s->r->n - 1].T = s->val;
         }
       break;
-      
+
     case 103: // 0 12 103. Dew-point temperature (scale 2)
       if ( s->rep > 0 && s->r->n > 0 )
         {
-          s->r->raw[s->r->n - 1].Td = s->val;
+          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+            {
+              s->r->raw[s->r->n - 1].Td = MISSING_REAL;
+            }
+          else
+            s->r->raw[s->r->n - 1].Td = s->val;
         }
       break;
-      
+
     default:
       break;
     }

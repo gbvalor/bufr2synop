@@ -261,6 +261,8 @@
 #define SUBSET_MASK_HAVE_GUST (131072)
 
 
+#define REPORT_LENGTH (8192)
+
 /*!
   \struct bufr_descriptor
   \brief BUFR descriptor
@@ -354,17 +356,6 @@ struct gts_header
 };
 
 /*!
-   \struct met_datetime
-   \brief stores date and time reference of a report, commonly the observation time
-*/
-struct met_datetime
-{
-  time_t t; /*!< Unix instant for report date/time reference */
-  struct tm tim;  /*!<  struct tm with report date/time info (UTC) */
-  char datime[16]; /*!< date/time reference (UTC) as string with YYYYMMDDHHmm[ss] format */
-};
-
-/*!
    \struct met_geo
    \brief Geographic meta information
 */
@@ -393,13 +384,13 @@ struct metreport
   struct temp_chunks temp; /*!< The possible parsed temp */
   struct climat_chunks climat; /*!< The pssible parsed climat */
   char type[8]; /*!< The type of report as MiMiMjMj */
-  char alphanum[2048]; /*!< The alphanumeric report */
+  char alphanum[REPORT_LENGTH]; /*!< The alphanumeric report */
   char type2[8]; /*!< The type of report of part 2 as MiMiMjMj */
-  char alphanum2[2048]; /*!< The alphanumeric report, part 2 */
+  char alphanum2[REPORT_LENGTH]; /*!< The alphanumeric report, part 2 */
   char type3[8]; /*!< The type of report of part 3 as MiMiMjMj */
-  char alphanum3[2048]; /*!< The alphanumeric report, part 3 */
+  char alphanum3[REPORT_LENGTH]; /*!< The alphanumeric report, part 3 */
   char type4[8]; /*!< The type of report of part 4 as MiMiMjMj */
-  char alphanum4[2048]; /*!< The alphanumeric report, part 4 */
+  char alphanum4[REPORT_LENGTH]; /*!< The alphanumeric report, part 4 */
 };
 
 /* Functions definitions */
@@ -429,7 +420,9 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr_subset_state *s, str
 int parse_subset_as_climat ( struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq,
                            char *err );
 int YYYYMMDDHHmm_to_met_datetime ( struct met_datetime *t, const char *source );
+int round_met_datetime_to_hour(struct met_datetime *target, struct met_datetime *source);
 int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn );
+char *met_datetime_to_YYGG (char *target, struct met_datetime *t);
 int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b );
 int check_date_from_future(struct metreport *m);
 char *guess_WMO_region ( char *A1, char *Reg, const char *II, const char *iii );
@@ -449,9 +442,12 @@ char * kelvin_to_TTTT ( char *target, double T );
 char * kelvin_to_snTTT ( char *target, double T );
 char * kelvin_to_snTT ( char *target, double T );
 char * kelvin_to_TT ( char *target, double T );
+char * kelvin_to_TTTa(char *target, double T);
+char * dewpoint_depression_to_DnDn ( char * target, double T, double Td);
 char * m_to_h ( char *target, double h );
 char * m_to_hh ( char *target, double h );
 char * pascal_to_ppp ( char *target, double P );
+char * pascal_to_pnpnpn ( char *target, double P );
 char * pascal_to_PPPP ( char *target, double P );
 char * percent_to_okta ( char *target, double perc );
 char * prec_to_RRR ( char *target, double r );
@@ -459,6 +455,7 @@ char * prec_to_RRRR24 ( char *target, double r );
 char * secs_to_tt ( char *tt, int secs );
 char * vism_to_VV ( char *target, double V );
 char * recent_snow_to_ss ( char *target, double r );
+char * wind_to_dndnfnfnfn( char *target, double dd, double ff);
 
 int print_synop ( char *report, size_t lmax, struct synop_chunks *syn );
 char * print_synop_sec0 ( char **sec0, size_t lmax, struct synop_chunks *syn );
@@ -481,12 +478,30 @@ char * print_climat_sec2 ( char **sec2, size_t lmax, struct climat_chunks *cl );
 char * print_climat_sec3 ( char **sec3, size_t lmax, struct climat_chunks *cl );
 char * print_climat_sec4 ( char **sec4, size_t lmax, struct climat_chunks *cl );
 
+int print_temp (struct metreport *m);
+int print_temp_a (char *report, size_t lmax, struct temp_chunks *t);
+char * print_temp_a_sec1 (char **sec1, size_t lmax, struct temp_chunks *t);
+char * print_temp_a_sec2 (char **sec2, size_t lmax, struct temp_chunks *t);
+char * print_temp_a_sec3 (char **sec3, size_t lmax, struct temp_chunks *t);
+char * print_temp_a_sec4 (char **sec4, size_t lmax, struct temp_chunks *t);
+char * print_temp_a_sec7 (char **sec7, size_t lmax, struct temp_chunks *t);
+int print_temp_b (char *report, size_t lmax, struct temp_chunks *t);
+char * print_temp_b_sec1 (char **sec1, size_t lmax, struct temp_chunks *t);
+char * print_temp_b_sec5 (char **sec5, size_t lmax, struct temp_chunks *t);
+char * print_temp_b_sec6 (char **sec6, size_t lmax, struct temp_chunks *t);
+char * print_temp_b_sec7 (char **sec7, size_t lmax, struct temp_chunks *t);
+char * print_temp_b_sec8 (char **sec8, size_t lmax, struct temp_chunks *t);
+
+
+int parse_temp_raw_data (struct temp_chunks *t, struct temp_raw_data *r );
+int parse_temp_raw_wind_shear_data (struct temp_chunks *t, struct temp_raw_wind_shear_data *w );
 int print_temp_raw_data ( struct temp_raw_data *r );
 int print_temp_raw_wind_shear_data ( struct temp_raw_wind_shear_data *w );
 
 int print_csv ( FILE *f, struct metreport *m );
 int print_json ( FILE *f, struct metreport *m );
 int print_xml ( FILE *f, struct metreport *m );
+int print_plain(FILE *f, struct metreport *m);
 
 int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s );
 int syn_parse_x02 ( struct synop_chunks *syn, struct bufr_subset_state *s );

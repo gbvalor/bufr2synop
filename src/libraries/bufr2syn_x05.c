@@ -183,6 +183,7 @@ int temp_parse_x05 ( struct temp_chunks *t, struct bufr_subset_state *s )
       t->b.s1.Ula[0] = t->b.s1.LaLaLa[1];
       t->c.s1.Ula[0] = t->c.s1.LaLaLa[1];
       t->d.s1.Ula[0] = t->d.s1.LaLaLa[1];
+      
       // check if set both LaLaLa and LoLoLoLo to set Qc
       if ( ( t->a.s1.Qc[0] == 0 ) && t->a.s1.LaLaLa[0] && t->a.s1.LoLoLoLo[0] )
         {

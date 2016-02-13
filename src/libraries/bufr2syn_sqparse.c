@@ -154,7 +154,7 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
       // Parse FM-12, FM-13 and FM-14
       if ( parse_subset_as_synop ( m, st, sq, err ) == 0 )
         {
-          return print_synop ( m->alphanum, 2048, &m->synop );
+          return print_synop ( m->alphanum, REPORT_LENGTH, &m->synop );
         }
     }
   else if ( strcmp ( st->type_report,"ZZYY" ) == 0 )
@@ -162,7 +162,7 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
       // parse BUOY
       if ( parse_subset_as_buoy ( m, st, sq, err ) == 0 )
         {
-          return print_buoy ( m->alphanum, 2048, &m->buoy );
+          return print_buoy ( m->alphanum, REPORT_LENGTH, &m->buoy );
         }
     }
   else if ( strcmp ( st->type_report,"TTXX" ) == 0 )
@@ -170,7 +170,7 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
       // psrse TEMP
       if ( parse_subset_as_temp ( m, st, sq, err ) == 0 )
         {
-          return 0;  // FIXME
+          return print_temp(m);  
         }
     }
   else if ( strcmp ( st->type_report,"CLIMAT" ) == 0 )
@@ -178,7 +178,7 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
       // psrse CLIMAT
       if ( parse_subset_as_climat ( m, st, sq, err ) == 0 )
         {
-          return print_climat ( m->alphanum, 2048, &m->climat );
+          return print_climat ( m->alphanum, REPORT_LENGTH, &m->climat );
         }
     }
 

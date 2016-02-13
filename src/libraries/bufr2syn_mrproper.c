@@ -176,7 +176,7 @@ void clean_buoy_chunks ( struct buoy_chunks *b )
 */
 void clean_temp_chunks ( struct temp_chunks *t )
 {
-  memset ( &t, 0, sizeof ( struct temp_chunks ) );
+  memset ( t, 0, sizeof ( struct temp_chunks ) );
 }
 
 /*! \fn void clean_climat_sec0(struct climat_sec0 *s)

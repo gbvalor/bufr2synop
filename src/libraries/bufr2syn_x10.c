@@ -44,6 +44,21 @@ char * pascal_to_ppp ( char *target, double P )
   return target;
 }
 
+char * pascal_to_pnpnpn ( char *target, double P )
+{
+  int ic;
+  if ( P > 10000.0 )
+    {
+      ic = ( int ) ( P * 0.01 + 0.5 );
+    }
+  else
+    {
+      ic = ( int ) ( P * 0.1 + 0.5);
+    }
+  sprintf ( target, "%03d", ic % 1000 );
+  return target;
+}
+
 
 /*!
   \fn char * pascal_to_PPPP ( char *target, double P )

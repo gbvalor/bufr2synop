@@ -147,6 +147,35 @@ int YYYYMMDDHHmm_to_met_datetime ( struct met_datetime *t, const char *source )
 }
 
 /*!
+  \fn char *met_datetime_to_YYGG (char *target, struct met_datetime *t)
+  \brief Get YYGG from a struct \ref met_datetime
+  \param target string with result as output
+  \param t pointer to source struct \ref met_datetime
+*/
+char *met_datetime_to_YYGG (char *target, struct met_datetime *t)
+{
+  time_t tx;
+  struct tm tim;
+  
+  tx = ((t->t + 1800) / 3600) * 3600 ; // rounding to next whole hour
+  memset (&tim, 0, sizeof(struct tm));
+  gmtime_r(&tx, &tim);
+  
+  strftime(target, 8, "%d%H", &tim);
+    
+  return target;
+}
+
+int round_met_datetime_to_hour(struct met_datetime *target, struct met_datetime *source)
+{
+  target->t = ((source->t + 1800) / 3600) * 3600 ; // rounding to next whole hour
+  memset (&target->tim, 0, sizeof(struct tm));
+  gmtime_r(&target->t, &target->tim);
+  strftime ( target->datime, 16, "%Y%m%d%H%M", &target->tim );
+  return 0;
+}
+
+/*!
   \fn char *guess_WMO_region(char *A1, char *Reg, const char *II, const char *iii)
   \brief get WMO region A1 and Reg items from II and iii (WMO index)
   \param A1 string woth resulting A1

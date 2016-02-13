@@ -127,8 +127,8 @@ char * vism_to_VV ( char *target, double V )
     strcpy ( target, "00" );
   else if ( V <= 5000.0 )
     sprintf ( target, "%02d", ( int ) ( V + 0.1 ) / 100 );
-  else if ( V < 6000.0)
-    sprintf ( target, "50"); // this is to avoid 51-55 range
+  else if ( V < 6000.0 )
+    sprintf ( target, "50" ); // this is to avoid 51-55 range
   else if ( V <= 30000.0 )
     sprintf ( target, "%02d", ( int ) ( V + 0.1 ) / 1000 + 50 );
   else if ( V <= 70000.0 )
@@ -380,41 +380,41 @@ int temp_parse_x20 ( struct temp_chunks *t, struct bufr_subset_state *s )
     case 11: // 0 20 011 . Cloud amount
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         return 0;
-          if ( s->ival <= 8 )
-            sprintf ( t->b.s8.Nh, "%1d", s->ival );
-          else if ( s->ival <= 10 )
-            sprintf ( t->b.s8.Nh, "9" );
-          else if ( s->ival == 15 )
-            sprintf ( t->b.s8.Nh, "/" );
-          t->b.mask |= TEMP_SEC_8;
+      if ( s->ival <= 8 )
+        sprintf ( t->b.s8.Nh, "%1d", s->ival );
+      else if ( s->ival <= 10 )
+        sprintf ( t->b.s8.Nh, "9" );
+      else if ( s->ival == 15 )
+        sprintf ( t->b.s8.Nh, "/" );
+      t->b.mask |= TEMP_SEC_8;
       break;
     case 12: // 0 20 012 . Cloud type
-          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-            return 0;
-          if ( s->ival >= 10 && s->ival < 20 )
-            sprintf ( t->b.s8.Ch, "%1d", s->ival % 10 );
-          else if ( s->ival >= 20 && s->ival < 30 )
-            sprintf ( t->b.s8.Cm, "%1d", s->ival % 10 );
-          else if ( s->ival >= 30 && s->ival < 40 )
-            sprintf ( t->b.s8.Cl, "%1d", s->ival % 10 );
-          else if ( s->ival == 59 )
-            sprintf ( t->b.s8.Nh, "/" );
-          else if ( s->ival == 60 )
-            sprintf ( t->b.s8.Ch, "/" );
-          else if ( s->ival == 61 )
-            sprintf ( t->b.s8.Cm, "/" );
-          else if ( s->ival == 62 )
-            sprintf ( t->b.s8.Cl, "/" );
-          t->b.mask |= TEMP_SEC_8;
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        return 0;
+      if ( s->ival >= 10 && s->ival < 20 )
+        sprintf ( t->b.s8.Ch, "%1d", s->ival % 10 );
+      else if ( s->ival >= 20 && s->ival < 30 )
+        sprintf ( t->b.s8.Cm, "%1d", s->ival % 10 );
+      else if ( s->ival >= 30 && s->ival < 40 )
+        sprintf ( t->b.s8.Cl, "%1d", s->ival % 10 );
+      else if ( s->ival == 59 )
+        sprintf ( t->b.s8.Nh, "/" );
+      else if ( s->ival == 60 )
+        sprintf ( t->b.s8.Ch, "/" );
+      else if ( s->ival == 61 )
+        sprintf ( t->b.s8.Cm, "/" );
+      else if ( s->ival == 62 )
+        sprintf ( t->b.s8.Cl, "/" );
+      t->b.mask |= TEMP_SEC_8;
       break;
     case 13: // 0 20 013 . Height of base of cloud
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         return 0;
-        m_to_h ( t->b.s8.h, s->val );
+      m_to_h ( t->b.s8.h, s->val );
       break;
-      
+
     default:
       break;
     }
-    return 0;
+  return 0;
 }

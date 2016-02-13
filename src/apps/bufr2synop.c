@@ -356,7 +356,7 @@ int main ( int argc, char *argv[] )
       // Check about the WMO master table
       if ( KSEC1[13] )
         {
-          fprintf ( stderr,"Sorry, we only accept WMO BUFR master Table. sss = %d instead of 0\n" , KSEC1[13]);
+          fprintf ( stderr,"Sorry, we only accept WMO BUFR master Table. sss = %d instead of 0\n" , KSEC1[13] );
           exit ( EXIT_FAILURE );
         }
 
@@ -526,7 +526,9 @@ int main ( int argc, char *argv[] )
               print_csv ( stdout, &REPORT );
             }
           else
-            fprintf ( stdout, "%s\n", REPORT.alphanum );
+            {
+              print_plain ( stdout, &REPORT );
+            }
         }
 
 

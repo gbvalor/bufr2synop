@@ -76,6 +76,28 @@ char * secs_to_tt ( char *tt, int secs )
 }
 
 /*!
+  \fn char * wind_to_dndnfnfnfn( char target, double dd, double ff)
+  \brief sets dndnfnfnfn item in a temp report
+  \param target string set as resul
+  \param dd wind direction (degrees)
+  \param vv wind speed
+*/
+char * wind_to_dndnfnfnfn ( char * target, double dd, double ff )
+{
+  int ix;
+
+  if (dd == MISSING_REAL || ff == MISSING_REAL)
+  {
+    strcpy(target, "/////");
+    return target;
+  }
+  
+  ix = ( int ) (( dd + 2.5 ) / 5) * 5 * 100 + ( int ) ( ff + 0.5 );
+  sprintf ( target, "%05d", ix );
+  return target;
+}
+
+/*!
   \fn int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s )
   \brief Parse a expanded descriptor with X = 11
   \param syn pointer to a struct \ref synop_chunks where to set the results
@@ -412,11 +434,6 @@ int climat_parse_x11 ( struct climat_chunks *c, struct bufr_subset_state *s )
 int temp_parse_x11 ( struct temp_chunks *t, struct bufr_subset_state *s )
 {
 
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    {
-      return 0;
-    }
-
   if ( t == NULL )
     return 1;
 
@@ -425,28 +442,52 @@ int temp_parse_x11 ( struct temp_chunks *t, struct bufr_subset_state *s )
     case 1: // 0 11 001. Wind direction
       if ( s->rep > 0 && s->r->n > 0 )
         {
-          s->r->raw[s->r->n - 1].dd = s->val;
+          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+            {
+              s->r->raw[s->r->n - 1].dd = MISSING_REAL;
+            }
+          else
+	  {
+            s->r->raw[s->r->n - 1].dd = s->val;
+	  }
         }
       break;
 
     case 2: // 0 11 002. Wind speed
       if ( s->rep > 0 && s->r->n > 0 )
         {
-          s->r->raw[s->r->n - 1].ff = s->val;
+          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+            {
+              s->r->raw[s->r->n - 1].ff = MISSING_REAL;
+            }
+          else
+	  {
+            s->r->raw[s->r->n - 1].ff = s->val;
+	  }
         }
       break;
 
     case 61: // 0 11 061. Absolute wind shear in 1 km layer below
-      if ( s->rep > 0 && s->w->n > 0 )
+      if ( s->w->n > 0 )
         {
-          s->w->raw[s->w->n - 1].ws_blw = s->val;
+          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+            {
+              s->w->raw[s->w->n - 1].ws_blw = MISSING_REAL;
+            }
+          else
+            s->w->raw[s->w->n - 1].ws_blw = s->val;
         }
       break;
 
     case 62: // 0 11 062. Absolute wind shear in 1 km layer above
-      if ( s->rep > 0 && s->w->n > 0 )
+      if ( s->w->n > 0 )
         {
-          s->w->raw[s->w->n - 1].ws_abv = s->val;
+          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+            {
+              s->w->raw[s->w->n - 1].ws_abv = MISSING_REAL;
+            }
+          else
+            s->w->raw[s->w->n - 1].ws_abv = s->val;
         }
       break;
 

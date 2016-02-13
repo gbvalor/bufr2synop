@@ -93,13 +93,18 @@ int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 int temp_parse_x33 ( struct temp_chunks *t, struct bufr_subset_state *s )
 {
 
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    return 0;
-
-
   switch ( s->a->desc.y )
     {
     case 24: // 0 33 024. Station elevation quality mark (for mobile stations)
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          strcpy ( t->a.s1.im, "/" );
+          strcpy ( t->b.s1.im, "/" );
+          strcpy ( t->c.s1.im, "/" );
+          strcpy ( t->d.s1.im, "/" );
+          return 0;
+        }
+
       if ( s->ival >= 0 && s->ival < 9 )
         {
           sprintf ( t->a.s1.im, "%d", s->ival );

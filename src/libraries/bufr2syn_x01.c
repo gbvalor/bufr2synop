@@ -70,6 +70,8 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s )
         {
           strcpy ( aux, s->a->cval );
           adjust_string ( aux );
+          if ( aux[0] == '\xff' )
+            break;
           if ( strlen ( aux ) < 10 )
             strcpy ( syn->s0.D_D, aux );
         }
@@ -253,47 +255,47 @@ int temp_parse_x01 ( struct temp_chunks *t, struct bufr_subset_state *s )
       sprintf ( t->c.s1.A1, "%d", s->ival );
       sprintf ( t->d.s1.A1, "%d", s->ival );
       if ( strcmp ( t->a.s1.A1, "1" ) == 0 )
-      {
-        strcpy ( t->a.s1.Reg, "I" );
-        strcpy ( t->b.s1.Reg, "I" );
-        strcpy ( t->c.s1.Reg, "I" );
-        strcpy ( t->d.s1.Reg, "I" );
-      }
+        {
+          strcpy ( t->a.s1.Reg, "I" );
+          strcpy ( t->b.s1.Reg, "I" );
+          strcpy ( t->c.s1.Reg, "I" );
+          strcpy ( t->d.s1.Reg, "I" );
+        }
       else if ( strcmp ( t->a.s1.A1, "2" ) == 0 )
-      {
-        strcpy ( t->a.s1.Reg, "II" );
-        strcpy ( t->b.s1.Reg, "II" );
-        strcpy ( t->c.s1.Reg, "II" );
-        strcpy ( t->d.s1.Reg, "II" );
-      }
+        {
+          strcpy ( t->a.s1.Reg, "II" );
+          strcpy ( t->b.s1.Reg, "II" );
+          strcpy ( t->c.s1.Reg, "II" );
+          strcpy ( t->d.s1.Reg, "II" );
+        }
       else if ( strcmp ( t->a.s1.A1, "3" ) == 0 )
-      {
-        strcpy ( t->a.s1.Reg, "III" );
-        strcpy ( t->b.s1.Reg, "III" );
-        strcpy ( t->c.s1.Reg, "III" );
-        strcpy ( t->d.s1.Reg, "III" );
-      }
+        {
+          strcpy ( t->a.s1.Reg, "III" );
+          strcpy ( t->b.s1.Reg, "III" );
+          strcpy ( t->c.s1.Reg, "III" );
+          strcpy ( t->d.s1.Reg, "III" );
+        }
       else if ( strcmp ( t->a.s1.A1, "4" ) == 0 )
-      {
-        strcpy ( t->a.s1.Reg, "IV" );
-        strcpy ( t->b.s1.Reg, "IV" );
-        strcpy ( t->c.s1.Reg, "IV" );
-        strcpy ( t->d.s1.Reg, "IV" );
-      }
+        {
+          strcpy ( t->a.s1.Reg, "IV" );
+          strcpy ( t->b.s1.Reg, "IV" );
+          strcpy ( t->c.s1.Reg, "IV" );
+          strcpy ( t->d.s1.Reg, "IV" );
+        }
       else if ( strcmp ( t->a.s1.A1, "5" ) == 0 )
-      {
-        strcpy ( t->a.s1.Reg, "V" );
-        strcpy ( t->b.s1.Reg, "V" );
-        strcpy ( t->c.s1.Reg, "V" );
-        strcpy ( t->d.s1.Reg, "V" );
-      }
+        {
+          strcpy ( t->a.s1.Reg, "V" );
+          strcpy ( t->b.s1.Reg, "V" );
+          strcpy ( t->c.s1.Reg, "V" );
+          strcpy ( t->d.s1.Reg, "V" );
+        }
       else if ( strcmp ( t->a.s1.A1, "6" ) == 0 )
-      {
-        strcpy ( t->a.s1.Reg, "VI" );
-        strcpy ( t->b.s1.Reg, "VI" );
-        strcpy ( t->c.s1.Reg, "VI" );
-        strcpy ( t->d.s1.Reg, "VI" );
-      }
+        {
+          strcpy ( t->a.s1.Reg, "VI" );
+          strcpy ( t->b.s1.Reg, "VI" );
+          strcpy ( t->c.s1.Reg, "VI" );
+          strcpy ( t->d.s1.Reg, "VI" );
+        }
       break;
     case 4: // 0 01 004 . WMO Subarea
     case 20: // 0 01 020 . WMO region subarea
@@ -307,13 +309,16 @@ int temp_parse_x01 ( struct temp_chunks *t, struct bufr_subset_state *s )
         {
           strcpy ( aux, s->a->cval );
           adjust_string ( aux );
+          if ( aux[0] == '\xff' )
+            break;
+
           if ( strlen ( aux ) < 10 )
-	  {
-            strcpy ( t->a.s1.D_D, aux );
-            strcpy ( t->b.s1.D_D, aux );
-            strcpy ( t->c.s1.D_D, aux );
-            strcpy ( t->d.s1.D_D, aux );
-	  }
+            {
+              strcpy ( t->a.s1.D_D, aux );
+              strcpy ( t->b.s1.D_D, aux );
+              strcpy ( t->c.s1.D_D, aux );
+              strcpy ( t->d.s1.D_D, aux );
+            }
         }
       break;
     case 15: // 0 01 015 . Station or site name

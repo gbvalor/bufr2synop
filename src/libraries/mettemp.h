@@ -119,6 +119,13 @@
 #define TEMP_NSTAND_MAX (16)
 
 /*!
+  \def TEMP_NTROP_MAX
+  \brief Maximum number of standard levels in any part of a TEMP report
+*/
+#define TEMP_NTROP_MAX (4)
+
+
+/*!
   \def TEMP_NMAXWIND_MAX
   \brief Maximum number of mwx wind level in any part of a TEMP report
 */
@@ -171,7 +178,6 @@ This is an extact of table, Note that is bit 1 is most significance in this case
 #define TEMP_POINT_MASK_LEVEL_DETERMINED_BY_REGIONAL_DECISION (8)
 #define TEMP_POINT_MASK_RESERVED (4)
 #define TEMP_POINT_MASK_PRESSURE_LEVEL_VERTICAL_COORDINATE (2)
-
 
 /*!
   \struct temp_raw_point_data
@@ -233,11 +239,9 @@ struct temp_raw_wind_shear_data
 struct temp_main_level_data
 {
   char PnPnPn[4]; /*!< Pressure in hPa at level omiting thousand unit */
-  char TnTn[4]; /*!< Temperature . Whole degrees */
-  char Tan[2]; /*!< tenth and sign of temperature (Code Table 3931) */
+  char TnTnTan[4]; /*!< Temperature . Whole degrees and tenth and sign of temperature (Code Table 3931) */
   char DnDn[4]; /*!< Dewpoint depression . (Code table 0777) */
-  char dndn[4]; /*!< true wind direction in tens of degree */
-  char fnfnfn[4]; /*!< Wind speed */
+  char dndnfnfnfn[8]; /*!< true wind direction in tens of degree and wind speed */
 }; /*!< Detailed data at a main level (surface, tropopause ...)*/
 
 /*!
@@ -248,11 +252,9 @@ struct temp_std_level_data
 {
   char PnPn[4]; /*!< Pressure in hPa at standard level int tens of hPa. 1000 = '00' , 925 = '92' */
   char hnhnhn[4]; /*!< Altitude (in mgp) of standard levels */
-  char TnTn[4]; /*!< Temperature . Whole degrees */
-  char Tan[2]; /*!< tenth and sign of temperature (Code Table 3931) */
+  char TnTnTan[4]; /*!< Temperature . Whole degrees and tenth and sign of temperature (Code Table 3931) */
   char DnDn[4]; /*!< Dewpoint depression . (Code table 0777) */
-  char dndn[4]; /*!< true wind direction in tens of degree */
-  char fnfnfn[4]; /*!< Wind speed */
+  char dndnfnfnfn[8]; /*!< true wind direction in tens of degree and wind speed */
 };
 
 /*!
@@ -261,9 +263,9 @@ struct temp_std_level_data
 */
 struct temp_max_wind_data
 {
+  int  no_last_wind; /*!< Flag to set that this is not the latest wind data */ 
   char PmPmPm[4]; /*!< Pressure in hPa of wind maximum level */
-  char dmdm[4]; /*!< true wind direction in tens of degree */
-  char fmfmfm[4]; /*!< Wind speed */
+  char dmdmfmfmfm[8]; /*!< true max wind direction in tens of degree and wind speed */
   char vbvb[4]; /*!< Diference of winds . 1 km below */
   char vava[4]; /*!< Diference of winds . 1 km above */
 };
@@ -274,9 +276,9 @@ struct temp_max_wind_data
 */
 struct temp_th_point
 {
+  char nini[4]; /*!< Index designer */
   char PnPnPn[4]; /*!< Pressure in hPa at evel omiting thousand unit */
-  char TnTn[4]; /*!< Temperature . Whole degrees */
-  char Tan[2]; /*!< tenth and sign of temperature (Code Table 3931) */
+  char TnTnTan[4]; /*!< Temperature . Whole degrees and tenth and sign of temperature (Code Table 3931) */
   char DnDn[4]; /*!< Dewpoint depression . (Code table 0777) */
 };
 
@@ -286,9 +288,9 @@ struct temp_th_point
 */
 struct temp_wind_point
 {
+  char nini[4]; /*!< Index designer */
   char PnPnPn[4]; /*!< Pressure in hPa at evel omiting thousand unit */
-  char dndn[4]; /*!< true wind direction in tens of degree */
-  char fnfnfn[4]; /*!< Wind speed */
+  char dndnfnfnfn[8]; /*!< true wind direction in tens of degree and wind speed */
 };
 
 /*!
@@ -302,8 +304,7 @@ struct temp_acd_sec1
   char A1[2]; /*!< A1 item. WMO region */
   char bw[2]; /*!< bw item. WMO subregion */
   char D_D[10]; /*!< Ship signal or mobile land station indentifier*/
-  char YY[4]; /*!< Day (UTC) of observation . If wind units are in knots, add 50 to day */
-  char GG[4]; /*!< Hour (UTC) of observation */
+  char YYGG[8]; /*!< Day and HOUR (UTC) of observation . If wind units are in knots, add 50 to day */
   char id[2]; /*!< Indicator for standard isobaric levels included for wind */
   char II[4]; /*!< Regional indicator for a synop station index */
   char iii[4]; /*!< Station index  */
@@ -330,8 +331,7 @@ struct temp_b_sec1
   char A1[2]; /*!< A1 item. WMO region */
   char bw[2]; /*!< bw item. WMO subregion */
   char D_D[10]; /*!< Ship signal or mobile land station indentifier*/
-  char YY[4]; /*!< Day (UTC) of observation . If wind units are in knots, add 50 to day */
-  char GG[4]; /*!< Hour (UTC) of observation */
+  char YYGG[8]; /*!< Day and HOUR (UTC) of observation . If wind units are in knots, add 50 to day */
   char a4[2]; /*!< Type of measuring equipment used. (Code table 0265) */
   char II[4]; /*!< Regional indicator for a synop station index */
   char iii[4]; /*!< Station index  */
@@ -353,7 +353,7 @@ struct temp_b_sec1
 */
 struct temp_a_sec2
 {
-  int n; /*!< current number of standard levels */
+  size_t n; /*!< current number of standard levels */
   struct temp_main_level_data lev0; /*!< data at starting point */
   struct temp_std_level_data std[TEMP_NSTAND_MAX]; /*!< Array with data at standard levels */
 }; 
@@ -364,7 +364,7 @@ struct temp_a_sec2
 */
 struct temp_c_sec2
 {
-  int n; /*!< current number of standard levels */
+  size_t n; /*!< current number of standard levels */
   struct temp_std_level_data std[TEMP_NSTAND_MAX]; /*!< Array with data at standard levels */
 }; 
 
@@ -374,7 +374,8 @@ struct temp_c_sec2
 */
 struct temp_ac_sec3
 {
-  struct temp_main_level_data trop; /*!< data at starting tropopause */
+  size_t n; /*!< current number of troppopause levels */
+  struct temp_main_level_data trop[TEMP_NTROP_MAX]; /*!< data at starting tropopause */
 }; 
 
 /*!
@@ -383,6 +384,7 @@ struct temp_ac_sec3
 */
 struct temp_ac_sec4
 {
+  size_t n; /*! current number of maxwind levels */
   struct temp_max_wind_data windx[TEMP_NMAXWIND_MAX];
 }; 
 
@@ -407,7 +409,7 @@ struct temp_sec7
 */
 struct temp_bd_sec5
 {
-  int n; /*!< current number of points */
+  size_t n; /*!< current number of points */
   struct temp_th_point th[TEMP_NMAX_POINTS]; /*!< Significant th points for sec 5 for a part B */
 };
 
@@ -417,7 +419,7 @@ struct temp_bd_sec5
 */
 struct temp_bd_sec6
 {
-  int n; /*!< current number of points */
+  size_t n; /*!< current number of points */
   struct temp_wind_point wd[TEMP_NMAX_POINTS]; /*!< Significant wind points for sec 6 for a part B */
 };/*!< Section 6 for a part B or D of TEMP report */
 
@@ -500,6 +502,7 @@ struct temp_d
 struct temp_chunks
 {
   int mask; /*!< bit mask with parsed parts info */
+  struct met_datetime t; /*!< Nominal GTS report release date and time (it is not the starting of soubding) */ 
   struct temp_a a; /*!< Part A */
   struct temp_b b; /*!< Part B */
   struct temp_c c; /*!< Part C */

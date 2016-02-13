@@ -38,4 +38,20 @@ struct report_date_ext
   char ss[4]; /*!< Second 00..59 */
 };
 
+#ifndef MET_DATETIME
+#define MET_DATETIME
+/*!
+   \struct met_datetime
+   \brief stores date and time reference of a report, commonly the observation time
+*/
+struct met_datetime
+{
+  time_t t; /*!< Unix instant for report date/time reference */
+  struct tm tim;  /*!<  struct tm with report date/time info (UTC) */
+  char datime[16]; /*!< date/time reference (UTC) as string with YYYYMMDDHHmm[ss] format */
+};
+#endif
+
+
+
 #endif
