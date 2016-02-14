@@ -92,7 +92,7 @@ int read_table_c ( char tablec[MAXLINES_TABLEC][92], size_t *nlines_tablec, char
 
 /*!
   \fn char * get_explained_table_val(char *expl, size_t dim, struct bufr_descriptor *d, int ival)
-  \brief gets a strung with the meaning of a value for a code table descriptor
+  \brief gets a string with the meaning of a value for a code table descriptor
   \param expl string with resulting meaning
   \param dim max length alowed for \a expl string
   \param d pointer to the source descriptor

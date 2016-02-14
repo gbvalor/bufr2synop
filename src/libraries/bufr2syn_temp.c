@@ -263,8 +263,8 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr_subset_state *s, str
   /****** Second pass. Global results and consistence analysis ************/
   sprintf ( aux,"%s%s%s%s%s%s", t->a.e.YYYY, t->a.e.MM, t->a.e.DD, t->a.e.HH, t->a.e.mm, t->a.e.ss );
   YYYYMMDDHHmm_to_met_datetime ( &dtm, aux );
-  round_met_datetime_to_hour(&m->t, &dtm);
-  memcpy(&m->temp.t, &m->t, sizeof(struct met_datetime));
+  round_met_datetime_to_hour ( &m->t, &dtm );
+  memcpy ( &m->temp.t, &m->t, sizeof ( struct met_datetime ) );
 
   met_datetime_to_YYGG ( t->a.s1.YYGG, &dtm );
   strcpy ( t->b.s1.YYGG, t->a.s1.YYGG );
@@ -343,8 +343,10 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
             {
               if ( is_over_100 )
                 sprintf ( t->c.s2.std[isc].hnhnhn, "%03d", ix % 1000 );
-              else
+              else if ( ix >= 0 )
                 sprintf ( t->a.s2.std[isa].hnhnhn, "%03d", ix % 1000 );
+              else
+                sprintf ( t->a.s2.std[isa].hnhnhn, "%03d", ( -ix + 500 ) % 1000 );
             }
           if ( is_over_100 )
             {
@@ -417,17 +419,17 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
           if ( is_over_100 )
             {
               ix = ( int ) ( d->p * 0.1 + 0.5 );
-              sprintf ( t->c.s4.windx[iwxc].PmPmPm, "%03d", ix % 1000); // PnPnPn
+              sprintf ( t->c.s4.windx[iwxc].PmPmPm, "%03d", ix % 1000 ); // PnPnPn
               wind_to_dndnfnfnfn ( t->c.s4.windx[iwxc].dmdmfmfmfm, d->dd, d->ff ); // dndnfnfnfn
-	      // check if more wind data
-	      for (j = i + 1; j < r->n ; j++)
-	      {
-		if (r->raw[j].ff != MISSING_REAL)
-		{
-		  t->c.s4.windx[iwxc].no_last_wind = 1;
-		  break;
-		}
-	      } 
+              // check if more wind data
+              for ( j = i + 1; j < r->n ; j++ )
+                {
+                  if ( r->raw[j].ff != MISSING_REAL )
+                    {
+                      t->c.s4.windx[iwxc].no_last_wind = 1;
+                      break;
+                    }
+                }
               if ( iwxc < TEMP_NMAXWIND_MAX )
                 {
                   iwxc += 1;
@@ -437,16 +439,16 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
           else
             {
               ix = ( int ) ( d->p * 0.01 + 0.5 );
-              sprintf ( t->a.s4.windx[iwxa].PmPmPm, "%03d", ix % 1000); // PnPnPn.
+              sprintf ( t->a.s4.windx[iwxa].PmPmPm, "%03d", ix % 1000 ); // PnPnPn.
               wind_to_dndnfnfnfn ( t->a.s4.windx[iwxa].dmdmfmfmfm, d->dd, d->ff ); // dndnfnfnfn
-	      for (j = i + 1; j < r->n ; j++)
-	      {
-		if (r->raw[j].ff != MISSING_REAL)
-		{
-		  t->a.s4.windx[iwxa].no_last_wind = 1;
-		  break;
-		}
-	      } 
+              for ( j = i + 1; j < r->n ; j++ )
+                {
+                  if ( r->raw[j].ff != MISSING_REAL )
+                    {
+                      t->a.s4.windx[iwxa].no_last_wind = 1;
+                      break;
+                    }
+                }
               if ( iwxa < TEMP_NMAXWIND_MAX )
                 {
                   iwxa += 1;
@@ -562,12 +564,12 @@ int parse_temp_raw_wind_shear_data ( struct temp_chunks *t, struct temp_raw_wind
       // set pnpnpn on aux
       if ( is_over_100 )
         {
-          if (t ->c.s4.n == 0)
-	    continue;
-	  
+          if ( t ->c.s4.n == 0 )
+            continue;
+
           ix = ( int ) ( d->p * 0.1 + 0.5 );
-          sprintf ( aux, "%03d", ix % 1000); // PnPnPn
-	  
+          sprintf ( aux, "%03d", ix % 1000 ); // PnPnPn
+
           // checks for a significant wind level in section 4 with same pnpnpn
           for ( j = 0 ; j < t->c.s4.n ; j++ )
             {
@@ -587,17 +589,17 @@ int parse_temp_raw_wind_shear_data ( struct temp_chunks *t, struct temp_raw_wind
         }
       else
         {
-          if (t ->a.s4.n == 0)
-	    continue;
+          if ( t ->a.s4.n == 0 )
+            continue;
           ix = ( int ) ( d->p * 0.01 + 0.5 );
-          sprintf ( aux, "%03d", ix % 1000); // PnPnPn.
+          sprintf ( aux, "%03d", ix % 1000 ); // PnPnPn.
           // checks for a significant wind level in section 4 with same pnpnpn
           for ( j = 0 ; j < t->a.s4.n ; j++ )
             {
               if ( strcmp ( t->a.s4.windx[j].PmPmPm , aux ) == 0 )
                 {
                   //printf("%s %s\n", aux, t->a.s4.windx[j].PmPmPm);
-		  //printf("%.1lf %.1lf\n", d->ws_blw, d->ws_abv);
+                  //printf("%.1lf %.1lf\n", d->ws_blw, d->ws_abv);
                   if ( d->ws_blw != MISSING_REAL )
                     {
                       sprintf ( t->a.s4.windx[j].vbvb, "%02.0lf", d->ws_blw );

@@ -8,3 +8,6 @@ add_executable(bufr_decode bufr_decode.c)
 target_link_libraries(bufr_decode bufr m gfortran)
 
 add_executable(bufrnoaa bufrnoaa.c bufrnoaa_io.c bufrnoaa_utils.c)
+
+add_executable(bufrdeco_test bufrdeco_test.c)
+target_link_libraries(bufrdeco_test m bufrdeco)

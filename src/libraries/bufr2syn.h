@@ -37,120 +37,12 @@
 #include <sys/stat.h>
 
 // project includes
+#include "bufrdeco.h"
 #include "metsynop.h"
 #include "metbuoy.h"
 #include "mettemp.h"
 #include "metclimat.h"
 //#define DEBUG
-
-/*!
-  \def KELEM
-  \brief max dimension of elements for a single report
-*/
-#define KELEM (8192)
-
-/*!
-  \def KVALS
-  \brief dimension of arrays of doubles. It must store all the data for all subset
-*/
-#define KVALS (32768 * 512)
-
-/*!
-  \def KSUBS
-  \brief Maximum number of subset this version can manage
-*/
-#define KSUBS (KVALS / KELEM)
-
-/*!
-  \def BUFR_LEN
-  \brief max length of a bufrfile
-*/
-#define BUFR_LEN 512000
-
-/*!
-   \def BUFR_OBS_DATA_MASK
-   \brief bit mask for Observed data
-*/
-#define BUFR_OBS_DATA_MASK 128
-
-/*!
-   \def BUFR_COMPRESSED_DATA_MASK
-   \brief bit mask for Observed data
-*/
-#define BUFR_COMPRESSED_DATA_MASK 64
-
-/*!
-  \def MISSING_REAL
-  \brief The missing default value for real values
-*/
-#define MISSING_REAL (1.7e38)
-
-/*!
-  \def MISSING_INTEGER
-  \brief The missing default value for integer values
-*/
-#define MISSING_INTEGER (2147483647)
-
-/*!
-  \def MAXLINES_TABLEC
-  \brief The maximum expected lines in a Table C file
-*/
-#define MAXLINES_TABLEC (8192)
-
-/*!
-  \def NMAXSEQ
-  \brief Maximum expected descriptor in a expanded sequence for a single subset
-*/
-#define NMAXSEQ (16384)
-
-/*!
-  \def DESCRIPTOR_VALUE_MISSING
-  \brief Bit mask for a missing value in a struct \ref bufr_atom_data
-*/
-#define DESCRIPTOR_VALUE_MISSING (1)
-
-/*!
- \def DESCRIPTOR_HAVE_REAL_VALUE
- \brief Bit mask for a real value in a struct \ref bufr_atom_data
-*/
-#define DESCRIPTOR_HAVE_REAL_VALUE (2)
-
-/*!
- \def DESCRIPTOR_HAVE_STRING_VALUE
- \brief Bit mask for a string in a struct \ref bufr_atom_data
-*/
-#define DESCRIPTOR_HAVE_STRING_VALUE (4)
-
-/*!
- \def DESCRIPTOR_IS_CODE_TABLE
- \brief Bit mask for a code table in a struct \ref bufr_atom_data
-*/
-#define DESCRIPTOR_IS_CODE_TABLE (8)
-
-/*!
- \def DESCRIPTOR_HAVE_CODE_TABLE_STRING
- \brief Bit mask for a code table string in a struct \ref bufr_atom_data
-*/
-#define DESCRIPTOR_HAVE_CODE_TABLE_STRING (16)
-
-/*!
- \def DESCRIPTOR_HAVE_FLAG_TABLE_STRING
- \brief Bit mask for a flag table string in a struct \ref bufr_atom_data
-*/
-#define DESCRIPTOR_HAVE_FLAG_TABLE_STRING (32)
-
-/*!
- \def DESCRIPTOR_IS_FLAG_TABLE
- \brief Bit mask for a flag table in a struct \ref bufr_atom_data
-*/
-#define DESCRIPTOR_IS_FLAG_TABLE (64)
-
-/*!
- \def DESCRIPTOR_IS_A_REPLICATOR
- \brief Bit mask for a flag table string in a struct \ref bufr_atom_data
-*/
-#define DESCRIPTOR_IS_A_REPLICATOR (128)
-
 
 /*!
  \def SUBSET_MASK_LATITUDE_SOUTH
@@ -263,42 +155,6 @@
 
 #define REPORT_LENGTH (8192)
 
-/*!
-  \struct bufr_descriptor
-  \brief BUFR descriptor
-*/
-struct bufr_descriptor
-{
-  unsigned char f; /*!< F part of descriptor, 2 bits */
-  unsigned char x; /*!< X part of descriptor, 6 bits */
-  unsigned char y; /*!< Y part of descriptor, 8 bits */
-  char c[8]; /*!< string with whole descriptor (6 decimal digits plus the 0x00 as the end of string */
-};
-
-/*!
-  \struct bufr_atom_data
-  \brief Contains all the information for a single descriptor in a expanded squence
-*/
-struct bufr_atom_data
-{
-  struct bufr_descriptor desc; /*!< struct \ref bufr_descriptor */
-  int mask; /*!< Mask with for the type */
-  char name[92]; /*!< String with the name of descriptor */
-  char unit[32]; /*!< String with the name of units */
-  double val; /*!< Value for the bufr descriptor */
-  char cval[128]; /*!< String value for the bufr descriptor */
-  char ctable[256]; /*!< Explained meaning for a code table */
-};
-
-/*!
-  \struct bufr_subset_sequence_data
-  \brief Contains all the information for a subset in a expanded squence
-*/
-struct bufr_subset_sequence_data
-{
-  size_t nd; /*!< number of current amount of data in sequence */
-  struct bufr_atom_data sequence[NMAXSEQ]; /*!< the array of data associated to a expanded sequence */
-};
 
 /*!
   \struct bufr_subset_state
@@ -339,20 +195,6 @@ struct bufr_subset_state
   int mask; /*!< mask which contain several information from the subset data taken at the moment */
   struct temp_raw_data *r; /*!< pointer to a struct where to set the data from a temp profile being parsed */
   struct temp_raw_wind_shear_data *w; /*!< pointer to a struct where to set the data from a temp profile being parsed */
-};
-
-/*!
-  \struct gts_header
-  \brief stores WMO GTS header info
-*/
-struct gts_header
-{
-  char bname[16]; /*!< Name of bulletin, as 'SNAU48' */
-  char center[8]; /*!< Release center name, as 'EGRR' */
-  char dtrel[16]; /*!< Date and time of release (format DDHHmm) */
-  char order[8]; /*!< sequence, as 'BBB' , 'RRA' 'CCA' ... */
-  char filename[256]; /*!< filename of Bufr file */
-  char timestamp[16]; /*!< String with timestamp (UTC) of file in GTS. Format YYYYMMDDHHmmss */
 };
 
 /*!

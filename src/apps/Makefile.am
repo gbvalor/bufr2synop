@@ -1,6 +1,6 @@
 METASOURCES = AUTO
 
-bin_PROGRAMS = bufr2synop bufr_decode bufrnoaa
+bin_PROGRAMS = bufr2synop bufr_decode bufrnoaa bufrdeco_test
 
 bufr_decode_SOURCES = bufr_decode.c
 
@@ -19,5 +19,6 @@ bufr2synop_LDADD = $(top_builddir)/src/libraries/libbufr2syn.la -lbufr \
 
 AM_CFLAGS = -W -Wall
 bufrnoaa_SOURCES = bufrnoaa.c bufrnoaa_io.c bufrnoaa_utils.c
-
+bufrdeco_test_SOURCES = bufrdeco_test.c
+bufrdeco_test_LDADD = $(top_builddir)/src/libraries/libbufrdeco.la -lm 
 EXTRA_DIST = CMakeLists.txt
