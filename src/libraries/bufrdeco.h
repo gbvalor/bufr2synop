@@ -267,7 +267,8 @@ struct bufr_sec1
   uint8_t update; /*!< update sequence number */
   uint8_t options; /*!< options */
   uint8_t category; /*!< Data category (table A) */
-  uint8_t subcategory; /*!< Local data subcategory */
+  uint8_t subcategory; /*!< subcategory */
+  uint8_t subcategory_local;/*!< local data subcategory */
   uint8_t master_version; /*!< Version of master table */
   uint8_t master_local; /*!< Version number of local tables used to augment master table in use */
   time_t datetime; /*!< Unix time for Most typical time for the BUFR message contents – see Note 4 */

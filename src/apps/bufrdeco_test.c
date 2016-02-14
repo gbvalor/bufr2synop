@@ -84,6 +84,11 @@ int main ( int argc, char *argv[] )
     }
 
   printf("Readed %lu bytes from '%s'\n", BUFR.sec4.allocated, ENTRADA);
+  printf("Bufr edition nuber:    %u\n", BUFR.sec0.edition);
+  printf("Sec1 length:           %u\n", BUFR.sec1.length);
+  printf("Bufr master table:     %u\n", BUFR.sec1.master);
+  printf("Centre:                %u\n", BUFR.sec1.centre);  
+  printf("Sub-Centre:            %u\n", BUFR.sec1.subcentre);  
   printf("So far so good\n");
   clean_bufr ( &BUFR );
 
