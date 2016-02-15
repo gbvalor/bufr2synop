@@ -83,13 +83,11 @@ int main ( int argc, char *argv[] )
       exit ( EXIT_FAILURE );
     }
 
-  printf("Readed %lu bytes from '%s'\n", BUFR.sec4.allocated, ENTRADA);
-  printf("Bufr edition nuber:    %u\n", BUFR.sec0.edition);
-  printf("Sec1 length:           %u\n", BUFR.sec1.length);
-  printf("Bufr master table:     %u\n", BUFR.sec1.master);
-  printf("Centre:                %u\n", BUFR.sec1.centre);  
-  printf("Sub-Centre:            %u\n", BUFR.sec1.subcentre);  
-  printf("So far so good\n");
+  print_sec0_info (&BUFR);
+  print_sec1_info (&BUFR);
+  print_sec3_info (&BUFR);
+  print_sec4_info (&BUFR);
+  printf("So far so good !!\n");
   clean_bufr ( &BUFR );
 
   exit ( EXIT_SUCCESS );

@@ -109,6 +109,12 @@ int init_bufr(struct bufr *b, size_t l)
   if ((b->sec4.raw = (uint8_t *) calloc(1, l)) == NULL)
     return 1;
   b->sec4.allocated = l;
+  if ((b->table = (struct bufr_tables *) calloc(1, sizeof(struct bufr_tables))) == NULL)
+  {
+    free((void *)b->sec4.raw);
+    b->sec4.allocated = 0;
+    return 1;
+  }
   return 0;
 }
 
@@ -116,6 +122,8 @@ int clean_bufr(struct bufr *b)
 {
   if (b->sec4.allocated > 0 &&  b->sec4.raw != NULL)
     free ((void *) b->sec4.raw);
+  if (b->table != NULL)
+    free ((void *) b->table);
   memset(b, 0, sizeof (struct bufr));
   return 0;
 }

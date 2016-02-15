@@ -172,6 +172,10 @@
 */
 #define BUFR_LEN_SEC3 (8 + 2 * BUFR_LEN_UNEXPANDED_DESCRIPTOR)
 
+#define BUFR_MAXLINES_TABLEB (2048)
+#define BUFR_MAXLINES_TABLEC (8192)
+#define BUFR_MAXLINES_TABLED (8192)
+
 /*!
   \struct bufr_descriptor
   \brief BUFR descriptor
@@ -271,7 +275,12 @@ struct bufr_sec1
   uint8_t subcategory_local;/*!< local data subcategory */
   uint8_t master_version; /*!< Version of master table */
   uint8_t master_local; /*!< Version number of local tables used to augment master table in use */
-  time_t datetime; /*!< Unix time for Most typical time for the BUFR message contents – see Note 4 */
+  uint32_t year; /*!< Year */
+  uint8_t month; /*!< Month */
+  uint8_t day; /*!< Day */
+  uint8_t hour; /*!< hour */
+  uint8_t minute; /*!< minute */
+  uint8_t second; /*!< second */
   uint8_t raw[BUFR_LEN_SEC1]; /*!< Raw data for sec1 as is in original BUFR file */
 };
 
@@ -285,6 +294,9 @@ struct bufr_sec3
 {
   uint32_t length; /*!< length of sec3 in bytes */
   uint32_t subsets; /*!< Number of data subsets */
+  uint8_t observed; /*!< 1 if observed */
+  uint8_t compressed; /*!< 1 if compressed */
+  uint32_t ndesc; /*!< Current number of unexpanded descriptors */
   struct bufr_descriptor unexpanded[BUFR_LEN_UNEXPANDED_DESCRIPTOR]; /*!< Array of unexpanded descriptors */
   uint8_t raw[BUFR_LEN_SEC3]; /*!< Raw data for sec3 as is in original BUFR file */
 };
@@ -296,6 +308,34 @@ struct bufr_sec4
   uint8_t *raw; /*!< Pointer to a raw data for sec4 as in original BUFR file */
 };
 
+struct bufr_tableb
+{
+  char path[256];
+  size_t nlines;
+  char l[BUFR_MAXLINES_TABLEB][180];
+};
+
+struct bufr_tablec
+{
+  char path[256];
+  size_t nlines;
+  char l[BUFR_MAXLINES_TABLEC][96];
+};
+
+struct bufr_tabled
+{
+  char path[256];
+  size_t nlines;
+  char l[BUFR_MAXLINES_TABLED][128];
+};
+
+struct bufr_tables
+{
+  struct bufr_tableb b;
+  struct bufr_tablec c;
+  struct bufr_tabled d;
+};
+
 struct bufr
 {
   struct gts_header header;
@@ -304,11 +344,23 @@ struct bufr
   struct bufr_sec2 sec2;
   struct bufr_sec3 sec3;
   struct bufr_sec4 sec4;
+  struct bufr_tables *table;
 };
+
+extern const char DEFAULT_BUFRTABLES_DIR1[];
+extern const char DEFAULT_BUFRTABLES_DIR2[];
+
 
 int init_bufr(struct bufr *b, size_t l);
 int clean_bufr(struct bufr *b);
 int bufrdeco_read_bufr(struct bufr *b,  char *filename, char *error);
+void print_sec0_info(struct bufr *b);
+void print_sec1_info(struct bufr *b);
+void print_sec3_info(struct bufr *b);
+void print_sec4_info(struct bufr *b);
+int bufr_read_tableb(struct bufr_tableb *tb, char *error);
+int bufr_read_tablec(struct bufr_tablec *tc, char *error);
+int bufr_read_tabled(struct bufr_tabled *td, char *error);
 
 // Utililies functions
 uint32_t two_bytes_to_uint32 ( const uint8_t *source );
@@ -316,4 +368,5 @@ uint32_t three_bytes_to_uint32 ( const uint8_t *source );
 size_t get_bits_as_uint32_t(uint32_t *target, uint8_t *source, size_t *bit0_offset, size_t bit_length);
 int two_bytes_to_descriptor (struct bufr_descriptor *d, const uint8_t *source);
 int uint32_t_to_descriptor ( struct bufr_descriptor *d, uint32_t id );
+int get_ecmwf_tablenames ( struct bufr *b, const char *bufrtables_dir );
 #endif  // from ifndef BUFRDECO_H
