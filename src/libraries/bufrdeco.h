@@ -305,6 +305,7 @@ struct bufr_sec4
 {
   uint32_t length; /*< length of sec4 in bytes */
   size_t allocated; /*!< Allocated size of raw */
+  size_t bit_offset; /*!< Offset to current first bit in raw data sec4 to parse */ 
   uint8_t *raw; /*!< Pointer to a raw data for sec4 as in original BUFR file */
 };
 
@@ -368,5 +369,7 @@ uint32_t three_bytes_to_uint32 ( const uint8_t *source );
 size_t get_bits_as_uint32_t(uint32_t *target, uint8_t *source, size_t *bit0_offset, size_t bit_length);
 int two_bytes_to_descriptor (struct bufr_descriptor *d, const uint8_t *source);
 int uint32_t_to_descriptor ( struct bufr_descriptor *d, uint32_t id );
+char * bufr_adjust_string ( char *s );
+char * bufr_charray_to_string ( char *s, char *buf, size_t size );
 int get_ecmwf_tablenames ( struct bufr *b, const char *bufrtables_dir );
 #endif  // from ifndef BUFRDECO_H

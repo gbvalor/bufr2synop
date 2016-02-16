@@ -1,6 +1,6 @@
 LINK_DIRECTORIES(/usr/lib /usr/lib64 /usr/local/lib /usr/local/lib64)
 
-add_library(bufrdeco bufrdeco.c bufrdeco_tablec.c bufrdeco_utils.c)
+add_library(bufrdeco bufrdeco.c bufrdeco_tableb.c bufrdeco_tablec.c bufrdeco_tabled.c bufrdeco_utils.c)
 target_link_libraries(bufrdeco m)
 
 add_library(bufr2syn bufr2syn_buoy.c bufr2syn_csv.c bufr2syn_env.c 

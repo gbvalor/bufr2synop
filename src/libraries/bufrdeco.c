@@ -180,6 +180,7 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
   /******************* section 4 *****************************/
   b->sec4.length = three_bytes_to_uint32 ( c );
   memcpy ( b->sec4.raw, c, b->sec4.length );
+  b->sec4.bit_offset = 32; // the first bit in byte 4
   free ( ( void * ) bufrx );
 
   // get tablenames

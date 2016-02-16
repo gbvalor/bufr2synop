@@ -103,6 +103,37 @@ int two_bytes_to_descriptor (struct bufr_descriptor *d, const uint8_t *source)
   return 0;
 }
 
+/*!
+  \fn char * bufr_charray_to_string(char *s, char *buf, size_t size)
+  \brief get a null termitated c-string from an array of unsigned chars
+  \param s resulting string
+  \param buf pointer to first element in array
+  \param size number of chars in array
+*/
+char * bufr_charray_to_string ( char *s, char *buf, size_t size )
+{
+  // copy
+  memcpy ( s , buf, size );
+  // add final string mark
+  s[size] = '\0';
+  return s;
+}
+
+/*!
+  \fn uint8_t * adjust_string(char *s)
+  \brief Supress trailing blanks of a string
+  \param s string to process
+*/
+char * bufr_adjust_string ( char *s )
+{
+  size_t l;
+  l = strlen ( s );
+  while ( l && s[--l] == ' ' )
+    s[l] = '\0';
+  return s;
+}
+
+
 int init_bufr(struct bufr *b, size_t l)
 {
   memset(b, 0, sizeof (struct bufr));

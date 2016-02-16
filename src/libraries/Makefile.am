@@ -6,7 +6,8 @@ AM_CPPFLAGS= $(all_includes)
 include_HEADERS = bufrdeco.h bufr2syn.h metbuoy.h metsynop.h mettemp.h metclimat.h metcommon.h
 
 lib_LTLIBRARIES = libbufrdeco.la libbufr2syn.la
-libbufrdeco_la_SOURCES = bufrdeco.c bufrdeco_tablec.c bufrdeco_utils.c
+libbufrdeco_la_SOURCES = bufrdeco.c bufrdeco_tableb.c bufrdeco_tablec.c bufrdeco_tabled.c \
+	bufrdeco_utils.c
 libbufrdeco_la_LIBADD = -lm
 libbufr2syn_la_SOURCES = bufr2syn_buoy.c bufr2syn_csv.c bufr2syn_env.c \
 	bufr2syn_io.c bufr2syn_json.c bufr2syn_mrproper.c bufr2syn_print.c bufr2syn_sqparse.c \

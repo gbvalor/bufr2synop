@@ -117,58 +117,190 @@ int bufr_read_tablec(struct bufr_tablec *tc, char *error)
   return 0;
 }
 
-int bufr_read_tableb(struct bufr_tableb *tb, char *error)
+
+
+/*!
+  \fn char * bufrdeco_explained_table_val (char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d, int ival)
+  \brief gets a string with the meaning of a value for a code table descriptor
+  \param expl string with resulting meaning
+  \param dim numero máximo de caracteres de la cadena resultante
+  \param tc pointer to a \ref bufr_tablec struct 
+  \param d pointer to the source descriptor
+  \param ival integer value for the descriptor
+
+  If something went wrong, it returns NULL . Otherwise it returns \a expl
+*/
+char * bufrdeco_explained_table_val (char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d, uint32_t ival)
 {
   char *c;
-  FILE *t;
-  size_t i = 0;
+  uint32_t nv, v,  nl;
+  size_t i, j;
 
-  if (tb->path == NULL)
-    return 1;
-  
-  tb->nlines = 0;
-  if ( ( t = fopen ( tb->path, "r" ) ) == NULL )
+  // Find first line for descriptor
+  for ( i = 0; i <  tc->nlines ; i++ )
     {
-      sprintf ( error,"Unable to open table B file '%s'\n", tb->path);
-      return 1;
+      if ( tc->l[i][0] != d->c[0] ||
+           tc->l[i][1] != d->c[1] ||
+           tc->l[i][2] != d->c[2] ||
+           tc->l[i][3] != d->c[3] ||
+           tc->l[i][4] != d->c[4] ||
+           tc->l[i][5] != d->c[5] )
+        continue;
+      else
+        break;
     }
 
-  while ( fgets ( tb->l[i], 180, t ) != NULL && i < BUFR_MAXLINES_TABLEC )
+  if ( i == tc->nlines)
     {
-      // supress the newline
-      if ( ( c = strrchr ( tb->l[i],'\n' ) ) != NULL )
-        *c = '\0';
-      i++;
+      //printf("Descriptor %s not found\n", d->c);
+      return NULL;
     }
-  fclose ( t );
-  tb->nlines = i;
-  return 0;
+  //printf("Descriptor %s on linea %d\n", d->c, i);
+
+  // reads the amount of possible values
+  if ( tc->l[i][7] != ' ' )
+    nv = strtoul ( &tc->l[i][7], &c, 10 );
+  else
+    return NULL;
+
+  // read a value
+  for ( j = 0; j < nv && i < tc->nlines ; i++ )
+    {
+      if ( tc->l[i][12] != ' ' )
+        {
+          v = strtoul ( &tc->l[i][12], &c, 10 );
+          j++;
+          if ( v != ival )
+            continue;
+          break;
+        }
+    }
+
+  if ( j == nv || i == tc->nlines )
+    return NULL; // Value not found
+
+  // read how many lines for the descriptors
+  nl = strtoul ( &tc->l[i][21], &c, 10 );
+
+
+  // if match then we have finished the search
+  strcpy ( expl, &tc->l[i][24] );
+  if ( nl > 1 )
+    {
+      for ( nv = 1 ; nv < nl; nv++ )
+        if ( ( strlen ( expl ) + strlen ( &tc->l[i + nv][22] ) ) < dim )
+          strcat ( expl, &tc->l[i + nv][22] );
+    }
+
+  return expl;
 }
 
-int bufr_read_tabled(struct bufr_tabled *td, char *error)
+/*!
+  \fn char * bufrdeco_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d, unsigned long ival)
+  \brief gets a strung with the meaning of a value for a flag table descriptor
+  \param expl string with resulting meaning
+  \param dim max length alowed for \a expl string
+  \param d pointer to the source descriptor
+  \param ival integer value for the descriptos
+
+  Remember that in FLAG tables for bufr, bit 1 is most significant and N the less one. Bit N only is set to
+  1 when all others are also set to one, i.e. in case of missing value.
+
+  If something went wrong, it returns NULL . Otherwise it returns \a expl
+*/
+char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d, uint64_t ival )
 {
-  char *c;
-  FILE *t;
-  size_t i = 0;
+  char *c, *s;
+  uint64_t test, test0;
+  uint64_t nb, nx, v,  nl;
+  size_t i, j;
 
-  if ( td->path == NULL)
-    return 1;
-  
-  td->nlines = 0;
-  if ( ( t = fopen ( td->path, "r" ) ) == NULL )
+  // Find first line for descriptor
+  for ( i = 0; i <  tc->nlines; i++ )
     {
-      sprintf ( error,"Unable to open table D file '%s'\n", td->path);
-      return 1;
+      if ( tc->l[i][0] != d->c[0] ||
+           tc->l[i][1] != d->c[1] ||
+           tc->l[i][2] != d->c[2] ||
+           tc->l[i][3] != d->c[3] ||
+           tc->l[i][4] != d->c[4] ||
+           tc->l[i][5] != d->c[5] )
+        continue;
+      else
+        break;
     }
 
-  while ( fgets ( td->l[i], 124, t ) != NULL && i < BUFR_MAXLINES_TABLEC )
+  if ( i == tc->nlines )
     {
-      // supress the newline
-      if ( ( c = strrchr ( td->l[i],'\n' ) ) != NULL )
-        *c = '\0';
-      i++;
+      //printf("Descriptor %s No encontrado\n", d->c);
+      return NULL;
     }
-  fclose ( t );
-  td->nlines = i;
-  return 0;
+  //printf("Descriptor %s en linea %d\n", d->c, i);
+
+  // reads the amount of possible bits
+  if ( tc->l[i][7] != ' ' )
+    nb = strtoul ( &tc->l[i][7], &c, 10 );
+  else
+    return NULL;
+
+  // read a value
+  s = expl;
+  s[0] = '\0';
+
+  for ( j = 0, test0 = 2; j < nb && i < tc->nlines ; i++ )
+    {
+      if ( tc->l[i][12] != ' ' )
+        {
+          v = strtol ( &tc->l[i][12], &c, 10 ); // v is the bit number
+          j++;
+
+          // case 0 with meaning
+          if ( v == 0 )
+            {
+              test0 = 1;
+              if ( ival == 0 )
+                {
+                  nl = strtoul ( &tc->l[i][21], &c, 10 );
+                  if ( strlen ( expl ) && ( strlen ( expl ) + 1 ) < dim )
+                    s += sprintf ( s, "|" );
+                  s += sprintf ( s,"%s", &tc->l[i][24] );
+                  if ( nl > 1 )
+                    {
+                      for ( nx = 1 ; nx < nl; nx++ )
+                        if ( ( strlen ( expl ) + strlen ( &tc->l[i + nx][22] ) )  < dim )
+                          {
+                            s += sprintf ( s, "%s", &tc->l[i + nx][22] );
+                          }
+                    }
+                  return expl;
+                }
+            }
+
+          test = test0 << ( nb - v );
+
+          if ( v && ( test & ival ) != 0 )
+            {
+              // bit match
+              // read how many lines for the descriptors
+              nl = strtol ( &tc->l[i][21], &c, 10 );
+              if ( strlen ( expl ) && ( strlen ( expl ) + 1 ) < dim )
+                s += sprintf ( s, "|" );
+              s += sprintf ( s,"%s", &tc->l[i][24] );
+              if ( nl > 1 )
+                {
+                  for ( nx = 1 ; nx < nl; nx++ )
+                    if ( ( strlen ( expl ) + strlen ( &tc->l[i + nx][22] ) )  < dim )
+                      {
+                        s += sprintf ( s, "%s", &tc->l[i + nx][22] );
+                      }
+                }
+
+            }
+          else
+            continue;
+        }
+    }
+
+  // if match then we have finished the search
+
+  return expl;
 }
