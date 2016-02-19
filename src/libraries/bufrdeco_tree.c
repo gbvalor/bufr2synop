@@ -36,7 +36,7 @@ int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct 
   return 0;
 }
 
-int bufr_parse_tree_deep ( struct bufr *b, struct bufr_sequence *father,  const char *key )
+int bufr_parse_tree_recursive ( struct bufr *b, struct bufr_sequence *father,  const char *key )
 {
   size_t i, nl;
   struct bufr_sequence *l;
@@ -90,7 +90,7 @@ int bufr_parse_tree_deep ( struct bufr *b, struct bufr_sequence *father,  const 
         }
       l->sons[i] = & ( b->tree->seq[b->tree->nseq] );
       // we then recursively parse the son
-      if ( bufr_parse_tree_deep ( b, l, l->lseq[i].c ) )
+      if ( bufr_parse_tree_recursive ( b, l, l->lseq[i].c ) )
         {
           return 1;
         }
@@ -103,19 +103,23 @@ int bufr_parse_tree_deep ( struct bufr *b, struct bufr_sequence *father,  const 
 int bufr_parse_tree ( struct bufr *b )
 {
   // here we start the pars
-  bufr_parse_tree_deep ( b, NULL, NULL );
+  bufr_parse_tree_recursive ( b, NULL, NULL );
   return 0;
 }
 
-int bufr_print_tree_deep ( struct bufr *b, struct bufr_sequence *seq )
+int bufr_print_tree_recursive ( struct bufr *b, struct bufr_sequence *seq )
 {
   size_t i, j;
   struct bufr_sequence *l;
 
   if ( seq == NULL )
-    l = & ( b->tree->seq[0] );
+    {
+      l = & ( b->tree->seq[0] );
+    }
   else
-    l = seq;
+    {
+      l = seq;
+    }
 
   for ( i = 0; i < l->ndesc; i++ )
     {
@@ -128,10 +132,12 @@ int bufr_print_tree_deep ( struct bufr *b, struct bufr_sequence *seq )
       printf ( "%u %02u %03u\n", l->lseq[i].f, l->lseq[i].x,l->lseq[i].y );
 
       if ( l->lseq[i].f != 3 )
-        continue;
+        {
+          continue;
+        }
 
       // we then recursively parse the son
-      if ( bufr_print_tree_deep ( b, l->sons[i] ) )
+      if ( bufr_print_tree_recursive ( b, l->sons[i] ) )
         {
           return 1;
         }
@@ -143,10 +149,10 @@ int bufr_print_tree_deep ( struct bufr *b, struct bufr_sequence *seq )
 
 void bufr_print_tree ( struct bufr *b )
 {
-  bufr_print_tree_deep ( b, NULL );
+  bufr_print_tree_recursive ( b, NULL );
 };
 
-int bufr_decode_data_subset_deep ( struct bufr_subset_sequence_data *s, struct bufr_sequence *l, struct bufr *b )
+int bufr_decode_data_subset_recursive ( struct bufr_subset_sequence_data *s, struct bufr_sequence *l, struct bufr *b )
 {
   size_t i;
   struct bufr_sequence *seq;
@@ -168,7 +174,9 @@ int bufr_decode_data_subset_deep ( struct bufr_subset_sequence_data *s, struct b
         }
     }
   else
-    seq = l;
+    {
+      seq = l;
+    }
 
   // loop for a sequence
   for ( i = 0; i < seq->ndesc ; i++ )
@@ -176,24 +184,27 @@ int bufr_decode_data_subset_deep ( struct bufr_subset_sequence_data *s, struct b
       switch ( seq->lseq[i].f )
         {
         case 0:
-	  // Get data from table B
-	  if (bufrdeco_tableb_val (&(s->sequence[s->nd]), b, l->lseq[i].c ))
-	  {
-	    return 1;
-	  }
+          // Get data from table B
+          if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, l->lseq[i].c ) )
+            {
+              return 1;
+            }
           break;
         case 1:
-	  // Case of replicator descriptor
+          // Case of replicator descriptor
+	  
           break;
         case 2:
-	  // Case of operator descriptor
+          // Case of operator descriptor
           break;
         case 3:
-	  // Case of sequence descriptor
+          // Case of sequence descriptor
+          if (bufr_decode_data_subset_recursive ( s, seq->sons[i], b ))
+	    return 1;
           break;
         default:
-	  // this case is not possible
-	  sprintf(b->error, "bufr_decode_data_subset(): Found bad 'f' in descriptor\n");
+          // this case is not possible
+          sprintf ( b->error, "bufr_decode_data_subset(): Found bad 'f' in descriptor\n" );
           return 1;
           break;
         }
