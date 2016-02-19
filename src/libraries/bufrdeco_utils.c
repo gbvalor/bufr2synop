@@ -25,28 +25,32 @@
 
 uint8_t bitf[8] = {0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01};
 
-size_t get_bits_as_uint32_t(uint32_t *target, uint8_t *source, size_t *bit0_offset, size_t bit_length)
+size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
 {
-  int i; 
+  int i;
   size_t r, d;
   uint8_t *c;
 
-  if (bit_length > 32 || bit_length == 0)
+  if ( bit_length > 32 || bit_length == 0 )
     return 0;
-  
+
   r = bit_length;
   d = 0;
   *target = 0;
+  *has_data = 0; // marc if no missing data is present
   do
     {
-      c = source + (*bit0_offset + d) / 8;
-      i = (*bit0_offset + d) % 8;
-      *target += (1U << (r - 1)) * (*c & bitf[i]);
+      c = source + ( *bit0_offset + d ) / 8;
+      i = ( *bit0_offset + d ) % 8;
+      if ( *c & bitf[i] )
+        *target += ( 1U << ( r - 1 ) );
+      else
+        *has_data = 1;
       d += 1;
       r -= 1;
     }
-   while (r > 0);
-   *bit0_offset += bit_length; // update bit0_offset
+  while ( r > 0 );
+  *bit0_offset += bit_length; // update bit0_offset
   return bit_length;
 }
 
@@ -88,18 +92,18 @@ int uint32_t_to_descriptor ( struct bufr_descriptor *d, uint32_t id )
 
 /*!
   \fn int two_bytes_to_descriptor (struct bufr_descriptor *d, const uint8_t *source)
-  \brief set a struct \ref bufr_descriptor from two consecutive bytes in bufr file 
+  \brief set a struct \ref bufr_descriptor from two consecutive bytes in bufr file
   \param source pointer to first byte (most significant)
   \param d pointer to the resulting descriptor
 
   It resturns 0 if all is OK. 1 otherwise
  */
-int two_bytes_to_descriptor (struct bufr_descriptor *d, const uint8_t *source)
+int two_bytes_to_descriptor ( struct bufr_descriptor *d, const uint8_t *source )
 {
   d->y = source[1];
   d->x = source[0] & 0x3f;
-  d->f = (source[0] >> 6) & 0x03;
-  sprintf(d->c, "%u%02u%03u", d->f, d->x, d->y);
+  d->f = ( source[0] >> 6 ) & 0x03;
+  sprintf ( d->c, "%u%02u%03u", d->f, d->x, d->y );
   return 0;
 }
 
@@ -134,27 +138,36 @@ char * bufr_adjust_string ( char *s )
 }
 
 
-int init_bufr(struct bufr *b, size_t l)
+int init_bufr ( struct bufr *b, size_t l )
 {
-  memset(b, 0, sizeof (struct bufr));
-  if ((b->sec4.raw = (uint8_t *) calloc(1, l)) == NULL)
+  memset ( b, 0, sizeof ( struct bufr ) );
+  if ( ( b->sec4.raw = ( uint8_t * ) calloc ( 1, l ) ) == NULL )
     return 1;
   b->sec4.allocated = l;
-  if ((b->table = (struct bufr_tables *) calloc(1, sizeof(struct bufr_tables))) == NULL)
+  if ( ( b->table = ( struct bufr_tables * ) calloc ( 1, sizeof ( struct bufr_tables ) ) ) == NULL )
+    {
+      free ( ( void * ) b->sec4.raw );
+      b->sec4.allocated = 0;
+      return 1;
+    }
+  if ( ( b->tree = ( struct bufr_expanded_tree * ) calloc ( 1, sizeof ( struct bufr_expanded_tree ) ) ) == NULL )
   {
-    free((void *)b->sec4.raw);
-    b->sec4.allocated = 0;
-    return 1;
+      free ( ( void * ) b->sec4.raw );
+      free ( ( void * ) b->table );
+      return 1;
   }
+    
   return 0;
 }
 
-int clean_bufr(struct bufr *b)
+int clean_bufr ( struct bufr *b )
 {
-  if (b->sec4.allocated > 0 &&  b->sec4.raw != NULL)
-    free ((void *) b->sec4.raw);
-  if (b->table != NULL)
-    free ((void *) b->table);
-  memset(b, 0, sizeof (struct bufr));
+  if ( b->sec4.allocated > 0 &&  b->sec4.raw != NULL )
+    free ( ( void * ) b->sec4.raw );
+  if ( b->table != NULL )
+    free ( ( void * ) b->table );
+  if ( b->tree != NULL)
+    free ( ( void * ) b->tree );
+  memset ( b, 0, sizeof ( struct bufr ) );
   return 0;
 }

@@ -112,7 +112,7 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
 
   // we have already checked about begin and end
 
-  // length of whole messge
+  // length of whole message
   b->sec0.bufr_length = three_bytes_to_uint32 ( &bufrx[4] );
   // check if length is correct
   if ( b->sec0.bufr_length != ( uint32_t ) n )

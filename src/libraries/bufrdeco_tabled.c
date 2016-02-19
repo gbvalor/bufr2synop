@@ -49,3 +49,67 @@ int bufr_read_tabled(struct bufr_tabled *td, char *error)
   td->nlines = i;
   return 0;
 }
+
+int bufrdeco_tabled_get_descritors_array(struct bufr_sequence *s, struct bufr *b, const char *needle)
+{
+  size_t i, j;
+  uint32_t nv, v;
+  char *c;
+  struct bufr_tabled *td;
+  
+  td = & ( b->table->d );
+
+  // Reject wrong arguments
+  if ( s == NULL || b == NULL || needle == NULL )
+  {
+    sprintf(b->error,"bufrdeco_tabled_get_descritors_array(): Wrong entry arguments\n");
+    return 1;
+  }
+  
+  // search source descriptor on data
+  // Find first line for descriptor
+  for ( i = 0; i <  td->nlines ; i++ )
+    {
+      if ( td->l[i][0] != ' ' ||
+           td->l[i][1] != needle[0] ||
+           td->l[i][2] != needle[1] ||
+           td->l[i][3] != needle[2] ||
+           td->l[i][4] != needle[3] ||
+           td->l[i][5] != needle[4] ||
+           td->l[i][6] != needle[5] )
+        continue;
+      else
+        break;
+    }
+
+  if ( i == td->nlines )
+    {
+      sprintf(b->error, "bufrdeco_tabled_get_descritors_array(): Cannot find key '%s' in provided table D\n",
+	needle);
+      return 1; // descritor not found
+    }
+
+  // reads the amount of possible values
+  if ( td->l[i][7] == ' ' )
+    nv = strtoul ( &td->l[i][7], &c, 10 );
+  else
+  {
+    sprintf(b->error, "bufrdeco_tabled_get_descritors_array(): Error when parsing provided table D\n");
+    return 1;
+  }
+  // s->level must be set by caller
+  // s->father must be set by caller
+
+  s->ndesc = 0;
+  
+  // read all descriptors
+  for ( j = 0; j < nv && (i + j) < td->nlines ; j++ )
+    {
+      v = strtoul(&(td->l[i+j][11]), &c, 10);
+      uint32_t_to_descriptor ( &(s->lseq[j]), v );
+      (s->ndesc)++; 
+    }
+
+  // s->sons are not set here
+  return 0;
+}

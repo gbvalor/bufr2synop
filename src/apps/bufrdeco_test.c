@@ -87,6 +87,16 @@ int main ( int argc, char *argv[] )
   print_sec1_info (&BUFR);
   print_sec3_info (&BUFR);
   print_sec4_info (&BUFR);
+  
+  if(bufr_parse_tree(&BUFR))
+  {
+    printf("%s", BUFR.error);
+    clean_bufr ( &BUFR );
+    exit ( EXIT_FAILURE );
+  }
+
+  bufr_print_tree(&BUFR);
+  
   printf("So far so good !!\n");
   clean_bufr ( &BUFR );
 

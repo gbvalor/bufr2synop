@@ -23,6 +23,9 @@
  */
 #include "bufrdeco.h"
 
+const double pow10pos[8]= {1.0, 10.0, 100.0, 1000.0, 10000.0, 100000.0, 1000000.0, 10000000.0};
+const double pow10neg[8]= {1.0,  0.1,  0.01,  0.001,  0.0001,  0.00001,  0.000001,  0.0000001};
+
 int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
 {
   char *c;
@@ -54,7 +57,8 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
 int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *needle )
 {
   size_t i, nbits;
-  uint32_t ix;
+  uint32_t ix, ival;
+  uint8_t has_data;
   char *c;
   char name[80], type[32];
   int32_t escale, reference;
@@ -84,6 +88,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *needle
 
   if ( i == tb->nlines )
     {
+      sprintf(b->error, "bufrdeco_tableb_val(): descriptor '%s' not found in table B\n", needle);
       return 1; // descritor not found
     }
 
@@ -100,13 +105,58 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *needle
   bufr_adjust_string ( type );
 
   // escale
-  escale = strtol ( &tb->l[i][97], &c, 10);
+  escale = strtol ( &tb->l[i][97], &c, 10 );
 
   // reference
-  reference = strtol ( &tb->l[i][102], &c, 10);
+  reference = strtol ( &tb->l[i][102], &c, 10 );
 
   // bits
-  nbits = strtol ( &tb->l[i][115], &c, 10);
+  nbits = strtol ( &tb->l[i][115], &c, 10 );
+
+
+  if (get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[0], &b->sec4.bit_offset, nbits ) == 0)
+  {
+    sprintf(b->error, "bufrdeco_tableb_val(): Cannot get bits from '%s'\n", needle);
+    return 1;
+  }
+
+  if ( has_data )
+    {
+      if ( escale >= 0 && escale < 8 )
+        a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10neg[ ( size_t ) escale];
+      else if ( escale < 0 && escale > -8 )
+        a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10pos[ ( size_t ) ( -escale )];
+      else
+        a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10 ( ( double ) ( -escale ) );
+    }
+  else
+    a->val = MISSING_REAL;
+
+  ival = ( uint32_t ) ( a->val + 0.5 );
+  a->mask = 0;
+  if ( a->val != MISSING_REAL )
+    {
+      if ( strstr ( a->unit, "CCITTIA5" ) != NULL )
+        a->mask |= DESCRIPTOR_HAVE_STRING_VALUE;
+      else if ( strstr ( a->unit, "CODE TABLE" ) == a->unit )
+        {
+          a->mask |= DESCRIPTOR_IS_CODE_TABLE;
+          if ( bufrdeco_explained_table_val ( a->ctable, 256, & ( b->table->c ), & ( a->desc ), ival ) != NULL )
+            {
+              a->mask |= DESCRIPTOR_HAVE_CODE_TABLE_STRING;
+            }
+        }
+      else if ( strstr ( a->unit,"FLAG" ) == a->unit )
+        {
+          a->mask |= DESCRIPTOR_IS_FLAG_TABLE;
+          if ( bufrdeco_explained_flag_val ( a->ctable, 256, & ( b->table->c ), & ( a->desc ), ival ) != NULL )
+            {
+              a->mask |= DESCRIPTOR_HAVE_FLAG_TABLE_STRING;
+            }
+        }
+    }
+    else
+      a->mask |= DESCRIPTOR_VALUE_MISSING;
 
   return 0;
 }
