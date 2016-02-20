@@ -152,16 +152,16 @@ void bufr_print_tree ( struct bufr *b )
   bufr_print_tree_recursive ( b, NULL );
 };
 
-int bufr_decode_data_subset_recursive ( struct bufr_subset_sequence_data *s, struct bufr_sequence *l, struct bufr *b )
+int bufr_decode_data_subset ( struct bufr_subset_sequence_data *s, struct bufr *b )
+{
+  return bufr_decode_subset_data_recursive ( s, NULL, b );
+}
+
+int bufr_decode_subset_data_recursive ( struct bufr_subset_sequence_data *s, struct bufr_sequence *l, struct bufr *b )
 {
   size_t i;
   struct bufr_sequence *seq;
-  size_t current = 0;
-  struct bufr_descriptor *replicator = NULL;
-  struct bufr_descriptor *delayed = NULL;
-  size_t last_desc = 0; /*!< last descriptor in sequence affected by replicator loop */
-  size_t loops = 0; /*!< number of loops in replicator */
-  size_t iteration = 0; /*!< current loop */
+  struct bufr_replicator replicator;
 
   // clean subset data
   if ( l == NULL )
@@ -185,22 +185,60 @@ int bufr_decode_data_subset_recursive ( struct bufr_subset_sequence_data *s, str
         {
         case 0:
           // Get data from table B
-          if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, l->lseq[i].c ) )
+          if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, seq->lseq[i].c ) )
             {
+              return 1;
+            }
+          if ( s->nd < NMAXSEQ )
+            ( s->nd ) ++;
+          else
+            {
+              sprintf ( b->error, "bufr_decode_data_subset_recursive(): No more bufr_atom_data available. Check NMAXSEQ\n" );
               return 1;
             }
           break;
         case 1:
           // Case of replicator descriptor
-	  
+          replicator.s = l;
+          replicator.ixrep = i;
+          if ( seq->lseq[i].y != 0 )
+            {
+              // no delayed
+              replicator.ixdel = i;
+              replicator.ndesc = seq->lseq[i].x;
+              replicator.nloops = seq->lseq[i].y;
+              bufr_decode_replicated_subsequence ( s, &replicator, b );
+            }
+          else
+            {
+              // case of delayed;
+              replicator.ixdel = i + 1;
+              replicator.ndesc = seq->lseq[i].x;
+              // here we read ndesc from delayed replicator descriptor
+              if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, seq->lseq[i + 1].c ) )
+                {
+                  return 1;
+                }
+              replicator.nloops = ( size_t ) s->sequence[s->nd].val;
+              if ( s->nd < NMAXSEQ )
+                ( s->nd ) ++;
+              else
+                {
+                  sprintf ( b->error, "bufr_decode_data_subset_recursive(): No more bufr_atom_data available. Check NMAXSEQ\n" );
+                  return 1;
+                }
+              bufr_decode_replicated_subsequence ( s, &replicator, b );
+            }
+          i = replicator.ixdel + replicator.ndesc; // update i properly
           break;
         case 2:
           // Case of operator descriptor
+          // FIXME
           break;
         case 3:
           // Case of sequence descriptor
-          if (bufr_decode_data_subset_recursive ( s, seq->sons[i], b ))
-	    return 1;
+          if ( bufr_decode_subset_data_recursive ( s, seq->sons[i], b ) )
+            return 1;
           break;
         default:
           // this case is not possible
@@ -209,9 +247,87 @@ int bufr_decode_data_subset_recursive ( struct bufr_subset_sequence_data *s, str
           break;
         }
     }
-
-
-
-
   return 0;
 };
+
+int bufr_decode_replicated_subsequence ( struct bufr_subset_sequence_data *s, struct bufr_replicator *r, struct bufr *b )
+{
+  size_t i;
+  size_t ixloop; // Index for loop
+  size_t ixd; // Index for descriptor
+  struct bufr_sequence *l = r->s; // sequence
+
+  for ( ixloop = 0; ixloop < r->nloops; ixloop++ )
+    {
+      for ( ixd = 0; ixd < r->ndesc ; ixd ++ )
+        {
+          i = ixd + r->ixdel + 1;
+          switch ( l->lseq[i].f )
+            {
+            case 0:
+              // Get data from table B
+              if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, l->lseq[i].c ) )
+                {
+                  return 1;
+                }
+              if ( s->nd < NMAXSEQ )
+                ( s->nd ) ++;
+              else
+                {
+                  sprintf ( b->error, "bufr_decode_data_subset_recursive(): No more bufr_atom_data available. Check NMAXSEQ\n" );
+                  return 1;
+                }
+              break;
+            case 1:
+              // Case of replicator descriptor
+              r->s = l;
+              r->ixrep = i;
+              if ( l->lseq[i].y != 0 )
+                {
+                  // no delayed
+                  r->ixdel = i;
+                  r->ndesc = l->lseq[i].x;
+                  r->nloops = l->lseq[i].y;
+                  bufr_decode_replicated_subsequence ( s, r, b );
+                }
+              else
+                {
+                  // case of delayed;
+                  r->ixdel = i + 1;
+                  r->ndesc = l->lseq[i].x;
+                  // here we read ndesc from delayed replicator descriptor
+                  if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, l->lseq[i + 1].c ) )
+                    {
+                      return 1;
+                    }
+                  r->nloops = ( size_t ) s->sequence[s->nd].val;
+                  if ( s->nd < NMAXSEQ )
+                    ( s->nd ) ++;
+                  else
+                    {
+                      sprintf ( b->error, "bufr_decode_data_subset_recursive(): No more bufr_atom_data available. Check NMAXSEQ\n" );
+                      return 1;
+                    }
+                  bufr_decode_replicated_subsequence ( s, r, b );
+                }
+              i = r->ixdel + r->ndesc; // update i properly
+              break;
+            case 2:
+              // Case of operator descriptor
+              // FIXME
+              break;
+            case 3:
+              // Case of sequence descriptor
+              if ( bufr_decode_subset_data_recursive ( s, l->sons[i], b ) )
+                return 1;
+              break;
+            default:
+              // this case is not possible
+              sprintf ( b->error, "bufr_decode_subset_data_recursive(): Found bad 'f' in descriptor\n" );
+              return 1;
+              break;
+            }
+        }
+    }
+  return 0;
+}

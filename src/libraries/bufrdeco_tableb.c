@@ -97,13 +97,15 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *needle
   uint32_t_to_descriptor ( &a->desc, ix );
 
   // detailed name
-  bufr_charray_to_string ( name,&tb->l[i][8], 64 );
+  bufr_charray_to_string ( name, &tb->l[i][8], 64 );
   bufr_adjust_string ( name ); // supress trailing blanks
-
+  strcpy(a->name, name);
+  
   // tyoe
   bufr_charray_to_string ( type,&tb->l[i][73], 24 );
   bufr_adjust_string ( type );
-
+  strcpy(a->unit, type);
+  
   // escale
   escale = strtol ( &tb->l[i][97], &c, 10 );
 
@@ -113,8 +115,18 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *needle
   // bits
   nbits = strtol ( &tb->l[i][115], &c, 10 );
 
-
-  if (get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[0], &b->sec4.bit_offset, nbits ) == 0)
+  //printf(" escale = %d  reference = %d nbits = %lu\n", escale, reference, nbits);
+  if ( strstr ( a->unit, "CCITTIA5" ) != NULL )  
+  {
+    if (get_bits_as_char_array(a->cval, &has_data, &b->sec4.raw[4], &(b->state.bit_offset), nbits ) == 0)
+    {
+      sprintf(b->error, "bufrdeco_tableb_val(): Cannot get uchars from '%s'\n", needle);
+      return 1;
+    }
+    if (has_data == 0)
+      a->mask |= DESCRIPTOR_VALUE_MISSING;
+  }
+  else if (get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], &(b->state.bit_offset), nbits ) == 0)
   {
     sprintf(b->error, "bufrdeco_tableb_val(): Cannot get bits from '%s'\n", needle);
     return 1;
@@ -157,6 +169,6 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *needle
     }
     else
       a->mask |= DESCRIPTOR_VALUE_MISSING;
-
+  
   return 0;
 }

@@ -25,6 +25,40 @@
 
 uint8_t bitf[8] = {0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01};
 
+size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
+{
+  int i, j;
+  size_t r, d, nc;
+  uint8_t *c;
+
+  if ( bit_length % 8 )
+    return 0; // bit_length needs to be divisible by 8
+
+  nc = bit_length / 8;
+  *has_data = 0; // marc if no missing data is present
+  for ( j = 0; j < nc ; j++ )
+    {
+      r = 8;
+      d = 0;
+      * ( target + j ) = 0;
+      do
+        {
+          c = source + ( *bit0_offset + d ) / 8;
+          i = ( *bit0_offset + d ) % 8;
+          if ( *c & bitf[i] )
+            * ( target + j ) += ( 1U << ( r - 1 ) );
+          else
+            *has_data = 1;
+          d += 1;
+          r -= 1;
+        }
+      while ( r > 0 );
+      *bit0_offset += 8; // update bit0_offset
+    }
+  * ( target + nc ) = '\0';
+  return bit_length;
+}
+
 size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
 {
   int i;
@@ -151,12 +185,12 @@ int init_bufr ( struct bufr *b, size_t l )
       return 1;
     }
   if ( ( b->tree = ( struct bufr_expanded_tree * ) calloc ( 1, sizeof ( struct bufr_expanded_tree ) ) ) == NULL )
-  {
+    {
       free ( ( void * ) b->sec4.raw );
       free ( ( void * ) b->table );
       return 1;
-  }
-    
+    }
+
   return 0;
 }
 
@@ -166,8 +200,62 @@ int clean_bufr ( struct bufr *b )
     free ( ( void * ) b->sec4.raw );
   if ( b->table != NULL )
     free ( ( void * ) b->table );
-  if ( b->tree != NULL)
+  if ( b->tree != NULL )
     free ( ( void * ) b->tree );
   memset ( b, 0, sizeof ( struct bufr ) );
   return 0;
+}
+
+char * bufr_print_atom_data ( char *target, struct bufr_atom_data *a )
+{
+  char aux[256], *c;
+  c = target;
+  c += sprintf ( c, "%u %02u %03u ", a->desc.f, a->desc.x, a->desc.y );
+  strcpy ( aux, a->name );
+  aux[40] = '\0';
+  c += sprintf ( c, "%-40s ", aux );
+  strcpy ( aux, a->unit );
+  aux[20] = '\0';
+  c += sprintf ( c, "%-20s", aux );
+  if (a->mask & DESCRIPTOR_VALUE_MISSING)
+    c += sprintf (c, "%+17s", "MISSING VALUE");
+  else
+  { 
+    if (a->mask & DESCRIPTOR_HAVE_STRING_VALUE)
+    {
+      strcpy(aux, a->cval);
+      aux[56] = '\0';
+      c += sprintf(c, "                  ");
+      c += sprintf(c, "%s", aux);                 
+    }
+    else if (a->mask & DESCRIPTOR_HAVE_CODE_TABLE_STRING)
+    {
+      strcpy(aux, a->ctable);
+      aux[56] = '\0';
+      c += sprintf ( c, "%17u ", (uint32_t) a->val );
+      c += sprintf(c, "%s", aux);                 
+    }
+    else if (a->mask & DESCRIPTOR_HAVE_FLAG_TABLE_STRING)
+    {
+      strcpy(aux, a->ctable);
+      aux[56] = '\0';
+      c += sprintf ( c, "       0x%08X ", (uint32_t) a->val );
+      c += sprintf(c, "%s", aux);                 
+    }
+    else
+    {
+      c += sprintf ( c, "%17.10e ", a->val );
+    }
+  }
+  return target;
+}
+
+void bufr_print_subset_sequence_data ( struct bufr_subset_sequence_data *s )
+{
+  size_t i;
+  char aux[1024];
+  for ( i = 0; i < s->nd ; i++ )
+    {
+       printf("%5lu:  %s\n", i, bufr_print_atom_data ( aux, &s->sequence[i] ));
+    }
 }

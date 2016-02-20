@@ -202,6 +202,19 @@ struct bufr_descriptor
 };
 
 /*!
+  \struct bufr_replicator
+  \brief store the information when parsing related to replicators
+*/
+struct bufr_replicator
+{
+  struct bufr_sequence *s; /*!< struct to which this replicator struct belongs */
+  size_t ixrep; /*!< index in a sequence of replicator descriptor */
+  size_t ixdel; /*!< index in a sequence of a delayed replicator, if not then is the same that ixrep */
+  size_t ndesc; /*!< amount of descritptors in sequence affected by replicator */
+  size_t nloops; /*!< amount of loops to do */
+};
+
+/*!
   \struct bufr_atom_data
   \brief Contains all the information for a single descriptor in a expanded squence
 */
@@ -230,7 +243,7 @@ struct bufr_decoding_data_state
 /*!
   \fn struct bufr_sequence
   \brief Stores an unexpanded sequence of descriptors
-  
+
   A sequence layer is needed when parsing expanded descriptor sec3 and sec4
 
   First bufr_sequence is the sequence of descriptors in sec3 after
@@ -256,8 +269,8 @@ struct bufr_sequence
 /*!
  \struct bufr_expanded_tree
  \brief Array of structs \ref bufr_sequence
-*/ 
-struct bufr_expanded_tree 
+*/
+struct bufr_expanded_tree
 {
   size_t nseq; /*!< current number of structs */
   struct bufr_sequence seq[BUFR_MAX_EXPANDED_SEQUENCES]; /*!< array of structs */
@@ -429,23 +442,29 @@ int bufr_read_tabled ( struct bufr_tabled *td, char *error );
 // Utililies functions
 uint32_t two_bytes_to_uint32 ( const uint8_t *source );
 uint32_t three_bytes_to_uint32 ( const uint8_t *source );
-size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, 
-			      size_t bit_length );
+size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset,
+                              size_t bit_length );
+size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset,
+                                   size_t bit_length );
 int two_bytes_to_descriptor ( struct bufr_descriptor *d, const uint8_t *source );
 int uint32_t_to_descriptor ( struct bufr_descriptor *d, uint32_t id );
 char * bufr_adjust_string ( char *s );
 char * bufr_charray_to_string ( char *s, char *buf, size_t size );
 int get_ecmwf_tablenames ( struct bufr *b, const char *bufrtables_dir );
-char * bufrdeco_explained_table_val (char *expl, size_t dim, struct bufr_tablec *tc, 
-				     struct bufr_descriptor *d, uint32_t ival);
-char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d, 
-				     uint64_t ival );
-int bufrdeco_tabled_get_descritors_array(struct bufr_sequence *s, struct bufr *b, 
-					 const char *key);
+char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec *tc,
+                                      struct bufr_descriptor *d, uint32_t ival );
+char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d,
+                                     uint64_t ival );
+int bufrdeco_tabled_get_descritors_array ( struct bufr_sequence *s, struct bufr *b,
+    const char *key );
 int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *needle );
-int bufr_parse_tree_deep(struct bufr *b, struct bufr_sequence *father,  const char *key);
-int bufr_parse_tree(struct bufr *b);
+int bufr_parse_tree_deep ( struct bufr *b, struct bufr_sequence *father,  const char *key );
+int bufr_parse_tree ( struct bufr *b );
 void bufr_print_tree ( struct bufr *b );
-int bufr_decode_data_subset (struct bufr_subset_sequence_data *s, struct bufr *b);
+int bufr_decode_data_subset ( struct bufr_subset_sequence_data *s, struct bufr *b );
+int bufr_decode_replicated_subsequence ( struct bufr_subset_sequence_data *s,
+    struct bufr_replicator *r, struct bufr *b );
+char * bufr_print_atom_data ( char *target, struct bufr_atom_data *a );
+void bufr_print_subset_sequence_data(struct bufr_subset_sequence_data *s);
 
 #endif  // from ifndef BUFRDECO_H
