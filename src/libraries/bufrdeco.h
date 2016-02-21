@@ -99,6 +99,8 @@
 */
 #define NMAXSEQ (16384)
 
+#define BUFR_NMAXSEQ (2 * 16384)
+
 /*!
    \def NMAXSEQ_DESCRIPTORS
    \brief Maximum nuber of unexpanded descriptors in a struct \ref bufr_sequence
@@ -225,6 +227,7 @@ struct bufr_atom_data
   char name[92]; /*!< String with the name of descriptor */
   char unit[32]; /*!< String with the name of units */
   double val; /*!< Value for the bufr descriptor */
+  uint32_t associated; /*!< value for associated field, if any */
   char cval[128]; /*!< String value for the bufr descriptor */
   char ctable[256]; /*!< Explained meaning for a code table */
 };
@@ -238,6 +241,11 @@ struct bufr_decoding_data_state
 {
   size_t subset; /*!< Subset sequence index being parsed */
   size_t bit_offset; /*!< first data bit offset of current since the begining of data in byte 4 in SEC 4 */
+  int8_t added_bit_length; /*!< Current aditional bit_length that can be changed by descriptor 2 01 YYY */
+  int8_t added_scale; /*!< Current aditional scale factor that can be changed by descriptor 2 02 YYY */
+  int32_t added_reference; /*!< Current aditional reference that can be changed bu descriptor 2 03 YYY */
+  uint8_t assoc_bits; /*!< number of associated bits */
+  uint8_t changing_reference; /*!< Changing reference as descriptor 2 03 YYY */
 };
 
 /*!
@@ -283,7 +291,7 @@ struct bufr_expanded_tree
 struct bufr_subset_sequence_data
 {
   size_t nd; /*!< number of current amount of data in sequence */
-  struct bufr_atom_data sequence[NMAXSEQ]; /*!< the array of data associated to a expanded sequence */
+  struct bufr_atom_data sequence[BUFR_NMAXSEQ]; /*!< the array of data associated to a expanded sequence */
 };
 
 struct bufr_sec0
@@ -382,11 +390,29 @@ struct bufr_sec4
   uint8_t *raw; /*!< Pointer to a raw data for sec4 as in original BUFR file */
 };
 
+struct bufr_tableb_decoded_item
+{
+  uint8_t changed; // flag. If 0 = not changed from table B. If 1 Changed */
+  uint8_t x; // x value of descriptor
+  uint8_t y; // y value of descriptor
+  char key[8]; // c value of descriptor
+  char name[64]; // name
+  char unit[24]; // unit
+  int32_t scale; // escale
+  int32_t scale_ori; // escale as readed from table b
+  int32_t reference; // reference
+  int32_t reference_ori; // reference as readed from table b
+  size_t nbits; // bits
+  size_t nbits_ori; // bits as readed from table bS
+};
+
 struct bufr_tableb
 {
   char path[256];
   size_t nlines;
-  char l[BUFR_MAXLINES_TABLEB][180];
+  size_t x_start[64]; /*!< Index of first x */
+  size_t num[64]; /*!< Amonut of items for x */
+  struct bufr_tableb_decoded_item item[BUFR_MAXLINES_TABLEB];
 };
 
 struct bufr_tablec
@@ -465,6 +491,10 @@ int bufr_decode_data_subset ( struct bufr_subset_sequence_data *s, struct bufr *
 int bufr_decode_replicated_subsequence ( struct bufr_subset_sequence_data *s,
     struct bufr_replicator *r, struct bufr *b );
 char * bufr_print_atom_data ( char *target, struct bufr_atom_data *a );
+void bufr_print_atom_data_stdout (struct bufr_atom_data *a );
 void bufr_print_subset_sequence_data(struct bufr_subset_sequence_data *s);
+int bufrdeco_parse_f2_descriptor (struct bufr_subset_sequence_data *s, struct bufr_descriptor *d, struct bufr *b);
+int bufr_find_tableb_index(size_t *index, struct bufr_tableb *tb, const char *key);
+int get_table_b_reference_from_uint32_t(int32_t *target, uint8_t bits, uint32_t source);
 
 #endif  // from ifndef BUFRDECO_H

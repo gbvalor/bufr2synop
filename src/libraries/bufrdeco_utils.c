@@ -88,6 +88,25 @@ size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *sour
   return bit_length;
 }
 
+// most significant of bits is the sign 
+int get_table_b_reference_from_uint32_t(int32_t *target, uint8_t bits, uint32_t source)
+{
+  uint32_t mask = 1;
+  if (bits > 32 || bits == 0)
+    return 1;
+  
+  if (bits > 1)
+    mask = ((uint32_t)1 << (bits - 1));
+  
+  if (mask & source)
+  { // case of negative number
+    *target = -(int32_t)(source - mask);
+  }
+  else
+    *target = (int32_t)(source);
+  return 0;
+}
+
 /*!
   \fn uint32_t two_bytes_to_uint32(const uint8_t *source)
   \brief returns the uint32_t value from an array of two bytes, most significant first
@@ -206,56 +225,3 @@ int clean_bufr ( struct bufr *b )
   return 0;
 }
 
-char * bufr_print_atom_data ( char *target, struct bufr_atom_data *a )
-{
-  char aux[256], *c;
-  c = target;
-  c += sprintf ( c, "%u %02u %03u ", a->desc.f, a->desc.x, a->desc.y );
-  strcpy ( aux, a->name );
-  aux[40] = '\0';
-  c += sprintf ( c, "%-40s ", aux );
-  strcpy ( aux, a->unit );
-  aux[20] = '\0';
-  c += sprintf ( c, "%-20s", aux );
-  if (a->mask & DESCRIPTOR_VALUE_MISSING)
-    c += sprintf (c, "%+17s", "MISSING VALUE");
-  else
-  { 
-    if (a->mask & DESCRIPTOR_HAVE_STRING_VALUE)
-    {
-      strcpy(aux, a->cval);
-      aux[56] = '\0';
-      c += sprintf(c, "                  ");
-      c += sprintf(c, "%s", aux);                 
-    }
-    else if (a->mask & DESCRIPTOR_HAVE_CODE_TABLE_STRING)
-    {
-      strcpy(aux, a->ctable);
-      aux[56] = '\0';
-      c += sprintf ( c, "%17u ", (uint32_t) a->val );
-      c += sprintf(c, "%s", aux);                 
-    }
-    else if (a->mask & DESCRIPTOR_HAVE_FLAG_TABLE_STRING)
-    {
-      strcpy(aux, a->ctable);
-      aux[56] = '\0';
-      c += sprintf ( c, "       0x%08X ", (uint32_t) a->val );
-      c += sprintf(c, "%s", aux);                 
-    }
-    else
-    {
-      c += sprintf ( c, "%17.10e ", a->val );
-    }
-  }
-  return target;
-}
-
-void bufr_print_subset_sequence_data ( struct bufr_subset_sequence_data *s )
-{
-  size_t i;
-  char aux[1024];
-  for ( i = 0; i < s->nd ; i++ )
-    {
-       printf("%5lu:  %s\n", i, bufr_print_atom_data ( aux, &s->sequence[i] ));
-    }
-}

@@ -23,6 +23,12 @@
  */
 #include "bufrdeco.h"
 
+#define BUFR_TABLEB_CHANGED_BITS (1)
+#define BUFR_TABLEB_CHANGED_SCALE (2)
+#define BUFR_TABLEB_CHANGED_REFERENCE (4)
+
+
+
 const double pow10pos[8]= {1.0, 10.0, 100.0, 1000.0, 10000.0, 100000.0, 1000000.0, 10000000.0};
 const double pow10neg[8]= {1.0,  0.1,  0.01,  0.001,  0.0001,  0.00001,  0.000001,  0.0000001};
 
@@ -31,6 +37,9 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
   char *c;
   FILE *t;
   size_t i = 0;
+  uint32_t ix;
+  char l[180];
+  struct bufr_descriptor desc;
 
   if ( tb->path == NULL )
     return 1;
@@ -42,98 +51,199 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
       return 1;
     }
 
-  while ( fgets ( tb->l[i], 180, t ) != NULL && i < BUFR_MAXLINES_TABLEC )
+  while ( fgets ( l, 180, t ) != NULL && i < BUFR_MAXLINES_TABLEC )
     {
       // supress the newline
-      if ( ( c = strrchr ( tb->l[i],'\n' ) ) != NULL )
+      if ( ( c = strrchr ( l,'\n' ) ) != NULL )
         *c = '\0';
+
+      // First we build the descriptor
+      ix = strtoul ( & ( l[0] ), &c, 10 );
+      uint32_t_to_descriptor ( &desc, ix );
+      tb->item[i].changed = 0; // Original from table B
+      tb->item[i].x = desc.x; // x
+      tb->item[i].y = desc.y; // y
+      strcpy ( tb->item[i].key, desc.c ); // key
+      if ( tb->x_start[desc.x] == 0 )
+        tb->x_start[desc.x] = i; // marc the start
+      ( tb->num[desc.x] ) ++;
+
+      // detailed name
+      bufr_charray_to_string ( tb->item[i].name, &l[8], 64 );
+      bufr_adjust_string ( tb->item[i].name ); // supress trailing blanks
+
+      // tyoe
+      bufr_charray_to_string ( tb->item[i].unit ,&l[73], 24 );
+      bufr_adjust_string ( tb->item[i].unit );
+
+      // escale
+      tb->item[i].scale_ori = strtol ( &l[97], &c, 10 );
+      tb->item[i].scale = tb->item[i].scale_ori;
+
+      // reference
+      tb->item[i].reference_ori = strtol ( &l[102], &c, 10 );
+      tb->item[i].reference = tb->item[i].reference_ori;
+
+      // bits
+      tb->item[i].nbits_ori = strtol ( &l[115], &c, 10 );
+      tb->item[i].nbits = tb->item[i].nbits_ori;
+
+      /*printf("%s %s %s %d %u %lu\n", tb->item[i].key, tb->item[i].name, tb->item[i].unit,
+       tb->item[i].escale, tb->item[i].reference, tb->item[i].nbits);*/
       i++;
     }
+  tb->x_start[0] = 0; // fix the start for x = 0
   fclose ( t );
   tb->nlines = i;
   return 0;
 }
 
-int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *needle )
+int bufr_restore_original_tableb_item ( struct bufr_tableb *tb, struct bufr *b, uint8_t mode, char *key )
 {
-  size_t i, nbits;
+  size_t i;
+
+  if ( bufr_find_tableb_index ( &i, tb, key ) )
+    {
+      sprintf ( b->error, "bufr_restore_original_tableb_item(): descriptor '%s' not found in table B\n", key );
+      return 1; // descritor not found
+    }
+
+  // escale
+  if ( mode & BUFR_TABLEB_CHANGED_SCALE || mode == 0 )
+    {
+      tb->item[i].scale = tb->item[i].scale_ori;
+      tb->item[i].changed &= ~ ( BUFR_TABLEB_CHANGED_SCALE ); // Clear bit mask
+    }
+
+  // reference
+  if ( mode & BUFR_TABLEB_CHANGED_REFERENCE || mode == 0 )
+    {
+      tb->item[i].reference = tb->item[i].reference_ori;
+      tb->item[i].changed &= ~ ( BUFR_TABLEB_CHANGED_REFERENCE ); // Clear bit mask
+    }
+  // bits
+  if ( mode & BUFR_TABLEB_CHANGED_BITS || mode == 0 )
+    {
+      tb->item[i].nbits = tb->item[i].nbits_ori;
+      tb->item[i].changed &= ~ ( BUFR_TABLEB_CHANGED_BITS ); // Clear bit mask
+    }
+  return 0;
+}
+
+int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *key )
+{
+  uint32_t ix;
+  size_t i, i0;
+  char *c;
+  struct bufr_descriptor desc;
+
+  ix = strtoul ( key, &c, 10 );
+  uint32_t_to_descriptor ( &desc, ix );
+  i0 = tb->x_start[desc.x];
+  for ( i = i0 ; i < i0 + tb->num[desc.x] ; i++ )
+    {
+      if ( tb->item[i].x != desc.x )
+        {
+          return 1; // descriptor not found
+        }
+      if ( tb->item[i].y == desc.y )
+        {
+          *index = i;
+          return 0; // found
+        }
+    }
+  return 1; // not found
+}
+
+int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *key )
+{
+  size_t i, nbits = 0;
+  char *c;
   uint32_t ix, ival;
   uint8_t has_data;
-  char *c;
-  char name[80], type[32];
-  int32_t escale, reference;
+  int32_t escale = 0, reference = 0;
   struct bufr_tableb *tb;
 
   tb = & ( b->table->b );
 
   // Reject wrong arguments
-  if ( a == NULL || b == NULL || needle == NULL )
+  if ( a == NULL || b == NULL || key == NULL )
     return 1;
 
-  // search source descriptor on data
-  // Find first line for descriptor
-  for ( i = 0; i <  tb->nlines ; i++ )
+  if ( bufr_find_tableb_index ( &i, tb, key ) )
     {
-      if ( tb->l[i][0] != ' ' ||
-           tb->l[i][1] != needle[0] ||
-           tb->l[i][2] != needle[1] ||
-           tb->l[i][3] != needle[2] ||
-           tb->l[i][4] != needle[3] ||
-           tb->l[i][5] != needle[4] ||
-           tb->l[i][6] != needle[5] )
-        continue;
-      else
-        break;
-    }
-
-  if ( i == tb->nlines )
-    {
-      sprintf(b->error, "bufrdeco_tableb_val(): descriptor '%s' not found in table B\n", needle);
+      sprintf ( b->error, "bufrdeco_tableb_val(): descriptor '%s' not found in table B\n", key );
       return 1; // descritor not found
     }
+  ix = strtoul ( key, &c, 10 );
+  uint32_t_to_descriptor ( & ( a->desc ), ix );
+  a->mask = 0;
+  strcpy ( a->name, tb->item[i].name );
+  strcpy ( a->unit, tb->item[i].unit );
+  escale = tb->item[i].scale;
+  nbits = tb->item[i].nbits;
 
-  // First we build the descriptor
-  ix = strtoul ( needle, &c, 10 );
-  uint32_t_to_descriptor ( &a->desc, ix );
+  if ( b->state.changing_reference != 255 )
+    {
+      // The descriptor operator 2 03 YYY is on action
+      if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
+        {
+          sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get bits from '%s'\n", key );
+          return 1;
+        }
+      // Change the reference value
+      if ( get_table_b_reference_from_uint32_t ( & ( tb->item[i].reference ), b->state.changing_reference, ival ) )
+        {
+          sprintf ( b->error, "bufrdeco_tableb_val(): Cannot change reference in 2 03 YYY operator for '%s'\n", key );
+          return 1;
+        }
+      strcpy ( a->unit, "NEW REFERENCE" );
+      a->val = ( double ) tb->item[i].reference;
+      return 0;
+    }
 
-  // detailed name
-  bufr_charray_to_string ( name, &tb->l[i][8], 64 );
-  bufr_adjust_string ( name ); // supress trailing blanks
-  strcpy(a->name, name);
-  
-  // tyoe
-  bufr_charray_to_string ( type,&tb->l[i][73], 24 );
-  bufr_adjust_string ( type );
-  strcpy(a->unit, type);
-  
-  // escale
-  escale = strtol ( &tb->l[i][97], &c, 10 );
-
-  // reference
-  reference = strtol ( &tb->l[i][102], &c, 10 );
-
-  // bits
-  nbits = strtol ( &tb->l[i][115], &c, 10 );
+  reference = tb->item[i].reference;
 
   //printf(" escale = %d  reference = %d nbits = %lu\n", escale, reference, nbits);
-  if ( strstr ( a->unit, "CCITTIA5" ) != NULL )  
-  {
-    if (get_bits_as_char_array(a->cval, &has_data, &b->sec4.raw[4], &(b->state.bit_offset), nbits ) == 0)
+  if ( strstr ( a->unit, "CCITTIA5" ) != NULL )
     {
-      sprintf(b->error, "bufrdeco_tableb_val(): Cannot get uchars from '%s'\n", needle);
-      return 1;
+      if ( get_bits_as_char_array ( a->cval, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
+        {
+          sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get uchars from '%s'\n", key );
+          return 1;
+        }
+      if ( has_data == 0 )
+        a->mask |= DESCRIPTOR_VALUE_MISSING;
     }
-    if (has_data == 0)
-      a->mask |= DESCRIPTOR_VALUE_MISSING;
-  }
-  else if (get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], &(b->state.bit_offset), nbits ) == 0)
-  {
-    sprintf(b->error, "bufrdeco_tableb_val(): Cannot get bits from '%s'\n", needle);
-    return 1;
-  }
-
-  if ( has_data )
+  else
     {
+      // is a numeric field, i.e, a data value, a flag code or a code
+      if ( b->state.assoc_bits &&
+           a->desc.x != 31 &&  // Data description qualifier has not associated bits itself
+           get_bits_as_uint32_t ( &a->associated, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), b->state.assoc_bits ) == 0 )
+        {
+          sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get associated bits from '%s'\n", key );
+          return 1;
+        }
+      else
+        {
+          a->associated = MISSING_INTEGER;
+        }
+
+      if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
+        {
+          sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get bits from '%s'\n", key );
+          return 1;
+        }
+    }
+
+  if ( has_data &&  strstr ( a->unit, "CCITTIA5" ) == NULL )
+    {
+      if ( strstr ( a->unit, "CODE TABLE" ) != a->unit &&  strstr ( a->unit,"FLAG" ) == a->unit )
+        {
+          escale += b->state.added_scale;
+          reference += b->state.added_reference;
+        }
       if ( escale >= 0 && escale < 8 )
         a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10neg[ ( size_t ) escale];
       else if ( escale < 0 && escale > -8 )
@@ -144,14 +254,13 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *needle
   else
     a->val = MISSING_REAL;
 
-  ival = ( uint32_t ) ( a->val + 0.5 );
-  a->mask = 0;
   if ( a->val != MISSING_REAL )
     {
       if ( strstr ( a->unit, "CCITTIA5" ) != NULL )
         a->mask |= DESCRIPTOR_HAVE_STRING_VALUE;
       else if ( strstr ( a->unit, "CODE TABLE" ) == a->unit )
         {
+          ival = ( uint32_t ) ( a->val + 0.5 );
           a->mask |= DESCRIPTOR_IS_CODE_TABLE;
           if ( bufrdeco_explained_table_val ( a->ctable, 256, & ( b->table->c ), & ( a->desc ), ival ) != NULL )
             {
@@ -160,6 +269,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *needle
         }
       else if ( strstr ( a->unit,"FLAG" ) == a->unit )
         {
+          ival = ( uint32_t ) ( a->val + 0.5 );
           a->mask |= DESCRIPTOR_IS_FLAG_TABLE;
           if ( bufrdeco_explained_flag_val ( a->ctable, 256, & ( b->table->c ), & ( a->desc ), ival ) != NULL )
             {
@@ -167,8 +277,8 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *needle
             }
         }
     }
-    else
-      a->mask |= DESCRIPTOR_VALUE_MISSING;
-  
+  else
+    a->mask |= DESCRIPTOR_VALUE_MISSING;
+
   return 0;
 }
