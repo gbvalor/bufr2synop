@@ -88,22 +88,23 @@ size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *sour
   return bit_length;
 }
 
-// most significant of bits is the sign 
-int get_table_b_reference_from_uint32_t(int32_t *target, uint8_t bits, uint32_t source)
+// most significant of bits is the sign
+int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_t source )
 {
   uint32_t mask = 1;
-  if (bits > 32 || bits == 0)
+  if ( bits > 32 || bits == 0 )
     return 1;
-  
-  if (bits > 1)
-    mask = ((uint32_t)1 << (bits - 1));
-  
-  if (mask & source)
-  { // case of negative number
-    *target = -(int32_t)(source - mask);
-  }
+
+  if ( bits > 1 )
+    mask = ( ( uint32_t ) 1 << ( bits - 1 ) );
+
+  if ( mask & source )
+    {
+      // case of negative number
+      *target = - ( int32_t ) ( source - mask );
+    }
   else
-    *target = (int32_t)(source);
+    *target = ( int32_t ) ( source );
   return 0;
 }
 
@@ -190,6 +191,15 @@ char * bufr_adjust_string ( char *s )
   return s;
 }
 
+int is_a_delayed_descriptor ( struct bufr_descriptor *d )
+{
+  if ( d->f == 0 &&
+       d->x == 31 &&
+       ( d->y == 1 || d->y == 2 || d->y == 11 || d->y == 12 ) )
+    return 1;
+  else
+    return 0;
+}
 
 int init_bufr ( struct bufr *b, size_t l )
 {

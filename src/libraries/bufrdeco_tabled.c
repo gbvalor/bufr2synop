@@ -107,9 +107,13 @@ int bufrdeco_tabled_get_descritors_array(struct bufr_sequence *s, struct bufr *b
     {
       v = strtoul(&(td->l[i+j][11]), &c, 10);
       uint32_t_to_descriptor ( &(s->lseq[j]), v );
+      if (b->sec3.compressed && is_a_delayed_descriptor( &(s->lseq[j])))
+      {
+	 sprintf(b->error, "bufrdeco_tabled_get_descritors_array(): Found a delayed descriptor in a compressed bufr\n");
+	 return 1;
+      }
       (s->ndesc)++; 
     }
-
   // s->sons are not set here
   return 0;
 }

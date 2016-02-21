@@ -496,5 +496,6 @@ void bufr_print_subset_sequence_data(struct bufr_subset_sequence_data *s);
 int bufrdeco_parse_f2_descriptor (struct bufr_subset_sequence_data *s, struct bufr_descriptor *d, struct bufr *b);
 int bufr_find_tableb_index(size_t *index, struct bufr_tableb *tb, const char *key);
 int get_table_b_reference_from_uint32_t(int32_t *target, uint8_t bits, uint32_t source);
+int is_a_delayed_descriptor ( struct bufr_descriptor *d );
 
 #endif  // from ifndef BUFRDECO_H
