@@ -26,7 +26,21 @@
 const char DEFAULT_BUFRTABLES_DIR1[] = "/usr/local/lib/bufrtables/";
 const char DEFAULT_BUFRTABLES_DIR2[] = "/usr/lib/bufrtables/";
 
+/*!
+  \fn int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
+  \brief Read bufr file and does preliminary and first decode pass
+  \param b pointer to struct \ref bufr
+  \param filename complete path of BUFR file
+  \param error string where to explain error if nedeed
 
+  This function does the folowing tasks:
+  - Read the file and checks the marks at the begining and end to see wheter is a BUFR file
+  - Init the structs and allocate the needed memory
+  - Splits and parse the BUFR sections (without expanding descriptors nor parsing data)
+  - Reads the needed Table files and store them in memory.
+
+  Returns 0 if all is OK, 1 otherwise
+ */
 int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
 {
   int aux;
