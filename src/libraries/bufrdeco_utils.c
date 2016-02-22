@@ -25,9 +25,20 @@
 
 uint8_t bitf[8] = {0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01};
 
+/*!
+  \fn size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
+  \brief Get a string from an array of bits 
+  \param target string as result
+  \param has_data Output flags to check whether is missing data. If 0 then data is missing, othewise has data
+  \param source array of uint8_t elements. Most significant bit of first element is the bit offest reference
+  \param bit_offset Bit offset 
+  \param bit_length Lenght (in bits) for the chunck to extract
+  
+  If returns the amount of bits readed. 0 if problems. It also update bits_offset with the new bits.
+*/
 size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
 {
-  int i, j;
+  size_t i, j;
   size_t r, d, nc;
   uint8_t *c;
 
@@ -59,6 +70,17 @@ size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source
   return bit_length;
 }
 
+/*!
+  \fn size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
+  \brief Read bits from an array of uint8_t and set them as an uint32_t 
+  \param target uint32_t pointer where to set the result
+  \param has_data Output flags to check whether is missing data. If 0 then data is missing, othewise has data
+  \param source array of uint8_t elements. Most significant bit of first element is the bit offset reference
+  \param bit_offset Bit offset 
+  \param bit_length Lenght (in bits) for the chunck to extract
+
+  If returns the amount of bits readed. 0 if problems. It also update bits_offset with the new bits.
+*/
 size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
 {
   int i;
@@ -88,6 +110,15 @@ size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *sour
   return bit_length;
 }
 
+/*!
+ \fn int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_t source )
+ \brief Get an int32_t from bits according with bufr criteria to change the reference of a descritor. Most significant bit in source is sign
+ \param target int32_t as result
+ \param bits number of bits to consider
+ \param source uint32_T with the data to transform 
+ 
+ If success return 0, 1 otherwise
+*/
 // most significant of bits is the sign
 int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_t source )
 {
@@ -191,6 +222,13 @@ char * bufr_adjust_string ( char *s )
   return s;
 }
 
+/*!
+  \fn int is_a_delayed_descriptor ( struct bufr_descriptor *d )
+  \brief check if a descriptor is a delayed descriptor
+  \param d pointer to a struct \bufr_descriptor to check
+  
+  If is a delayed desccriptor return 1, 0 otherwise.
+*/
 int is_a_delayed_descriptor ( struct bufr_descriptor *d )
 {
   if ( d->f == 0 &&
@@ -201,6 +239,9 @@ int is_a_delayed_descriptor ( struct bufr_descriptor *d )
     return 0;
 }
 
+/*!
+
+*/
 int init_bufr ( struct bufr *b, size_t l )
 {
   memset ( b, 0, sizeof ( struct bufr ) );
@@ -223,6 +264,9 @@ int init_bufr ( struct bufr *b, size_t l )
   return 0;
 }
 
+/*!
+ 
+*/
 int clean_bufr ( struct bufr *b )
 {
   if ( b->sec4.allocated > 0 &&  b->sec4.raw != NULL )

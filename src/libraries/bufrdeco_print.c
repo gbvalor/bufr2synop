@@ -95,7 +95,9 @@ void print_sec4_info ( struct bufr *b )
   printf ( "Sec4 length:           %5u\n", b->sec4.length );
 }
 
-
+/*!
+  \fn int bufr_print_tree_recursive ( struct bufr *b, struct bufr_sequence *seq )
+*/ 
 int bufr_print_tree_recursive ( struct bufr *b, struct bufr_sequence *seq )
 {
   size_t i, j;
@@ -142,11 +144,11 @@ void bufr_print_tree ( struct bufr *b )
 };
 
 
-void bufr_print_atom_data_stdout (struct bufr_atom_data *a )
+void bufr_print_atom_data_stdout ( struct bufr_atom_data *a )
 {
   char aux[256];
-  bufr_print_atom_data(aux, a);
-  printf("%s\n",aux);
+  bufr_print_atom_data ( aux, a );
+  printf ( "%s\n",aux );
 }
 
 char * bufr_print_atom_data ( char *target, struct bufr_atom_data *a )
@@ -160,36 +162,36 @@ char * bufr_print_atom_data ( char *target, struct bufr_atom_data *a )
   strcpy ( aux, a->unit );
   aux[20] = '\0';
   c += sprintf ( c, "%-20s", aux );
-  if (a->mask & DESCRIPTOR_VALUE_MISSING)
-    c += sprintf (c, "%+17s", "MISSING VALUE");
+  if ( a->mask & DESCRIPTOR_VALUE_MISSING )
+    c += sprintf ( c, "%+17s", "MISSING VALUE" );
   else
-  { 
-    if (a->mask & DESCRIPTOR_HAVE_STRING_VALUE)
     {
-      strcpy(aux, a->cval);
-      aux[56] = '\0';
-      c += sprintf(c, "                  ");
-      c += sprintf(c, "%s", aux);                 
+      if ( a->mask & DESCRIPTOR_HAVE_STRING_VALUE )
+        {
+          strcpy ( aux, a->cval );
+          aux[56] = '\0';
+          c += sprintf ( c, "                  " );
+          c += sprintf ( c, "%s", aux );
+        }
+      else if ( a->mask & DESCRIPTOR_HAVE_CODE_TABLE_STRING )
+        {
+          strcpy ( aux, a->ctable );
+          aux[56] = '\0';
+          c += sprintf ( c, "%17u ", ( uint32_t ) a->val );
+          c += sprintf ( c, "%s", aux );
+        }
+      else if ( a->mask & DESCRIPTOR_HAVE_FLAG_TABLE_STRING )
+        {
+          strcpy ( aux, a->ctable );
+          aux[56] = '\0';
+          c += sprintf ( c, "       0x%08X ", ( uint32_t ) a->val );
+          c += sprintf ( c, "%s", aux );
+        }
+      else
+        {
+          c += sprintf ( c, "%17.10e ", a->val );
+        }
     }
-    else if (a->mask & DESCRIPTOR_HAVE_CODE_TABLE_STRING)
-    {
-      strcpy(aux, a->ctable);
-      aux[56] = '\0';
-      c += sprintf ( c, "%17u ", (uint32_t) a->val );
-      c += sprintf(c, "%s", aux);                 
-    }
-    else if (a->mask & DESCRIPTOR_HAVE_FLAG_TABLE_STRING)
-    {
-      strcpy(aux, a->ctable);
-      aux[56] = '\0';
-      c += sprintf ( c, "       0x%08X ", (uint32_t) a->val );
-      c += sprintf(c, "%s", aux);                 
-    }
-    else
-    {
-      c += sprintf ( c, "%17.10e ", a->val );
-    }
-  }
   return target;
 }
 
@@ -199,7 +201,7 @@ void bufr_print_subset_sequence_data ( struct bufr_subset_sequence_data *s )
   char aux[1024];
   for ( i = 0; i < s->nd ; i++ )
     {
-       printf("%5lu:  %s\n", i, bufr_print_atom_data ( aux, &s->sequence[i] ));
+      printf ( "%5lu:  %s\n", i, bufr_print_atom_data ( aux, &s->sequence[i] ) );
     }
 }
 
