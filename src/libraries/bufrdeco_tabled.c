@@ -22,19 +22,20 @@
  \brief file with the code to read table D data (code and flag tables)
  */
 #include "bufrdeco.h"
-int bufr_read_tabled(struct bufr_tabled *td, char *error)
+int bufr_read_tabled ( struct bufr_tabled *td, char *error )
 {
-  char *c;
+  char aux[8], *c;
   FILE *t;
+  size_t ix = 0;
   size_t i = 0;
 
-  if ( td->path == NULL)
+  if ( td->path == NULL )
     return 1;
-  
+
   td->nlines = 0;
   if ( ( t = fopen ( td->path, "r" ) ) == NULL )
     {
-      sprintf ( error,"Unable to open table D file '%s'\n", td->path);
+      sprintf ( error,"Unable to open table D file '%s'\n", td->path );
       return 1;
     }
 
@@ -43,6 +44,16 @@ int bufr_read_tabled(struct bufr_tabled *td, char *error)
       // supress the newline
       if ( ( c = strrchr ( td->l[i],'\n' ) ) != NULL )
         *c = '\0';
+      if ( td->l[i][1] != ' ' && td->l[i][2] != ' ' )
+        {
+          aux[0] = td->l[i][2];
+          aux[1] = td->l[i][3];
+          aux[2] = '\0';
+          ix = strtoul ( aux, &c, 10 );
+          if ( td->x_start[ix] == 0 )
+            td->x_start[ix] = i; // marc the start
+        }
+      ( td->num[ix] ) ++;
       i++;
     }
   fclose ( t );
@@ -50,42 +61,57 @@ int bufr_read_tabled(struct bufr_tabled *td, char *error)
   return 0;
 }
 
-int bufrdeco_tabled_get_descritors_array(struct bufr_sequence *s, struct bufr *b, const char *needle)
+int bufr_find_tabled_index ( size_t *index, struct bufr_tabled *td, const char *key )
+{
+  size_t i, i0;
+  size_t ix = 0;
+  char *c, aux[8];
+
+  aux[0] = key[1];
+  aux[1] = key[2];
+  aux[2] = '\0';
+  ix = strtoul ( aux, &c, 10 );
+  i0 = td->x_start[ix];
+  for ( i = i0 ; i < i0 + td->num[ix] ; i++ )
+    {
+      if ( td->l[i][1] != key[0] ||
+           td->l[i][2] != key[1] ||
+           td->l[i][3] != key[2] ||
+           td->l[i][4] != key[3] ||
+           td->l[i][5] != key[4] ||
+           td->l[i][6] != key[5] )
+        continue;
+      else
+        {
+          *index = i;
+          return 0;
+        }
+    }
+  return 1; // not found
+}
+
+
+int bufrdeco_tabled_get_descritors_array ( struct bufr_sequence *s, struct bufr *b, const char *key )
 {
   size_t i, j;
   uint32_t nv, v;
   char *c;
   struct bufr_tabled *td;
-  
+
   td = & ( b->table->d );
 
   // Reject wrong arguments
-  if ( s == NULL || b == NULL || needle == NULL )
-  {
-    sprintf(b->error,"bufrdeco_tabled_get_descritors_array(): Wrong entry arguments\n");
-    return 1;
-  }
-  
-  // search source descriptor on data
-  // Find first line for descriptor
-  for ( i = 0; i <  td->nlines ; i++ )
+  if ( s == NULL || b == NULL || key == NULL )
     {
-      if ( td->l[i][0] != ' ' ||
-           td->l[i][1] != needle[0] ||
-           td->l[i][2] != needle[1] ||
-           td->l[i][3] != needle[2] ||
-           td->l[i][4] != needle[3] ||
-           td->l[i][5] != needle[4] ||
-           td->l[i][6] != needle[5] )
-        continue;
-      else
-        break;
+      sprintf ( b->error,"bufrdeco_tabled_get_descritors_array(): Wrong entry arguments\n" );
+      return 1;
     }
 
-  if ( i == td->nlines )
+  // here the calling b item learn where to find table C line
+
+  if ( bufr_find_tabled_index ( &i, td, key ) )
     {
-      sprintf(b->error, "bufrdeco_tabled_get_descritors_array(): Cannot find key '%s' in provided table D\n",
-	needle);
+      sprintf ( b->error, "bufrdeco_tabled_val(): descriptor '%s' not found in table D\n", key );
       return 1; // descritor not found
     }
 
@@ -93,26 +119,26 @@ int bufrdeco_tabled_get_descritors_array(struct bufr_sequence *s, struct bufr *b
   if ( td->l[i][7] == ' ' )
     nv = strtoul ( &td->l[i][7], &c, 10 );
   else
-  {
-    sprintf(b->error, "bufrdeco_tabled_get_descritors_array(): Error when parsing provided table D\n");
-    return 1;
-  }
+    {
+      sprintf ( b->error, "bufrdeco_tabled_get_descritors_array(): Error when parsing provided table D\n" );
+      return 1;
+    }
   // s->level must be set by caller
   // s->father must be set by caller
 
   s->ndesc = 0;
-  
+
   // read all descriptors
-  for ( j = 0; j < nv && (i + j) < td->nlines ; j++ )
+  for ( j = 0; j < nv && ( i + j ) < td->nlines ; j++ )
     {
-      v = strtoul(&(td->l[i+j][11]), &c, 10);
-      uint32_t_to_descriptor ( &(s->lseq[j]), v );
-      if (b->sec3.compressed && is_a_delayed_descriptor( &(s->lseq[j])))
-      {
-	 sprintf(b->error, "bufrdeco_tabled_get_descritors_array(): Found a delayed descriptor in a compressed bufr\n");
-	 return 1;
-      }
-      (s->ndesc)++; 
+      v = strtoul ( & ( td->l[i+j][11] ), &c, 10 );
+      uint32_t_to_descriptor ( & ( s->lseq[j] ), v );
+      if ( b->sec3.compressed && is_a_delayed_descriptor ( & ( s->lseq[j] ) ) )
+        {
+          sprintf ( b->error, "bufrdeco_tabled_get_descritors_array(): Found a delayed descriptor in a compressed bufr\n" );
+          return 1;
+        }
+      ( s->ndesc ) ++;
     }
   // s->sons are not set here
   return 0;

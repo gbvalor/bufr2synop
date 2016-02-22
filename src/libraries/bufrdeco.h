@@ -404,6 +404,8 @@ struct bufr_tableb_decoded_item
   int32_t reference_ori; // reference as readed from table b
   size_t nbits; // bits
   size_t nbits_ori; // bits as readed from table bS
+  size_t tablec_ref; // item to point table c, if any
+  size_t tabled_ref; // item to point table d, if any
 };
 
 struct bufr_tableb
@@ -411,7 +413,9 @@ struct bufr_tableb
   char path[256];
   size_t nlines;
   size_t x_start[64]; /*!< Index of first x */
+  uint8_t y_ref[64][256]; /*!< index of y since first x*/ 
   size_t num[64]; /*!< Amonut of items for x */
+  
   struct bufr_tableb_decoded_item item[BUFR_MAXLINES_TABLEB];
 };
 
@@ -419,6 +423,8 @@ struct bufr_tablec
 {
   char path[256];
   size_t nlines;
+  size_t x_start[64]; /*!< Index of first x */
+  size_t num[64]; /*!< Amonut of lines for x */
   char l[BUFR_MAXLINES_TABLEC][96];
 };
 
@@ -426,6 +432,8 @@ struct bufr_tabled
 {
   char path[256];
   size_t nlines;
+  size_t x_start[64]; /*!< Index of first x */
+  size_t num[64]; /*!< Amonut of lines for x */
   char l[BUFR_MAXLINES_TABLED][128];
 };
 
@@ -477,13 +485,13 @@ int uint32_t_to_descriptor ( struct bufr_descriptor *d, uint32_t id );
 char * bufr_adjust_string ( char *s );
 char * bufr_charray_to_string ( char *s, char *buf, size_t size );
 int get_ecmwf_tablenames ( struct bufr *b, const char *bufrtables_dir );
-char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec *tc,
+char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec *tc, size_t *index,
                                       struct bufr_descriptor *d, uint32_t ival );
 char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d,
                                      uint64_t ival );
 int bufrdeco_tabled_get_descritors_array ( struct bufr_sequence *s, struct bufr *b,
     const char *key );
-int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *needle );
+int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_descriptor *d );
 int bufr_parse_tree_deep ( struct bufr *b, struct bufr_sequence *father,  const char *key );
 int bufr_parse_tree ( struct bufr *b );
 void bufr_print_tree ( struct bufr *b );

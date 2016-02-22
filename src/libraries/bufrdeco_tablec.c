@@ -91,7 +91,8 @@ int get_ecmwf_tablenames ( struct bufr *b, const char *bufrtables_dir )
 
 int bufr_read_tablec(struct bufr_tablec *tc, char *error)
 {
-  char *c;
+  char aux[8], *c;
+  size_t startx = 0;
   FILE *t;
   size_t i = 0;
 
@@ -110,6 +111,16 @@ int bufr_read_tablec(struct bufr_tablec *tc, char *error)
       // supress the newline
       if ( ( c = strrchr ( tc->l[i],'\n' ) ) != NULL )
         *c = '\0';
+      if (tc->l[i][1] != ' ' && tc->l[i][2] != ' ')
+      {
+	aux[0] = tc->l[i][1];
+	aux[1] = tc->l[i][2];
+	aux[2] = '\0';
+	startx = strtoul(aux, &c, 10);
+        if ( tc->x_start[startx] == 0 )
+          tc->x_start[startx] = i; // marc the start
+      }
+      ( tc->num[startx] ) ++;
       i++;
     }
   fclose ( t );
@@ -117,6 +128,34 @@ int bufr_read_tablec(struct bufr_tablec *tc, char *error)
   return 0;
 }
 
+int bufr_find_tablec_index ( size_t *index, struct bufr_tablec *tc, const char *key )
+{
+  size_t i, i0;
+  size_t x = 0;
+  char *c, aux[8];
+
+  aux[0] = key[1];
+  aux[1] = key[2];
+  aux[2] = '\0';
+  x = strtoul(aux, &c, 10);
+  i0 = tc->x_start[x];
+  for ( i = i0 ; i < i0 + tc->num[x] ; i++ )
+    {
+      if ( tc->l[i][0] != key[0] ||
+           tc->l[i][1] != key[1] ||
+           tc->l[i][2] != key[2] ||
+           tc->l[i][3] != key[3] ||
+           tc->l[i][4] != key[4] ||
+           tc->l[i][5] != key[5] )
+        continue;
+      else
+      {
+	*index = i;
+	return 0;
+      }
+    }
+  return 1; // not found
+}
 
 
 /*!
@@ -125,38 +164,29 @@ int bufr_read_tablec(struct bufr_tablec *tc, char *error)
   \param expl string with resulting meaning
   \param dim numero máximo de caracteres de la cadena resultante
   \param tc pointer to a \ref bufr_tablec struct 
+  \param index element to read if is not 0
   \param d pointer to the source descriptor
   \param ival integer value for the descriptor
 
   If something went wrong, it returns NULL . Otherwise it returns \a expl
 */
-char * bufrdeco_explained_table_val (char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d, uint32_t ival)
+char * bufrdeco_explained_table_val (char *expl, size_t dim, struct bufr_tablec *tc, size_t *index, struct bufr_descriptor *d, uint32_t ival)
 {
   char *c;
   uint32_t nv, v,  nl;
-  size_t i, j;
+  size_t  i, j;
 
-  // Find first line for descriptor
-  for ( i = 0; i <  tc->nlines ; i++ )
-    {
-      if ( tc->l[i][0] != d->c[0] ||
-           tc->l[i][1] != d->c[1] ||
-           tc->l[i][2] != d->c[2] ||
-           tc->l[i][3] != d->c[3] ||
-           tc->l[i][4] != d->c[4] ||
-           tc->l[i][5] != d->c[5] )
-        continue;
-      else
-        break;
+  if (*index == 0)
+  {
+   // here the calling b item learn where to find table C line
+   if ( bufr_find_tablec_index ( index, tc, d->c ) )
+    { 
+      //sprintf ( b->error, "bufrdeco_explained_table_val(): descriptor '%s' not found in table D\n", d->c );
+      return NULL; // descritor not found
     }
-
-  if ( i == tc->nlines)
-    {
-      //printf("Descriptor %s not found\n", d->c);
-      return NULL;
-    }
-  //printf("Descriptor %s on linea %d\n", d->c, i);
-
+  }
+  
+  i = *index; 
   // reads the amount of possible values
   if ( tc->l[i][7] != ' ' )
     nv = strtoul ( &tc->l[i][7], &c, 10 );

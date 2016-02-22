@@ -66,8 +66,8 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
       strcpy ( tb->item[i].key, desc.c ); // key
       if ( tb->x_start[desc.x] == 0 )
         tb->x_start[desc.x] = i; // marc the start
-      ( tb->num[desc.x] ) ++;
-
+      tb->y_ref[desc.x][desc.y] = i - tb->x_start[desc.x]; // marc the position from start of first x
+      
       // detailed name
       bufr_charray_to_string ( tb->item[i].name, &l[8], 64 );
       bufr_adjust_string ( tb->item[i].name ); // supress trailing blanks
@@ -155,7 +155,7 @@ int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *
   return 1; // not found
 }
 
-int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *key )
+int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_descriptor *d)
 {
   size_t i, nbits = 0;
   char *c;
@@ -167,16 +167,12 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *key )
   tb = & ( b->table->b );
 
   // Reject wrong arguments
-  if ( a == NULL || b == NULL || key == NULL )
+  if ( a == NULL || b == NULL || d == NULL )
     return 1;
 
-  if ( bufr_find_tableb_index ( &i, tb, key ) )
-    {
-      sprintf ( b->error, "bufrdeco_tableb_val(): descriptor '%s' not found in table B\n", key );
-      return 1; // descritor not found
-    }
-  ix = strtoul ( key, &c, 10 );
-  uint32_t_to_descriptor ( & ( a->desc ), ix );
+  i = tb->x_start[d->x] + tb->y_ref[d->x][d->y];
+  
+  memcpy(&(a->desc), d, sizeof(struct bufr_descriptor));
   a->mask = 0;
   strcpy ( a->name, tb->item[i].name );
   strcpy ( a->unit, tb->item[i].unit );
@@ -188,13 +184,13 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *key )
       // The descriptor operator 2 03 YYY is on action
       if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
         {
-          sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get bits from '%s'\n", key );
+          sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get bits from '%s'\n", d->c );
           return 1;
         }
       // Change the reference value
       if ( get_table_b_reference_from_uint32_t ( & ( tb->item[i].reference ), b->state.changing_reference, ival ) )
         {
-          sprintf ( b->error, "bufrdeco_tableb_val(): Cannot change reference in 2 03 YYY operator for '%s'\n", key );
+          sprintf ( b->error, "bufrdeco_tableb_val(): Cannot change reference in 2 03 YYY operator for '%s'\n", d->c );
           return 1;
         }
       strcpy ( a->unit, "NEW REFERENCE" );
@@ -209,7 +205,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *key )
     {
       if ( get_bits_as_char_array ( a->cval, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
         {
-          sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get uchars from '%s'\n", key );
+          sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get uchars from '%s'\n", d->c );
           return 1;
         }
       if ( has_data == 0 )
@@ -222,7 +218,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *key )
            a->desc.x != 31 &&  // Data description qualifier has not associated bits itself
            get_bits_as_uint32_t ( &a->associated, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), b->state.assoc_bits ) == 0 )
         {
-          sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get associated bits from '%s'\n", key );
+          sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get associated bits from '%s'\n", d->c );
           return 1;
         }
       else
@@ -232,7 +228,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *key )
 
       if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
         {
-          sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get bits from '%s'\n", key );
+          sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get bits from '%s'\n", d->c );
           return 1;
         }
     }
@@ -262,7 +258,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *key )
         {
           ival = ( uint32_t ) ( a->val + 0.5 );
           a->mask |= DESCRIPTOR_IS_CODE_TABLE;
-          if ( bufrdeco_explained_table_val ( a->ctable, 256, & ( b->table->c ), & ( a->desc ), ival ) != NULL )
+          if ( bufrdeco_explained_table_val ( a->ctable, 256, & ( b->table->c ), &(tb->item[i].tablec_ref), & ( a->desc ), ival ) != NULL )
             {
               a->mask |= DESCRIPTOR_HAVE_CODE_TABLE_STRING;
             }
@@ -271,6 +267,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *key )
         {
           ival = ( uint32_t ) ( a->val + 0.5 );
           a->mask |= DESCRIPTOR_IS_FLAG_TABLE;
+	  
           if ( bufrdeco_explained_flag_val ( a->ctable, 256, & ( b->table->c ), & ( a->desc ), ival ) != NULL )
             {
               a->mask |= DESCRIPTOR_HAVE_FLAG_TABLE_STRING;

@@ -163,7 +163,9 @@ char * bufr_print_atom_data ( char *target, struct bufr_atom_data *a )
   aux[20] = '\0';
   c += sprintf ( c, "%-20s", aux );
   if ( a->mask & DESCRIPTOR_VALUE_MISSING )
-    c += sprintf ( c, "%+17s", "MISSING VALUE" );
+  {
+    c += sprintf ( c, "%17s", "MISSING" );
+  }
   else
     {
       if ( a->mask & DESCRIPTOR_HAVE_STRING_VALUE )
@@ -173,7 +175,8 @@ char * bufr_print_atom_data ( char *target, struct bufr_atom_data *a )
           c += sprintf ( c, "                  " );
           c += sprintf ( c, "%s", aux );
         }
-      else if ( a->mask & DESCRIPTOR_HAVE_CODE_TABLE_STRING )
+      else if ( a->mask & DESCRIPTOR_HAVE_CODE_TABLE_STRING 
+	|| strstr ( a->unit, "CODE TABLE" ) == a->unit  )
         {
           strcpy ( aux, a->ctable );
           aux[56] = '\0';
