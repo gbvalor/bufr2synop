@@ -99,11 +99,13 @@
 */
 #define NMAXSEQ (16384)
 
+#define BUFR_NMAXSEQ (2 * 16384)
+
 /*!
-   \def NMAXSEQ_LAYER
-   \brief Maximum nuber of unexpanded descriptors in a struct \ref bufr_unexpanded_sequence_layer
+   \def NMAXSEQ_DESCRIPTORS
+   \brief Maximum nuber of unexpanded descriptors in a struct \ref bufr_sequence
 */
-#define NMAXSEQ_LAYER (256)
+#define NMAXSEQ_DESCRIPTORS (256)
 
 /*!
   \def DESCRIPTOR_VALUE_MISSING
@@ -172,6 +174,13 @@
 */
 #define BUFR_LEN_UNEXPANDED_DESCRIPTOR (512)
 
+
+/*!
+  \def BUFR_MAX_EXPANDED_SEQUENCES
+  \brief Max amount of unexpanded layers in a struct \ref bufr_unexpanded_layers
+*/
+#define BUFR_MAX_EXPANDED_SEQUENCES (128)
+
 /*!
   \def BUFR_LEN_SEC3
   \brief Max length in bytes for a sec3
@@ -195,6 +204,19 @@ struct bufr_descriptor
 };
 
 /*!
+  \struct bufr_replicator
+  \brief store the information when parsing related to replicators
+*/
+struct bufr_replicator
+{
+  struct bufr_sequence *s; /*!< struct to which this replicator struct belongs */
+  size_t ixrep; /*!< index in a sequence of replicator descriptor */
+  size_t ixdel; /*!< index in a sequence of a delayed replicator, if not then is the same that ixrep */
+  size_t ndesc; /*!< amount of descritptors in sequence affected by replicator */
+  size_t nloops; /*!< amount of loops to do */
+};
+
+/*!
   \struct bufr_atom_data
   \brief Contains all the information for a single descriptor in a expanded squence
 */
@@ -205,59 +227,61 @@ struct bufr_atom_data
   char name[92]; /*!< String with the name of descriptor */
   char unit[32]; /*!< String with the name of units */
   double val; /*!< Value for the bufr descriptor */
+  uint32_t associated; /*!< value for associated field, if any */
   char cval[128]; /*!< String value for the bufr descriptor */
   char ctable[256]; /*!< Explained meaning for a code table */
 };
 
 /*!
-  \fn  struct bufr_layer_expanding_state
+  \fn  struct bufr_decoding_data_state
   \brief stores the state when expanding a sequence.
-  
-  When expanding,  every level is managed by a  \ref bufr_layer_expanding_state  
+
 */
-struct bufr_layer_expanding_state
+struct bufr_decoding_data_state
 {
-  size_t level; /*!< Level to which this struct belongs to */
   size_t subset; /*!< Subset sequence index being parsed */
-  struct bufr_unexpanded_sequence_layer *layer; /*!< pointer to the current layer being parsed in the level */
-  struct bufr_layer_expanding_state *son; /*!< pointer to the current son */
-  struct bufr_layer_expanding_state *father; /*!< pointer to the father. NULL when level = 0 */
-  size_t current; /*!< current descriptor from a layer in parsing state */
-  struct bufr_descriptor *rep; /*! pointer to the replication descriptor in the layer affecting current. 
-                                          NULL otherwise */
-  struct bufr_descriptor *del; /*! pointer to the delayed replication descriptor in the layer affecting current. 
-                                          NULL otherwise */
-  size_t iteration; /*!< current iteration if the descriptor is afected by a replication descriptor. 0 othewise */
-  size_t last_iteration; /*!< last iteration if the descriptor is afected by a replication descriptor. 0 othewise */
-  size_t bit_offset; /*!< first data bit offset of current since the begining of data in byte 4 in SEC 4 
-                          When finished a layer this date have to be passed and update the father struct.
-                          Also when the control is passed to a son, it have to set the current value in son struct 
-                          */
+  size_t bit_offset; /*!< first data bit offset of current since the begining of data in byte 4 in SEC 4 */
+  int8_t added_bit_length; /*!< Current aditional bit_length that can be changed by descriptor 2 01 YYY */
+  int8_t added_scale; /*!< Current aditional scale factor that can be changed by descriptor 2 02 YYY */
+  int32_t added_reference; /*!< Current aditional reference that can be changed bu descriptor 2 03 YYY */
+  uint8_t assoc_bits; /*!< number of associated bits */
+  uint8_t changing_reference; /*!< Changing reference as descriptor 2 03 YYY */
 };
 
 /*!
-  \fn struct bufr_unexpanded_sequence_layer
+  \fn struct bufr_sequence
   \brief Stores an unexpanded sequence of descriptors
-  
+
   A sequence layer is needed when parsing expanded descriptor sec3 and sec4
 
-  First bufr_unexpanded_sequence_layer is the sequence of descriptors in sec3 after
-  byte 8. This is a bufr_unexpanded_sequence_layer in level 0.
+  First bufr_sequence is the sequence of descriptors in sec3 after
+  byte 8. This is a bufr_sequence in level 0.
 
   When a sequence descriptor is found in a layer, the sequence entries found in table D
-  form this descriptor is a son bufr_unexpanded_sequence_layer. This son has then a father
+  form this descriptor is a son bufr_sequence. This son has then a father
   and also can have one or more sons. The index level is incremented by one every step it
   go into decendents.
 
 */
-struct bufr_unexpanded_sequence_layer
+struct bufr_sequence
 {
+  char key[8]; /*!< the key */
   size_t level; /*!< The recursion level. descriptors in sec3 are level 0 */
-  struct bufr_unexpanded_sequence_layer *father; /*!< Pointer to the father struct. It should be NULL if level = 0 */
+  struct bufr_sequence *father; /*!< Pointer to the father struct. It should be NULL if level = 0 */
   size_t ndesc; /*!< Number of unexpanded descriptor of a layer */
-  struct bufr_descriptor lseq[NMAXSEQ_LAYER]; /*!< Array of unexpanded descriptors */
-  struct bufr_unexpanded_sequence_layer *sons[NMAXSEQ_LAYER]; /*!< Array of pointers to sons. It must be NULL
+  struct bufr_descriptor lseq[NMAXSEQ_DESCRIPTORS]; /*!< Array of unexpanded descriptors */
+  struct bufr_sequence *sons[NMAXSEQ_DESCRIPTORS]; /*!< Array of pointers to sons. It must be NULL
    except for sequence descriptors.  */
+};
+
+/*!
+ \struct bufr_expanded_tree
+ \brief Array of structs \ref bufr_sequence
+*/
+struct bufr_expanded_tree
+{
+  size_t nseq; /*!< current number of structs */
+  struct bufr_sequence seq[BUFR_MAX_EXPANDED_SEQUENCES]; /*!< array of structs */
 };
 
 /*!
@@ -267,7 +291,7 @@ struct bufr_unexpanded_sequence_layer
 struct bufr_subset_sequence_data
 {
   size_t nd; /*!< number of current amount of data in sequence */
-  struct bufr_atom_data sequence[NMAXSEQ]; /*!< the array of data associated to a expanded sequence */
+  struct bufr_atom_data sequence[BUFR_NMAXSEQ]; /*!< the array of data associated to a expanded sequence */
 };
 
 struct bufr_sec0
@@ -366,11 +390,29 @@ struct bufr_sec4
   uint8_t *raw; /*!< Pointer to a raw data for sec4 as in original BUFR file */
 };
 
+struct bufr_tableb_decoded_item
+{
+  uint8_t changed; // flag. If 0 = not changed from table B. If 1 Changed */
+  uint8_t x; // x value of descriptor
+  uint8_t y; // y value of descriptor
+  char key[8]; // c value of descriptor
+  char name[64]; // name
+  char unit[24]; // unit
+  int32_t scale; // escale
+  int32_t scale_ori; // escale as readed from table b
+  int32_t reference; // reference
+  int32_t reference_ori; // reference as readed from table b
+  size_t nbits; // bits
+  size_t nbits_ori; // bits as readed from table bS
+};
+
 struct bufr_tableb
 {
   char path[256];
   size_t nlines;
-  char l[BUFR_MAXLINES_TABLEB][180];
+  size_t x_start[64]; /*!< Index of first x */
+  size_t num[64]; /*!< Amonut of items for x */
+  struct bufr_tableb_decoded_item item[BUFR_MAXLINES_TABLEB];
 };
 
 struct bufr_tablec
@@ -403,6 +445,9 @@ struct bufr
   struct bufr_sec3 sec3;
   struct bufr_sec4 sec4;
   struct bufr_tables *table;
+  struct bufr_expanded_tree *tree;
+  struct bufr_decoding_data_state state;
+  char error[1024];
 };
 
 extern const char DEFAULT_BUFRTABLES_DIR1[];
@@ -423,10 +468,34 @@ int bufr_read_tabled ( struct bufr_tabled *td, char *error );
 // Utililies functions
 uint32_t two_bytes_to_uint32 ( const uint8_t *source );
 uint32_t three_bytes_to_uint32 ( const uint8_t *source );
-size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *source, size_t *bit0_offset, size_t bit_length );
+size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset,
+                              size_t bit_length );
+size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset,
+                                   size_t bit_length );
 int two_bytes_to_descriptor ( struct bufr_descriptor *d, const uint8_t *source );
 int uint32_t_to_descriptor ( struct bufr_descriptor *d, uint32_t id );
 char * bufr_adjust_string ( char *s );
 char * bufr_charray_to_string ( char *s, char *buf, size_t size );
 int get_ecmwf_tablenames ( struct bufr *b, const char *bufrtables_dir );
+char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec *tc,
+                                      struct bufr_descriptor *d, uint32_t ival );
+char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d,
+                                     uint64_t ival );
+int bufrdeco_tabled_get_descritors_array ( struct bufr_sequence *s, struct bufr *b,
+    const char *key );
+int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, char *needle );
+int bufr_parse_tree_deep ( struct bufr *b, struct bufr_sequence *father,  const char *key );
+int bufr_parse_tree ( struct bufr *b );
+void bufr_print_tree ( struct bufr *b );
+int bufr_decode_data_subset ( struct bufr_subset_sequence_data *s, struct bufr *b );
+int bufr_decode_replicated_subsequence ( struct bufr_subset_sequence_data *s,
+    struct bufr_replicator *r, struct bufr *b );
+char * bufr_print_atom_data ( char *target, struct bufr_atom_data *a );
+void bufr_print_atom_data_stdout (struct bufr_atom_data *a );
+void bufr_print_subset_sequence_data(struct bufr_subset_sequence_data *s);
+int bufrdeco_parse_f2_descriptor (struct bufr_subset_sequence_data *s, struct bufr_descriptor *d, struct bufr *b);
+int bufr_find_tableb_index(size_t *index, struct bufr_tableb *tb, const char *key);
+int get_table_b_reference_from_uint32_t(int32_t *target, uint8_t bits, uint32_t source);
+int is_a_delayed_descriptor ( struct bufr_descriptor *d );
+
 #endif  // from ifndef BUFRDECO_H

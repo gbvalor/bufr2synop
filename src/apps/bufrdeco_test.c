@@ -23,6 +23,7 @@
 #include "bufrdeco.h"
 
 struct bufr BUFR;
+struct bufr_subset_sequence_data SEQ;
 char ENTRADA[256];
 
 void print_usage ( void )
@@ -72,6 +73,8 @@ int read_args ( int _argc, char * _argv[] )
 
 int main ( int argc, char *argv[] )
 {
+  size_t subset;
+
   char error[256];
   if ( read_args ( argc, argv ) < 0 )
     exit ( EXIT_FAILURE );
@@ -83,11 +86,32 @@ int main ( int argc, char *argv[] )
       exit ( EXIT_FAILURE );
     }
 
-  print_sec0_info (&BUFR);
-  print_sec1_info (&BUFR);
-  print_sec3_info (&BUFR);
-  print_sec4_info (&BUFR);
-  printf("So far so good !!\n");
+  print_sec0_info ( &BUFR );
+  print_sec1_info ( &BUFR );
+  print_sec3_info ( &BUFR );
+  print_sec4_info ( &BUFR );
+
+  if ( bufr_parse_tree ( &BUFR ) )
+    {
+      printf ( "%s", BUFR.error );
+      clean_bufr ( &BUFR );
+      exit ( EXIT_FAILURE );
+    }
+
+  bufr_print_tree ( &BUFR );
+
+  for ( subset = 0; subset < BUFR.sec3.subsets ; subset++ )
+    {
+      if ( bufr_decode_data_subset ( &SEQ, &BUFR ) )
+        {
+          printf ( "%s", BUFR.error );
+          clean_bufr ( &BUFR );
+          exit ( EXIT_FAILURE );
+        }
+      bufr_print_subset_sequence_data(&SEQ);
+    }
+
+  printf ( "So far so good !!\n" );
   clean_bufr ( &BUFR );
 
   exit ( EXIT_SUCCESS );
