@@ -67,7 +67,7 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
       if ( tb->x_start[desc.x] == 0 )
         tb->x_start[desc.x] = i; // marc the start
       tb->y_ref[desc.x][desc.y] = i - tb->x_start[desc.x]; // marc the position from start of first x
-      
+
       // detailed name
       bufr_charray_to_string ( tb->item[i].name, &l[8], 64 );
       bufr_adjust_string ( tb->item[i].name ); // supress trailing blanks
@@ -155,7 +155,7 @@ int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *
   return 1; // not found
 }
 
-int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_descriptor *d)
+int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_descriptor *d )
 {
   size_t i, nbits = 0;
   uint32_t ival;
@@ -170,8 +170,8 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_
     return 1;
 
   i = tb->x_start[d->x] + tb->y_ref[d->x][d->y];
-  
-  memcpy(&(a->desc), d, sizeof(struct bufr_descriptor));
+
+  memcpy ( & ( a->desc ), d, sizeof ( struct bufr_descriptor ) );
   a->mask = 0;
   strcpy ( a->name, tb->item[i].name );
   strcpy ( a->unit, tb->item[i].unit );
@@ -208,56 +208,56 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_
           return 1;
         }
       if ( has_data == 0 )
+      {
         a->mask |= DESCRIPTOR_VALUE_MISSING;
+      }
+      else
+      {
+        a->mask |= DESCRIPTOR_HAVE_STRING_VALUE;
+      }
+      return 0;
+    }
+    
+  // is a numeric field, i.e, a data value, a flag code or a code
+  // Set associated bits
+  if ( b->state.assoc_bits &&
+       a->desc.x != 31 &&  // Data description qualifier has not associated bits itself
+       get_bits_as_uint32_t ( &a->associated, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), b->state.assoc_bits ) == 0 )
+    {
+      sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get associated bits from '%s'\n", d->c );
+      return 1;
     }
   else
     {
-      // is a numeric field, i.e, a data value, a flag code or a code
-      if ( b->state.assoc_bits &&
-           a->desc.x != 31 &&  // Data description qualifier has not associated bits itself
-           get_bits_as_uint32_t ( &a->associated, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), b->state.assoc_bits ) == 0 )
-        {
-          sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get associated bits from '%s'\n", d->c );
-          return 1;
-        }
-      else
-        {
-          a->associated = MISSING_INTEGER;
-        }
-
-      if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
-        {
-          sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get bits from '%s'\n", d->c );
-          return 1;
-        }
+      a->associated = MISSING_INTEGER;
     }
 
-  if ( has_data &&  strstr ( a->unit, "CCITTIA5" ) == NULL )
+  if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
     {
-      if ( strstr ( a->unit, "CODE TABLE" ) != a->unit &&  strstr ( a->unit,"FLAG" ) == a->unit )
+      sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get bits from '%s'\n", d->c );
+      return 1;
+    }
+
+  if ( has_data )
+    {
+      if ( strstr ( a->unit, "CODE TABLE" ) != a->unit &&  strstr ( a->unit,"FLAG" ) != a->unit )
         {
           escale += b->state.added_scale;
           reference += b->state.added_reference;
         }
+      // Get a numeric number
       if ( escale >= 0 && escale < 8 )
         a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10neg[ ( size_t ) escale];
       else if ( escale < 0 && escale > -8 )
         a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10pos[ ( size_t ) ( -escale )];
       else
         a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10 ( ( double ) ( -escale ) );
-    }
-  else
-    a->val = MISSING_REAL;
-
-  if ( a->val != MISSING_REAL )
-    {
-      if ( strstr ( a->unit, "CCITTIA5" ) != NULL )
-        a->mask |= DESCRIPTOR_HAVE_STRING_VALUE;
-      else if ( strstr ( a->unit, "CODE TABLE" ) == a->unit )
+      
+      if ( strstr ( a->unit, "CODE TABLE" ) == a->unit )
         {
           ival = ( uint32_t ) ( a->val + 0.5 );
           a->mask |= DESCRIPTOR_IS_CODE_TABLE;
-          if ( bufrdeco_explained_table_val ( a->ctable, 256, & ( b->table->c ), &(tb->item[i].tablec_ref), & ( a->desc ), ival ) != NULL )
+          if ( bufrdeco_explained_table_val ( a->ctable, 256, & ( b->table->c ), & ( tb->item[i].tablec_ref ), & ( a->desc ), ival ) != NULL )
             {
               a->mask |= DESCRIPTOR_HAVE_CODE_TABLE_STRING;
             }
@@ -266,15 +266,18 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_
         {
           ival = ( uint32_t ) ( a->val + 0.5 );
           a->mask |= DESCRIPTOR_IS_FLAG_TABLE;
-	  
+
           if ( bufrdeco_explained_flag_val ( a->ctable, 256, & ( b->table->c ), & ( a->desc ), ival ) != NULL )
             {
               a->mask |= DESCRIPTOR_HAVE_FLAG_TABLE_STRING;
             }
         }
     }
-  else
+  else 
+  {
+    a->val = MISSING_REAL;
     a->mask |= DESCRIPTOR_VALUE_MISSING;
+  }
 
   return 0;
 }

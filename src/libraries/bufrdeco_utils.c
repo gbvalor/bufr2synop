@@ -81,6 +81,8 @@ size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source
   if ( bit_length % 8 )
     return 0; // bit_length needs to be divisible by 8
 
+  //printf("bit_length=%lu\n", bit_length);
+    
   nc = bit_length / 8;
   i = ( *bit0_offset ) % 8;
   k = 8 - i;
@@ -94,8 +96,9 @@ size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source
           * ( target + j ) <<= i;
           * ( target + j ) |= ( ( * ( c + 1 ) & bitk[i - 1] ) >> k );
         }
-      if ( * ( target + j ) != -127 )
+      if ( * ( target + j ) != -1 )
         *has_data = 1;
+      //printf("%c", * ( target + j ) );
       *bit0_offset += 8; // update bit0_offset
     }
   * ( target + nc ) = '\0';
@@ -356,7 +359,7 @@ int clean_bufr ( struct bufr *b )
   return 0;
 }
 
-int bufr_init_subset_sequence_data (struct bufr_subset_sequence_data *ba)
+int bufrdeco_init_subset_sequence_data (struct bufrdeco_subset_sequence_data *ba)
 {
   if (ba->dim == 0)
   {
@@ -371,15 +374,15 @@ int bufr_init_subset_sequence_data (struct bufr_subset_sequence_data *ba)
   return 0;
 }
 
-int bufr_clean_subset_sequence_data (struct bufr_subset_sequence_data *ba)
+int bufrdeco_clean_subset_sequence_data (struct bufrdeco_subset_sequence_data *ba)
 {
   if (ba->sequence != NULL)
     free((void *) ba->sequence);
   memset(ba, 0, sizeof(struct bufr_subset_sequence_data));
-  return bufr_init_subset_sequence_data (ba);
+  return bufrdeco_init_subset_sequence_data (ba);
 }
 
-int bufr_free_subset_sequence_data (struct bufr_subset_sequence_data *ba)
+int bufrdeco_free_subset_sequence_data (struct bufrdeco_subset_sequence_data *ba)
 {
   if (ba->sequence != NULL)
     free((void *) ba->sequence);

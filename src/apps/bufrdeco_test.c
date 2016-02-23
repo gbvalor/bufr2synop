@@ -23,7 +23,7 @@
 #include "bufrdeco.h"
 
 struct bufr BUFR;
-struct bufr_subset_sequence_data SEQ;
+struct bufrdeco_subset_sequence_data SEQ;
 char ENTRADA[256];
 
 void print_usage ( void )
@@ -91,29 +91,29 @@ int main ( int argc, char *argv[] )
   print_sec3_info ( &BUFR );
   print_sec4_info ( &BUFR );
 
-  if ( bufr_parse_tree ( &BUFR ) )
+  if ( bufrdeco_parse_tree ( &BUFR ) )
     {
       printf ( "%s", BUFR.error );
       clean_bufr ( &BUFR );
       exit ( EXIT_FAILURE );
     }
 
-  bufr_print_tree ( &BUFR );
+  bufrdeco_print_tree ( &BUFR );
 
   for ( subset = 0; subset < BUFR.sec3.subsets ; subset++ )
     {
-      if ( bufr_decode_data_subset ( &SEQ, &BUFR ) )
+      if ( bufrdeco_decode_data_subset ( &SEQ, &BUFR ) )
         {
           printf ( "%s", BUFR.error );
           clean_bufr ( &BUFR );
           exit ( EXIT_FAILURE );
         }
-      bufr_print_subset_sequence_data(&SEQ);
+      bufrdeco_print_subset_sequence_data(&SEQ);
     }
 
   printf ( "So far so good !!\n" );
   clean_bufr ( &BUFR );
-
+  bufrdeco_free_subset_sequence_data(&SEQ);
   exit ( EXIT_SUCCESS );
 }
 

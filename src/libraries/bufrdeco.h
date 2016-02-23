@@ -289,12 +289,25 @@ struct bufr_expanded_tree
   \brief Contains all the information for a subset in a expanded squence
   This is a verion to use with bufrdeco parse library
 */
-struct bufreco_subset_sequence_data
+struct bufrdeco_subset_sequence_data
 {
   size_t dim; /*!< Amount of bufr_atom_data currently allocated */
   size_t nd; /*!< number of current amount of data used in sequence */
   struct bufr_atom_data *sequence; /*!< the array of data associated to a expanded sequence */
 };
+
+/*!
+  \struct bufr_subset_sequence_data
+  \brief Contains all the information for a subset in a expanded squence
+  This is a verion to use with ECMWF library
+*/
+struct bufr_subset_sequence_data
+{
+  size_t dim; /*!< Amount of bufr_atom_data currently allocated */
+  size_t nd; /*!< number of current amount of data used in sequence */
+  struct bufr_atom_data sequence[BUFR_NMAXSEQ]; /*!< the array of data associated to a expanded sequence */
+};
+
 
 struct bufr_sec0
 {
@@ -494,20 +507,20 @@ char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec 
 int bufrdeco_tabled_get_descritors_array ( struct bufr_sequence *s, struct bufr *b,
     const char *key );
 int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_descriptor *d );
-int bufr_parse_tree_deep ( struct bufr *b, struct bufr_sequence *father,  const char *key );
-int bufr_parse_tree ( struct bufr *b );
-void bufr_print_tree ( struct bufr *b );
-int bufr_decode_data_subset ( struct bufr_subset_sequence_data *s, struct bufr *b );
-int bufr_decode_replicated_subsequence ( struct bufr_subset_sequence_data *s,
+int bufrdeco_parse_tree_deep ( struct bufr *b, struct bufr_sequence *father,  const char *key );
+int bufrdeco_parse_tree ( struct bufr *b );
+void bufrdeco_print_tree ( struct bufr *b );
+int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struct bufr *b );
+int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *s,
     struct bufr_replicator *r, struct bufr *b );
-char * bufr_print_atom_data ( char *target, struct bufr_atom_data *a );
-void bufr_print_atom_data_stdout (struct bufr_atom_data *a );
-void bufr_print_subset_sequence_data(struct bufr_subset_sequence_data *s);
-int bufrdeco_parse_f2_descriptor (struct bufr_subset_sequence_data *s, struct bufr_descriptor *d, struct bufr *b);
+char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a );
+void bufrdeco_print_atom_data_stdout (struct bufr_atom_data *a );
+void bufrdeco_print_subset_sequence_data(struct bufrdeco_subset_sequence_data *s);
+int bufrdeco_parse_f2_descriptor (struct bufrdeco_subset_sequence_data *s, struct bufr_descriptor *d, struct bufr *b);
 int bufr_find_tableb_index(size_t *index, struct bufr_tableb *tb, const char *key);
 int get_table_b_reference_from_uint32_t(int32_t *target, uint8_t bits, uint32_t source);
 int is_a_delayed_descriptor ( struct bufr_descriptor *d );
-int bufr_init_subset_sequence_data (struct bufr_subset_sequence_data *ba);
-int bufr_clean_subset_sequence_data (struct bufr_subset_sequence_data *ba);
-int bufr_free_subset_sequence_data (struct bufr_subset_sequence_data *ba);
+int bufrdeco_init_subset_sequence_data (struct bufrdeco_subset_sequence_data *ba);
+int bufrdeco_clean_subset_sequence_data (struct bufrdeco_subset_sequence_data *ba);
+int bufrdeco_free_subset_sequence_data (struct bufrdeco_subset_sequence_data *ba);
 #endif  // from ifndef BUFRDECO_H

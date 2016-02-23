@@ -201,8 +201,6 @@ int main ( int argc, char *argv[] )
   int icode = 0, ktdlen, ktdexl;
   int current_ss;
 
-  bufr_init_subset_sequence_data (&SUBSET);
-
   if ( read_arguments ( argc, argv ) )
     {
       fprintf ( stderr, "%s: error geting arguments\n", SELF );
@@ -411,8 +409,7 @@ int main ( int argc, char *argv[] )
           nsub1 = nsub + 1;
 
           // clean sequence
-	  bufr_clean_subset_sequence_data(&SUBSET);
-          //memset ( &SUBSET, 0, sizeof ( struct bufr_subset_sequence_data ) );
+          memset ( &SUBSET, 0, sizeof ( struct bufr_subset_sequence_data ) );
 
           // clean REPORT
           memset ( &REPORT, 0, sizeof ( struct metreport ) );

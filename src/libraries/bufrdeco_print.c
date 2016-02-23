@@ -96,9 +96,9 @@ void print_sec4_info ( struct bufr *b )
 }
 
 /*!
-  \fn int bufr_print_tree_recursive ( struct bufr *b, struct bufr_sequence *seq )
+  \fn int bufrdeco_print_tree_recursive ( struct bufr *b, struct bufr_sequence *seq )
 */ 
-int bufr_print_tree_recursive ( struct bufr *b, struct bufr_sequence *seq )
+int bufrdeco_print_tree_recursive ( struct bufr *b, struct bufr_sequence *seq )
 {
   size_t i, j;
   struct bufr_sequence *l;
@@ -128,7 +128,7 @@ int bufr_print_tree_recursive ( struct bufr *b, struct bufr_sequence *seq )
         }
 
       // we then recursively parse the son
-      if ( bufr_print_tree_recursive ( b, l->sons[i] ) )
+      if ( bufrdeco_print_tree_recursive ( b, l->sons[i] ) )
         {
           return 1;
         }
@@ -138,20 +138,20 @@ int bufr_print_tree_recursive ( struct bufr *b, struct bufr_sequence *seq )
   return 0;
 }
 
-void bufr_print_tree ( struct bufr *b )
+void bufrdeco_print_tree ( struct bufr *b )
 {
-  bufr_print_tree_recursive ( b, NULL );
+  bufrdeco_print_tree_recursive ( b, NULL );
 };
 
 
-void bufr_print_atom_data_stdout ( struct bufr_atom_data *a )
+void bufrdeco_print_atom_data_stdout ( struct bufr_atom_data *a )
 {
   char aux[256];
-  bufr_print_atom_data ( aux, a );
+  bufrdeco_print_atom_data ( aux, a );
   printf ( "%s\n",aux );
 }
 
-char * bufr_print_atom_data ( char *target, struct bufr_atom_data *a )
+char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a )
 {
   char aux[256], *c;
   c = target;
@@ -198,13 +198,13 @@ char * bufr_print_atom_data ( char *target, struct bufr_atom_data *a )
   return target;
 }
 
-void bufr_print_subset_sequence_data ( struct bufr_subset_sequence_data *s )
+void bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *s )
 {
   size_t i;
   char aux[1024];
   for ( i = 0; i < s->nd ; i++ )
     {
-      printf ( "%5lu:  %s\n", i, bufr_print_atom_data ( aux, &s->sequence[i] ) );
+      printf ( "%5lu:  %s\n", i, bufrdeco_print_atom_data ( aux, &s->sequence[i] ) );
     }
 }
 

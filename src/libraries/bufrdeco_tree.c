@@ -41,7 +41,7 @@ int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct 
   return 0;
 }
 
-int bufr_parse_tree_recursive ( struct bufr *b, struct bufr_sequence *father,  const char *key )
+int bufrdeco_parse_tree_recursive ( struct bufr *b, struct bufr_sequence *father,  const char *key )
 {
   size_t i, nl;
   struct bufr_sequence *l;
@@ -99,7 +99,7 @@ int bufr_parse_tree_recursive ( struct bufr *b, struct bufr_sequence *father,  c
         }
       l->sons[i] = & ( b->tree->seq[b->tree->nseq] );
       // we then recursively parse the son
-      if ( bufr_parse_tree_recursive ( b, l, l->lseq[i].c ) )
+      if ( bufrdeco_parse_tree_recursive ( b, l, l->lseq[i].c ) )
         {
           return 1;
         }
@@ -109,14 +109,30 @@ int bufr_parse_tree_recursive ( struct bufr *b, struct bufr_sequence *father,  c
   return 0;
 }
 
-int bufr_parse_tree ( struct bufr *b )
+int bufrdeco_parse_tree ( struct bufr *b )
 {
   // here we start the pars
-  return  bufr_parse_tree_recursive ( b, NULL, NULL );
+  return  bufrdeco_parse_tree_recursive ( b, NULL, NULL );
 }
 
+int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s )
+{
+  if ( s->dim < ( BUFR_NMAXSEQ * 8 ) )
+    {
+      if ( ( s->sequence = ( struct bufr_atom_data * ) realloc ( ( void * ) s->sequence,
+                           s->dim * 2 * sizeof ( struct bufr_atom_data ) ) ) == NULL )
+        return 1;
+      else
+        {
+          s->dim *= 2;
+          return 0;
+        }
+    }
+  else
+    return 1;
+}
 
-int bufr_decode_subset_data_recursive ( struct bufr_subset_sequence_data *s, struct bufr_sequence *l, struct bufr *b )
+int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *s, struct bufr_sequence *l, struct bufr *b )
 {
   size_t i;
   struct bufr_sequence *seq;
@@ -157,7 +173,9 @@ int bufr_decode_subset_data_recursive ( struct bufr_subset_sequence_data *s, str
             }
 
           //bufr_print_atom_data_stdout(& ( s->sequence[s->nd] ));
-          if ( s->nd < BUFR_NMAXSEQ )
+          if ( s->nd < s->dim )
+            ( s->nd ) ++;
+          else if ( bufrdeco_increase_data_array ( s ) == 0 )
             ( s->nd ) ++;
           else
             {
@@ -175,7 +193,7 @@ int bufr_decode_subset_data_recursive ( struct bufr_subset_sequence_data *s, str
               replicator.ixdel = i;
               replicator.ndesc = seq->lseq[i].x;
               replicator.nloops = seq->lseq[i].y;
-              bufr_decode_replicated_subsequence ( s, &replicator, b );
+              bufrdeco_decode_replicated_subsequence ( s, &replicator, b );
             }
           else
             {
@@ -188,14 +206,17 @@ int bufr_decode_subset_data_recursive ( struct bufr_subset_sequence_data *s, str
                   return 1;
                 }
               replicator.nloops = ( size_t ) s->sequence[s->nd].val;
-              if ( s->nd < BUFR_NMAXSEQ )
+              if ( s->nd < s->dim )
+                ( s->nd ) ++;
+              else if ( bufrdeco_increase_data_array ( s ) == 0 )
                 ( s->nd ) ++;
               else
                 {
+
                   sprintf ( b->error, "bufr_decode_data_subset_recursive(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n" );
                   return 1;
                 }
-              bufr_decode_replicated_subsequence ( s, &replicator, b );
+              bufrdeco_decode_replicated_subsequence ( s, &replicator, b );
             }
           i = replicator.ixdel + replicator.ndesc; // update i properly
           break;
@@ -203,7 +224,9 @@ int bufr_decode_subset_data_recursive ( struct bufr_subset_sequence_data *s, str
           // Case of operator descriptor
           if ( bufrdeco_parse_f2_descriptor ( s, & ( seq->lseq[i] ), b ) )
             return 1;
-          if ( s->nd < BUFR_NMAXSEQ )
+          if ( s->nd < s->dim )
+            ( s->nd ) ++;
+          else if ( bufrdeco_increase_data_array ( s ) == 0 )
             ( s->nd ) ++;
           else
             {
@@ -213,7 +236,7 @@ int bufr_decode_subset_data_recursive ( struct bufr_subset_sequence_data *s, str
           break;
         case 3:
           // Case of sequence descriptor
-          if ( bufr_decode_subset_data_recursive ( s, seq->sons[i], b ) )
+          if ( bufrdeco_decode_subset_data_recursive ( s, seq->sons[i], b ) )
             return 1;
           break;
         default:
@@ -226,18 +249,18 @@ int bufr_decode_subset_data_recursive ( struct bufr_subset_sequence_data *s, str
   return 0;
 };
 
-int bufr_decode_data_subset ( struct bufr_subset_sequence_data *s, struct bufr *b )
+int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struct bufr *b )
 {
-  if (bufr_init_subset_sequence_data (s))
+  if ( bufrdeco_init_subset_sequence_data ( s ) )
     return 1;
-  if ( bufr_decode_subset_data_recursive ( s, NULL, b ) )
+  if ( bufrdeco_decode_subset_data_recursive ( s, NULL, b ) )
     return 1;
 
   ( b->state.subset ) ++;
   return 0;
 }
 
-int bufr_decode_replicated_subsequence ( struct bufr_subset_sequence_data *s, struct bufr_replicator *r, struct bufr *b )
+int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *s, struct bufr_replicator *r, struct bufr *b )
 {
   size_t i;
   size_t ixloop; // Index for loop
@@ -258,7 +281,9 @@ int bufr_decode_replicated_subsequence ( struct bufr_subset_sequence_data *s, st
                   return 1;
                 }
               //bufr_print_atom_data_stdout(& ( s->sequence[s->nd] ));
-              if ( s->nd < BUFR_NMAXSEQ )
+              if ( s->nd < s->dim )
+                ( s->nd ) ++;
+              else if ( bufrdeco_increase_data_array ( s ) == 0 )
                 ( s->nd ) ++;
               else
                 {
@@ -276,7 +301,7 @@ int bufr_decode_replicated_subsequence ( struct bufr_subset_sequence_data *s, st
                   r->ixdel = i;
                   r->ndesc = l->lseq[i].x;
                   r->nloops = l->lseq[i].y;
-                  bufr_decode_replicated_subsequence ( s, r, b );
+                  bufrdeco_decode_replicated_subsequence ( s, r, b );
                 }
               else
                 {
@@ -289,14 +314,16 @@ int bufr_decode_replicated_subsequence ( struct bufr_subset_sequence_data *s, st
                       return 1;
                     }
                   r->nloops = ( size_t ) s->sequence[s->nd].val;
-                  if ( s->nd < BUFR_NMAXSEQ )
+                  if ( s->nd < s->dim )
+                    ( s->nd ) ++;
+                  else if ( bufrdeco_increase_data_array ( s ) == 0 )
                     ( s->nd ) ++;
                   else
                     {
                       sprintf ( b->error, "bufr_decode_data_subset_recursive(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n" );
                       return 1;
                     }
-                  bufr_decode_replicated_subsequence ( s, r, b );
+                  bufrdeco_decode_replicated_subsequence ( s, r, b );
                 }
               i = r->ixdel + r->ndesc; // update i properly
               break;
@@ -304,7 +331,9 @@ int bufr_decode_replicated_subsequence ( struct bufr_subset_sequence_data *s, st
               // Case of operator descriptor
               if ( bufrdeco_parse_f2_descriptor ( s, & ( l->lseq[i] ), b ) )
                 return 1;
-              if ( s->nd < BUFR_NMAXSEQ )
+              if ( s->nd < s->dim )
+                ( s->nd ) ++;
+              else if ( bufrdeco_increase_data_array ( s ) == 0 )
                 ( s->nd ) ++;
               else
                 {
@@ -314,7 +343,7 @@ int bufr_decode_replicated_subsequence ( struct bufr_subset_sequence_data *s, st
               break;
             case 3:
               // Case of sequence descriptor
-              if ( bufr_decode_subset_data_recursive ( s, l->sons[i], b ) )
+              if ( bufrdeco_decode_subset_data_recursive ( s, l->sons[i], b ) )
                 return 1;
               break;
             default:

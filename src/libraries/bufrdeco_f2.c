@@ -23,7 +23,7 @@
  */
 #include "bufrdeco.h"
 
-int bufrdeco_parse_f2_descriptor ( struct bufr_subset_sequence_data *s, struct bufr_descriptor *d, struct bufr *b )
+int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, struct bufr_descriptor *d, struct bufr *b )
 {
   size_t nbits;
   struct bufr_atom_data *a;
