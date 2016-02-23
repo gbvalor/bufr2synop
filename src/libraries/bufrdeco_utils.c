@@ -26,9 +26,20 @@
 uint8_t bitf[8] = {0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01};
 uint8_t biti[8] = {0xFF,0x7f,0x3f,0x1F,0x0F,0x07,0x03,0x01};
 
+/*!
+  \fn size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
+  \brief Get a string from an array of bits 
+  \param target string as result
+  \param has_data Output flags to check whether is missing data. If 0 then data is missing, othewise has data
+  \param source array of uint8_t elements. Most significant bit of first element is the bit offest reference
+  \param bit_offset Bit offset 
+  \param bit_length Lenght (in bits) for the chunck to extract
+  
+  If returns the amount of bits readed. 0 if problems. It also update bits_offset with the new bits.
+*/
 size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
 {
-  int i, j;
+  size_t i, j;
   size_t r, d, nc;
   uint8_t *c;
 
@@ -60,7 +71,18 @@ size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source
   return bit_length;
 }
 
-size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
+/*!
+  \fn size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
+  \brief Read bits from an array of uint8_t and set them as an uint32_t 
+  \param target uint32_t pointer where to set the result
+  \param has_data Output flags to check whether is missing data. If 0 then data is missing, othewise has data
+  \param source array of uint8_t elements. Most significant bit of first element is the bit offset reference
+  \param bit_offset Bit offset 
+  \param bit_length Lenght (in bits) for the chunck to extract
+
+  If returns the amount of bits readed. 0 if problems. It also update bits_offset with the new bits.
+*/
+size_t get_bits_as_uint32_t2 ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
 {
   int i;
   size_t r, d;
@@ -89,24 +111,21 @@ size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *sour
   return bit_length;
 }
 
-size_t get_bits_as_uint32_t2 ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
+size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
 {
-  int i, j;
-  size_t r, d;
+  int i;
   uint8_t *c;
   uint64_t x;
   
   if ( bit_length > 32 || bit_length == 0 )
     return 0;
 
-  r = bit_length;
-  d = 0;
   *target = 0;
   *has_data = 0; // marc if no missing data is present
   c = source + ( *bit0_offset ) / 8;
-  i = ( *bit0_offset + d ) % 8;
-  x = (uint64_t)(*c & biti[i]) << 32 + (uint64_t)(*(c + 1)) << 24 + (uint64_t)(*(c + 2)) << 16 +
-     (uint64_t)(*(c + 3)) << 8 + (uint64_t)(*(c + 4)); // 40 - i bits
+  i = ( *bit0_offset ) % 8;
+  x = ((uint64_t)(*c & biti[i]) << 32) + ((uint64_t)(*(c + 1)) << 24) + ((uint64_t)(*(c + 2)) << 16) +
+     ((uint64_t)(*(c + 3)) << 8) + (uint64_t)(*(c + 4)); // 40 - i bits
   x >>= (40 - i - bit_length);
   *target = (uint32_t) x;
   if ((1UL << bit_length) != (x + 1UL))
@@ -116,6 +135,35 @@ size_t get_bits_as_uint32_t2 ( uint32_t *target, uint8_t *has_data, uint8_t *sou
   return bit_length;
 }
 
+
+/*!
+ \fn int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_t source )
+ \brief Get an int32_t from bits according with bufr criteria to change the reference of a descritor. Most significant bit in source is sign
+ \param target int32_t as result
+ \param bits number of bits to consider
+ \param source uint32_T with the data to transform 
+ 
+ If success return 0, 1 otherwise
+*/
+// most significant of bits is the sign
+int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_t source )
+{
+  uint32_t mask = 1;
+  if ( bits > 32 || bits == 0 )
+    return 1;
+
+  if ( bits > 1 )
+    mask = ( ( uint32_t ) 1 << ( bits - 1 ) );
+
+  if ( mask & source )
+    {
+      // case of negative number
+      *target = - ( int32_t ) ( source - mask );
+    }
+  else
+    *target = ( int32_t ) ( source );
+  return 0;
+}
 
 /*!
   \fn uint32_t two_bytes_to_uint32(const uint8_t *source)
@@ -200,7 +248,26 @@ char * bufr_adjust_string ( char *s )
   return s;
 }
 
+/*!
+  \fn int is_a_delayed_descriptor ( struct bufr_descriptor *d )
+  \brief check if a descriptor is a delayed descriptor
+  \param d pointer to a struct \bufr_descriptor to check
+  
+  If is a delayed desccriptor return 1, 0 otherwise.
+*/
+int is_a_delayed_descriptor ( struct bufr_descriptor *d )
+{
+  if ( d->f == 0 &&
+       d->x == 31 &&
+       ( d->y == 1 || d->y == 2 || d->y == 11 || d->y == 12 ) )
+    return 1;
+  else
+    return 0;
+}
 
+/*!
+
+*/
 int init_bufr ( struct bufr *b, size_t l )
 {
   memset ( b, 0, sizeof ( struct bufr ) );
@@ -223,6 +290,9 @@ int init_bufr ( struct bufr *b, size_t l )
   return 0;
 }
 
+/*!
+ 
+*/
 int clean_bufr ( struct bufr *b )
 {
   if ( b->sec4.allocated > 0 &&  b->sec4.raw != NULL )
@@ -235,56 +305,3 @@ int clean_bufr ( struct bufr *b )
   return 0;
 }
 
-char * bufr_print_atom_data ( char *target, struct bufr_atom_data *a )
-{
-  char aux[256], *c;
-  c = target;
-  c += sprintf ( c, "%u %02u %03u ", a->desc.f, a->desc.x, a->desc.y );
-  strcpy ( aux, a->name );
-  aux[40] = '\0';
-  c += sprintf ( c, "%-40s ", aux );
-  strcpy ( aux, a->unit );
-  aux[20] = '\0';
-  c += sprintf ( c, "%-20s", aux );
-  if (a->mask & DESCRIPTOR_VALUE_MISSING)
-    c += sprintf (c, "%17s", "MISSING VALUE");
-  else
-  { 
-    if (a->mask & DESCRIPTOR_HAVE_STRING_VALUE)
-    {
-      strcpy(aux, a->cval);
-      aux[56] = '\0';
-      c += sprintf(c, "                  ");
-      c += sprintf(c, "%s", aux);                 
-    }
-    else if (a->mask & DESCRIPTOR_HAVE_CODE_TABLE_STRING)
-    {
-      strcpy(aux, a->ctable);
-      aux[56] = '\0';
-      c += sprintf ( c, "%17u ", (uint32_t) a->val );
-      c += sprintf(c, "%s", aux);                 
-    }
-    else if (a->mask & DESCRIPTOR_HAVE_FLAG_TABLE_STRING)
-    {
-      strcpy(aux, a->ctable);
-      aux[56] = '\0';
-      c += sprintf ( c, "       0x%08X ", (uint32_t) a->val );
-      c += sprintf(c, "%s", aux);                 
-    }
-    else
-    {
-      c += sprintf ( c, "%17.10e ", a->val );
-    }
-  }
-  return target;
-}
-
-void bufr_print_subset_sequence_data ( struct bufr_subset_sequence_data *s )
-{
-  size_t i;
-  char aux[1024];
-  for ( i = 0; i < s->nd ; i++ )
-    {
-       printf("%5lu:  %s\n", i, bufr_print_atom_data ( aux, &s->sequence[i] ));
-    }
-}
