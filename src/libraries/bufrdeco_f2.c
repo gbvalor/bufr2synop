@@ -38,20 +38,20 @@ int bufrdeco_parse_f2_descriptor ( struct bufr_subset_sequence_data *s, struct b
       // Add (YYY–128) bits to the data width given for each
       // data element in Table B, other than CCITT IA5
       // (character) data, code or flag tables.
-      if (d->y)
-	b->state.added_bit_length = d->y - 128;
+      if ( d->y )
+        b->state.added_bit_length = d->y - 128;
       else
-	b->state.added_bit_length = 0;
+        b->state.added_bit_length = 0;
       break;
-    
+
     case 2:
       // Add YYY–128 to the scale for each data element in
       // Table B, other than CCITT IA5 (character) data, code
       // or flag tables.
-      if (d->y)
-	b->state.added_scale = d->y - 128;
+      if ( d->y )
+        b->state.added_scale = d->y - 128;
       else
-	b->state.added_scale = 0;
+        b->state.added_scale = 0;
       break;
 
     case 3:
@@ -64,7 +64,7 @@ int bufrdeco_parse_f2_descriptor ( struct bufr_subset_sequence_data *s, struct b
       // integer with the left-most bit (bit 1) set to 1.
       b->state.changing_reference = d->y;
       break;
-      
+
     case 4:
       // Precede each data element with YYY bits of
       // information. This operation associates a data field
@@ -72,13 +72,13 @@ int bufrdeco_parse_f2_descriptor ( struct bufr_subset_sequence_data *s, struct b
       // data element.
       b->state.assoc_bits = d->y;
       break;
-      
+
     case 5:
       // YYY characters (CCITT International Alphabet No. 5) are
       // inserted as a data field of YYY x 8 bits in length.
       nbits = 8 * d->y;
       a = & ( s->sequence[s->nd] );
-      memcpy(&a->desc, d, sizeof(struct bufr_descriptor));
+      memcpy ( &a->desc, d, sizeof ( struct bufr_descriptor ) );
       if ( get_bits_as_char_array ( a->cval, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
         {
           sprintf ( b->error, "bufrdeco_parse_f2_descriptor(): Cannot get %u uchars from '%s'\n", d->y, d->c );
@@ -88,8 +88,8 @@ int bufrdeco_parse_f2_descriptor ( struct bufr_subset_sequence_data *s, struct b
         a->mask |= DESCRIPTOR_VALUE_MISSING;
       else
         a->mask |= DESCRIPTOR_HAVE_STRING_VALUE;
-      strcpy(a->name, "SIGNIFY CHARACTER");
-      strcpy(a->unit, "CCITTIA5"); // unit
+      strcpy ( a->name, "SIGNIFY CHARACTER" );
+      strcpy ( a->unit, "CCITTIA5" ); // unit
       break;
     default:
       sprintf ( b->error, "bufrdeco_parse_f2_descriptor(): Still no proccessed descriptor '%s' in "

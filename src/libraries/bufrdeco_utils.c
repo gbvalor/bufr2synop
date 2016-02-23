@@ -23,21 +23,22 @@
 */
 #include "bufrdeco.h"
 
-uint8_t bitf[8] = {0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01};
-uint8_t biti[8] = {0xFF,0x7f,0x3f,0x1F,0x0F,0x07,0x03,0x01};
+uint8_t bitf[8] = {0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01}; /*!< Mask a single bit of a byte */
+uint8_t biti[8] = {0xFF,0x7f,0x3f,0x1F,0x0F,0x07,0x03,0x01}; /*!< Mask remaining bits in a byte (less significant) */
+uint8_t bitk[8] = {0x80,0xc0,0xe0,0xf0,0xf8,0xfc,0xfe,0xff}; /*!< Mask first bits in a byte (most significant) */
 
 /*!
   \fn size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
-  \brief Get a string from an array of bits 
+  \brief Get a string from an array of bits
   \param target string as result
   \param has_data Output flags to check whether is missing data. If 0 then data is missing, othewise has data
   \param source array of uint8_t elements. Most significant bit of first element is the bit offest reference
-  \param bit_offset Bit offset 
+  \param bit_offset Bit offset
   \param bit_length Lenght (in bits) for the chunck to extract
-  
+
   If returns the amount of bits readed. 0 if problems. It also update bits_offset with the new bits.
 */
-size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
+size_t get_bits_as_char_array2 ( char *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
 {
   size_t i, j;
   size_t r, d, nc;
@@ -71,14 +72,47 @@ size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source
   return bit_length;
 }
 
+size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
+{
+  size_t i, j, k;
+  size_t nc;
+  uint8_t *c;
+
+  if ( bit_length % 8 )
+    return 0; // bit_length needs to be divisible by 8
+
+  nc = bit_length / 8;
+  i = ( *bit0_offset ) % 8;
+  k = 8 - i;
+  *has_data = 0; // marc if no missing data is present
+  for ( j = 0; j < nc ; j++ )
+    {
+      c = source + ( *bit0_offset)  / 8;
+      * ( target + j ) = ( *c & biti[i] );
+      if ( i )
+        {
+          * ( target + j ) <<= i;
+          * ( target + j ) |= ( ( * ( c + 1 ) & bitk[i - 1] ) >> k );
+        }
+      if ( * ( target + j ) != -127 )
+        *has_data = 1;
+      *bit0_offset += 8; // update bit0_offset
+    }
+  * ( target + nc ) = '\0';
+  return bit_length;
+}
+
 /*!
-  \fn size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
-  \brief Read bits from an array of uint8_t and set them as an uint32_t 
+  \fn size_t get_bits_as_uint32_t2 ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
+  \brief Read bits from an array of uint8_t and set them as an uint32_t
   \param target uint32_t pointer where to set the result
   \param has_data Output flags to check whether is missing data. If 0 then data is missing, othewise has data
   \param source array of uint8_t elements. Most significant bit of first element is the bit offset reference
-  \param bit_offset Bit offset 
+  \param bit_offset Bit offset
   \param bit_length Lenght (in bits) for the chunck to extract
+
+  This is a version which extract bit a bit. For more than about 8 bits should be used the algorithm in
+  \ref get_bits_as_uint32_t
 
   If returns the amount of bits readed. 0 if problems. It also update bits_offset with the new bits.
 */
@@ -111,24 +145,41 @@ size_t get_bits_as_uint32_t2 ( uint32_t *target, uint8_t *has_data, uint8_t *sou
   return bit_length;
 }
 
+
+/*!
+  \fn size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
+  \brief Read bits from an array of uint8_t and set them as an uint32_t
+  \param target uint32_t pointer where to set the result
+  \param has_data Output flags to check whether is missing data. If 0 then data is missing, othewise has data
+  \param source array of uint8_t elements. Most significant bit of first element is the bit offset reference
+  \param bit_offset Bit offset
+  \param bit_length Lenght (in bits) for the chunck to extract
+
+  If bil_length is less than 8 then it uses version 2 \ref get_bits_as_uint32_t2
+
+  If returns the amount of bits readed. 0 if problems. It also update bits_offset with the new bits.
+*/
 size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
 {
   int i;
   uint8_t *c;
   uint64_t x;
-  
+
   if ( bit_length > 32 || bit_length == 0 )
     return 0;
+
+  if ( bit_length < 8 )
+    return get_bits_as_uint32_t2 ( target, has_data, source, bit0_offset, bit_length );
 
   *target = 0;
   *has_data = 0; // marc if no missing data is present
   c = source + ( *bit0_offset ) / 8;
   i = ( *bit0_offset ) % 8;
-  x = ((uint64_t)(*c & biti[i]) << 32) + ((uint64_t)(*(c + 1)) << 24) + ((uint64_t)(*(c + 2)) << 16) +
-     ((uint64_t)(*(c + 3)) << 8) + (uint64_t)(*(c + 4)); // 40 - i bits
-  x >>= (40 - i - bit_length);
-  *target = (uint32_t) x;
-  if ((1UL << bit_length) != (x + 1UL))
+  x = ( ( uint64_t ) ( *c & biti[i] ) << 32 ) + ( ( uint64_t ) ( * ( c + 1 ) ) << 24 ) + ( ( uint64_t ) ( * ( c + 2 ) ) << 16 ) +
+      ( ( uint64_t ) ( * ( c + 3 ) ) << 8 ) + ( uint64_t ) ( * ( c + 4 ) ); // 40 - i bits
+  x >>= ( 40 - i - bit_length );
+  *target = ( uint32_t ) x;
+  if ( ( 1UL << bit_length ) != ( x + 1UL ) )
     *has_data = 1;
 
   *bit0_offset += bit_length; // update bit0_offset
@@ -141,8 +192,8 @@ size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *sour
  \brief Get an int32_t from bits according with bufr criteria to change the reference of a descritor. Most significant bit in source is sign
  \param target int32_t as result
  \param bits number of bits to consider
- \param source uint32_T with the data to transform 
- 
+ \param source uint32_T with the data to transform
+
  If success return 0, 1 otherwise
 */
 // most significant of bits is the sign
@@ -252,13 +303,13 @@ char * bufr_adjust_string ( char *s )
   \fn int is_a_delayed_descriptor ( struct bufr_descriptor *d )
   \brief check if a descriptor is a delayed descriptor
   \param d pointer to a struct \bufr_descriptor to check
-  
+
   If is a delayed desccriptor return 1, 0 otherwise.
 */
 int is_a_delayed_descriptor ( struct bufr_descriptor *d )
 {
-  if ( d->f == 0 &&
-       d->x == 31 &&
+  if ( (d->f == 0) &&
+       (d->x == 31) &&
        ( d->y == 1 || d->y == 2 || d->y == 11 || d->y == 12 ) )
     return 1;
   else
@@ -291,7 +342,7 @@ int init_bufr ( struct bufr *b, size_t l )
 }
 
 /*!
- 
+
 */
 int clean_bufr ( struct bufr *b )
 {
@@ -305,3 +356,32 @@ int clean_bufr ( struct bufr *b )
   return 0;
 }
 
+int bufr_init_subset_sequence_data (struct bufr_subset_sequence_data *ba)
+{
+  if (ba->dim == 0)
+  {
+    if ((ba->sequence = (struct bufr_atom_data *) malloc(BUFR_NMAXSEQ * sizeof (struct bufr_atom_data))) == NULL)
+    {
+      fprintf(stderr,"bufr_init_subset_sequence_data():Cannot allocate memory for atom data array\n");
+      return 1;
+    }
+    ba->dim = BUFR_NMAXSEQ;
+  }
+  ba->nd = 0;
+  return 0;
+}
+
+int bufr_clean_subset_sequence_data (struct bufr_subset_sequence_data *ba)
+{
+  if (ba->sequence != NULL)
+    free((void *) ba->sequence);
+  memset(ba, 0, sizeof(struct bufr_subset_sequence_data));
+  return bufr_init_subset_sequence_data (ba);
+}
+
+int bufr_free_subset_sequence_data (struct bufr_subset_sequence_data *ba)
+{
+  if (ba->sequence != NULL)
+    free((void *) ba->sequence);
+  return 0;
+}

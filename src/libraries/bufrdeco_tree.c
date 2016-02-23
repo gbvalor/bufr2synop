@@ -31,11 +31,11 @@ int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct 
   for ( i = 0; i < b->sec3.ndesc ; i++ )
     {
       memcpy ( & ( s->lseq[i] ), & ( b->sec3.unexpanded[i] ), sizeof ( struct bufr_descriptor ) );
-      if (b->sec3.compressed && is_a_delayed_descriptor(&(s->lseq[i])) )
-      {
-	 sprintf(b->error, "get_unexpanded_descriptor_array_from_sec3(): Found a delayed descriptor in a compressed bufr\n");
-	 return 1;
-      }
+      if ( b->sec3.compressed && is_a_delayed_descriptor ( & ( s->lseq[i] ) ) )
+        {
+          sprintf ( b->error, "get_unexpanded_descriptor_array_from_sec3(): Found a delayed descriptor in a compressed bufr\n" );
+          return 1;
+        }
     }
   s->ndesc = b->sec3.ndesc;
   return 0;
@@ -59,6 +59,7 @@ int bufr_parse_tree_recursive ( struct bufr *b, struct bufr_sequence *father,  c
         {
           return 1;
         }
+      printf ( "level=%lu ndesc=%lu\n", l->level, l->ndesc );
     }
   else
     {
@@ -77,11 +78,14 @@ int bufr_parse_tree_recursive ( struct bufr *b, struct bufr_sequence *father,  c
       strcpy ( l->key, key );
       l->level = father->level + 1;
       l->father = father;
+      //printf ("level=%lu ", l->level);
       // here we get ndesc and lsec array from table d
       if ( bufrdeco_tabled_get_descritors_array ( l, b, key ) )
         {
+          //printf("\n%s\n",b->error);
           return 1; // something went wrong
         }
+      //printf ("ndesc=%lu\n",l->ndesc);
     }
 
   // now we detect sons and go to parse them
@@ -108,8 +112,7 @@ int bufr_parse_tree_recursive ( struct bufr *b, struct bufr_sequence *father,  c
 int bufr_parse_tree ( struct bufr *b )
 {
   // here we start the pars
-  bufr_parse_tree_recursive ( b, NULL, NULL );
-  return 0;
+  return  bufr_parse_tree_recursive ( b, NULL, NULL );
 }
 
 
@@ -129,7 +132,7 @@ int bufr_decode_subset_data_recursive ( struct bufr_subset_sequence_data *s, str
         {
           b->state.bit_offset = 0;
         }
-      // also reset reference and bits inc 
+      // also reset reference and bits inc
       b->state.added_bit_length = 0;
       b->state.added_scale = 0;
       b->state.added_reference = 0;
@@ -148,11 +151,11 @@ int bufr_decode_subset_data_recursive ( struct bufr_subset_sequence_data *s, str
         {
         case 0:
           // Get data from table B
-          if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, &(seq->lseq[i]) ) )
+          if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, & ( seq->lseq[i] ) ) )
             {
               return 1;
             }
-            
+
           //bufr_print_atom_data_stdout(& ( s->sequence[s->nd] ));
           if ( s->nd < BUFR_NMAXSEQ )
             ( s->nd ) ++;
@@ -180,7 +183,7 @@ int bufr_decode_subset_data_recursive ( struct bufr_subset_sequence_data *s, str
               replicator.ixdel = i + 1;
               replicator.ndesc = seq->lseq[i].x;
               // here we read ndesc from delayed replicator descriptor
-              if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, &(seq->lseq[i + 1]) ) )
+              if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, & ( seq->lseq[i + 1] ) ) )
                 {
                   return 1;
                 }
@@ -225,10 +228,12 @@ int bufr_decode_subset_data_recursive ( struct bufr_subset_sequence_data *s, str
 
 int bufr_decode_data_subset ( struct bufr_subset_sequence_data *s, struct bufr *b )
 {
-  if (bufr_decode_subset_data_recursive ( s, NULL, b ))
+  if (bufr_init_subset_sequence_data (s))
     return 1;
-  
-  (b->state.subset)++;
+  if ( bufr_decode_subset_data_recursive ( s, NULL, b ) )
+    return 1;
+
+  ( b->state.subset ) ++;
   return 0;
 }
 
@@ -248,12 +253,12 @@ int bufr_decode_replicated_subsequence ( struct bufr_subset_sequence_data *s, st
             {
             case 0:
               // Get data from table B
-              if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, &(l->lseq[i]) ) )
+              if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[i] ) ) )
                 {
                   return 1;
                 }
-             //bufr_print_atom_data_stdout(& ( s->sequence[s->nd] ));
-             if ( s->nd < BUFR_NMAXSEQ )
+              //bufr_print_atom_data_stdout(& ( s->sequence[s->nd] ));
+              if ( s->nd < BUFR_NMAXSEQ )
                 ( s->nd ) ++;
               else
                 {
@@ -279,7 +284,7 @@ int bufr_decode_replicated_subsequence ( struct bufr_subset_sequence_data *s, st
                   r->ixdel = i + 1;
                   r->ndesc = l->lseq[i].x;
                   // here we read ndesc from delayed replicator descriptor
-                  if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, &(l->lseq[i + 1]) ) )
+                  if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[i + 1] ) ) )
                     {
                       return 1;
                     }

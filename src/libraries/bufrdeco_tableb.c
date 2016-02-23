@@ -158,8 +158,7 @@ int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *
 int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_descriptor *d)
 {
   size_t i, nbits = 0;
-  char *c;
-  uint32_t ix, ival;
+  uint32_t ival;
   uint8_t has_data;
   int32_t escale = 0, reference = 0;
   struct bufr_tableb *tb;

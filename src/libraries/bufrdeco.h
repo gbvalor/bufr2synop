@@ -285,13 +285,15 @@ struct bufr_expanded_tree
 };
 
 /*!
-  \struct bufr_subset_sequence_data
+  \struct bufrdeco_subset_sequence_data
   \brief Contains all the information for a subset in a expanded squence
+  This is a verion to use with bufrdeco parse library
 */
-struct bufr_subset_sequence_data
+struct bufreco_subset_sequence_data
 {
-  size_t nd; /*!< number of current amount of data in sequence */
-  struct bufr_atom_data sequence[BUFR_NMAXSEQ]; /*!< the array of data associated to a expanded sequence */
+  size_t dim; /*!< Amount of bufr_atom_data currently allocated */
+  size_t nd; /*!< number of current amount of data used in sequence */
+  struct bufr_atom_data *sequence; /*!< the array of data associated to a expanded sequence */
 };
 
 struct bufr_sec0
@@ -505,5 +507,7 @@ int bufrdeco_parse_f2_descriptor (struct bufr_subset_sequence_data *s, struct bu
 int bufr_find_tableb_index(size_t *index, struct bufr_tableb *tb, const char *key);
 int get_table_b_reference_from_uint32_t(int32_t *target, uint8_t bits, uint32_t source);
 int is_a_delayed_descriptor ( struct bufr_descriptor *d );
-
+int bufr_init_subset_sequence_data (struct bufr_subset_sequence_data *ba);
+int bufr_clean_subset_sequence_data (struct bufr_subset_sequence_data *ba);
+int bufr_free_subset_sequence_data (struct bufr_subset_sequence_data *ba);
 #endif  // from ifndef BUFRDECO_H
