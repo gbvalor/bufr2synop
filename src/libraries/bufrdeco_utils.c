@@ -24,6 +24,7 @@
 #include "bufrdeco.h"
 
 uint8_t bitf[8] = {0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01};
+uint8_t biti[8] = {0xFF,0x7f,0x3f,0x1F,0x0F,0x07,0x03,0x01};
 
 size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
 {
@@ -87,6 +88,34 @@ size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *sour
   *bit0_offset += bit_length; // update bit0_offset
   return bit_length;
 }
+
+size_t get_bits_as_uint32_t2 ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
+{
+  int i, j;
+  size_t r, d;
+  uint8_t *c;
+  uint64_t x;
+  
+  if ( bit_length > 32 || bit_length == 0 )
+    return 0;
+
+  r = bit_length;
+  d = 0;
+  *target = 0;
+  *has_data = 0; // marc if no missing data is present
+  c = source + ( *bit0_offset ) / 8;
+  i = ( *bit0_offset + d ) % 8;
+  x = (uint64_t)(*c & biti[i]) << 32 + (uint64_t)(*(c + 1)) << 24 + (uint64_t)(*(c + 2)) << 16 +
+     (uint64_t)(*(c + 3)) << 8 + (uint64_t)(*(c + 4)); // 40 - i bits
+  x >>= (40 - i - bit_length);
+  *target = (uint32_t) x;
+  if ((1UL << bit_length) != (x + 1UL))
+    *has_data = 1;
+
+  *bit0_offset += bit_length; // update bit0_offset
+  return bit_length;
+}
+
 
 /*!
   \fn uint32_t two_bytes_to_uint32(const uint8_t *source)
@@ -218,7 +247,7 @@ char * bufr_print_atom_data ( char *target, struct bufr_atom_data *a )
   aux[20] = '\0';
   c += sprintf ( c, "%-20s", aux );
   if (a->mask & DESCRIPTOR_VALUE_MISSING)
-    c += sprintf (c, "%+17s", "MISSING VALUE");
+    c += sprintf (c, "%17s", "MISSING VALUE");
   else
   { 
     if (a->mask & DESCRIPTOR_HAVE_STRING_VALUE)
