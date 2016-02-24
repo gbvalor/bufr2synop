@@ -94,7 +94,7 @@ int main ( int argc, char *argv[] )
   if ( bufrdeco_parse_tree ( &BUFR ) )
     {
       printf ( "%s", BUFR.error );
-      clean_bufr ( &BUFR );
+      close_bufr ( &BUFR );
       exit ( EXIT_FAILURE );
     }
 
@@ -105,14 +105,14 @@ int main ( int argc, char *argv[] )
       if ( bufrdeco_decode_data_subset ( &SEQ, &BUFR ) )
         {
           printf ( "%s", BUFR.error );
-          clean_bufr ( &BUFR );
+          close_bufr ( &BUFR );
           exit ( EXIT_FAILURE );
         }
       bufrdeco_print_subset_sequence_data(&SEQ);
     }
 
   printf ( "So far so good !!\n" );
-  clean_bufr ( &BUFR );
+  close_bufr ( &BUFR );
   bufrdeco_free_subset_sequence_data(&SEQ);
   exit ( EXIT_SUCCESS );
 }

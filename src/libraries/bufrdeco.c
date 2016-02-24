@@ -72,7 +72,13 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
     }
 
   /* Inits bufr struct */
-  if ( init_bufr ( b, ( size_t ) st.st_size ) )
+  if ( st.st_size >= BUFR_LEN)
+  {
+     sprintf (error, "File '%s' too large. Consider increase BUFR_LEN\n", filename);     
+      free ( ( void * ) bufrx );
+      return 1;
+  }
+  if ( init_bufr ( b ) )
     {
       sprintf ( error, "bufrdeco_read_bufr(): Cannot init bufr struct\n" );
       free ( ( void * ) bufrx );
@@ -85,7 +91,7 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
     {
       sprintf ( error, "bufrdeco_read_bufr(): cannot open file '%s'\n", filename );
       free ( ( void * ) bufrx );
-      clean_bufr ( b );
+      close_bufr ( b );
       return 1;
     }
 
@@ -100,7 +106,7 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
     {
       sprintf ( error, "bufrdeco_read_bufr(): Too few bytes for a bufr\n" );
       free ( ( void * ) bufrx );
-      clean_bufr ( b );
+      close_bufr ( b );
       return 1;
     }
 
@@ -109,7 +115,7 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
     {
       sprintf ( error, "bufrdeco_read_bufr(): file '%s' does not begin with 'BUFR' chars\n", filename );
       free ( ( void * ) bufrx );
-      clean_bufr ( b );
+      close_bufr ( b );
       return 1;
     }
 
@@ -118,7 +124,7 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
     {
       sprintf ( error, "bufrdeco_read_bufr(): file '%s' does not end with '7777' chars\n", filename );
       free ( ( void * ) bufrx );
-      clean_bufr ( b );
+      close_bufr ( b );
       return 1;
     }
 
@@ -134,7 +140,7 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
       sprintf ( error, "bufrdeco_read_bufr(): file '%s' have %u bytes and it says %u\n", filename,
                 ( uint32_t ) n, b->sec0.bufr_length );
       free ( ( void * ) bufrx );
-      clean_bufr ( b );
+      close_bufr ( b );
       return 1;
     }
 
@@ -145,7 +151,7 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
   {
       sprintf ( error, "bufrdeco_read_bufr(): Bufr edition must be 4 and this file is coded with version %u\n", b->sec0.edition );
       free ( ( void * ) bufrx );
-      clean_bufr ( b );
+      close_bufr ( b );
       return 1;
   }
   
@@ -209,24 +215,24 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
   if ( get_ecmwf_tablenames ( b, NULL ) )
     {
       sprintf ( error, "bufrdeco_read_bufr(): Cannot find bufr tebles\n" );
-      clean_bufr ( b );
+      close_bufr ( b );
       return 1;
     }
 
   // read tables
   if ( bufr_read_tableb ( & ( b->table->b ), error ) )
     {
-      clean_bufr ( b );
+      close_bufr ( b );
       return 1;
     }
   if ( bufr_read_tablec ( & ( b->table->c ), error ) )
     {
-      clean_bufr ( b );
+      close_bufr ( b );
       return 1;
     }
   if ( bufr_read_tabled ( & ( b->table->d ), error ) )
     {
-      clean_bufr ( b );
+      close_bufr ( b );
       return 1;
     }
 

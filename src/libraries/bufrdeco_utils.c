@@ -322,12 +322,13 @@ int is_a_delayed_descriptor ( struct bufr_descriptor *d )
 /*!
 
 */
-int init_bufr ( struct bufr *b, size_t l )
+int init_bufr ( struct bufr *b)
 {
   memset ( b, 0, sizeof ( struct bufr ) );
-  if ( ( b->sec4.raw = ( uint8_t * ) calloc ( 1, l ) ) == NULL )
+  if ( ( b->sec4.raw = ( uint8_t * ) calloc ( 1, BUFR_LEN ) ) == NULL )
     return 1;
-  b->sec4.allocated = l;
+  b->sec4.allocated = BUFR_LEN;
+  
   if ( ( b->table = ( struct bufr_tables * ) calloc ( 1, sizeof ( struct bufr_tables ) ) ) == NULL )
     {
       free ( ( void * ) b->sec4.raw );
@@ -347,7 +348,7 @@ int init_bufr ( struct bufr *b, size_t l )
 /*!
 
 */
-int clean_bufr ( struct bufr *b )
+int close_bufr ( struct bufr *b )
 {
   if ( b->sec4.allocated > 0 &&  b->sec4.raw != NULL )
     free ( ( void * ) b->sec4.raw );
@@ -358,6 +359,8 @@ int clean_bufr ( struct bufr *b )
   memset ( b, 0, sizeof ( struct bufr ) );
   return 0;
 }
+
+
 
 int bufrdeco_init_subset_sequence_data (struct bufrdeco_subset_sequence_data *ba)
 {

@@ -44,6 +44,29 @@
 #include "metclimat.h"
 //#define DEBUG
 
+#define USE_ECMWF_BUFRDC
+
+#ifdef USE_ECMWF_BUFRDC
+/*!
+  \def KELEM
+  \brief max dimension of elements for a single report
+*/
+#define KELEM (8192 * 1)
+
+/*!
+  \def KVALS
+  \brief dimension of arrays of doubles. It must store all the data for all subset
+*/
+#define KVALS (32768 * 512)
+
+/*!
+  \def KSUBS
+  \brief Maximum number of subset this version can manage
+*/
+#define KSUBS (KVALS / KELEM)
+
+#endif
+
 /*!
  \def SUBSET_MASK_LATITUDE_SOUTH
  \brief Bit mask to mark a struct \ref bufr_subset_sequence_data with south latitude

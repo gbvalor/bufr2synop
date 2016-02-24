@@ -40,24 +40,6 @@
 //#define DEBUG
 
 /*!
-  \def KELEM
-  \brief max dimension of elements for a single report
-*/
-#define KELEM (8192 * 1)
-
-/*!
-  \def KVALS
-  \brief dimension of arrays of doubles. It must store all the data for all subset
-*/
-#define KVALS (32768 * 512)
-
-/*!
-  \def KSUBS
-  \brief Maximum number of subset this version can manage
-*/
-#define KSUBS (KVALS / KELEM)
-
-/*!
   \def BUFR_LEN
   \brief max length of a bufrfile
 */
@@ -477,8 +459,8 @@ extern const char DEFAULT_BUFRTABLES_DIR1[];
 extern const char DEFAULT_BUFRTABLES_DIR2[];
 
 
-int init_bufr ( struct bufr *b, size_t l );
-int clean_bufr ( struct bufr *b );
+int init_bufr ( struct bufr *b );
+int close_bufr ( struct bufr *b );
 int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error );
 void print_sec0_info ( struct bufr *b );
 void print_sec1_info ( struct bufr *b );

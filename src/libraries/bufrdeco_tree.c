@@ -111,7 +111,7 @@ int bufrdeco_parse_tree_recursive ( struct bufr *b, struct bufr_sequence *father
 
 int bufrdeco_parse_tree ( struct bufr *b )
 {
-  // here we start the pars
+  // here we start the parse
   return  bufrdeco_parse_tree_recursive ( b, NULL, NULL );
 }
 
