@@ -279,6 +279,28 @@ struct bufrdeco_subset_sequence_data
 };
 
 /*!
+ \struct bufrdeco_compressed_ref
+ \brief Struct to hold the needed reference bit offsets in a compressed BUFR
+*/
+struct bufrdeco_compressed_ref 
+{
+  size_t bit0; /*!< first bit offset, i.e, most significant bit for ref0 */
+  uint32_t ref0; /*!< reference for a expanded data in subsets*/
+  uint8_t bits; /*!< number of inc bits for every subset  */
+};
+
+/*!
+  \struct bufrdeco_compressed_data_refences
+  \brief Manage an array of structs \ref bufrdeco_compressed_ref
+*/
+struct bufrdeco_compressed_data_refences
+{
+  size_t dim; /*!< dimension of array of compressed refs */
+  size_t nd; /*!< current amount of data used */
+  struct bufrdeco_compressed_ref *refs; /*!< pointer to allocated array */
+};
+
+/*!
   \struct bufr_subset_sequence_data
   \brief Contains all the information for a subset in a expanded squence
   This is a verion to use with ECMWF library

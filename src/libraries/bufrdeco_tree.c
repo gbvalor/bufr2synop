@@ -23,6 +23,12 @@
 */
 #include "bufrdeco.h"
 
+/*!
+  \fn int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct bufr *b )
+  \brief Set to a struct \ref bufr_sequence an unexpanded descriptor array from sec3 in a BUFR report
+  \param s Pointer to the target struct \ref bufr_sequence
+  \param b Pointer to the base struct \ref bufr
+*/ 
 int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct bufr *b )
 {
   size_t i;
@@ -41,6 +47,16 @@ int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct 
   return 0;
 }
 
+
+/*!
+  \fn int bufrdeco_parse_tree_recursive ( struct bufr *b, struct bufr_sequence *father,  const char *key )
+  \brief Parse the descriptor tree in a recursive way
+  \param key string with descriptor in form 'FXXYYY'
+  \param father pointer to the father struct \ref bufr_sequence
+  \param b pointer to the base struct \ref bufr
+ 
+  Returns 0 if success, 1 otherwise
+ */
 int bufrdeco_parse_tree_recursive ( struct bufr *b, struct bufr_sequence *father,  const char *key )
 {
   size_t i, nl;
@@ -109,12 +125,24 @@ int bufrdeco_parse_tree_recursive ( struct bufr *b, struct bufr_sequence *father
   return 0;
 }
 
+/*!
+  \fn int bufrdeco_parse_tree ( struct bufr *b )
+  \brief Parse the tree of descriptors without expand the replicators
+  \param b Pointer to the source struct \ref bufr
+*/
 int bufrdeco_parse_tree ( struct bufr *b )
 {
   // here we start the parse
   return  bufrdeco_parse_tree_recursive ( b, NULL, NULL );
 }
 
+/*!
+  \fn int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s )
+  \brief doubles the allocated space for a struct \ref bufrdeco_subset_sequence_data whenever is posible
+  \param s pointer to source struct \ref bufrdeco_subset_sequence_data
+ 
+  Return 0 when success, otherwise return 1 and the struct is unmodified
+*/
 int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s )
 {
   if ( s->dim < ( BUFR_NMAXSEQ * 8 ) )
@@ -132,6 +160,15 @@ int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s )
     return 1;
 }
 
+/*!
+  \fn int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *s, struct bufr_sequence *l, struct bufr *b )
+  \brief decode the data from a subset in a recursive way
+  \param s pointer to the target struct \ref bufrdeco_subset_sequence_data
+  \param l pointer to the source struct \ref bufr_sequence 
+  \param b pointer to the base struct \ref bufr
+  
+  Return 0 in case of success, 1 otherwise
+*/
 int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *s, struct bufr_sequence *l, struct bufr *b )
 {
   size_t i;
@@ -249,6 +286,14 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
   return 0;
 };
 
+/*!
+  \fn  int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struct bufr *b )
+  \brief  User interface to decode a BUFR subset
+  \param s pointer to the target struct \ref bufrdeco_subset_sequence_data
+  \param b pointer to the base struct \ref bufr
+  
+  Return 0 in case of success, 1 otherwise
+*/
 int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struct bufr *b )
 {
   if ( bufrdeco_init_subset_sequence_data ( s ) )
@@ -260,6 +305,16 @@ int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struc
   return 0;
 }
 
+
+/*!
+  \fn int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *s, struct bufr_replicator *r, struct bufr *b )
+  \brief Decodes a replicated sequence
+  \param s target struct \ref bufrdeco_subset_sequence_data
+  \param r pointer to a struct \ref bufr_replicator which manage the replication task
+  \param b pointer to the base struct \ref bufr  
+  
+  If succeeded return 0, 1 otherwise
+*/ 
 int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *s, struct bufr_replicator *r, struct bufr *b )
 {
   size_t i;
