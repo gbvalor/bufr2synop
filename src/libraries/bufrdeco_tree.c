@@ -37,11 +37,12 @@ int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct 
   for ( i = 0; i < b->sec3.ndesc ; i++ )
     {
       memcpy ( & ( s->lseq[i] ), & ( b->sec3.unexpanded[i] ), sizeof ( struct bufr_descriptor ) );
-      if ( b->sec3.compressed && is_a_delayed_descriptor ( & ( s->lseq[i] ) ) )
+      /*if ( b->sec3.compressed && is_a_delayed_descriptor ( & ( s->lseq[i] ) ) )
         {
           sprintf ( b->error, "get_unexpanded_descriptor_array_from_sec3(): Found a delayed descriptor in a compressed bufr\n" );
           return 1;
         }
+      */
     }
   s->ndesc = b->sec3.ndesc;
   return 0;

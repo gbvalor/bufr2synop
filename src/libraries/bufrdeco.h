@@ -284,16 +284,22 @@ struct bufrdeco_subset_sequence_data
 */
 struct bufrdeco_compressed_ref 
 {
+  uint8_t is_associated ; /*!< 0 if is not associated data */
+  uint8_t bits; /*!< bits for data or associated in table b */
+  uint32_t ref; /*!< reference for a expanded data in table b */
   size_t bit0; /*!< first bit offset, i.e, most significant bit for ref0 */
-  uint32_t ref0; /*!< reference for a expanded data in subsets*/
-  uint8_t bits; /*!< number of inc bits for every subset  */
+  uint32_t ref0; /*!< local reference for a expanded data in subsets */
+  uint8_t inc_bits; /*!< number of inc bits for every subset  */
+  int32_t escale; /*!< escale for a expanded data in subset */
+  char name[92]; /*!< String with the name of descriptor */
+  char unit[32]; /*!< String with the name of units */
 };
 
 /*!
-  \struct bufrdeco_compressed_data_refences
+  \struct bufrdeco_compressed_data_references
   \brief Manage an array of structs \ref bufrdeco_compressed_ref
 */
-struct bufrdeco_compressed_data_refences
+struct bufrdeco_compressed_data_references
 {
   size_t dim; /*!< dimension of array of compressed refs */
   size_t nd; /*!< current amount of data used */

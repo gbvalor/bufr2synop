@@ -155,6 +155,23 @@ int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *
   return 1; // not found
 }
 
+// For compressed bufr, returns the number of bits
+size_t bufrdeco_tableb_compressed (struct bufrdeco_compressed_ref *r, struct bufr *b, struct bufr_descriptor *d )
+{
+  size_t i, nbits = 0;
+  struct bufr_tableb *tb;
+  tb = & ( b->table->b );
+
+  // Reject wrong arguments
+  if ( r == NULL || b == NULL || d == NULL )
+    return 1;
+
+  i = tb->x_start[d->x] + tb->y_ref[d->x][d->y];
+  r->bits = tb->item[i].nbits;
+  r->escale = tb->item[i].scale;
+}
+
+
 int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_descriptor *d )
 {
   size_t i, nbits = 0;
