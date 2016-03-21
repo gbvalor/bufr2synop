@@ -156,7 +156,7 @@ int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *
 }
 
 // For compressed bufr, returns the number of bits
-size_t bufrdeco_tableb_compressed (struct bufrdeco_compressed_ref *r, struct bufr *b, struct bufr_descriptor *d )
+size_t bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufr *b, struct bufr_descriptor *d )
 {
   size_t i, nbits = 0;
   struct bufr_tableb *tb;
@@ -169,6 +169,8 @@ size_t bufrdeco_tableb_compressed (struct bufrdeco_compressed_ref *r, struct buf
   i = tb->x_start[d->x] + tb->y_ref[d->x][d->y];
   r->bits = tb->item[i].nbits;
   r->escale = tb->item[i].scale;
+  strcpy ( r->name, tb->item[i].name );
+  strcpy ( r->unit, tb->item[i].unit );
 }
 
 
@@ -225,16 +227,16 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_
           return 1;
         }
       if ( has_data == 0 )
-      {
-        a->mask |= DESCRIPTOR_VALUE_MISSING;
-      }
+        {
+          a->mask |= DESCRIPTOR_VALUE_MISSING;
+        }
       else
-      {
-        a->mask |= DESCRIPTOR_HAVE_STRING_VALUE;
-      }
+        {
+          a->mask |= DESCRIPTOR_HAVE_STRING_VALUE;
+        }
       return 0;
     }
-    
+
   // is a numeric field, i.e, a data value, a flag code or a code
   // Set associated bits
   if ( b->state.assoc_bits &&
@@ -269,7 +271,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_
         a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10pos[ ( size_t ) ( -escale )];
       else
         a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10 ( ( double ) ( -escale ) );
-      
+
       if ( strstr ( a->unit, "CODE TABLE" ) == a->unit )
         {
           ival = ( uint32_t ) ( a->val + 0.5 );
@@ -290,11 +292,13 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_
             }
         }
     }
-  else 
-  {
-    a->val = MISSING_REAL;
-    a->mask |= DESCRIPTOR_VALUE_MISSING;
-  }
+  else
+    {
+      a->val = MISSING_REAL;
+      a->mask |= DESCRIPTOR_VALUE_MISSING;
+    }
 
   return 0;
 }
+
+
