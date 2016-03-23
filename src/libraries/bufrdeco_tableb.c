@@ -32,6 +32,15 @@
 const double pow10pos[8]= {1.0, 10.0, 100.0, 1000.0, 10000.0, 100000.0, 1000000.0, 10000000.0};
 const double pow10neg[8]= {1.0,  0.1,  0.01,  0.001,  0.0001,  0.00001,  0.000001,  0.0000001};
 
+/*!
+  \fn int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
+  \brief Read a Table B file and set the result in a struct \ref bufr_tableb
+  \param tb pointer to the struct \ref bufr_tableb where to set the results
+  \param error string with the error explanation if any
+
+  Note that this function assumes that file is formatted as EMWCF table B
+  Return 0 if success, 1 otherwise
+*/
 int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
 {
   char *c;
@@ -42,7 +51,9 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
   struct bufr_descriptor desc;
 
   if ( tb->path == NULL )
-    return 1;
+    {
+      return 1;
+    }
 
   tb->nlines = 0;
   if ( ( t = fopen ( tb->path, "r" ) ) == NULL )
@@ -55,7 +66,9 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
     {
       // supress the newline
       if ( ( c = strrchr ( l,'\n' ) ) != NULL )
-        *c = '\0';
+        {
+          *c = '\0';
+        }
 
       // First we build the descriptor
       ix = strtoul ( & ( l[0] ), &c, 10 );
@@ -65,7 +78,9 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
       tb->item[i].y = desc.y; // y
       strcpy ( tb->item[i].key, desc.c ); // key
       if ( tb->x_start[desc.x] == 0 )
-        tb->x_start[desc.x] = i; // marc the start
+        {
+          tb->x_start[desc.x] = i;  // marc the start
+        }
       tb->y_ref[desc.x][desc.y] = i - tb->x_start[desc.x]; // marc the position from start of first x
 
       // detailed name
@@ -98,6 +113,16 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
   return 0;
 }
 
+/*!
+  \fn int bufr_restore_original_tableb_item ( struct bufr_tableb *tb, struct bufr *b, uint8_t mode, char *key )
+  \brief Restores the original table B parameters for a BUFR descriptor
+  \param tb pointer to struct \ref bufr_tableb where are stored all table B data
+  \param b pointer to the basic struct \ref bufr
+  \param mode integer with bit mask about changed parameteres by operator descriptors
+  \param key descriptor string in format FXXYYY
+
+  Return 0 if success, 1 otherwise
+*/
 int bufr_restore_original_tableb_item ( struct bufr_tableb *tb, struct bufr *b, uint8_t mode, char *key )
 {
   size_t i;
@@ -130,6 +155,15 @@ int bufr_restore_original_tableb_item ( struct bufr_tableb *tb, struct bufr *b, 
   return 0;
 }
 
+/*!
+  \fn int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *key )
+  \brief found a descriptor index in a struct \ref bufr_tableb
+  \param index pointer  to a size_t where to set the result if success
+  \param tb pointer to struct \ref bufr_tableb where are stored all table B data
+  \param key descriptor string in format FXXYYY
+
+  Return 0 if success, 1 otherwise
+*/
 int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *key )
 {
   uint32_t ix;
@@ -155,25 +189,144 @@ int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *
   return 1; // not found
 }
 
-// For compressed bufr, returns the number of bits
-size_t bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufr *b, struct bufr_descriptor *d )
+// For compressed bufr, returns the number of bits. If mode = 1 then we search for an associated field
+int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufr *b, struct bufr_descriptor *d, int mode )
 {
-  size_t i, nbits = 0;
+  size_t i;
+  uint32_t ival;
+  uint8_t has_data;
   struct bufr_tableb *tb;
   tb = & ( b->table->b );
 
   // Reject wrong arguments
   if ( r == NULL || b == NULL || d == NULL )
-    return 1;
+    {
+      return 1;
+    }
 
+  // if mode 1 then we search for associated_bits
+  if ( mode && b->state.assoc_bits == 0 )
+    {
+      return -1;
+    }
+
+  if ( mode )
+    {
+      r->is_associated = 1;
+    }
   i = tb->x_start[d->x] + tb->y_ref[d->x][d->y];
   r->bits = tb->item[i].nbits;
   r->escale = tb->item[i].scale;
   strcpy ( r->name, tb->item[i].name );
   strcpy ( r->unit, tb->item[i].unit );
+  r->bit0 = b->state.bit_offset; // OFFSET
+  r->cref0[0] = '\0'; // default
+  r->ref0 = 0 ; // default
+
+  if ( b->state.changing_reference != 255 )
+    {
+      // The descriptor operator 2 03 YYY is on action
+      if ( get_bits_as_uint32_t ( &ival, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), r->bits ) == 0 )
+        {
+          sprintf ( b->error, "bufrdeco_tableb_compressed(): Cannot get bits from '%s'\n", d->c );
+          return 1;
+        }
+      // Change the reference value
+      if ( get_table_b_reference_from_uint32_t ( & ( tb->item[i].reference ), b->state.changing_reference, ival ) )
+        {
+          sprintf ( b->error, "bufrdeco_tableb_val(): Cannot change reference in 2 03 YYY operator for '%s'\n", d->c );
+          return 1;
+        }
+      strcpy ( r->unit, "NEW REFERENCE" );
+      r->ref = ( double ) tb->item[i].reference;
+
+      // extracting inc_bits from next 6 bits
+      if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), 6 ) == 0 )
+        {
+          sprintf ( b->error, "bufrdeco_tableb_compressed(): Cannot get 6 bits for inc_bits from '%s'\n", d->c );
+          return 1;
+        }
+      // Here is supossed that all subsets will have the same reference change,
+      // so inc_bits must be 0 and no inc data should be present
+      if ( ival )
+        {
+          sprintf ( b->error, "bufrdeco_tableb_compressed(): Bad format for compressed data when changing reference from '%s'\n", d->c );
+          return 1;
+        }
+      r->ref0 = 0; // here we also assume that ref0 = 0
+      r->inc_bits = 0;
+      return 0;
+    }
+
+  if ( strstr ( r->unit, "CCITTIA5" ) != NULL )
+    {
+      if ( get_bits_as_char_array ( r->cref0, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), r->bits ) == 0 )
+        {
+          sprintf ( b->error, "bufrdeco_tableb_compressed(): Cannot get uchars from '%s'\n", d->c );
+          return 1;
+        }
+      // extracting inc_bits from next 6 bits
+      if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), 6 ) == 0 )
+        {
+          sprintf ( b->error, "bufrdeco_tableb_compressed(): Cannot get 6 bits for inc_bits from '%s'\n", d->c );
+          return 1;
+        }
+      r->inc_bits = ival;
+      r->ref0 = 0;
+
+      // Set the bit_offset
+      b->state.bit_offset += r->inc_bits * 8 * b->sec3.subsets;
+
+      return 0;
+    }
+
+  // is a numeric field, i.e, a data value, a flag code or a code
+  if ( mode ) // case of associated field
+    {
+      if ( get_bits_as_uint32_t ( &r->ref0, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), b->state.assoc_bits ) == 0 )
+        {
+          sprintf ( b->error, "bufrdeco_tableb_compressed(): Cannot get associated bits from '%s'\n", d->c );
+          return 1;
+        }
+    }
+  else // case of data
+    {
+      if ( get_bits_as_uint32_t ( &r->ref0, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), b->state.assoc_bits ) == 0 )
+        {
+          sprintf ( b->error, "bufrdeco_tableb_compressed(): Cannot get data bits from '%s'\n", d->c );
+          return 1;
+        }
+    }
+
+  // extracting inc_bits from next 6 bits
+  if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), 6 ) == 0 )
+    {
+      sprintf ( b->error, "bufrdeco_tableb_compressed(): Cannot get 6 bits for inc_bits from '%s'\n", d->c );
+      return 1;
+    }
+  r->inc_bits = ival;
+
+  // if is a delayed descriptor then inc_bits MUST be 0.
+  if ( is_a_delayed_descriptor ( d ) && r->inc_bits )
+    {
+      sprintf ( b->error, "bufrdeco_tableb_compressed(): Found a delayed descriptor with inc_bits != 0\n" );
+      return 1;
+    }
+  // Set the bit_offset
+  b->state.bit_offset += r->inc_bits * 8 * b->sec3.subsets;
+
+  return 0;
 }
 
+/*!
+  \fn int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_descriptor *d )
+  \brief Get data from a table B descriptor
+  \param a pointer to a struct \ref bufr_atom_data where to set the results
+  \param b pointer to the basic struct \ref bufr
+  \param d pointer to the target descriptor
 
+  Return 0 if success, 1 otherwise
+*/
 int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_descriptor *d )
 {
   size_t i, nbits = 0;
@@ -186,7 +339,9 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_
 
   // Reject wrong arguments
   if ( a == NULL || b == NULL || d == NULL )
-    return 1;
+    {
+      return 1;
+    }
 
   i = tb->x_start[d->x] + tb->y_ref[d->x][d->y];
 
@@ -266,11 +421,17 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_
         }
       // Get a numeric number
       if ( escale >= 0 && escale < 8 )
-        a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10neg[ ( size_t ) escale];
+        {
+          a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10neg[ ( size_t ) escale];
+        }
       else if ( escale < 0 && escale > -8 )
-        a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10pos[ ( size_t ) ( -escale )];
+        {
+          a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10pos[ ( size_t ) ( -escale )];
+        }
       else
-        a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10 ( ( double ) ( -escale ) );
+        {
+          a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10 ( ( double ) ( -escale ) );
+        }
 
       if ( strstr ( a->unit, "CODE TABLE" ) == a->unit )
         {

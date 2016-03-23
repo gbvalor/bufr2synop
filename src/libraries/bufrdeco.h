@@ -285,10 +285,12 @@ struct bufrdeco_subset_sequence_data
 struct bufrdeco_compressed_ref 
 {
   uint8_t is_associated ; /*!< 0 if is not associated data */
+  uint8_t has_data ; /*!< 1 if has any subset with valid data. 0 if missing in all subsets */
   uint8_t bits; /*!< bits for data or associated in table b */
   uint32_t ref; /*!< reference for a expanded data in table b */
   size_t bit0; /*!< first bit offset, i.e, most significant bit for ref0 */
   uint32_t ref0; /*!< local reference for a expanded data in subsets */
+  char cref0[256]; /*!< Local reference in case of string */
   uint8_t inc_bits; /*!< number of inc bits for every subset  */
   int32_t escale; /*!< escale for a expanded data in subset */
   char name[92]; /*!< String with the name of descriptor */
@@ -517,6 +519,7 @@ char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec 
 int bufrdeco_tabled_get_descritors_array ( struct bufr_sequence *s, struct bufr *b,
     const char *key );
 int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_descriptor *d );
+int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufr *b, struct bufr_descriptor *d, int mode );
 int bufrdeco_parse_tree_deep ( struct bufr *b, struct bufr_sequence *father,  const char *key );
 int bufrdeco_parse_tree ( struct bufr *b );
 void bufrdeco_print_tree ( struct bufr *b );
@@ -527,6 +530,7 @@ char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a );
 void bufrdeco_print_atom_data_stdout (struct bufr_atom_data *a );
 void bufrdeco_print_subset_sequence_data(struct bufrdeco_subset_sequence_data *s);
 int bufrdeco_parse_f2_descriptor (struct bufrdeco_subset_sequence_data *s, struct bufr_descriptor *d, struct bufr *b);
+int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_descriptor *d, struct bufr *b );
 int bufr_find_tableb_index(size_t *index, struct bufr_tableb *tb, const char *key);
 int get_table_b_reference_from_uint32_t(int32_t *target, uint8_t bits, uint32_t source);
 int is_a_delayed_descriptor ( struct bufr_descriptor *d );

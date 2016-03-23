@@ -42,10 +42,9 @@ int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_r
 
 int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_references *r, struct bufr_sequence *l, struct bufr *b )
 {
-  size_t i, ref0;
+  int res;
+  size_t i;
   struct bufr_sequence *seq;
-  struct bufr_replicator replicator;
-  struct bufr_atom_data a;
   struct bufrdeco_compressed_ref *rf;
 
   if ( l == NULL )
@@ -73,21 +72,74 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
         {
         case 0:
           // Get data from table B
-          ref0 = b->state.bit_offset;
-          if ( bufrdeco_tableb_val ( &a, b, & ( seq->lseq[i] ) ) )
+          rf = & ( r->refs[r->nd] );
+          // First associated field
+          res = bufrdeco_tableb_compressed ( rf, b, & ( seq->lseq[i] ), 1 );
+          if ( res > 0 )
+            {
+              return 1; // case of error
+            }
+          else if ( res == 0 )
+            {
+              // associated field read with success
+              if ( r->nd <  BUFR_NMAXSEQ )
+                {
+                  r->nd += 1;
+                }
+              else
+                {
+                  sprintf ( b->error, "bufr_parse_compressed_recursive(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
+                  return 1;
+                }
+              rf = & ( r->refs[r->nd] );
+            }
+
+          // then the data itself
+          if ( bufrdeco_tableb_compressed ( rf, b, & ( seq->lseq[i] ), 0 ) )
             {
               return 1;
             }
-          // now use som values from a
-          if ( a.associated != MISSING_INTEGER )
+          if ( r->nd <  BUFR_NMAXSEQ )
             {
-              //process associated field
-              rf = & ( r->refs[r->nd] );
-              rf->is_associated = 1;
-              rf->bits = b->state.assoc_bits;
-              rf->escale = 0;
-              // get the bits from
+              r->nd += 1;
             }
+          else
+            {
+              sprintf ( b->error, "bufr_parse_compressed_recursive(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
+              return 1;
+            }
+          break;
+
+        case 2:
+          // Case of operator descriptor
+          if ( bufrdeco_parse_f2_compressed ( r, & ( seq->lseq[i] ), b ) )
+	  {
+            return 1;
+	  }
+          if ( r->nd <  BUFR_NMAXSEQ )
+            {
+              r->nd += 1;
+            }
+          else
+            {
+              sprintf ( b->error, "bufr_parse_compressed_recursive(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
+              return 1;
+            }
+          break;
+
+        case 3:
+          // Case of sequence descriptor
+          if ( bufrdeco_parse_compressed_recursive ( r, seq->sons[i], b ) )
+            {
+              return 1;
+            }
+          break;
+
+        default:
+          // this case is not possible
+          sprintf ( b->error, "bufr_parse_compressed_recursive(): Found bad 'f' in descriptor\n" );
+          return 1;
+          break;
         }
     }
   return 0;
@@ -97,10 +149,14 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
 int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr *b )
 {
   if ( bufrdeco_init_compressed_data_references ( r ) )
-    return 1;
+    {
+      return 1;
+    }
 
   if ( bufrdeco_parse_compressed_recursive ( r, NULL, b ) )
-    return 1;
+    {
+      return 1;
+    }
 
   return 0;
 }

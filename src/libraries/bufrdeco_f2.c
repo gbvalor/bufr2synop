@@ -30,7 +30,9 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
   uint8_t has_data;
 
   if ( d->f != 2 )
-    return 0; // nothing to do here
+    {
+      return 0;  // nothing to do here
+    }
 
   switch ( d->x )
     {
@@ -39,9 +41,13 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
       // data element in Table B, other than CCITT IA5
       // (character) data, code or flag tables.
       if ( d->y )
-        b->state.added_bit_length = d->y - 128;
+        {
+          b->state.added_bit_length = d->y - 128;
+        }
       else
-        b->state.added_bit_length = 0;
+        {
+          b->state.added_bit_length = 0;
+        }
       break;
 
     case 2:
@@ -49,9 +55,13 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
       // Table B, other than CCITT IA5 (character) data, code
       // or flag tables.
       if ( d->y )
-        b->state.added_scale = d->y - 128;
+        {
+          b->state.added_scale = d->y - 128;
+        }
       else
-        b->state.added_scale = 0;
+        {
+          b->state.added_scale = 0;
+        }
       break;
 
     case 3:
@@ -85,12 +95,115 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
           return 1;
         }
       if ( has_data == 0 )
-        a->mask |= DESCRIPTOR_VALUE_MISSING;
+        {
+          a->mask |= DESCRIPTOR_VALUE_MISSING;
+        }
       else
-        a->mask |= DESCRIPTOR_HAVE_STRING_VALUE;
+        {
+          a->mask |= DESCRIPTOR_HAVE_STRING_VALUE;
+        }
       strcpy ( a->name, "SIGNIFY CHARACTER" );
       strcpy ( a->unit, "CCITTIA5" ); // unit
       break;
+    default:
+      sprintf ( b->error, "bufrdeco_parse_f2_descriptor(): Still no proccessed descriptor '%s' in "
+                "current library version\n", d->c );
+      return 1;
+    }
+  return 0;
+}
+
+
+int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_descriptor *d, struct bufr *b )
+{
+  size_t nbits;
+  uint32_t ival;
+  struct bufrdeco_compressed_ref *rf;
+  uint8_t has_data;
+
+  if ( d->f != 2 )
+    {
+      return 0;  // nothing to do here
+    }
+
+  switch ( d->x )
+    {
+    case 1:
+      // Add (YYY–128) bits to the data width given for each
+      // data element in Table B, other than CCITT IA5
+      // (character) data, code or flag tables.
+      if ( d->y )
+        {
+          b->state.added_bit_length = d->y - 128;
+        }
+      else
+        {
+          b->state.added_bit_length = 0;
+        }
+      break;
+
+    case 2:
+      // Add YYY–128 to the scale for each data element in
+      // Table B, other than CCITT IA5 (character) data, code
+      // or flag tables.
+      if ( d->y )
+        {
+          b->state.added_scale = d->y - 128;
+        }
+      else
+        {
+          b->state.added_scale = 0;
+        }
+      break;
+
+    case 3:
+      // Subsequent element descriptors define new reference
+      // values for corresponding Table B entries. Each new
+      // reference value is represented by YYY bits in the Data
+      // section. Definition of new reference values is concluded
+      // by coding this operator with YYY = 255. Negative
+      // reference values shall be represented by a positive
+      // integer with the left-most bit (bit 1) set to 1.
+      b->state.changing_reference = d->y;
+      break;
+
+    case 4:
+      // Precede each data element with YYY bits of
+      // information. This operation associates a data field
+      // (e.g. quality control information) of YYY bits with each
+      // data element.
+      b->state.assoc_bits = d->y;
+      break;
+
+    case 5:
+      // YYY characters (CCITT International Alphabet No. 5) are
+      // inserted as a data field of YYY x 8 bits in length.
+      nbits = 8 * d->y;
+      rf = & ( r->refs[r->nd] );
+      if ( get_bits_as_char_array ( rf->cref0, &rf->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
+        {
+          sprintf ( b->error, "bufrdeco_parse_f2_compressed(): Cannot get %u uchars from '%s'\n", d->y, d->c );
+          return 1;
+        }
+      strcpy ( rf->name, "SIGNIFY CHARACTER" );
+      strcpy ( rf->unit, "CCITTIA5" ); // unit
+
+      // Is suppossed all data will have same length in all subsets
+      // extracting inc_bits from next 6 bits
+      if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), 6 ) == 0 )
+        {
+          sprintf ( b->error, "bufrdeco_parse_f2_compressed(): Cannot get 6 bits for inc_bits from '%s'\n", d->c );
+          return 1;
+        }
+      if ( ival != d->y )
+        {
+          sprintf ( b->error, "bufrdeco_parse_f2_compressed(): Bad length in inc_bits for a 2 05 YYY descriptor from '%s'\n", d->c );
+          return 1;
+        }
+      rf->inc_bits = ival;
+      b->state.bit_offset += rf->inc_bits * 8 * b->sec3.subsets;
+      break;
+
     default:
       sprintf ( b->error, "bufrdeco_parse_f2_descriptor(): Still no proccessed descriptor '%s' in "
                 "current library version\n", d->c );
