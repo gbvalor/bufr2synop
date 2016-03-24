@@ -282,7 +282,7 @@ struct bufrdeco_subset_sequence_data
  \struct bufrdeco_compressed_ref
  \brief Struct to hold the needed reference bit offsets in a compressed BUFR
 */
-struct bufrdeco_compressed_ref 
+struct bufrdeco_compressed_ref
 {
   uint8_t is_associated ; /*!< 0 if is not associated data */
   uint8_t has_data ; /*!< 1 if has any subset with valid data. 0 if missing in all subsets */
@@ -295,6 +295,7 @@ struct bufrdeco_compressed_ref
   int32_t escale; /*!< escale for a expanded data in subset */
   char name[92]; /*!< String with the name of descriptor */
   char unit[32]; /*!< String with the name of units */
+  struct bufr_descriptor desc; /*!< associated descriptor */
 };
 
 /*!
@@ -440,9 +441,9 @@ struct bufr_tableb
   char path[256];
   size_t nlines;
   size_t x_start[64]; /*!< Index of first x */
-  uint8_t y_ref[64][256]; /*!< index of y since first x*/ 
+  uint8_t y_ref[64][256]; /*!< index of y since first x*/
   size_t num[64]; /*!< Amonut of items for x */
-  
+
   struct bufr_tableb_decoded_item item[BUFR_MAXLINES_TABLEB];
 };
 
@@ -506,7 +507,7 @@ uint32_t three_bytes_to_uint32 ( const uint8_t *source );
 size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset,
                               size_t bit_length );
 size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset,
-                                   size_t bit_length );
+                                size_t bit_length );
 int two_bytes_to_descriptor ( struct bufr_descriptor *d, const uint8_t *source );
 int uint32_t_to_descriptor ( struct bufr_descriptor *d, uint32_t id );
 char * bufr_adjust_string ( char *s );
@@ -519,22 +520,36 @@ char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec 
 int bufrdeco_tabled_get_descritors_array ( struct bufr_sequence *s, struct bufr *b,
     const char *key );
 int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_descriptor *d );
-int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufr *b, struct bufr_descriptor *d, int mode );
 int bufrdeco_parse_tree_deep ( struct bufr *b, struct bufr_sequence *father,  const char *key );
 int bufrdeco_parse_tree ( struct bufr *b );
 void bufrdeco_print_tree ( struct bufr *b );
-int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struct bufr *b );
+int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struct bufrdeco_compressed_data_references *r, struct bufr *b );
+int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *s, struct bufr_sequence *l, struct bufr *b );
 int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *s,
     struct bufr_replicator *r, struct bufr *b );
 char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a );
-void bufrdeco_print_atom_data_stdout (struct bufr_atom_data *a );
-void bufrdeco_print_subset_sequence_data(struct bufrdeco_subset_sequence_data *s);
-int bufrdeco_parse_f2_descriptor (struct bufrdeco_subset_sequence_data *s, struct bufr_descriptor *d, struct bufr *b);
-int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_descriptor *d, struct bufr *b );
-int bufr_find_tableb_index(size_t *index, struct bufr_tableb *tb, const char *key);
-int get_table_b_reference_from_uint32_t(int32_t *target, uint8_t bits, uint32_t source);
+void bufrdeco_print_atom_data_stdout ( struct bufr_atom_data *a );
+void bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *s );
+int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, struct bufr_descriptor *d, struct bufr *b );
+int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *key );
+int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_t source );
 int is_a_delayed_descriptor ( struct bufr_descriptor *d );
-int bufrdeco_init_subset_sequence_data (struct bufrdeco_subset_sequence_data *ba);
-int bufrdeco_clean_subset_sequence_data (struct bufrdeco_subset_sequence_data *ba);
-int bufrdeco_free_subset_sequence_data (struct bufrdeco_subset_sequence_data *ba);
+int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba );
+int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba );
+int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba );
+int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s );
+
+// for compressed bufr
+int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr *b );
+int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_references *r, struct bufr_sequence *l, struct bufr *b );
+int bufr_decode_subset_data_compressed ( struct bufrdeco_subset_sequence_data *s, struct bufrdeco_compressed_data_references *r,
+    struct bufr *b );
+int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_references *rf );
+int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_replicator *rep,
+    struct bufr *b );
+int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_descriptor *d, struct bufr *b );
+int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufr *b, struct bufr_descriptor *d, int mode );
+int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, struct bufrdeco_compressed_ref *r,
+    size_t subset, struct bufr *b );
+
 #endif  // from ifndef BUFRDECO_H

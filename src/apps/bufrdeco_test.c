@@ -24,6 +24,8 @@
 
 struct bufr BUFR;
 struct bufrdeco_subset_sequence_data SEQ;
+struct bufrdeco_compressed_data_references REF;
+
 char ENTRADA[256];
 
 void print_usage ( void )
@@ -102,7 +104,7 @@ int main ( int argc, char *argv[] )
 
   for ( subset = 0; subset < BUFR.sec3.subsets ; subset++ )
     {
-      if ( bufrdeco_decode_data_subset ( &SEQ, &BUFR ) )
+      if ( bufrdeco_decode_data_subset ( &SEQ, &REF, &BUFR ) )
         {
           printf ( "%s", BUFR.error );
           close_bufr ( &BUFR );

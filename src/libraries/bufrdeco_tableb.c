@@ -215,6 +215,7 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufr 
       r->is_associated = 1;
     }
   i = tb->x_start[d->x] + tb->y_ref[d->x][d->y];
+  memcpy ( & ( r->desc ), d, sizeof ( struct bufr_descriptor ) );
   r->bits = tb->item[i].nbits;
   r->escale = tb->item[i].scale;
   strcpy ( r->name, tb->item[i].name );
@@ -412,6 +413,10 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_
       return 1;
     }
 
+  // patch for delayed descriptor: it allways have data
+  if (a->desc.x == 31)
+    has_data = 1;
+  
   if ( has_data )
     {
       if ( strstr ( a->unit, "CODE TABLE" ) != a->unit &&  strstr ( a->unit,"FLAG" ) != a->unit )
