@@ -97,7 +97,7 @@ void print_sec4_info ( struct bufr *b )
 
 /*!
   \fn int bufrdeco_print_tree_recursive ( struct bufr *b, struct bufr_sequence *seq )
-*/ 
+*/
 int bufrdeco_print_tree_recursive ( struct bufr *b, struct bufr_sequence *seq )
 {
   size_t i, j;
@@ -163,9 +163,9 @@ char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a )
   aux[20] = '\0';
   c += sprintf ( c, "%-20s", aux );
   if ( a->mask & DESCRIPTOR_VALUE_MISSING )
-  {
-    c += sprintf ( c, "%17s", "MISSING" );
-  }
+    {
+      c += sprintf ( c, "%17s", "MISSING" );
+    }
   else
     {
       if ( a->mask & DESCRIPTOR_HAVE_STRING_VALUE )
@@ -175,8 +175,8 @@ char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a )
           c += sprintf ( c, "                  " );
           c += sprintf ( c, "%s", aux );
         }
-      else if ( a->mask & DESCRIPTOR_HAVE_CODE_TABLE_STRING 
-	|| strstr ( a->unit, "CODE TABLE" ) == a->unit  )
+      else if ( a->mask & DESCRIPTOR_HAVE_CODE_TABLE_STRING
+                || strstr ( a->unit, "CODE TABLE" ) == a->unit )
         {
           strcpy ( aux, a->ctable );
           aux[56] = '\0';
@@ -208,3 +208,24 @@ void bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data 
     }
 }
 
+void print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r )
+{
+  printf ( "%s -> A=%u, D=%u, ",r->desc.c,r->is_associated,r->has_data );
+  if ( r->cref0[0] == '\0' )
+    {
+      printf ( "bits=%2u, ref=%10d, escale=%3d,",  r->bits, r->ref, r->escale );
+      printf ( "ref0=%10u, inc_bits=%2u ", r->ref0, r->inc_bits );
+      printf ( "%s %s\n",r->name, r->unit );
+    }
+  else
+    {
+      printf ( "'%s', chars=%3u\n", r->cref0, r->inc_bits );
+    }
+}
+
+void print_bufrdeco_compressed_data_references(struct bufrdeco_compressed_data_references *r)
+{
+  size_t  i;
+  for (i = 0; i < r->nd; i++)
+    print_bufrdeco_compressed_ref( & r->refs[i]);
+}

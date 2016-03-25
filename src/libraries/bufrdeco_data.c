@@ -205,7 +205,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
           break;
         default:
           // this case is not possible
-          sprintf ( b->error, "bufr_decode_data_subset(): Found bad 'f' in descriptor\n" );
+          sprintf ( b->error, "bufr_decode_data_subset_recursive(): Found bad 'f' in descriptor\n" );
           return 1;
           break;
         }

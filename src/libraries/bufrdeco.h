@@ -287,7 +287,7 @@ struct bufrdeco_compressed_ref
   uint8_t is_associated ; /*!< 0 if is not associated data */
   uint8_t has_data ; /*!< 1 if has any subset with valid data. 0 if missing in all subsets */
   uint8_t bits; /*!< bits for data or associated in table b */
-  uint32_t ref; /*!< reference for a expanded data in table b */
+  int32_t ref; /*!< reference for a expanded data in table b */
   size_t bit0; /*!< first bit offset, i.e, most significant bit for ref0 */
   uint32_t ref0; /*!< local reference for a expanded data in subsets */
   char cref0[256]; /*!< Local reference in case of string */
@@ -493,6 +493,8 @@ extern const char DEFAULT_BUFRTABLES_DIR2[];
 int init_bufr ( struct bufr *b );
 int close_bufr ( struct bufr *b );
 int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error );
+void print_bufrdeco_compressed_ref (struct bufrdeco_compressed_ref *r);
+void print_bufrdeco_compressed_data_references(struct bufrdeco_compressed_data_references *r);
 void print_sec0_info ( struct bufr *b );
 void print_sec1_info ( struct bufr *b );
 void print_sec3_info ( struct bufr *b );

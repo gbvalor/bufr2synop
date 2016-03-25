@@ -98,6 +98,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
             }
           else if ( res == 0 )
             {
+              //print_bufrdeco_compressed_ref ( rf );
               // associated field read with success
               if ( r->nd <  BUFR_NMAXSEQ )
                 {
@@ -116,6 +117,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
             {
               return 1;
             }
+          //print_bufrdeco_compressed_ref ( rf );
           if ( r->nd <  BUFR_NMAXSEQ )
             {
               r->nd += 1;
@@ -155,6 +157,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
                   }
                 else if ( res == 0 )
                   {
+                    //print_bufrdeco_compressed_ref ( rf );
                     // associated field read with success
                     if ( r->nd <  BUFR_NMAXSEQ )
                       {
@@ -173,6 +176,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
                   {
                     return 1;
                   }
+                //print_bufrdeco_compressed_ref ( rf );
                 if ( r->nd <  BUFR_NMAXSEQ )
                   {
                     r->nd += 1;
@@ -196,14 +200,17 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
             {
               return 1;
             }
-          if ( r->nd <  BUFR_NMAXSEQ )
+          if ( seq->lseq[i].x == 5 ) // cases wich produces a new ref
             {
-              r->nd += 1;
-            }
-          else
-            {
-              sprintf ( b->error, "bufr_parse_compressed_recursive(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
-              return 1;
+              if ( r->nd <  BUFR_NMAXSEQ )
+                {
+                  r->nd += 1;
+                }
+              else
+                {
+                  sprintf ( b->error, "bufr_parse_compressed_recursive(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
+                  return 1;
+                }
             }
           break;
 
@@ -254,6 +261,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                   }
                 else if ( res == 0 )
                   {
+                    //print_bufrdeco_compressed_ref ( rf );
                     // associated field read with success
                     if ( r->nd <  BUFR_NMAXSEQ )
                       {
@@ -272,6 +280,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                   {
                     return 1;
                   }
+                //print_bufrdeco_compressed_ref ( rf );
                 if ( r->nd <  BUFR_NMAXSEQ )
                   {
                     r->nd += 1;
@@ -313,6 +322,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                       }
                     else if ( res == 0 )
                       {
+                        //print_bufrdeco_compressed_ref ( rf );
                         // associated field read with success
                         if ( r->nd <  BUFR_NMAXSEQ )
                           {
@@ -331,6 +341,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                       {
                         return 1;
                       }
+                    //print_bufrdeco_compressed_ref ( rf );
                     if ( r->nd <  BUFR_NMAXSEQ )
                       {
                         r->nd += 1;
@@ -354,14 +365,17 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                 {
                   return 1;
                 }
-              if ( r->nd <  BUFR_NMAXSEQ )
+              if ( l->lseq[i].x == 5 ) // cases wich produces a new ref
                 {
-                  r->nd += 1;
-                }
-              else
-                {
-                  sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
-                  return 1;
+                  if ( r->nd <  BUFR_NMAXSEQ )
+                    {
+                      r->nd += 1;
+                    }
+                  else
+                    {
+                      sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
+                      return 1;
+                    }
                 }
               break;
             case 3:
@@ -458,7 +472,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
               // extract inc_bits data
               if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & bit_offset, r->inc_bits ) == 0 )
                 {
-                  sprintf ( b->error, "get_bufr_atom_data_from_compressed_data_ref(): Cannot get bits from '%s'\n", r->desc.c );
+                  sprintf ( b->error, "get_bufr_atom_data_from_compressed_data_ref(): Cannot get associated bits from '%s'\n", r->desc.c );
                   return 1;
                 }
               // finally get the associated data
@@ -495,7 +509,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
       // extract inc_bits data
       if ( get_bits_as_uint32_t ( &ival0, &has_data, &b->sec4.raw[4], & bit_offset, r->inc_bits ) == 0 )
         {
-          sprintf ( b->error, "get_bufr_atom_data_from_compressed_data_ref(): Cannot get bits from '%s'\n", r->desc.c );
+          sprintf ( b->error, "get_bufr_atom_data_from_compressed_data_ref(): Cannot get inc_bits from '%s'\n", r->desc.c );
           return 1;
         }
       if ( has_data )
@@ -542,7 +556,7 @@ int bufr_decode_subset_data_compressed ( struct bufrdeco_subset_sequence_data *s
 
   for ( i = 0; i < r->nd; i++ )
     {
-      if ( bufrdeco_get_atom_data_from_compressed_data_ref ( & ( s->sequence[s->nd] ) , & ( r->refs[i]), b->state.subset, b ) )
+      if ( bufrdeco_get_atom_data_from_compressed_data_ref ( & ( s->sequence[s->nd] ) , & ( r->refs[i] ), b->state.subset, b ) )
         return 1;
 
       if ( r->refs[i].is_associated == 0 )

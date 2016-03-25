@@ -216,14 +216,19 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufr 
     }
   i = tb->x_start[d->x] + tb->y_ref[d->x][d->y];
   memcpy ( & ( r->desc ), d, sizeof ( struct bufr_descriptor ) );
-  r->bits = tb->item[i].nbits;
+  r->ref = tb->item[i].reference;
+  r->bits = tb->item[i].nbits + b->state.added_bit_length;
   r->escale = tb->item[i].scale;
   strcpy ( r->name, tb->item[i].name );
   strcpy ( r->unit, tb->item[i].unit );
+  if ( strstr ( r->unit, "CODE TABLE" ) != r->unit &&  strstr ( r->unit,"FLAG" ) != r->unit )
+    {
+      r->escale += b->state.added_scale;
+      //r->reference += b->state.added_reference;
+    }
   r->bit0 = b->state.bit_offset; // OFFSET
   r->cref0[0] = '\0'; // default
   r->ref0 = 0 ; // default
-
   if ( b->state.changing_reference != 255 )
     {
       // The descriptor operator 2 03 YYY is on action
@@ -289,14 +294,20 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufr 
           sprintf ( b->error, "bufrdeco_tableb_compressed(): Cannot get associated bits from '%s'\n", d->c );
           return 1;
         }
+      // patch for delayed descriptor: it allways have data
+      if ( d->x == 31 )
+        r->has_data = 1;
     }
   else // case of data
     {
-      if ( get_bits_as_uint32_t ( &r->ref0, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), b->state.assoc_bits ) == 0 )
+      if ( get_bits_as_uint32_t ( &r->ref0, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), r->bits ) == 0 )
         {
-          sprintf ( b->error, "bufrdeco_tableb_compressed(): Cannot get data bits from '%s'\n", d->c );
+          sprintf ( b->error, "bufrdeco_tableb_compressed(): Cannot get the data bits from '%s'\n", d->c );
           return 1;
         }
+      // patch for delayed descriptor: it allways have data
+      if ( d->x == 31 )
+        r->has_data = 1;
     }
 
   // extracting inc_bits from next 6 bits
@@ -314,7 +325,7 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufr 
       return 1;
     }
   // Set the bit_offset
-  b->state.bit_offset += r->inc_bits * 8 * b->sec3.subsets;
+  b->state.bit_offset += r->inc_bits * b->sec3.subsets;
 
   return 0;
 }
@@ -414,9 +425,9 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_
     }
 
   // patch for delayed descriptor: it allways have data
-  if (a->desc.x == 31)
+  if ( a->desc.x == 31 )
     has_data = 1;
-  
+
   if ( has_data )
     {
       if ( strstr ( a->unit, "CODE TABLE" ) != a->unit &&  strstr ( a->unit,"FLAG" ) != a->unit )
