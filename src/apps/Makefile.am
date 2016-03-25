@@ -7,7 +7,7 @@ bufr_decode_SOURCES = bufr_decode.c
 noinst_HEADERS = bufr2synop.h bufrnoaa.h
 
 # set the include path found by configure
-AM_CPPFLAGS= $(all_includes) -I$(top_srcdir)/src/libraries
+AM_CPPFLAGS= $(all_includes) -I$(top_srcdir)/src/bufrdeco -I$(top_srcdir)/src/libraries
 
 # the library search path.
 bufr_decode_LDFLAGS = $(all_libraries)
@@ -20,5 +20,5 @@ bufr2synop_LDADD = $(top_builddir)/src/libraries/libbufr2syn.la -lbufr \
 AM_CFLAGS = -W -Wall
 bufrnoaa_SOURCES = bufrnoaa.c bufrnoaa_io.c bufrnoaa_utils.c
 bufrdeco_test_SOURCES = bufrdeco_test.c
-bufrdeco_test_LDADD = $(top_builddir)/src/libraries/libbufrdeco.la -lm 
+bufrdeco_test_LDADD = $(top_builddir)/src/bufrdeco/libbufrdeco.la -lm 
 EXTRA_DIST = CMakeLists.txt

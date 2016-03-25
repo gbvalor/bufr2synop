@@ -3,13 +3,10 @@ METASOURCES = AUTO
 # set the include path found by configure
 AM_CPPFLAGS= $(all_includes)
 
-include_HEADERS = bufrdeco.h bufr2syn.h metbuoy.h metsynop.h mettemp.h metclimat.h metcommon.h
+include_HEADERS = bufr2syn.h metbuoy.h metsynop.h mettemp.h metclimat.h metcommon.h
 
-lib_LTLIBRARIES = libbufrdeco.la libbufr2syn.la
-libbufrdeco_la_SOURCES = bufrdeco.c bufrdeco_tableb.c bufrdeco_tablec.c bufrdeco_tabled.c \
-	bufrdeco_utils.c bufrdeco_tree.c bufrdeco_data.c bufrdeco_compressed.c bufrdeco_f2.c \
-	bufrdeco_print.c
-libbufrdeco_la_LIBADD = -lm
+lib_LTLIBRARIES = libbufr2syn.la
+
 libbufr2syn_la_SOURCES = bufr2syn_buoy.c bufr2syn_csv.c bufr2syn_env.c \
 	bufr2syn_io.c bufr2syn_json.c bufr2syn_mrproper.c bufr2syn_print.c bufr2syn_sqparse.c \
 	bufr2syn_tablec.c bufr2syn_synop.c bufr2syn_temp.c bufr2syn_utils.c bufr2syn_x01.c \

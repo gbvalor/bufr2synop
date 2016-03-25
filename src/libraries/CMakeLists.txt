@@ -1,8 +1,5 @@
-LINK_DIRECTORIES(/usr/lib /usr/lib64 /usr/local/lib /usr/local/lib64)
-
-add_library(bufrdeco bufrdeco.h bufrdeco.c bufrdeco_tableb.c bufrdeco_tablec.c bufrdeco_tabled.c bufrdeco_utils.c 
-        bufrdeco_tree.c bufrdeco_data.c bufrdeco_compressed.c bufrdeco_f2.c bufrdeco_print.c)
-target_link_libraries(bufrdeco m)
+INCLUDE_DIRECTORIES( ${bufr2synop_SOURCE_DIR}/src/bufrdeco $(all_includes) )
+LINK_DIRECTORIES(${bufr2synop_SOURCE_DIR}/src/bufrdeco /usr/lib /usr/lib64 /usr/local/lib /usr/local/lib64)
 
 add_library(bufr2syn bufr2syn.h metcommon.h metbuoy.h metsynop.h mettemp.h metclimat.h 
         bufr2syn_buoy.c bufr2syn_csv.c bufr2syn_env.c 
@@ -14,6 +11,6 @@ add_library(bufr2syn bufr2syn.h metcommon.h metbuoy.h metsynop.h mettemp.h metcl
 	bufr2syn_xml.c bufr2syn_climat.c bufr2syn_print_temp.c bufr2syn_tablec.c)
 target_link_libraries(bufr2syn bufrdeco m gfortran)
 
-INSTALL(FILES bufrdeco.h bufr2syn.h metbuoy.h metsynop.h mettemp.h metclimat.h metcommon.h
+INSTALL(FILES bufr2syn.h metbuoy.h metsynop.h mettemp.h metclimat.h metcommon.h
   DESTINATION include PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ)
   

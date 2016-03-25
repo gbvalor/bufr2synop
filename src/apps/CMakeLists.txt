@@ -1,5 +1,7 @@
-INCLUDE_DIRECTORIES( ${bufr2synop_SOURCE_DIR}/src/libraries $(all_includes) )
-LINK_DIRECTORIES( ${bufr2synop_SOURCE_DIR}/src/libraries /usr/lib /usr/lib64 /usr/local/lib /usr/local/lib64)
+INCLUDE_DIRECTORIES( ${bufr2synop_SOURCE_DIR}/src/bufrdeco ${bufr2synop_SOURCE_DIR}/src/libraries 
+                     $(all_includes) )
+LINK_DIRECTORIES( ${bufr2synop_SOURCE_DIR}/src/bufrdeco ${bufr2synop_SOURCE_DIR}/src/libraries 
+                    /usr/lib /usr/lib64 /usr/local/lib /usr/local/lib64)
 
 add_executable(bufr2synop bufr2synop.c bufr2synop_io.c)
 target_link_libraries(bufr2synop bufr2syn bufr m gfortran)

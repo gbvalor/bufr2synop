@@ -1,3 +1,3 @@
 
-add_subdirectory(libraries)
+add_subdirectory(bufrdeco libraries)
 add_subdirectory(apps)
