@@ -55,6 +55,18 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
       return 1;
     }
 
+  // If we've already readed this table. We just regenerate the table with original values
+  if ( strcmp ( tb->path, tb->old_path ) == 0 )
+    {
+      for ( i = 0; i < tb->nlines ; i++ )
+        {
+          tb->item[i].scale = tb->item[i].scale_ori;
+          tb->item[i].reference = tb->item[i].reference_ori;
+          tb->item[i].nbits = tb->item[i].nbits_ori;
+        }
+      return 0; // all done
+    }
+    
   tb->nlines = 0;
   if ( ( t = fopen ( tb->path, "r" ) ) == NULL )
     {
@@ -110,6 +122,7 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
   tb->x_start[0] = 0; // fix the start for x = 0
   fclose ( t );
   tb->nlines = i;
+  strcpy(tb->old_path, tb->path); // store latest path
   return 0;
 }
 

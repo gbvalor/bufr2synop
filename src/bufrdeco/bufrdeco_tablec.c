@@ -98,8 +98,14 @@ int bufr_read_tablec(struct bufr_tablec *tc, char *error)
 
   if (tc->path == NULL)
     return 1;
-  
-  tc->nlines = 0;
+
+  // If we've already readed this table.
+  if ( strcmp ( tc->path, tc->old_path ) == 0 )
+    {
+      return 0; // all done
+    }
+
+    tc->nlines = 0;
   if ( ( t = fopen ( tc->path, "r" ) ) == NULL )
     {
       sprintf ( error,"Unable to open table C file '%s'\n", tc->path);
@@ -125,6 +131,7 @@ int bufr_read_tablec(struct bufr_tablec *tc, char *error)
     }
   fclose ( t );
   tc->nlines = i;
+  strcpy(tc->old_path, tc->path); // store latest path
   return 0;
 }
 

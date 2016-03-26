@@ -23,6 +23,10 @@
 */
 #include "bufrdeco.h"
 
+
+/*!
+   These are the default directories where the ECMWF package install bufrtables
+*/
 const char DEFAULT_BUFRTABLES_DIR1[] = "/usr/local/lib/bufrtables/";
 const char DEFAULT_BUFRTABLES_DIR2[] = "/usr/lib/bufrtables/";
 
@@ -44,12 +48,13 @@ const char DEFAULT_BUFRTABLES_DIR2[] = "/usr/lib/bufrtables/";
 int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
 {
   int aux;
-  uint8_t *bufrx = NULL, *c;
+  uint8_t *bufrx = NULL; /*!< pointer to a memory buffer where we write raw bufr file */
+  uint8_t *c;
   size_t ix, ud, n = 0;
   FILE *fp;
   struct stat st;
 
-  /* Open input file */
+  /* Stat input file */
   if ( stat ( filename, &st ) < 0 )
     {
       sprintf ( error, "bufrdeco_read_bufr(): cannot stat file '%s'\n", filename );

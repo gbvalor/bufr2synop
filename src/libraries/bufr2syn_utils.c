@@ -51,6 +51,20 @@ int integer_to_descriptor ( struct bufr_descriptor *d, int id )
 }
 
 /*!
+  \fn int descriptor_to_integer(int *id, struct bufr_descriptor *d)
+  \brief parse a descriptor and sets an integer in the decimal formas fxxyyy
+  \param id pointer to target integer 
+  \param d pointer to a struct \ref bufr_descriptor with the source
+*/
+int descriptor_to_integer ( int *id, struct bufr_descriptor *d)
+{
+  if ( d == NULL )
+    return 1;
+  *id = 100000 * d->f + 1000 * d->x + d->y; 
+  return 0;
+}
+
+/*!
   \fn char * charray_to_string(char *s, unsigned char *buf, size_t size)
   \brief get a null termitated c-string from an array of unsigned chars
   \param s resulting string

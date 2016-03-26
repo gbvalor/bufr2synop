@@ -171,7 +171,7 @@ FILE *FL; /*!< Buffer to read the list of files */
 
 struct bufr_subset_sequence_data SUBSET; /*!< ALl data decoded for a subset*/
 struct bufr_subset_state STATE; /*!< Includes the info when parsing a subset sequence */
-
+struct bufr_atom_data DATARRAY[BUFR_NMAXSEQ]; /****/
 //struct synop_chunks SYN;
 
 char DEFAULT_BUFRTABLES[] = "/usr/local/lib/bufrtables/"; /*!< Default bufr tables dir */
@@ -210,6 +210,12 @@ int main ( int argc, char *argv[] )
   // set needed enviroment before use bufr library
   bufr_set_environment ( DEFAULT_BUFRTABLES, BUFRTABLES_DIR );
 
+  //bufrdeco_init_subset_sequence_data ( &SUBSET);
+  //memset(&SUBSET, 0, sizeof(struct bufr_subset_sequence_data));
+  SUBSET.sequence = DATARRAY;
+  SUBSET.nd = 0;
+  SUBSET.dim = BUFR_NMAXSEQ;
+  
   /**** Big loop. a cycle per file ****/
   while ( get_bufrfile_path ( INPUTFILE, ERR ) )
     {
@@ -409,8 +415,10 @@ int main ( int argc, char *argv[] )
           nsub1 = nsub + 1;
 
           // clean sequence
-          memset ( &SUBSET, 0, sizeof ( struct bufr_subset_sequence_data ) );
-
+          //memset ( &SUBSET, 0, sizeof ( struct bufr_subset_sequence_data ) ); /***/
+          memset ( SUBSET.sequence, 0, (sizeof( struct bufr_atom_data)) * BUFR_NMAXSEQ  );
+	  SUBSET.nd = 0;
+	  
           // clean REPORT
           memset ( &REPORT, 0, sizeof ( struct metreport ) );
 
@@ -431,7 +439,7 @@ int main ( int argc, char *argv[] )
           if ( KERR )
             continue;
 
-          for ( j = 0 ; j < ktdexl && j < KSUBS ; j++ )
+	  for ( j = 0 ; j < ktdexl && j < KSUBS ; j++ )
             {
               i = nsub * KELEM + j;
               LINAUX[0] = '\0'; // clean the output line

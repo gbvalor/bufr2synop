@@ -70,7 +70,7 @@ int bufrdeco_parse_tree_recursive ( struct bufr *b, struct bufr_sequence *father
         {
           return 1;
         }
-      printf ( "level=%lu ndesc=%lu\n", l->level, l->ndesc );
+      //printf ( "level=%lu ndesc=%lu\n", l->level, l->ndesc );
     }
   else
     {

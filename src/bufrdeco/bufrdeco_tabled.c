@@ -32,6 +32,12 @@ int bufr_read_tabled ( struct bufr_tabled *td, char *error )
   if ( td->path == NULL )
     return 1;
 
+  // Check if we've already readed this table.
+  if ( strcmp ( td->path, td->old_path ) == 0 )
+    {
+      return 0; // all done
+    }
+
   td->nlines = 0;
   if ( ( t = fopen ( td->path, "r" ) ) == NULL )
     {
@@ -58,6 +64,7 @@ int bufr_read_tabled ( struct bufr_tabled *td, char *error )
     }
   fclose ( t );
   td->nlines = i;
+  strcpy(td->old_path, td->path); // store latest path
   return 0;
 }
 

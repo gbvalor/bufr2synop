@@ -178,6 +178,22 @@
 
 #define REPORT_LENGTH (8192)
 
+//#define PRUEBA
+#ifdef OLD_VERSION
+/*!
+  \struct bufr_subset_sequence_data
+  \brief Contains all the information for a subset in a expanded squence
+  This is a version to use with ECMWF library
+*/
+struct bufr_subset_sequence_data
+{
+  size_t dim; /*!< Amount of bufr_atom_data currently allocated */
+  size_t nd; /*!< number of current amount of data used in sequence */
+  struct bufr_atom_data sequence[BUFR_NMAXSEQ]; /*!< the array of data associated to a expanded sequence */
+};
+#else
+# define bufr_subset_sequence_data bufrdeco_subset_sequence_data
+#endif
 
 /*!
   \struct bufr_subset_state
@@ -267,6 +283,7 @@ void clean_climat_chunks ( struct climat_chunks *c );
 
 int set_environment ( char *default_bufrtables, char *bufrtables_dir );
 int integer_to_descriptor ( struct bufr_descriptor *d, int id );
+int descriptor_to_integer ( int *id, struct bufr_descriptor *d);
 unsigned int three_bytes_to_uint ( const unsigned char *source );
 char * charray_to_string ( char *s, unsigned char *buf, size_t size );
 char * adjust_string ( char *s );

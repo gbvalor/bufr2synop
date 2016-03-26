@@ -13,3 +13,6 @@ add_executable(bufrnoaa bufrnoaa.c bufrnoaa_io.c bufrnoaa_utils.c)
 
 add_executable(bufrdeco_test bufrdeco_test.c)
 target_link_libraries(bufrdeco_test m bufrdeco)
+
+add_executable(bufrdeco_test2 bufrdeco_test2.c)
+target_link_libraries(bufrdeco_test2 m bufrdeco bufr2syn)

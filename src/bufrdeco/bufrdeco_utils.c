@@ -82,14 +82,14 @@ size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source
     return 0; // bit_length needs to be divisible by 8
 
   //printf("bit_length=%lu\n", bit_length);
-    
+
   nc = bit_length / 8;
   i = ( *bit0_offset ) % 8;
   k = 8 - i;
   *has_data = 0; // marc if no missing data is present
   for ( j = 0; j < nc ; j++ )
     {
-      c = source + ( *bit0_offset)  / 8;
+      c = source + ( *bit0_offset )  / 8;
       * ( target + j ) = ( *c & biti[i] );
       if ( i )
         {
@@ -311,24 +311,38 @@ char * bufr_adjust_string ( char *s )
 */
 int is_a_delayed_descriptor ( struct bufr_descriptor *d )
 {
-  if ( (d->f == 0) &&
-       (d->x == 31) &&
+  if ( ( d->f == 0 ) &&
+       ( d->x == 31 ) &&
        ( d->y == 1 || d->y == 2 || d->y == 11 || d->y == 12 ) )
     return 1;
   else
     return 0;
 }
 
+int bufrdeco_init ( struct bufr *b )
+{
+  if ( init_bufr ( b ) )
+    return 1;
+  return 0;
+}
+
+int bufrdeco_close ( struct bufr *b )
+{
+  if ( close_bufr ( b ) )
+    return 1;
+  return 0;
+}
+
 /*!
 
 */
-int init_bufr ( struct bufr *b)
+int init_bufr ( struct bufr *b )
 {
   memset ( b, 0, sizeof ( struct bufr ) );
   if ( ( b->sec4.raw = ( uint8_t * ) calloc ( 1, BUFR_LEN ) ) == NULL )
     return 1;
   b->sec4.allocated = BUFR_LEN;
-  
+
   if ( ( b->table = ( struct bufr_tables * ) calloc ( 1, sizeof ( struct bufr_tables ) ) ) == NULL )
     {
       free ( ( void * ) b->sec4.raw );
@@ -362,32 +376,61 @@ int close_bufr ( struct bufr *b )
 
 
 
-int bufrdeco_init_subset_sequence_data (struct bufrdeco_subset_sequence_data *ba)
+int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
 {
-  if (ba->dim == 0)
-  {
-    if ((ba->sequence = (struct bufr_atom_data *) malloc(BUFR_NMAXSEQ * sizeof (struct bufr_atom_data))) == NULL)
+  if ( ba->dim == 0 )
     {
-      fprintf(stderr,"bufr_init_subset_sequence_data():Cannot allocate memory for atom data array\n");
-      return 1;
+      if ( ( ba->sequence = ( struct bufr_atom_data * ) malloc ( BUFR_NMAXSEQ * sizeof ( struct bufr_atom_data ) ) ) == NULL )
+        {
+          fprintf ( stderr,"bufr_init_subset_sequence_data():Cannot allocate memory for atom data array\n" );
+          return 1;
+        }
+      ba->dim = BUFR_NMAXSEQ;
     }
-    ba->dim = BUFR_NMAXSEQ;
-  }
   ba->nd = 0;
   return 0;
 }
 
-int bufrdeco_clean_subset_sequence_data (struct bufrdeco_subset_sequence_data *ba)
+int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
 {
-  if (ba->sequence != NULL)
-    free((void *) ba->sequence);
-  memset(ba, 0, sizeof(struct bufr_subset_sequence_data));
-  return bufrdeco_init_subset_sequence_data (ba);
+  if ( ba->sequence != NULL )
+    free ( ( void * ) ba->sequence );
+  memset ( ba, 0, sizeof ( struct bufrdeco_subset_sequence_data ) );
+  return bufrdeco_init_subset_sequence_data ( ba );
 }
 
-int bufrdeco_free_subset_sequence_data (struct bufrdeco_subset_sequence_data *ba)
+int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
 {
-  if (ba->sequence != NULL)
-    free((void *) ba->sequence);
+  if ( ba->sequence != NULL )
+    free ( ( void * ) ba->sequence );
+  return 0;
+}
+
+int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
+{
+  if ( rf->dim == 0 )
+    {
+      if ( ( rf->refs = ( struct bufrdeco_compressed_ref * ) malloc ( BUFR_NMAXSEQ * sizeof ( struct bufrdeco_compressed_ref ) ) ) == NULL )
+        {
+          fprintf ( stderr,"bufr_init_compressed_data_references():Cannot allocate memory for bufrdeco_compressed_ref array\n" );
+          return 1;
+        }
+      rf->dim = BUFR_NMAXSEQ;
+    }
+  rf->nd = 0;
+  return 0;
+}
+
+int bufrdeco_clean_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
+{
+  rf->nd = 0;
+  return 0;
+}
+
+
+int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
+{
+  if ( rf->refs != NULL )
+    free ( ( void * ) rf->refs );
   return 0;
 }

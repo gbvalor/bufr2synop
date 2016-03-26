@@ -39,22 +39,6 @@ int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, s
 }
 
 
-int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
-{
-  if ( rf->dim == 0 )
-    {
-      if ( ( rf->refs = ( struct bufrdeco_compressed_ref * ) malloc ( BUFR_NMAXSEQ * sizeof ( struct bufrdeco_compressed_ref ) ) ) == NULL )
-        {
-          fprintf ( stderr,"bufr_init_compressed_data_references():Cannot allocate memory for bufrdeco_compressed_ref array\n" );
-          return 1;
-        }
-      rf->dim = BUFR_NMAXSEQ;
-    }
-  rf->nd = 0;
-  return 0;
-}
-
-
 int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_references *r, struct bufr_sequence *l, struct bufr *b )
 {
   int res;

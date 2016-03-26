@@ -1,7 +1,7 @@
 METASOURCES = AUTO
 
 # set the include path found by configure
-AM_CPPFLAGS= $(all_includes)
+AM_CPPFLAGS= $(all_includes)  -I$(top_srcdir)/src/bufrdeco
 
 include_HEADERS = bufr2syn.h metbuoy.h metsynop.h mettemp.h metclimat.h metcommon.h
 

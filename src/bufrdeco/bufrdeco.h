@@ -81,7 +81,7 @@
 */
 #define NMAXSEQ (16384)
 
-#define BUFR_NMAXSEQ (2 * 16384)
+#define BUFR_NMAXSEQ (1 * 16384)
 
 /*!
    \def NMAXSEQ_DESCRIPTORS
@@ -309,18 +309,6 @@ struct bufrdeco_compressed_data_references
   struct bufrdeco_compressed_ref *refs; /*!< pointer to allocated array */
 };
 
-/*!
-  \struct bufr_subset_sequence_data
-  \brief Contains all the information for a subset in a expanded squence
-  This is a verion to use with ECMWF library
-*/
-struct bufr_subset_sequence_data
-{
-  size_t dim; /*!< Amount of bufr_atom_data currently allocated */
-  size_t nd; /*!< number of current amount of data used in sequence */
-  struct bufr_atom_data sequence[BUFR_NMAXSEQ]; /*!< the array of data associated to a expanded sequence */
-};
-
 
 struct bufr_sec0
 {
@@ -439,6 +427,7 @@ struct bufr_tableb_decoded_item
 struct bufr_tableb
 {
   char path[256];
+  char old_path[256];
   size_t nlines;
   size_t x_start[64]; /*!< Index of first x */
   uint8_t y_ref[64][256]; /*!< index of y since first x*/
@@ -450,6 +439,7 @@ struct bufr_tableb
 struct bufr_tablec
 {
   char path[256];
+  char old_path[256];
   size_t nlines;
   size_t x_start[64]; /*!< Index of first x */
   size_t num[64]; /*!< Amonut of lines for x */
@@ -459,6 +449,7 @@ struct bufr_tablec
 struct bufr_tabled
 {
   char path[256];
+  char old_path[256];
   size_t nlines;
   size_t x_start[64]; /*!< Index of first x */
   size_t num[64]; /*!< Amonut of lines for x */
@@ -492,6 +483,12 @@ extern const char DEFAULT_BUFRTABLES_DIR2[];
 
 int init_bufr ( struct bufr *b );
 int close_bufr ( struct bufr *b );
+int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba );
+int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba );
+int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba );
+int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_references *rf );
+int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_references *rf );
+
 int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error );
 void print_bufrdeco_compressed_ref (struct bufrdeco_compressed_ref *r);
 void print_bufrdeco_compressed_data_references(struct bufrdeco_compressed_data_references *r);
