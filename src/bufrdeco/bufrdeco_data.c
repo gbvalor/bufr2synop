@@ -147,7 +147,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
           break;
         case 1:
           // Case of replicator descriptor
-          replicator.s = l;
+          replicator.s = seq;
           replicator.ixrep = i;
           if ( seq->lseq[i].y != 0 )
             {
@@ -230,6 +230,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
   struct bufr_sequence *l = r->s; // sequence
   struct bufr_replicator replicator;
 
+  //printf("nloops=%lu, ndesc=%lu\n", r->nloops, r->ndesc);
   for ( ixloop = 0; ixloop < r->nloops; ixloop++ )
     {
       for ( ixd = 0; ixd < r->ndesc ; ixd ++ )
@@ -243,7 +244,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                 {
                   return 1;
                 }
-              //bufr_print_atom_data_stdout(& ( s->sequence[s->nd] ));
+              //bufrdeco_print_atom_data_stdout(& ( s->sequence[s->nd] ));
               if ( s->nd < s->dim )
                 ( s->nd ) ++;
               else if ( bufrdeco_increase_data_array ( s ) == 0 )

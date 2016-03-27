@@ -36,8 +36,6 @@
        - xxxxx - Originating centre
        - yyy - Version number of master table used
        - zzz - Version number of local table used
-
-  If standard WMO tables are used, the Originating centre xxxxx will be set to
 */
 int get_ecmwf_tablenames ( struct bufr *b, const char *bufrtables_dir )
 {
@@ -68,35 +66,49 @@ int get_ecmwf_tablenames ( struct bufr *b, const char *bufrtables_dir )
   else
     strcpy ( aux, bufrtables_dir );
 
-  if ( b->sec1.master != 0 ) // case of not WMO tables
+  sprintf ( b->table->b.path,"%sB%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
+            b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
+  sprintf ( b->table->c.path,"%sC%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
+            b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
+  sprintf ( b->table->d.path,"%sD%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
+            b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
+
+  /* check for table b, if problems then we try alternative */
+  if ( stat ( b->table->b.path, &st ) )
     {
-      sprintf ( b->table->b.path,"%sB%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
-                b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
-      sprintf ( b->table->c.path,"%sC%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
-                b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
-      sprintf ( b->table->d.path,"%sD%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
-                b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
-    }
-  else
-    {
-      sprintf ( b->table->b.path,"%sB000%05d00000%03d%03d.TXT", aux, b->sec1.subcentre,
-                b->sec1.master_version, b->sec1.master_local );
-      sprintf ( b->table->c.path,"%sC000%05d00000%03d%03d.TXT", aux, b->sec1.subcentre,
-                b->sec1.master_version, b->sec1.master_local );
-      sprintf ( b->table->d.path,"%sD000%05d00000%03d%03d.TXT", aux, b->sec1.subcentre,
-                b->sec1.master_version, b->sec1.master_local );
+      // here we set originating centre xxxxx to 00000 for WMO tables
+      if ( b->sec1.master != 0 ) // case of not WMO tables
+        {
+          sprintf ( b->table->b.path,"%sB%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
+                    b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
+          sprintf ( b->table->c.path,"%sC%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
+                    b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
+          sprintf ( b->table->d.path,"%sD%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
+                    b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
+        }
+      else
+        {
+          sprintf ( b->table->b.path,"%sB000%05d00000%03d%03d.TXT", aux, b->sec1.subcentre,
+                    b->sec1.master_version, b->sec1.master_local );
+          sprintf ( b->table->c.path,"%sC000%05d00000%03d%03d.TXT", aux, b->sec1.subcentre,
+                    b->sec1.master_version, b->sec1.master_local );
+          sprintf ( b->table->d.path,"%sD000%05d00000%03d%03d.TXT", aux, b->sec1.subcentre,
+                    b->sec1.master_version, b->sec1.master_local );
+        }
     }
   return 0;
 }
 
-int bufr_read_tablec(struct bufr_tablec *tc, char *error)
+
+
+int bufr_read_tablec ( struct bufr_tablec *tc, char *error )
 {
   char aux[8], *c;
   size_t startx = 0;
   FILE *t;
   size_t i = 0;
 
-  if (tc->path == NULL)
+  if ( tc->path == NULL )
     return 1;
 
   // If we've already readed this table.
@@ -105,10 +117,10 @@ int bufr_read_tablec(struct bufr_tablec *tc, char *error)
       return 0; // all done
     }
 
-    tc->nlines = 0;
+  tc->nlines = 0;
   if ( ( t = fopen ( tc->path, "r" ) ) == NULL )
     {
-      sprintf ( error,"Unable to open table C file '%s'\n", tc->path);
+      sprintf ( error,"Unable to open table C file '%s'\n", tc->path );
       return 1;
     }
 
@@ -117,21 +129,21 @@ int bufr_read_tablec(struct bufr_tablec *tc, char *error)
       // supress the newline
       if ( ( c = strrchr ( tc->l[i],'\n' ) ) != NULL )
         *c = '\0';
-      if (tc->l[i][1] != ' ' && tc->l[i][2] != ' ')
-      {
-	aux[0] = tc->l[i][1];
-	aux[1] = tc->l[i][2];
-	aux[2] = '\0';
-	startx = strtoul(aux, &c, 10);
-        if ( tc->x_start[startx] == 0 )
-          tc->x_start[startx] = i; // marc the start
-      }
+      if ( tc->l[i][1] != ' ' && tc->l[i][2] != ' ' )
+        {
+          aux[0] = tc->l[i][1];
+          aux[1] = tc->l[i][2];
+          aux[2] = '\0';
+          startx = strtoul ( aux, &c, 10 );
+          if ( tc->x_start[startx] == 0 )
+            tc->x_start[startx] = i; // marc the start
+        }
       ( tc->num[startx] ) ++;
       i++;
     }
   fclose ( t );
   tc->nlines = i;
-  strcpy(tc->old_path, tc->path); // store latest path
+  strcpy ( tc->old_path, tc->path ); // store latest path
   return 0;
 }
 
@@ -144,7 +156,7 @@ int bufr_find_tablec_index ( size_t *index, struct bufr_tablec *tc, const char *
   aux[0] = key[1];
   aux[1] = key[2];
   aux[2] = '\0';
-  x = strtoul(aux, &c, 10);
+  x = strtoul ( aux, &c, 10 );
   i0 = tc->x_start[x];
   for ( i = i0 ; i < i0 + tc->num[x] ; i++ )
     {
@@ -156,10 +168,10 @@ int bufr_find_tablec_index ( size_t *index, struct bufr_tablec *tc, const char *
            tc->l[i][5] != key[5] )
         continue;
       else
-      {
-	*index = i;
-	return 0;
-      }
+        {
+          *index = i;
+          return 0;
+        }
     }
   return 1; // not found
 }
@@ -170,30 +182,30 @@ int bufr_find_tablec_index ( size_t *index, struct bufr_tablec *tc, const char *
   \brief gets a string with the meaning of a value for a code table descriptor
   \param expl string with resulting meaning
   \param dim numero máximo de caracteres de la cadena resultante
-  \param tc pointer to a \ref bufr_tablec struct 
+  \param tc pointer to a \ref bufr_tablec struct
   \param index element to read if is not 0
   \param d pointer to the source descriptor
   \param ival integer value for the descriptor
 
   If something went wrong, it returns NULL . Otherwise it returns \a expl
 */
-char * bufrdeco_explained_table_val (char *expl, size_t dim, struct bufr_tablec *tc, size_t *index, struct bufr_descriptor *d, uint32_t ival)
+char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec *tc, size_t *index, struct bufr_descriptor *d, uint32_t ival )
 {
   char *c;
   uint32_t nv, v,  nl;
   size_t  i, j;
 
-  if (*index == 0)
-  {
-   // here the calling b item learn where to find table C line
-   if ( bufr_find_tablec_index ( index, tc, d->c ) )
-    { 
-      //sprintf ( b->error, "bufrdeco_explained_table_val(): descriptor '%s' not found in table D\n", d->c );
-      return NULL; // descritor not found
+  if ( *index == 0 )
+    {
+      // here the calling b item learn where to find table C line
+      if ( bufr_find_tablec_index ( index, tc, d->c ) )
+        {
+          //sprintf ( b->error, "bufrdeco_explained_table_val(): descriptor '%s' not found in table D\n", d->c );
+          return NULL; // descritor not found
+        }
     }
-  }
-  
-  i = *index; 
+
+  i = *index;
   // reads the amount of possible values
   if ( tc->l[i][7] != ' ' )
     nv = strtoul ( &tc->l[i][7], &c, 10 );

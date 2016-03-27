@@ -77,12 +77,12 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
     }
 
   /* Inits bufr struct */
-  if ( st.st_size >= BUFR_LEN)
-  {
-     sprintf (error, "File '%s' too large. Consider increase BUFR_LEN\n", filename);     
+  if ( ( st.st_size + 4 ) >= BUFR_LEN )
+    {
+      sprintf ( error, "File '%s' too large. Consider increase BUFR_LEN\n", filename );
       free ( ( void * ) bufrx );
       return 1;
-  }
+    }
   if ( init_bufr ( b ) )
     {
       sprintf ( error, "bufrdeco_read_bufr(): Cannot init bufr struct\n" );
@@ -152,39 +152,71 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
   // set bufr edition number
   b->sec0.edition = bufrx[7];
 
-  if (b->sec0.edition != 4)
-  {
-      sprintf ( error, "bufrdeco_read_bufr(): Bufr edition must be 4 and this file is coded with version %u\n", b->sec0.edition );
+  if ( b->sec0.edition < 3 )
+    {
+      sprintf ( error, "bufrdeco_read_bufr(): Bufr edition must be 3 or superior and this file is coded with version %u\n", b->sec0.edition );
       free ( ( void * ) bufrx );
       close_bufr ( b );
       return 1;
-  }
-  
+    }
+
   // raw
   memcpy ( &b->sec0.raw[0], &bufrx[0], 8 );
 
   /******************* section 1 *****************************/
   c = &bufrx[8]; // pointer to begin of sec1
-
-  b->sec1.length = three_bytes_to_uint32 ( c );
-  b->sec1.master = c[3];
-  b->sec1.centre = two_bytes_to_uint32 ( &c[4] );
-  b->sec1.subcentre = two_bytes_to_uint32 ( &c[6] );
-  b->sec1.update = c[8];
-  b->sec1.options = c[9];
-  b->sec1.category = c[10];
-  b->sec1.subcategory = c[11];
-  b->sec1.subcategory_local = c[12];
-  b->sec1.master_version = c[13];
-  b->sec1.master_local = c[14];
-  b->sec1.year = two_bytes_to_uint32 ( &c[15] );
-  b->sec1.month = c[17];
-  b->sec1.day = c[18];
-  b->sec1.hour = c[19];
-  b->sec1.minute = c[20];
-  b->sec1.second = c[21];
+  switch ( b->sec0.edition )
+    {
+    case 3:
+      b->sec1.length = three_bytes_to_uint32 ( c );
+      b->sec1.master = c[3];
+      b->sec1.subcentre = c[4];
+      b->sec1.centre = c[5];
+      b->sec1.update = c[6];
+      b->sec1.options = c[7];
+      b->sec1.category = c[8];
+      b->sec1.subcategory = c[9];
+      b->sec1.subcategory_local = 0; // not in version 3
+      b->sec1.master_version = c[10];
+      b->sec1.master_local = c[11];
+      if ( c[12] > 80 )
+        b->sec1.year = 1900 + c[12];
+      else
+        b->sec1.year = 2900 + c[12];
+      b->sec1.month = c[13];
+      b->sec1.day = c[14];
+      b->sec1.hour = c[15];
+      b->sec1.minute = c[16];
+      b->sec1.second = 0; // not in version 3
+      break;
+    case 4:
+      b->sec1.length = three_bytes_to_uint32 ( c );
+      b->sec1.master = c[3];
+      b->sec1.centre = two_bytes_to_uint32 ( &c[4] );
+      b->sec1.subcentre = two_bytes_to_uint32 ( &c[6] );
+      b->sec1.update = c[8];
+      b->sec1.options = c[9];
+      b->sec1.category = c[10];
+      b->sec1.subcategory = c[11];
+      b->sec1.subcategory_local = c[12];
+      b->sec1.master_version = c[13];
+      b->sec1.master_local = c[14];
+      b->sec1.year = two_bytes_to_uint32 ( &c[15] );
+      b->sec1.month = c[17];
+      b->sec1.day = c[18];
+      b->sec1.hour = c[19];
+      b->sec1.minute = c[20];
+      b->sec1.second = c[21];
+      break;
+    default:
+      sprintf ( error, "bufrdeco_read_bufr(): This file is coded with version %u and is not supported\n", b->sec0.edition );
+      free ( ( void * ) bufrx );
+      close_bufr ( b );
+      return 1;
+    }
   memcpy ( b->sec1.raw, c, b->sec1.length ); // raw data
   c += b->sec1.length;
+  //print_sec1_info(b);
 
   /******************* section 2 (Optional) ******************/
   if ( b->sec1.options & 0x80 )
@@ -202,9 +234,11 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
   if ( c[6] & 0x40 )
     b->sec3.compressed = 1;
   // loop of unexpanded descriptors
-  for ( ix = 7, ud = 0; ix < b->sec3.length && ud < BUFR_LEN_UNEXPANDED_DESCRIPTOR; ix += 2, ud += 1 )
+  for ( ix = 7, ud = 0; ix < b->sec3.length && ud < BUFR_LEN_UNEXPANDED_DESCRIPTOR; ix += 2 )
     {
       two_bytes_to_descriptor ( &b->sec3.unexpanded[ud], &c[ix] );
+      if ( b->sec3.unexpanded[ud].f || b->sec3.unexpanded[ud].x || b->sec3.unexpanded[ud].y )
+        ud++;
     }
   b->sec3.ndesc = ud;
   memcpy ( b->sec3.raw, c, b->sec3.length );
@@ -212,7 +246,9 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
 
   /******************* section 4 *****************************/
   b->sec4.length = three_bytes_to_uint32 ( c );
-  memcpy ( b->sec4.raw, c, b->sec4.length );
+  // we copy 4 byte more without danger because of latest '7777' and to use fastest exctracting bits algorithm
+  memcpy ( b->sec4.raw, c, b->sec4.length + 4 );
+
   b->sec4.bit_offset = 32; // the first bit in byte 4
   free ( ( void * ) bufrx );
 

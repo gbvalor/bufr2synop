@@ -271,8 +271,8 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr_subset_state *s, str
   strcpy ( t->c.s1.YYGG, t->a.s1.YYGG );
   strcpy ( t->d.s1.YYGG, t->a.s1.YYGG );
 
-  print_temp_raw_data ( r );
-  print_temp_raw_wind_shear_data ( w );
+  //print_temp_raw_data ( r );
+  //print_temp_raw_wind_shear_data ( w );
 
   parse_temp_raw_data ( t, r );
   parse_temp_raw_wind_shear_data ( t, w );

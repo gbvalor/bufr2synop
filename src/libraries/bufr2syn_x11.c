@@ -35,7 +35,11 @@ char * secs_to_tt ( char *tt, int secs )
 {
   int i;
 
-  i = ( -secs ) / 360;
+  if (secs < 0)
+    i = ( -secs ) / 360;
+  else
+    i = ( secs ) / 360;
+    
   if ( i <= 60 )
     {
       sprintf ( tt, "%02d", i );

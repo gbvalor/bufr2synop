@@ -184,13 +184,14 @@ int temp_parse_x02 ( struct temp_chunks *t, struct bufr_subset_state *s )
       break;
 
     case 11: // 0 02 011 . Radiosonde type
-      if ( s->ival >= 0 && s->ival < 100 )
+      if ( s->ival >= 0 )
         {
-          sprintf ( t->a.s7.rara, "%02d", s->ival );
-          sprintf ( t->b.s7.rara, "%02d", s->ival );
-          sprintf ( t->c.s7.rara, "%02d", s->ival );
-          sprintf ( t->d.s7.rara, "%02d", s->ival );
+          sprintf ( t->a.s7.rara, "%02d", s->ival % 100 );
+          sprintf ( t->b.s7.rara, "%02d", s->ival % 100 );
+          sprintf ( t->c.s7.rara, "%02d", s->ival % 100 );
+          sprintf ( t->d.s7.rara, "%02d", s->ival % 100 );
         }
+      else 
       break;
 
     case 13: // 0 02 013 . Solar and infrared radiation correction
