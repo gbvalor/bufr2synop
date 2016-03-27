@@ -131,7 +131,8 @@ size_t get_bits_as_uint32_t2 ( uint32_t *target, uint8_t *has_data, uint8_t *sou
   r = bit_length;
   d = 0;
   *target = 0;
-  *has_data = 0; // marc if no missing data is present
+  *has_data = 0;
+  
   do
     {
       c = source + ( *bit0_offset + d ) / 8;
@@ -145,6 +146,7 @@ size_t get_bits_as_uint32_t2 ( uint32_t *target, uint8_t *has_data, uint8_t *sou
     }
   while ( r > 0 );
   *bit0_offset += bit_length; // update bit0_offset
+
   return bit_length;
 }
 

@@ -178,7 +178,7 @@
 
 #define REPORT_LENGTH (8192)
 
-//#define PRUEBA
+//#define OLD_VERSION
 #ifdef OLD_VERSION
 /*!
   \struct bufr_subset_sequence_data

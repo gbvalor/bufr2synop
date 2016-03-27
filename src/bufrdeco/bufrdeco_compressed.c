@@ -35,6 +35,7 @@ int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, s
       return 1;
     }
 
+  //print_bufrdeco_compressed_data_references(r);
   return 0;
 }
 
@@ -391,6 +392,8 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
   tb = & ( b->table->b );
   i = tb->x_start[r->desc.x] + tb->y_ref[r->desc.x][r->desc.y];
 
+  a->mask = 0;
+  
   // descriptor
   memcpy ( & ( a->desc ), & ( r->desc ), sizeof ( struct bufr_descriptor ) );
   // name
@@ -483,7 +486,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
 
   if ( r->inc_bits == 0 )
     {
-      ival = r->ref0 + r->ref;
+      ival = r->ref + r->ref0;
     }
   else
     {
@@ -496,6 +499,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
           sprintf ( b->error, "get_bufr_atom_data_from_compressed_data_ref(): Cannot get inc_bits from '%s'\n", r->desc.c );
           return 1;
         }
+      //printf("has=%u, ref=%u, ref0=%u, ival0=%u\n", has_data, r->ref, r->ref0, ival0);
       if ( has_data )
         {
           ival = r->ref + r->ref0 + ival0;
@@ -538,6 +542,14 @@ int bufr_decode_subset_data_compressed ( struct bufrdeco_subset_sequence_data *s
 {
   size_t i; // references index
 
+  // first some clean
+  if ( s->nd )
+    {
+      memset ( & (s->sequence), 0, sizeof ( struct bufr_atom_data ) * s->nd );
+      s->nd = 0;
+    }
+
+  // then get sequence
   for ( i = 0; i < r->nd; i++ )
     {
       if ( bufrdeco_get_atom_data_from_compressed_data_ref ( & ( s->sequence[s->nd] ) , & ( r->refs[i] ), b->state.subset, b ) )
