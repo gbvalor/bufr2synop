@@ -57,7 +57,7 @@
   \def KVALS
   \brief dimension of arrays of doubles. It must store all the data for all subset
 */
-#define KVALS (32768 * 32)
+#define KVALS (32768 * 512)
 
 /*!
   \def KSUBS
