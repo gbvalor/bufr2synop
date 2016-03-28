@@ -54,17 +54,23 @@ int get_ecmwf_tablenames ( struct bufr *b, const char *bufrtables_dir )
           else
             {
               if ( S_ISDIR ( st.st_mode ) )
-                strcpy ( aux,DEFAULT_BUFRTABLES_DIR2 );
+                {
+                  strcpy ( aux,DEFAULT_BUFRTABLES_DIR2 );
+                }
             }
         }
       else
         {
           if ( S_ISDIR ( st.st_mode ) )
-            strcpy ( aux,DEFAULT_BUFRTABLES_DIR1 );
+            {
+              strcpy ( aux,DEFAULT_BUFRTABLES_DIR1 );
+            }
         }
     }
   else
-    strcpy ( aux, bufrtables_dir );
+    {
+      strcpy ( aux, bufrtables_dir );
+    }
 
   sprintf ( b->table->b.path,"%sB%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
             b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
@@ -95,6 +101,29 @@ int get_ecmwf_tablenames ( struct bufr *b, const char *bufrtables_dir )
           sprintf ( b->table->d.path,"%sD000%05d00000%03d%03d.TXT", aux, b->sec1.subcentre,
                     b->sec1.master_version, b->sec1.master_local );
         }
+
+      if ( stat ( b->table->b.path, &st ) )
+        {
+          // Yet another chance. Set local zzz to 000
+          if ( b->sec1.master != 0 ) // case of not WMO tables
+            {
+              sprintf ( b->table->b.path,"%sB%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
+                        b->sec1.subcentre, b->sec1.centre, b->sec1.master_version );
+              sprintf ( b->table->c.path,"%sC%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
+                        b->sec1.subcentre, b->sec1.centre, b->sec1.master_version );
+              sprintf ( b->table->d.path,"%sD%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
+                        b->sec1.subcentre, b->sec1.centre, b->sec1.master_version );
+            }
+          else
+            {
+              sprintf ( b->table->b.path,"%sB000%05d00000%03d000.TXT", aux, b->sec1.subcentre,
+                        b->sec1.master_version );
+              sprintf ( b->table->c.path,"%sC000%05d00000%03d000.TXT", aux, b->sec1.subcentre,
+                        b->sec1.master_version );
+              sprintf ( b->table->d.path,"%sD000%05d00000%03d000.TXT", aux, b->sec1.subcentre,
+                        b->sec1.master_version );
+            }
+        }
     }
   return 0;
 }
@@ -109,7 +138,9 @@ int bufr_read_tablec ( struct bufr_tablec *tc, char *error )
   size_t i = 0;
 
   if ( tc->path == NULL )
-    return 1;
+    {
+      return 1;
+    }
 
   // If we've already readed this table.
   if ( strcmp ( tc->path, tc->old_path ) == 0 )
@@ -128,7 +159,9 @@ int bufr_read_tablec ( struct bufr_tablec *tc, char *error )
     {
       // supress the newline
       if ( ( c = strrchr ( tc->l[i],'\n' ) ) != NULL )
-        *c = '\0';
+        {
+          *c = '\0';
+        }
       if ( tc->l[i][1] != ' ' && tc->l[i][2] != ' ' )
         {
           aux[0] = tc->l[i][1];
@@ -136,7 +169,9 @@ int bufr_read_tablec ( struct bufr_tablec *tc, char *error )
           aux[2] = '\0';
           startx = strtoul ( aux, &c, 10 );
           if ( tc->x_start[startx] == 0 )
-            tc->x_start[startx] = i; // marc the start
+            {
+              tc->x_start[startx] = i;  // marc the start
+            }
         }
       ( tc->num[startx] ) ++;
       i++;
@@ -166,7 +201,9 @@ int bufr_find_tablec_index ( size_t *index, struct bufr_tablec *tc, const char *
            tc->l[i][3] != key[3] ||
            tc->l[i][4] != key[4] ||
            tc->l[i][5] != key[5] )
-        continue;
+        {
+          continue;
+        }
       else
         {
           *index = i;
@@ -208,9 +245,13 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec
   i = *index;
   // reads the amount of possible values
   if ( tc->l[i][7] != ' ' )
-    nv = strtoul ( &tc->l[i][7], &c, 10 );
+    {
+      nv = strtoul ( &tc->l[i][7], &c, 10 );
+    }
   else
-    return NULL;
+    {
+      return NULL;
+    }
 
   // read a value
   for ( j = 0; j < nv && i < tc->nlines ; i++ )
@@ -220,13 +261,17 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec
           v = strtoul ( &tc->l[i][12], &c, 10 );
           j++;
           if ( v != ival )
-            continue;
+            {
+              continue;
+            }
           break;
         }
     }
 
   if ( j == nv || i == tc->nlines )
-    return NULL; // Value not found
+    {
+      return NULL;  // Value not found
+    }
 
   // read how many lines for the descriptors
   nl = strtoul ( &tc->l[i][21], &c, 10 );
@@ -238,7 +283,9 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec
     {
       for ( nv = 1 ; nv < nl; nv++ )
         if ( ( strlen ( expl ) + strlen ( &tc->l[i + nv][22] ) ) < dim )
-          strcat ( expl, &tc->l[i + nv][22] );
+          {
+            strcat ( expl, &tc->l[i + nv][22] );
+          }
     }
 
   return expl;
@@ -273,9 +320,13 @@ char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec 
            tc->l[i][3] != d->c[3] ||
            tc->l[i][4] != d->c[4] ||
            tc->l[i][5] != d->c[5] )
-        continue;
+        {
+          continue;
+        }
       else
-        break;
+        {
+          break;
+        }
     }
 
   if ( i == tc->nlines )
@@ -287,9 +338,13 @@ char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec 
 
   // reads the amount of possible bits
   if ( tc->l[i][7] != ' ' )
-    nb = strtoul ( &tc->l[i][7], &c, 10 );
+    {
+      nb = strtoul ( &tc->l[i][7], &c, 10 );
+    }
   else
-    return NULL;
+    {
+      return NULL;
+    }
 
   // read a value
   s = expl;
@@ -310,7 +365,9 @@ char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec 
                 {
                   nl = strtoul ( &tc->l[i][21], &c, 10 );
                   if ( strlen ( expl ) && ( strlen ( expl ) + 1 ) < dim )
-                    s += sprintf ( s, "|" );
+                    {
+                      s += sprintf ( s, "|" );
+                    }
                   s += sprintf ( s,"%s", &tc->l[i][24] );
                   if ( nl > 1 )
                     {
@@ -332,7 +389,9 @@ char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec 
               // read how many lines for the descriptors
               nl = strtol ( &tc->l[i][21], &c, 10 );
               if ( strlen ( expl ) && ( strlen ( expl ) + 1 ) < dim )
-                s += sprintf ( s, "|" );
+                {
+                  s += sprintf ( s, "|" );
+                }
               s += sprintf ( s,"%s", &tc->l[i][24] );
               if ( nl > 1 )
                 {
@@ -345,7 +404,9 @@ char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec 
 
             }
           else
-            continue;
+            {
+              continue;
+            }
         }
     }
 

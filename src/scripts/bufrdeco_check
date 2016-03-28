@@ -22,7 +22,7 @@ echo -n "Testing results for '${FILE}' ... "
 ${BIN1} -i "${FILE}" > old.out
 ${BIN2} -i "${FILE}" > new.out
 
-diff new.out old.out > diff.out
+diff -Z new.out old.out > diff.out
 if test -s diff.out ; then
   echo -e "\e[31mFAIL\e[0m"
   cat diff.out

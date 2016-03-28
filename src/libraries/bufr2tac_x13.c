@@ -35,17 +35,17 @@ char * prec_to_RRR ( char *target, double r )
     {
       strcpy ( target,"000" );
     }
-  else if ( r < 0.1 )
+  /*else if ( r < 0.1 )
     {
       strcpy ( target,"990" );
-    }
+    }*/
   else if ( r < 1.0 )
     {
-      sprintf ( target, "99%d", ( int ) ( r * 10.0 ) );
+      sprintf ( target, "99%d", ( int ) ( r * 10.0 + 0.5) );
     }
   else
     {
-      sprintf ( target, "%03d", ( int ) ( r ) );
+      sprintf ( target, "%03d", ( int ) ( r + 0.5) );
     }
   return target;
 
@@ -88,7 +88,7 @@ char * prec_to_RRRR24 ( char *target, double r )
     }
   else if ( r <= 999.8 )
     {
-      sprintf ( target,"%04d", ( int ) ( r * 10.0 ) );
+      sprintf ( target,"%04d", ( int ) ( r * 10.0 + 0.5) );
     }
   else
     {
@@ -106,7 +106,7 @@ char * prec_to_RRRR24 ( char *target, double r )
 char * recent_snow_to_ss ( char *target, double r )
 {
   int i;
-  i = ( int ) ( r * 1000.0 ); // convert to mm
+  i = ( int ) ( r * 1000.0 + 0.5); // convert to mm
 
   if ( i == 0 )
     {
