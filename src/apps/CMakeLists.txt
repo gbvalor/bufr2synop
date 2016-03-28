@@ -4,7 +4,7 @@ LINK_DIRECTORIES( ${bufr2synop_SOURCE_DIR}/src/bufrdeco ${bufr2synop_SOURCE_DIR}
                     /usr/lib /usr/lib64 /usr/local/lib /usr/local/lib64)
 
 add_executable(bufr2synop bufr2synop.c bufr2synop_io.c)
-target_link_libraries(bufr2synop bufr2syn bufr m gfortran)
+target_link_libraries(bufr2synop bufr2tac bufr m gfortran)
 
 add_executable(bufr_decode bufr_decode.c)
 target_link_libraries(bufr_decode bufr m gfortran)
@@ -15,4 +15,4 @@ add_executable(bufrdeco_test bufrdeco_test.c)
 target_link_libraries(bufrdeco_test m bufrdeco)
 
 add_executable(bufrdeco_test2 bufrdeco_test2.c)
-target_link_libraries(bufrdeco_test2 m bufrdeco bufr2syn)
+target_link_libraries(bufrdeco_test2 m bufrdeco bufr2tac)

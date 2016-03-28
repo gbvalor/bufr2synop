@@ -21,7 +21,7 @@
     \brief This file includes the code to test bufr to TAC libraries using bufrdeco library to decode bufr
 */
 #include "bufrdeco.h"
-#include "bufr2syn.h"
+#include "bufr2tac.h"
 
 struct bufr BUFR;
 struct bufrdeco_subset_sequence_data SEQ;

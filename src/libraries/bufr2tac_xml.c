@@ -18,64 +18,42 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 /*!
- \file bufr2synop.h
- \brief Include header file for binary bufr2synop
+ \file bufr2tac_xml.c
+ \brief Output a struct \ref metreport in xml form
 */
-
 #include "bufr2tac.h"
 
-// Global vars
-extern unsigned char BUFR_MESSAGE[BUFR_LEN];
-extern char CNAMES[KELEM][64];
-extern char CUNITS[KELEM][24];
+/*!
+  \fn int print_xml(FILE *f, struct metreport *m)
+  \brief prints a struct \ref metreport in xml format
+  \param f pointer to a file already open by caller routine
+  \param m pointer to a struct \ref metreport containing the data to print
+*/
+int print_xml ( FILE *f, struct metreport *m )
+{
+  // prints header
+  fprintf ( f, "<metreport type=%s>\n", m->type );
+  fprintf ( f, "<bufrfile>%s</bufrfile>\n",m->h->filename );
+  // print GTS_HEADER
+  if ( m->h != NULL )
+    fprintf ( f, " <gts_header>%s %s %s %s</gts_header>\n",m->h->bname, m->h->center, m->h->dtrel, m->h->order );
 
-extern int KSUP[9]; /*!< array containing supplementary information */
-extern int KSEC0[3];
-extern int KSEC1[40];
-extern int KSEC2[4096];
-extern int KSEC3[4];
-extern int KSEC4[2];
-extern int KEY[46];
-extern int KERR;
+  // print DATE AND TIME
+  fprintf ( f, " <observation_datetime>%s</observation_datetime>\n",m->t.datime );
 
-
-extern char CVALS[KVALS][80]; /*!< array of strings with value of data */
-
-extern double VALUES[KVALS], VALS[KVALS];
-
-extern int KTDLST[KELEM], KTDEXP[KELEM];
-
-extern char INPUTFILE[256];
-extern char OUTPUTFILE[256];
-extern char BUFRTABLES_DIR[256];
-extern char LISTOFFILES[256];
-extern char SELF[];
-extern int VERBOSE;
-extern int SHOW_SEQUENCE;
-extern int SHOW_ECMWF_OUTPUT;
-extern int DEBUG;
-extern int NFILES;
-extern int GTS_HEADER;
-extern int XML;
-extern int JSON;
-extern int CSV;
-
-extern struct synop_chunks SYNOP;
-extern struct buoy_chunks BUOY;
-extern struct temp_chunks TEMP;
-
-extern size_t NLINES_TABLEC;
-extern char TABLEC[MAXLINES_TABLEC][92];
-extern char DEFAULT_BUFRTABLES[];
-extern char TYPE[8];
-extern struct metreport REPORT;
-extern struct gts_header HEADER;
-extern FILE * FL;
-extern struct bufr_subset_sequence_data SUBSET;
-extern struct bufr_subset_state STATE;
-
-
-// functions
-void print_usage ( void );
-int read_arguments ( int _argc, char * _argv[] );
-char * get_bufrfile_path ( char *filename, char *err );
+  // Geo data
+  fprintf ( f, " <geo>\n" );
+  if ( strlen ( m->g.index ) )
+    fprintf ( f, "  <index>%s</index>\n", m->g.index );
+  if ( strlen ( m->g.name ) )
+    fprintf ( f, "  <name>%s</name>\n", m->g.name );
+  if ( strlen ( m->g.country ) )
+    fprintf ( f, "  <country>%s</country>\n", m->g.country );
+  fprintf ( f, "  <latitude>%.6lf</latitude>\n", m->g.lat );
+  fprintf ( f, "  <longitude>%.6lf</longitude>\n", m->g.lon );
+  fprintf ( f, "  <altitude>%.1lf</altitude>\n", m->g.alt );
+  fprintf ( f, " </geo>\n" );
+  fprintf ( f, " <report>%s=</report>\n", m->alphanum );
+  fprintf ( f, "</metreport>\n" );
+  return 0;
+}
