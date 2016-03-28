@@ -321,6 +321,23 @@ int is_a_delayed_descriptor ( struct bufr_descriptor *d )
     return 0;
 }
 
+/*!
+  \fn int is_a_local_descriptor ( struct bufr_descriptor *d )
+  \brief check if a descriptor is a local descriptor
+  \param d pointer to a struct \bufr_descriptor to check
+
+  If is a local desccriptor return 1, 0 otherwise.
+*/
+int is_a_local_descriptor (struct bufr_descriptor *d)
+{
+  if ( (d->f == 0) && 
+       (d->x >= 48) && 
+       (d->x <= 63) )
+    return 1;
+  else
+    return 0;
+}
+
 int bufrdeco_init ( struct bufr *b )
 {
   if ( init_bufr ( b ) )

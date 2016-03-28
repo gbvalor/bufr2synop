@@ -104,7 +104,7 @@ int get_ecmwf_tablenames ( struct bufr *b, const char *bufrtables_dir )
 
       if ( stat ( b->table->b.path, &st ) )
         {
-          // Yet another chance. Set local zzz to 000
+          // Another chance. Set local zzz to 000
           if ( b->sec1.master != 0 ) // case of not WMO tables
             {
               sprintf ( b->table->b.path,"%sB%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
@@ -122,6 +122,26 @@ int get_ecmwf_tablenames ( struct bufr *b, const char *bufrtables_dir )
                         b->sec1.master_version );
               sprintf ( b->table->d.path,"%sD000%05d00000%03d000.TXT", aux, b->sec1.subcentre,
                         b->sec1.master_version );
+            }
+
+          if ( stat ( b->table->b.path, &st ) )
+            {
+              // Another chance. Set subcentre wwwww to 00000
+              if ( b->sec1.master != 0 ) // case of not WMO tables
+                {
+                  sprintf ( b->table->b.path,"%sB%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
+                            b->sec1.subcentre, b->sec1.centre, b->sec1.master_version );
+                  sprintf ( b->table->c.path,"%sC%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
+                            b->sec1.subcentre, b->sec1.centre, b->sec1.master_version );
+                  sprintf ( b->table->d.path,"%sD%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
+                            b->sec1.subcentre, b->sec1.centre, b->sec1.master_version );
+                }
+              else
+                {
+                  sprintf ( b->table->b.path,"%sB0000000000000%03d000.TXT", aux, b->sec1.master_version );
+                  sprintf ( b->table->c.path,"%sC0000000000000%03d000.TXT", aux, b->sec1.master_version );
+                  sprintf ( b->table->d.path,"%sD0000000000000%03d000.TXT", aux, b->sec1.master_version );
+                }
             }
         }
     }

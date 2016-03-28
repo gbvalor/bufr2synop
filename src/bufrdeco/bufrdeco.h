@@ -138,6 +138,12 @@
 #define DESCRIPTOR_IS_A_REPLICATOR (128)
 
 /*!
+ \def DESCRIPTOR_IS_LOCAL
+ \brief Bit mask for a flag table string in a struct \ref bufr_atom_data
+*/
+#define DESCRIPTOR_IS_LOCAL (256)
+
+/*!
   \def BUFR_LEN_SEC1
   \brief Max length in bytes for a sec1
 */
@@ -228,6 +234,8 @@ struct bufr_decoding_data_state
   int32_t added_reference; /*!< Current aditional reference that can be changed bu descriptor 2 03 YYY */
   uint8_t assoc_bits; /*!< number of associated bits */
   uint8_t changing_reference; /*!< Changing reference as descriptor 2 03 YYY */
+  uint8_t fixed_ccitt; /*!< Length in octests for a CCITT var. Changed with descriptor 2 08 YYY . default 0 (or 1)*/
+  uint8_t local_bit_reserved; /*!< bits reserved for the inmediately local descriptor */
 };
 
 /*!
@@ -533,6 +541,7 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
 int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *key );
 int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_t source );
 int is_a_delayed_descriptor ( struct bufr_descriptor *d );
+int is_a_local_descriptor (struct bufr_descriptor *d);
 int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba );
 int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba );
 int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba );

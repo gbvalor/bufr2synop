@@ -60,6 +60,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
       b->state.added_reference = 0;
       b->state.assoc_bits = 0;
       b->state.changing_reference = 255;
+      b->state.fixed_ccitt = 0;
     }
   else
     {
@@ -388,12 +389,34 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
   uint32_t ival, ival0;
   struct bufr_tableb *tb;
 
+  if ( is_a_local_descriptor (& (r->desc) ) )
+    {
+      a->mask = DESCRIPTOR_IS_LOCAL;
+      memcpy ( & ( a->desc ), & ( r->desc ), sizeof ( struct bufr_descriptor ) );
+      strcpy ( a->name, "LOCAL DESCRIPTOR" );
+      strcpy ( a->unit, "UNKNOWN" );
+      if ( r->inc_bits )
+        {
+          bit_offset = r->bit0 + r->bits + 6 + r->inc_bits * subset;
+          // extract inc_bits data
+          if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & bit_offset, r->inc_bits ) == 0 )
+            {
+              sprintf ( b->error, "get_bufr_atom_data_from_compressed_data_ref(): Cannot get associated bits from '%s'\n", r->desc.c );
+              return 1;
+            }
+          a->val = ival + r->ref0;
+        }
+      else
+        a->val = r->ref0;
+      return 0;
+    }
+
   // some utils pointers
   tb = & ( b->table->b );
   i = tb->x_start[r->desc.x] + tb->y_ref[r->desc.x][r->desc.y];
 
   a->mask = 0;
-  
+
   // descriptor
   memcpy ( & ( a->desc ), & ( r->desc ), sizeof ( struct bufr_descriptor ) );
   // name
@@ -545,7 +568,7 @@ int bufr_decode_subset_data_compressed ( struct bufrdeco_subset_sequence_data *s
   // first some clean
   if ( s->nd )
     {
-      memset ( & (s->sequence), 0, sizeof ( struct bufr_atom_data ) * s->nd );
+      memset ( & ( s->sequence ), 0, sizeof ( struct bufr_atom_data ) * s->nd );
       s->nd = 0;
     }
 

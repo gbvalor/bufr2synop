@@ -227,6 +227,33 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufr 
     {
       r->is_associated = 1;
     }
+    
+  if (is_a_local_descriptor(d))
+  { // if is a local descriptor we just skip the needed bits signified by operator 2 06 YYY
+    // we assign ref = 0 and ref0 as readed reserved bits. We also will assume escale = 0
+     memcpy ( & ( r->desc ), d, sizeof ( struct bufr_descriptor ) );
+     r->bits = b->state.local_bit_reserved;
+     r->bit0 = b->state.bit_offset; // OFFSET
+     strcpy ( r->name, "LOCAL DESCRIPTOR");
+     strcpy ( r->unit, "UNKNOWN");
+     if ( get_bits_as_uint32_t ( &r->ref0, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ),
+       b->state.local_bit_reserved ) == 0 )
+        {
+          sprintf ( b->error, "bufrdeco_tableb_compressed(): Cannot get bits from '%s'\n", d->c );
+          return 1;
+        }
+     if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), 6 ) == 0 )
+        {
+          sprintf ( b->error, "bufrdeco_tableb_compressed(): Cannot get 6 bits for inc_bits from '%s'\n", d->c );
+          return 1;
+        }
+     r->escale = 0;
+     r->inc_bits = ival;
+     b->state.bit_offset += r->inc_bits * b->sec3.subsets;
+     b->state.local_bit_reserved = 0; // Clean the reserved bits
+     return 0;
+  }
+
   i = tb->x_start[d->x] + tb->y_ref[d->x][d->y];
   memcpy ( & ( r->desc ), d, sizeof ( struct bufr_descriptor ) );
   r->ref = tb->item[i].reference;
@@ -279,6 +306,9 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufr 
 
   if ( strstr ( r->unit, "CCITTIA5" ) != NULL )
     {
+      if (b->state.fixed_ccitt != 0) // can be changed by 2 08 YYY operator
+	r->bits = 8 * b->state.fixed_ccitt;
+      
       if ( get_bits_as_char_array ( r->cref0, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), r->bits ) == 0 )
         {
           sprintf ( b->error, "bufrdeco_tableb_compressed(): Cannot get uchars from '%s'\n", d->c );
@@ -368,6 +398,21 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_
       return 1;
     }
 
+  if (is_a_local_descriptor(d))
+  { // if is a local descriptor we just skip the bits signified by operator 2 06 YYY
+     a->mask = DESCRIPTOR_IS_LOCAL;
+     strcpy(a->name, "LOCAL DESCRIPTOR");
+     strcpy(a->unit, "UNKNOWN");
+     if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), b->state.local_bit_reserved) == 0 )
+        {
+          sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get bits from '%s'\n", d->c );
+          return 1;
+        }
+     a->val = ival; // we assume escale = 0 and ref = 0
+     b->state.local_bit_reserved = 0; // Clean the reserved bits
+     return 0;
+  }
+    
   i = tb->x_start[d->x] + tb->y_ref[d->x][d->y];
 
   memcpy ( & ( a->desc ), d, sizeof ( struct bufr_descriptor ) );
@@ -401,6 +446,9 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_
   //printf(" escale = %d  reference = %d nbits = %lu\n", escale, reference, nbits);
   if ( strstr ( a->unit, "CCITTIA5" ) != NULL )
     {
+      if (b->state.fixed_ccitt != 0) // can be changed by 2 08 YYY operator
+	nbits = 8 * b->state.fixed_ccitt;
+
       if ( get_bits_as_char_array ( a->cval, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
         {
           sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get uchars from '%s'\n", d->c );

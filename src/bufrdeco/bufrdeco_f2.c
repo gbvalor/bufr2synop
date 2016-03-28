@@ -105,6 +105,18 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
       strcpy ( a->name, "SIGNIFY CHARACTER" );
       strcpy ( a->unit, "CCITTIA5" ); // unit
       break;
+    case 6:
+      // YYY bits of data are described by the immediately
+      // following local descriptor.
+      b->state.local_bit_reserved = d->y;
+      break;
+    case 8:
+      // YYY characters from CCITT International Alphabet
+      // No. 5 (representing YYY x 8 bits in length) replace the
+      // specified data width given for each CCITT IA5
+      // element in Table B.
+      b->state.fixed_ccitt = d->y;
+      break;
     default:
       sprintf ( b->error, "bufrdeco_parse_f2_descriptor(): Still no proccessed descriptor '%s' in "
                 "current library version\n", d->c );

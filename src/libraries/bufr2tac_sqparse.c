@@ -112,6 +112,7 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
           strcpy ( st->type_report,"BBXX" );  // FM-13 ship
         }
       else if ( find_descriptor_interval ( kdtlst, nlst, 308001, 308003 ) ||
+	        find_descriptor ( kdtlst, nlst,315009 ) ||
                 find_descriptor ( kdtlst, nlst,1005 ) ||
                 find_descriptor ( kdtlst, nlst,2036 ) ||
                 find_descriptor ( kdtlst, nlst,2149 ) ||
