@@ -5,6 +5,6 @@ AUTOMAKE_OPTIONS = foreign 1.4
 # set the include path found by configure
 AM_CPPFLAGS= $(all_includes)
 
-SUBDIRS = bufrdeco libraries apps
+SUBDIRS = bufrdeco libraries apps scripts
 
 EXTRA_DIST = CMakeLists.txt

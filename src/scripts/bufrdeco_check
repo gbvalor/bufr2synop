@@ -1,0 +1,31 @@
+#!/bin/sh
+#
+# This script compares the output from bufr2syn library
+# using both ECMWF and native bufdeco library.
+# 
+# The expected result is a void diff. Otherwise there is something
+# wrong
+#
+
+if test ${#} -ne 3 ; then
+  echo "usage:"
+  echo "bufrdeco_check path_to_bufr2synop_binary path_to_bufrdeco_test2_binary path_to_file_to_check"
+  exit 1
+fi
+
+BIN1=${1}
+BIN2=${2}
+FILE=${3}
+
+echo -n "Testing results for '${FILE}' ... "
+
+${BIN1} -i "${FILE}" > old.out
+${BIN2} -i "${FILE}" > new.out
+
+diff new.out old.out > diff.out
+if test -s diff.out ; then
+  echo -e "\e[31mFAIL\e[0m"
+  cat diff.out
+else
+  echo -e "\e[32mOK!\e[0m"
+fi

@@ -29,4 +29,4 @@ esac
 }
 
 
-AC_OUTPUT(Makefile src/Makefile src/apps/Makefile src/bufrdeco/Makefile src/libraries/Makefile examples/Makefile) 
+AC_OUTPUT(Makefile src/Makefile src/apps/Makefile src/bufrdeco/Makefile src/libraries/Makefile src/scripts/Makefile examples/Makefile) 
