@@ -375,6 +375,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
   size_t i, bit_offset;
   uint8_t has_data;
   uint32_t ival, ival0;
+  int32_t ivals;
   struct bufr_tableb *tb;
 
   if ( is_a_local_descriptor (& (r->desc) ) )
@@ -476,7 +477,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
               // finally get the associated data
               if ( has_data )
                 {
-                  a->associated = r->ref0 + r->ref + ival;
+                  a->associated = r->ref + (int32_t) (r->ref0 +  ival);
                 }
               else
                 {
@@ -497,7 +498,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
 
   if ( r->inc_bits == 0 )
     {
-      ival = r->ref + r->ref0;
+      ivals = r->ref + (int32_t) r->ref0;
     }
   else
     {
@@ -513,7 +514,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
       //printf("has=%u, ref=%u, ref0=%u, ival0=%u\n", has_data, r->ref, r->ref0, ival0);
       if ( has_data )
         {
-          ival = r->ref + r->ref0 + ival0;
+          ivals = r->ref + (int32_t)(r->ref0 + ival0);
         }
       else
         {
@@ -524,8 +525,9 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
     }
 
   // Get a numeric number
-  a->val = ( double ) ( ( int32_t ) ival ) * pow10 ( ( double ) ( - r->escale ) );
-
+  a->val = ( double ) ( ivals ) * pow10 ( ( double ) ( - r->escale ) );
+  
+  //printf("ival = %lf\n", a->val);
   if ( strstr ( a->unit, "CODE TABLE" ) == a->unit )
     {
       ival = ( uint32_t ) ( a->val + 0.5 );

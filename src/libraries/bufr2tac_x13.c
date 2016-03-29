@@ -39,7 +39,7 @@ char * prec_to_RRR ( char *target, double r )
     {
       strcpy ( target,"990" );
     }*/
-  else if ( r < 1.0 )
+  else if ( r < 0.95 )
     {
       sprintf ( target, "99%d", ( int ) ( r * 10.0 + 0.5) );
     }
@@ -163,6 +163,8 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s )
   switch ( s->a->desc.y )
     {
     case 11: // 0 13 011 . Total precipitaction
+      if (s->val < 0.0)
+	return 0;
       if ( s->itval ==  -3600 )
         {
           if ( syn->s3.RRR[0] == 0 )
@@ -337,6 +339,8 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s )
         }
       break;
     case 23: // 0 13 023 . Total precipitaction past 24 hours
+      if (s->val < 0.0)
+	return 0;
       if ( syn->s1.RRR[0] == 0 )
         {
           syn->s1.tr[0] = '4'; // 24 hour

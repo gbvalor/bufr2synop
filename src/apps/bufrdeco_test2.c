@@ -109,6 +109,7 @@ int bufrdeco_parse_subset_sequence ( struct metreport *m, struct bufrdeco_subset
   ksec1[6] = b->sec1.subcategory;
 
   // Finaly we call to bufr2syn library
+  memset(m, 0, sizeof( struct metreport));
   return parse_subset_sequence ( m, sq, st, kdtlst, nlst, ksec1, err );
 
 }
