@@ -186,18 +186,6 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
             {
               return 1;
             }
-          if ( seq->lseq[i].x == 5 ) // cases wich produces a new ref
-            {
-              if ( r->nd <  BUFR_NMAXSEQ )
-                {
-                  r->nd += 1;
-                }
-              else
-                {
-                  sprintf ( b->error, "bufr_parse_compressed_recursive(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
-                  return 1;
-                }
-            }
           break;
 
         case 3:

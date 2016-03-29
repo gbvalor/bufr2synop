@@ -23,6 +23,15 @@
  */
 #include "bufrdeco.h"
 
+/*!
+  \fn int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, struct bufr_descriptor *d, struct bufr *b )
+  \brief parse a descritor with f = 2
+  \param s pointer to a struct \ref  bufrdeco_subset_sequence_data where to set data if any
+  \param d pointer to the source descriptor
+  \param b pointer to the base struct \ref bufr
+
+  If succeded return 0, otherwise 1
+ */
 int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, struct bufr_descriptor *d, struct bufr *b )
 {
   size_t nbits;
@@ -104,6 +113,19 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
         }
       strcpy ( a->name, "SIGNIFY CHARACTER" );
       strcpy ( a->unit, "CCITTIA5" ); // unit
+      if ( s->nd < s->dim )
+        {
+          ( s->nd ) ++;
+        }
+      else if ( bufrdeco_increase_data_array ( s ) == 0 )
+        {
+          ( s->nd ) ++;
+        }
+      else
+        {
+          sprintf ( b->error, "bufrdeco_parse_f2_descriptor(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n" );
+          return 1;
+        }
       break;
     case 6:
       // YYY bits of data are described by the immediately
@@ -126,6 +148,15 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
 }
 
 
+/*!
+  \fn int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_descriptor *d, struct bufr *b )
+  \brief parse a descritor with f = 2 in case of compressed bufr
+  \param r pointer to a struct \ref bufrdeco_compressed_data_references where to set data references if any
+  \param d pointer to the source descriptor
+  \param b pointer to the base struct \ref bufr
+
+  If succeded return 0, otherwise 1
+ */
 int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_descriptor *d, struct bufr *b )
 {
   size_t nbits;
@@ -214,6 +245,15 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
         }
       rf->inc_bits = ival;
       b->state.bit_offset += rf->inc_bits * 8 * b->sec3.subsets;
+      if ( r->nd <  BUFR_NMAXSEQ )
+        {
+          r->nd += 1;
+        }
+      else
+        {
+          sprintf ( b->error, "bufrdeco_parse_f2_compressed(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
+          return 1;
+        }
       break;
 
     default:

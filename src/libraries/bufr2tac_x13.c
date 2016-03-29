@@ -43,6 +43,10 @@ char * prec_to_RRR ( char *target, double r )
     {
       sprintf ( target, "99%d", ( int ) ( r * 10.0 + 0.5) );
     }
+  else if ( r >= 989.0)
+    {
+      strcpy ( target,"989" );
+    }
   else
     {
       sprintf ( target, "%03d", ( int ) ( r + 0.5) );

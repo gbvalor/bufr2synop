@@ -187,7 +187,7 @@ char * print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn )
         {
           if ( syn->s1.tr[0] == 0 )
             {
-              syn->s1.tr[0] = '/';
+               syn->s1.tr[0] = '/';
             }
           if ( syn->s1.RRR[0] == 0 )
             {

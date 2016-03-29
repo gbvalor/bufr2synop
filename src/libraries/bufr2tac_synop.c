@@ -137,7 +137,7 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr_subset_state *s, st
         }
 
       s->i = is;
-      s->ival = ( int ) sq->sequence[is].val;
+      s->ival = ( int ) (sq->sequence[is].val);
       s->val = sq->sequence[is].val;
       s->a = &sq->sequence[is];
       if ( is > 0 )

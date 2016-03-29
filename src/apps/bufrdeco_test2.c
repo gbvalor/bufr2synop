@@ -155,9 +155,13 @@ int main ( int argc, char *argv[] )
           close_bufr ( &BUFR );
           exit ( EXIT_FAILURE );
         }
+        
       if ( DEBUG )
+      {
+	if ((subset == 0) && BUFR.sec3.compressed)
+	   print_bufrdeco_compressed_data_references(&REF);
         bufrdeco_print_subset_sequence_data ( &SEQ );
-
+      }
       if ( bufrdeco_parse_subset_sequence ( &REPORT, &SEQ, &STATE, &BUFR, error ) )
         {
           if ( DEBUG )
