@@ -81,7 +81,7 @@
 */
 #define NMAXSEQ (16384)
 
-#define BUFR_NMAXSEQ (1 * 16384)
+#define BUFR_NMAXSEQ (2 * 16384)
 
 /*!
    \def NMAXSEQ_DESCRIPTORS
@@ -596,7 +596,7 @@ int get_ecmwf_tablenames ( struct bufr *b, const char *bufrtables_dir );
 char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec *tc, size_t *index,
                                       struct bufr_descriptor *d, uint32_t ival );
 char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d,
-                                     uint64_t ival );
+                                     uint64_t ival, uint8_t nbits );
 int bufrdeco_tabled_get_descritors_array ( struct bufr_sequence *s, struct bufr *b,
     const char *key );
 int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_descriptor *d );

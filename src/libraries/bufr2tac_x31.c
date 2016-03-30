@@ -35,10 +35,14 @@
 int syn_parse_x31 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 {
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    return 0;
+    {
+      return 0;
+    }
 
   if ( syn == NULL )
-    return 1;
+    {
+      return 1;
+    }
 
   switch ( s->a->desc.y )
     {
@@ -64,10 +68,14 @@ int syn_parse_x31 ( struct synop_chunks *syn, struct bufr_subset_state *s )
 int buoy_parse_x31 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 {
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    return 0;
+    {
+      return 0;
+    }
 
   if ( b == NULL )
-    return 1;
+    {
+      return 1;
+    }
 
   switch ( s->a->desc.y )
     {
@@ -92,35 +100,47 @@ int buoy_parse_x31 ( struct buoy_chunks *b, struct bufr_subset_state *s )
 int temp_parse_x31 ( struct temp_chunks *t, struct bufr_subset_state *s )
 {
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    return 0;
+    {
+      return 0;
+    }
 
   if ( t == NULL )
-    return 1;
+    {
+      return 1;
+    }
 
   switch ( s->a->desc.y )
     {
-    case 1: // 0 31 001 .  Replicator   
+    case 1: // 0 31 001 .  Replicator
       // It is the amount of points of wind shear data at pressure level
-      if (s->ival < TEMP_NMAX_POINTS)
-      {
-	s->itval = s->ival;
-	s->rep = 0;
-      }
+      if ( s->ival < TEMP_NMAX_POINTS )
+        {
+          s->itval = s->ival;
+          s->rep = 0;
+        }
       else
-	return 1; // too much points
+        {
+          return 1;  // too much points
+        }
       s->k_itval = s->i;
       s->w->n = 0;
       break;
+
     case 2: // 0 31 002 . Extended replicatos
-      // IT is the amount of points of Temperature, dew-point and wind data at 
+      // IT is the amount of points of Temperature, dew-point and wind data at
       // a pressure level with radiosonde position
-      if (s->ival < (TEMP_NMAX_POINTS * 4))
-      {
-        s->rep = s->ival;
-	s->itval = 0;
-      }
+      /*if ( s->ival < ( TEMP_NMAX_POINTS * 4 ) )
+        {
+          s->rep = s->ival;
+          s->itval = 0;
+        }
       else
-	return 1; // Too much points
+        {
+          return 1;  // Too much points
+        }*/
+      s->rep = s->ival;
+      s->itval = 0;
+
       s->k_rep = s->i;
       s->r->n = 0;
       break;

@@ -524,7 +524,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_
           ival = ( uint32_t ) ( a->val + 0.5 );
           a->mask |= DESCRIPTOR_IS_FLAG_TABLE;
 
-          if ( bufrdeco_explained_flag_val ( a->ctable, 256, & ( b->table->c ), & ( a->desc ), ival ) != NULL )
+          if ( bufrdeco_explained_flag_val ( a->ctable, 256, & ( b->table->c ), & ( a->desc ), ival, nbits ) != NULL )
             {
               a->mask |= DESCRIPTOR_HAVE_FLAG_TABLE_STRING;
             }

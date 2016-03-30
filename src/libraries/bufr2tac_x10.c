@@ -272,9 +272,6 @@ int temp_parse_x10 ( struct temp_chunks *t, struct bufr_subset_state *s )
           s->r->raw[s->r->n - 1].h = s->val;
         }
       break;
-
-      break;
-      
     default:
       break;
     }

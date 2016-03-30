@@ -543,18 +543,26 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr_subset_state *s )
       break;
 
     case 86: // 0 04 086 . Long time period or displacement (since launch time)
-      if ( s->rep > 0 )
+      if ( s->rep > 0 ) //this is trick to check if point is wind shear or not
         {
           // case of Temperature, humidty ... point
           if ( ( int ) s->r->n < s->rep )
-            s->r->n += 1;
+            {
+              if ( s->r->n < ( TEMP_NMAX_POINTS * 4 ) &&
+                   ( s->r->n == 0 || s->r->raw[s->r->n - 1].flags ) )
+                {
+                  s->r->n += 1;
+                }
+            }
           s->r->raw[s->r->n - 1].dt = s->ival;
         }
       else
         {
           // case of wind shear point
           if ( ( int ) s->w->n < s->itval )
-            s->w->n += 1;
+            {
+              s->w->n += 1;
+            }
           s->w->raw[s->w->n - 1].dt = s->ival;
         }
       break;

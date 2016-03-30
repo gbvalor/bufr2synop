@@ -38,6 +38,7 @@ int print_temp_raw_data ( struct temp_raw_data *r )
 {
   size_t i;
 
+  printf("raw points %lu\n", r->n);
   for ( i = 0; i < r->n ; i++ )
     {
       if ( r->raw[i].T != MISSING_REAL &&
@@ -84,6 +85,7 @@ int print_temp_raw_wind_shear_data ( struct temp_raw_wind_shear_data *w )
 {
   size_t i;
 
+  printf("raw share wind points %lu\n", w->n);
   for ( i = 0; i < w->n ; i++ )
     {
       if ( w->raw[i].ws_blw != MISSING_REAL && w->raw[i].ws_abv != MISSING_REAL )

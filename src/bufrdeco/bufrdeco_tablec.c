@@ -186,19 +186,21 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec
 }
 
 /*!
-  \fn char * bufrdeco_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d, unsigned long ival)
+  \fn char * bufrdeco_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d, unsigned long ival, uint8_t nbits)
   \brief gets a strung with the meaning of a value for a flag table descriptor
   \param expl string with resulting meaning
   \param dim max length alowed for \a expl string
   \param d pointer to the source descriptor
   \param ival integer value for the descriptos
+  \param nbits uint8_t with the bit extensión of descriptor
 
   Remember that in FLAG tables for bufr, bit 1 is most significant and N the less one. Bit N only is set to
   1 when all others are also set to one, i.e. in case of missing value.
 
   If something went wrong, it returns NULL . Otherwise it returns \a expl
 */
-char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d, uint64_t ival )
+char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d, 
+     uint64_t ival, uint8_t nbits )
 {
   char *c, *s;
   uint64_t test, test0;
@@ -244,7 +246,7 @@ char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec 
   s = expl;
   s[0] = '\0';
 
-  for ( j = 0, test0 = 2; j < nb && i < tc->nlines ; i++ )
+  for ( j = 0, test0 = 1; j < nb && i < tc->nlines ; i++ )
     {
       if ( tc->l[i][12] != ' ' )
         {
@@ -275,7 +277,7 @@ char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec 
                 }
             }
 
-          test = test0 << ( nb - v );
+          test = test0 << ( nbits - v );
 
           if ( v && ( test & ival ) != 0 )
             {

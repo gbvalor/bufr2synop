@@ -542,7 +542,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
       ival = ( uint32_t ) ( a->val + 0.5 );
       a->mask |= DESCRIPTOR_IS_FLAG_TABLE;
 
-      if ( bufrdeco_explained_flag_val ( a->ctable, 256, & ( b->table->c ), & ( a->desc ), ival ) != NULL )
+      if ( bufrdeco_explained_flag_val ( a->ctable, 256, & ( b->table->c ), & ( a->desc ), ival, r->bits ) != NULL )
         {
           a->mask |= DESCRIPTOR_HAVE_FLAG_TABLE_STRING;
         }
