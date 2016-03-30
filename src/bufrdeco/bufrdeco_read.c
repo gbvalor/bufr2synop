@@ -18,17 +18,177 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 /*!
- \file bufrdeco.c
- \brief This file has the code of user level routines for library bufrdeco
+ \file bufrdeco_read.c
+ \brief This file has the code to read bufr files
 */
 #include "bufrdeco.h"
-
 
 /*!
    These are the default directories where the ECMWF package install bufrtables
 */
 const char DEFAULT_BUFRTABLES_DIR1[] = "/usr/local/lib/bufrtables/";
 const char DEFAULT_BUFRTABLES_DIR2[] = "/usr/lib/bufrtables/";
+
+
+/*!
+  \fn int get_ecmwf_tablenames ( struct bufr *b, const char *bufrtables_dir)
+  \brief Get the complete pathnames for EMCWF table files needed by a bufr message
+  \param bufrtables_dir string with path to bufr file tables dir
+  \param b pointer for a struct \ref bufr
+
+  In ECMWF library the name of a table file is Kssswwwwwxxxxxyyyzzz.TXT , where
+       - K - type of table, i.e, 'B', 'C', or 'D'
+       - sss - Master table number (zero for WMO meteorological tables)
+       - wwwww - Originating sub-centre
+       - xxxxx - Originating centre
+       - yyy - Version number of master table used
+       - zzz - Version number of local table used
+*/
+int get_ecmwf_tablenames ( struct bufr *b, const char *bufrtables_dir )
+{
+  struct stat st;
+  char aux[256];
+
+  if ( bufrtables_dir == NULL )
+    {
+      // try to guess directory
+      if ( stat ( DEFAULT_BUFRTABLES_DIR1, &st ) )
+        {
+          if ( stat ( DEFAULT_BUFRTABLES_DIR2, &st ) )
+            {
+              return 1;
+            }
+          else
+            {
+              if ( S_ISDIR ( st.st_mode ) )
+                {
+                  strcpy ( aux,DEFAULT_BUFRTABLES_DIR2 );
+                }
+            }
+        }
+      else
+        {
+          if ( S_ISDIR ( st.st_mode ) )
+            {
+              strcpy ( aux,DEFAULT_BUFRTABLES_DIR1 );
+            }
+        }
+    }
+  else
+    {
+      strcpy ( aux, bufrtables_dir );
+    }
+
+  sprintf ( b->table->b.path,"%sB%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
+            b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
+  sprintf ( b->table->c.path,"%sC%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
+            b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
+  sprintf ( b->table->d.path,"%sD%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
+            b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
+
+  /* check for table b, if problems then we try alternative */
+  if ( stat ( b->table->b.path, &st ) )
+    {
+      // here we set originating centre xxxxx to 00000 for WMO tables
+      if ( b->sec1.master != 0 ) // case of not WMO tables
+        {
+          sprintf ( b->table->b.path,"%sB%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
+                    b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
+          sprintf ( b->table->c.path,"%sC%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
+                    b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
+          sprintf ( b->table->d.path,"%sD%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
+                    b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
+        }
+      else
+        {
+          sprintf ( b->table->b.path,"%sB000%05d00000%03d%03d.TXT", aux, b->sec1.subcentre,
+                    b->sec1.master_version, b->sec1.master_local );
+          sprintf ( b->table->c.path,"%sC000%05d00000%03d%03d.TXT", aux, b->sec1.subcentre,
+                    b->sec1.master_version, b->sec1.master_local );
+          sprintf ( b->table->d.path,"%sD000%05d00000%03d%03d.TXT", aux, b->sec1.subcentre,
+                    b->sec1.master_version, b->sec1.master_local );
+        }
+
+      if ( stat ( b->table->b.path, &st ) )
+        {
+          // Another chance. Set local zzz to 000
+          if ( b->sec1.master != 0 ) // case of not WMO tables
+            {
+              sprintf ( b->table->b.path,"%sB%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
+                        b->sec1.subcentre, b->sec1.centre, b->sec1.master_version );
+              sprintf ( b->table->c.path,"%sC%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
+                        b->sec1.subcentre, b->sec1.centre, b->sec1.master_version );
+              sprintf ( b->table->d.path,"%sD%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
+                        b->sec1.subcentre, b->sec1.centre, b->sec1.master_version );
+            }
+          else
+            {
+              sprintf ( b->table->b.path,"%sB000%05d00000%03d000.TXT", aux, b->sec1.subcentre,
+                        b->sec1.master_version );
+              sprintf ( b->table->c.path,"%sC000%05d00000%03d000.TXT", aux, b->sec1.subcentre,
+                        b->sec1.master_version );
+              sprintf ( b->table->d.path,"%sD000%05d00000%03d000.TXT", aux, b->sec1.subcentre,
+                        b->sec1.master_version );
+            }
+
+          if ( stat ( b->table->b.path, &st ) )
+            {
+              // Another chance. Set subcentre wwwww to 00000
+              if ( b->sec1.master != 0 ) // case of not WMO tables
+                {
+                  sprintf ( b->table->b.path,"%sB%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
+                            b->sec1.subcentre, b->sec1.centre, b->sec1.master_version );
+                  sprintf ( b->table->c.path,"%sC%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
+                            b->sec1.subcentre, b->sec1.centre, b->sec1.master_version );
+                  sprintf ( b->table->d.path,"%sD%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
+                            b->sec1.subcentre, b->sec1.centre, b->sec1.master_version );
+                }
+              else
+                {
+                  sprintf ( b->table->b.path,"%sB0000000000000%03d000.TXT", aux, b->sec1.master_version );
+                  sprintf ( b->table->c.path,"%sC0000000000000%03d000.TXT", aux, b->sec1.master_version );
+                  sprintf ( b->table->d.path,"%sD0000000000000%03d000.TXT", aux, b->sec1.master_version );
+                }
+            }
+        }
+    }
+  return 0;
+}
+
+
+
+/*!
+  \fn int bufr_read_tables(struct bufr *b, char *tables_dir)
+  \brief Read the tables according with bufr file data from a bufr table directory
+  \param b basic struct with needed data
+  \param tables_dir complete path string for directory with ECMWF bufr tables. Must be ended with a '/' . If NULL then is the default
+  
+  The default directories where to search bufr tables are stored in \ref DEFAULT_BUFRTABLES_DIR1 and \ref DEFAULT_BUFRTABLES_DIR2
+*/
+int bufr_read_tables(struct bufr *b, char *tables_dir)
+{
+  // get tablenames
+  if ( get_ecmwf_tablenames ( b, tables_dir ) )
+    {
+      sprintf ( b->error, "bufrdeco_read_bufr(): Cannot find bufr tebles\n" );
+      return 1;
+    }
+
+  // read tables
+  if ( bufr_read_tableb ( & ( b->table->b ), b->error ) )
+    {
+      return 1;
+    }
+  if ( bufr_read_tablec ( & ( b->table->c ), b->error ) )
+    {
+      return 1;
+    }
+  if ( bufr_read_tabled ( & ( b->table->d ), b->error ) )
+    {
+      return 1;
+    }
+  return 0;
+}
 
 /*!
   \fn int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
@@ -39,7 +199,7 @@ const char DEFAULT_BUFRTABLES_DIR2[] = "/usr/lib/bufrtables/";
 
   This function does the folowing tasks:
   - Read the file and checks the marks at the begining and end to see wheter is a BUFR file
-  - Init the structs and allocate the needed memory
+  - Init the structs and allocate the needed memory if not done previously
   - Splits and parse the BUFR sections (without expanding descriptors nor parsing data)
   - Reads the needed Table files and store them in memory.
 
@@ -252,31 +412,12 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
   b->sec4.bit_offset = 32; // the first bit in byte 4
   free ( ( void * ) bufrx );
 
-  // get tablenames
-  if ( get_ecmwf_tablenames ( b, NULL ) )
-    {
-      sprintf ( error, "bufrdeco_read_bufr(): Cannot find bufr tebles\n" );
-      close_bufr ( b );
-      return 1;
-    }
-
-  // read tables
-  if ( bufr_read_tableb ( & ( b->table->b ), error ) )
-    {
-      close_bufr ( b );
-      return 1;
-    }
-  if ( bufr_read_tablec ( & ( b->table->c ), error ) )
-    {
-      close_bufr ( b );
-      return 1;
-    }
-  if ( bufr_read_tabled ( & ( b->table->d ), error ) )
-    {
-      close_bufr ( b );
-      return 1;
-    }
-
+  // Now read tables needed for current readed bufr file
+  if (bufr_read_tables (b, NULL))
+  {
+    close_bufr ( b );
+    return 1;
+  }
   return 0;
 }
 

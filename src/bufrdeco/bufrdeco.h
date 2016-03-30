@@ -340,7 +340,12 @@ struct gts_header
 };
 
 
-/*
+/*!
+  \struct bufr_sec1
+  \brief Store de parsed section 1 of a bufr file
+
+  <pre>
+  This is for version 4 BUFR
   Section 1 – Identification section
   Octet No.  Contents
   1–3        Length of section
@@ -366,6 +371,28 @@ struct gts_header
   22         Second
   23–Optional – for local use by ADP centres
 
+  And this is for version 3
+  1–3        Length of section 
+  4          BUFR master table (zero if standard WMO FM 94 BUFR tables are used – see Note 2) 
+  5          Originating/generating sub-centre: Code table 0 01 034 (defined, if necessary, by associated 
+             originating/generating centre – see Note 3 of Common Code table C–1 in Part C/c.) 
+  6          Originating/generating centre: Code table 0 01 033 (Common Code table C–1 in Part C/c.) 
+  7          Update sequence number (zero for original BUFR messages; incremented for updates) 
+  8          Bit 1 = 0 No optional section 
+                   = 1 Optional section follows 
+             Bits 2–8 Set to zero (reserved) 
+  9          Data category (Table A) 
+  10         Data sub-category (defined by local automatic data processing (ADP) centres) 
+  11         Version number of master table used – see Notes 2 and 4 
+  12         Version number of local tables used to augment the master table in use – see Note 2 
+  13         Year of century 
+  14         Month     
+  15         Day Most typical for the BUFR message contents 
+  16         Hour     
+  17         Minute     
+  18-        If not required by ADP centres for local use, octet 18 only shall be included and set to zero with 
+             reference to Regulation 94.1.3 
+  </pre>
 */
 struct bufr_sec1
 {
@@ -389,12 +416,20 @@ struct bufr_sec1
   uint8_t raw[BUFR_LEN_SEC1]; /*!< Raw data for sec1 as is in original BUFR file */
 };
 
+/*!
+  \struct bufr_sec2
+  \brief Store a parsed sec2 from a bufr file
+*/
 struct bufr_sec2
 {
   uint32_t length;
   uint8_t raw[BUFR_LEN_SEC2]; /*!< Raw data for sec2 as is in original BUFR file */
 };
 
+/*!
+  \struct bufr_sec3
+  \brief Store a parsed sec3 from a bufr file
+*/
 struct bufr_sec3
 {
   uint32_t length; /*!< length of sec3 in bytes */
@@ -406,6 +441,12 @@ struct bufr_sec3
   uint8_t raw[BUFR_LEN_SEC3]; /*!< Raw data for sec3 as is in original BUFR file */
 };
 
+/*!
+  \struct bufr_sec4
+  \brief Store a parsed sec4 from a bufr file
+
+  Note that member \a raw  must be initialized to allocate needed memory
+*/
 struct bufr_sec4
 {
   uint32_t length; /*< length of sec4 in bytes */
@@ -414,75 +455,102 @@ struct bufr_sec4
   uint8_t *raw; /*!< Pointer to a raw data for sec4 as in original BUFR file */
 };
 
+/*!
+   \struct struct bufr_tableb_decoded_item
+   \brief Store parameters for a descriptor in table b, i. e. with f = 0
+*/
 struct bufr_tableb_decoded_item
 {
-  uint8_t changed; // flag. If 0 = not changed from table B. If 1 Changed */
-  uint8_t x; // x value of descriptor
-  uint8_t y; // y value of descriptor
-  char key[8]; // c value of descriptor
-  char name[64]; // name
-  char unit[24]; // unit
-  int32_t scale; // escale
-  int32_t scale_ori; // escale as readed from table b
-  int32_t reference; // reference
-  int32_t reference_ori; // reference as readed from table b
-  size_t nbits; // bits
-  size_t nbits_ori; // bits as readed from table bS
-  size_t tablec_ref; // item to point table c, if any
-  size_t tabled_ref; // item to point table d, if any
+  uint8_t changed; /*!< flag. If 0 = not changed from table B. If 1 Changed */
+  uint8_t x; /*!< x value of descriptor */
+  uint8_t y; /*!< y value of descriptor */
+  char key[8]; /*< c value of descriptor */
+  char name[64]; /*!< name */
+  char unit[24]; /*!< unit */
+  int32_t scale; /*!< escale */
+  int32_t scale_ori; /*!< escale as readed from table b */
+  int32_t reference; /*!< reference */
+  int32_t reference_ori; /*!< reference as readed from table b */
+  size_t nbits; /*!< bits */
+  size_t nbits_ori; /*!< bits as readed from table b */
+  size_t tablec_ref; /*!< item to point table c, if any */
+  size_t tabled_ref; /*!< item to point table d, if any */
 };
 
+/*!
+  \struct bufr_tableb
+  \brief Store a table B readed from a file formated and named as ECMWF bufrdc package
+*/
 struct bufr_tableb
 {
-  char path[256];
-  char old_path[256];
-  size_t nlines;
-  size_t x_start[64]; /*!< Index of first x */
-  uint8_t y_ref[64][256]; /*!< index of y since first x*/
-  size_t num[64]; /*!< Amonut of items for x */
-
-  struct bufr_tableb_decoded_item item[BUFR_MAXLINES_TABLEB];
+  char path[256]; /*!< Complete path of current file readed */
+  char old_path[256]; /*!< Cmplete path of prior file readed, used to avoid read two consecutive times the same file */
+  size_t nlines; /*!< Current lines readed from file, i. e. used in array item[] */
+  size_t x_start[64]; /*!< Index in array \a item[] for first x. x_start[j] is index for first descriptor which x == j */
+  uint8_t y_ref[64][256]; /*!< index for y since first x. x_ref[i][j] is index since x_start[i] where y == j */
+  size_t num[64]; /*!< Amount of items for x. num[i] is the amount of items in array where x = i */
+  struct bufr_tableb_decoded_item item[BUFR_MAXLINES_TABLEB]; /*!< Array with structs containing parsed lines readed from file */
 };
 
+/*!
+  \struct bufr_tablec
+  \brief Store a table C readed from a file formated and named as ECMWF bufrdc package
+*/
 struct bufr_tablec
 {
-  char path[256];
-  char old_path[256];
-  size_t nlines;
-  size_t x_start[64]; /*!< Index of first x */
-  size_t num[64]; /*!< Amonut of lines for x */
-  char l[BUFR_MAXLINES_TABLEC][96];
+  char path[256]; /*!< Complete path of current file readed */
+  char old_path[256]; /*!< Cmplete path of prior file readed, used to avoid read two consecutive times the same file */
+  size_t nlines; /*!< Current lines readed from file, i. e. used in array \a l[] */
+  size_t x_start[64]; /*!< Index in array \a l[] for first x. x_start[j] is index for first descriptor which x == j */
+  size_t num[64]; /*!< Amonut of lines for x. num[i] is the amount of items in array where x = i */
+  char l[BUFR_MAXLINES_TABLEC][96]; /*!< Array with lines readed from file */
 };
 
+/*!
+  \struct bufr_tabled
+  \brief Store a table D readed from a file formated and named as ECMWF bufrdc package
+*/
 struct bufr_tabled
 {
-  char path[256];
-  char old_path[256];
-  size_t nlines;
-  size_t x_start[64]; /*!< Index of first x */
-  size_t num[64]; /*!< Amonut of lines for x */
-  char l[BUFR_MAXLINES_TABLED][128];
+  char path[256]; /*!< Complete path of current file readed */
+  char old_path[256]; /*!< Cmplete path of prior file readed, used to avoid read two consecutive times the same file */
+  size_t nlines; /*!< Current lines readed from file, i. e. used in array \a l[] */
+  size_t x_start[64]; /*!< Index in array \a l[] for first x. x_start[j] is index for first descriptor which x == j */
+  size_t num[64]; /*!< Amonut of lines for x. num[i] is the amount of items in array where x = i */
+  char l[BUFR_MAXLINES_TABLED][128]; /*!< Array with lines readed from file */
 };
 
+/*!
+  \struct bufr_tables
+  \brief Contains all tables needed to parse a bufr file
+
+  All readed files need to be named an formed as ECMWF bufrdc package
+*/
 struct bufr_tables
 {
-  struct bufr_tableb b;
-  struct bufr_tablec c;
-  struct bufr_tabled d;
+  struct bufr_tableb b; /*!< Table B */
+  struct bufr_tablec c; /*!< Table C */
+  struct bufr_tabled d; /*!< Table D */
 };
 
+/*!
+  \struct bufr
+  \brief This struct contains all needed data to parse and decode a BUFR file
+
+  NOTE that must be initializad before use
+*/
 struct bufr
 {
-  struct gts_header header;
-  struct bufr_sec0 sec0;
-  struct bufr_sec1 sec1;
-  struct bufr_sec2 sec2;
-  struct bufr_sec3 sec3;
-  struct bufr_sec4 sec4;
-  struct bufr_tables *table;
-  struct bufr_expanded_tree *tree;
-  struct bufr_decoding_data_state state;
-  char error[1024];
+  struct gts_header header; /*!< GTS data */
+  struct bufr_sec0 sec0; /*!< Parsed sec0 */
+  struct bufr_sec1 sec1; /*!< Parsed sec1 */
+  struct bufr_sec2 sec2; /*!< Parsed sec2 */
+  struct bufr_sec3 sec3; /*!< Parsed sec3 */
+  struct bufr_sec4 sec4; /*!< Parsed sec4 */
+  struct bufr_tables *table; /*!< Pointer to a the struct containing all tables needed for a single bufr */
+  struct bufr_expanded_tree *tree; /*!< Pointer to a truct containing the parsed descriptor tree (without explansion) */
+  struct bufr_decoding_data_state state; /*!< Struct with data needed when parsing bufr */
+  char error[1024]; /*!< String with detected errors, if any */
 };
 
 extern const char DEFAULT_BUFRTABLES_DIR1[];
@@ -491,6 +559,9 @@ extern const char DEFAULT_BUFRTABLES_DIR2[];
 
 int init_bufr ( struct bufr *b );
 int close_bufr ( struct bufr *b );
+int bufr_substitute_tables (struct bufr_tables **replaced, struct bufr_tables *source, struct bufr *b);
+int init_bufr_tables (struct bufr_tables **t);
+int free_bufr_tables (struct bufr_tables *t);
 int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba );
 int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba );
 int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba );
@@ -498,6 +569,8 @@ int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_r
 int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_references *rf );
 
 int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error );
+int bufr_read_tables(struct bufr *b, char *tables_dir);
+
 void print_bufrdeco_compressed_ref (struct bufrdeco_compressed_ref *r);
 void print_bufrdeco_compressed_data_references(struct bufrdeco_compressed_data_references *r);
 void print_sec0_info ( struct bufr *b );
