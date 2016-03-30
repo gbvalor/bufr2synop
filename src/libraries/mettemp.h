@@ -137,6 +137,14 @@
 */
 #define TEMP_NMAX_POINTS (64)
 
+/*!
+  \def RAW_TEMP_NMAX_POINTS
+  \brief maximum number of raw points points
+*/
+#define RAW_TEMP_NMAX_POINTS (TEMP_NMAX_POINTS * 4)
+
+
+
 /***** VERTICAL SIGNIFICANT FLAGS *****/
 /*
 

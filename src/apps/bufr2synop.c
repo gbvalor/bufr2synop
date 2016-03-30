@@ -201,7 +201,7 @@ int main ( int argc, char *argv[] )
   int icode = 0, ktdlen, ktdexl;
   int current_ss;
 
-  if ( read_arguments ( argc, argv ) )
+  if ( read_args ( argc, argv ) )
     {
       fprintf ( stderr, "%s: error geting arguments\n", SELF );
       return ( EXIT_FAILURE );

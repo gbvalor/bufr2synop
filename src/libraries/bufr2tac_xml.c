@@ -23,16 +23,12 @@
 */
 #include "bufr2tac.h"
 
-/*!
-  \fn int print_xml(FILE *f, struct metreport *m)
-  \brief prints a struct \ref metreport in xml format
-  \param f pointer to a file already open by caller routine
-  \param m pointer to a struct \ref metreport containing the data to print
-*/
-int print_xml ( FILE *f, struct metreport *m )
+
+
+int print_xml_alphanum ( FILE *f, char *type, char *alphanum, struct metreport *m )
 {
   // prints header
-  fprintf ( f, "<metreport type=%s>\n", m->type );
+  fprintf ( f, "<metreport type=%s>\n", type );
   fprintf ( f, "<bufrfile>%s</bufrfile>\n",m->h->filename );
   // print GTS_HEADER
   if ( m->h != NULL )
@@ -53,7 +49,31 @@ int print_xml ( FILE *f, struct metreport *m )
   fprintf ( f, "  <longitude>%.6lf</longitude>\n", m->g.lon );
   fprintf ( f, "  <altitude>%.1lf</altitude>\n", m->g.alt );
   fprintf ( f, " </geo>\n" );
-  fprintf ( f, " <report>%s=</report>\n", m->alphanum );
+  fprintf ( f, " <report>%s=</report>\n", alphanum );
   fprintf ( f, "</metreport>\n" );
+  return 0;
+}
+
+
+/*!
+  \fn int print_xml(FILE *f, struct metreport *m)
+  \brief prints a struct \ref metreport in xml format
+  \param f pointer to a file already open by caller routine
+  \param m pointer to a struct \ref metreport containing the data to print
+*/
+int print_xml ( FILE *f, struct metreport *m )
+{
+  // Single report
+  print_xml_alphanum(f, m->type, m->alphanum, m);
+  
+  if (m->type2[0]) //TTBB
+    print_xml_alphanum(f, m->type2, m->alphanum2, m);
+
+  if (m->type3[0]) //TTCC
+    print_xml_alphanum(f, m->type3, m->alphanum3, m);
+
+  if (m->type4[0]) //TTDD
+    print_xml_alphanum(f, m->type4, m->alphanum4, m);
+
   return 0;
 }

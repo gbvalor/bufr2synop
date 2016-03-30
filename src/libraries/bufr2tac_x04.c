@@ -543,15 +543,23 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr_subset_state *s )
       break;
 
     case 86: // 0 04 086 . Long time period or displacement (since launch time)
-      if ( s->rep > 0 ) //this is trick to check if point is wind shear or not
+
+      // s->rep is used to check what type of point we are dealing from
+      // see repliator 0 31 001 and 0 31 002 to understand it better
+      // Because this is the first descriptor in a sequence for a point, we use this
+      // descriptor to set properly the current index
+      if ( s->rep > 0 )
         {
           // case of Temperature, humidty ... point
           if ( ( int ) s->r->n < s->rep )
             {
-              if ( s->r->n < ( TEMP_NMAX_POINTS * 4 ) &&
+              // Because of there are bufr reports with a lot of not significant points
+              // we only collect the first one and significant points, i.e. those that flags are non zero
+              // When flags are zero we just overwrite points
+              if ( s->r->n < ( RAW_TEMP_NMAX_POINTS ) &&
                    ( s->r->n == 0 || s->r->raw[s->r->n - 1].flags ) )
                 {
-                  s->r->n += 1;
+                  s->r->n += 1; // Here we update the index
                 }
             }
           s->r->raw[s->r->n - 1].dt = s->ival;

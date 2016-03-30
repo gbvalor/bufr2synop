@@ -25,7 +25,7 @@
 
 int bufrdeco_init ( struct bufr *b )
 {
-  if ( init_bufr ( b ) )
+  if ( init_bufr ( b, NULL ) )
     return 1;
   return 0;
 }
@@ -37,52 +37,70 @@ int bufrdeco_close ( struct bufr *b )
   return 0;
 }
 
-int init_bufr_tables (struct bufr_tables **t)
+int init_bufr_tables ( struct bufr_tables **t )
 {
   if ( ( *t = ( struct bufr_tables * ) calloc ( 1, sizeof ( struct bufr_tables ) ) ) == NULL )
     return 1;
   return 0;
 }
 
-int free_bufr_tables (struct bufr_tables *t)
+int free_bufr_tables ( struct bufr_tables *t )
 {
-  if (t == NULL)
+  if ( t == NULL )
     return 1; // already free
-  free( (void *) t);
+  free ( ( void * ) t );
   return 0;
 }
 
 /*
 
-
+  This is useful for not to read and parse tables again. 
 */
-int bufr_substitute_tables (struct bufr_tables **replaced, struct bufr_tables *source, struct bufr *b)
+int bufr_substitute_tables ( struct bufr_tables **replaced, struct bufr_tables *source, struct bufr *b )
 {
   *replaced = b->table;
-  if (source == NULL) 
-  { // allocate memory for table
-    return init_bufr_tables (& (b->table));
-  }
+  if ( source == NULL )
+    {
+      // allocate memory for table
+      return init_bufr_tables ( & ( b->table ) );
+    }
+  else
+    b->table = source;
   return 0;
 }
 
 /*!
 
+
 */
-int init_bufr ( struct bufr *b )
+int init_bufr ( struct bufr *b, struct bufr_tables *t )
 {
+  // Check if already initialized
+  if ( b->sec4.raw != NULL && b->sec4.allocated == BUFR_LEN )
+    return 0;
+
+  // then we first clean
   memset ( b, 0, sizeof ( struct bufr ) );
+
+  // Allocate for sec4
   if ( ( b->sec4.raw = ( uint8_t * ) calloc ( 1, BUFR_LEN ) ) == NULL )
     return 1;
   b->sec4.allocated = BUFR_LEN;
 
-  if ( init_bufr_tables (& (b->table)))
+  // Allocate for a new table struct
+  if ( t == NULL )
     {
-      free ( ( void * ) b->sec4.raw );
-      b->sec4.allocated = 0;
-      return 1;
+      if ( init_bufr_tables ( & ( b->table ) ) )
+        {
+          free ( ( void * ) b->sec4.raw );
+          b->sec4.allocated = 0;
+          return 1;
+        }
     }
+  else
+    b->table = t;
 
+  // Allocate for a new tree struct
   if ( ( b->tree = ( struct bufr_expanded_tree * ) calloc ( 1, sizeof ( struct bufr_expanded_tree ) ) ) == NULL )
     {
       free ( ( void * ) b->sec4.raw );
@@ -92,6 +110,7 @@ int init_bufr ( struct bufr *b )
 
   return 0;
 }
+
 
 /*!
 

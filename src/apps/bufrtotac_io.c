@@ -18,19 +18,18 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 /*!
- \file bufrto2syn_io.c
- \brief file with the i/o code for binary bufr2synop
+ \file bufrtotac_io.c
+ \brief file with the i/o code for binary bufrtotac
  */
 
-#include "bufr2synop.h"
+#include "bufrtotac.h"
 
 void print_usage ( void )
 {
   printf ( "Usage: \n" );
-  printf ( "  bufr2synop [-i input] [-I list_of_files] [-t bufrtable_dir][-o output][-s][-v][-j][-x][-c]\n" );
-  printf ( "       -e Print some original output from ECMWF library\n" );
-  printf ( "       -h. Show this help\n" );
-  printf ( "       -i input. Pathname of the file with the bufr message to parse\n" );
+  printf ( "%s -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-c][-h]\n" , SELF);
+  printf ( "       -h Print this help\n" );
+  printf ( "       -i Input file. Complete input path file for bufr file\n" );
   printf ( "       -j. The output is in json format\n" );
   printf ( "       -c. The output is in csv format\n" );
   printf ( "       -I list_of_files. Pathname of a file with the list of files to parse, one filename per line\n" );
@@ -41,11 +40,14 @@ void print_usage ( void )
   printf ( "       -x. The output is in xml format\n" );
 }
 
-
 /*!
- \fn int read_args( int _argc, char * _argv[])
- \brief read input arguments with the aid of getopt
- */
+  \fn int read_args( int _argc, char * _argv[])
+  \brief read the arguments from stdio
+  \param _argc number of arguments passed
+  \param _argv array of arguments
+
+  Returns 1 if succcess, -1 othewise
+*/
 int read_args ( int _argc, char * _argv[] )
 {
   int iopt;
@@ -57,7 +59,6 @@ int read_args ( int _argc, char * _argv[] )
   BUFRTABLES_DIR[0] = '\0';
   VERBOSE = 0;
   SHOW_SEQUENCE = 0;
-  SHOW_ECMWF_OUTPUT = 0;
   DEBUG = 0;
   NFILES = 0;
   XML = 0;
@@ -65,12 +66,12 @@ int read_args ( int _argc, char * _argv[] )
   CSV= 0;
 
   /*
-   Read input arguments using getop library
-   */
-  while ( ( iopt = getopt ( _argc, _argv, "cDehi:jI:o:st:vx" ) ) != -1 )
+     Read input options
+  */
+  while ( ( iopt = getopt ( _argc, _argv, "cDhi:jI:o:st:vx" ) ) !=-1 )
     switch ( iopt )
       {
-      case 'i':
+     case 'i':
         if ( strlen ( optarg ) < 256 )
           strcpy ( INPUTFILE, optarg );
         break;
@@ -94,9 +95,6 @@ int read_args ( int _argc, char * _argv[] )
       case 'D':
         DEBUG = 1;
         break;
-      case 'e':
-        SHOW_ECMWF_OUTPUT = 1;
-        break;
       case 'v':
         VERBOSE = 1;
         break;
@@ -117,12 +115,44 @@ int read_args ( int _argc, char * _argv[] )
 
   if ( INPUTFILE[0] == 0 && LISTOFFILES[0] == 0 )
     {
+      printf ( "read_args(): It is needed an input file. Use -i or -I option\n" );
       print_usage();
-      return 1;
+      return -1;
     }
-  return 0;
+  return 1;
 }
 
+/* this is an interface to use bufr2tac */
+int bufrdeco_parse_subset_sequence ( struct metreport *m, struct bufrdeco_subset_sequence_data *sq, struct bufr_subset_state *st,
+                                     struct bufr *b, char *err )
+{
+  size_t i;
+  int ksec1[40];
+  int *kdtlst;
+  size_t nlst = b->sec3.ndesc;
+
+  // memory for kdtlst
+  if ( ( kdtlst = ( int * ) malloc ( nlst * sizeof ( int ) ) ) == NULL )
+    {
+      sprintf ( err, "decobufr_parse_subset_sequence(): cannot alloc memory for kdtlst\n" );
+      return 1;
+    }
+
+  // sets descriptor as integer according to ECMWF
+  for ( i = 0; i < nlst ; i++ )
+    {
+      descriptor_to_integer ( &kdtlst[i], &b->sec3.unexpanded[i] );
+    }
+
+  // And now set only used ksec1 elements
+  ksec1[5] = b->sec1.category;
+  ksec1[6] = b->sec1.subcategory;
+
+  // Finaly we call to bufr2syn library
+  memset(m, 0, sizeof( struct metreport));
+  return parse_subset_sequence ( m, sq, st, kdtlst, nlst, ksec1, err );
+
+}
 
 /*!
   \fn char * get_bufrfile_path( char *filename, char *err)
@@ -140,7 +170,7 @@ int read_args ( int _argc, char * _argv[] )
   want to parse all *.bufr files in current directory, we can do
 
   \code
-  ls -1 *.bufr > list_file && bufr2synop -I list_file
+  ls -1 *.bufr > list_file && bufrtotac -I list_file
   \endcode
 */
 char * get_bufrfile_path ( char *filename, char *err )

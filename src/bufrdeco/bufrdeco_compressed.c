@@ -216,6 +216,11 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
   struct bufr_replicator replicator;
   struct bufr_sequence *l = rep->s; // sequence
 
+  // if no loops the we save process time and space in data
+  if (rep->nloops == 0)
+    return 0; 
+  
+  // The big loop
   for ( ixloop = 0; ixloop < rep->nloops; ixloop++ )
     {
       for ( ixd = 0; ixd < rep->ndesc ; ixd ++ )

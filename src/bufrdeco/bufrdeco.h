@@ -557,7 +557,7 @@ extern const char DEFAULT_BUFRTABLES_DIR1[];
 extern const char DEFAULT_BUFRTABLES_DIR2[];
 
 
-int init_bufr ( struct bufr *b );
+int init_bufr ( struct bufr *b, struct bufr_tables *t );
 int close_bufr ( struct bufr *b );
 int bufr_substitute_tables (struct bufr_tables **replaced, struct bufr_tables *source, struct bufr *b);
 int init_bufr_tables (struct bufr_tables **t);

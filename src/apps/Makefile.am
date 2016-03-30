@@ -1,10 +1,10 @@
 METASOURCES = AUTO
 
-bin_PROGRAMS = bufr2synop bufr_decode bufrnoaa bufrdeco_test bufrdeco_test2
+bin_PROGRAMS = bufr2synop bufr_decode bufrnoaa bufrdeco_test bufrtotac
 
 bufr_decode_SOURCES = bufr_decode.c
 
-noinst_HEADERS = bufr2synop.h bufrnoaa.h
+noinst_HEADERS = bufr2synop.h bufrtotac.h bufrnoaa.h
 
 # set the include path found by configure
 AM_CPPFLAGS= $(all_includes) -I$(top_srcdir)/src/bufrdeco -I$(top_srcdir)/src/libraries
@@ -20,6 +20,6 @@ AM_CFLAGS = -W -Wall
 bufrnoaa_SOURCES = bufrnoaa.c bufrnoaa_io.c bufrnoaa_utils.c
 bufrdeco_test_SOURCES = bufrdeco_test.c
 bufrdeco_test_LDADD = $(top_builddir)/src/bufrdeco/libbufrdeco.la -lm 
-bufrdeco_test2_SOURCES = bufrdeco_test2.c
-bufrdeco_test2_LDADD = $(top_builddir)/src/bufrdeco/libbufrdeco.la $(top_builddir)/src/libraries/libbufr2tac.la -lm 
+bufrtotac_SOURCES = bufrtotac.c bufrtotac_io.c
+bufrtotac_LDADD = $(top_builddir)/src/bufrdeco/libbufrdeco.la $(top_builddir)/src/libraries/libbufr2tac.la -lm 
 EXTRA_DIST = CMakeLists.txt

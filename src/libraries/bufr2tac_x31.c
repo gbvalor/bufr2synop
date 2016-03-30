@@ -112,11 +112,13 @@ int temp_parse_x31 ( struct temp_chunks *t, struct bufr_subset_state *s )
   switch ( s->a->desc.y )
     {
     case 1: // 0 31 001 .  Replicator
+      // It is supposed that it is the extended replicator used when describing
+      // wind shear points in raiosonde
       // It is the amount of points of wind shear data at pressure level
       if ( s->ival < TEMP_NMAX_POINTS )
         {
-          s->itval = s->ival;
-          s->rep = 0;
+          s->itval = s->ival; 
+          s->rep = 0;  // used to mark it is a share point in sequent descriptors 
         }
       else
         {
@@ -126,21 +128,12 @@ int temp_parse_x31 ( struct temp_chunks *t, struct bufr_subset_state *s )
       s->w->n = 0;
       break;
 
-    case 2: // 0 31 002 . Extended replicatos
-      // IT is the amount of points of Temperature, dew-point and wind data at
-      // a pressure level with radiosonde position
-      /*if ( s->ival < ( TEMP_NMAX_POINTS * 4 ) )
-        {
-          s->rep = s->ival;
-          s->itval = 0;
-        }
-      else
-        {
-          return 1;  // Too much points
-        }*/
-      s->rep = s->ival;
+    case 2: // 0 31 002 . Extended replicator
+      // It is supposed that it is the extended replicator used when describing
+      // Temperature, dew-point and wind data at a pressure level with radiosonde position
+      // So the integer value of repliactor IS the amount of points
+      s->rep = s->ival; // replications and points we need. Also Used to mark this type of point 
       s->itval = 0;
-
       s->k_rep = s->i;
       s->r->n = 0;
       break;

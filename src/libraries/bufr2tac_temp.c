@@ -143,55 +143,68 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr_subset_state *s, str
       switch ( sq->sequence[is].desc.x )
         {
         case 1: //localization descriptors
-          temp_parse_x01 ( t, s );
+          if ( temp_parse_x01 ( t, s ) )
+            return 1;
           break;
 
         case 2: //Type of station descriptors
-          temp_parse_x02 ( t, s );
+          if ( temp_parse_x02 ( t, s ) )
+            return 1;
           break;
 
         case 4: //Date and time descriptors
-          temp_parse_x04 ( t, s );
+          if ( temp_parse_x04 ( t, s ) )
+            return 1;
           break;
 
         case 5: // Horizontal position. Latitude
-          temp_parse_x05 ( t, s );
+          if ( temp_parse_x05 ( t, s ) )
+            return 1;
           break;
 
         case 6: // Horizontal position. Longitude
-          temp_parse_x06 ( t, s );
+          if ( temp_parse_x06 ( t, s ) )
+            return 1;
           break;
 
         case 7: // Vertical position
-          temp_parse_x07 ( t, s );
+          if ( temp_parse_x07 ( t, s ) )
+            return 1;
           break;
 
         case 10: // Air Pressure descriptors
-          temp_parse_x10 ( t, s );
+          if ( temp_parse_x10 ( t, s ) )
+            return 1;
           break;
 
         case 11: // wind  data
-          temp_parse_x11 ( t, s );
+          if ( temp_parse_x11 ( t, s ) )
+            return 1;
           break;
 
         case 12: //Temperature descriptors
-          temp_parse_x12 ( t, s );
+          if ( temp_parse_x12 ( t, s ) )
+            return 1;
           break;
 
         case 20: // Cloud data
-          temp_parse_x20 ( t, s );
+          if ( temp_parse_x20 ( t, s ) )
+            return 1;
           break;
 
         case 22: // Oceanographic data
-          temp_parse_x22 ( t, s );
+          if ( temp_parse_x22 ( t, s ) )
+            return 1;
           break;
 
         case 31: // Replicators
-          temp_parse_x31 ( t, s );
+          if ( temp_parse_x31 ( t, s ) )
+            return 1;
           break;
 
         case 33: // Quality data
-          temp_parse_x33 ( t, s );
+          if ( temp_parse_x33 ( t, s ) )
+            return 1;
           break;
 
         default:

@@ -23,16 +23,10 @@
 */
 #include "bufr2tac.h"
 
-/*!
-  \fn int print_csv(FILE *f, struct metreport *m)
-  \brief prints a struct \ref metreport in labeled csv format
-  \param f pointer to a file already open by caller routine
-  \param m pointer to a struct \ref metreport containing the data to print
-*/
-int print_csv ( FILE *f, struct metreport *m )
+int print_csv_alphanum ( FILE *f, char *type, char *alphanum, struct metreport *m )
 {
   // prints header
-  fprintf ( f, "\"%s\",", m->type );
+  fprintf ( f, "\"%s\",", type );
   fprintf ( f, "\"%s\",",m->h->filename );
   // print GTS_HEADER
   if ( m->h != NULL )
@@ -63,6 +57,29 @@ int print_csv ( FILE *f, struct metreport *m )
   fprintf ( f, "%.6lf,", m->g.lat );
   fprintf ( f, "%.6lf,", m->g.lon );
   fprintf ( f, "%.1lf,", m->g.alt );
-  fprintf ( f, "\"%s=\"\n", m->alphanum );
+  fprintf ( f, "\"%s=\"\n", alphanum );
+  return 0;
+}
+
+/*!
+  \fn int print_csv(FILE *f, struct metreport *m)
+  \brief prints a struct \ref metreport in labeled csv format
+  \param f pointer to a file already open by caller routine
+  \param m pointer to a struct \ref metreport containing the data to print
+*/
+int print_csv ( FILE *f, struct metreport *m )
+{
+  // Single report
+  print_csv_alphanum(f, m->type, m->alphanum, m);
+  
+  if (m->type2[0]) //TTBB
+    print_csv_alphanum(f, m->type2, m->alphanum2, m);
+
+  if (m->type3[0]) //TTCC
+    print_csv_alphanum(f, m->type3, m->alphanum3, m);
+
+  if (m->type4[0]) //TTDD
+    print_csv_alphanum(f, m->type4, m->alphanum4, m);
+
   return 0;
 }

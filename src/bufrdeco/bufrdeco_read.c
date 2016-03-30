@@ -243,7 +243,7 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
       free ( ( void * ) bufrx );
       return 1;
     }
-  if ( init_bufr ( b ) )
+  if ( init_bufr ( b, NULL ) )
     {
       sprintf ( error, "bufrdeco_read_bufr(): Cannot init bufr struct\n" );
       free ( ( void * ) bufrx );
