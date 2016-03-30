@@ -174,6 +174,8 @@ int bufr_read_tables(struct bufr *b, char *tables_dir)
       return 1;
     }
 
+  printf("%s\n", b->table->b.path);
+  
   // read tables
   if ( bufr_read_tableb ( & ( b->table->b ), b->error ) )
     {

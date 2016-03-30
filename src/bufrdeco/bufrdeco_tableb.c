@@ -48,6 +48,7 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
   size_t i = 0;
   uint32_t ix;
   char l[180];
+  char caux[26];
   struct bufr_descriptor desc;
 
   if ( tb->path == NULL )
@@ -63,11 +64,14 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
           tb->item[i].scale = tb->item[i].scale_ori;
           tb->item[i].reference = tb->item[i].reference_ori;
           tb->item[i].nbits = tb->item[i].nbits_ori;
+	  tb->item[i].changed = 0;
         }
       return 0; // all done
     }
-    
-  tb->nlines = 0;
+  
+  strcpy(caux, tb->path);
+  memset(tb, 0, sizeof(struct bufr_tableb));
+  strcpy(tb->path,caux);
   if ( ( t = fopen ( tb->path, "r" ) ) == NULL )
     {
       sprintf ( error,"Unable to open table B file '%s'\n", tb->path );

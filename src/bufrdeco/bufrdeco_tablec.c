@@ -30,6 +30,7 @@ int bufr_read_tablec ( struct bufr_tablec *tc, char *error )
   size_t startx = 0;
   FILE *t;
   size_t i = 0;
+  char caux[256];
 
   if ( tc->path == NULL )
     {
@@ -42,7 +43,9 @@ int bufr_read_tablec ( struct bufr_tablec *tc, char *error )
       return 0; // all done
     }
 
-  tc->nlines = 0;
+  strcpy(caux, tc->path);
+  memset(tc, 0, sizeof(struct bufr_tablec));
+  strcpy(tc->path,caux);
   if ( ( t = fopen ( tc->path, "r" ) ) == NULL )
     {
       sprintf ( error,"Unable to open table C file '%s'\n", tc->path );

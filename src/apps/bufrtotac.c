@@ -61,12 +61,7 @@ int main ( int argc, char *argv[] )
   /**** Big loop. a cycle per file ****/
   while ( get_bufrfile_path ( INPUTFILE, ERR ) )
     {
-      /* Try to guess a GTS header from filename*/
-      GTS_HEADER = guess_gts_header ( &BUFR.header , INPUTFILE );
-      if ( GTS_HEADER && DEBUG )
-        printf ( "#%s %s %s %s %s\n", BUFR.header.timestamp, BUFR.header.bname, BUFR.header.center,
-                 BUFR.header.dtrel, BUFR.header.order );
-
+      printf("%s\n", INPUTFILE);
       if ( bufrdeco_read_bufr ( &BUFR, INPUTFILE, ERR ) )
         {
 	  /*
@@ -76,6 +71,13 @@ int main ( int argc, char *argv[] )
           goto end_loop;
         }
 
+      /* Try to guess a GTS header from filename*/
+      GTS_HEADER = guess_gts_header ( &BUFR.header , INPUTFILE );
+      if ( GTS_HEADER && DEBUG )
+        printf ( "#%s %s %s %s %s\n", BUFR.header.timestamp, BUFR.header.bname, BUFR.header.center,
+                 BUFR.header.dtrel, BUFR.header.order );
+
+ 
       if ( VERBOSE )
         {
           print_sec0_info ( &BUFR );
@@ -93,7 +95,6 @@ int main ( int argc, char *argv[] )
                 */
           goto end_loop;
         }
-
       if ( VERBOSE )
         bufrdeco_print_tree ( &BUFR );
 

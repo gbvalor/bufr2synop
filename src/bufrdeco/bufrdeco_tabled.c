@@ -28,9 +28,12 @@ int bufr_read_tabled ( struct bufr_tabled *td, char *error )
   FILE *t;
   size_t ix = 0;
   size_t i = 0;
+  char caux[256];
 
   if ( td->path == NULL )
-    return 1;
+    {
+      return 1;
+    }
 
   // Check if we've already readed this table.
   if ( strcmp ( td->path, td->old_path ) == 0 )
@@ -38,7 +41,9 @@ int bufr_read_tabled ( struct bufr_tabled *td, char *error )
       return 0; // all done
     }
 
-  td->nlines = 0;
+  strcpy ( caux, td->path );
+  memset ( td, 0, sizeof ( struct bufr_tabled ) );
+  strcpy ( td->path,caux );
   if ( ( t = fopen ( td->path, "r" ) ) == NULL )
     {
       sprintf ( error,"Unable to open table D file '%s'\n", td->path );
@@ -49,7 +54,9 @@ int bufr_read_tabled ( struct bufr_tabled *td, char *error )
     {
       // supress the newline
       if ( ( c = strrchr ( td->l[i],'\n' ) ) != NULL )
-        *c = '\0';
+        {
+          *c = '\0';
+        }
       if ( td->l[i][1] != ' ' && td->l[i][2] != ' ' )
         {
           aux[0] = td->l[i][2];
@@ -57,14 +64,16 @@ int bufr_read_tabled ( struct bufr_tabled *td, char *error )
           aux[2] = '\0';
           ix = strtoul ( aux, &c, 10 );
           if ( td->x_start[ix] == 0 )
-            td->x_start[ix] = i; // marc the start
+            {
+              td->x_start[ix] = i;  // marc the start
+            }
         }
       ( td->num[ix] ) ++;
       i++;
     }
   fclose ( t );
   td->nlines = i;
-  strcpy(td->old_path, td->path); // store latest path
+  strcpy ( td->old_path, td->path ); // store latest path
   return 0;
 }
 
@@ -87,7 +96,9 @@ int bufr_find_tabled_index ( size_t *index, struct bufr_tabled *td, const char *
            td->l[i][4] != key[3] ||
            td->l[i][5] != key[4] ||
            td->l[i][6] != key[5] )
-        continue;
+        {
+          continue;
+        }
       else
         {
           *index = i;
@@ -124,7 +135,9 @@ int bufrdeco_tabled_get_descritors_array ( struct bufr_sequence *s, struct bufr 
 
   // reads the amount of possible values
   if ( td->l[i][7] == ' ' )
-    nv = strtoul ( &td->l[i][7], &c, 10 );
+    {
+      nv = strtoul ( &td->l[i][7], &c, 10 );
+    }
   else
     {
       sprintf ( b->error, "bufrdeco_tabled_get_descritors_array(): Error when parsing provided table D\n" );
