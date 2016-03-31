@@ -27,6 +27,7 @@ struct bufrdeco_subset_sequence_data SEQ;
 struct bufrdeco_compressed_data_references REF;
 struct metreport REPORT; /*!< stuct to set the parsed report */
 struct bufr_subset_state STATE; /*!< Includes the info when parsing a subset sequence */
+struct bufr_tables *TABLES; /*!< Pointer to a struct bufr_tables */
 
 const char SELF[]= "bufrtotac"; /*! < the name of this binary */
 char ERR[256]; /*!< string with an error */
@@ -57,17 +58,30 @@ int main ( int argc, char *argv[] )
       printf ( "%s(): Cannot init bufr struct\n", SELF );
       return 1;
     }
+  TABLES = BUFR.table;
+
+  bufrdeco_init_subset_sequence_data ( &SEQ );
+  memset(&REF, 0, sizeof(struct bufrdeco_compressed_data_references));
 
   /**** Big loop. a cycle per file ****/
   while ( get_bufrfile_path ( INPUTFILE, ERR ) )
     {
       printf ( "%s\n", INPUTFILE );
+      if ( NFILES )
+        {
+          if ( init_bufr ( &BUFR, TABLES ) )
+            {
+              printf ( "%s(): Cannot init bufr struct\n", SELF );
+              return 1;
+            }
+        }
       if ( bufrdeco_read_bufr ( &BUFR, INPUTFILE, ERR ) )
         {
           /*
               printf ( "%s", ERR );
               exit ( EXIT_FAILURE );
               */
+	  close_bufr(&BUFR, &TABLES);
           NFILES++;
           continue;
         }
@@ -95,6 +109,7 @@ int main ( int argc, char *argv[] )
                 exit ( EXIT_FAILURE );
                 */
           NFILES++;
+	  close_bufr(&BUFR, &TABLES);
           continue;
         }
       if ( VERBOSE )
@@ -107,6 +122,7 @@ int main ( int argc, char *argv[] )
               if ( DEBUG )
                 printf ( "%s", BUFR.error );
               NFILES++;
+ 	      close_bufr(&BUFR, &TABLES);
               continue;
               //goto end_loop;
               /*close_bufr ( &BUFR );
@@ -132,9 +148,9 @@ int main ( int argc, char *argv[] )
 
         }
       NFILES ++;
+      close_bufr ( &BUFR, &TABLES );
     } // End of big loop parsing files
 
-  close_bufr ( &BUFR );
   bufrdeco_free_subset_sequence_data ( &SEQ );
   exit ( EXIT_SUCCESS );
 }

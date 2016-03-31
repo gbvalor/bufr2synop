@@ -450,9 +450,8 @@ struct bufr_sec3
 struct bufr_sec4
 {
   uint32_t length; /*< length of sec4 in bytes */
-  size_t allocated; /*!< Allocated size of raw */
   size_t bit_offset; /*!< Offset to current first bit in raw data sec4 to parse */
-  uint8_t *raw; /*!< Pointer to a raw data for sec4 as in original BUFR file */
+  uint8_t raw[BUFR_LEN]; /*!< Pointer to a raw data for sec4 as in original BUFR file */
 };
 
 /*!
@@ -558,7 +557,7 @@ extern const char DEFAULT_BUFRTABLES_DIR2[];
 
 
 int init_bufr ( struct bufr *b, struct bufr_tables *t );
-int close_bufr ( struct bufr *b );
+int close_bufr ( struct bufr *b , struct bufr_tables **t);
 int bufr_substitute_tables (struct bufr_tables **replaced, struct bufr_tables *source, struct bufr *b);
 int init_bufr_tables (struct bufr_tables **t);
 int free_bufr_tables (struct bufr_tables *t);

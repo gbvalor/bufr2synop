@@ -174,7 +174,7 @@ int bufr_read_tables(struct bufr *b, char *tables_dir)
       return 1;
     }
 
-  //printf("%s\n", b->table->b.path);
+  printf("%s\n", b->table->b.path);
   
   // read tables
   if ( bufr_read_tableb ( & ( b->table->b ), b->error ) )
@@ -245,20 +245,20 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
       free ( ( void * ) bufrx );
       return 1;
     }
+  /*
   if ( init_bufr ( b, NULL ) )
     {
       sprintf ( error, "bufrdeco_read_bufr(): Cannot init bufr struct\n" );
       free ( ( void * ) bufrx );
       return 1;
     }
-
+  */
 
   // Open and read the file
   if ( ( fp = fopen ( filename, "r" ) ) == NULL )
     {
       sprintf ( error, "bufrdeco_read_bufr(): cannot open file '%s'\n", filename );
       free ( ( void * ) bufrx );
-      close_bufr ( b );
       return 1;
     }
 
@@ -273,7 +273,6 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
     {
       sprintf ( error, "bufrdeco_read_bufr(): Too few bytes for a bufr\n" );
       free ( ( void * ) bufrx );
-      close_bufr ( b );
       return 1;
     }
 
@@ -282,7 +281,6 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
     {
       sprintf ( error, "bufrdeco_read_bufr(): file '%s' does not begin with 'BUFR' chars\n", filename );
       free ( ( void * ) bufrx );
-      close_bufr ( b );
       return 1;
     }
 
@@ -291,7 +289,6 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
     {
       sprintf ( error, "bufrdeco_read_bufr(): file '%s' does not end with '7777' chars\n", filename );
       free ( ( void * ) bufrx );
-      close_bufr ( b );
       return 1;
     }
 
@@ -307,7 +304,6 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
       sprintf ( error, "bufrdeco_read_bufr(): file '%s' have %u bytes and it says %u\n", filename,
                 ( uint32_t ) n, b->sec0.bufr_length );
       free ( ( void * ) bufrx );
-      close_bufr ( b );
       return 1;
     }
 
@@ -318,7 +314,6 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
     {
       sprintf ( error, "bufrdeco_read_bufr(): Bufr edition must be 3 or superior and this file is coded with version %u\n", b->sec0.edition );
       free ( ( void * ) bufrx );
-      close_bufr ( b );
       return 1;
     }
 
@@ -373,7 +368,6 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
     default:
       sprintf ( error, "bufrdeco_read_bufr(): This file is coded with version %u and is not supported\n", b->sec0.edition );
       free ( ( void * ) bufrx );
-      close_bufr ( b );
       return 1;
     }
   memcpy ( b->sec1.raw, c, b->sec1.length ); // raw data
@@ -422,7 +416,6 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
   // Now read tables needed for current readed bufr file
   if (bufr_read_tables (b, NULL))
   {
-    close_bufr ( b );
     return 1;
   }
   return 0;

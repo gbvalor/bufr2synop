@@ -59,6 +59,7 @@ int bufrdeco_parse_tree_recursive ( struct bufr *b, struct bufr_sequence *father
 
   if ( key == NULL )
     {
+      memset(b->tree, 0, sizeof (struct bufr_expanded_tree));
       // case first layer
       b->tree->nseq = 1;
       l = & ( b->tree->seq[0] );

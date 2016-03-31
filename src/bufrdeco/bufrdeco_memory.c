@@ -30,15 +30,11 @@ int bufrdeco_init ( struct bufr *b )
   return 0;
 }
 
-int bufrdeco_close ( struct bufr *b )
-{
-  if ( close_bufr ( b ) )
-    return 1;
-  return 0;
-}
-
 int init_bufr_tables ( struct bufr_tables **t )
 {
+  if ( *t != NULL )
+    free ( ( void * ) *t );
+
   if ( ( *t = ( struct bufr_tables * ) calloc ( 1, sizeof ( struct bufr_tables ) ) ) == NULL )
     return 1;
   return 0;
@@ -54,7 +50,7 @@ int free_bufr_tables ( struct bufr_tables *t )
 
 /*
 
-  This is useful for not to read and parse tables again. 
+  This is useful for not to read and parse tables again.
 */
 int bufr_substitute_tables ( struct bufr_tables **replaced, struct bufr_tables *source, struct bufr *b )
 {
@@ -75,47 +71,25 @@ int bufr_substitute_tables ( struct bufr_tables **replaced, struct bufr_tables *
 */
 int init_bufr ( struct bufr *b, struct bufr_tables *t )
 {
-  // Check if already initialized
-  if ( b->sec4.raw != NULL && b->sec4.allocated == BUFR_LEN )
-  {
-    memset(& (b->header), 0, sizeof (struct gts_header));
-    memset(& (b->sec0), 0, sizeof (struct bufr_sec0));
-    memset(& (b->sec1), 0, sizeof (struct bufr_sec1));
-    memset(& (b->sec2), 0, sizeof (struct bufr_sec2));
-    memset(& (b->sec3), 0, sizeof (struct bufr_sec3));
-    memset(b->sec4.raw, 0, BUFR_LEN);
-    memset(&(b->state), 0, sizeof(struct bufr_decoding_data_state));
-    return 0;
-  }
-  // then we first clean
+
   memset ( b, 0, sizeof ( struct bufr ) );
-
-  // Allocate for sec4
-  if ( ( b->sec4.raw = ( uint8_t * ) calloc ( 1, BUFR_LEN ) ) == NULL )
-    return 1;
-  b->sec4.allocated = BUFR_LEN;
-
-  // Allocate for a new table struct
   if ( t == NULL )
     {
       if ( init_bufr_tables ( & ( b->table ) ) )
         {
-          free ( ( void * ) b->sec4.raw );
-          b->sec4.allocated = 0;
           return 1;
         }
     }
   else
-    b->table = t;
-
-  // Allocate for a new tree struct
-  if ( ( b->tree = ( struct bufr_expanded_tree * ) calloc ( 1, sizeof ( struct bufr_expanded_tree ) ) ) == NULL )
     {
-      free ( ( void * ) b->sec4.raw );
-      free ( ( void * ) b->table );
-      return 1;
+      b->table = t;
     }
 
+// Allocate for a new tree struct
+  if ( ( b->tree = ( struct bufr_expanded_tree * ) calloc ( 1, sizeof ( struct bufr_expanded_tree ) ) ) == NULL )
+    {
+      return 1;
+    }
   return 0;
 }
 
@@ -123,11 +97,11 @@ int init_bufr ( struct bufr *b, struct bufr_tables *t )
 /*!
 
 */
-int close_bufr ( struct bufr *b )
+int close_bufr ( struct bufr *b, struct bufr_tables **t )
 {
-  if ( b->sec4.allocated > 0 &&  b->sec4.raw != NULL )
-    free ( ( void * ) b->sec4.raw );
-  if ( b->table != NULL )
+  if ( t != NULL )
+    *t = b->table;
+  else
     free ( ( void * ) b->table );
   if ( b->tree != NULL )
     free ( ( void * ) b->tree );
@@ -139,24 +113,20 @@ int close_bufr ( struct bufr *b )
 
 int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
 {
-  if ( ba->dim == 0 )
+  memset ( ba, 0, sizeof ( struct bufrdeco_subset_sequence_data ) );
+  if ( ( ba->sequence = ( struct bufr_atom_data * ) malloc ( BUFR_NMAXSEQ * sizeof ( struct bufr_atom_data ) ) ) == NULL )
     {
-      if ( ( ba->sequence = ( struct bufr_atom_data * ) malloc ( BUFR_NMAXSEQ * sizeof ( struct bufr_atom_data ) ) ) == NULL )
-        {
-          fprintf ( stderr,"bufr_init_subset_sequence_data():Cannot allocate memory for atom data array\n" );
-          return 1;
-        }
-      ba->dim = BUFR_NMAXSEQ;
+      fprintf ( stderr,"bufr_init_subset_sequence_data():Cannot allocate memory for atom data array\n" );
+      return 1;
     }
-  ba->nd = 0;
+  ba->dim = BUFR_NMAXSEQ;
   return 0;
 }
 
 int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
 {
-  if ( ba->sequence != NULL && ba->dim)
+  if ( ba->sequence != NULL )
     free ( ( void * ) ba->sequence );
-  memset ( ba, 0, sizeof ( struct bufrdeco_subset_sequence_data ) );
   return bufrdeco_init_subset_sequence_data ( ba );
 }
 
@@ -169,6 +139,11 @@ int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *b
 
 int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
 {
+  if ( rf->dim != 0 )
+  {
+    free ((void *) rf->refs);
+    memset (rf, 0, sizeof(struct bufrdeco_compressed_data_references));
+  }
   if ( rf->dim == 0 )
     {
       if ( ( rf->refs = ( struct bufrdeco_compressed_ref * ) malloc ( BUFR_NMAXSEQ * sizeof ( struct bufrdeco_compressed_ref ) ) ) == NULL )
@@ -178,7 +153,6 @@ int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_r
         }
       rf->dim = BUFR_NMAXSEQ;
     }
-  rf->nd = 0;
   return 0;
 }
 

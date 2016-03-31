@@ -36,7 +36,7 @@ int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struc
                                   struct bufr *b )
 {
   // First we init the subset sequence data
-  if ( bufrdeco_init_subset_sequence_data ( s ) )
+  if ( bufrdeco_clean_subset_sequence_data ( s ) )
     {
       return 1;
     }
