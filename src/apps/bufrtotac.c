@@ -81,6 +81,8 @@ int main ( int argc, char *argv[] )
               printf ( "%s", ERR );
               exit ( EXIT_FAILURE );
               */
+	  if (DEBUG)
+	    printf("#%s\n", ERR);
 	  close_bufr(&BUFR, &TABLES);
           NFILES++;
           continue;

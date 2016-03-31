@@ -226,7 +226,7 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
   /* Alloc nedeed memory for bufr */
   if ( S_ISREG ( st.st_mode ) || S_ISLNK ( st.st_mode ) )
     {
-      if ( ( bufrx = ( uint8_t * ) calloc ( 1, st.st_size ) ) == NULL )
+      if ( ( bufrx = ( uint8_t * ) calloc ( 1, st.st_size + 4) ) == NULL )
         {
           sprintf ( error, "bufrdeco_read_bufr(): cannot alloc memory for file '%s'\n", filename );
           return 1;
