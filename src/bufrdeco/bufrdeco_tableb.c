@@ -57,7 +57,7 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
     }
 
   // If we've already readed this table. We just regenerate the table with original values
-  if ( strcmp ( tb->path, tb->old_path ) == 0 )
+  if ( strcmp ( tb->path, tb->old_path ) == 0)
     {
       for ( i = 0; i < tb->nlines ; i++ )
         {

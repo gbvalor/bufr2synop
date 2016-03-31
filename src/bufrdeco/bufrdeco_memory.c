@@ -77,8 +77,14 @@ int init_bufr ( struct bufr *b, struct bufr_tables *t )
 {
   // Check if already initialized
   if ( b->sec4.raw != NULL && b->sec4.allocated == BUFR_LEN )
+  {
+    memset(& (b->sec0), 0, sizeof (struct bufr_sec0));
+    memset(& (b->sec1), 0, sizeof (struct bufr_sec1));
+    memset(& (b->sec2), 0, sizeof (struct bufr_sec2));
+    memset(& (b->sec3), 0, sizeof (struct bufr_sec3));
+    memset(b->sec4.raw, 0, BUFR_LEN);
     return 0;
-
+  }
   // then we first clean
   memset ( b, 0, sizeof ( struct bufr ) );
 
@@ -146,7 +152,7 @@ int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *b
 
 int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
 {
-  if ( ba->sequence != NULL )
+  if ( ba->sequence != NULL && ba->dim)
     free ( ( void * ) ba->sequence );
   memset ( ba, 0, sizeof ( struct bufrdeco_subset_sequence_data ) );
   return bufrdeco_init_subset_sequence_data ( ba );

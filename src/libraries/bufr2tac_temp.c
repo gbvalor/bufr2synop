@@ -144,67 +144,119 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr_subset_state *s, str
         {
         case 1: //localization descriptors
           if ( temp_parse_x01 ( t, s ) )
-            return 1;
+            {
+              free ( ( void * ) ( r ) );
+              free ( ( void * ) ( w ) );
+              return 1;
+            }
           break;
 
         case 2: //Type of station descriptors
           if ( temp_parse_x02 ( t, s ) )
-            return 1;
+            {
+              free ( ( void * ) ( r ) );
+              free ( ( void * ) ( w ) );
+              return 1;
+            }
           break;
 
         case 4: //Date and time descriptors
           if ( temp_parse_x04 ( t, s ) )
-            return 1;
+            {
+              free ( ( void * ) ( r ) );
+              free ( ( void * ) ( w ) );
+              return 1;
+            }
           break;
 
         case 5: // Horizontal position. Latitude
           if ( temp_parse_x05 ( t, s ) )
-            return 1;
+            {
+              free ( ( void * ) ( r ) );
+              free ( ( void * ) ( w ) );
+              return 1;
+            }
           break;
 
         case 6: // Horizontal position. Longitude
           if ( temp_parse_x06 ( t, s ) )
-            return 1;
+            {
+              free ( ( void * ) ( r ) );
+              free ( ( void * ) ( w ) );
+              return 1;
+            }
           break;
 
         case 7: // Vertical position
           if ( temp_parse_x07 ( t, s ) )
-            return 1;
+            {
+              free ( ( void * ) ( r ) );
+              free ( ( void * ) ( w ) );
+              return 1;
+            }
           break;
 
         case 10: // Air Pressure descriptors
           if ( temp_parse_x10 ( t, s ) )
-            return 1;
+            {
+              free ( ( void * ) ( r ) );
+              free ( ( void * ) ( w ) );
+              return 1;
+            }
           break;
 
         case 11: // wind  data
           if ( temp_parse_x11 ( t, s ) )
-            return 1;
+            {
+              free ( ( void * ) ( r ) );
+              free ( ( void * ) ( w ) );
+              return 1;
+            }
           break;
 
         case 12: //Temperature descriptors
           if ( temp_parse_x12 ( t, s ) )
-            return 1;
+            {
+              free ( ( void * ) ( r ) );
+              free ( ( void * ) ( w ) );
+              return 1;
+            }
           break;
 
         case 20: // Cloud data
           if ( temp_parse_x20 ( t, s ) )
-            return 1;
+            {
+              free ( ( void * ) ( r ) );
+              free ( ( void * ) ( w ) );
+              return 1;
+            }
           break;
 
         case 22: // Oceanographic data
           if ( temp_parse_x22 ( t, s ) )
-            return 1;
+            {
+              free ( ( void * ) ( r ) );
+              free ( ( void * ) ( w ) );
+              return 1;
+            }
           break;
 
         case 31: // Replicators
           if ( temp_parse_x31 ( t, s ) )
-            return 1;
+            {
+              free ( ( void * ) ( r ) );
+              free ( ( void * ) ( w ) );
+              return 1;
+            }
           break;
 
         case 33: // Quality data
           if ( temp_parse_x33 ( t, s ) )
-            return 1;
+            {
+              free ( ( void * ) ( r ) );
+              free ( ( void * ) ( w ) );
+              return 1;
+            }
           break;
 
         default:
@@ -401,7 +453,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
           if ( is_over_100 )
             {
               ix = ( int ) ( d->p * 0.1 + 0.5 );
-              sprintf ( t->c.s3.trop[itc].PnPnPn, "%03d", ix ); // PnPnPn
+              sprintf ( t->c.s3.trop[itc].PnPnPn, "%03d", ix % 1000 ); // PnPnPn
               kelvin_to_TTTa ( t->c.s3.trop[itc].TnTnTan, d->T ); // TnTnTan
               dewpoint_depression_to_DnDn ( t->c.s3.trop[itc].DnDn, d->T , d->Td ); // DnDn
               wind_to_dndnfnfnfn ( t->c.s3.trop[itc].dndnfnfnfn, d->dd, d->ff ); // dndnfnfnfn
@@ -414,7 +466,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
           else
             {
               ix = ( int ) ( d->p * 0.01 + 0.5 );
-              sprintf ( t->a.s3.trop[ita].PnPnPn, "%03d", ix ); // PnPnPn.
+              sprintf ( t->a.s3.trop[ita].PnPnPn, "%03d", ix % 1000 ); // PnPnPn.
               kelvin_to_TTTa ( t->a.s3.trop[ita].TnTnTan, d->T ); // TnTnTan
               dewpoint_depression_to_DnDn ( t->a.s3.trop[ita].DnDn, d->T , d->Td ); // DnDn
               wind_to_dndnfnfnfn ( t->a.s3.trop[ita].dndnfnfnfn, d->dd, d->ff ); // dndnfnfnfn
@@ -497,7 +549,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
                   sprintf ( t->b.s5.th[itb].nini, "%d%d", ( ( int ) itb - 1 ) %9 + 1, ( ( int ) itb - 1 ) %9 + 1 );
                 }
               ix = ( int ) ( d->p * 0.01 + 0.5 );
-              sprintf ( t->b.s5.th[itb].PnPnPn, "%03d", ix ); // PnPnPn.
+              sprintf ( t->b.s5.th[itb].PnPnPn, "%03d", ix % 1000 ); // PnPnPn.
               kelvin_to_TTTa ( t->b.s5.th[itb].TnTnTan, d->T ); // TnTnTan
               dewpoint_depression_to_DnDn ( t->b.s5.th[itb].DnDn, d->T , d->Td ); // DnDn
               if ( itb < TEMP_NMAX_POINTS )
@@ -534,7 +586,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
                   sprintf ( t->b.s6.wd[iwb].nini, "%d%d", ( ( int ) iwb - 1 ) %9 + 1, ( ( int ) iwb - 1 ) %9 + 1 );
                 }
               ix = ( int ) ( d->p * 0.01 + 0.5 );
-              sprintf ( t->b.s6.wd[iwb].PnPnPn, "%03d", ix ); // PnPnPn.
+              sprintf ( t->b.s6.wd[iwb].PnPnPn, "%03d", ix % 1000 ); // PnPnPn.
               wind_to_dndnfnfnfn ( t->b.s6.wd[iwb].dndnfnfnfn, d->dd, d->ff ); // dndnfnfnfn
               if ( iwb < TEMP_NMAX_POINTS )
                 {

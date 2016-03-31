@@ -77,5 +77,5 @@ extern struct bufr_subset_state STATE;
 
 // functions
 void print_usage ( void );
-int read_arguments ( int _argc, char * _argv[] );
+int read_args ( int _argc, char * _argv[] );
 char * get_bufrfile_path ( char *filename, char *err );

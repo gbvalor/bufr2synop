@@ -127,7 +127,7 @@ int bufrdeco_parse_subset_sequence ( struct metreport *m, struct bufrdeco_subset
                                      struct bufr *b, char *err )
 {
   size_t i;
-  int ksec1[40];
+  int ksec1[40], res;
   int *kdtlst;
   size_t nlst = b->sec3.ndesc;
 
@@ -150,8 +150,9 @@ int bufrdeco_parse_subset_sequence ( struct metreport *m, struct bufrdeco_subset
 
   // Finaly we call to bufr2syn library
   memset(m, 0, sizeof( struct metreport));
-  return parse_subset_sequence ( m, sq, st, kdtlst, nlst, ksec1, err );
-
+  res = parse_subset_sequence ( m, sq, st, kdtlst, nlst, ksec1, err );
+  free ((void *) kdtlst);
+  return res;
 }
 
 /*!

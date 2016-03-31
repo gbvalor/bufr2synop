@@ -91,7 +91,7 @@ int bufrdeco_parse_tree_recursive ( struct bufr *b, struct bufr_sequence *father
       l->father = father;
       //printf ("level=%lu ", l->level);
       // here we get ndesc and lsec array from table d
-      if ( bufrdeco_tabled_get_descritors_array ( l, b, key ) )
+      if ( bufrdeco_tabled_get_descriptors_array ( l, b, key ) )
         {
           //printf("\n%s\n",b->error);
           return 1; // something went wrong

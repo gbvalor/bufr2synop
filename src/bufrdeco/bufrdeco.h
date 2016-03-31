@@ -597,7 +597,7 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec
                                       struct bufr_descriptor *d, uint32_t ival );
 char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d,
                                      uint64_t ival, uint8_t nbits );
-int bufrdeco_tabled_get_descritors_array ( struct bufr_sequence *s, struct bufr *b,
+int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufr *b,
     const char *key );
 int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_descriptor *d );
 int bufrdeco_parse_tree_deep ( struct bufr *b, struct bufr_sequence *father,  const char *key );
@@ -632,5 +632,5 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
 int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufr *b, struct bufr_descriptor *d, int mode );
 int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, struct bufrdeco_compressed_ref *r,
     size_t subset, struct bufr *b );
-
+int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufr *b, const char *key );
 #endif  // from ifndef BUFRDECO_H

@@ -61,14 +61,15 @@ int main ( int argc, char *argv[] )
   /**** Big loop. a cycle per file ****/
   while ( get_bufrfile_path ( INPUTFILE, ERR ) )
     {
-      printf("%s\n", INPUTFILE);
+      printf ( "%s\n", INPUTFILE );
       if ( bufrdeco_read_bufr ( &BUFR, INPUTFILE, ERR ) )
         {
-	  /*
-          printf ( "%s", ERR );
-          exit ( EXIT_FAILURE );
-          */
-          goto end_loop;
+          /*
+              printf ( "%s", ERR );
+              exit ( EXIT_FAILURE );
+              */
+          NFILES++;
+          continue;
         }
 
       /* Try to guess a GTS header from filename*/
@@ -77,7 +78,7 @@ int main ( int argc, char *argv[] )
         printf ( "#%s %s %s %s %s\n", BUFR.header.timestamp, BUFR.header.bname, BUFR.header.center,
                  BUFR.header.dtrel, BUFR.header.order );
 
- 
+
       if ( VERBOSE )
         {
           print_sec0_info ( &BUFR );
@@ -93,7 +94,8 @@ int main ( int argc, char *argv[] )
                 close_bufr ( &BUFR );
                 exit ( EXIT_FAILURE );
                 */
-          goto end_loop;
+          NFILES++;
+          continue;
         }
       if ( VERBOSE )
         bufrdeco_print_tree ( &BUFR );
@@ -104,7 +106,9 @@ int main ( int argc, char *argv[] )
             {
               if ( DEBUG )
                 printf ( "%s", BUFR.error );
-              goto end_loop;
+              NFILES++;
+              continue;
+              //goto end_loop;
               /*close_bufr ( &BUFR );
               exit ( EXIT_FAILURE );*/
             }
@@ -127,7 +131,6 @@ int main ( int argc, char *argv[] )
             }
 
         }
-      end_loop:;
       NFILES ++;
     } // End of big loop parsing files
 
@@ -135,4 +138,6 @@ int main ( int argc, char *argv[] )
   bufrdeco_free_subset_sequence_data ( &SEQ );
   exit ( EXIT_SUCCESS );
 }
+
+
 

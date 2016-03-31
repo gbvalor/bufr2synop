@@ -176,7 +176,7 @@
 #define SUBSET_MASK_HAVE_GUST (131072)
 
 
-#define REPORT_LENGTH (8192)
+#define REPORT_LENGTH (16384)
 
 //#define OLD_VERSION
 #ifdef OLD_VERSION

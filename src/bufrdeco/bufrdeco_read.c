@@ -174,7 +174,7 @@ int bufr_read_tables(struct bufr *b, char *tables_dir)
       return 1;
     }
 
-  printf("%s\n", b->table->b.path);
+  //printf("%s\n", b->table->b.path);
   
   // read tables
   if ( bufr_read_tableb ( & ( b->table->b ), b->error ) )
@@ -393,8 +393,13 @@ int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
   b->sec3.subsets = two_bytes_to_uint32 ( &c[4] );
   if ( c[6] & 0x80 )
     b->sec3.observed = 1;
+  else
+    b->sec3.observed = 0;
   if ( c[6] & 0x40 )
     b->sec3.compressed = 1;
+  else
+    b->sec3.compressed = 0;
+  
   // loop of unexpanded descriptors
   for ( ix = 7, ud = 0; ix < b->sec3.length && ud < BUFR_LEN_UNEXPANDED_DESCRIPTOR; ix += 2 )
     {

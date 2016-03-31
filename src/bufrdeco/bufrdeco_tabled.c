@@ -36,7 +36,7 @@ int bufr_read_tabled ( struct bufr_tabled *td, char *error )
     }
 
   // Check if we've already readed this table.
-  if ( strcmp ( td->path, td->old_path ) == 0 )
+  if ( strcmp ( td->path, td->old_path ) == 0)
     {
       return 0; // all done
     }
@@ -109,7 +109,7 @@ int bufr_find_tabled_index ( size_t *index, struct bufr_tabled *td, const char *
 }
 
 
-int bufrdeco_tabled_get_descritors_array ( struct bufr_sequence *s, struct bufr *b, const char *key )
+int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufr *b, const char *key )
 {
   size_t i, j;
   uint32_t nv, v;

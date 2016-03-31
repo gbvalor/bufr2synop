@@ -38,7 +38,7 @@ int bufr_read_tablec ( struct bufr_tablec *tc, char *error )
     }
 
   // If we've already readed this table.
-  if ( strcmp ( tc->path, tc->old_path ) == 0 )
+  if ( strcmp ( tc->path, tc->old_path ) == 0)
     {
       return 0; // all done
     }
