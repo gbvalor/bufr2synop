@@ -24,7 +24,7 @@
 #include "bufrdeco.h"
 #include "bufr2tac.h"
 
-extern struct bufr BUFR;
+extern struct bufrdeco BUFR;
 extern struct bufrdeco_subset_sequence_data SEQ;
 extern struct bufrdeco_compressed_data_references REF;
 extern struct metreport REPORT; 
@@ -51,4 +51,4 @@ void print_usage ( void );
 int read_args ( int _argc, char * _argv[] );
 char * get_bufrfile_path ( char *filename, char *err );
 int bufrdeco_parse_subset_sequence ( struct metreport *m, struct bufrdeco_subset_sequence_data *sq, struct bufr_subset_state *st,
-                                     struct bufr *b, char *err );
+                                     struct bufrdeco *b, char *err );

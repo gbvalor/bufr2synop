@@ -31,7 +31,7 @@ const char DEFAULT_BUFRTABLES_DIR2[] = "/usr/lib/bufrtables/";
 
 
 /*!
-  \fn int get_ecmwf_tablenames ( struct bufr *b, const char *bufrtables_dir)
+  \fn int get_ecmwf_tablenames ( struct bufrdeco *b, const char *bufrtables_dir)
   \brief Get the complete pathnames for EMCWF table files needed by a bufr message
   \param bufrtables_dir string with path to bufr file tables dir
   \param b pointer for a struct \ref bufr
@@ -44,7 +44,7 @@ const char DEFAULT_BUFRTABLES_DIR2[] = "/usr/lib/bufrtables/";
        - yyy - Version number of master table used
        - zzz - Version number of local table used
 */
-int get_ecmwf_tablenames ( struct bufr *b, const char *bufrtables_dir )
+int get_ecmwf_tablenames ( struct bufrdeco *b, const char *bufrtables_dir )
 {
   struct stat st;
   char aux[256];
@@ -158,14 +158,14 @@ int get_ecmwf_tablenames ( struct bufr *b, const char *bufrtables_dir )
 
 
 /*!
-  \fn int bufr_read_tables(struct bufr *b, char *tables_dir)
+  \fn int bufr_read_tables(struct bufrdeco *b, char *tables_dir)
   \brief Read the tables according with bufr file data from a bufr table directory
   \param b basic struct with needed data
   \param tables_dir complete path string for directory with ECMWF bufr tables. Must be ended with a '/' . If NULL then is the default
   
   The default directories where to search bufr tables are stored in \ref DEFAULT_BUFRTABLES_DIR1 and \ref DEFAULT_BUFRTABLES_DIR2
 */
-int bufr_read_tables(struct bufr *b, char *tables_dir)
+int bufr_read_tables(struct bufrdeco *b, char *tables_dir)
 {
   // get tablenames
   if ( get_ecmwf_tablenames ( b, tables_dir ) )
@@ -193,7 +193,7 @@ int bufr_read_tables(struct bufr *b, char *tables_dir)
 }
 
 /*!
-  \fn int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
+  \fn int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename, char *error )
   \brief Read bufr file and does preliminary and first decode pass
   \param b pointer to struct \ref bufr
   \param filename complete path of BUFR file
@@ -207,7 +207,7 @@ int bufr_read_tables(struct bufr *b, char *tables_dir)
 
   Returns 0 if all is OK, 1 otherwise
  */
-int bufrdeco_read_bufr ( struct bufr *b,  char *filename, char *error )
+int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename, char *error )
 {
   int aux;
   uint8_t *bufrx = NULL; /*!< pointer to a memory buffer where we write raw bufr file */

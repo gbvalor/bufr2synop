@@ -24,12 +24,12 @@
 #include "bufrdeco.h"
 
 /*!
-  \fn int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct bufr *b )
+  \fn int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct bufrdeco *b )
   \brief Set to a struct \ref bufr_sequence an unexpanded descriptor array from sec3 in a BUFR report
   \param s Pointer to the target struct \ref bufr_sequence
   \param b Pointer to the base struct \ref bufr
 */ 
-int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct bufr *b )
+int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct bufrdeco *b )
 {
   size_t i;
 
@@ -44,7 +44,7 @@ int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct 
 
 
 /*!
-  \fn int bufrdeco_parse_tree_recursive ( struct bufr *b, struct bufr_sequence *father,  const char *key )
+  \fn int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *father,  const char *key )
   \brief Parse the descriptor tree in a recursive way
   \param key string with descriptor in form 'FXXYYY'
   \param father pointer to the father struct \ref bufr_sequence
@@ -52,14 +52,14 @@ int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct 
  
   Returns 0 if success, 1 otherwise
  */
-int bufrdeco_parse_tree_recursive ( struct bufr *b, struct bufr_sequence *father,  const char *key )
+int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *father,  const char *key )
 {
   size_t i, nl;
   struct bufr_sequence *l;
 
   if ( key == NULL )
     {
-      memset(b->tree, 0, sizeof (struct bufr_expanded_tree));
+      memset(b->tree, 0, sizeof (struct bufrdeco_expanded_tree));
       // case first layer
       b->tree->nseq = 1;
       l = & ( b->tree->seq[0] );
@@ -122,11 +122,11 @@ int bufrdeco_parse_tree_recursive ( struct bufr *b, struct bufr_sequence *father
 }
 
 /*!
-  \fn int bufrdeco_parse_tree ( struct bufr *b )
+  \fn int bufrdeco_parse_tree ( struct bufrdeco *b )
   \brief Parse the tree of descriptors without expand the replicators
   \param b Pointer to the source struct \ref bufr
 */
-int bufrdeco_parse_tree ( struct bufr *b )
+int bufrdeco_parse_tree ( struct bufrdeco *b )
 {
   // here we start the parse
   return  bufrdeco_parse_tree_recursive ( b, NULL, NULL );

@@ -109,7 +109,7 @@ int bufr_find_tabled_index ( size_t *index, struct bufr_tabled *td, const char *
 }
 
 
-int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufr *b, const char *key )
+int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key )
 {
   size_t i, j;
   uint32_t nv, v;

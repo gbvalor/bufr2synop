@@ -23,7 +23,7 @@
 */
 #include "bufrdeco.h"
 
-int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr *b )
+int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
 {
   if ( bufrdeco_init_compressed_data_references ( r ) )
     {
@@ -40,7 +40,7 @@ int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, s
 }
 
 
-int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_references *r, struct bufr_sequence *l, struct bufr *b )
+int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_references *r, struct bufr_sequence *l, struct bufrdeco *b )
 {
   int res;
   size_t i;
@@ -53,7 +53,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
       //inicia el array
       r->nd = 0;
       seq = & ( b->tree->seq[0] );
-      memset(& (b->state), 0, sizeof(struct bufr_decoding_data_state));
+      memset(& (b->state), 0, sizeof(struct bufrdeco_decoding_data_state));
       b->state.bit_offset = 0;
       // also reset reference and bits inc
       b->state.added_bit_length = 0;
@@ -207,7 +207,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
   return 0;
 }
 
-int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_replicator *rep, struct bufr *b )
+int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_replicator *rep, struct bufrdeco *b )
 {
   int res;
   size_t i;
@@ -376,7 +376,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
 
 
 int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, struct bufrdeco_compressed_ref *r,
-    size_t subset, struct bufr *b )
+    size_t subset, struct bufrdeco *b )
 {
   size_t i, bit_offset;
   uint8_t has_data;
@@ -557,7 +557,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
   return 0;
 }
 
-int bufr_decode_subset_data_compressed ( struct bufrdeco_subset_sequence_data *s, struct bufrdeco_compressed_data_references *r, struct bufr *b )
+int bufr_decode_subset_data_compressed ( struct bufrdeco_subset_sequence_data *s, struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
 {
   size_t i; // references index
 

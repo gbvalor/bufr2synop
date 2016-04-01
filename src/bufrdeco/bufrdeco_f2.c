@@ -24,7 +24,7 @@
 #include "bufrdeco.h"
 
 /*!
-  \fn int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, struct bufr_descriptor *d, struct bufr *b )
+  \fn int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, struct bufr_descriptor *d, struct bufrdeco *b )
   \brief parse a descritor with f = 2
   \param s pointer to a struct \ref  bufrdeco_subset_sequence_data where to set data if any
   \param d pointer to the source descriptor
@@ -32,7 +32,7 @@
 
   If succeded return 0, otherwise 1
  */
-int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, struct bufr_descriptor *d, struct bufr *b )
+int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, struct bufr_descriptor *d, struct bufrdeco *b )
 {
   size_t nbits;
   struct bufr_atom_data *a;
@@ -149,7 +149,7 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
 
 
 /*!
-  \fn int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_descriptor *d, struct bufr *b )
+  \fn int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_descriptor *d, struct bufrdeco *b )
   \brief parse a descritor with f = 2 in case of compressed bufr
   \param r pointer to a struct \ref bufrdeco_compressed_data_references where to set data references if any
   \param d pointer to the source descriptor
@@ -157,7 +157,7 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
 
   If succeded return 0, otherwise 1
  */
-int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_descriptor *d, struct bufr *b )
+int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_descriptor *d, struct bufrdeco *b )
 {
   size_t nbits;
   uint32_t ival;

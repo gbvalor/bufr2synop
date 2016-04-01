@@ -24,11 +24,11 @@
 #include "bufrdeco.h"
 
 /*!
-  \fn void print_sec0_info(struct bufr *b)
+  \fn void print_sec0_info(struct bufrdeco *b)
   \brief Prints info from sec0
   \param b pointer to the source struct \ref bufr
 */
-void print_sec0_info ( struct bufr *b )
+void print_sec0_info ( struct bufrdeco *b )
 {
   printf ( "#### SEC 0 INFO ###\n" );
   printf ( "Bufr length:           %5u\n", b->sec0.bufr_length );
@@ -36,11 +36,11 @@ void print_sec0_info ( struct bufr *b )
 }
 
 /*!
-  \fn void print_sec1_info(struct bufr *b)
+  \fn void print_sec1_info(struct bufrdeco *b)
   \brief Prints info from sec1
   \param b pointer to the source struct \ref bufr
 */
-void print_sec1_info ( struct bufr *b )
+void print_sec1_info ( struct bufrdeco *b )
 {
   printf ( "\n#### SEC 1 INFO ###\n" );
   printf ( "Sec1 length:           %5u\n", b->sec1.length );
@@ -68,11 +68,11 @@ void print_sec1_info ( struct bufr *b )
 }
 
 /*!
-  \fn void print_sec3_info(struct bufr *b)
+  \fn void print_sec3_info(struct bufrdeco *b)
   \brief Prints info from sec3
   \param b pointer to the source struct \ref bufr
 */
-void print_sec3_info ( struct bufr *b )
+void print_sec3_info ( struct bufrdeco *b )
 {
   size_t i;
   printf ( "\n#### SEC 3 INFO ###\n" );
@@ -89,20 +89,20 @@ void print_sec3_info ( struct bufr *b )
 }
 
 /*!
-  \fn void print_sec4_info(struct bufr *b)
+  \fn void print_sec4_info(struct bufrdeco *b)
   \brief Prints info from sec3
   \param b pointer to the source struct \ref bufr
 */
-void print_sec4_info ( struct bufr *b )
+void print_sec4_info ( struct bufrdeco *b )
 {
   printf ( "\n#### SEC 4 INFO ###\n" );
   printf ( "Sec4 length:           %5u\n", b->sec4.length );
 }
 
 /*!
-  \fn int bufrdeco_print_tree_recursive ( struct bufr *b, struct bufr_sequence *seq )
+  \fn int bufrdeco_print_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *seq )
 */
-int bufrdeco_print_tree_recursive ( struct bufr *b, struct bufr_sequence *seq )
+int bufrdeco_print_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *seq )
 {
   size_t i, j;
   struct bufr_sequence *l;
@@ -142,7 +142,7 @@ int bufrdeco_print_tree_recursive ( struct bufr *b, struct bufr_sequence *seq )
   return 0;
 }
 
-void bufrdeco_print_tree ( struct bufr *b )
+void bufrdeco_print_tree ( struct bufrdeco *b )
 {
   bufrdeco_print_tree_recursive ( b, NULL );
 };

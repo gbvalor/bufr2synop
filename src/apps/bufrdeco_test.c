@@ -22,7 +22,7 @@
 */
 #include "bufrdeco.h"
 
-struct bufr BUFR;
+struct bufrdeco BUFR;
 struct bufrdeco_subset_sequence_data SEQ;
 struct bufrdeco_compressed_data_references REF;
 

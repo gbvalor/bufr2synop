@@ -23,7 +23,7 @@
 */
 #include "bufrdeco.h"
 
-int bufrdeco_init ( struct bufr *b )
+int bufrdeco_init ( struct bufrdeco *b )
 {
   if ( init_bufr ( b, NULL ) )
     return 1;
@@ -52,7 +52,7 @@ int free_bufr_tables ( struct bufr_tables *t )
 
   This is useful for not to read and parse tables again.
 */
-int bufr_substitute_tables ( struct bufr_tables **replaced, struct bufr_tables *source, struct bufr *b )
+int bufr_substitute_tables ( struct bufr_tables **replaced, struct bufr_tables *source, struct bufrdeco *b )
 {
   *replaced = b->table;
   if ( source == NULL )
@@ -69,10 +69,10 @@ int bufr_substitute_tables ( struct bufr_tables **replaced, struct bufr_tables *
 
 
 */
-int init_bufr ( struct bufr *b, struct bufr_tables *t )
+int init_bufr ( struct bufrdeco *b, struct bufr_tables *t )
 {
 
-  memset ( b, 0, sizeof ( struct bufr ) );
+  memset ( b, 0, sizeof ( struct bufrdeco ) );
   if ( t == NULL )
     {
       if ( init_bufr_tables ( & ( b->table ) ) )
@@ -86,7 +86,7 @@ int init_bufr ( struct bufr *b, struct bufr_tables *t )
     }
 
 // Allocate for a new tree struct
-  if ( ( b->tree = ( struct bufr_expanded_tree * ) calloc ( 1, sizeof ( struct bufr_expanded_tree ) ) ) == NULL )
+  if ( ( b->tree = ( struct bufrdeco_expanded_tree * ) calloc ( 1, sizeof ( struct bufrdeco_expanded_tree ) ) ) == NULL )
     {
       return 1;
     }
@@ -97,7 +97,7 @@ int init_bufr ( struct bufr *b, struct bufr_tables *t )
 /*!
 
 */
-int close_bufr ( struct bufr *b, struct bufr_tables **t )
+int close_bufr ( struct bufrdeco *b, struct bufr_tables **t )
 {
   if ( t != NULL )
     *t = b->table;
@@ -105,7 +105,7 @@ int close_bufr ( struct bufr *b, struct bufr_tables **t )
     free ( ( void * ) b->table );
   if ( b->tree != NULL )
     free ( ( void * ) b->tree );
-  memset ( b, 0, sizeof ( struct bufr ) );
+  memset ( b, 0, sizeof ( struct bufrdeco ) );
   return 0;
 }
 

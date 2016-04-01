@@ -124,7 +124,7 @@ int read_args ( int _argc, char * _argv[] )
 
 /* this is an interface to use bufr2tac */
 int bufrdeco_parse_subset_sequence ( struct metreport *m, struct bufrdeco_subset_sequence_data *sq, struct bufr_subset_state *st,
-                                     struct bufr *b, char *err )
+                                     struct bufrdeco *b, char *err )
 {
   size_t i;
   int ksec1[40], res;

@@ -59,7 +59,7 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
   // If we've already readed this table. We just regenerate the table with original values
   if ( strcmp ( tb->path, tb->old_path ) == 0)
     {
-      printf ("Reutilizo tablas\n");
+      //printf ("Reutilizo tablas\n");
       for ( i = 0; i < tb->nlines ; i++ )
         {
           tb->item[i].scale = tb->item[i].scale_ori;
@@ -132,7 +132,7 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
 }
 
 /*!
-  \fn int bufr_restore_original_tableb_item ( struct bufr_tableb *tb, struct bufr *b, uint8_t mode, char *key )
+  \fn int bufr_restore_original_tableb_item ( struct bufr_tableb *tb, struct bufrdeco *b, uint8_t mode, char *key )
   \brief Restores the original table B parameters for a BUFR descriptor
   \param tb pointer to struct \ref bufr_tableb where are stored all table B data
   \param b pointer to the basic struct \ref bufr
@@ -141,7 +141,7 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
 
   Return 0 if success, 1 otherwise
 */
-int bufr_restore_original_tableb_item ( struct bufr_tableb *tb, struct bufr *b, uint8_t mode, char *key )
+int bufr_restore_original_tableb_item ( struct bufr_tableb *tb, struct bufrdeco *b, uint8_t mode, char *key )
 {
   size_t i;
 
@@ -208,7 +208,7 @@ int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *
 }
 
 // For compressed bufr, returns the number of bits. If mode = 1 then we search for an associated field
-int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufr *b, struct bufr_descriptor *d, int mode )
+int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrdeco *b, struct bufr_descriptor *d, int mode )
 {
   size_t i;
   uint32_t ival;
@@ -379,7 +379,7 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufr 
 }
 
 /*!
-  \fn int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_descriptor *d )
+  \fn int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct bufr_descriptor *d )
   \brief Get data from a table B descriptor
   \param a pointer to a struct \ref bufr_atom_data where to set the results
   \param b pointer to the basic struct \ref bufr
@@ -387,7 +387,7 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufr 
 
   Return 0 if success, 1 otherwise
 */
-int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufr *b, struct bufr_descriptor *d )
+int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct bufr_descriptor *d )
 {
   size_t i, nbits = 0;
   uint32_t ival;

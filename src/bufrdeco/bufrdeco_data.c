@@ -24,7 +24,7 @@
 #include "bufrdeco.h"
 
 /*!
-  \fn  int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struct bufrdeco_compressed_data_references *r, struct bufr *b )
+  \fn  int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
   \brief  User interface to decode a BUFR subset
   \param s pointer to the target struct \ref bufrdeco_subset_sequence_data
   \param r pointer to the struct \ref bufrdeco_compressed_data_references
@@ -33,7 +33,7 @@
   Return 0 in case of success, 1 otherwise
 */
 int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struct bufrdeco_compressed_data_references *r,
-                                  struct bufr *b )
+                                  struct bufrdeco *b )
 {
   // First we init the subset sequence data
   if ( bufrdeco_clean_subset_sequence_data ( s ) )
@@ -99,7 +99,7 @@ int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s )
 }
 
 /*!
-  \fn int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *s, struct bufr_sequence *l, struct bufr *b )
+  \fn int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *s, struct bufr_sequence *l, struct bufrdeco *b )
   \brief decode the data from a subset in a recursive way
   \param s pointer to the target struct \ref bufrdeco_subset_sequence_data
   \param l pointer to the source struct \ref bufr_sequence
@@ -107,7 +107,7 @@ int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s )
 
   Return 0 in case of success, 1 otherwise
 */
-int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *s, struct bufr_sequence *l, struct bufr *b )
+int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *s, struct bufr_sequence *l, struct bufrdeco *b )
 {
   size_t i;
   struct bufr_sequence *seq;
@@ -240,7 +240,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
 };
 
 /*!
-  \fn int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *s, struct bufr_replicator *r, struct bufr *b )
+  \fn int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *s, struct bufr_replicator *r, struct bufrdeco *b )
   \brief Decodes a replicated sequence
   \param s target struct \ref bufrdeco_subset_sequence_data
   \param r pointer to a struct \ref bufr_replicator which manage the replication task
@@ -248,7 +248,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
 
   If succeeded return 0, 1 otherwise
 */
-int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *s, struct bufr_replicator *r, struct bufr *b )
+int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *s, struct bufr_replicator *r, struct bufrdeco *b )
 {
   size_t i;
   size_t ixloop; // Index for loop
