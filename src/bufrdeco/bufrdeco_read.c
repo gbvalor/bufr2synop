@@ -174,7 +174,7 @@ int bufr_read_tables(struct bufrdeco *b, char *tables_dir)
       return 1;
     }
 
-  printf("%s\n", b->table->b.path);
+  //printf("%s\n", b->table->b.path);
   
   // read tables
   if ( bufr_read_tableb ( & ( b->table->b ), b->error ) )
@@ -193,11 +193,11 @@ int bufr_read_tables(struct bufrdeco *b, char *tables_dir)
 }
 
 /*!
-  \fn int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename, char *error )
+  \fn int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
   \brief Read bufr file and does preliminary and first decode pass
   \param b pointer to struct \ref bufr
   \param filename complete path of BUFR file
-  \param error string where to explain error if nedeed
+
 
   This function does the folowing tasks:
   - Read the file and checks the marks at the begining and end to see wheter is a BUFR file
@@ -207,7 +207,7 @@ int bufr_read_tables(struct bufrdeco *b, char *tables_dir)
 
   Returns 0 if all is OK, 1 otherwise
  */
-int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename, char *error )
+int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
 {
   int aux;
   uint8_t *bufrx = NULL; /*!< pointer to a memory buffer where we write raw bufr file */
@@ -219,7 +219,7 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename, char *error )
   /* Stat input file */
   if ( stat ( filename, &st ) < 0 )
     {
-      sprintf ( error, "bufrdeco_read_bufr(): cannot stat file '%s'\n", filename );
+      sprintf ( b->error, "bufrdeco_read_bufr(): cannot stat file '%s'\n", filename );
       return 1;
     }
 
@@ -228,36 +228,28 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename, char *error )
     {
       if ( ( bufrx = ( uint8_t * ) calloc ( 1, st.st_size + 4) ) == NULL )
         {
-          sprintf ( error, "bufrdeco_read_bufr(): cannot alloc memory for file '%s'\n", filename );
+          sprintf ( b->error, "bufrdeco_read_bufr(): cannot alloc memory for file '%s'\n", filename );
           return 1;
         }
     }
   else
     {
-      sprintf ( error, "bufrdeco_read_bufr(): '%s' is not a regular file nor symbolic link\n", filename );
+      sprintf ( b->error, "bufrdeco_read_bufr(): '%s' is not a regular file nor symbolic link\n", filename );
       return 1;
     }
 
   /* Inits bufr struct */
   if ( ( st.st_size + 4 ) >= BUFR_LEN )
     {
-      sprintf ( error, "File '%s' too large. Consider increase BUFR_LEN\n", filename );
+      sprintf ( b->error, "File '%s' too large. Consider increase BUFR_LEN\n", filename );
       free ( ( void * ) bufrx );
       return 1;
     }
-  /*
-  if ( init_bufr ( b, NULL ) )
-    {
-      sprintf ( error, "bufrdeco_read_bufr(): Cannot init bufr struct\n" );
-      free ( ( void * ) bufrx );
-      return 1;
-    }
-  */
 
   // Open and read the file
   if ( ( fp = fopen ( filename, "r" ) ) == NULL )
     {
-      sprintf ( error, "bufrdeco_read_bufr(): cannot open file '%s'\n", filename );
+      sprintf ( b->error, "bufrdeco_read_bufr(): cannot open file '%s'\n", filename );
       free ( ( void * ) bufrx );
       return 1;
     }
@@ -271,7 +263,7 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename, char *error )
   // Some fast checks
   if ( n < 8 )
     {
-      sprintf ( error, "bufrdeco_read_bufr(): Too few bytes for a bufr\n" );
+      sprintf ( b->error, "bufrdeco_read_bufr(): Too few bytes for a bufr\n" );
       free ( ( void * ) bufrx );
       return 1;
     }
@@ -279,7 +271,7 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename, char *error )
   // check if begins with BUFR
   if ( bufrx[0] != 'B' || bufrx[1] != 'U' || bufrx[2] != 'F' || bufrx[3] != 'R' )
     {
-      sprintf ( error, "bufrdeco_read_bufr(): file '%s' does not begin with 'BUFR' chars\n", filename );
+      sprintf ( b->error, "bufrdeco_read_bufr(): file '%s' does not begin with 'BUFR' chars\n", filename );
       free ( ( void * ) bufrx );
       return 1;
     }
@@ -287,7 +279,7 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename, char *error )
   // check if end with '7777'
   if ( bufrx[n - 4] != '7' || bufrx[n - 3] != '7' || bufrx[n - 2] != '7' || bufrx[n - 1] != '7' )
     {
-      sprintf ( error, "bufrdeco_read_bufr(): file '%s' does not end with '7777' chars\n", filename );
+      sprintf ( b->error, "bufrdeco_read_bufr(): file '%s' does not end with '7777' chars\n", filename );
       free ( ( void * ) bufrx );
       return 1;
     }
@@ -301,7 +293,7 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename, char *error )
   // check if length is correct
   if ( b->sec0.bufr_length != ( uint32_t ) n )
     {
-      sprintf ( error, "bufrdeco_read_bufr(): file '%s' have %u bytes and it says %u\n", filename,
+      sprintf ( b->error, "bufrdeco_read_bufr(): file '%s' have %u bytes and it says %u\n", filename,
                 ( uint32_t ) n, b->sec0.bufr_length );
       free ( ( void * ) bufrx );
       return 1;
@@ -312,7 +304,7 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename, char *error )
 
   if ( b->sec0.edition < 3 )
     {
-      sprintf ( error, "bufrdeco_read_bufr(): Bufr edition must be 3 or superior and this file is coded with version %u\n", b->sec0.edition );
+      sprintf ( b->error, "bufrdeco_read_bufr(): Bufr edition must be 3 or superior and this file is coded with version %u\n", b->sec0.edition );
       free ( ( void * ) bufrx );
       return 1;
     }
@@ -366,7 +358,7 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename, char *error )
       b->sec1.second = c[21];
       break;
     default:
-      sprintf ( error, "bufrdeco_read_bufr(): This file is coded with version %u and is not supported\n", b->sec0.edition );
+      sprintf ( b->error, "bufrdeco_read_bufr(): This file is coded with version %u and is not supported\n", b->sec0.edition );
       free ( ( void * ) bufrx );
       return 1;
     }

@@ -561,16 +561,22 @@ extern const char DEFAULT_BUFRTABLES_DIR2[];
 
 int init_bufr ( struct bufrdeco *b, struct bufr_tables *t );
 int close_bufr ( struct bufrdeco *b , struct bufr_tables **t);
+int bufrdeco_init (struct bufrdeco *b);
+int bufrdeco_close (struct bufrdeco *b);
+int bufrdeco_reset (struct bufrdeco *b);
+
+struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data(struct bufrdeco *b);
+int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename);
+
 int bufr_substitute_tables (struct bufr_tables **replaced, struct bufr_tables *source, struct bufrdeco *b);
-int init_bufr_tables (struct bufr_tables **t);
-int free_bufr_tables (struct bufr_tables *t);
+int bufrdeco_init_tables (struct bufr_tables **t);
+int bufrdeco_free_tables (struct bufr_tables **t);
 int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba );
 int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba );
 int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba );
 int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_references *rf );
 int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_references *rf );
 
-int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename, char *error );
 int bufr_read_tables(struct bufrdeco *b, char *tables_dir);
 
 void print_bufrdeco_compressed_ref (struct bufrdeco_compressed_ref *r);

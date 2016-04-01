@@ -170,7 +170,7 @@ char LINAUX[2048]; /*!< auxiliar output line string */
 FILE *FL; /*!< Buffer to read the list of files */
 
 struct bufr_subset_sequence_data SUBSET; /*!< ALl data decoded for a subset*/
-struct bufr_subset_state STATE; /*!< Includes the info when parsing a subset sequence */
+struct bufr2tac_subset_state STATE; /*!< Includes the info when parsing a subset sequence */
 struct bufr_atom_data DATARRAY[BUFR_NMAXSEQ]; /****/
 //struct synop_chunks SYN;
 

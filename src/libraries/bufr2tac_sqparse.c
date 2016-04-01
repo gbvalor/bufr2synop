@@ -68,20 +68,20 @@ int find_descriptor_interval ( int *haystack, size_t nlst, int needlemin, int ne
 }
 
 /*!
-  \fn int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr_subset_state *st,  int *kdtlst, size_t nlst, int *ksec1, char *err)
+  \fn int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr2tac_subset_state *st,  int *kdtlst, size_t nlst, int *ksec1, char *err)
   \brief Parse a sequence of expanded descriptors for a subset
   \param m pointer to a struct \ref metreport where to set the data
   \param sq pointer to a struct \ref bufr_subset_sequence_data where the values for sequence of descriptors for a subset has been decoded
-  \param st pointer to a struct \ref bufr_subset_state
+  \param st pointer to a struct \ref bufr2tac_subset_state
   \param kdtlst array of integers with descriptors
   \param nlst number of descriptors in \a kdtlst
   \param ksec1 array of auxiliar integers decoded by bufrdc ECMWF library
   \param err string where to write errors if any
 */
-int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr_subset_state *st,  int *kdtlst, size_t nlst, int *ksec1, char *err )
+int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr2tac_subset_state *st,  int *kdtlst, size_t nlst, int *ksec1, char *err )
 {
   /* Clean the state */
-  memset ( st, 0, sizeof ( struct bufr_subset_state ) );
+  memset ( st, 0, sizeof ( struct bufr2tac_subset_state ) );
 
   /* First task to do is figure out the type of report */
   switch ( ksec1[5] )

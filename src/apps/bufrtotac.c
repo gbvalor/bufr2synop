@@ -23,11 +23,8 @@
 #include "bufrtotac.h"
 
 struct bufrdeco BUFR;
-struct bufrdeco_subset_sequence_data SEQ;
-struct bufrdeco_compressed_data_references REF;
 struct metreport REPORT; /*!< stuct to set the parsed report */
-struct bufr_subset_state STATE; /*!< Includes the info when parsing a subset sequence */
-struct bufr_tables *TABLES; /*!< Pointer to a struct bufr_tables */
+struct bufr2tac_subset_state STATE; /*!< Includes the info when parsing a subset sequence */
 
 const char SELF[]= "bufrtotac"; /*! < the name of this binary */
 char ERR[256]; /*!< string with an error */
@@ -48,43 +45,28 @@ FILE *FL; /*!< Buffer to read the list of files */
 int main ( int argc, char *argv[] )
 {
   size_t subset;
+  struct bufrdeco_subset_sequence_data *seq;
 
   if ( read_args ( argc, argv ) < 0 )
     exit ( EXIT_FAILURE );
 
   // init bufr struct
-  if ( init_bufr ( &BUFR, NULL ) )
+  if ( bufrdeco_init ( &BUFR ) )
     {
       printf ( "%s(): Cannot init bufr struct\n", SELF );
       return 1;
     }
-  TABLES = BUFR.table;
-
-  bufrdeco_init_subset_sequence_data ( &SEQ );
-  memset(&REF, 0, sizeof(struct bufrdeco_compressed_data_references));
 
   /**** Big loop. a cycle per file ****/
   while ( get_bufrfile_path ( INPUTFILE, ERR ) )
     {
-      printf ( "%s\n", INPUTFILE );
-      if ( NFILES )
+      //printf ( "%s\n", INPUTFILE );
+      if ( bufrdeco_read_bufr ( &BUFR, INPUTFILE) )
         {
-          if ( init_bufr ( &BUFR, TABLES ) )
-            {
-              printf ( "%s(): Cannot init bufr struct\n", SELF );
-              return 1;
-            }
-        }
-      if ( bufrdeco_read_bufr ( &BUFR, INPUTFILE, ERR ) )
-        {
-          /*
-              printf ( "%s", ERR );
-              exit ( EXIT_FAILURE );
-              */
 	  if (DEBUG)
-	    printf("# %s\n", ERR);
-	  close_bufr(&BUFR, &TABLES);
+	    printf("# %s\n", BUFR.error);
           NFILES++;
+          bufrdeco_reset(&BUFR);
           continue;
         }
 
@@ -108,7 +90,7 @@ int main ( int argc, char *argv[] )
 	  if (DEBUG)
           printf ( "# %s", BUFR.error );
           NFILES++;
-	  close_bufr(&BUFR, &TABLES);
+          bufrdeco_reset(&BUFR);
           continue;
         }
       if ( VERBOSE )
@@ -116,7 +98,7 @@ int main ( int argc, char *argv[] )
 
       for ( subset = 0; subset < BUFR.sec3.subsets ; subset++ )
         {
-          if ( bufrdeco_decode_data_subset ( &SEQ, &REF, &BUFR ) )
+          if ( (seq = bufrdeco_get_subset_sequence_data ( &BUFR )) == NULL)
             {
               if ( DEBUG )
                 printf ( "# %s", BUFR.error );
@@ -126,11 +108,11 @@ int main ( int argc, char *argv[] )
           if ( VERBOSE )
             {
               if ( ( subset == 0 ) && BUFR.sec3.compressed )
-                print_bufrdeco_compressed_data_references ( &REF );
-              bufrdeco_print_subset_sequence_data ( &SEQ );
+                print_bufrdeco_compressed_data_references ( &(BUFR.refs) );
+              bufrdeco_print_subset_sequence_data ( seq );
             }
 
-          if (BUFR.sec3.ndesc &&  bufrdeco_parse_subset_sequence ( &REPORT, &SEQ, &STATE, &BUFR, ERR ) )
+          if (BUFR.sec3.ndesc &&  bufrdeco_parse_subset_sequence ( &REPORT, &STATE, &BUFR, ERR ) )
             {
               if ( DEBUG )
                 fprintf ( stderr, "# %s\n", ERR );
@@ -142,13 +124,11 @@ int main ( int argc, char *argv[] )
 
         }
       fin:;
+      bufrdeco_reset(&BUFR);
       NFILES ++;
-      close_bufr ( &BUFR, &TABLES );
     } // End of big loop parsing files
 
-  bufrdeco_free_subset_sequence_data ( &SEQ );
-  bufrdeco_free_compressed_data_references (&REF);
-  free_bufr_tables( TABLES);
+  bufrdeco_close(&BUFR);
   exit ( EXIT_SUCCESS );
 }
 

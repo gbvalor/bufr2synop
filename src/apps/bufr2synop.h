@@ -72,7 +72,7 @@ extern struct metreport REPORT;
 extern struct gts_header HEADER;
 extern FILE * FL;
 extern struct bufr_subset_sequence_data SUBSET;
-extern struct bufr_subset_state STATE;
+extern struct bufr2tac_subset_state STATE;
 
 
 // functions

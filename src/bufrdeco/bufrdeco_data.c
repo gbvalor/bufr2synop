@@ -23,6 +23,16 @@
 */
 #include "bufrdeco.h"
 
+struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data(struct bufrdeco *b)
+{
+  if (bufrdeco_decode_data_subset (&(b->seq), &(b->refs), b ))
+  {
+    return NULL;
+  }
+  return &(b->seq);
+}
+
+
 /*!
   \fn  int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
   \brief  User interface to decode a BUFR subset
@@ -44,7 +54,7 @@ int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struc
   // Then we get the data from an already parsed descriptor tree
   if ( b->sec3.compressed )
     {
-      if ( r->refs == NULL || r->dim == 0 )
+      if ( r->nd == 0 /*r->refs == NULL || r->dim == 0 */ )
         {
           // case of compressed data and still not parsed
           if ( bufrdeco_parse_compressed ( r, b ) )
@@ -130,6 +140,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
       b->state.assoc_bits = 0;
       b->state.changing_reference = 255;
       b->state.fixed_ccitt = 0;
+      b->state.local_bit_reserved = 0;
     }
   else
     {

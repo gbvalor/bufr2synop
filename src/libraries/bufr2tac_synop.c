@@ -83,16 +83,16 @@ char *guess_WMO_region_synop ( struct synop_chunks *syn )
 
 
 /*!
-  \fn int parse_subset_as_synop (struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
+  \fn int parse_subset_as_synop (struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
   \brief parses a subset sequence as an Land fixed SYNOP FM-12, SHIP FM-13 or SYNOP-mobil FM-14 report
   \param m pointer to a struct \ref metreport where set some results
-  \param s pointer to a struct \ref bufr_subset_state
+  \param s pointer to a struct \ref bufr2tac_subset_state
   \param sq pointer to a struct \ref bufr_subset_sequence_data with the parsed sequence on input
   \param err string with detected errors, if any
 
   It return 0 if all is OK. Otherwise returns 1 and it also fills the \a err string
 */
-int parse_subset_as_synop ( struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
+int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
 {
   size_t is;
   char aux[16];

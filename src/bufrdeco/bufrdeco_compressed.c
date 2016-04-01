@@ -62,6 +62,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
       b->state.assoc_bits = 0;
       b->state.changing_reference = 255;
       b->state.fixed_ccitt = 0;
+      b->state.local_bit_reserved = 0;
     }
   else
     {
@@ -564,7 +565,7 @@ int bufr_decode_subset_data_compressed ( struct bufrdeco_subset_sequence_data *s
   // first some clean
   if ( s->nd )
     {
-      memset ( & ( s->sequence ), 0, sizeof ( struct bufr_atom_data ) * s->nd );
+      //memset ( & ( s->sequence ), 0, sizeof ( struct bufr_atom_data ) * s->nd );
       s->nd = 0;
     }
 
@@ -576,7 +577,7 @@ int bufr_decode_subset_data_compressed ( struct bufrdeco_subset_sequence_data *s
 
       if ( r->refs[i].is_associated == 0 )
         {
-          if ( s->nd < s->dim )
+          if ( s->nd < (s->dim - 1))
             ( s->nd ) ++;
           else if ( bufrdeco_increase_data_array ( s ) == 0 )
             ( s->nd ) ++;

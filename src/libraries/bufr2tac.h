@@ -196,10 +196,10 @@ struct bufr_subset_sequence_data
 #endif
 
 /*!
-  \struct bufr_subset_state
+  \struct bufr2tac_subset_state
   \brief stores information needed to parse a sequential list of expanded descriptors for a subset
 */
-struct bufr_subset_state
+struct bufr2tac_subset_state
 {
   char type_report[16]; /*!< The type of report to decode (MMMM) */
   struct bufr_atom_data *a; /*!< the current struct \ref bufr_atom_data being parsed */
@@ -293,13 +293,13 @@ char * get_explained_flag_val ( char *expl, size_t dim, char tablec[MAXLINES_TAB
                                 struct bufr_descriptor *d, unsigned long ival );
 char * get_ecmwf_tablename ( char *target, char type, char *bufrtables_dir, int ksec1[40] );
 char * get_bufrfile_path ( char *filename, char *err );
-int parse_subset_as_buoy ( struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq,
+int parse_subset_as_buoy ( struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq,
                            char *err );
-int parse_subset_as_synop ( struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq,
+int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq,
                             char *err );
-int parse_subset_as_temp ( struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq,
+int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq,
                            char *err );
-int parse_subset_as_climat ( struct metreport *m, struct bufr_subset_state *s, struct bufr_subset_sequence_data *sq,
+int parse_subset_as_climat ( struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq,
                            char *err );
 int YYYYMMDDHHmm_to_met_datetime ( struct met_datetime *t, const char *source );
 int round_met_datetime_to_hour(struct met_datetime *target, struct met_datetime *source);
@@ -311,7 +311,7 @@ char *guess_WMO_region ( char *A1, char *Reg, const char *II, const char *iii );
 char * guess_WMO_region_synop ( struct synop_chunks *syn );
 char *guess_WMO_region_temp ( struct temp_chunks *temp );
 int read_table_c ( char tablec[MAXLINES_TABLEC][92], size_t *nlines_tablec, char *bufrtables_dir, int ksec1[40] );
-int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr_subset_state *st,
+int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr2tac_subset_state *st,
                             int *kdtlst, size_t nlst, int *ksec1, char *err );
 int find_descriptor ( int *haystack, size_t nlst, int needle );
 int find_descriptor_interval ( int *haystack, size_t nlst, int needlemin, int needlemax );
@@ -385,70 +385,70 @@ int print_json ( FILE *f, struct metreport *m );
 int print_xml ( FILE *f, struct metreport *m );
 int print_plain(FILE *f, struct metreport *m);
 
-int syn_parse_x01 ( struct synop_chunks *syn, struct bufr_subset_state *s );
-int syn_parse_x02 ( struct synop_chunks *syn, struct bufr_subset_state *s );
-int syn_parse_x04 ( struct synop_chunks *syn, struct bufr_subset_state *s );
-int syn_parse_x05 ( struct synop_chunks *syn, struct bufr_subset_state *s );
-int syn_parse_x06 ( struct synop_chunks *syn, struct bufr_subset_state *s );
-int syn_parse_x07 ( struct synop_chunks *syn, struct bufr_subset_state *s );
-int syn_parse_x08 ( struct synop_chunks *syn, struct bufr_subset_state *s );
-int syn_parse_x10 ( struct synop_chunks *syn, struct bufr_subset_state *s );
-int syn_parse_x11 ( struct synop_chunks *syn, struct bufr_subset_state *s );
-int syn_parse_x12 ( struct synop_chunks *syn, struct bufr_subset_state *s );
-int syn_parse_x13 ( struct synop_chunks *syn, struct bufr_subset_state *s );
-int syn_parse_x14 ( struct synop_chunks *syn, struct bufr_subset_state *s );
-int syn_parse_x20 ( struct synop_chunks *syn, struct bufr_subset_state *s );
-int syn_parse_x22 ( struct synop_chunks *syn, struct bufr_subset_state *s );
-int syn_parse_x31 ( struct synop_chunks *syn, struct bufr_subset_state *s );
+int syn_parse_x01 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x02 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x05 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x06 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x07 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x08 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x22 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x31 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
 
-int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr_subset_state *s );
-int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr_subset_state *s );
-int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr_subset_state *s );
-int buoy_parse_x05 ( struct buoy_chunks *b, struct bufr_subset_state *s );
-int buoy_parse_x06 ( struct buoy_chunks *b, struct bufr_subset_state *s );
-int buoy_parse_x07 ( struct buoy_chunks *b, struct bufr_subset_state *s );
-int buoy_parse_x08 ( struct buoy_chunks *b, struct bufr_subset_state *s );
-int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr_subset_state *s );
-int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr_subset_state *s );
-int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr_subset_state *s );
-int buoy_parse_x13 ( struct buoy_chunks *b, struct bufr_subset_state *s );
-int buoy_parse_x14 ( struct buoy_chunks *b, struct bufr_subset_state *s );
-int buoy_parse_x20 ( struct buoy_chunks *b, struct bufr_subset_state *s );
-int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr_subset_state *s );
-int buoy_parse_x31 ( struct buoy_chunks *b, struct bufr_subset_state *s );
-int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr_subset_state *s );
+int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x05 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x06 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x07 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x08 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x13 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x14 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x20 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x31 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
 
-int climat_parse_x01 ( struct climat_chunks *c, struct bufr_subset_state *s );
-int climat_parse_x02 ( struct climat_chunks *c, struct bufr_subset_state *s );
-int climat_parse_x04 ( struct climat_chunks *c, struct bufr_subset_state *s );
-int climat_parse_x05 ( struct climat_chunks *c, struct bufr_subset_state *s );
-int climat_parse_x06 ( struct climat_chunks *c, struct bufr_subset_state *s );
-int climat_parse_x07 ( struct climat_chunks *c, struct bufr_subset_state *s );
-int climat_parse_x08 ( struct climat_chunks *c, struct bufr_subset_state *s );
-int climat_parse_x10 ( struct climat_chunks *c, struct bufr_subset_state *s );
-int climat_parse_x11 ( struct climat_chunks *c, struct bufr_subset_state *s );
-int climat_parse_x12 ( struct climat_chunks *c, struct bufr_subset_state *s );
-int climat_parse_x13 ( struct climat_chunks *c, struct bufr_subset_state *s );
-int climat_parse_x14 ( struct climat_chunks *c, struct bufr_subset_state *s );
-int climat_parse_x20 ( struct climat_chunks *c, struct bufr_subset_state *s );
-int climat_parse_x22 ( struct climat_chunks *c, struct bufr_subset_state *s );
-int climat_parse_x31 ( struct climat_chunks *c, struct bufr_subset_state *s );
-int climat_parse_x33 ( struct climat_chunks *c, struct bufr_subset_state *s );
+int climat_parse_x01 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x02 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x05 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x06 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x07 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x08 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x10 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x11 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x13 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x14 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x20 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x22 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x31 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x33 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
 
-int temp_parse_x01 ( struct temp_chunks *t, struct bufr_subset_state *s );
-int temp_parse_x02 ( struct temp_chunks *t, struct bufr_subset_state *s );
-int temp_parse_x04 ( struct temp_chunks *t, struct bufr_subset_state *s );
-int temp_parse_x05 ( struct temp_chunks *t, struct bufr_subset_state *s );
-int temp_parse_x06 ( struct temp_chunks *t, struct bufr_subset_state *s );
-int temp_parse_x07 ( struct temp_chunks *t, struct bufr_subset_state *s );
-int temp_parse_x08 ( struct temp_chunks *t, struct bufr_subset_state *s );
-int temp_parse_x10 ( struct temp_chunks *t, struct bufr_subset_state *s );
-int temp_parse_x11 ( struct temp_chunks *t, struct bufr_subset_state *s );
-int temp_parse_x12 ( struct temp_chunks *t, struct bufr_subset_state *s );
-int temp_parse_x20 ( struct temp_chunks *t, struct bufr_subset_state *s );
-int temp_parse_x22 ( struct temp_chunks *t, struct bufr_subset_state *s );
-int temp_parse_x31 ( struct temp_chunks *t, struct bufr_subset_state *s );
-int temp_parse_x33 ( struct temp_chunks *t, struct bufr_subset_state *s );
+int temp_parse_x01 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x02 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x05 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x06 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x07 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x08 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x10 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x11 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x12 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x20 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x22 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x31 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x33 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
 
 // These are prototypes for used ecmwf bufr library functions
 int bus012_ ( int *, unsigned int *, int *, int *, int *, int *, int * );

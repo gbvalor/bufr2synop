@@ -123,7 +123,7 @@ int read_args ( int _argc, char * _argv[] )
 }
 
 /* this is an interface to use bufr2tac */
-int bufrdeco_parse_subset_sequence ( struct metreport *m, struct bufrdeco_subset_sequence_data *sq, struct bufr_subset_state *st,
+int bufrdeco_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subset_state *st,
                                      struct bufrdeco *b, char *err )
 {
   size_t i;
@@ -150,7 +150,7 @@ int bufrdeco_parse_subset_sequence ( struct metreport *m, struct bufrdeco_subset
 
   // Finaly we call to bufr2syn library
   memset(m, 0, sizeof( struct metreport));
-  res = parse_subset_sequence ( m, sq, st, kdtlst, nlst, ksec1, err );
+  res = parse_subset_sequence ( m, &b->seq, st, kdtlst, nlst, ksec1, err );
   free ((void *) kdtlst);
   return res;
 }

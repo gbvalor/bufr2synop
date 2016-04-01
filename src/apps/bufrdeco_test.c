@@ -23,8 +23,6 @@
 #include "bufrdeco.h"
 
 struct bufrdeco BUFR;
-struct bufrdeco_subset_sequence_data SEQ;
-struct bufrdeco_compressed_data_references REF;
 
 char ENTRADA[256];
 
@@ -76,15 +74,17 @@ int read_args ( int _argc, char * _argv[] )
 int main ( int argc, char *argv[] )
 {
   size_t subset;
+  struct bufrdeco_subset_sequence_data *seq;
 
-  char error[256];
   if ( read_args ( argc, argv ) < 0 )
     exit ( EXIT_FAILURE );
 
+  bufrdeco_init(&BUFR);
+  
   // Check read file
-  if ( bufrdeco_read_bufr ( &BUFR, ENTRADA, error ) )
+  if ( bufrdeco_read_bufr ( &BUFR, ENTRADA) )
     {
-      printf ( "%s", error );
+      printf ( "%s", BUFR.error );
       exit ( EXIT_FAILURE );
     }
 
@@ -95,8 +95,8 @@ int main ( int argc, char *argv[] )
 
   if ( bufrdeco_parse_tree ( &BUFR ) )
     {
-      printf ( "%s", BUFR.error );
-      close_bufr ( &BUFR, NULL );
+      printf ( "# %s", BUFR.error );
+      bufrdeco_close ( &BUFR );
       exit ( EXIT_FAILURE );
     }
 
@@ -104,18 +104,17 @@ int main ( int argc, char *argv[] )
 
   for ( subset = 0; subset < BUFR.sec3.subsets ; subset++ )
     {
-      if ( bufrdeco_decode_data_subset ( &SEQ, &REF, &BUFR ) )
+      if ( (seq = bufrdeco_get_subset_sequence_data ( &BUFR )) == NULL)
         {
-          printf ( "%s", BUFR.error );
-          close_bufr ( &BUFR, NULL );
+          printf ( "# %s", BUFR.error );
+          bufrdeco_close ( &BUFR );
           exit ( EXIT_FAILURE );
         }
-      bufrdeco_print_subset_sequence_data(&SEQ);
+      bufrdeco_print_subset_sequence_data( seq );
     }
 
   printf ( "So far so good !!\n" );
-  close_bufr ( &BUFR, NULL );
-  bufrdeco_free_subset_sequence_data(&SEQ);
+  bufrdeco_close(&BUFR);
   exit ( EXIT_SUCCESS );
 }
 
