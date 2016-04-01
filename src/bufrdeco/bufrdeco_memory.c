@@ -146,11 +146,6 @@ int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *
   }
   else
     return bufrdeco_init_subset_sequence_data(ba);
-  /*
-  if ( ba->sequence != NULL )
-    free ( ( void * ) ba->sequence );
-  return bufrdeco_init_subset_sequence_data ( ba );
-  */
 }
 
 int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
@@ -238,6 +233,14 @@ int bufrdeco_init ( struct bufrdeco *b )
   return 0;
 }
 
+/*!
+   \fn int bufrdeco_reset(struct bufrdeco *b)
+   \brief Reset an struct \ref bufrdeco to be resed with another bufrfile 
+   \param b pointer to the target struct
+
+   This function must be called when parsing another bufrfile without callimg 
+   \ref bufrdeco_close and \ref bufrdeco_init. 
+*/
 int bufrdeco_reset (struct bufrdeco *b)
 {
   memset(&(b->header), 0, sizeof(struct gts_header));
