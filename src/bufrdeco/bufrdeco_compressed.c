@@ -53,6 +53,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
       //inicia el array
       r->nd = 0;
       seq = & ( b->tree->seq[0] );
+      memset(& (b->state), 0, sizeof(struct bufr_decoding_data_state));
       b->state.bit_offset = 0;
       // also reset reference and bits inc
       b->state.added_bit_length = 0;

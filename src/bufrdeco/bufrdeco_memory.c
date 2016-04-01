@@ -114,7 +114,7 @@ int close_bufr ( struct bufr *b, struct bufr_tables **t )
 int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
 {
   memset ( ba, 0, sizeof ( struct bufrdeco_subset_sequence_data ) );
-  if ( ( ba->sequence = ( struct bufr_atom_data * ) malloc ( BUFR_NMAXSEQ * sizeof ( struct bufr_atom_data ) ) ) == NULL )
+  if ( ( ba->sequence = ( struct bufr_atom_data * ) calloc( 1, BUFR_NMAXSEQ * sizeof ( struct bufr_atom_data ) ) ) == NULL )
     {
       fprintf ( stderr,"bufr_init_subset_sequence_data():Cannot allocate memory for atom data array\n" );
       return 1;
@@ -146,11 +146,12 @@ int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_r
   }
   if ( rf->dim == 0 )
     {
-      if ( ( rf->refs = ( struct bufrdeco_compressed_ref * ) malloc ( BUFR_NMAXSEQ * sizeof ( struct bufrdeco_compressed_ref ) ) ) == NULL )
+      if ( ( rf->refs = ( struct bufrdeco_compressed_ref * ) calloc ( 1, BUFR_NMAXSEQ * sizeof ( struct bufrdeco_compressed_ref ) ) ) == NULL )
         {
           fprintf ( stderr,"bufr_init_compressed_data_references():Cannot allocate memory for bufrdeco_compressed_ref array\n" );
           return 1;
         }
+      rf->nd = 0;
       rf->dim = BUFR_NMAXSEQ;
     }
   return 0;

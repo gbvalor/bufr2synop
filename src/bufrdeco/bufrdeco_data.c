@@ -149,7 +149,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
             }
 
           //bufr_print_atom_data_stdout(& ( s->sequence[s->nd] ));
-          if ( s->nd < s->dim )
+          if ( s->nd < (s->dim - 1))
             {
               ( s->nd ) ++;
             }
@@ -187,7 +187,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
                   return 1;
                 }
               replicator.nloops = ( size_t ) ( s->sequence[s->nd].val );
-              if ( s->nd < s->dim )
+              if ( s->nd < (s->dim - 1))
                 {
                   ( s->nd ) ++;
                 }
@@ -271,7 +271,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                   return 1;
                 }
               //bufrdeco_print_atom_data_stdout(& ( s->sequence[s->nd] ));
-              if ( s->nd < s->dim )
+              if ( s->nd < (s->dim - 1))
                 {
                   ( s->nd ) ++;
                 }
@@ -309,7 +309,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                       return 1;
                     }
                   replicator.nloops = ( size_t ) s->sequence[s->nd].val;
-                  if ( s->nd < s->dim )
+                  if ( s->nd < (s->dim - 1) )
                     {
                       ( s->nd ) ++;
                     }

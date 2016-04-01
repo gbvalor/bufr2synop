@@ -224,6 +224,15 @@ void clean_climat_sec4 ( struct climat_sec4 *s )
   memset ( s, 0, sizeof ( struct climat_sec4 ) );
 }
 
+/*! \fn void clean_climat_old(struct climat_old *s)
+    \brief clean a climat_sec4 struct
+    \param s pointer to the climat_old struct
+*/
+void clean_climat_old ( struct climat_old *s )
+{
+  memset ( s, 0, sizeof ( struct climat_old ) );
+}
+
 
 /*!
   \fn void clean_climat_chunks( struct climat_chunks *b)
@@ -238,7 +247,7 @@ void clean_climat_chunks ( struct climat_chunks *c )
   clean_climat_sec1 ( & ( c->s1 ) );
   clean_climat_sec2 ( & ( c->s2 ) );
   clean_climat_sec3 ( & ( c->s3 ) );
-  clean_climat_sec4 ( & ( c->s4 ) );
-
+  clean_climat_sec4 ( & ( c->s4 ) ); 
+  clean_climat_old ( & (c->o) );
   c->error[0] = '\0';
 }

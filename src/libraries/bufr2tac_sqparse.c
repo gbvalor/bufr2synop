@@ -35,7 +35,7 @@
 int find_descriptor ( int *haystack, size_t nlst, int needle )
 {
   size_t i = 0;
-  while ( haystack[i] != needle && i < nlst )
+  while ( (i < nlst) && (haystack[i] != needle)  )
     {
       i++;
     }
@@ -59,7 +59,8 @@ int find_descriptor ( int *haystack, size_t nlst, int needle )
 int find_descriptor_interval ( int *haystack, size_t nlst, int needlemin, int needlemax )
 {
   size_t i = 0;
-  while ( ( haystack[i] > needlemax || haystack[i] < needlemin ) && i < nlst )
+  
+  while ( (i < nlst) && ( haystack[i] > needlemax || haystack[i] < needlemin ) )
     {
       i++;
     }

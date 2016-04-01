@@ -129,10 +129,10 @@ int bufrdeco_parse_subset_sequence ( struct metreport *m, struct bufrdeco_subset
   size_t i;
   int ksec1[40], res;
   int *kdtlst;
-  size_t nlst = b->sec3.ndesc;
+  size_t nlst = (size_t) b->sec3.ndesc;
 
   // memory for kdtlst
-  if ( ( kdtlst = ( int * ) malloc ( nlst * sizeof ( int ) ) ) == NULL )
+  if ( ( kdtlst = ( int * ) calloc ( 1, nlst * sizeof ( int ) ) ) == NULL )
     {
       sprintf ( err, "decobufr_parse_subset_sequence(): cannot alloc memory for kdtlst\n" );
       return 1;
@@ -181,7 +181,8 @@ char * get_bufrfile_path ( char *filename, char *err )
     {
       if ( NFILES == 0 )
         {
-          strcpy ( filename, INPUTFILE );
+	  if (filename != INPUTFILE)
+            strcpy ( filename, INPUTFILE );
           return filename;
         }
       else

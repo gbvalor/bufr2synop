@@ -1770,7 +1770,7 @@ int print_climat ( char *report, size_t lmax, struct climat_chunks *cl )
   c = report;
 
   // Needs time extension
-  if ( cl->e.YYYY[0] == 0 )
+  if ( cl->e.YYYY[0] == 0 || cl->e.MM[0] == 0)
     {
       return 1;
     }

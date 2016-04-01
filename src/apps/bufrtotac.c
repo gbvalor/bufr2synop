@@ -82,7 +82,7 @@ int main ( int argc, char *argv[] )
               exit ( EXIT_FAILURE );
               */
 	  if (DEBUG)
-	    printf("#%s\n", ERR);
+	    printf("# %s\n", ERR);
 	  close_bufr(&BUFR, &TABLES);
           NFILES++;
           continue;
@@ -94,7 +94,7 @@ int main ( int argc, char *argv[] )
         printf ( "#%s %s %s %s %s\n", BUFR.header.timestamp, BUFR.header.bname, BUFR.header.center,
                  BUFR.header.dtrel, BUFR.header.order );
 
-
+      /* Prints sections if verbose */
       if ( VERBOSE )
         {
           print_sec0_info ( &BUFR );
@@ -105,11 +105,8 @@ int main ( int argc, char *argv[] )
 
       if ( bufrdeco_parse_tree ( &BUFR ) )
         {
-          printf ( "%s", BUFR.error );
-          /*
-                close_bufr ( &BUFR );
-                exit ( EXIT_FAILURE );
-                */
+	  if (DEBUG)
+          printf ( "# %s", BUFR.error );
           NFILES++;
 	  close_bufr(&BUFR, &TABLES);
           continue;
@@ -122,13 +119,8 @@ int main ( int argc, char *argv[] )
           if ( bufrdeco_decode_data_subset ( &SEQ, &REF, &BUFR ) )
             {
               if ( DEBUG )
-                printf ( "%s", BUFR.error );
-              NFILES++;
- 	      close_bufr(&BUFR, &TABLES);
-              continue;
-              //goto end_loop;
-              /*close_bufr ( &BUFR );
-              exit ( EXIT_FAILURE );*/
+                printf ( "# %s", BUFR.error );
+              goto fin;
             }
 
           if ( VERBOSE )
@@ -138,10 +130,10 @@ int main ( int argc, char *argv[] )
               bufrdeco_print_subset_sequence_data ( &SEQ );
             }
 
-          if ( bufrdeco_parse_subset_sequence ( &REPORT, &SEQ, &STATE, &BUFR, ERR ) )
+          if (BUFR.sec3.ndesc &&  bufrdeco_parse_subset_sequence ( &REPORT, &SEQ, &STATE, &BUFR, ERR ) )
             {
               if ( DEBUG )
-                fprintf ( stderr, "#%s\n", ERR );
+                fprintf ( stderr, "# %s\n", ERR );
             }
           else
             {
@@ -149,11 +141,14 @@ int main ( int argc, char *argv[] )
             }
 
         }
+      fin:;
       NFILES ++;
       close_bufr ( &BUFR, &TABLES );
     } // End of big loop parsing files
 
   bufrdeco_free_subset_sequence_data ( &SEQ );
+  bufrdeco_free_compressed_data_references (&REF);
+  free_bufr_tables( TABLES);
   exit ( EXIT_SUCCESS );
 }
 
