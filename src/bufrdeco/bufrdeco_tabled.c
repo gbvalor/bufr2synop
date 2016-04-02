@@ -116,7 +116,7 @@ int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufr
   char *c;
   struct bufr_tabled *td;
 
-  td = & ( b->table->d );
+  td = & ( b->tables->d );
 
   // Reject wrong arguments
   if ( s == NULL || b == NULL || key == NULL )

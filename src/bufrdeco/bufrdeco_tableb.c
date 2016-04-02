@@ -214,7 +214,7 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
   uint32_t ival;
   uint8_t has_data;
   struct bufr_tableb *tb;
-  tb = & ( b->table->b );
+  tb = & ( b->tables->b );
 
   // Reject wrong arguments
   if ( r == NULL || b == NULL || d == NULL )
@@ -395,7 +395,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
   int32_t escale = 0, reference = 0;
   struct bufr_tableb *tb;
 
-  tb = & ( b->table->b );
+  tb = & ( b->tables->b );
 
   // Reject wrong arguments
   if ( a == NULL || b == NULL || d == NULL )
@@ -519,7 +519,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
         {
           ival = ( uint32_t ) ( a->val + 0.5 );
           a->mask |= DESCRIPTOR_IS_CODE_TABLE;
-          if ( bufrdeco_explained_table_val ( a->ctable, 256, & ( b->table->c ), & ( tb->item[i].tablec_ref ), & ( a->desc ), ival ) != NULL )
+          if ( bufrdeco_explained_table_val ( a->ctable, 256, & ( b->tables->c ), & ( tb->item[i].tablec_ref ), & ( a->desc ), ival ) != NULL )
             {
               a->mask |= DESCRIPTOR_HAVE_CODE_TABLE_STRING;
             }
@@ -529,7 +529,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
           ival = ( uint32_t ) ( a->val + 0.5 );
           a->mask |= DESCRIPTOR_IS_FLAG_TABLE;
 
-          if ( bufrdeco_explained_flag_val ( a->ctable, 256, & ( b->table->c ), & ( a->desc ), ival, nbits ) != NULL )
+          if ( bufrdeco_explained_flag_val ( a->ctable, 256, & ( b->tables->c ), & ( a->desc ), ival, nbits ) != NULL )
             {
               a->mask |= DESCRIPTOR_HAVE_FLAG_TABLE_STRING;
             }

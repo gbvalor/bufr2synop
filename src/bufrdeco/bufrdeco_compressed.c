@@ -23,23 +23,45 @@
 */
 #include "bufrdeco.h"
 
+/*!
+  \fn int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
+  \brief Parse a compressed data bufr
+  \param r pointer to a struct \ref bufrdeco_compressed_data_references where to set the results
+  \param b basic container struct \ref bufrdeco 
+  
+  When a bufr report has compressed data, it is needed to do a first parse step to get references about
+  where to find the data for every descriptor in subsets. This is what this function does. If succeeded
+  the struct \a r will have all needed data to decode individual subsets.
+
+  Also be mind that the descriptors tree have to be already parsed when calling this function  
+  
+  Returns 0 if succeeded, 1 othewise
+*/
 int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
 {
+  // first we assure that needed memory is allocated and array of references initizalized
   if ( bufrdeco_init_compressed_data_references ( r ) )
     {
       return 1;
     }
 
+  // Then we make the parsing task in a recursive way. NULL pointer says it is the begining.
   if ( bufrdeco_parse_compressed_recursive ( r, NULL, b ) )
     {
       return 1;
     }
 
-  //print_bufrdeco_compressed_data_references(r);
+  // all is OK
   return 0;
 }
 
 
+/*!
+  \fn int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_references *r, struct bufr_sequence *l, struct bufrdeco *b )
+  \brief Parse recursively the compressed data in a bufr report to get references where to get data for every descriptor in a subset
+  \param r pointer to target struct \ref bufrdeco_compressed_data_references where to set results
+  \param l pointer to a struct 
+*/
 int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_references *r, struct bufr_sequence *l, struct bufrdeco *b )
 {
   int res;
@@ -408,7 +430,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
     }
 
   // some utils pointers
-  tb = & ( b->table->b );
+  tb = & ( b->tables->b );
   i = tb->x_start[r->desc.x] + tb->y_ref[r->desc.x][r->desc.y];
 
   a->mask = 0;
@@ -539,7 +561,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
     {
       ival = ( uint32_t ) ( a->val + 0.5 );
       a->mask |= DESCRIPTOR_IS_CODE_TABLE;
-      if ( bufrdeco_explained_table_val ( a->ctable, 256, & ( b->table->c ), & ( tb->item[i].tablec_ref ), & ( a->desc ), ival ) != NULL )
+      if ( bufrdeco_explained_table_val ( a->ctable, 256, & ( b->tables->c ), & ( tb->item[i].tablec_ref ), & ( a->desc ), ival ) != NULL )
         {
           a->mask |= DESCRIPTOR_HAVE_CODE_TABLE_STRING;
         }
@@ -549,7 +571,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
       ival = ( uint32_t ) ( a->val + 0.5 );
       a->mask |= DESCRIPTOR_IS_FLAG_TABLE;
 
-      if ( bufrdeco_explained_flag_val ( a->ctable, 256, & ( b->table->c ), & ( a->desc ), ival, r->bits ) != NULL )
+      if ( bufrdeco_explained_flag_val ( a->ctable, 256, & ( b->tables->c ), & ( a->desc ), ival, r->bits ) != NULL )
         {
           a->mask |= DESCRIPTOR_HAVE_FLAG_TABLE_STRING;
         }

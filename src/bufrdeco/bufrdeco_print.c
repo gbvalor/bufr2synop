@@ -61,9 +61,9 @@ void print_sec1_info ( struct bufrdeco *b )
   printf ( "Minute:                %5u\n", b->sec1.minute );
   printf ( "Second:                %5u\n", b->sec1.second );
   printf ( "Aditional space:       %5u\n", b->sec1.length - 22 );
-  if (b->table->b.path[0])
+  if (b->tables->b.path[0])
   {
-    printf ( "Tables used: '%s'\n", b->table->b.path );
+    printf ( "Tables used: '%s'\n", b->tables->b.path );
   }
 }
 

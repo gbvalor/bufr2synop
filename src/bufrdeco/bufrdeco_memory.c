@@ -23,6 +23,13 @@
 */
 #include "bufrdeco.h"
 
+/*!
+  \fn int bufrdeco_init_tables ( struct bufr_tables **t )
+  \brief Init a struct \ref bufr_tables allocating space 
+  \param t pointer to the target pointer to struct \ref bufr_tables 
+  
+  Returns 0 if succeeded, 1 otherwise
+*/
 int bufrdeco_init_tables ( struct bufr_tables **t )
 {
   if ( *t != NULL )
@@ -33,6 +40,14 @@ int bufrdeco_init_tables ( struct bufr_tables **t )
   return 0;
 }
 
+
+/*!
+  \fn int bufrdeco_free_tables ( struct bufr_tables **t )
+  \brief Frees the allocated space for a struct \ref bufr_tables  
+  \param t pointer to the target pointer to struct \ref bufr_tables 
+  
+  Returns 0 and \a*t is set to NULL
+*/
 int bufrdeco_free_tables ( struct bufr_tables **t )
 {
   if ( *t != NULL )
@@ -43,6 +58,13 @@ int bufrdeco_free_tables ( struct bufr_tables **t )
   return 0;
 }
 
+/*!
+  \fn int bufrdeco_init_expanded_tree ( struct bufrdeco_expanded_tree **t )
+  \brief Init a struct \ref bufrdeco_expanded_tree allocating space 
+  \param t pointer to the target pointer to struct \ref bufrdeco_expanded_tree 
+  
+  Returns 0 if succeeded, 1 otherwise
+*/
 int bufrdeco_init_expanded_tree ( struct bufrdeco_expanded_tree **t )
 {
   if ( *t != NULL )
@@ -53,6 +75,13 @@ int bufrdeco_init_expanded_tree ( struct bufrdeco_expanded_tree **t )
   return 0;
 }
 
+/*!
+  \fn int bufrdeco_free_expanded_tree ( struct bufrdeco_expanded_tree **t )
+  \brief Frees the allocated space for a struct \ref bufrdeco_expanded_tree  
+  \param t pointer to the target pointer to struct \ref bufrdeco_expanded_tree 
+  
+  Returns 0 and \a*t is set to NULL
+*/
 int bufrdeco_free_expanded_tree ( struct bufrdeco_expanded_tree **t )
 {
   if ( *t != NULL )
@@ -62,69 +91,44 @@ int bufrdeco_free_expanded_tree ( struct bufrdeco_expanded_tree **t )
     }
   return 0;
 }
-/*
 
-  This is useful for not to read and parse tables again.
+/*!
+  \fn int bufrdeco_substitute_tables ( struct bufr_tables **replaced, struct bufr_tables *source, struct bufrdeco *b )
+  \brief substitute an struct \ref bufr_tables into a struct \ref bufrdeco
+  \param replaced  Pointer where to set the replaced pointer 
+  \param source Pointer to a struct \ref bufr_tables
+  \param pointer to the container basic struct \ref bufrdeco
+  
+  Remember that the struct \ref bufr_tables used in bufrdeco library is the one which pointer is in struct 
+  \ref bufrdeco . To avoid problems the struct must be initialized before substituted in this fucntion.
+  Both source and replaced structs are not modified.
+
+  This is useful if we do not want to read and parse tables again if the caller has a pool of 
+  already readed tables.
 */
-int bufr_substitute_tables ( struct bufr_tables **replaced, struct bufr_tables *source, struct bufrdeco *b )
+int bufrdeco_substitute_tables ( struct bufr_tables **replaced, struct bufr_tables *source, struct bufrdeco *b )
 {
-  *replaced = b->table;
+  *replaced = b->tables;
   if ( source == NULL )
     {
       // allocate memory for table
-      return bufrdeco_init_tables ( & ( b->table ) );
+      return bufrdeco_init_tables ( & ( b->tables ) );
     }
   else
-    b->table = source;
+    b->tables = source;
   return 0;
 }
 
 /*!
+   \fn int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
+   \brief Init a struct \ref bufrdeco_subset_sequence_data 
+   \param ba pointer to the target struct
 
-
+   It is supossed that no memory is allocated for sequence. If we are not sure better use 
+   function \ref bufrdeco_clean_subset_sequence_data
+   
+   Returns 0 if succeeded, 1 otherwise
 */
-int init_bufr ( struct bufrdeco *b, struct bufr_tables *t )
-{
-
-  memset ( b, 0, sizeof ( struct bufrdeco ) );
-  if ( t == NULL )
-    {
-      if ( bufrdeco_init_tables ( & ( b->table ) ) )
-        {
-          return 1;
-        }
-    }
-  else
-    {
-      b->table = t;
-    }
-
-// Allocate for a new tree struct
-  if ( ( b->tree = ( struct bufrdeco_expanded_tree * ) calloc ( 1, sizeof ( struct bufrdeco_expanded_tree ) ) ) == NULL )
-    {
-      return 1;
-    }
-  return 0;
-}
-
-
-/*!
-
-*/
-int close_bufr ( struct bufrdeco *b, struct bufr_tables **t )
-{
-  if ( t != NULL )
-    *t = b->table;
-  else
-    free ( ( void * ) b->table );
-  if ( b->tree != NULL )
-    free ( ( void * ) b->tree );
-  memset ( b, 0, sizeof ( struct bufrdeco ) );
-  return 0;
-}
-
-
-
 int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
 {
   memset ( ba, 0, sizeof ( struct bufrdeco_subset_sequence_data ) );
@@ -137,6 +141,15 @@ int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *b
   return 0;
 }
 
+/*!
+  \fn int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
+  \brief Cleans a struct \ref bufrdeco_subset_sequence_data
+  
+  For eficience, if sequence in the struct \ref bufrdeco_subset_sequence_data is allocated, just set the used 
+  elements to zero. If is still no allocated memory for sequence inits the struct
+
+  Returns 0 if succeeded, 1 otherwise
+*/
 int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
 {
   if ( ba->sequence != NULL)
@@ -148,6 +161,13 @@ int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *
     return bufrdeco_init_subset_sequence_data(ba);
 }
 
+/*!
+ \fn  int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
+ \brief Free the memory for sequence array in a struct \ref bufrdeco_subset_sequence_data 
+ \param ba pointer to the target struct to free
+ 
+ Returns 0
+*/
 int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
 {
   if ( ba->sequence != NULL )
@@ -158,15 +178,23 @@ int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *b
   return 0;
 }
 
+/*!
+  \fn int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
+  \brief Init a struct bufrdeco_compressed_data_references
+  \param rf pointer ti the target struct
+
+  If already memory is allocated for array of references then just adjust the used index to zero. Otherwise
+  it allocate the needed memory and init the struct
+  
+  If succeeded return 0, otherwise 1
+*/
 int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
 {
-  if ( rf->dim != 0 )
+  if ( rf->refs != NULL && rf->dim != 0 )
     {
-      /*free ( ( void * ) rf->refs );
-      memset ( rf, 0, sizeof ( struct bufrdeco_compressed_data_references ) );*/
       rf->nd = 0;
     }
-  if ( rf->dim == 0 )
+  else if ( rf->refs == NULL )
     {
       if ( ( rf->refs = ( struct bufrdeco_compressed_ref * ) calloc ( 1, BUFR_NMAXSEQ * sizeof ( struct bufrdeco_compressed_ref ) ) ) == NULL )
         {
@@ -179,13 +207,26 @@ int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_r
   return 0;
 }
 
+/*!
+  \fn int bufrdeco_clean_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
+  \brief Clean a struct \ref bufrdeco_compressed_data_references
+
+*/
 int bufrdeco_clean_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
 {
-  rf->nd = 0;
+  if (rf->refs != NULL && rf->nd != 0)
+    rf->nd = 0;
+  else
+    return bufrdeco_init_compressed_data_references(rf);
   return 0;
 }
 
+/*!
+  \fn int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
+  \brief Free the memory allocated for array of references in a struct \ref bufrdeco_compressed_data_references
 
+  Returns 0
+*/
 int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
 {
   if ( rf->refs != NULL )
@@ -216,7 +257,7 @@ int bufrdeco_init ( struct bufrdeco *b )
   // data
 
   // allocate memory for Tables
-  if ( bufrdeco_init_tables ( &b->table ) )
+  if ( bufrdeco_init_tables ( &b->tables ) )
     {
       sprintf ( b->error,"init_bufrdeco(): Cannot allocate space for tables\n" );
       return 1;
@@ -261,7 +302,7 @@ int bufrdeco_reset (struct bufrdeco *b)
   \brief Free all allocated memory
   \param b pointer to the target struct
   
-  This function must be called at the end when no more calls t bufrdeco library is needed
+  This function must be called at the end when no more calls to bufrdeco library is needed
 */
 int bufrdeco_close ( struct bufrdeco *b )
 {
@@ -269,6 +310,6 @@ int bufrdeco_close ( struct bufrdeco *b )
   bufrdeco_free_subset_sequence_data ( & ( b->seq ) );
   bufrdeco_free_compressed_data_references ( & ( b->refs ) );
   bufrdeco_free_expanded_tree ( & ( b->tree ) );
-  bufrdeco_free_tables ( & ( b->table ) );
+  bufrdeco_free_tables ( & ( b->tables ) );
   return 0;
 }
