@@ -72,6 +72,17 @@ size_t get_bits_as_char_array2 ( char *target, uint8_t *has_data, uint8_t *sourc
   return bit_length;
 }
 
+/*!
+  \fn size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
+  \brief get a sequence of bits in data section 4 from a BUFR reports to get an array of chars
+  \param target string with the resulting array
+  \param has_data if 1 then has data, if 0 what we got is missing data
+  \param source buffer of uint8_t which is actually the data section 4.
+  \param bit0_offset bit offset of first bit of first char
+  \param bit_length number of bits to extract. Obviously this will be divisible by 8
+
+  If returns the amount of bits readed. 0 if problems. It also update bit0_offset with the new bits.
+*/
 size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
 {
   size_t i, j, k;
@@ -132,7 +143,7 @@ size_t get_bits_as_uint32_t2 ( uint32_t *target, uint8_t *has_data, uint8_t *sou
   d = 0;
   *target = 0;
   *has_data = 0;
-  
+
   do
     {
       c = source + ( *bit0_offset + d ) / 8;
@@ -328,11 +339,11 @@ int is_a_delayed_descriptor ( struct bufr_descriptor *d )
 
   If is a local desccriptor return 1, 0 otherwise.
 */
-int is_a_local_descriptor (struct bufr_descriptor *d)
+int is_a_local_descriptor ( struct bufr_descriptor *d )
 {
-  if ( (d->f == 0) && 
-       (d->x >= 48) && 
-       (d->x <= 63) )
+  if ( ( d->f == 0 ) &&
+       ( d->x >= 48 ) &&
+       ( d->x <= 63 ) )
     return 1;
   else
     return 0;

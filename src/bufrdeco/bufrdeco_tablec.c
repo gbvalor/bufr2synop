@@ -24,9 +24,12 @@
 #include "bufrdeco.h"
 
 /*!
+  \fn int bufr_read_tablec ( struct bufr_tablec *tc, char *error )
+  \brief Reads a file with table C content according with ECMWF format
+  \param tc pointer to a target struct \ref bufr_tablec
+  \param error string where to set error if any
 
-
-
+  If succeded return 0, otherwise 1
 */
 int bufr_read_tablec ( struct bufr_tablec *tc, char *error )
 {
@@ -42,14 +45,14 @@ int bufr_read_tablec ( struct bufr_tablec *tc, char *error )
     }
 
   // If we've already readed this table.
-  if ( strcmp ( tc->path, tc->old_path ) == 0)
+  if ( strcmp ( tc->path, tc->old_path ) == 0 )
     {
       return 0; // all done
     }
 
-  strcpy(caux, tc->path);
-  memset(tc, 0, sizeof(struct bufr_tablec));
-  strcpy(tc->path,caux);
+  strcpy ( caux, tc->path );
+  memset ( tc, 0, sizeof ( struct bufr_tablec ) );
+  strcpy ( tc->path,caux );
   if ( ( t = fopen ( tc->path, "r" ) ) == NULL )
     {
       sprintf ( error,"Unable to open table C file '%s'\n", tc->path );
@@ -83,6 +86,15 @@ int bufr_read_tablec ( struct bufr_tablec *tc, char *error )
   return 0;
 }
 
+/*!
+ \fn  int bufr_find_tablec_index ( size_t *index, struct bufr_tablec *tc, const char *key )
+ \brief Find the index of a line in table C for a given key of a descriptor
+ \param index pointer where to set the result
+ \param tc pointer to a struct \ref bufr_tablec where all table data is stored
+ \param key string in the form FXXYYY which is the key of descriptor we want to find out
+
+ If the descriptor has been found with success then returns 0, othewise returns 1
+*/
 int bufr_find_tablec_index ( size_t *index, struct bufr_tablec *tc, const char *key )
 {
   size_t i, i0;
@@ -194,7 +206,7 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec
 
 /*!
   \fn char * bufrdeco_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d, unsigned long ival, uint8_t nbits)
-  \brief gets a strung with the meaning of a value for a flag table descriptor
+  \brief gets a string with the meaning of a value for a flag table descriptor
   \param expl string with resulting meaning
   \param dim max length alowed for \a expl string
   \param d pointer to the source descriptor
@@ -206,8 +218,8 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec
 
   If something went wrong, it returns NULL . Otherwise it returns \a expl
 */
-char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d, 
-     uint64_t ival, uint8_t nbits )
+char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d,
+                                     uint64_t ival, uint8_t nbits )
 {
   char *c, *s;
   uint64_t test, test0;
@@ -314,6 +326,5 @@ char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec 
     }
 
   // if match then we have finished the search
-
   return expl;
 }

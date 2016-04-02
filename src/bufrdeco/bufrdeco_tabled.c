@@ -22,6 +22,15 @@
  \brief file with the code to read table D data (code and flag tables)
  */
 #include "bufrdeco.h"
+
+/*!
+  \fn int bufr_read_tabled ( struct bufr_tabled *td, char *error )
+  \brief Reads a file with table D content according with ECMWF format
+  \param td pointer to a target struct \ref bufr_tabled
+  \param error string where to set error if any
+
+  If succeded return 0, otherwise 1
+*/
 int bufr_read_tabled ( struct bufr_tabled *td, char *error )
 {
   char aux[8], *c;
@@ -77,6 +86,15 @@ int bufr_read_tabled ( struct bufr_tabled *td, char *error )
   return 0;
 }
 
+/*!
+ \fn  int bufr_find_tabled_index ( size_t *index, struct bufr_tabled *td, const char *key )
+ \brief Find the index of a line in table D for a given key of a descriptor
+ \param index pointer where to set the result
+ \param td pointer to a struct \ref bufr_tabled where all table data is stored
+ \param key string in the form FXXYYY which is the key of descriptor we want to find out
+
+ If the descriptor has been found with success then returns 0, othewise returns 1
+*/
 int bufr_find_tabled_index ( size_t *index, struct bufr_tabled *td, const char *key )
 {
   size_t i, i0;
@@ -109,6 +127,15 @@ int bufr_find_tabled_index ( size_t *index, struct bufr_tabled *td, const char *
 }
 
 
+/*!
+ \fn int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key )
+ \brief get the descriptors array for a descriptor sequence defined in table D with F = 3
+ \param target struct \ref bufr_sequence
+ \param b pointer to the basic container struct \ref bufrdeco
+ \param key string in the form FXXYYY which is the key of descriptor we want to find out, F = 3
+ 
+ If the sequence has been filled with success then returns 0, otherwise returns 1
+*/
 int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key )
 {
   size_t i, j;
