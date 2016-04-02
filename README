@@ -21,8 +21,10 @@ At the moment includes the following reports:
   - FM 38-XI  TEMP MOBIL
   - FM 71-XII CLIMAT
 
-The software is based in bufrdc library from ECMWF.  *It have to be installed*. In that package
-there is a synop2bufr application doing just the reverse task. You can grab this library from 
+The software is based in bufrdc library from ECMWF. Before version 0.7 this package should to be 
+installed. Since version 0.7, a library for decode a wide subset of bufr reports has been writen 
+from scratch. This is a fast and light bufr decoder. Anyway it still uses the bufr tables installed
+by ECMWF packages so it still need to be installed. You can grab ECMWF library from 
 
 https://software.ecmwf.int/wiki/display/BUFR/Releases
 
@@ -53,19 +55,23 @@ and to build the package
 
   make
 
-Assume you built the package. you will have three binaries:
+Assume you built the package. you will have four binaries:
 
 - bufr2synop . 
-    Main binary to extract alphanumeric reports.
+    Main binary to extract alphanumeric reports using ECMWF decode library.
+- bufrtorac .
+    The same than bufr2ynop but using the own bufrdeco library. It is several times faste  
 - bufr_decode . 
     A binary extracted and adapted from ECMWF bufrdc library. Is an example of use for 
-    bufrdc library
+    ECMWF bufrdc library
 - bufrnoaa
     An utility to extract and select bufr files from NOAA bin archives.
+    
+And also the libraries :
 
-And also a library:
-
-- libbufr2syn  Used by bufr2synop
+- libbufrdeco  A light and very fast bufr decode library
+- libbufr2tac  Used by binaries bufr2synop and bufrtotac to transform a decoded bufr into a TAC (Traditional
+               Alphanumeric Form)
 
 
 INSTALL
@@ -115,9 +121,22 @@ And to see CLIMAT reports, we can try with another bufr file
 
 We will get 19 CLIMAT reports, some of them NIL reports.
 
-There are some more options for bufrnoaa and bufr2synop. You can see a list using 
+Since version 0.7 we also can do the same using bufrtotac which uses the own bufrdeco library. It works 
+with the same arguments than bufr2synop, so 
+
+   bufrtotac -i 20141018211119_ISIN03_EGRR_182100.bufr
+
+and
+
+   bufrtotac -i 20150705121512_ISCD01_LIIB_050000.bufr 
+
+should produce the same output, but a lot faster.
+
+There are some more options for bufrnoaa, bufrtotac and bufr2synop. You can see a list using 
 
    bufrnoaa -h
+
+   bufrtotac -h 
 
 or
 

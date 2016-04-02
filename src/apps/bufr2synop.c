@@ -21,61 +21,6 @@
  \file bufr2synop.c
  \brief decodes a bufr file using ECMWF bufr library and tries to pass the decoded reports to synop-format
 
-  \mainpage Bufr to alphanumeric
-
-  \section Introduction
-  This is a package to make the transition to bufr reports from alphanumeric text easiest as possible.
-
-  A lot of software is coded assuming that the primary source of meteorological reports is in alphanumeric format. Decode libraries are expecting this. But time is changing, meteorological services are migrating to bufr and other binary formats. Most decode sofware have to be changed.
-
-  This is a software to get meteorological reports in old alphanumeric format from bufr files. At the moment includes the following reports:
-
-  - FM 12-XIV SYNOP
-  - FM 13-XIV SHIP
-  - FM 14-XIV SYNOP MOBIL
-  - FM 18-XII BUOY
-  - FM 71-XII CLIMAT
-
-  The software is based in bufrdc library from ECMWF  It must to be installed. In that package there is a \a synop2bufr application doing just the reverse task.
-
-  Note that the results from this library is not intended to match at %100 level to original alphanumeric reports. It cannot. Some variables in alphanumeric code rules can be coded in several ways, and there is not a regional even national decision about them. As example, the 'hshs' item (table code 1617) for synop FM 12 can be coded using 00-80 range or 90-99 one. A numeric value for heigh of base clouds can be coded in two ways. And there some few more examples.
-
-  \section Install
-
-  Remember you have to download and install bufrdc library from ECMWF
-
-  https://software.ecmwf.int/wiki/display/BUFR/Releases
-
-  You also will need a Fortran and C compilers in your system and the usual development packages. GNU gcc and gfortran compilers are ok.
-
-  Then, to install bufr2synop, download the tarball and uncompress it
-
-  \code
-  tar -xvzf bufr2synop-X.Y.tar.gz
-  \endcode
-
-  Where X.Y is the current version. This will create the directory \a bufr2synop-X.Y
-
-  You then have to configure
-
-  \code
-  cd bufr2synop-X.Y
-  ./configure
-  \endcode
-
-  after a succesfully configuration you then can then compile the package
-
-  \code
-  make
-  \endcode
-
-  and finally install it.
-  \code
-  make install
-  \endcode
-
-  by default, it will install binaries and libraries under \a /usr/local tree, so you will need root privileges.
-
 */
 #include "bufr2synop.h"
 
