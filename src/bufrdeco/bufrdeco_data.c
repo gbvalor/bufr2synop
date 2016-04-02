@@ -23,13 +23,25 @@
 */
 #include "bufrdeco.h"
 
-struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data(struct bufrdeco *b)
+/*!
+  \fn struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data(struct bufrdeco *b)
+  \brief Parse and get a struct \ref bufrdeco_subset_sequence_data
+  \param b basic container struct \ref bufrdeco
+
+  Note that if succeeded the counter to current subset index is increased. Remember that in case of non
+  compressed data we must to decode all previous subsets to get the desired one. In case of compressed
+  we can access directly to a the desired subset
+
+  If succeeded returns a pointer to the struct \ref bufrdeco_subset_sequence_data with the results for a
+  subset,  otherwise returns NULL
+*/
+struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data ( struct bufrdeco *b )
 {
-  if (bufrdeco_decode_data_subset (&(b->seq), &(b->refs), b ))
-  {
-    return NULL;
-  }
-  return &(b->seq);
+  if ( bufrdeco_decode_data_subset ( & ( b->seq ), & ( b->refs ), b ) )
+    {
+      return NULL;
+    }
+  return & ( b->seq );
 }
 
 
@@ -40,11 +52,22 @@ struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data(struct 
   \param r pointer to the struct \ref bufrdeco_compressed_data_references
   \param b pointer to the base struct \ref bufr
 
+  Note that if succeeded the counter to current subset index is increased. Remember that in case of non
+  compressed data we must to decode all previous subsets to get the desired one. In case of compressed
+  we can access directly to a the desired subset
+
   Return 0 in case of success, 1 otherwise
 */
 int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struct bufrdeco_compressed_data_references *r,
                                   struct bufrdeco *b )
 {
+  // Check about parsed tree
+  if ( b->tree == NULL || b->tree->nseq == 0 )
+    {
+      sprintf ( b->error, "bufrdeco_subset_sequence_datad(): Try to parse compressed data without parsed tree\n" );
+      return 1;
+    }
+
   // First we init the subset sequence data
   if ( bufrdeco_clean_subset_sequence_data ( s ) )
     {
@@ -84,6 +107,10 @@ int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struc
   \fn int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s )
   \brief doubles the allocated space for a struct \ref bufrdeco_subset_sequence_data whenever is posible
   \param s pointer to source struct \ref bufrdeco_subset_sequence_data
+
+  The amount of data in a bufr must be huge. In a first moment, the dimension of a sequence of structs
+  \ref bufr_atom_data is \ref BUFR_NMAXSEQ but may be increased. This function task is try to double the
+  allocated dimension and reallocate it.
 
   Return 0 when success, otherwise return 1 and the struct is unmodified
 */
@@ -160,7 +187,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
             }
 
           //bufr_print_atom_data_stdout(& ( s->sequence[s->nd] ));
-          if ( s->nd < (s->dim - 1))
+          if ( s->nd < ( s->dim - 1 ) )
             {
               ( s->nd ) ++;
             }
@@ -174,6 +201,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
               return 1;
             }
           break;
+
         case 1:
           // Case of replicator descriptor
           replicator.s = seq;
@@ -198,7 +226,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
                   return 1;
                 }
               replicator.nloops = ( size_t ) ( s->sequence[s->nd].val );
-              if ( s->nd < (s->dim - 1))
+              if ( s->nd < ( s->dim - 1 ) )
                 {
                   ( s->nd ) ++;
                 }
@@ -217,22 +245,15 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
             }
           //i = replicator.ixdel + replicator.ndesc; // update i properly
           break;
+
         case 2:
           // Case of operator descriptor
           if ( bufrdeco_parse_f2_descriptor ( s, & ( seq->lseq[i] ), b ) )
             {
               return 1;
             }
-          /*if ( s->nd < s->dim )
-            ( s->nd ) ++;
-          else if ( bufrdeco_increase_data_array ( s ) == 0 )
-            ( s->nd ) ++;
-          else
-            {
-              sprintf ( b->error, "bufr_decode_data_subset_recursive(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n" );
-              return 1;
-            }*/
           break;
+
         case 3:
           // Case of sequence descriptor
           if ( bufrdeco_decode_subset_data_recursive ( s, seq->sons[i], b ) )
@@ -240,6 +261,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
               return 1;
             }
           break;
+
         default:
           // this case is not possible
           sprintf ( b->error, "bufr_decode_data_subset_recursive(): Found bad 'f' in descriptor\n" );
@@ -281,8 +303,8 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                 {
                   return 1;
                 }
-              //bufrdeco_print_atom_data_stdout(& ( s->sequence[s->nd] ));
-              if ( s->nd < (s->dim - 1))
+
+              if ( s->nd < ( s->dim - 1 ) )
                 {
                   ( s->nd ) ++;
                 }
@@ -296,6 +318,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                   return 1;
                 }
               break;
+
             case 1:
               // Case of replicator descriptor
               replicator.s = l;
@@ -320,7 +343,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                       return 1;
                     }
                   replicator.nloops = ( size_t ) s->sequence[s->nd].val;
-                  if ( s->nd < (s->dim - 1) )
+                  if ( s->nd < ( s->dim - 1 ) )
                     {
                       ( s->nd ) ++;
                     }
@@ -338,23 +361,15 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                 }
               //i = r->ixdel + r->ndesc; // update i properly
               break;
+
             case 2:
               // Case of operator descriptor
               if ( bufrdeco_parse_f2_descriptor ( s, & ( l->lseq[i] ), b ) )
                 {
                   return 1;
                 }
-              /*
-                  if ( s->nd < s->dim )
-                    ( s->nd ) ++;
-                  else if ( bufrdeco_increase_data_array ( s ) == 0 )
-                    ( s->nd ) ++;
-                  else
-                    {
-                      sprintf ( b->error, "bufr_decode_data_subset_recursive(): No more bufr_atom_data available. Check NMAXSEQ\n" );
-                      return 1;
-                    }*/
               break;
+
             case 3:
               // Case of sequence descriptor
               if ( bufrdeco_decode_subset_data_recursive ( s, l->sons[i], b ) )
@@ -362,6 +377,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                   return 1;
                 }
               break;
+
             default:
               // this case is not possible
               sprintf ( b->error, "bufr_decode_subset_data_recursive(): Found bad 'f' in descriptor\n" );

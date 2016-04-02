@@ -61,10 +61,10 @@ void print_sec1_info ( struct bufrdeco *b )
   printf ( "Minute:                %5u\n", b->sec1.minute );
   printf ( "Second:                %5u\n", b->sec1.second );
   printf ( "Aditional space:       %5u\n", b->sec1.length - 22 );
-  if (b->tables->b.path[0])
-  {
-    printf ( "Tables used: '%s'\n", b->tables->b.path );
-  }
+  if ( b->tables->b.path[0] )
+    {
+      printf ( "Tables used: '%s'\n", b->tables->b.path );
+    }
 }
 
 /*!
@@ -101,6 +101,11 @@ void print_sec4_info ( struct bufrdeco *b )
 
 /*!
   \fn int bufrdeco_print_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *seq )
+  \brief  Print a tree of descriptors in a recursive way
+  \param b pointer to the basic container struct \ref bufrdeco
+  \param seq pointer to the struct \ref bufr_sequence  to print
+
+  If succeded return 0, else return 1
 */
 int bufrdeco_print_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *seq )
 {
@@ -142,12 +147,21 @@ int bufrdeco_print_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *se
   return 0;
 }
 
+/*!
+  \fn void bufrdeco_print_tree ( struct bufrdeco *b )
+  \brief Print a tree of descriptors
+  \param b pointer to a basic container struct \ref bufrdeco
+*/
 void bufrdeco_print_tree ( struct bufrdeco *b )
 {
   bufrdeco_print_tree_recursive ( b, NULL );
 };
 
-
+/*!
+  \fn void bufrdeco_print_atom_data_stdout ( struct bufr_atom_data *a )
+  \brief print the data in a struct \ref bufr_atom_data to stdout
+  \param a pointer to struct ref \ref bufr_atom_data with data to print
+*/
 void bufrdeco_print_atom_data_stdout ( struct bufr_atom_data *a )
 {
   char aux[256];
@@ -155,6 +169,14 @@ void bufrdeco_print_atom_data_stdout ( struct bufr_atom_data *a )
   printf ( "%s\n",aux );
 }
 
+/*!
+  \fn char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a )
+  \brief print the data in a struct \ref bufr_atom_data to a string
+  \param string where to print the result
+  \param a pointer to struct ref \ref bufr_atom_data with data to print
+
+  Returns a pointer to result string
+*/
 char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a )
 {
   char aux[256], *c;
@@ -202,6 +224,11 @@ char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a )
   return target;
 }
 
+/*!
+  \fn void bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *s )
+  \brief Prints a struct \ref bufrdeco_subset_sequence_data
+  \param s pointer to the struct to print
+*/
 void bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *s )
 {
   size_t i;
@@ -212,6 +239,11 @@ void bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data 
     }
 }
 
+/*!
+  \fn void print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r )
+  \brief prints a struct bufrdeco_compressed_ref
+  \param r pointer to the struct to print
+*/
 void print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r )
 {
   printf ( "%s -> A=%u, D=%u, ",r->desc.c,r->is_associated,r->has_data );
@@ -227,9 +259,16 @@ void print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r )
     }
 }
 
-void print_bufrdeco_compressed_data_references(struct bufrdeco_compressed_data_references *r)
+/*!
+  \fn void print_bufrdeco_compressed_data_references ( struct bufrdeco_compressed_data_references *r )
+  \brief prints a struct bufrdeco_compressed_references
+  \param r pointer to the struct to print
+
+  It is used mainly in debug stage
+*/
+void print_bufrdeco_compressed_data_references ( struct bufrdeco_compressed_data_references *r )
 {
   size_t  i;
-  for (i = 0; i < r->nd; i++)
-    print_bufrdeco_compressed_ref( & r->refs[i]);
+  for ( i = 0; i < r->nd; i++ )
+    print_bufrdeco_compressed_ref ( & r->refs[i] );
 }

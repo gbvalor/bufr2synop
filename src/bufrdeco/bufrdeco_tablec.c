@@ -23,7 +23,11 @@
  */
 #include "bufrdeco.h"
 
+/*!
 
+
+
+*/
 int bufr_read_tablec ( struct bufr_tablec *tc, char *error )
 {
   char aux[8], *c;

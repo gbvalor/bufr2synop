@@ -27,18 +27,25 @@
   \fn int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
   \brief Parse a compressed data bufr
   \param r pointer to a struct \ref bufrdeco_compressed_data_references where to set the results
-  \param b basic container struct \ref bufrdeco 
-  
+  \param b basic container struct \ref bufrdeco
+
   When a bufr report has compressed data, it is needed to do a first parse step to get references about
   where to find the data for every descriptor in subsets. This is what this function does. If succeeded
   the struct \a r will have all needed data to decode individual subsets.
 
-  Also be mind that the descriptors tree have to be already parsed when calling this function  
-  
-  Returns 0 if succeeded, 1 othewise
+  Also be mind that the descriptors tree have to be already parsed when calling this function
+
+  Returns 0 if succeeded, 1 otherwise
 */
 int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
 {
+  // Check about parsed tree
+  if ( b->tree == NULL || b->tree->nseq == 0 )
+    {
+      sprintf ( b->error, "bufrdeco_parse_compressed(): Try to parse compressed data without parsed tree\n" );
+      return 1;
+    }
+
   // first we assure that needed memory is allocated and array of references initizalized
   if ( bufrdeco_init_compressed_data_references ( r ) )
     {
@@ -60,7 +67,10 @@ int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, s
   \fn int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_references *r, struct bufr_sequence *l, struct bufrdeco *b )
   \brief Parse recursively the compressed data in a bufr report to get references where to get data for every descriptor in a subset
   \param r pointer to target struct \ref bufrdeco_compressed_data_references where to set results
-  \param l pointer to a struct 
+  \param l pointer to a struct \ref bufr_sequence to parse in this call. If NULL then it is first root sequence
+  \param b basic container struct \ref bufrdeco
+
+  Returns 0 if succeeded, 1 otherwise
 */
 int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_references *r, struct bufr_sequence *l, struct bufrdeco *b )
 {
@@ -72,10 +82,10 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
 
   if ( l == NULL )
     {
-      //inicia el array
+      //inits the array
       r->nd = 0;
       seq = & ( b->tree->seq[0] );
-      memset(& (b->state), 0, sizeof(struct bufrdeco_decoding_data_state));
+      memset ( & ( b->state ), 0, sizeof ( struct bufrdeco_decoding_data_state ) );
       b->state.bit_offset = 0;
       // also reset reference and bits inc
       b->state.added_bit_length = 0;
@@ -108,7 +118,6 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
             }
           else if ( res == 0 )
             {
-              //print_bufrdeco_compressed_ref ( rf );
               // associated field read with success
               if ( r->nd <  BUFR_NMAXSEQ )
                 {
@@ -149,6 +158,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
               replicator.ixdel = i;
               replicator.ndesc = seq->lseq[i].x;
               replicator.nloops = seq->lseq[i].y;
+              // call to decode a replicated subsequence
               bufrdeco_decode_replicated_subsequence_compressed ( r, &replicator, b );
             }
           else
@@ -199,6 +209,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
               }
               replicator.nloops = ( size_t ) rf->ref0;
 
+              // call to decode a replicated subsequence
               bufrdeco_decode_replicated_subsequence_compressed ( r, &replicator, b );
             }
           i = replicator.ixdel + replicator.ndesc; // update i properly
@@ -230,6 +241,15 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
   return 0;
 }
 
+/*!
+  \fn int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_replicator *rep, struct bufrdeco *b )
+  \brief decodes a repicated subsequence
+  \param r pointer to target struct \ref bufrdeco_compressed_data_references where to set results
+  \param rep pointer to a replicator which contains the data for replication
+  \param b basic container struct \ref bufrdeco
+
+  Returns 0 if succeeded, 1 otherwise
+*/
 int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_replicator *rep, struct bufrdeco *b )
 {
   int res;
@@ -241,9 +261,9 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
   struct bufr_sequence *l = rep->s; // sequence
 
   // if no loops the we save process time and space in data
-  if (rep->nloops == 0)
-    return 0; 
-  
+  if ( rep->nloops == 0 )
+    return 0;
+
   // The big loop
   for ( ixloop = 0; ixloop < rep->nloops; ixloop++ )
     {
@@ -397,7 +417,17 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
   return 0;
 }
 
+/*!
 
+  \fn int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, struct bufrdeco_compressed_ref *r, size_t subset, struct bufrdeco *b )
+  \brief Get atom data from a descriptor for a given subset
+  \param a pointer to the target struct \ref bufr_atom_data where to set the results
+  \param r pointer to the struct \ref bufrdeco_compressed_ref with the info to know how and where get the data
+  \param subset index for solicited subset. First subset has index 0
+  \param b basic container struct \ref bufrdeco
+
+  Returns 0 if succeeded, 1 otherwise
+*/
 int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, struct bufrdeco_compressed_ref *r,
     size_t subset, struct bufrdeco *b )
 {
@@ -407,7 +437,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
   int32_t ivals;
   struct bufr_tableb *tb;
 
-  if ( is_a_local_descriptor (& (r->desc) ) )
+  if ( is_a_local_descriptor ( & ( r->desc ) ) )
     {
       a->mask = DESCRIPTOR_IS_LOCAL;
       memcpy ( & ( a->desc ), & ( r->desc ), sizeof ( struct bufr_descriptor ) );
@@ -506,7 +536,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
               // finally get the associated data
               if ( has_data )
                 {
-                  a->associated = r->ref + (int32_t) (r->ref0 +  ival);
+                  a->associated = r->ref + ( int32_t ) ( r->ref0 +  ival );
                 }
               else
                 {
@@ -527,7 +557,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
 
   if ( r->inc_bits == 0 )
     {
-      ivals = r->ref + (int32_t) r->ref0;
+      ivals = r->ref + ( int32_t ) r->ref0;
     }
   else
     {
@@ -543,7 +573,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
       //printf("has=%u, ref=%u, ref0=%u, ival0=%u\n", has_data, r->ref, r->ref0, ival0);
       if ( has_data )
         {
-          ivals = r->ref + (int32_t)(r->ref0 + ival0);
+          ivals = r->ref + ( int32_t ) ( r->ref0 + ival0 );
         }
       else
         {
@@ -555,7 +585,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
 
   // Get a numeric number
   a->val = ( double ) ( ivals ) * pow10 ( ( double ) ( - r->escale ) );
-  
+
   //printf("ival = %lf\n", a->val);
   if ( strstr ( a->unit, "CODE TABLE" ) == a->unit )
     {
@@ -580,14 +610,29 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
   return 0;
 }
 
+/*!
+  \fn int bufr_decode_subset_data_compressed ( struct bufrdeco_subset_sequence_data *s, struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
+  \brief Get data for a given subset in a compressed data bufr
+  \param s pointer to a struct \ref bufrdeco_subset_sequence_data where to set the results
+  \param r pointer to the struct \ref bufrdeco_compressed_data_references with the info about how and where to get the data
+  \param b basic container struct \ref bufrdeco
+
+  Returns 0 if succeeded, 1 otherwise
+*/
 int bufr_decode_subset_data_compressed ( struct bufrdeco_subset_sequence_data *s, struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
 {
   size_t i; // references index
 
+  // Previous check
+  if ( r->refs == NULL || r->nd == 0 )
+    {
+      sprintf ( b->error, "bufr_decode_subset_data_compressed(): Try to get subset data without previous references\n" );
+      return 1;
+    }
+
   // first some clean
   if ( s->nd )
     {
-      //memset ( & ( s->sequence ), 0, sizeof ( struct bufr_atom_data ) * s->nd );
       s->nd = 0;
     }
 
@@ -599,7 +644,7 @@ int bufr_decode_subset_data_compressed ( struct bufrdeco_subset_sequence_data *s
 
       if ( r->refs[i].is_associated == 0 )
         {
-          if ( s->nd < (s->dim - 1))
+          if ( s->nd < ( s->dim - 1 ) )
             ( s->nd ) ++;
           else if ( bufrdeco_increase_data_array ( s ) == 0 )
             ( s->nd ) ++;

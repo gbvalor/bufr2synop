@@ -162,26 +162,26 @@ int get_ecmwf_tablenames ( struct bufrdeco *b, const char *bufrtables_dir )
   \brief Read the tables according with bufr file data from a bufr table directory
   \param b basic struct with needed data
   \param tables_dir complete path string for directory with ECMWF bufr tables. Must be ended with a '/' . If NULL then is the default
-  
+
   The default directories where to search bufr tables are stored in \ref DEFAULT_BUFRTABLES_DIR1 and \ref DEFAULT_BUFRTABLES_DIR2
 */
-int bufr_read_tables(struct bufrdeco *b, char *tables_dir)
+int bufr_read_tables ( struct bufrdeco *b, char *tables_dir )
 {
-    
+
   // get tablenames
   if ( get_ecmwf_tablenames ( b, tables_dir ) )
     {
       sprintf ( b->error, "bufrdeco_read_bufr(): Cannot find bufr tebles\n" );
       return 1;
     }
-  
-  // If tables still not initialized then lets go
-  if (b->tables == NULL && bufrdeco_init_tables( &(b->tables)))
-  {
+
+  // If tables still not initialized then do it
+  if ( b->tables == NULL && bufrdeco_init_tables ( & ( b->tables ) ) )
+    {
       sprintf ( b->error, "bufrdeco_read_bufr(): Cannot allocate memory for tables\n" );
       return 1;
-  }
-  
+    }
+
   // And now read tables
   if ( bufr_read_tableb ( & ( b->tables->b ), b->error ) )
     {
@@ -232,7 +232,7 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
   /* Alloc nedeed memory for bufr */
   if ( S_ISREG ( st.st_mode ) || S_ISLNK ( st.st_mode ) )
     {
-      if ( ( bufrx = ( uint8_t * ) calloc ( 1, st.st_size + 4) ) == NULL )
+      if ( ( bufrx = ( uint8_t * ) calloc ( 1, st.st_size + 4 ) ) == NULL )
         {
           sprintf ( b->error, "bufrdeco_read_bufr(): cannot alloc memory for file '%s'\n", filename );
           return 1;
@@ -391,7 +391,7 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
     b->sec3.compressed = 1;
   else
     b->sec3.compressed = 0;
-  
+
   // loop of unexpanded descriptors
   for ( ix = 7, ud = 0; ix < b->sec3.length && ud < BUFR_LEN_UNEXPANDED_DESCRIPTOR; ix += 2 )
     {
@@ -412,10 +412,10 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
   free ( ( void * ) bufrx );
 
   // Now read tables needed for current readed bufr file
-  if (bufr_read_tables (b, NULL))
-  {
-    return 1;
-  }
+  if ( bufr_read_tables ( b, NULL ) )
+    {
+      return 1;
+    }
   return 0;
 }
 

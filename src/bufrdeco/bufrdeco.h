@@ -372,26 +372,26 @@ struct gts_header
   23–Optional – for local use by ADP centres
 
   And this is for version 3
-  1–3        Length of section 
-  4          BUFR master table (zero if standard WMO FM 94 BUFR tables are used – see Note 2) 
-  5          Originating/generating sub-centre: Code table 0 01 034 (defined, if necessary, by associated 
-             originating/generating centre – see Note 3 of Common Code table C–1 in Part C/c.) 
-  6          Originating/generating centre: Code table 0 01 033 (Common Code table C–1 in Part C/c.) 
-  7          Update sequence number (zero for original BUFR messages; incremented for updates) 
-  8          Bit 1 = 0 No optional section 
-                   = 1 Optional section follows 
-             Bits 2–8 Set to zero (reserved) 
-  9          Data category (Table A) 
-  10         Data sub-category (defined by local automatic data processing (ADP) centres) 
-  11         Version number of master table used – see Notes 2 and 4 
-  12         Version number of local tables used to augment the master table in use – see Note 2 
-  13         Year of century 
-  14         Month     
-  15         Day Most typical for the BUFR message contents 
-  16         Hour     
-  17         Minute     
-  18-        If not required by ADP centres for local use, octet 18 only shall be included and set to zero with 
-             reference to Regulation 94.1.3 
+  1–3        Length of section
+  4          BUFR master table (zero if standard WMO FM 94 BUFR tables are used – see Note 2)
+  5          Originating/generating sub-centre: Code table 0 01 034 (defined, if necessary, by associated
+             originating/generating centre – see Note 3 of Common Code table C–1 in Part C/c.)
+  6          Originating/generating centre: Code table 0 01 033 (Common Code table C–1 in Part C/c.)
+  7          Update sequence number (zero for original BUFR messages; incremented for updates)
+  8          Bit 1 = 0 No optional section
+                   = 1 Optional section follows
+             Bits 2–8 Set to zero (reserved)
+  9          Data category (Table A)
+  10         Data sub-category (defined by local automatic data processing (ADP) centres)
+  11         Version number of master table used – see Notes 2 and 4
+  12         Version number of local tables used to augment the master table in use – see Note 2
+  13         Year of century
+  14         Month
+  15         Day Most typical for the BUFR message contents
+  16         Hour
+  17         Minute
+  18-        If not required by ADP centres for local use, octet 18 only shall be included and set to zero with
+             reference to Regulation 94.1.3
   </pre>
 */
 struct bufr_sec1
@@ -540,7 +540,7 @@ struct bufr_tables
 */
 struct bufrdeco
 {
-  
+
   struct gts_header header; /*!< GTS data */
   struct bufr_sec0 sec0; /*!< Parsed sec0 */
   struct bufr_sec1 sec1; /*!< Parsed sec1 */
@@ -560,12 +560,12 @@ extern const char DEFAULT_BUFRTABLES_DIR2[];
 
 
 // Memory funcions
-int bufrdeco_init (struct bufrdeco *b);
-int bufrdeco_close (struct bufrdeco *b);
-int bufrdeco_reset (struct bufrdeco *b);
-int bufrdeco_init_tables (struct bufr_tables **t);
-int bufrdeco_free_tables (struct bufr_tables **t);
-int bufrdeco_substitute_tables (struct bufr_tables **replaced, struct bufr_tables *source, struct bufrdeco *b);
+int bufrdeco_init ( struct bufrdeco *b );
+int bufrdeco_close ( struct bufrdeco *b );
+int bufrdeco_reset ( struct bufrdeco *b );
+int bufrdeco_init_tables ( struct bufr_tables **t );
+int bufrdeco_free_tables ( struct bufr_tables **t );
+int bufrdeco_substitute_tables ( struct bufr_tables **replaced, struct bufr_tables *source, struct bufrdeco *b );
 int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba );
 int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba );
 int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba );
@@ -574,15 +574,15 @@ int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_r
 int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s );
 
 // Read bufr functions
-int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename);
-int bufr_read_tables(struct bufrdeco *b, char *tables_dir);
+int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename );
+int bufr_read_tables ( struct bufrdeco *b, char *tables_dir );
 int bufr_read_tableb ( struct bufr_tableb *tb, char *error );
 int bufr_read_tablec ( struct bufr_tablec *tc, char *error );
 int bufr_read_tabled ( struct bufr_tabled *td, char *error );
 
 // Print and output functions
-void print_bufrdeco_compressed_ref (struct bufrdeco_compressed_ref *r);
-void print_bufrdeco_compressed_data_references(struct bufrdeco_compressed_data_references *r);
+void print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r );
+void print_bufrdeco_compressed_data_references ( struct bufrdeco_compressed_data_references *r );
 void print_sec0_info ( struct bufrdeco *b );
 void print_sec1_info ( struct bufrdeco *b );
 void print_sec3_info ( struct bufrdeco *b );
@@ -592,7 +592,7 @@ void bufrdeco_print_atom_data_stdout ( struct bufr_atom_data *a );
 void bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *s );
 char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a );
 
-// To parse. General 
+// To parse. General
 int bufrdeco_parse_tree ( struct bufrdeco *b );
 int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struct bufrdeco_compressed_data_references *r, struct bufrdeco *b );
 int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *s, struct bufr_sequence *l, struct bufrdeco *b );
@@ -613,7 +613,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
     size_t subset, struct bufrdeco *b );
 
 // To get parsed data
-struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data(struct bufrdeco *b);
+struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data ( struct bufrdeco *b );
 
 // To get bits functions
 uint32_t two_bytes_to_uint32 ( const uint8_t *source );
@@ -640,7 +640,7 @@ int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufr
 int two_bytes_to_descriptor ( struct bufr_descriptor *d, const uint8_t *source );
 int uint32_t_to_descriptor ( struct bufr_descriptor *d, uint32_t id );
 int is_a_delayed_descriptor ( struct bufr_descriptor *d );
-int is_a_local_descriptor (struct bufr_descriptor *d);
+int is_a_local_descriptor ( struct bufr_descriptor *d );
 
 // Utilities for strings
 char * bufr_adjust_string ( char *s );

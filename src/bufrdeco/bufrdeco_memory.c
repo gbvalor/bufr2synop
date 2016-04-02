@@ -25,9 +25,9 @@
 
 /*!
   \fn int bufrdeco_init_tables ( struct bufr_tables **t )
-  \brief Init a struct \ref bufr_tables allocating space 
-  \param t pointer to the target pointer to struct \ref bufr_tables 
-  
+  \brief Init a struct \ref bufr_tables allocating space
+  \param t pointer to the target pointer to struct \ref bufr_tables
+
   Returns 0 if succeeded, 1 otherwise
 */
 int bufrdeco_init_tables ( struct bufr_tables **t )
@@ -43,9 +43,9 @@ int bufrdeco_init_tables ( struct bufr_tables **t )
 
 /*!
   \fn int bufrdeco_free_tables ( struct bufr_tables **t )
-  \brief Frees the allocated space for a struct \ref bufr_tables  
-  \param t pointer to the target pointer to struct \ref bufr_tables 
-  
+  \brief Frees the allocated space for a struct \ref bufr_tables
+  \param t pointer to the target pointer to struct \ref bufr_tables
+
   Returns 0 and \a*t is set to NULL
 */
 int bufrdeco_free_tables ( struct bufr_tables **t )
@@ -60,9 +60,9 @@ int bufrdeco_free_tables ( struct bufr_tables **t )
 
 /*!
   \fn int bufrdeco_init_expanded_tree ( struct bufrdeco_expanded_tree **t )
-  \brief Init a struct \ref bufrdeco_expanded_tree allocating space 
-  \param t pointer to the target pointer to struct \ref bufrdeco_expanded_tree 
-  
+  \brief Init a struct \ref bufrdeco_expanded_tree allocating space
+  \param t pointer to the target pointer to struct \ref bufrdeco_expanded_tree
+
   Returns 0 if succeeded, 1 otherwise
 */
 int bufrdeco_init_expanded_tree ( struct bufrdeco_expanded_tree **t )
@@ -77,9 +77,9 @@ int bufrdeco_init_expanded_tree ( struct bufrdeco_expanded_tree **t )
 
 /*!
   \fn int bufrdeco_free_expanded_tree ( struct bufrdeco_expanded_tree **t )
-  \brief Frees the allocated space for a struct \ref bufrdeco_expanded_tree  
-  \param t pointer to the target pointer to struct \ref bufrdeco_expanded_tree 
-  
+  \brief Frees the allocated space for a struct \ref bufrdeco_expanded_tree
+  \param t pointer to the target pointer to struct \ref bufrdeco_expanded_tree
+
   Returns 0 and \a*t is set to NULL
 */
 int bufrdeco_free_expanded_tree ( struct bufrdeco_expanded_tree **t )
@@ -95,15 +95,15 @@ int bufrdeco_free_expanded_tree ( struct bufrdeco_expanded_tree **t )
 /*!
   \fn int bufrdeco_substitute_tables ( struct bufr_tables **replaced, struct bufr_tables *source, struct bufrdeco *b )
   \brief substitute an struct \ref bufr_tables into a struct \ref bufrdeco
-  \param replaced  Pointer where to set the replaced pointer 
+  \param replaced  Pointer where to set the replaced pointer
   \param source Pointer to a struct \ref bufr_tables
   \param pointer to the container basic struct \ref bufrdeco
-  
-  Remember that the struct \ref bufr_tables used in bufrdeco library is the one which pointer is in struct 
+
+  Remember that the struct \ref bufr_tables used in bufrdeco library is the one which pointer is in struct
   \ref bufrdeco . To avoid problems the struct must be initialized before substituted in this fucntion.
   Both source and replaced structs are not modified.
 
-  This is useful if we do not want to read and parse tables again if the caller has a pool of 
+  This is useful if we do not want to read and parse tables again if the caller has a pool of
   already readed tables.
 */
 int bufrdeco_substitute_tables ( struct bufr_tables **replaced, struct bufr_tables *source, struct bufrdeco *b )
@@ -121,12 +121,12 @@ int bufrdeco_substitute_tables ( struct bufr_tables **replaced, struct bufr_tabl
 
 /*!
    \fn int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
-   \brief Init a struct \ref bufrdeco_subset_sequence_data 
+   \brief Init a struct \ref bufrdeco_subset_sequence_data
    \param ba pointer to the target struct
 
-   It is supossed that no memory is allocated for sequence. If we are not sure better use 
+   It is supossed that no memory is allocated for sequence. If we are not sure better use
    function \ref bufrdeco_clean_subset_sequence_data
-   
+
    Returns 0 if succeeded, 1 otherwise
 */
 int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
@@ -144,28 +144,28 @@ int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *b
 /*!
   \fn int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
   \brief Cleans a struct \ref bufrdeco_subset_sequence_data
-  
-  For eficience, if sequence in the struct \ref bufrdeco_subset_sequence_data is allocated, just set the used 
+
+  For eficience, if sequence in the struct \ref bufrdeco_subset_sequence_data is allocated, just set the used
   elements to zero. If is still no allocated memory for sequence inits the struct
 
   Returns 0 if succeeded, 1 otherwise
 */
 int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
 {
-  if ( ba->sequence != NULL)
-  {
-    ba->nd = 0;
-    return 0;
-  }
+  if ( ba->sequence != NULL )
+    {
+      ba->nd = 0;
+      return 0;
+    }
   else
-    return bufrdeco_init_subset_sequence_data(ba);
+    return bufrdeco_init_subset_sequence_data ( ba );
 }
 
 /*!
  \fn  int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
- \brief Free the memory for sequence array in a struct \ref bufrdeco_subset_sequence_data 
+ \brief Free the memory for sequence array in a struct \ref bufrdeco_subset_sequence_data
  \param ba pointer to the target struct to free
- 
+
  Returns 0
 */
 int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
@@ -185,7 +185,7 @@ int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *b
 
   If already memory is allocated for array of references then just adjust the used index to zero. Otherwise
   it allocate the needed memory and init the struct
-  
+
   If succeeded return 0, otherwise 1
 */
 int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
@@ -214,10 +214,10 @@ int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_r
 */
 int bufrdeco_clean_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
 {
-  if (rf->refs != NULL && rf->nd != 0)
+  if ( rf->refs != NULL && rf->nd != 0 )
     rf->nd = 0;
   else
-    return bufrdeco_init_compressed_data_references(rf);
+    return bufrdeco_init_compressed_data_references ( rf );
   return 0;
 }
 
@@ -276,22 +276,22 @@ int bufrdeco_init ( struct bufrdeco *b )
 
 /*!
    \fn int bufrdeco_reset(struct bufrdeco *b)
-   \brief Reset an struct \ref bufrdeco to be resed with another bufrfile 
+   \brief Reset an struct \ref bufrdeco to be resed with another bufrfile
    \param b pointer to the target struct
 
-   This function must be called when parsing another bufrfile without callimg 
-   \ref bufrdeco_close and \ref bufrdeco_init. 
+   This function must be called when parsing another bufrfile without callimg
+   \ref bufrdeco_close and \ref bufrdeco_init.
 */
-int bufrdeco_reset (struct bufrdeco *b)
+int bufrdeco_reset ( struct bufrdeco *b )
 {
-  memset(&(b->header), 0, sizeof(struct gts_header));
-  memset(&(b->sec0), 0, sizeof(struct bufr_sec0));
-  memset(&(b->sec1), 0, sizeof(struct bufr_sec1));
-  memset(&(b->sec2), 0, sizeof(struct bufr_sec2));
-  memset(&(b->sec3), 0, sizeof(struct bufr_sec3));
-  memset(&(b->sec4), 0, sizeof(struct bufr_sec4));
-  memset(b->tree, 0, sizeof(struct bufrdeco_expanded_tree));
-  memset(&(b->state), 0, sizeof(struct bufrdeco_decoding_data_state));
+  memset ( & ( b->header ), 0, sizeof ( struct gts_header ) );
+  memset ( & ( b->sec0 ), 0, sizeof ( struct bufr_sec0 ) );
+  memset ( & ( b->sec1 ), 0, sizeof ( struct bufr_sec1 ) );
+  memset ( & ( b->sec2 ), 0, sizeof ( struct bufr_sec2 ) );
+  memset ( & ( b->sec3 ), 0, sizeof ( struct bufr_sec3 ) );
+  memset ( & ( b->sec4 ), 0, sizeof ( struct bufr_sec4 ) );
+  memset ( b->tree, 0, sizeof ( struct bufrdeco_expanded_tree ) );
+  memset ( & ( b->state ), 0, sizeof ( struct bufrdeco_decoding_data_state ) );
   b->refs.nd = 0;
   b->seq.nd = 0;
   return 0;
@@ -301,7 +301,7 @@ int bufrdeco_reset (struct bufrdeco *b)
   \fn int bufrdeco_close ( struct bufrdeco *b )
   \brief Free all allocated memory
   \param b pointer to the target struct
-  
+
   This function must be called at the end when no more calls to bufrdeco library is needed
 */
 int bufrdeco_close ( struct bufrdeco *b )
