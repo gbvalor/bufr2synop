@@ -130,7 +130,7 @@ int bufr_find_tabled_index ( size_t *index, struct bufr_tabled *td, const char *
 /*!
  \fn int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key )
  \brief get the descriptors array for a descriptor sequence defined in table D with F = 3
- \param target struct \ref bufr_sequence
+ \param s target struct \ref bufr_sequence
  \param b pointer to the basic container struct \ref bufrdeco
  \param key string in the form FXXYYY which is the key of descriptor we want to find out, F = 3
  

@@ -272,7 +272,7 @@ char *guess_WMO_region ( char *A1, char *Reg, const char *II, const char *iii )
 
 /*!
    \fn int check_date_from_future(struct metreport *m)
-   \brief Check a estructure \ref met_report not from future
+   \brief Check a estructure \ref metreport not from future
    \param m pointer to a struct metreport to check about date and time
 
    It resturns 1 if date/time is from future, and likely wrong

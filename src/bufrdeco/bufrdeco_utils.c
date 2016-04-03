@@ -33,7 +33,7 @@ uint8_t bitk[8] = {0x80,0xc0,0xe0,0xf0,0xf8,0xfc,0xfe,0xff}; /*!< Mask first bit
   \param target string as result
   \param has_data Output flags to check whether is missing data. If 0 then data is missing, othewise has data
   \param source array of uint8_t elements. Most significant bit of first element is the bit offest reference
-  \param bit_offset Bit offset
+  \param bit0_offset Bit offset
   \param bit_length Lenght (in bits) for the chunck to extract
 
   If returns the amount of bits readed. 0 if problems. It also update bits_offset with the new bits.
@@ -122,7 +122,7 @@ size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source
   \param target uint32_t pointer where to set the result
   \param has_data Output flags to check whether is missing data. If 0 then data is missing, othewise has data
   \param source array of uint8_t elements. Most significant bit of first element is the bit offset reference
-  \param bit_offset Bit offset
+  \param bit0_offset Bit offset
   \param bit_length Lenght (in bits) for the chunck to extract
 
   This is a version which extract bit a bit. For more than about 8 bits should be used the algorithm in
@@ -168,7 +168,7 @@ size_t get_bits_as_uint32_t2 ( uint32_t *target, uint8_t *has_data, uint8_t *sou
   \param target uint32_t pointer where to set the result
   \param has_data Output flags to check whether is missing data. If 0 then data is missing, othewise has data
   \param source array of uint8_t elements. Most significant bit of first element is the bit offset reference
-  \param bit_offset Bit offset
+  \param bit0_offset Bit offset
   \param bit_length Lenght (in bits) for the chunck to extract
 
   If bil_length is less than 8 then it uses version 2 \ref get_bits_as_uint32_t2
@@ -318,7 +318,7 @@ char * bufr_adjust_string ( char *s )
 /*!
   \fn int is_a_delayed_descriptor ( struct bufr_descriptor *d )
   \brief check if a descriptor is a delayed descriptor
-  \param d pointer to a struct \bufr_descriptor to check
+  \param d pointer to a struct \ref bufr_descriptor to check
 
   If is a delayed desccriptor return 1, 0 otherwise.
 */
@@ -335,7 +335,7 @@ int is_a_delayed_descriptor ( struct bufr_descriptor *d )
 /*!
   \fn int is_a_local_descriptor ( struct bufr_descriptor *d )
   \brief check if a descriptor is a local descriptor
-  \param d pointer to a struct \bufr_descriptor to check
+  \param d pointer to a struct \ref bufr_descriptor to check
 
   If is a local desccriptor return 1, 0 otherwise.
 */

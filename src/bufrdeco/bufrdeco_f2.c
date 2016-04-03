@@ -28,7 +28,7 @@
   \brief parse a descritor with f = 2
   \param s pointer to a struct \ref  bufrdeco_subset_sequence_data where to set data if any
   \param d pointer to the source descriptor
-  \param b pointer to the base struct \ref bufr
+  \param b pointer to the base struct \ref bufrdeco
 
   If succeded return 0, otherwise 1
  */
@@ -156,7 +156,7 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
   \brief parse a descritor with f = 2 in case of compressed bufr
   \param r pointer to a struct \ref bufrdeco_compressed_data_references where to set data references if any
   \param d pointer to the source descriptor
-  \param b pointer to the base struct \ref bufr
+  \param b pointer to the base struct \ref bufrdeco
 
   If succeded return 0, otherwise 1
  */

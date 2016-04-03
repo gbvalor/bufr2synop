@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 /*!
- \file bufrto2syn_io.c
+ \file bufr2synop_io.c
  \brief file with the i/o code for binary bufr2synop
  */
 

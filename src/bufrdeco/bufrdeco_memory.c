@@ -46,7 +46,7 @@ int bufrdeco_init_tables ( struct bufr_tables **t )
   \brief Frees the allocated space for a struct \ref bufr_tables
   \param t pointer to the target pointer to struct \ref bufr_tables
 
-  Returns 0 and \a*t is set to NULL
+  Returns 0 and \a *t is set to NULL
 */
 int bufrdeco_free_tables ( struct bufr_tables **t )
 {
@@ -80,7 +80,7 @@ int bufrdeco_init_expanded_tree ( struct bufrdeco_expanded_tree **t )
   \brief Frees the allocated space for a struct \ref bufrdeco_expanded_tree
   \param t pointer to the target pointer to struct \ref bufrdeco_expanded_tree
 
-  Returns 0 and \a*t is set to NULL
+  Returns 0 and \a *t is set to NULL
 */
 int bufrdeco_free_expanded_tree ( struct bufrdeco_expanded_tree **t )
 {
@@ -97,7 +97,7 @@ int bufrdeco_free_expanded_tree ( struct bufrdeco_expanded_tree **t )
   \brief substitute an struct \ref bufr_tables into a struct \ref bufrdeco
   \param replaced  Pointer where to set the replaced pointer
   \param source Pointer to a struct \ref bufr_tables
-  \param pointer to the container basic struct \ref bufrdeco
+  \param b pointer to the container basic struct \ref bufrdeco
 
   Remember that the struct \ref bufr_tables used in bufrdeco library is the one which pointer is in struct
   \ref bufrdeco . To avoid problems the struct must be initialized before substituted in this fucntion.
@@ -242,7 +242,7 @@ int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_r
    \brief Inits and allocate memory for a struct \ref bufrdeco
    \param b pointer to the target struct
 
-   This function only must be called once. When finished the function \ref close_bufrdeco must be called to
+   This function only must be called once. When finished the function \ref bufrdeco_close must be called to
    free all needed memory
 */
 int bufrdeco_init ( struct bufrdeco *b )

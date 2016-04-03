@@ -145,7 +145,7 @@ int climat_parse_x02 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
 }
 
 /*!
-  \fn int temp_parse_x02 ( struct temp_chunks *c, struct bufr2tac_subset_state *s )
+  \fn int temp_parse_x02 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
   \brief Parse a expanded descriptor with X = 02
   \param t pointer to a struct \ref temp_chunks where to set the results
   \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis

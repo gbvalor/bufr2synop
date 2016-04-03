@@ -34,7 +34,7 @@ const char DEFAULT_BUFRTABLES_DIR2[] = "/usr/lib/bufrtables/";
   \fn int get_ecmwf_tablenames ( struct bufrdeco *b, const char *bufrtables_dir)
   \brief Get the complete pathnames for EMCWF table files needed by a bufr message
   \param bufrtables_dir string with path to bufr file tables dir
-  \param b pointer for a struct \ref bufr
+  \param b pointer for a struct \ref bufrdeco
 
   In ECMWF library the name of a table file is Kssswwwwwxxxxxyyyzzz.TXT , where
        - K - type of table, i.e, 'B', 'C', or 'D'
@@ -201,7 +201,7 @@ int bufr_read_tables ( struct bufrdeco *b, char *tables_dir )
 /*!
   \fn int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
   \brief Read bufr file and does preliminary and first decode pass
-  \param b pointer to struct \ref bufr
+  \param b pointer to struct \ref bufrdeco
   \param filename complete path of BUFR file
 
 

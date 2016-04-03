@@ -161,7 +161,8 @@ char * kelvin_to_TTTa ( char *target, double T )
   \fn  char * dewpoint_depression_to_DnDn ( char * target, double T, double Td )
   \brief Set DnDn (dewpoint depression)
   \param target string to set as result
-  \param dpd dewpoint depresion (celsius)
+  \param T temperature (Kelvin)
+  \param Td dewpoint (Kelvin)
 */
 char * dewpoint_depression_to_DnDn ( char * target, double T, double Td )
 {
@@ -576,9 +577,9 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
 }
 
 /*!
-  \fn int temp_parse_x12 ( struct temp_chunks *c, struct bufr2tac_subset_state *s )
+  \fn int temp_parse_x12 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
   \brief Parse a expanded descriptor with X = 12
-  \param c pointer to a struct \ref temp_chunks where to set the results
+  \param t pointer to a struct \ref temp_chunks where to set the results
   \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway

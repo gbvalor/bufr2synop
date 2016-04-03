@@ -149,9 +149,9 @@ int buoy_parse_x06 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 
 
 /*!
-  \fn int climat_parse_x06 ( struct climat_chunks *b, struct bufr2tac_subset_state *s )
+  \fn int climat_parse_x06 ( struct climat_chunks *c, struct bufr2tac_subset_state *s )
   \brief Parse a expanded descriptor with X = 06
-  \param b pointer to a struct \ref climat_chunks where to set the results
+  \param c pointer to a struct \ref climat_chunks where to set the results
   \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway

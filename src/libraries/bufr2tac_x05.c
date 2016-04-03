@@ -116,7 +116,7 @@ int buoy_parse_x05 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 }
 
 /*!
-  \fn int climat_parse_x05 ( struct climat_chunks *syn, struct bufr2tac_subset_state *s )
+  \fn int climat_parse_x05 ( struct climat_chunks *c, struct bufr2tac_subset_state *s )
   \brief Parse a expanded descriptor with X = 05
   \param c pointer to a struct \ref climat_chunks where to set the results
   \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis

@@ -50,7 +50,7 @@ struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data ( struc
   \brief  User interface to decode a BUFR subset
   \param s pointer to the target struct \ref bufrdeco_subset_sequence_data
   \param r pointer to the struct \ref bufrdeco_compressed_data_references
-  \param b pointer to the base struct \ref bufr
+  \param b pointer to the base struct \ref bufrdeco
 
   Note that if succeeded the counter to current subset index is increased. Remember that in case of non
   compressed data we must to decode all previous subsets to get the desired one. In case of compressed
@@ -140,7 +140,7 @@ int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s )
   \brief decode the data from a subset in a recursive way
   \param s pointer to the target struct \ref bufrdeco_subset_sequence_data
   \param l pointer to the source struct \ref bufr_sequence
-  \param b pointer to the base struct \ref bufr
+  \param b pointer to the base struct \ref bufrdeco
 
   Return 0 in case of success, 1 otherwise
 */
@@ -277,7 +277,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
   \brief Decodes a replicated sequence
   \param s target struct \ref bufrdeco_subset_sequence_data
   \param r pointer to a struct \ref bufr_replicator which manage the replication task
-  \param b pointer to the base struct \ref bufr
+  \param b pointer to the base struct \ref bufrdeco
 
   If succeeded return 0, 1 otherwise
 */

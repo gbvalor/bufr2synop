@@ -165,7 +165,7 @@
 
 /*!
   \def BUFR_MAX_EXPANDED_SEQUENCES
-  \brief Max amount of unexpanded layers in a struct \ref bufr_unexpanded_layers
+  \brief Max amount of unexpanded layers in a struct \ref bufrdeco_expanded_tree
 */
 #define BUFR_MAX_EXPANDED_SEQUENCES (128)
 
@@ -221,7 +221,7 @@ struct bufr_atom_data
 };
 
 /*!
-  \fn  struct bufrdeco_decoding_data_state
+  \struct bufrdeco_decoding_data_state
   \brief stores the state when expanding a sequence.
 
 */
@@ -239,7 +239,7 @@ struct bufrdeco_decoding_data_state
 };
 
 /*!
-  \fn struct bufr_sequence
+  \struct bufr_sequence
   \brief Stores an unexpanded sequence of descriptors
 
   A sequence layer is needed when parsing expanded descriptor sec3 and sec4
@@ -455,7 +455,7 @@ struct bufr_sec4
 };
 
 /*!
-   \struct struct bufr_tableb_decoded_item
+   \struct bufr_tableb_decoded_item
    \brief Store parameters for a descriptor in table b, i. e. with f = 0
 */
 struct bufr_tableb_decoded_item

@@ -235,9 +235,9 @@ void clean_climat_old ( struct climat_old *s )
 
 
 /*!
-  \fn void clean_climat_chunks( struct climat_chunks *b)
+  \fn void clean_climat_chunks( struct climat_chunks *c)
   \brief cleans a \ref climat_chunks struct
-  \param b pointer to the struct to clean
+  \param c pointer to the struct to clean
 */
 void clean_climat_chunks ( struct climat_chunks *c )
 {

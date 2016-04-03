@@ -135,7 +135,7 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
   \fn int bufr_restore_original_tableb_item ( struct bufr_tableb *tb, struct bufrdeco *b, uint8_t mode, char *key )
   \brief Restores the original table B parameters for a BUFR descriptor
   \param tb pointer to struct \ref bufr_tableb where are stored all table B data
-  \param b pointer to the basic struct \ref bufr
+  \param b pointer to the basic struct \ref bufrdeco
   \param mode integer with bit mask about changed parameteres by operator descriptors
   \param key descriptor string in format FXXYYY
 
@@ -392,7 +392,7 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
   \fn int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct bufr_descriptor *d )
   \brief Get data from a table B descriptor
   \param a pointer to a struct \ref bufr_atom_data where to set the results
-  \param b pointer to the basic struct \ref bufr
+  \param b pointer to the basic struct \ref bufrdeco
   \param d pointer to the target descriptor
 
   Return 0 if success, 1 otherwise

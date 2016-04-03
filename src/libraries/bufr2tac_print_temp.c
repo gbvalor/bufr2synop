@@ -77,7 +77,7 @@ int print_temp_raw_data ( struct temp_raw_data *r )
 }
 
 /*!
-  \fn int print_temp_raw_wind_shear ( struct temp_raw_wind_shear_data *w )
+  \fn int print_temp_raw_wind_shear_data ( struct temp_raw_wind_shear_data *w )
   \brief Prints for debug a struct \ref temp_raw_data
   \param w the pointer of struct to print
 */

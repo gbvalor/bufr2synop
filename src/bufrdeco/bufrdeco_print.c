@@ -26,7 +26,7 @@
 /*!
   \fn void print_sec0_info(struct bufrdeco *b)
   \brief Prints info from sec0
-  \param b pointer to the source struct \ref bufr
+  \param b pointer to the source struct \ref bufrdeco
 */
 void print_sec0_info ( struct bufrdeco *b )
 {
@@ -38,7 +38,7 @@ void print_sec0_info ( struct bufrdeco *b )
 /*!
   \fn void print_sec1_info(struct bufrdeco *b)
   \brief Prints info from sec1
-  \param b pointer to the source struct \ref bufr
+  \param b pointer to the source struct \ref bufrdeco
 */
 void print_sec1_info ( struct bufrdeco *b )
 {
@@ -70,7 +70,7 @@ void print_sec1_info ( struct bufrdeco *b )
 /*!
   \fn void print_sec3_info(struct bufrdeco *b)
   \brief Prints info from sec3
-  \param b pointer to the source struct \ref bufr
+  \param b pointer to the source struct \ref bufrdeco
 */
 void print_sec3_info ( struct bufrdeco *b )
 {
@@ -91,7 +91,7 @@ void print_sec3_info ( struct bufrdeco *b )
 /*!
   \fn void print_sec4_info(struct bufrdeco *b)
   \brief Prints info from sec3
-  \param b pointer to the source struct \ref bufr
+  \param b pointer to the source struct \ref bufrdeco
 */
 void print_sec4_info ( struct bufrdeco *b )
 {
@@ -172,7 +172,7 @@ void bufrdeco_print_atom_data_stdout ( struct bufr_atom_data *a )
 /*!
   \fn char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a )
   \brief print the data in a struct \ref bufr_atom_data to a string
-  \param string where to print the result
+  \param target string where to print the result
   \param a pointer to struct ref \ref bufr_atom_data with data to print
 
   Returns a pointer to result string
