@@ -168,6 +168,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
       b->state.changing_reference = 255;
       b->state.fixed_ccitt = 0;
       b->state.local_bit_reserved = 0;
+      b->state.factor_reference = 1;
     }
   else
     {

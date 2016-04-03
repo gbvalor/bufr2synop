@@ -356,8 +356,8 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s,
     {
       strcpy ( m->g.country, s->country );
     }
-  
-  
+
+
   //print_temp_raw_data ( r );
   //print_temp_raw_wind_shear_data ( w );
 
@@ -479,7 +479,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
               kelvin_to_TTTa ( t->c.s3.trop[itc].TnTnTan, d->T ); // TnTnTan
               dewpoint_depression_to_DnDn ( t->c.s3.trop[itc].DnDn, d->T , d->Td ); // DnDn
               wind_to_dndnfnfnfn ( t->c.s3.trop[itc].dndnfnfnfn, d->dd, d->ff ); // dndnfnfnfn
-              if ( itc < TEMP_NTROP_MAX )
+              if ( ix && itc < TEMP_NTROP_MAX )
                 {
                   itc += 1;
                   t->c.s3.n = itc;
@@ -492,7 +492,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
               kelvin_to_TTTa ( t->a.s3.trop[ita].TnTnTan, d->T ); // TnTnTan
               dewpoint_depression_to_DnDn ( t->a.s3.trop[ita].DnDn, d->T , d->Td ); // DnDn
               wind_to_dndnfnfnfn ( t->a.s3.trop[ita].dndnfnfnfn, d->dd, d->ff ); // dndnfnfnfn
-              if ( ita < TEMP_NTROP_MAX )
+              if ( ix && ita < TEMP_NTROP_MAX )
                 {
                   ita += 1;
                   t->a.s3.n = ita;
@@ -517,7 +517,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
                       break;
                     }
                 }
-              if ( iwxc < TEMP_NMAXWIND_MAX )
+              if ( ix && iwxc < TEMP_NMAXWIND_MAX )
                 {
                   iwxc += 1;
                   t->c.s4.n = iwxc;
@@ -536,7 +536,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
                       break;
                     }
                 }
-              if ( iwxa < TEMP_NMAXWIND_MAX )
+              if ( ix && iwxa < TEMP_NMAXWIND_MAX )
                 {
                   iwxa += 1;
                   t->a.s4.n = iwxa;
@@ -545,7 +545,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
         }
 
       // Significant TH points
-      if ( d->flags & TEMP_POINT_MASK_SIGNIFICANT_TEMPERATURE_LEVEL )
+      if ( d->flags & ( TEMP_POINT_MASK_SIGNIFICANT_TEMPERATURE_LEVEL | TEMP_POINT_MASK_SIGNIFICANT_HUMIDITY_LEVEL ) )
         {
           if ( is_over_100 )
             {
@@ -554,7 +554,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
               sprintf ( t->d.s5.th[itd].PnPnPn, "%03d", ix ); // PnPnPn
               kelvin_to_TTTa ( t->d.s5.th[itd].TnTnTan, d->T ); // TnTnTan
               dewpoint_depression_to_DnDn ( t->d.s5.th[itd].DnDn, d->T , d->Td ); // DnDn
-              if ( itd < TEMP_NMAX_POINTS )
+              if ( ix && itd < TEMP_NMAX_POINTS )
                 {
                   itd += 1;
                   t->d.s5.n = itd;
@@ -574,7 +574,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
               sprintf ( t->b.s5.th[itb].PnPnPn, "%03d", ix % 1000 ); // PnPnPn.
               kelvin_to_TTTa ( t->b.s5.th[itb].TnTnTan, d->T ); // TnTnTan
               dewpoint_depression_to_DnDn ( t->b.s5.th[itb].DnDn, d->T , d->Td ); // DnDn
-              if ( itb < TEMP_NMAX_POINTS )
+              if ( ix && itb < TEMP_NMAX_POINTS )
                 {
                   itb += 1;
                   t->b.s5.n = itb;
@@ -591,7 +591,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
               ix = ( int ) ( d->p * 0.1 + 0.5 );
               sprintf ( t->d.s6.wd[iwd].PnPnPn, "%03d", ix ); // PnPnPn
               wind_to_dndnfnfnfn ( t->d.s6.wd[iwd].dndnfnfnfn, d->dd, d->ff ); // dndnfnfnfn
-              if ( iwd < TEMP_NMAX_POINTS )
+              if ( ix && iwd < TEMP_NMAX_POINTS )
                 {
                   iwd += 1;
                   t->d.s6.n = iwd;
@@ -610,7 +610,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
               ix = ( int ) ( d->p * 0.01 + 0.5 );
               sprintf ( t->b.s6.wd[iwb].PnPnPn, "%03d", ix % 1000 ); // PnPnPn.
               wind_to_dndnfnfnfn ( t->b.s6.wd[iwb].dndnfnfnfn, d->dd, d->ff ); // dndnfnfnfn
-              if ( iwb < TEMP_NMAX_POINTS )
+              if ( ix && iwb < TEMP_NMAX_POINTS )
                 {
                   iwb += 1;
                   t->b.s6.n = iwb;
@@ -618,6 +618,29 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
             }
         }
     }
+
+  // Now we set some bit masks
+  if ( isa )
+    t->a.mask |= TEMP_SEC_2;
+  if ( isc )
+    t->c.mask |= TEMP_SEC_2;
+  if ( ita )
+    t->a.mask |= TEMP_SEC_3;
+  if ( itc )
+    t->c.mask |= TEMP_SEC_3;
+  if ( iwxa )
+    t->a.mask |= TEMP_SEC_4;
+  if ( iwxc )
+    t->c.mask |= TEMP_SEC_4;
+  if ( itb )
+    t->b.mask |= TEMP_SEC_5;
+  if ( itd )
+    t->d.mask |= TEMP_SEC_5;
+  if ( iwb )
+    t->b.mask |= TEMP_SEC_6;
+  if ( iwd )
+    t->d.mask |= TEMP_SEC_6;
+
   return 0;
 }
 

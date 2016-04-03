@@ -154,15 +154,17 @@ int climat_parse_x02 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
 */
 int temp_parse_x02 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
 {
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    return 0;
-
   if ( t == NULL )
     return 1;
 
   switch ( s->a->desc.y )
     {
     case 3:  // 0 02 003 . Type of measuring equipment used
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          sprintf ( t->b.s1.a4,"/" );
+          return 0;
+        }
       switch ( s->ival )
         {
         case 0:
@@ -184,6 +186,14 @@ int temp_parse_x02 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
       break;
 
     case 11: // 0 02 011 . Radiosonde type
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          sprintf ( t->a.s7.rara, "//" );
+          sprintf ( t->b.s7.rara, "//" );
+          sprintf ( t->c.s7.rara, "//" );
+          sprintf ( t->d.s7.rara, "//" );
+          return 0;
+        }
       if ( s->ival >= 0 )
         {
           sprintf ( t->a.s7.rara, "%02d", s->ival % 100 );
@@ -191,10 +201,18 @@ int temp_parse_x02 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
           sprintf ( t->c.s7.rara, "%02d", s->ival % 100 );
           sprintf ( t->d.s7.rara, "%02d", s->ival % 100 );
         }
-      else 
       break;
 
     case 13: // 0 02 013 . Solar and infrared radiation correction
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          strcpy ( t->a.s7.sr, "/" );
+          strcpy ( t->b.s7.sr, "/" );
+          strcpy ( t->c.s7.sr, "/" );
+          strcpy ( t->d.s7.sr, "/" );
+          return 0;
+
+        }
       if ( s->ival >= 0 && s->ival <= 7 )
         {
           sprintf ( t->a.s7.sr, "%d", s->ival );
@@ -213,6 +231,14 @@ int temp_parse_x02 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
       break;
 
     case 14: // 0 02 014 . Tracking technique/status of system used
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          strcpy ( t->a.s7.sasa, "//" );
+          strcpy ( t->b.s7.sasa, "//" );
+          strcpy ( t->c.s7.sasa, "//" );
+          strcpy ( t->d.s7.sasa, "//" );
+          return 0;
+        }
       if ( s->ival >= 0 && s->ival < 100 )
         {
           sprintf ( t->a.s7.sasa, "%02d", s->ival );

@@ -232,6 +232,7 @@ struct bufrdeco_decoding_data_state
   int8_t added_bit_length; /*!< Current aditional bit_length that can be changed by descriptor 2 01 YYY */
   int8_t added_scale; /*!< Current aditional scale factor that can be changed by descriptor 2 02 YYY */
   int32_t added_reference; /*!< Current aditional reference that can be changed bu descriptor 2 03 YYY */
+  int32_t factor_reference; /*!< Factor to multiply current reference if > 1 */
   uint8_t assoc_bits; /*!< number of associated bits */
   uint8_t changing_reference; /*!< Changing reference as descriptor 2 03 YYY */
   uint8_t fixed_ccitt; /*!< Length in octests for a CCITT var. Changed with descriptor 2 08 YYY . default 0 (or 1)*/
@@ -557,6 +558,9 @@ struct bufrdeco
 
 extern const char DEFAULT_BUFRTABLES_DIR1[];
 extern const char DEFAULT_BUFRTABLES_DIR2[];
+extern const double pow10pos[8];
+extern const double pow10neg[8];
+extern const int32_t pow10pos_int[10];
 
 
 // Memory funcions

@@ -27,10 +27,10 @@
 #define BUFR_TABLEB_CHANGED_SCALE (2)
 #define BUFR_TABLEB_CHANGED_REFERENCE (4)
 
-
-
+const int32_t pow10pos_int[10]= {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000};
 const double pow10pos[8]= {1.0, 10.0, 100.0, 1000.0, 10000.0, 100000.0, 1000000.0, 10000000.0};
 const double pow10neg[8]= {1.0,  0.1,  0.01,  0.001,  0.0001,  0.00001,  0.000001,  0.0000001};
+
 
 /*!
   \fn int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
@@ -437,7 +437,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
   strcpy ( a->unit, tb->item[i].unit );
   escale = tb->item[i].scale;
   nbits = tb->item[i].nbits;
-
+  
   if ( b->state.changing_reference != 255 )
     {
       // The descriptor operator 2 03 YYY is on action
@@ -494,7 +494,12 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
     {
       a->associated = MISSING_INTEGER;
     }
-
+    
+  if ( strstr ( a->unit, "CODE TABLE" ) != a->unit &&  strstr ( a->unit,"FLAG" ) != a->unit )
+    {  // case of numeric, no string nor code nor flag
+       nbits += b->state.added_bit_length;
+    }    
+    
   if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
     {
       sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get bits from '%s'\n", d->c );
@@ -511,6 +516,8 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
         {
           escale += b->state.added_scale;
           reference += b->state.added_reference;
+	  if (b->state.factor_reference > 1)
+	    reference *= b->state.factor_reference;
         }
       // Get a numeric number
       if ( escale >= 0 && escale < 8 )

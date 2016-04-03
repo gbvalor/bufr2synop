@@ -119,7 +119,7 @@ char * print_temp_a_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 
   c += sprintf ( c, " %s%s", t->a.s1.MiMi, t->a.s1.MjMj );
 
-  if ( t->a.s1.D_D[0] )
+  if ( t->a.s1.D_D[0] && t->a.s1.II[0] == 0)
     c += sprintf ( c, " %s", t->a.s1.D_D );
 
   c += sprintf ( c, " %s%s", t->a.s1.YYGG, t->a.s1.id );
@@ -314,7 +314,7 @@ char * print_temp_b_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 
   c += sprintf ( c, " %s%s", t->b.s1.MiMi, t->b.s1.MjMj );
 
-  if ( t->b.s1.D_D[0] )
+  if ( t->b.s1.D_D[0] && t->a.s1.II[0] == 0)
     c += sprintf ( c, " %s", t->b.s1.D_D );
 
   c += sprintf ( c, " %s%s", t->b.s1.YYGG, t->b.s1.a4 );
@@ -475,7 +475,7 @@ char * print_temp_c_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 
   c += sprintf ( c, " %s%s", t->c.s1.MiMi, t->c.s1.MjMj );
 
-  if ( t->c.s1.D_D[0] )
+  if ( t->c.s1.D_D[0] && t->a.s1.II[0] == 0)
     c += sprintf ( c, " %s", t->c.s1.D_D );
 
   c += sprintf ( c, " %s%s", t->c.s1.YYGG, t->c.s1.id );
@@ -599,7 +599,8 @@ char * print_temp_c_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
               else
                 c += sprintf ( c, " 66%s", t->c.s4.windx[i].PmPmPm );
               c += sprintf ( c, " %s", t->c.s4.windx[i].dmdmfmfmfm );
-              c += sprintf ( c, " 4%s%s", t->c.s4.windx[i].vbvb, t->c.s4.windx[i].vava );
+	      if (t->c.s4.windx[i].vbvb[0] && t->c.s4.windx[i].vava[0])
+                c += sprintf ( c, " 4%s%s", t->c.s4.windx[i].vbvb, t->c.s4.windx[i].vava );
             }
         }
     }
@@ -662,7 +663,7 @@ char * print_temp_d_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 
   c += sprintf ( c, " %s%s", t->d.s1.MiMi, t->d.s1.MjMj );
 
-  if ( t->d.s1.D_D[0] )
+  if ( t->d.s1.D_D[0] && t->a.s1.II[0] == 0)
     c += sprintf ( c, " %s", t->d.s1.D_D );
 
   c += sprintf ( c, " %s/", t->d.s1.YYGG);

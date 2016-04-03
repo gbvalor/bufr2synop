@@ -134,12 +134,51 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
       b->state.local_bit_reserved = d->y;
       break;
 
+    case 7:
+      // For Table B elements, which are not CCITT IA5
+      // (character data), code tables, or flag tables:
+      // 1. Add YYY to the existing scale factor
+      //  YYY
+      // 2. Multiply the existing reference value by 10
+      // 3. Calculate ((10 x YYY) + 2) ÷ 3, disregard any
+      // fractional remainder and add the result to the
+      // existing bit width.
+      if ( d->y )
+        {
+          b->state.added_scale = d->y;
+          if ( d->y < 10 )
+            b->state.factor_reference = pow10pos_int[d->y];
+          else
+            {
+              sprintf ( b->error, "bufrdeco_parse_f2_descriptor(): Too much %u increase bits for operator '%s'", d->y,
+                        d->c );
+              return 1;
+            }
+          b->state.added_bit_length = ( int8_t ) ( ( 10.0 * d->y + 2.0 ) / 3.0 );
+        }
+      else
+        {
+          b->state.added_scale = 0;
+          b->state.factor_reference = 1;
+          b->state.added_bit_length = 0;
+        }
+      break;
+
     case 8:
       // YYY characters from CCITT International Alphabet
       // No. 5 (representing YYY x 8 bits in length) replace the
       // specified data width given for each CCITT IA5
       // element in Table B.
       b->state.fixed_ccitt = d->y;
+      break;
+
+    case 22:
+      break;
+
+    case 36:
+      break;
+
+    case 37:
       break;
 
     default:
@@ -265,6 +304,36 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
       b->state.local_bit_reserved = d->y;
       break;
 
+    case 7:
+      // For Table B elements, which are not CCITT IA5
+      // (character data), code tables, or flag tables:
+      // 1. Add YYY to the existing scale factor
+      //  YYY
+      // 2. Multiply the existing reference value by 10
+      // 3. Calculate ((10 x YYY) + 2) ÷ 3, disregard any
+      // fractional remainder and add the result to the
+      // existing bit width.
+      if ( d->y )
+        {
+          b->state.added_scale = d->y;
+          if ( d->y < 10 )
+            b->state.factor_reference = pow10pos_int[d->y];
+          else
+            {
+              sprintf ( b->error, "bufrdeco_parse_f2_descriptor(): Too much %u increase bits for operator '%s'", d->y,
+                        d->c );
+              return 1;
+            }
+          b->state.added_bit_length = ( int8_t ) ( ( 10.0 * d->y + 2.0 ) / 3.0 );
+        }
+      else
+        {
+          b->state.added_scale = 0;
+          b->state.factor_reference = 1;
+          b->state.added_bit_length = 0;
+        }
+      break;
+
     case 8:
       // YYY characters from CCITT International Alphabet
       // No. 5 (representing YYY x 8 bits in length) replace the
@@ -273,6 +342,15 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
       b->state.fixed_ccitt = d->y;
       break;
 
+    case 22:
+      break;
+
+    case 36:
+      break;
+
+    case 37:
+      break;
+      
     default:
       sprintf ( b->error, "bufrdeco_parse_f2_descriptor(): Still no proccessed descriptor '%s' in "
                 "current library version\n", d->c );

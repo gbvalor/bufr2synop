@@ -95,6 +95,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
       b->state.changing_reference = 255;
       b->state.fixed_ccitt = 0;
       b->state.local_bit_reserved = 0;
+      b->state.factor_reference = 1;
     }
   else
     {
@@ -150,7 +151,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
 
         case 1:
           // Case of replicator descriptor
-          replicator.s = l;
+          replicator.s = seq;
           replicator.ixrep = i;
           if ( seq->lseq[i].y != 0 )
             {

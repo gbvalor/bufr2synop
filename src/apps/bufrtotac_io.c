@@ -146,7 +146,7 @@ int bufrdeco_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subset
 
   // And now set only used ksec1 elements
   ksec1[5] = b->sec1.category;
-  ksec1[6] = b->sec1.subcategory;
+  ksec1[6] = b->sec1.subcategory_local;
 
   // Finaly we call to bufr2syn library
   memset(m, 0, sizeof( struct metreport));
