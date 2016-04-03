@@ -29,33 +29,45 @@ int print_csv_alphanum ( FILE *f, char *type, char *alphanum, struct metreport *
   fprintf ( f, "\"%s\",", type );
   // print GTS_HEADER
   if ( m->h != NULL )
-  {
-    fprintf ( f, "\"%s\",",m->h->filename );
-    fprintf ( f, "\"%s %s %s %s\",",m->h->bname, m->h->center, m->h->dtrel, m->h->order );
-  }
+    {
+      fprintf ( f, "\"%s\",",m->h->filename );
+      fprintf ( f, "\"%s %s %s %s\",",m->h->bname, m->h->center, m->h->dtrel, m->h->order );
+    }
   else
-  {
-    fprintf ( f, ",," );
-  }
+    {
+      fprintf ( f, ",," );
+    }
   // print DATE AND TIME
   fprintf ( f, "\"%s\",",m->t.datime );
 
   // Geo data
   if ( strlen ( m->g.index ) )
-    fprintf ( f, "\"%s\",", m->g.index );
+    {
+      fprintf ( f, "\"%s\",", m->g.index );
+    }
   else
-    fprintf ( f, "," );
+    {
+      fprintf ( f, "," );
+    }
 
   if ( strlen ( m->g.name ) )
-    fprintf ( f, "\"%s\",", m->g.name );
+    {
+      fprintf ( f, "\"%s\",", m->g.name );
+    }
   else
-    fprintf ( f, "," );
+    {
+      fprintf ( f, "," );
+    }
 
 
   if ( strlen ( m->g.country ) )
-    fprintf ( f, "\"%s\",", m->g.country );
+    {
+      fprintf ( f, "\"%s\",", m->g.country );
+    }
   else
-    fprintf ( f, "," );
+    {
+      fprintf ( f, "," );
+    }
 
   fprintf ( f, "%.6lf,", m->g.lat );
   fprintf ( f, "%.6lf,", m->g.lon );
@@ -73,16 +85,25 @@ int print_csv_alphanum ( FILE *f, char *type, char *alphanum, struct metreport *
 int print_csv ( FILE *f, struct metreport *m )
 {
   // Single report
-  print_csv_alphanum(f, m->type, m->alphanum, m);
-  
-  if (m->type2[0]) //TTBB
-    print_csv_alphanum(f, m->type2, m->alphanum2, m);
+  if ( m->alphanum[0] )
+    {
+      print_csv_alphanum ( f, m->type, m->alphanum, m );
+    }
 
-  if (m->type3[0]) //TTCC
-    print_csv_alphanum(f, m->type3, m->alphanum3, m);
+  if ( m->alphanum2[0] ) //TTBB
+    {
+      print_csv_alphanum ( f, m->type2, m->alphanum2, m );
+    }
 
-  if (m->type4[0]) //TTDD
-    print_csv_alphanum(f, m->type4, m->alphanum4, m);
+  if ( m->alphanum3[0] ) //TTCC
+    {
+      print_csv_alphanum ( f, m->type3, m->alphanum3, m );
+    }
+
+  if ( m->alphanum4[0] ) //TTDD
+    {
+      print_csv_alphanum ( f, m->type4, m->alphanum4, m );
+    }
 
   return 0;
 }

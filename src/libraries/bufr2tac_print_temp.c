@@ -38,7 +38,7 @@ int print_temp_raw_data ( struct temp_raw_data *r )
 {
   size_t i;
 
-  printf("raw points %lu\n", r->n);
+  printf ( "raw points %lu\n", r->n );
   for ( i = 0; i < r->n ; i++ )
     {
       if ( r->raw[i].T != MISSING_REAL &&
@@ -53,24 +53,40 @@ int print_temp_raw_data ( struct temp_raw_data *r )
           printf ( "i=%3ld, dt=%4d, flags=%08X, P=%6.1lf, h=%6.0lf, dlat=%7.4lf, dlon=%7.4lf, ",
                    i, r->raw[i].dt, r->raw[i].flags, r->raw[i].p * 0.01, r->raw[i].h, r->raw[i].dlat, r->raw[i].dlon );
           if ( r->raw[i].T != MISSING_REAL )
-            printf ( "T=%6.1lf, ", r->raw[i].T - 273.15 );
+            {
+              printf ( "T=%6.1lf, ", r->raw[i].T - 273.15 );
+            }
           else
-            printf ( "T= ///./, " );
+            {
+              printf ( "T= ///./, " );
+            }
 
           if ( r->raw[i].Td != MISSING_REAL )
-            printf ( "T=%6.1lf, ", r->raw[i].Td - 273.15 );
+            {
+              printf ( "T=%6.1lf, ", r->raw[i].Td - 273.15 );
+            }
           else
-            printf ( "Td= ///./, " );
+            {
+              printf ( "Td= ///./, " );
+            }
 
           if ( r->raw[i].dd != MISSING_REAL )
-            printf ( "dd=%03.0lf, ", r->raw[i].dd );
+            {
+              printf ( "dd=%03.0lf, ", r->raw[i].dd );
+            }
           else
-            printf ( "dd=///, " );
+            {
+              printf ( "dd=///, " );
+            }
 
           if ( r->raw[i].dd != MISSING_REAL )
-            printf ( "ff=%5.1lf\n", r->raw[i].ff );
+            {
+              printf ( "ff=%5.1lf\n", r->raw[i].ff );
+            }
           else
-            printf ( "ff= //./\n" );
+            {
+              printf ( "ff= //./\n" );
+            }
         }
     }
   return 0;
@@ -85,7 +101,7 @@ int print_temp_raw_wind_shear_data ( struct temp_raw_wind_shear_data *w )
 {
   size_t i;
 
-  printf("raw share wind points %lu\n", w->n);
+  printf ( "raw share wind points %lu\n", w->n );
   for ( i = 0; i < w->n ; i++ )
     {
       if ( w->raw[i].ws_blw != MISSING_REAL && w->raw[i].ws_abv != MISSING_REAL )
@@ -98,14 +114,22 @@ int print_temp_raw_wind_shear_data ( struct temp_raw_wind_shear_data *w )
                    i, w->raw[i].dt, w->raw[i].flags, w->raw[i].p * 0.01, w->raw[i].dlat, w->raw[i].dlon );
 
           if ( w->raw[i].ws_blw != MISSING_REAL )
-            printf ( "ws_blw=%5.1lf, ", w->raw[i].ws_blw );
+            {
+              printf ( "ws_blw=%5.1lf, ", w->raw[i].ws_blw );
+            }
           else
-            printf ( "ws_blw= ///./, " );
+            {
+              printf ( "ws_blw= ///./, " );
+            }
 
           if ( w->raw[i].ws_abv != MISSING_REAL )
-            printf ( "ws_abv=%5.1lf\n", w->raw[i].ws_abv );
+            {
+              printf ( "ws_abv=%5.1lf\n", w->raw[i].ws_abv );
+            }
           else
-            printf ( "ws_abv= ///./\n" );
+            {
+              printf ( "ws_abv= ///./\n" );
+            }
         }
     }
   return 0;
@@ -119,8 +143,10 @@ char * print_temp_a_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 
   c += sprintf ( c, " %s%s", t->a.s1.MiMi, t->a.s1.MjMj );
 
-  if ( t->a.s1.D_D[0] && t->a.s1.II[0] == 0)
-    c += sprintf ( c, " %s", t->a.s1.D_D );
+  if ( t->a.s1.D_D[0] && t->a.s1.II[0] == 0 )
+    {
+      c += sprintf ( c, " %s", t->a.s1.D_D );
+    }
 
   c += sprintf ( c, " %s%s", t->a.s1.YYGG, t->a.s1.id );
 
@@ -206,7 +232,9 @@ char * print_temp_a_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
   if ( t->a.s3.n == 0 )
     {
       if ( check_len ( sec3, 6 ) )
-        c += sprintf ( c, " 88999" );
+        {
+          c += sprintf ( c, " 88999" );
+        }
     }
   else
     {
@@ -238,7 +266,9 @@ char * print_temp_a_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
     {
       if ( check_len ( sec4, 6 ) )
 
-        c += sprintf ( c, " 77999" );
+        {
+          c += sprintf ( c, " 77999" );
+        }
     }
   else
     {
@@ -247,9 +277,13 @@ char * print_temp_a_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
           if ( check_len ( sec4, 18 ) )
             {
               if ( t->a.s4.windx[i].no_last_wind )
-                c += sprintf ( c, " 77%s", t->a.s4.windx[i].PmPmPm );
+                {
+                  c += sprintf ( c, " 77%s", t->a.s4.windx[i].PmPmPm );
+                }
               else
-                c += sprintf ( c, " 66%s", t->a.s4.windx[i].PmPmPm );
+                {
+                  c += sprintf ( c, " 66%s", t->a.s4.windx[i].PmPmPm );
+                }
               c += sprintf ( c, " %s", t->a.s4.windx[i].dmdmfmfmfm );
               c += sprintf ( c, " 4%s%s", t->a.s4.windx[i].vbvb, t->a.s4.windx[i].vava );
             }
@@ -276,7 +310,9 @@ char * print_temp_a_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
       c += sprintf ( c, " 8%s%s", t->a.s7.GG, t->a.s7.gg );
     }
   if ( t->a.s7.TwTwTw[0] && check_len ( sec7, 6 ) )
-    c += sprintf ( c, " 9%s%s", t->a.s7.sn, t->a.s7.TwTwTw );
+    {
+      c += sprintf ( c, " 9%s%s", t->a.s7.sn, t->a.s7.TwTwTw );
+    }
 
   if ( c != c0 )
     {
@@ -314,8 +350,10 @@ char * print_temp_b_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 
   c += sprintf ( c, " %s%s", t->b.s1.MiMi, t->b.s1.MjMj );
 
-  if ( t->b.s1.D_D[0] && t->a.s1.II[0] == 0)
-    c += sprintf ( c, " %s", t->b.s1.D_D );
+  if ( t->b.s1.D_D[0] && t->a.s1.II[0] == 0 )
+    {
+      c += sprintf ( c, " %s", t->b.s1.D_D );
+    }
 
   c += sprintf ( c, " %s%s", t->b.s1.YYGG, t->b.s1.a4 );
 
@@ -389,7 +427,9 @@ char * print_temp_b_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
   char *c = *sec6, *c0 = *sec6;
 
   if ( check_len ( sec6, 6 ) )
-    c += sprintf ( c, " 21212" );
+    {
+      c += sprintf ( c, " 21212" );
+    }
 
   for ( i = 0; i < t->b.s6.n ; i++ )
     {
@@ -418,7 +458,9 @@ char * print_temp_b_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
       c += sprintf ( c, " 8%s%s", t->b.s7.GG, t->b.s7.gg );
     }
   if ( t->b.s7.TwTwTw[0] && check_len ( sec7, 6 ) )
-    c += sprintf ( c, " 9%s%s", t->b.s7.sn, t->b.s7.TwTwTw );
+    {
+      c += sprintf ( c, " 9%s%s", t->b.s7.sn, t->b.s7.TwTwTw );
+    }
 
   if ( c != c0 )
     {
@@ -475,8 +517,10 @@ char * print_temp_c_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 
   c += sprintf ( c, " %s%s", t->c.s1.MiMi, t->c.s1.MjMj );
 
-  if ( t->c.s1.D_D[0] && t->a.s1.II[0] == 0)
-    c += sprintf ( c, " %s", t->c.s1.D_D );
+  if ( t->c.s1.D_D[0] && t->a.s1.II[0] == 0 )
+    {
+      c += sprintf ( c, " %s", t->c.s1.D_D );
+    }
 
   c += sprintf ( c, " %s%s", t->c.s1.YYGG, t->c.s1.id );
 
@@ -554,7 +598,9 @@ char * print_temp_c_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
   if ( t->c.s3.n == 0 )
     {
       if ( check_len ( sec3, 6 ) )
-        c += sprintf ( c, " 88999" );
+        {
+          c += sprintf ( c, " 88999" );
+        }
     }
   else
     {
@@ -586,7 +632,9 @@ char * print_temp_c_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
     {
       if ( check_len ( sec4, 6 ) )
 
-        c += sprintf ( c, " 77999" );
+        {
+          c += sprintf ( c, " 77999" );
+        }
     }
   else
     {
@@ -595,12 +643,18 @@ char * print_temp_c_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
           if ( check_len ( sec4, 18 ) )
             {
               if ( t->c.s4.windx[i].no_last_wind )
-                c += sprintf ( c, " 77%s", t->c.s4.windx[i].PmPmPm );
+                {
+                  c += sprintf ( c, " 77%s", t->c.s4.windx[i].PmPmPm );
+                }
               else
-                c += sprintf ( c, " 66%s", t->c.s4.windx[i].PmPmPm );
+                {
+                  c += sprintf ( c, " 66%s", t->c.s4.windx[i].PmPmPm );
+                }
               c += sprintf ( c, " %s", t->c.s4.windx[i].dmdmfmfmfm );
-	      if (t->c.s4.windx[i].vbvb[0] && t->c.s4.windx[i].vava[0])
-                c += sprintf ( c, " 4%s%s", t->c.s4.windx[i].vbvb, t->c.s4.windx[i].vava );
+              if ( t->c.s4.windx[i].vbvb[0] && t->c.s4.windx[i].vava[0] )
+                {
+                  c += sprintf ( c, " 4%s%s", t->c.s4.windx[i].vbvb, t->c.s4.windx[i].vava );
+                }
             }
         }
     }
@@ -625,7 +679,9 @@ char * print_temp_c_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
       c += sprintf ( c, " 8%s%s", t->c.s7.GG, t->c.s7.gg );
     }
   if ( t->c.s7.TwTwTw[0] && check_len ( sec7, 6 ) )
-    c += sprintf ( c, " 9%s%s", t->c.s7.sn, t->c.s7.TwTwTw );
+    {
+      c += sprintf ( c, " 9%s%s", t->c.s7.sn, t->c.s7.TwTwTw );
+    }
 
   if ( c != c0 )
     {
@@ -663,10 +719,12 @@ char * print_temp_d_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 
   c += sprintf ( c, " %s%s", t->d.s1.MiMi, t->d.s1.MjMj );
 
-  if ( t->d.s1.D_D[0] && t->a.s1.II[0] == 0)
-    c += sprintf ( c, " %s", t->d.s1.D_D );
+  if ( t->d.s1.D_D[0] && t->a.s1.II[0] == 0 )
+    {
+      c += sprintf ( c, " %s", t->d.s1.D_D );
+    }
 
-  c += sprintf ( c, " %s/", t->d.s1.YYGG);
+  c += sprintf ( c, " %s/", t->d.s1.YYGG );
 
   // print IIiii
   if ( check_len ( sec1,6 ) && t->d.s1.II[0] )
@@ -738,7 +796,9 @@ char * print_temp_d_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
   char *c = *sec6, *c0 = *sec6;
 
   if ( check_len ( sec6, 6 ) )
-    c += sprintf ( c, " 21212" );
+    {
+      c += sprintf ( c, " 21212" );
+    }
 
   for ( i = 0; i < t->d.s6.n ; i++ )
     {
@@ -767,7 +827,9 @@ char * print_temp_d_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
       c += sprintf ( c, " 8%s%s", t->d.s7.GG, t->d.s7.gg );
     }
   if ( t->d.s7.TwTwTw[0] && check_len ( sec7, 6 ) )
-    c += sprintf ( c, " 9%s%s", t->d.s7.sn, t->d.s7.TwTwTw );
+    {
+      c += sprintf ( c, " 9%s%s", t->d.s7.sn, t->d.s7.TwTwTw );
+    }
 
   if ( c != c0 )
     {
@@ -799,10 +861,22 @@ int print_temp_d ( char *report, size_t lmax, struct temp_chunks *t )
 
 int print_temp ( struct metreport *m )
 {
-  print_temp_a ( m->alphanum, REPORT_LENGTH, &m->temp );
-  print_temp_b ( m->alphanum2, REPORT_LENGTH, &m->temp );
-  print_temp_c ( m->alphanum3, REPORT_LENGTH, &m->temp );
-  print_temp_d ( m->alphanum4, REPORT_LENGTH, &m->temp );
+  if ( m->temp.a.mask & TEMP_SEC_2 )
+    {
+      print_temp_a ( m->alphanum, REPORT_LENGTH, &m->temp );
+    }
+  if ( m->temp.b.mask & ( TEMP_SEC_5 | TEMP_SEC_6 ) )
+    {
+      print_temp_b ( m->alphanum2, REPORT_LENGTH, &m->temp );
+    }
+  if ( m->temp.c.mask & TEMP_SEC_2 )
+    {
+      print_temp_c ( m->alphanum3, REPORT_LENGTH, &m->temp );
+    }
+  if ( m->temp.b.mask & ( TEMP_SEC_5 | TEMP_SEC_6 ) )
+    {
+      print_temp_d ( m->alphanum4, REPORT_LENGTH, &m->temp );
+    }
 
   return 0;
 }

@@ -41,11 +41,17 @@ int print_xml_alphanum ( FILE *f, char *type, char *alphanum, struct metreport *
   // Geo data
   fprintf ( f, " <geo>\n" );
   if ( strlen ( m->g.index ) )
-    fprintf ( f, "  <index>%s</index>\n", m->g.index );
+    {
+      fprintf ( f, "  <index>%s</index>\n", m->g.index );
+    }
   if ( strlen ( m->g.name ) )
-    fprintf ( f, "  <name>%s</name>\n", m->g.name );
+    {
+      fprintf ( f, "  <name>%s</name>\n", m->g.name );
+    }
   if ( strlen ( m->g.country ) )
-    fprintf ( f, "  <country>%s</country>\n", m->g.country );
+    {
+      fprintf ( f, "  <country>%s</country>\n", m->g.country );
+    }
   fprintf ( f, "  <latitude>%.6lf</latitude>\n", m->g.lat );
   fprintf ( f, "  <longitude>%.6lf</longitude>\n", m->g.lon );
   fprintf ( f, "  <altitude>%.1lf</altitude>\n", m->g.alt );
@@ -65,16 +71,25 @@ int print_xml_alphanum ( FILE *f, char *type, char *alphanum, struct metreport *
 int print_xml ( FILE *f, struct metreport *m )
 {
   // Single report
-  print_xml_alphanum ( f, m->type, m->alphanum, m );
+  if ( m->alphanum[0] )
+    {
+      print_xml_alphanum ( f, m->type, m->alphanum, m );
+    }
 
-  if ( m->type2[0] ) //TTBB
-    print_xml_alphanum ( f, m->type2, m->alphanum2, m );
+  if ( m->alphanum2[0] ) //TTBB
+    {
+      print_xml_alphanum ( f, m->type2, m->alphanum2, m );
+    }
 
-  if ( m->type3[0] ) //TTCC
-    print_xml_alphanum ( f, m->type3, m->alphanum3, m );
+  if ( m->alphanum3[0] ) //TTCC
+    {
+      print_xml_alphanum ( f, m->type3, m->alphanum3, m );
+    }
 
-  if ( m->type4[0] ) //TTDD
-    print_xml_alphanum ( f, m->type4, m->alphanum4, m );
+  if ( m->alphanum4[0] ) //TTDD
+    {
+      print_xml_alphanum ( f, m->type4, m->alphanum4, m );
+    }
 
   return 0;
 }

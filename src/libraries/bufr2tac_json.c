@@ -34,11 +34,17 @@ int print_json_alphanum ( FILE *f, char *type, char *alphanum, struct metreport 
   fprintf ( f, "  \"observation_datetime\": \"%s\",\n", m->t.datime );
   fprintf ( f, "  \"geo\": { \n" );
   if ( strlen ( m->g.index ) )
-    fprintf ( f, "    \"index\": \"%s\",\n", m->g.index );
+    {
+      fprintf ( f, "    \"index\": \"%s\",\n", m->g.index );
+    }
   if ( strlen ( m->g.name ) )
-    fprintf ( f, "    \"name\": \"%s\",\n", m->g.name );
+    {
+      fprintf ( f, "    \"name\": \"%s\",\n", m->g.name );
+    }
   if ( strlen ( m->g.country ) )
-    fprintf ( f, "    \"country\": \"%s\",\n", m->g.country );
+    {
+      fprintf ( f, "    \"country\": \"%s\",\n", m->g.country );
+    }
   fprintf ( f, "    \"latitude\": %.6lf,\n", m->g.lat );
   fprintf ( f, "    \"longitude\": %.6lf,\n", m->g.lon );
   fprintf ( f, "    \"altitude\": %.1lf\n", m->g.alt );
@@ -56,20 +62,23 @@ int print_json_alphanum ( FILE *f, char *type, char *alphanum, struct metreport 
 int print_json ( FILE *f, struct metreport *m )
 {
   fprintf ( f, "{\"metreport\" :" );
-  print_json_alphanum ( f, m->type, m->alphanum, m );
+  if ( m->alphanum[0] )
+    {
+      print_json_alphanum ( f, m->type, m->alphanum, m );
+    }
 
-  if ( m->type2[0] ) //TTBB
+  if ( m->alphanum2[0] ) //TTBB
     {
       fprintf ( f, "," );
       print_json_alphanum ( f, m->type2, m->alphanum2, m );
     }
 
-  if ( m->type3[0] ) //TTCC
+  if ( m->alphanum3[0] ) //TTCC
     {
       fprintf ( f, "," );
       print_json_alphanum ( f, m->type3, m->alphanum3, m );
     }
-  if ( m->type4[0] ) //TTDD
+  if ( m->alphanum4[0] ) //TTDD
     {
       fprintf ( f, "," );
       print_json_alphanum ( f, m->type4, m->alphanum4, m );
