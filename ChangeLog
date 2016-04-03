@@ -1,3 +1,17 @@
+* Sun Apr 03 2016 Guillermo Ballester Valor <gbvalor@gmail.com>
+Added suport for the following TAC codes
+  - FM 12-XIV SYNOP
+  - FM 13-XIV SHIP
+  - FM 14-XIV SYNOP MOBIL
+  - FM 18-XII BUOY
+  - FM 35-XI  TEMP
+  - FM 36-XI  TEMP SHIP
+  - FM 38-XI  TEMP MOBIL
+  - FM 71-XII CLIMAT
+
+Created 'bufrdeco', a new library to decode BUFR reports. The aim 
+for this new library is a light and faster decode tool than ECMWF one. 
+Anyway this library still uses bufr tables from ECMWF bufrdc library.
+
 * Sun Oct 19 2014 Guillermo Ballester Valor <gbvalor@gmail.com>
 First commit importing to github
-

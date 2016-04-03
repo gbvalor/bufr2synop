@@ -29,11 +29,12 @@ int print_xml_alphanum ( FILE *f, char *type, char *alphanum, struct metreport *
 {
   // prints header
   fprintf ( f, "<metreport type=%s>\n", type );
-  fprintf ( f, "<bufrfile>%s</bufrfile>\n",m->h->filename );
   // print GTS_HEADER
   if ( m->h != NULL )
-    fprintf ( f, " <gts_header>%s %s %s %s</gts_header>\n",m->h->bname, m->h->center, m->h->dtrel, m->h->order );
-
+    {
+      fprintf ( f, "<bufrfile>%s</bufrfile>\n",m->h->filename );
+      fprintf ( f, " <gts_header>%s %s %s %s</gts_header>\n",m->h->bname, m->h->center, m->h->dtrel, m->h->order );
+    }
   // print DATE AND TIME
   fprintf ( f, " <observation_datetime>%s</observation_datetime>\n",m->t.datime );
 
@@ -64,16 +65,16 @@ int print_xml_alphanum ( FILE *f, char *type, char *alphanum, struct metreport *
 int print_xml ( FILE *f, struct metreport *m )
 {
   // Single report
-  print_xml_alphanum(f, m->type, m->alphanum, m);
-  
-  if (m->type2[0]) //TTBB
-    print_xml_alphanum(f, m->type2, m->alphanum2, m);
+  print_xml_alphanum ( f, m->type, m->alphanum, m );
 
-  if (m->type3[0]) //TTCC
-    print_xml_alphanum(f, m->type3, m->alphanum3, m);
+  if ( m->type2[0] ) //TTBB
+    print_xml_alphanum ( f, m->type2, m->alphanum2, m );
 
-  if (m->type4[0]) //TTDD
-    print_xml_alphanum(f, m->type4, m->alphanum4, m);
+  if ( m->type3[0] ) //TTCC
+    print_xml_alphanum ( f, m->type3, m->alphanum3, m );
+
+  if ( m->type4[0] ) //TTDD
+    print_xml_alphanum ( f, m->type4, m->alphanum4, m );
 
   return 0;
 }

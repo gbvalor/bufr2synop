@@ -150,6 +150,7 @@ int bufrdeco_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subset
 
   // Finaly we call to bufr2syn library
   memset(m, 0, sizeof( struct metreport));
+  m->h = &b->header;
   res = parse_subset_sequence ( m, &b->seq, st, kdtlst, nlst, ksec1, err );
   free ((void *) kdtlst);
   return res;

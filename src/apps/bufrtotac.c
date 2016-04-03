@@ -38,13 +38,13 @@
   - FM 38-XI  TEMP MOBIL
   - FM 71-XII CLIMAT
 
-  The software is based in bufrdc library from ECMWF. Before version 0.7 this package should to be 
-  installed. Since version 0.7, a library for decode a wide subset of bufr reports has been writen 
+  The software is based in bufrdc library from ECMWF. Before version 0.7 this package should to be
+  installed. Since version 0.7, a library for decode a wide subset of bufr reports has been writen
   from scratch. This is a fast and light bufr decoder. Anyway it still uses the bufr tables installed
-  by ECMWF packages so it still need to be installed. You can grab ECMWF library from 
+  by ECMWF packages so it still need to be installed. You can grab ECMWF library from
 
   https://software.ecmwf.int/wiki/display/BUFR/Releases
-  
+
   Note that the results from this library is not intended to match at %100 level to original alphanumeric reports. It cannot. Some variables in alphanumeric code rules can be coded in several ways, and there is not a regional even national decision about them. As example, the 'hshs' item (table code 1617) for synop FM 12 can be coded using 00-80 range or 90-99 one. A numeric value for heigh of base clouds can be coded in two ways. And there some few more examples.
 
   \section Install
@@ -125,12 +125,12 @@ int main ( int argc, char *argv[] )
   while ( get_bufrfile_path ( INPUTFILE, ERR ) )
     {
       //printf ( "%s\n", INPUTFILE );
-      if ( bufrdeco_read_bufr ( &BUFR, INPUTFILE) )
+      if ( bufrdeco_read_bufr ( &BUFR, INPUTFILE ) )
         {
-	  if (DEBUG)
-	    printf("# %s\n", BUFR.error);
+          if ( DEBUG )
+            printf ( "# %s\n", BUFR.error );
           NFILES++;
-          bufrdeco_reset(&BUFR);
+          bufrdeco_reset ( &BUFR );
           continue;
         }
 
@@ -151,10 +151,10 @@ int main ( int argc, char *argv[] )
 
       if ( bufrdeco_parse_tree ( &BUFR ) )
         {
-	  if (DEBUG)
-          printf ( "# %s", BUFR.error );
+          if ( DEBUG )
+            printf ( "# %s", BUFR.error );
           NFILES++;
-          bufrdeco_reset(&BUFR);
+          bufrdeco_reset ( &BUFR );
           continue;
         }
       if ( VERBOSE )
@@ -162,7 +162,7 @@ int main ( int argc, char *argv[] )
 
       for ( subset = 0; subset < BUFR.sec3.subsets ; subset++ )
         {
-          if ( (seq = bufrdeco_get_subset_sequence_data ( &BUFR )) == NULL)
+          if ( ( seq = bufrdeco_get_subset_sequence_data ( &BUFR ) ) == NULL )
             {
               if ( DEBUG )
                 printf ( "# %s", BUFR.error );
@@ -172,27 +172,43 @@ int main ( int argc, char *argv[] )
           if ( VERBOSE )
             {
               if ( ( subset == 0 ) && BUFR.sec3.compressed )
-                print_bufrdeco_compressed_data_references ( &(BUFR.refs) );
+                print_bufrdeco_compressed_data_references ( & ( BUFR.refs ) );
               bufrdeco_print_subset_sequence_data ( seq );
             }
 
-          if (BUFR.sec3.ndesc &&  bufrdeco_parse_subset_sequence ( &REPORT, &STATE, &BUFR, ERR ) )
+          if ( BUFR.sec3.ndesc &&  bufrdeco_parse_subset_sequence ( &REPORT, &STATE, &BUFR, ERR ) )
             {
               if ( DEBUG )
                 fprintf ( stderr, "# %s\n", ERR );
+            }
+          if ( XML )
+            {
+              if ( subset == 0 )
+                fprintf ( stdout, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
+              print_xml ( stdout, &REPORT );
+            }
+          else if ( JSON )
+            {
+              print_json ( stdout, &REPORT );
+            }
+          else if ( CSV )
+            {
+              if ( subset == 0 )
+                fprintf ( stdout, "TYPE,FILE,DATETIME,INDEX,NAME,COUNTRY,LATITUDE,LONGITUDE,ALTITUDE,REPORT\n" );
+              print_csv ( stdout, &REPORT );
             }
           else
             {
               print_plain ( stdout, &REPORT );
             }
-
         }
-      fin:;
-      bufrdeco_reset(&BUFR);
+    fin:
+      ;
+      bufrdeco_reset ( &BUFR );
       NFILES ++;
     } // End of big loop parsing files
 
-  bufrdeco_close(&BUFR);
+  bufrdeco_close ( &BUFR );
   exit ( EXIT_SUCCESS );
 }
 

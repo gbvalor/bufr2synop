@@ -336,6 +336,28 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s,
   strcpy ( t->c.s1.YYGG, t->a.s1.YYGG );
   strcpy ( t->d.s1.YYGG, t->a.s1.YYGG );
 
+  if ( s->mask & SUBSET_MASK_HAVE_LATITUDE )
+    {
+      m->g.lat = s->lat;
+    }
+  if ( s->mask & SUBSET_MASK_HAVE_LONGITUDE )
+    {
+      m->g.lon = s->lon;
+    }
+  if ( s->mask & SUBSET_MASK_HAVE_ALTITUDE )
+    {
+      m->g.alt = s->alt;
+    }
+  if ( s->mask & SUBSET_MASK_HAVE_NAME )
+    {
+      strcpy ( m->g.name, s->name );
+    }
+  if ( s->mask & SUBSET_MASK_HAVE_COUNTRY )
+    {
+      strcpy ( m->g.country, s->country );
+    }
+  
+  
   //print_temp_raw_data ( r );
   //print_temp_raw_wind_shear_data ( w );
 

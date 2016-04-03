@@ -27,13 +27,16 @@ int print_csv_alphanum ( FILE *f, char *type, char *alphanum, struct metreport *
 {
   // prints header
   fprintf ( f, "\"%s\",", type );
-  fprintf ( f, "\"%s\",",m->h->filename );
   // print GTS_HEADER
   if ( m->h != NULL )
+  {
+    fprintf ( f, "\"%s\",",m->h->filename );
     fprintf ( f, "\"%s %s %s %s\",",m->h->bname, m->h->center, m->h->dtrel, m->h->order );
+  }
   else
-    fprintf ( f, "," );
-
+  {
+    fprintf ( f, ",," );
+  }
   // print DATE AND TIME
   fprintf ( f, "\"%s\",",m->t.datime );
 

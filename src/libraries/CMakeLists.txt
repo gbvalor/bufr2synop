@@ -8,7 +8,8 @@ add_library(bufr2tac bufr2tac.h metcommon.h metbuoy.h metsynop.h mettemp.h metcl
 	bufr2tac_x02.c bufr2tac_x04.c bufr2tac_x05.c bufr2tac_x06.c bufr2tac_x07.c 
 	bufr2tac_x08.c bufr2tac_x10.c bufr2tac_x11.c bufr2tac_x12.c bufr2tac_x13.c 
 	bufr2tac_x14.c bufr2tac_x20.c bufr2tac_x22.c bufr2tac_x31.c bufr2tac_x33.c 
-	bufr2tac_xml.c bufr2tac_climat.c bufr2tac_print_temp.c bufr2tac_tablec.c)
+	bufr2tac_xml.c bufr2tac_climat.c bufr2tac_print_temp.c bufr2tac_tablec.c
+	bufr2tac_print_synop.c bufr2tac_print_buoy.c bufr2tac_print_climat.c)
 target_link_libraries(bufr2tac bufrdeco m gfortran)
 
 INSTALL(FILES bufr2tac.h metbuoy.h metsynop.h mettemp.h metclimat.h metcommon.h
