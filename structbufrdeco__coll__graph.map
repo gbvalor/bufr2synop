@@ -1,0 +1,21 @@
+<map id="bufrdeco" name="bufrdeco">
+<area shape="rect" id="node2" href="$structbufrdeco__subset__sequence__data.html" title="Contains all the information for a subset in a expanded squence This is a verion to use with bufrdeco..." alt="" coords="615,19,832,45"/>
+<area shape="rect" id="node3" href="$structbufr__atom__data.html" title="Contains all the information for a single descriptor in a expanded squence. " alt="" coords="340,5,455,32"/>
+<area shape="rect" id="node4" href="$structbufr__descriptor.html" title="BUFR descriptor. " alt="" coords="39,93,151,120"/>
+<area shape="rect" id="node14" href="$structbufr__sec3.html" title="Store a parsed sec3 from a bufr file. " alt="" coords="511,68,591,95"/>
+<area shape="rect" id="node17" href="$structbufr__sequence.html" title="Stores an unexpanded sequence of descriptors. " alt="" coords="343,160,452,187"/>
+<area shape="rect" id="node20" href="$structbufrdeco__compressed__ref.html" title="Struct to hold the needed reference bit offsets in a compressed BUFR. " alt="" coords="308,211,487,237"/>
+<area shape="rect" id="node5" href="$structbufr__tables.html" title="Contains all tables needed to parse a bufr file. " alt="" coords="679,269,767,296"/>
+<area shape="rect" id="node6" href="$structbufr__tableb.html" title="Store a table B readed from a file formated and named as ECMWF bufrdc package. " alt="" coords="353,261,442,288"/>
+<area shape="rect" id="node7" href="$structbufr__tableb__decoded__item.html" title="Store parameters for a descriptor in table b, i. e. with f = 0. " alt="" coords="5,261,184,288"/>
+<area shape="rect" id="node8" href="$structbufr__tablec.html" title="Store a table C readed from a file formated and named as ECMWF bufrdc package. " alt="" coords="353,312,441,339"/>
+<area shape="rect" id="node9" href="$structbufr__tabled.html" title="Store a table D readed from a file formated and named as ECMWF bufrdc package. " alt="" coords="353,363,442,389"/>
+<area shape="rect" id="node10" href="$structbufr__sec0.html" title="bufr_sec0" alt="" coords="683,320,763,347"/>
+<area shape="rect" id="node11" href="$structbufrdeco__decoding__data__state.html" title="stores the state when expanding a sequence. " alt="" coords="638,371,809,413"/>
+<area shape="rect" id="node12" href="$structbufr__sec1.html" title="Store de parsed section 1 of a bufr file. " alt="" coords="683,437,763,464"/>
+<area shape="rect" id="node13" href="$structbufr__sec2.html" title="Store a parsed sec2 from a bufr file. " alt="" coords="683,488,763,515"/>
+<area shape="rect" id="node15" href="$structbufr__sec4.html" title="Store a parsed sec4 from a bufr file. " alt="" coords="683,539,763,565"/>
+<area shape="rect" id="node16" href="$structbufrdeco__expanded__tree.html" title="Array of structs bufr_sequence. " alt="" coords="639,152,807,179"/>
+<area shape="rect" id="node18" href="$structgts__header.html" title="stores WMO GTS header info " alt="" coords="680,589,767,616"/>
+<area shape="rect" id="node19" href="$structbufrdeco__compressed__data__references.html" title="Manage an array of structs bufrdeco_compressed_ref. " alt="" coords="645,203,801,245"/>
+</map>

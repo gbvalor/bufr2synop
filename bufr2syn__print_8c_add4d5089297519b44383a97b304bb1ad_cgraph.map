@@ -1,7 +1,0 @@
-<map id="print_synop" name="print_synop">
-<area shape="rect" id="node3" href="$bufr2syn_8h.html#a2efe9b5773b09cdd2649f1c65dad4cb1" title="Prints the synop section 0 (header) " alt="" coords="142,5,263,32"/>
-<area shape="rect" id="node5" href="$bufr2syn_8h.html#a6e1518e8f52c550a8cca2232c18f7ca6" title="Prints the synop section 1. " alt="" coords="142,56,263,83"/>
-<area shape="rect" id="node7" href="$bufr2syn_8h.html#a8e5b785c80dc52b4963819a9c5d80a94" title="Prints the synop section 2. " alt="" coords="142,107,263,133"/>
-<area shape="rect" id="node9" href="$bufr2syn_8h.html#adbfb21c324a0d9a5c8901a964632ac45" title="Prints the synop section 3. " alt="" coords="142,157,263,184"/>
-<area shape="rect" id="node11" href="$bufr2syn__print_8c.html#af182375d94ff85e54775bda0b7c16104" title="Prints the synop section 5. " alt="" coords="142,208,263,235"/>
-</map>

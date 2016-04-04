@@ -1,0 +1,11 @@
+<map id="uint32_t_to_descriptor" name="uint32_t_to_descriptor">
+<area shape="rect" id="node2" href="$bufrdeco__tableb_8c.html#a28461deb41aac5215ca930d1c3378b20" title="found a descriptor index in a struct bufr_tableb " alt="" coords="204,17,359,43"/>
+<area shape="rect" id="node4" href="$bufrdeco__tableb_8c.html#adbb96e45b9fe584f936c841cfb962d7c" title="Read a Table B file and set the result in a struct bufr_tableb. " alt="" coords="221,71,342,98"/>
+<area shape="rect" id="node8" href="$bufrdeco__tabled_8c.html#a932bfb8966e0de15f687a356ebd5f3e2" title="get the descriptors array for a descriptor sequence defined in table D with F = 3 ..." alt="" coords="209,123,353,164"/>
+<area shape="rect" id="node3" href="$bufrdeco__tableb_8c.html#af7080c64e4b84c791d8531a67987edba" title="Restores the original table B parameters for a BUFR descriptor. " alt="" coords="407,5,549,47"/>
+<area shape="rect" id="node5" href="$bufrdeco__read_8c.html#abd43e15b30951a6fc340f0b91b80abba" title="Read the tables according with bufr file data from a bufr table directory. " alt="" coords="418,71,538,98"/>
+<area shape="rect" id="node6" href="$bufrdeco__read_8c.html#ae3cfc6802c196511223adc0a6324e4af" title="Read bufr file and does preliminary and first decode pass. " alt="" coords="599,74,738,101"/>
+<area shape="rect" id="node7" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="788,101,839,127"/>
+<area shape="rect" id="node9" href="$bufrdeco__tree_8c.html#a00f4341aa38b56eca75c207c59e9cc33" title="Parse the descriptor tree in a recursive way. " alt="" coords="407,123,549,164"/>
+<area shape="rect" id="node10" href="$bufrdeco__tree_8c.html#adc93880205e1dfb437cd0a438e2ad469" title="Parse the tree of descriptors without expand the replicators. " alt="" coords="597,126,740,153"/>
+</map>

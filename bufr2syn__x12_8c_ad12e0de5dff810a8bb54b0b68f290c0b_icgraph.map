@@ -1,6 +1,0 @@
-<map id="kelvin_to_snTT" name="kelvin_to_snTT">
-<area shape="rect" id="node3" href="$bufr2syn__x12_8c.html#a313794dd78e4aa316acebe8e66118589" title="Parse a expanded descriptor with X = 12. " alt="" coords="163,5,269,32"/>
-<area shape="rect" id="node5" href="$bufr2syn__synop_8c.html#a2fb7360821d4a5b604f5a1a54d94e4a0" title="parse_subset_as_synop" alt="" coords="317,5,475,32"/>
-<area shape="rect" id="node7" href="$bufr2syn__sqparse_8c.html#a7e093a8faf8eb358ee8913479497f7fc" title="parse_subset_sequence" alt="" coords="523,5,682,32"/>
-<area shape="rect" id="node9" href="$bufr2synop_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="the standard C main entry function " alt="" coords="731,5,781,32"/>
-</map>

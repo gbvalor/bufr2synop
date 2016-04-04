@@ -1,5 +1,0 @@
-<map id="print_synop_sec1" name="print_synop_sec1">
-<area shape="rect" id="node3" href="$bufr2syn__print_8c.html#add4d5089297519b44383a97b304bb1ad" title="prints a synop into a string " alt="" coords="177,5,263,32"/>
-<area shape="rect" id="node5" href="$bufr2syn__sqparse_8c.html#a7e093a8faf8eb358ee8913479497f7fc" title="parse_subset_sequence" alt="" coords="313,5,471,32"/>
-<area shape="rect" id="node7" href="$bufr2synop_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="the standard C main entry function " alt="" coords="520,5,571,32"/>
-</map>

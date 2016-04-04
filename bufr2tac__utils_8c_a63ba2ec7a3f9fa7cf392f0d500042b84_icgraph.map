@@ -1,0 +1,10 @@
+<map id="guess_WMO_region" name="guess_WMO_region">
+<area shape="rect" id="node2" href="$bufr2tac__synop_8c.html#a991bb92aa7dea23bd60bf2c48020dbcd" title="Try to find WMO region if it is not already set and WMO Block and number index are known..." alt="" coords="192,42,373,69"/>
+<area shape="rect" id="node9" href="$bufr2tac__temp_8c.html#abe763e4931ff3be114a73a496978fdb2" title="guess_WMO_region_temp" alt="" coords="195,93,370,119"/>
+<area shape="rect" id="node3" href="$bufr2tac__x12_8c.html#a7f1ed15f5027409b984c5b94b3538269" title="Parse a expanded descriptor with X = 12. " alt="" coords="421,42,528,69"/>
+<area shape="rect" id="node4" href="$bufr2tac__synop_8c.html#a3178eb404dc66ceccd7a08a3c719c2aa" title="parses a subset sequence as an Land fixed SYNOP FM&#45;12, SHIP FM&#45;13 or SYNOP&#45;mobil FM&#45;14 report ..." alt="" coords="576,42,739,69"/>
+<area shape="rect" id="node5" href="$bufr2tac__sqparse_8c.html#a7b839bfd63c95d7fdbad26be3c1d86be" title="Parse a sequence of expanded descriptors for a subset. " alt="" coords="787,42,951,69"/>
+<area shape="rect" id="node6" href="$bufrtotac__io_8c.html#a3baaf7cbcd5761ee638cfdc060f6f2da" title="bufrdeco_parse_subset\l_sequence" alt="" coords="999,5,1160,47"/>
+<area shape="rect" id="node8" href="$bufr2synop_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="1054,71,1105,98"/>
+<area shape="rect" id="node7" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="1208,13,1259,39"/>
+</map>

@@ -1,7 +1,0 @@
-<map id="latlon_to_MMM" name="latlon_to_MMM">
-<area shape="rect" id="node3" href="$bufr2syn__x05_8c.html#a98692fc869c59a8c09125855dd2ed793" title="Parse a expanded descriptor with X = 05. " alt="" coords="165,5,272,32"/>
-<area shape="rect" id="node11" href="$bufr2syn__x06_8c.html#a254a7388e7be07f9595d2ca3476989ed" title="Parse a expanded descriptor with X = 06. " alt="" coords="165,56,272,83"/>
-<area shape="rect" id="node5" href="$bufr2syn__synop_8c.html#a2fb7360821d4a5b604f5a1a54d94e4a0" title="parse_subset_as_synop" alt="" coords="320,31,477,57"/>
-<area shape="rect" id="node7" href="$bufr2syn__sqparse_8c.html#a7e093a8faf8eb358ee8913479497f7fc" title="parse_subset_sequence" alt="" coords="526,31,685,57"/>
-<area shape="rect" id="node9" href="$bufr2synop_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="the standard C main entry function " alt="" coords="733,31,784,57"/>
-</map>

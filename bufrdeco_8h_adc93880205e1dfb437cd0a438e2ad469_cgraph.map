@@ -1,0 +1,7 @@
+<map id="bufrdeco_parse_tree" name="bufrdeco_parse_tree">
+<area shape="rect" id="node2" href="$bufrdeco__tree_8c.html#a00f4341aa38b56eca75c207c59e9cc33" title="Parse the descriptor tree in a recursive way. " alt="" coords="196,39,339,80"/>
+<area shape="rect" id="node3" href="$bufrdeco__tree_8c.html#a9cc733eec2370436c295066c77a7ca80" title="Set to a struct bufr_sequence an unexpanded descriptor array from sec3 in a BUFR report. " alt="" coords="387,5,572,47"/>
+<area shape="rect" id="node4" href="$bufrdeco_8h.html#a932bfb8966e0de15f687a356ebd5f3e2" title="get the descriptors array for a descriptor sequence defined in table D with F = 3 ..." alt="" coords="407,71,551,112"/>
+<area shape="rect" id="node5" href="$bufrdeco__tabled_8c.html#a16611c6f7658ec239c5ec63a8b32ad43" title="Find the index of a line in table D for a given key of a descriptor. " alt="" coords="620,53,775,79"/>
+<area shape="rect" id="node6" href="$bufrdeco_8h.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary " alt="" coords="622,103,773,130"/>
+</map>

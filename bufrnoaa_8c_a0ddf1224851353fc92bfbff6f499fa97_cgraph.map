@@ -1,11 +1,10 @@
 <map id="main" name="main">
-<area shape="rect" id="node3" href="$bufrnoaa_8h.html#a036827f5c0ff2b9501403fead64d94e2" title="returns 1 if selected message 0 otherwise " alt="" coords="123,5,237,32"/>
-<area shape="rect" id="node5" href="$bufrnoaa_8h.html#aee54cab2f67e3406a3b75a406bfe9d43" title="date_mtime_from_stat" alt="" coords="105,56,255,83"/>
-<area shape="rect" id="node7" href="$bufrnoaa_8h.html#aae53f0cf25746fc6582e734634d88536" title="is_bufr" alt="" coords="150,107,210,133"/>
-<area shape="rect" id="node9" href="$bufrnoaa_8h.html#a4d85db149640a3c0662be2f467fcff23" title="is_endb" alt="" coords="147,157,213,184"/>
-<area shape="rect" id="node11" href="$bufrnoaa_8h.html#a98bea247cc3697248cd8d1b6ab974685" title="is_head" alt="" coords="147,208,213,235"/>
-<area shape="rect" id="node13" href="$bufrnoaa_8h.html#a7852e7b80fac5075558e8a19192fc494" title="mtime_from_stat" alt="" coords="121,259,239,285"/>
-<area shape="rect" id="node15" href="$bufrnoaa_8h.html#a46f2cea859a89848802f2cdc5f70dcb3" title="read_args" alt="" coords="141,309,219,336"/>
-<area shape="rect" id="node19" href="$bufrnoaa_8h.html#afae47bf6471a7bbc98d4629471967ca5" title="timeval_substract" alt="" coords="119,360,241,387"/>
-<area shape="rect" id="node17" href="$bufr2synop_8h.html#aa1187b70998f73cdb598833d6afaa30a" title="print_usage" alt="" coords="304,309,392,336"/>
+<area shape="rect" id="node2" href="$bufrnoaa_8h.html#a036827f5c0ff2b9501403fead64d94e2" title="returns 1 if selected message 0 otherwise " alt="" coords="121,5,239,32"/>
+<area shape="rect" id="node3" href="$bufrnoaa_8h.html#a8e32ee6fcb5a4a960e7210a4d7ce1419" title="get a string with date and time from a struct stat " alt="" coords="104,56,256,83"/>
+<area shape="rect" id="node4" href="$bufrnoaa_8h.html#aae53f0cf25746fc6582e734634d88536" title="checks if an unsigned char from an array is the first char of &#39;BUFR&#39; " alt="" coords="149,107,211,133"/>
+<area shape="rect" id="node5" href="$bufrnoaa_8h.html#a4d85db149640a3c0662be2f467fcff23" title="checks if an unsigned char from an array is the first char of &#39;7777&#39; " alt="" coords="146,157,214,184"/>
+<area shape="rect" id="node6" href="$bufrnoaa_8h.html#a98bea247cc3697248cd8d1b6ab974685" title="checks if an unsigned char from an array is the first char of &#39;****&#39; " alt="" coords="147,208,213,235"/>
+<area shape="rect" id="node7" href="$bufrnoaa_8h.html#a7852e7b80fac5075558e8a19192fc494" title="modifies a file update time from a struct stat " alt="" coords="120,259,240,285"/>
+<area shape="rect" id="node8" href="$bufr2synop_8h.html#a46f2cea859a89848802f2cdc5f70dcb3" title="read input arguments with the aid of getopt " alt="" coords="140,309,220,336"/>
+<area shape="rect" id="node9" href="$bufrnoaa_8h.html#afae47bf6471a7bbc98d4629471967ca5" title="Subtract the `struct timeval&#39; values X and Y, storing the result in RESULT. " alt="" coords="118,360,242,387"/>
 </map>

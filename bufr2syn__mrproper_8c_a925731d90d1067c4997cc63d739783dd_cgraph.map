@@ -1,8 +1,0 @@
-<map id="clean_synop_chunks" name="clean_synop_chunks">
-<area shape="rect" id="node3" href="$bufr2syn__mrproper_8c.html#af94da6985ce67c544c1ea37b9e389689" title="clean a synop_ext struct " alt="" coords="195,5,344,32"/>
-<area shape="rect" id="node5" href="$bufr2syn__mrproper_8c.html#a5ac3f3ac265e5723e25382975b52ffd6" title="clean a synop_sec0 struct " alt="" coords="213,56,326,83"/>
-<area shape="rect" id="node7" href="$bufr2syn__mrproper_8c.html#a580666c6622763e3889a635fd5a90abd" title="clean a synop_sec1 struct " alt="" coords="213,107,326,133"/>
-<area shape="rect" id="node9" href="$bufr2syn__mrproper_8c.html#a0df6d478697ca24f9371c791684b752c" title="clean a synop_sec2 struct " alt="" coords="213,157,326,184"/>
-<area shape="rect" id="node11" href="$bufr2syn__mrproper_8c.html#aec8f8c62ef33159b3932e3c27cdafa26" title="clean a synop_sec3 struct " alt="" coords="213,208,326,235"/>
-<area shape="rect" id="node13" href="$bufr2syn__mrproper_8c.html#ada826a7249f23a69b672f51c917255ff" title="clean a synop_sec5 struct " alt="" coords="213,259,326,285"/>
-</map>

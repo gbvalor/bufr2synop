@@ -1,8 +1,0 @@
-<map id="adjust_string" name="adjust_string">
-<area shape="rect" id="node3" href="$bufr2syn__x01_8c.html#acb3bbf3a22b9538856bc8600a8e059af" title="Parse a expanded descriptor with X = 01. " alt="" coords="149,5,264,32"/>
-<area shape="rect" id="node11" href="$bufr2syn__x01_8c.html#a45f5792feb03c19b863362d0bc6d31af" title="Parse a expanded descriptor with X = 01. " alt="" coords="153,56,260,83"/>
-<area shape="rect" id="node5" href="$bufr2syn__buoy_8c.html#a0ead25d81eb64a65e61fcc77ceae0285" title="parse_subset_as_buoy" alt="" coords="315,5,466,32"/>
-<area shape="rect" id="node7" href="$bufr2syn__sqparse_8c.html#a7e093a8faf8eb358ee8913479497f7fc" title="parse_subset_sequence" alt="" coords="518,31,677,57"/>
-<area shape="rect" id="node9" href="$bufr2synop_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="the standard C main entry function " alt="" coords="725,31,776,57"/>
-<area shape="rect" id="node13" href="$bufr2syn__synop_8c.html#a2fb7360821d4a5b604f5a1a54d94e4a0" title="parse_subset_as_synop" alt="" coords="312,56,469,83"/>
-</map>

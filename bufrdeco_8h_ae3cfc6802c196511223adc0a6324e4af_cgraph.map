@@ -1,0 +1,14 @@
+<map id="bufrdeco_read_bufr" name="bufrdeco_read_bufr">
+<area shape="rect" id="node2" href="$bufrdeco__read_8c.html#abd43e15b30951a6fc340f0b91b80abba" title="Read the tables according with bufr file data from a bufr table directory. " alt="" coords="215,107,335,133"/>
+<area shape="rect" id="node11" href="$bufrdeco_8h.html#a1a8996af46cd7bc0bacb76c46a453c01" title="returns the uint32_t value from an array of three bytes, most significant first " alt="" coords="201,157,349,184"/>
+<area shape="rect" id="node12" href="$bufrdeco_8h.html#ae5a6eb08d7b5c59b5d53136af36be22c" title="set a struct bufr_descriptor from two consecutive bytes in bufr file " alt="" coords="192,208,359,235"/>
+<area shape="rect" id="node13" href="$bufrdeco_8h.html#a0a8466d777dfa02324b7f13316ea71fb" title="returns the uint32_t value from an array of two bytes, most significant first " alt="" coords="205,259,346,285"/>
+<area shape="rect" id="node3" href="$bufrdeco__read_8c.html#a55827c8f81b4012aa4c65397369a5265" title="Get the complete pathnames for EMCWF table files needed by a bufr message. " alt="" coords="407,5,568,32"/>
+<area shape="rect" id="node4" href="$bufrdeco_8h.html#a0576a87972353fb9e7a569fa1f905e03" title="Init a struct bufr_tables allocating space. " alt="" coords="417,56,558,83"/>
+<area shape="rect" id="node5" href="$bufrdeco_8h.html#adbb96e45b9fe584f936c841cfb962d7c" title="Read a Table B file and set the result in a struct bufr_tableb. " alt="" coords="427,107,548,133"/>
+<area shape="rect" id="node9" href="$bufrdeco_8h.html#a77f656761635cd3b472aca002f29aa54" title="Reads a file with table C content according with ECMWF format. " alt="" coords="427,157,547,184"/>
+<area shape="rect" id="node10" href="$bufrdeco_8h.html#ad425183fbc0e44b92ad333f12bd41f4e" title="Reads a file with table D content according with ECMWF format. " alt="" coords="427,208,548,235"/>
+<area shape="rect" id="node6" href="$bufrdeco_8h.html#a86b51c0d7a12669b2664dbba50c5e328" title="bufr_adjust_string" alt="" coords="628,56,755,83"/>
+<area shape="rect" id="node7" href="$bufrdeco_8h.html#a454f64137d0cf7e0c4b3e018a52ddd9a" title="get a null termitated c&#45;string from an array of unsigned chars " alt="" coords="616,107,767,133"/>
+<area shape="rect" id="node8" href="$bufrdeco_8h.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary " alt="" coords="616,157,767,184"/>
+</map>

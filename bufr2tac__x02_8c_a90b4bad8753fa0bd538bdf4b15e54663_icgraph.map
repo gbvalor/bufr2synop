@@ -1,0 +1,7 @@
+<map id="climat_parse_x02" name="climat_parse_x02">
+<area shape="rect" id="node2" href="$bufr2tac__climat_8c.html#a9a64417498c5d0c1c66d9006e2ff8a45" title="parse_subset_as_climat" alt="" coords="176,42,339,69"/>
+<area shape="rect" id="node3" href="$bufr2tac__sqparse_8c.html#a7b839bfd63c95d7fdbad26be3c1d86be" title="Parse a sequence of expanded descriptors for a subset. " alt="" coords="387,42,551,69"/>
+<area shape="rect" id="node4" href="$bufrtotac__io_8c.html#a3baaf7cbcd5761ee638cfdc060f6f2da" title="bufrdeco_parse_subset\l_sequence" alt="" coords="599,5,760,47"/>
+<area shape="rect" id="node6" href="$bufr2synop_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="654,71,705,98"/>
+<area shape="rect" id="node5" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="808,13,859,39"/>
+</map>

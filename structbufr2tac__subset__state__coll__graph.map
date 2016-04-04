@@ -1,0 +1,8 @@
+<map id="bufr2tac_subset_state" name="bufr2tac_subset_state">
+<area shape="rect" id="node2" href="$structtemp__raw__data.html" title="Stores the array of all data profile points as it in bufr sequence. " alt="" coords="31,109,142,136"/>
+<area shape="rect" id="node3" href="$structtemp__raw__point__data.html" title="Stores data of a sounding profile in raw format, as given in bufr. " alt="" coords="5,13,152,39"/>
+<area shape="rect" id="node4" href="$structbufr__atom__data.html" title="Contains all the information for a single descriptor in a expanded squence. " alt="" coords="171,109,285,136"/>
+<area shape="rect" id="node5" href="$structbufr__descriptor.html" title="BUFR descriptor. " alt="" coords="176,13,288,39"/>
+<area shape="rect" id="node6" href="$structtemp__raw__wind__shear__data.html" title="array of Wind shear data points at a pressure level " alt="" coords="310,109,493,136"/>
+<area shape="rect" id="node7" href="$structtemp__raw__wind__shear__point.html" title="Wind shear data point at a pressure level. " alt="" coords="326,5,477,47"/>
+</map>

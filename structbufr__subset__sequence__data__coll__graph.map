@@ -1,4 +1,0 @@
-<map id="bufr_subset_sequence_data" name="bufr_subset_sequence_data">
-<area shape="rect" id="node2" href="$structbufr__atom__data.html" title="Contains all the information for a single descriptor in a expanded squence. " alt="" coords="40,96,151,123"/>
-<area shape="rect" id="node4" href="$structbufr__descriptor.html" title="BUFR descriptor. " alt="" coords="43,5,149,32"/>
-</map>

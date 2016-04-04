@@ -1,0 +1,6 @@
+<map id="bufrdeco_close" name="bufrdeco_close">
+<area shape="rect" id="node2" href="$bufrdeco__memory_8c.html#ada70fb2f449cb542b987acee73b8d494" title="Free the memory allocated for array of references in a struct bufrdeco_compressed_data_references. " alt="" coords="174,5,359,47"/>
+<area shape="rect" id="node3" href="$bufrdeco__memory_8c.html#aae49b482b2986da2bc5971ee16e33048" title="Frees the allocated space for a struct bufrdeco_expanded_tree. " alt="" coords="168,71,365,98"/>
+<area shape="rect" id="node4" href="$bufrdeco__memory_8c.html#a14e60e0905769f56485daf274c486d81" title="Free the memory for sequence array in a struct bufrdeco_subset_sequence_data. " alt="" coords="191,123,342,164"/>
+<area shape="rect" id="node5" href="$bufrdeco__memory_8c.html#a2a95716a5863b3b9fa6ecfcf26f19d1e" title="Frees the allocated space for a struct bufr_tables. " alt="" coords="193,189,340,215"/>
+</map>

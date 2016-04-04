@@ -1,0 +1,9 @@
+<map id="temp_d" name="temp_d">
+<area shape="rect" id="node2" href="$structtemp__sec7.html" title="Section 7 for a part of TEMP report. " alt="" coords="5,95,92,121"/>
+<area shape="rect" id="node3" href="$structtemp__bd__sec5.html" title="Section 5 for parts B and D of a TEMP report. " alt="" coords="116,95,224,121"/>
+<area shape="rect" id="node4" href="$structtemp__th__point.html" title="Store temperature and dewpoint depresion data in a TEMP report. " alt="" coords="113,5,219,32"/>
+<area shape="rect" id="node5" href="$structtemp__bd__sec6.html" title="Section 6 for parts B and D of a TEMP report. " alt="" coords="248,95,356,121"/>
+<area shape="rect" id="node6" href="$structtemp__wind__point.html" title="Store wind data in a TEMP report. " alt="" coords="243,5,366,32"/>
+<area shape="rect" id="node7" href="$structtemp__acd__sec1.html" title="Stores section 1 for parts A, C and D of a TEMP report. " alt="" coords="381,95,495,121"/>
+<area shape="rect" id="node8" href="$structreport__date__ext.html" title="contains extensions, not in wmo. Date/time UTC information " alt="" coords="519,95,631,121"/>
+</map>

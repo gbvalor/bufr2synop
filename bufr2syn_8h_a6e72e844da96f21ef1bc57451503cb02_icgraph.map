@@ -1,6 +1,0 @@
-<map id="vism_to_VV" name="vism_to_VV">
-<area shape="rect" id="node3" href="$bufr2syn__x20_8c.html#ad256bd10647927ed98a2e7e5694cddc6" title="Parse a expanded descriptor with X = 20. " alt="" coords="144,5,251,32"/>
-<area shape="rect" id="node5" href="$bufr2syn__synop_8c.html#a2fb7360821d4a5b604f5a1a54d94e4a0" title="parse_subset_as_synop" alt="" coords="299,5,456,32"/>
-<area shape="rect" id="node7" href="$bufr2syn__sqparse_8c.html#a7e093a8faf8eb358ee8913479497f7fc" title="parse_subset_sequence" alt="" coords="505,5,663,32"/>
-<area shape="rect" id="node9" href="$bufr2synop_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="the standard C main entry function " alt="" coords="712,5,763,32"/>
-</map>

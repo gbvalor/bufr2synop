@@ -1,6 +1,0 @@
-<map id="secs_to_tt" name="secs_to_tt">
-<area shape="rect" id="node3" href="$bufr2syn__x11_8c.html#a51bad76cadbf8907733d94d115b4a29f" title="Parse a expanded descriptor with X = 11. " alt="" coords="136,5,243,32"/>
-<area shape="rect" id="node5" href="$bufr2syn__synop_8c.html#a2fb7360821d4a5b604f5a1a54d94e4a0" title="parse_subset_as_synop" alt="" coords="291,5,448,32"/>
-<area shape="rect" id="node7" href="$bufr2syn__sqparse_8c.html#a7e093a8faf8eb358ee8913479497f7fc" title="parse_subset_sequence" alt="" coords="497,5,655,32"/>
-<area shape="rect" id="node9" href="$bufr2synop_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="the standard C main entry function " alt="" coords="704,5,755,32"/>
-</map>

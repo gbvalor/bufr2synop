@@ -1,10 +1,10 @@
 <map id="buoy_chunks" name="buoy_chunks">
-<area shape="rect" id="node2" href="$structbuoy__sec0.html" title="contains all possible substrings from section 0 when a report is parsed with success ..." alt="" coords="5,96,87,123"/>
-<area shape="rect" id="node4" href="$structbuoy__sec1.html" title="contains all possible substrings from section 1 when a report is parsed with success ..." alt="" coords="112,96,193,123"/>
-<area shape="rect" id="node6" href="$structbuoy__sec2.html" title="contains all possible substrings from section 2 when a report is parsed with success ..." alt="" coords="219,96,300,123"/>
-<area shape="rect" id="node8" href="$structreport__date__ext.html" title="contains extensions, not in wmo. Date/time UTC information " alt="" coords="326,96,436,123"/>
-<area shape="rect" id="node10" href="$structbuoy__sec3.html" title="contains all possible substrings from section 3 when a report is parsed with success ..." alt="" coords="461,96,543,123"/>
-<area shape="rect" id="node12" href="$structb__sec3__layer1.html" title="A layer with Temperature and salinity for a buoy report. " alt="" coords="387,5,491,32"/>
-<area shape="rect" id="node14" href="$structb__sec3__layer2.html" title="A layer with direction and speed for a sea current. " alt="" coords="515,5,619,32"/>
-<area shape="rect" id="node16" href="$structbuoy__sec4.html" title="contains all possible substrings from section 4 when a report is parsed with success ..." alt="" coords="568,96,649,123"/>
+<area shape="rect" id="node2" href="$structbuoy__sec0.html" title="contains all possible substrings from section 0 when a report is parsed with success ..." alt="" coords="5,95,91,121"/>
+<area shape="rect" id="node3" href="$structbuoy__sec1.html" title="contains all possible substrings from section 1 when a report is parsed with success ..." alt="" coords="115,95,200,121"/>
+<area shape="rect" id="node4" href="$structbuoy__sec2.html" title="contains all possible substrings from section 2 when a report is parsed with success ..." alt="" coords="224,95,309,121"/>
+<area shape="rect" id="node5" href="$structreport__date__ext.html" title="contains extensions, not in wmo. Date/time UTC information " alt="" coords="333,95,445,121"/>
+<area shape="rect" id="node6" href="$structbuoy__sec3.html" title="contains all possible substrings from section 3 when a report is parsed with success ..." alt="" coords="469,95,555,121"/>
+<area shape="rect" id="node7" href="$structb__sec3__layer1.html" title="A layer with Temperature and salinity for a buoy report. " alt="" coords="396,5,500,32"/>
+<area shape="rect" id="node8" href="$structb__sec3__layer2.html" title="A layer with direction and speed for a sea current. " alt="" coords="524,5,628,32"/>
+<area shape="rect" id="node9" href="$structbuoy__sec4.html" title="contains all possible substrings from section 4 when a report is parsed with success ..." alt="" coords="579,95,664,121"/>
 </map>

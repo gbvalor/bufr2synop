@@ -1,0 +1,7 @@
+<map id="print_temp_c" name="print_temp_c">
+<area shape="rect" id="node2" href="$bufr2tac__print__temp_8c.html#a8ed5b289db6877af3cdc8d7782ebfcd4" title="Prints the section 1 of part C of a TEMP report. " alt="" coords="151,5,281,32"/>
+<area shape="rect" id="node3" href="$bufr2tac__print__temp_8c.html#ac18019065e17e8a68e5eec4b07ddd07e" title="Prints the section 2 of part C of a TEMP report. " alt="" coords="151,56,281,83"/>
+<area shape="rect" id="node4" href="$bufr2tac__print__temp_8c.html#aa6d3c5f6083425543b562ac62cdf8223" title="Prints the section 3 of part C of a TEMP report. " alt="" coords="151,107,281,133"/>
+<area shape="rect" id="node5" href="$bufr2tac__print__temp_8c.html#ac7039dcd111c6a628ecffc87f8e07101" title="Prints the section 4 of part C of a TEMP report. " alt="" coords="151,157,281,184"/>
+<area shape="rect" id="node6" href="$bufr2tac__print__temp_8c.html#aabaf2c107e9b41d3dbfd497e83f27f9e" title="Prints the section 7 of part C of a TEMP report. " alt="" coords="151,208,281,235"/>
+</map>

@@ -1,0 +1,51 @@
+<map id="main" name="main">
+<area shape="rect" id="node2" href="$bufrdeco_8h.html#a8fe6bc0c46327ed8db54b7a471f31504" title="Free all allocated memory. " alt="" coords="124,202,239,229"/>
+<area shape="rect" id="node7" href="$bufrdeco_8h.html#a0e0289d12b117e4df8f37f14486d3d71" title="Parse and get a struct bufrdeco_subset_sequence_data. " alt="" coords="108,338,255,379"/>
+<area shape="rect" id="node22" href="$bufrdeco_8h.html#af9cff1700125f2b6df2e7da8d628c8d5" title="Inits and allocate memory for a struct bufrdeco. " alt="" coords="132,440,231,466"/>
+<area shape="rect" id="node25" href="$bufrdeco_8h.html#adc93880205e1dfb437cd0a438e2ad469" title="Parse the tree of descriptors without expand the replicators. " alt="" coords="110,502,253,529"/>
+<area shape="rect" id="node31" href="$bufrdeco_8h.html#a2a104186c33c1badba5f7c5234433a09" title="Prints a struct bufrdeco_subset_sequence_data. " alt="" coords="104,634,259,675"/>
+<area shape="rect" id="node33" href="$bufrdeco_8h.html#a4648714855a87e920c82a8056d08fac1" title="Print a tree of descriptors. " alt="" coords="113,700,249,726"/>
+<area shape="rect" id="node35" href="$bufrdeco_8h.html#ae3cfc6802c196511223adc0a6324e4af" title="Read bufr file and does preliminary and first decode pass. " alt="" coords="112,582,251,609"/>
+<area shape="rect" id="node45" href="$bufrdeco_8h.html#ab5bfc8d5afd84bb02478f71d105fb080" title="Prints info from sec0. " alt="" coords="126,750,237,777"/>
+<area shape="rect" id="node46" href="$bufrdeco_8h.html#a042daf00a0d80d153233fbec2e26dd69" title="Prints info from sec1. " alt="" coords="126,801,237,828"/>
+<area shape="rect" id="node47" href="$bufrdeco_8h.html#aba5f9357ff898a9f1fd3b9242ff8aa21" title="Prints info from sec3. " alt="" coords="126,852,237,878"/>
+<area shape="rect" id="node48" href="$bufrdeco_8h.html#a5b09fae2bf0ec6233666394b6de1b828" title="Prints info from sec3. " alt="" coords="126,902,237,929"/>
+<area shape="rect" id="node49" href="$bufrdeco__test_8c.html#a46f2cea859a89848802f2cdc5f70dcb3" title="read input arguments with the aid of getopt " alt="" coords="141,953,221,980"/>
+<area shape="rect" id="node3" href="$bufrdeco__memory_8c.html#a14e60e0905769f56485daf274c486d81" title="Free the memory for sequence array in a struct bufrdeco_subset_sequence_data. " alt="" coords="330,130,481,171"/>
+<area shape="rect" id="node4" href="$bufrdeco__memory_8c.html#ada70fb2f449cb542b987acee73b8d494" title="Free the memory allocated for array of references in a struct bufrdeco_compressed_data_references. " alt="" coords="313,195,498,236"/>
+<area shape="rect" id="node5" href="$bufrdeco__memory_8c.html#aae49b482b2986da2bc5971ee16e33048" title="Frees the allocated space for a struct bufrdeco_expanded_tree. " alt="" coords="307,261,504,288"/>
+<area shape="rect" id="node6" href="$bufrdeco__memory_8c.html#a2a95716a5863b3b9fa6ecfcf26f19d1e" title="Frees the allocated space for a struct bufr_tables. " alt="" coords="332,78,479,105"/>
+<area shape="rect" id="node8" href="$bufrdeco__data_8c.html#a90316581dc8355c7a63928ac3063fb32" title="User interface to decode a BUFR subset. " alt="" coords="326,312,485,354"/>
+<area shape="rect" id="node9" href="$bufrdeco_8h.html#ac39a1653e65fddaa1c96134f8e5cc995" title="Cleans a struct bufrdeco_subset_sequence_data. " alt="" coords="570,204,729,246"/>
+<area shape="rect" id="node11" href="$bufrdeco_8h.html#ab5056984d71413ec42f7bb6971de2ce8" title="Parse a compressed data bufr. " alt="" coords="552,306,747,333"/>
+<area shape="rect" id="node14" href="$bufrdeco_8h.html#ad2f986d73d85c08ffa6560d80c244b33" title="Get data for a given subset in a compressed data bufr. " alt="" coords="578,360,721,402"/>
+<area shape="rect" id="node17" href="$bufrdeco__data_8c.html#a37d001fbe5872fa6c77e8316af1dcd0f" title="decode the data from a subset in a recursive way " alt="" coords="563,51,736,92"/>
+<area shape="rect" id="node10" href="$bufrdeco__memory_8c.html#a119c6d89e7edbbe328149d2e0f91b0c3" title="Init a struct bufrdeco_subset_sequence_data. " alt="" coords="819,168,965,210"/>
+<area shape="rect" id="node12" href="$bufrdeco_8h.html#a683946b7b763416ffa9ab8849a608aaa" title="Init a struct bufrdeco_compressed_data_references. " alt="" coords="803,234,981,275"/>
+<area shape="rect" id="node13" href="$bufrdeco__compressed_8c.html#ac2034de9ae4ad0228a56c207689553b1" title="Parse recursively the compressed data in a bufr report to get references where to get data for every ..." alt="" coords="795,299,989,340"/>
+<area shape="rect" id="node15" href="$bufrdeco__compressed_8c.html#a3e953cbb9de497fded8393b666902bf2" title="Get atom data from a descriptor for a given subset. " alt="" coords="797,364,987,406"/>
+<area shape="rect" id="node16" href="$bufrdeco_8h.html#aac640b0a169dcc99097be9053118bcea" title="doubles the allocated space for a struct bufrdeco_subset_sequence_data whenever is posible ..." alt="" coords="1284,212,1447,254"/>
+<area shape="rect" id="node18" href="$bufrdeco_8h.html#a60d5f3460cfd609e245a5e2342d2ee4d" title="Get data from a table B descriptor. " alt="" coords="1066,58,1207,85"/>
+<area shape="rect" id="node19" href="$bufrdeco__data_8c.html#aac640b0a169dcc99097be9053118bcea" title="doubles the allocated space for a struct bufrdeco_subset_sequence_data whenever is posible ..." alt="" coords="1055,110,1218,151"/>
+<area shape="rect" id="node20" href="$bufrdeco__data_8c.html#a9fab831b9b513d6dfb8235bd909b4acf" title="Decodes a replicated sequence. " alt="" coords="797,51,987,92"/>
+<area shape="rect" id="node21" href="$bufrdeco_8h.html#a3169d30f8c32460fa68a2117129e4e44" title="parse a descritor with f = 2 " alt="" coords="1037,8,1236,34"/>
+<area shape="rect" id="node23" href="$bufrdeco__memory_8c.html#a0576a87972353fb9e7a569fa1f905e03" title="Init a struct bufr_tables allocating space. " alt="" coords="335,440,476,466"/>
+<area shape="rect" id="node24" href="$bufrdeco__memory_8c.html#a1d746042472e89d5c6092582919d1b98" title="Init a struct bufrdeco_expanded_tree allocating space. " alt="" coords="310,389,501,416"/>
+<area shape="rect" id="node26" href="$bufrdeco__tree_8c.html#a00f4341aa38b56eca75c207c59e9cc33" title="Parse the descriptor tree in a recursive way. " alt="" coords="334,491,477,532"/>
+<area shape="rect" id="node27" href="$bufrdeco__tree_8c.html#a9cc733eec2370436c295066c77a7ca80" title="Set to a struct bufr_sequence an unexpanded descriptor array from sec3 in a BUFR report. " alt="" coords="557,491,742,532"/>
+<area shape="rect" id="node28" href="$bufrdeco_8h.html#a932bfb8966e0de15f687a356ebd5f3e2" title="get the descriptors array for a descriptor sequence defined in table D with F = 3 ..." alt="" coords="577,426,721,467"/>
+<area shape="rect" id="node29" href="$bufrdeco__tabled_8c.html#a16611c6f7658ec239c5ec63a8b32ad43" title="Find the index of a line in table D for a given key of a descriptor. " alt="" coords="815,481,969,508"/>
+<area shape="rect" id="node30" href="$bufrdeco_8h.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary " alt="" coords="817,620,967,646"/>
+<area shape="rect" id="node32" href="$bufrdeco__print_8c.html#a35d19d7306d279df40e392f4986debc0" title="print the data in a struct bufr_atom_data to a string " alt="" coords="317,760,493,786"/>
+<area shape="rect" id="node34" href="$bufrdeco__print_8c.html#af9fef1838b7470615e265969b2e9c012" title="Print a tree of descriptors in a recursive way. " alt="" coords="337,811,473,852"/>
+<area shape="rect" id="node36" href="$bufrdeco_8h.html#a1a8996af46cd7bc0bacb76c46a453c01" title="returns the uint32_t value from an array of three bytes, most significant first " alt="" coords="331,658,479,685"/>
+<area shape="rect" id="node37" href="$bufrdeco_8h.html#a0a8466d777dfa02324b7f13316ea71fb" title="returns the uint32_t value from an array of two bytes, most significant first " alt="" coords="335,709,476,736"/>
+<area shape="rect" id="node38" href="$bufrdeco_8h.html#ae5a6eb08d7b5c59b5d53136af36be22c" title="set a struct bufr_descriptor from two consecutive bytes in bufr file " alt="" coords="322,557,489,584"/>
+<area shape="rect" id="node39" href="$bufrdeco__read_8c.html#abd43e15b30951a6fc340f0b91b80abba" title="Read the tables according with bufr file data from a bufr table directory. " alt="" coords="345,608,465,634"/>
+<area shape="rect" id="node40" href="$bufrdeco__read_8c.html#a55827c8f81b4012aa4c65397369a5265" title="Get the complete pathnames for EMCWF table files needed by a bufr message. " alt="" coords="569,760,730,786"/>
+<area shape="rect" id="node41" href="$bufrdeco_8h.html#a0576a87972353fb9e7a569fa1f905e03" title="Init a struct bufr_tables allocating space. " alt="" coords="579,557,720,584"/>
+<area shape="rect" id="node42" href="$bufrdeco_8h.html#adbb96e45b9fe584f936c841cfb962d7c" title="Read a Table B file and set the result in a struct bufr_tableb. " alt="" coords="589,709,710,736"/>
+<area shape="rect" id="node43" href="$bufrdeco_8h.html#a77f656761635cd3b472aca002f29aa54" title="Reads a file with table C content according with ECMWF format. " alt="" coords="589,608,709,634"/>
+<area shape="rect" id="node44" href="$bufrdeco_8h.html#ad425183fbc0e44b92ad333f12bd41f4e" title="Reads a file with table D content according with ECMWF format. " alt="" coords="589,658,710,685"/>
+<area shape="rect" id="node50" href="$bufrdeco__test_8c.html#aa1187b70998f73cdb598833d6afaa30a" title="print_usage" alt="" coords="360,953,451,980"/>
+</map>

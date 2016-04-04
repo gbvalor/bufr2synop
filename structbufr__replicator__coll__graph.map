@@ -1,0 +1,4 @@
+<map id="bufr_replicator" name="bufr_replicator">
+<area shape="rect" id="node2" href="$structbufr__sequence.html" title="Stores an unexpanded sequence of descriptors. " alt="" coords="7,96,116,123"/>
+<area shape="rect" id="node3" href="$structbufr__descriptor.html" title="BUFR descriptor. " alt="" coords="5,5,117,32"/>
+</map>

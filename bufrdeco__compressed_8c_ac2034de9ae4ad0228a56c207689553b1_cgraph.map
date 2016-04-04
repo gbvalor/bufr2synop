@@ -1,0 +1,11 @@
+<map id="bufrdeco_parse_compressed_recursive" name="bufrdeco_parse_compressed_recursive">
+<area shape="rect" id="node2" href="$bufrdeco__compressed_8c.html#a12eb30c4bdf4d68d2839d15dacbcf647" title="decodes a repicated subsequence " alt="" coords="248,78,439,119"/>
+<area shape="rect" id="node3" href="$bufrdeco_8h.html#a995fbc664903f38e5ddb916067aec107" title="parse a descritor with f = 2 in case of compressed bufr " alt="" coords="487,41,700,68"/>
+<area shape="rect" id="node7" href="$bufrdeco_8h.html#a92e5e1f8a8fad97564ab7e83cb1300cc" title="get data from table B when parsing compressed data references " alt="" coords="494,115,693,141"/>
+<area shape="rect" id="node4" href="$bufrdeco_8h.html#a11c794f59590b7351b8d487fe88fffb8" title="Get a string from an array of bits. " alt="" coords="752,56,907,83"/>
+<area shape="rect" id="node5" href="$bufrdeco_8h.html#a3ea14e425c4a8b2f8ccefa1f2b4b2737" title="Read bits from an array of uint8_t and set them as an uint32_t. " alt="" coords="759,5,899,32"/>
+<area shape="rect" id="node6" href="$bufrdeco__utils_8c.html#ae9927049c61078aa71a7504498ffa548" title="Read bits from an array of uint8_t and set them as an uint32_t. " alt="" coords="959,5,1105,32"/>
+<area shape="rect" id="node8" href="$bufrdeco_8h.html#a1d2fc8f6683d9697a36ca71eb513ef34" title="Get an int32_t from bits according with bufr criteria to change the reference of a descritor..." alt="" coords="754,107,905,149"/>
+<area shape="rect" id="node9" href="$bufrdeco_8h.html#ac1a6900782df9782c8e1b5d1b373db13" title="check if a descriptor is a delayed descriptor " alt="" coords="748,173,911,200"/>
+<area shape="rect" id="node10" href="$bufrdeco_8h.html#a22d23c4377cba5193d77a3b38c0f8d79" title="check if a descriptor is a local descriptor " alt="" coords="757,224,902,251"/>
+</map>
