@@ -470,7 +470,7 @@ char * print_temp_b_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
-  \fn char * print_temp_b_sec5 (char **sec2, size_t lmax, struct temp_chunks *t)
+  \fn char * print_temp_b_sec5 (char **sec5, size_t lmax, struct temp_chunks *t)
   \brief Prints the section 5 of part B of a TEMP report
   \param sec5 the pointer where to print section
   \param lmax max length permited
@@ -1069,7 +1069,7 @@ int print_temp_d ( char *report, size_t lmax, struct temp_chunks *t )
 /*!
    \fn int print_temp ( struct metreport *m )
    \brief print the four parts of a decoded TEMP report from a BUFR file into strings
-   \param m pointer to a struct \metreport in which alphanumeric string members stores the reults
+   \param m pointer to a struct \ref metreport in which alphanumeric string members stores the reults
  */
 int print_temp ( struct metreport *m )
 {
