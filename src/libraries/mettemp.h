@@ -135,7 +135,7 @@
   \def TEMP_NMAX_POINTS
   \brief maximum number of significant points
 */
-#define TEMP_NMAX_POINTS (64)
+#define TEMP_NMAX_POINTS (128)
 
 /*!
   \def RAW_TEMP_NMAX_POINTS

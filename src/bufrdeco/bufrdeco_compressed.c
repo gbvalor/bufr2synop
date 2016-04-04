@@ -120,7 +120,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
           else if ( res == 0 )
             {
               // associated field read with success
-              if ( r->nd <  BUFR_NMAXSEQ )
+              if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
                 {
                   r->nd += 1;
                 }
@@ -138,7 +138,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
               return 1;
             }
           //print_bufrdeco_compressed_ref ( rf );
-          if ( r->nd <  BUFR_NMAXSEQ )
+          if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
             {
               r->nd += 1;
             }
@@ -180,7 +180,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
                   {
                     //print_bufrdeco_compressed_ref ( rf );
                     // associated field read with success
-                    if ( r->nd <  BUFR_NMAXSEQ )
+                    if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
                       {
                         r->nd += 1;
                       }
@@ -198,7 +198,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
                     return 1;
                   }
                 //print_bufrdeco_compressed_ref ( rf );
-                if ( r->nd <  BUFR_NMAXSEQ )
+                if ( r->nd < ( BUFR_NMAXSEQ -1 ) )
                   {
                     r->nd += 1;
                   }
@@ -287,7 +287,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                   {
                     //print_bufrdeco_compressed_ref ( rf );
                     // associated field read with success
-                    if ( r->nd <  BUFR_NMAXSEQ )
+                    if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
                       {
                         r->nd += 1;
                       }
@@ -305,7 +305,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                     return 1;
                   }
                 //print_bufrdeco_compressed_ref ( rf );
-                if ( r->nd <  BUFR_NMAXSEQ )
+                if ( r->nd < ( BUFR_NMAXSEQ -1 ) )
                   {
                     r->nd += 1;
                   }
@@ -348,7 +348,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                       {
                         //print_bufrdeco_compressed_ref ( rf );
                         // associated field read with success
-                        if ( r->nd <  BUFR_NMAXSEQ )
+                        if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
                           {
                             r->nd += 1;
                           }
@@ -366,7 +366,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                         return 1;
                       }
                     //print_bufrdeco_compressed_ref ( rf );
-                    if ( r->nd <  BUFR_NMAXSEQ )
+                    if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
                       {
                         r->nd += 1;
                       }
@@ -391,7 +391,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                 }
               if ( l->lseq[i].x == 5 ) // cases wich produces a new ref
                 {
-                  if ( r->nd <  BUFR_NMAXSEQ )
+                  if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
                     {
                       r->nd += 1;
                     }

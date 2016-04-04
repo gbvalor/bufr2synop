@@ -34,7 +34,7 @@
   \brief Prints for debug a struct \ref temp_raw_data
   \param r the pointer of struct to print
 
-  This is used mainly for debug   
+  This is used mainly for debug
 */
 int print_temp_raw_data ( struct temp_raw_data *r )
 {
@@ -98,7 +98,7 @@ int print_temp_raw_data ( struct temp_raw_data *r )
   \fn int print_temp_raw_wind_shear_data ( struct temp_raw_wind_shear_data *w )
   \brief Prints for debug a struct \ref temp_raw_data
   \param w the pointer of struct to print
-  
+
   Used in debug stage
 */
 int print_temp_raw_wind_shear_data ( struct temp_raw_wind_shear_data *w )
@@ -325,7 +325,11 @@ char * print_temp_a_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
                   c += sprintf ( c, " 66%s", t->a.s4.windx[i].PmPmPm );
                 }
               c += sprintf ( c, " %s", t->a.s4.windx[i].dmdmfmfmfm );
-              c += sprintf ( c, " 4%s%s", t->a.s4.windx[i].vbvb, t->a.s4.windx[i].vava );
+
+              if ( t->a.s4.windx[i].vbvb[0] && t->a.s4.windx[i].vava[0] )
+                {
+                  c += sprintf ( c, " 4%s%s", t->a.s4.windx[i].vbvb, t->a.s4.windx[i].vava );
+                }
             }
         }
     }
@@ -374,7 +378,7 @@ char * print_temp_a_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
   \fn char * print_temp_a (char *report, size_t lmax, struct temp_chunks *t)
   \brief Prints the part A of a TEMP report into a string
   \param report string where to write the results
-  \param lmax max length permited 
+  \param lmax max length permited
   \param t pointer to s atruct \ref temp_chunks where the parse results are set
 */
 int print_temp_a ( char *report, size_t lmax, struct temp_chunks *t )
@@ -479,7 +483,7 @@ char * print_temp_b_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t )
   size_t i;
   char *c = *sec5, *c0 = *sec5;
 
-  for ( i = 0; i < t->b.s5.n ; i++ )
+  for ( i = 0; i < t->b.s5.n && i < TEMP_NMAX_POINTS ; i++ )
     {
       if ( check_len ( sec5, 12 ) )
         {
@@ -514,7 +518,7 @@ char * print_temp_b_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
       c += sprintf ( c, " 21212" );
     }
 
-  for ( i = 0; i < t->b.s6.n ; i++ )
+  for ( i = 0; i < t->b.s6.n && i < TEMP_NMAX_POINTS ; i++ )
     {
       if ( check_len ( sec6, 12 ) )
         {
@@ -522,7 +526,7 @@ char * print_temp_b_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
           c += sprintf ( c, " %s", t->b.s6.wd[i].dndnfnfnfn );
         }
     }
-
+  
   if ( c != c0 )
     {
       *sec6 = c;
@@ -592,7 +596,7 @@ char * print_temp_b_sec8 ( char **sec8, size_t lmax, struct temp_chunks *t )
   \fn int print_temp_b (char *report, size_t lmax, struct temp_chunks *t)
   \brief Prints the part B of a TEMP report into a string
   \param report string where to write the results
-  \param lmax max length permited 
+  \param lmax max length permited
   \param t pointer to s atruct \ref temp_chunks where the parse results are set
 */
 int print_temp_b ( char *report, size_t lmax, struct temp_chunks *t )
@@ -847,7 +851,7 @@ char * print_temp_c_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
   \fn int print_temp_c (char *report, size_t lmax, struct temp_chunks *t)
   \brief Prints the part C of a TEMP report into a string
   \param report string where to write the results
-  \param lmax max length permited 
+  \param lmax max length permited
   \param t pointer to s atruct \ref temp_chunks where the parse results are set
 */
 int print_temp_c ( char *report, size_t lmax, struct temp_chunks *t )
@@ -952,7 +956,7 @@ char * print_temp_d_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t )
   size_t i;
   char *c = *sec5, *c0 = *sec5;
 
-  for ( i = 0; i < t->d.s5.n ; i++ )
+  for ( i = 0; i < t->d.s5.n && i < TEMP_NMAX_POINTS ; i++ )
     {
       if ( check_len ( sec5, 12 ) )
         {
@@ -987,7 +991,7 @@ char * print_temp_d_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
       c += sprintf ( c, " 21212" );
     }
 
-  for ( i = 0; i < t->d.s6.n ; i++ )
+  for ( i = 0; i < t->d.s6.n && i < TEMP_NMAX_POINTS ; i++ )
     {
       if ( check_len ( sec6, 12 ) )
         {
@@ -1039,7 +1043,7 @@ char * print_temp_d_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
   \fn int print_temp_d (char *report, size_t lmax, struct temp_chunks *t)
   \brief Prints the part D of a TEMP report into a string
   \param report string where to write the results
-  \param lmax max length permited 
+  \param lmax max length permited
   \param t pointer to s atruct \ref temp_chunks where the parse results are set
 */
 int print_temp_d ( char *report, size_t lmax, struct temp_chunks *t )
@@ -1064,30 +1068,30 @@ int print_temp_d ( char *report, size_t lmax, struct temp_chunks *t )
 
 /*!
    \fn int print_temp ( struct metreport *m )
-   \brief print the four parts of a decoded TEMP report from a BUFR file into strings 
+   \brief print the four parts of a decoded TEMP report from a BUFR file into strings
    \param m pointer to a struct \metreport in which alphanumeric string members stores the reults
  */
 int print_temp ( struct metreport *m )
 {
-  // It is required that al lesat a standard level where decoded in SEC A 
+  // It is required that al lesat a standard level where decoded in SEC A
   if ( m->temp.a.mask & TEMP_SEC_2 )
     {
       print_temp_a ( m->alphanum, REPORT_LENGTH, &m->temp );
     }
-    
-  // It is required a significant TH or wind poind for sec B 
+
+  // It is required a significant TH or wind poind for sec B
   if ( m->temp.b.mask & ( TEMP_SEC_5 | TEMP_SEC_6 ) )
     {
       print_temp_b ( m->alphanum2, REPORT_LENGTH, &m->temp );
     }
-    
+
   // It is required a standard level for SEC C
   if ( m->temp.c.mask & TEMP_SEC_2 )
     {
       print_temp_c ( m->alphanum3, REPORT_LENGTH, &m->temp );
     }
-    
-  // It is required a significant TH or wind poind for sec B 
+
+  // It is required a significant TH or wind poind for sec B
   if ( m->temp.d.mask & ( TEMP_SEC_5 | TEMP_SEC_6 ) )
     {
       print_temp_d ( m->alphanum4, REPORT_LENGTH, &m->temp );

@@ -125,6 +125,9 @@ int main ( int argc, char *argv[] )
   while ( get_bufrfile_path ( INPUTFILE, ERR ) )
     {
       //printf ( "%s\n", INPUTFILE );
+      if ( DEBUG )
+        printf ( "# %s\n", INPUTFILE );
+
       if ( bufrdeco_read_bufr ( &BUFR, INPUTFILE ) )
         {
           if ( DEBUG )

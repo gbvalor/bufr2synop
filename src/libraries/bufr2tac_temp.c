@@ -361,9 +361,11 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s,
   //print_temp_raw_data ( r );
   //print_temp_raw_wind_shear_data ( w );
 
+  // Finally parse raw data to fill all needed points for a TEMP
   parse_temp_raw_data ( t, r );
   parse_temp_raw_wind_shear_data ( t, w );
 
+  // Free memory
   free ( ( void * ) ( r ) );
   free ( ( void * ) ( w ) );
   return 0;
@@ -614,6 +616,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
                 {
                   iwb += 1;
                   t->b.s6.n = iwb;
+                  //printf("%lu\n", t->b.s6.n);
                 }
             }
         }
