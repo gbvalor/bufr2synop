@@ -873,7 +873,7 @@ int print_temp ( struct metreport *m )
     {
       print_temp_c ( m->alphanum3, REPORT_LENGTH, &m->temp );
     }
-  if ( m->temp.b.mask & ( TEMP_SEC_5 | TEMP_SEC_6 ) )
+  if ( m->temp.d.mask & ( TEMP_SEC_5 | TEMP_SEC_6 ) )
     {
       print_temp_d ( m->alphanum4, REPORT_LENGTH, &m->temp );
     }
