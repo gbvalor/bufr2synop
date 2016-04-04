@@ -22,7 +22,7 @@ At the moment includes the following reports:
   - FM 71-XII CLIMAT
 
 The software is based in bufrdc library from ECMWF. Before version 0.7 this package should to be 
-installed. Since version 0.7, a library for decode a wide subset of bufr reports has been writen 
+installed. Since version 0.7, a library for decode a wide subset of BUFR reports has been written 
 from scratch. This is a fast and light bufr decoder. Anyway it still uses the bufr tables installed
 by ECMWF packages so it still need to be installed. You can grab ECMWF library from 
 
@@ -60,7 +60,7 @@ Assume you built the package. you will have four binaries:
 - bufr2synop . 
     Main binary to extract alphanumeric reports using ECMWF decode library.
 - bufrtorac .
-    The same than bufr2ynop but using the own bufrdeco library. It is several times faste  
+    The same than bufr2ynop but using the own bufrdeco library. It is several times faster  
 - bufr_decode . 
     A binary extracted and adapted from ECMWF bufrdc library. Is an example of use for 
     ECMWF bufrdc library
@@ -69,9 +69,11 @@ Assume you built the package. you will have four binaries:
     
 And also the libraries :
 
-- libbufrdeco  A light and very fast bufr decode library
+- libbufrdeco  A light and very fast bufr decode library. It still in beta phase but it can decode all BUFR types
+               needed to get the target TAC reports.   
 - libbufr2tac  Used by binaries bufr2synop and bufrtotac to transform a decoded bufr into a TAC (Traditional
-               Alphanumeric Form)
+               Alphanumeric Form). Before version 0.7 this library was named bufr2synop. It seems the new name is 
+               the right name.
 
 
 INSTALL
@@ -121,6 +123,12 @@ And to see CLIMAT reports, we can try with another bufr file
 
 We will get 19 CLIMAT reports, some of them NIL reports.
 
+We can try also to get a traditional TEMP report from examples. Let use the new bufrtotac
+
+   bufrtotac -i 20160402121749_IUSH01_DRRN_021100.bufr
+
+We will get the four parts of a TEMP report.
+ 
 Since version 0.7 we also can do the same using bufrtotac which uses the own bufrdeco library. It works 
 with the same arguments than bufr2synop, so 
 
