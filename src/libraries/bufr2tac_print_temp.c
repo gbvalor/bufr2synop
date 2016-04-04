@@ -33,6 +33,8 @@
   \fn int print_temp_raw_data ( struct temp_raw_data *r )
   \brief Prints for debug a struct \ref temp_raw_data
   \param r the pointer of struct to print
+
+  This is used mainly for debug   
 */
 int print_temp_raw_data ( struct temp_raw_data *r )
 {
@@ -96,6 +98,8 @@ int print_temp_raw_data ( struct temp_raw_data *r )
   \fn int print_temp_raw_wind_shear_data ( struct temp_raw_wind_shear_data *w )
   \brief Prints for debug a struct \ref temp_raw_data
   \param w the pointer of struct to print
+  
+  Used in debug stage
 */
 int print_temp_raw_wind_shear_data ( struct temp_raw_wind_shear_data *w )
 {
@@ -135,6 +139,15 @@ int print_temp_raw_wind_shear_data ( struct temp_raw_wind_shear_data *w )
   return 0;
 }
 
+/*!
+  \fn char * print_temp_a_sec1 (char **sec1, size_t lmax, struct temp_chunks *t)
+  \brief Prints the section 1 of part A of a TEMP report
+  \param sec1 the pointer where to print section
+  \param lmax max length permited
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+
+  returns the string sec1
+*/
 char * print_temp_a_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 {
   char *c = *sec1, *c0 = *sec1;
@@ -194,6 +207,15 @@ char * print_temp_a_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 }
 
 
+/*!
+  \fn char * print_temp_a_sec2 (char **sec2, size_t lmax, struct temp_chunks *t)
+  \brief Prints the section 2 of part A of a TEMP report
+  \param sec2 the pointer where to print section
+  \param lmax max length permited
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+
+  returns the string sec2
+*/
 char * print_temp_a_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t )
 {
   size_t i;
@@ -224,6 +246,15 @@ char * print_temp_a_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t )
 
 }
 
+/*!
+  \fn char * print_temp_a_sec3 (char **sec3, size_t lmax, struct temp_chunks *t)
+  \brief Prints the section 3 of part A of a TEMP report
+  \param sec3 the pointer where to print section
+  \param lmax max length permited
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+
+  returns the string sec3
+*/
 char * print_temp_a_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
 {
   size_t i;
@@ -257,6 +288,15 @@ char * print_temp_a_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
 
 }
 
+/*!
+  \fn char * print_temp_a_sec4 (char **sec4, size_t lmax, struct temp_chunks *t)
+  \brief Prints the section 4 of part A of a TEMP report
+  \param sec4 the pointer where to print section
+  \param lmax max length permited
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+
+  returns the string sec1
+*/
 char * print_temp_a_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
 {
   size_t i;
@@ -299,6 +339,15 @@ char * print_temp_a_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
 
 }
 
+/*!
+  \fn char * print_temp_a_sec7 (char **sec7, size_t lmax, struct temp_chunks *t)
+  \brief Prints the section 7 of part A of a TEMP report
+  \param sec7 the pointer where to print section
+  \param lmax max length permited
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+
+  returns the string sec7
+*/
 char * print_temp_a_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
 {
   char *c = *sec7, *c0 = *sec7;
@@ -321,6 +370,13 @@ char * print_temp_a_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
   return *sec7;
 }
 
+/*!
+  \fn char * print_temp_a (char *report, size_t lmax, struct temp_chunks *t)
+  \brief Prints the part A of a TEMP report into a string
+  \param report string where to write the results
+  \param lmax max length permited 
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+*/
 int print_temp_a ( char *report, size_t lmax, struct temp_chunks *t )
 {
   char *c;
@@ -342,6 +398,15 @@ int print_temp_a ( char *report, size_t lmax, struct temp_chunks *t )
   return 0;
 }
 
+/*!
+  \fn char * print_temp_b_sec1 (char **sec1, size_t lmax, struct temp_chunks *t)
+  \brief Prints the section 1 of part B of a TEMP report
+  \param sec1 the pointer where to print section
+  \param lmax max length permited
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+
+  returns the string sec1
+*/
 char * print_temp_b_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 {
   char *c = *sec1, *c0 = *sec1;
@@ -400,6 +465,15 @@ char * print_temp_b_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
   return *sec1;
 }
 
+/*!
+  \fn char * print_temp_b_sec5 (char **sec2, size_t lmax, struct temp_chunks *t)
+  \brief Prints the section 5 of part B of a TEMP report
+  \param sec5 the pointer where to print section
+  \param lmax max length permited
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+
+  returns the string sec5
+*/
 char * print_temp_b_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t )
 {
   size_t i;
@@ -421,6 +495,15 @@ char * print_temp_b_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t )
   return *sec5;
 }
 
+/*!
+  \fn char * print_temp_b_sec6 (char **sec6, size_t lmax, struct temp_chunks *t)
+  \brief Prints the section 6 of part B of a TEMP report
+  \param sec6 the pointer where to print section
+  \param lmax max length permited
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+
+  returns the string sec6
+*/
 char * print_temp_b_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
 {
   size_t i;
@@ -447,6 +530,15 @@ char * print_temp_b_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
   return *sec6;
 }
 
+/*!
+  \fn char * print_temp_b_sec7 (char **sec7, size_t lmax, struct temp_chunks *t)
+  \brief Prints the section 7 of part B of a TEMP report
+  \param sec7 the pointer where to print section
+  \param lmax max length permited
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+
+  returns the string sec7
+*/
 char * print_temp_b_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
 {
   char *c = *sec7, *c0 = *sec7;
@@ -469,6 +561,15 @@ char * print_temp_b_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
   return *sec7;
 }
 
+/*!
+  \fn char * print_temp_b_sec8 (char **sec8, size_t lmax, struct temp_chunks *t)
+  \brief Prints the section 8 of part B of a TEMP report
+  \param sec8 the pointer where to print section
+  \param lmax max length permited
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+
+  returns the string sec8
+*/
 char * print_temp_b_sec8 ( char **sec8, size_t lmax, struct temp_chunks *t )
 {
   char *c = *sec8, *c0 = *sec8;
@@ -487,6 +588,13 @@ char * print_temp_b_sec8 ( char **sec8, size_t lmax, struct temp_chunks *t )
 }
 
 
+/*!
+  \fn int print_temp_b (char *report, size_t lmax, struct temp_chunks *t)
+  \brief Prints the part B of a TEMP report into a string
+  \param report string where to write the results
+  \param lmax max length permited 
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+*/
 int print_temp_b ( char *report, size_t lmax, struct temp_chunks *t )
 {
   char *c;
@@ -509,6 +617,15 @@ int print_temp_b ( char *report, size_t lmax, struct temp_chunks *t )
 }
 
 
+/*!
+  \fn char * print_temp_c_sec1 (char **sec1, size_t lmax, struct temp_chunks *t)
+  \brief Prints the section 1 of part C of a TEMP report
+  \param sec1 the pointer where to print section
+  \param lmax max length permited
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+
+  returns the string sec1
+*/
 char * print_temp_c_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 {
   char *c = *sec1, *c0 = *sec1;
@@ -567,6 +684,15 @@ char * print_temp_c_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
   return *sec1;
 }
 
+/*!
+  \fn char * print_temp_c_sec2 (char **sec2, size_t lmax, struct temp_chunks *t)
+  \brief Prints the section 2 of part C of a TEMP report
+  \param sec2 the pointer where to print section
+  \param lmax max length permited
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+
+  returns the string sec2
+*/
 char * print_temp_c_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t )
 {
   size_t i;
@@ -590,6 +716,15 @@ char * print_temp_c_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t )
 
 }
 
+/*!
+  \fn char * print_temp_c_sec3 (char **sec3, size_t lmax, struct temp_chunks *t)
+  \brief Prints the section 3 of part C of a TEMP report
+  \param sec3 the pointer where to print section
+  \param lmax max length permited
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+
+  returns the string sec3
+*/
 char * print_temp_c_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
 {
   size_t i;
@@ -623,6 +758,15 @@ char * print_temp_c_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
 
 }
 
+/*!
+  \fn char * print_temp_c_sec4 (char **sec4, size_t lmax, struct temp_chunks *t)
+  \brief Prints the section 4 of part C of a TEMP report
+  \param sec4 the pointer where to print section
+  \param lmax max length permited
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+
+  returns the string sec4
+*/
 char * print_temp_c_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
 {
   size_t i;
@@ -668,6 +812,15 @@ char * print_temp_c_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
 
 }
 
+/*!
+  \fn char * print_temp_c_sec7 (char **sec7, size_t lmax, struct temp_chunks *t)
+  \brief Prints the section 7 of part C of a TEMP report
+  \param sec7 the pointer where to print section
+  \param lmax max length permited
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+
+  returns the string sec7
+*/
 char * print_temp_c_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
 {
   char *c = *sec7, *c0 = *sec7;
@@ -690,6 +843,13 @@ char * print_temp_c_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
   return *sec7;
 }
 
+/*!
+  \fn int print_temp_c (char *report, size_t lmax, struct temp_chunks *t)
+  \brief Prints the part C of a TEMP report into a string
+  \param report string where to write the results
+  \param lmax max length permited 
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+*/
 int print_temp_c ( char *report, size_t lmax, struct temp_chunks *t )
 {
   char *c;
@@ -711,6 +871,15 @@ int print_temp_c ( char *report, size_t lmax, struct temp_chunks *t )
   return 0;
 }
 
+/*!
+  \fn char * print_temp_d_sec1 (char **sec1, size_t lmax, struct temp_chunks *t)
+  \brief Prints the section 1 of part D of a TEMP report
+  \param sec1 the pointer where to print section
+  \param lmax max length permited
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+
+  returns the string sec1
+*/
 char * print_temp_d_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 {
   char *c = *sec1, *c0 = *sec1;
@@ -769,6 +938,15 @@ char * print_temp_d_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
   return *sec1;
 }
 
+/*!
+  \fn char * print_temp_d_sec5 (char **sec5, size_t lmax, struct temp_chunks *t)
+  \brief Prints the section 5 of part D of a TEMP report
+  \param sec5 the pointer where to print section
+  \param lmax max length permited
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+
+  returns the string sec5
+*/
 char * print_temp_d_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t )
 {
   size_t i;
@@ -790,6 +968,15 @@ char * print_temp_d_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t )
   return *sec5;
 }
 
+/*!
+  \fn char * print_temp_d_sec6 (char **sec6, size_t lmax, struct temp_chunks *t)
+  \brief Prints the section 6 of part D of a TEMP report
+  \param sec6 the pointer where to print section
+  \param lmax max length permited
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+
+  returns the string sec6
+*/
 char * print_temp_d_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
 {
   size_t i;
@@ -816,6 +1003,15 @@ char * print_temp_d_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
   return *sec6;
 }
 
+/*!
+  \fn char * print_temp_d_sec7 (char **sec7, size_t lmax, struct temp_chunks *t)
+  \brief Prints the section 7 of part D of a TEMP report
+  \param sec7 the pointer where to print section
+  \param lmax max length permited
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+
+  returns the string sec7
+*/
 char * print_temp_d_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
 {
   char *c = *sec7, *c0 = *sec7;
@@ -839,6 +1035,13 @@ char * print_temp_d_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
 }
 
 
+/*!
+  \fn int print_temp_d (char *report, size_t lmax, struct temp_chunks *t)
+  \brief Prints the part D of a TEMP report into a string
+  \param report string where to write the results
+  \param lmax max length permited 
+  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+*/
 int print_temp_d ( char *report, size_t lmax, struct temp_chunks *t )
 {
   char *c;
@@ -859,20 +1062,32 @@ int print_temp_d ( char *report, size_t lmax, struct temp_chunks *t )
   return 0;
 }
 
+/*!
+   \fn int print_temp ( struct metreport *m )
+   \brief print the four parts of a decoded TEMP report from a BUFR file into strings 
+   \param m pointer to a struct \metreport in which alphanumeric string members stores the reults
+ */
 int print_temp ( struct metreport *m )
 {
+  // It is required that al lesat a standard level where decoded in SEC A 
   if ( m->temp.a.mask & TEMP_SEC_2 )
     {
       print_temp_a ( m->alphanum, REPORT_LENGTH, &m->temp );
     }
+    
+  // It is required a significant TH or wind poind for sec B 
   if ( m->temp.b.mask & ( TEMP_SEC_5 | TEMP_SEC_6 ) )
     {
       print_temp_b ( m->alphanum2, REPORT_LENGTH, &m->temp );
     }
+    
+  // It is required a standard level for SEC C
   if ( m->temp.c.mask & TEMP_SEC_2 )
     {
       print_temp_c ( m->alphanum3, REPORT_LENGTH, &m->temp );
     }
+    
+  // It is required a significant TH or wind poind for sec B 
   if ( m->temp.d.mask & ( TEMP_SEC_5 | TEMP_SEC_6 ) )
     {
       print_temp_d ( m->alphanum4, REPORT_LENGTH, &m->temp );

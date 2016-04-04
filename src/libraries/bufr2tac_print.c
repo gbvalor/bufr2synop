@@ -23,15 +23,21 @@
  */
 #include "bufr2tac.h"
 
-int print_plain(FILE *f, struct metreport *m)
+/*!
+  \fn  int print_plain ( FILE *f, struct metreport *m )
+  \brief Print in a file the report decoded to Traditional Alphanumeric Code in plain text format. A line per report
+  \param f pointer to file where to write to
+  \param m pointer to struct \ref metreport where the decoded report is stored
+*/
+int print_plain ( FILE *f, struct metreport *m )
 {
-  if (m->alphanum[0])
-    fprintf(f, "%s\n", m->alphanum);
-  if (m->alphanum2[0])
-    fprintf(f, "%s\n", m->alphanum2);
-  if (m->alphanum3[0])
-    fprintf(f, "%s\n", m->alphanum3);
-  if (m->alphanum4[0])
-    fprintf(f, "%s\n", m->alphanum4);
+  if ( m->alphanum[0] )
+    fprintf ( f, "%s\n", m->alphanum );
+  if ( m->alphanum2[0] )
+    fprintf ( f, "%s\n", m->alphanum2 );
+  if ( m->alphanum3[0] )
+    fprintf ( f, "%s\n", m->alphanum3 );
+  if ( m->alphanum4[0] )
+    fprintf ( f, "%s\n", m->alphanum4 );
   return 0;
 }

@@ -373,7 +373,18 @@ char * print_temp_b_sec5 (char **sec5, size_t lmax, struct temp_chunks *t);
 char * print_temp_b_sec6 (char **sec6, size_t lmax, struct temp_chunks *t);
 char * print_temp_b_sec7 (char **sec7, size_t lmax, struct temp_chunks *t);
 char * print_temp_b_sec8 (char **sec8, size_t lmax, struct temp_chunks *t);
-
+int print_temp_c (char *report, size_t lmax, struct temp_chunks *t);
+char * print_temp_c_sec1 (char **sec1, size_t lmax, struct temp_chunks *t);
+char * print_temp_c_sec2 (char **sec2, size_t lmax, struct temp_chunks *t);
+char * print_temp_c_sec3 (char **sec3, size_t lmax, struct temp_chunks *t);
+char * print_temp_c_sec4 (char **sec4, size_t lmax, struct temp_chunks *t);
+char * print_temp_c_sec7 (char **sec7, size_t lmax, struct temp_chunks *t);
+int print_temp_d (char *report, size_t lmax, struct temp_chunks *t);
+char * print_temp_d_sec1 (char **sec1, size_t lmax, struct temp_chunks *t);
+char * print_temp_d_sec5 (char **sec5, size_t lmax, struct temp_chunks *t);
+char * print_temp_d_sec6 (char **sec6, size_t lmax, struct temp_chunks *t);
+char * print_temp_d_sec7 (char **sec7, size_t lmax, struct temp_chunks *t);
+char * print_temp_d_sec8 (char **sec8, size_t lmax, struct temp_chunks *t);
 
 int parse_temp_raw_data (struct temp_chunks *t, struct temp_raw_data *r );
 int parse_temp_raw_wind_shear_data (struct temp_chunks *t, struct temp_raw_wind_shear_data *w );
