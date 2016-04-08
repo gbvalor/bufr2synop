@@ -467,7 +467,7 @@ int guess_gts_header ( struct gts_header *h, const char *f )
   else
     c++;
 
-  nt = tokenize_string ( tk, 16, aux, strlen ( c ), "_." );
+  nt = tokenize_string ( tk, 16, c, strlen ( c ), "_. " );
   // parse filenames with format as example 'AAAAMMDDHHmmss_ISIE06_SBBR_012100_RRB.bufr'
 
   // 5 or 6 items

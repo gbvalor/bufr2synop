@@ -336,6 +336,20 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s,
   strcpy ( t->c.s1.YYGG, t->a.s1.YYGG );
   strcpy ( t->d.s1.YYGG, t->a.s1.YYGG );
 
+  if ( strlen ( t->a.s1.II ) )
+    {
+      strcpy ( m->g.index, t->a.s1.II );
+      strcat ( m->g.index, t->a.s1.iii );
+    }
+  else if ( strlen ( t->a.s1.D_D ) )
+    {
+      strcpy ( m->g.index, t->a.s1.D_D );
+    }
+  else if ( strlen ( t->a.s1.IIIII ) )
+    {
+      strcpy ( m->g.index, t->a.s1.IIIII );
+    }
+
   if ( s->mask & SUBSET_MASK_HAVE_LATITUDE )
     {
       m->g.lat = s->lat;
@@ -356,6 +370,7 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s,
     {
       strcpy ( m->g.country, s->country );
     }
+
 
 
   //print_temp_raw_data ( r );
