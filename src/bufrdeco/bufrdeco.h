@@ -133,15 +133,21 @@
 
 /*!
  \def DESCRIPTOR_IS_A_REPLICATOR
- \brief Bit mask for a flag table string in a struct \ref bufr_atom_data
+ \brief Bit mask for a replicator descriptor in a struct \ref bufr_atom_data
 */
 #define DESCRIPTOR_IS_A_REPLICATOR (128)
+
+/*!
+ \def DESCRIPTOR_IS_AN_OPERATOR
+ \brief Bit mask for an operator data descriptor in a struct \ref bufr_atom_data
+*/
+#define DESCRIPTOR_IS_AN_OPERATOR (256)
 
 /*!
  \def DESCRIPTOR_IS_LOCAL
  \brief Bit mask for a flag table string in a struct \ref bufr_atom_data
 */
-#define DESCRIPTOR_IS_LOCAL (256)
+#define DESCRIPTOR_IS_LOCAL (512)
 
 /*!
   \def BUFR_LEN_SEC1
@@ -221,6 +227,18 @@ struct bufr_atom_data
 };
 
 /*!
+  \struct bufrdeco_subset_sequence_data
+  \brief Contains all the information for a subset in a expanded squence
+  This is a verion to use with bufrdeco parse library
+*/
+struct bufrdeco_subset_sequence_data
+{
+  size_t dim; /*!< Amount of bufr_atom_data currently allocated */
+  size_t nd; /*!< number of current amount of data used in sequence */
+  struct bufr_atom_data *sequence; /*!< the array of data associated to a expanded sequence */
+};
+
+/*!
   \struct bufrdeco_decoding_data_state
   \brief stores the state when expanding a sequence.
 
@@ -273,18 +291,6 @@ struct bufrdeco_expanded_tree
 {
   size_t nseq; /*!< current number of structs */
   struct bufr_sequence seq[BUFR_MAX_EXPANDED_SEQUENCES]; /*!< array of structs */
-};
-
-/*!
-  \struct bufrdeco_subset_sequence_data
-  \brief Contains all the information for a subset in a expanded squence
-  This is a verion to use with bufrdeco parse library
-*/
-struct bufrdeco_subset_sequence_data
-{
-  size_t dim; /*!< Amount of bufr_atom_data currently allocated */
-  size_t nd; /*!< number of current amount of data used in sequence */
-  struct bufr_atom_data *sequence; /*!< the array of data associated to a expanded sequence */
 };
 
 /*!
