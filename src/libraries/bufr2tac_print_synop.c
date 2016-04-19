@@ -464,6 +464,20 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
           c += sprintf ( c, " 3%s%s", syn->s3.E, syn->s3.jjj );
         }
 
+       // printf 4E1sss
+      if ( check_len ( sec3,6 ) && ( syn->s3.E1[0] || syn->s3.sss[0] ) )
+        {
+          if ( syn->s3.E1[0] == 0 )
+            {
+              syn->s3.E1[0] = '/';
+            }
+          if ( syn->s3.sss[0] == 0 )
+            {
+              strcpy ( syn->s3.sss, "///" );
+            }
+          c += sprintf ( c, " 4%s%s", syn->s3.E1, syn->s3.sss );
+        }
+       
       /**** Radiation Sunshine gropus ***/
 
       // print 55SSS

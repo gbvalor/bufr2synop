@@ -41,15 +41,15 @@ char * prec_to_RRR ( char *target, double r )
     }*/
   else if ( r < 0.95 )
     {
-      sprintf ( target, "99%d", ( int ) ( r * 10.0 + 0.5) );
+      sprintf ( target, "99%d", ( int ) ( r * 10.0 + 0.5 ) );
     }
-  else if ( r >= 989.0)
+  else if ( r >= 989.0 )
     {
       strcpy ( target,"989" );
     }
   else
     {
-      sprintf ( target, "%03d", ( int ) ( r + 0.5) );
+      sprintf ( target, "%03d", ( int ) ( r + 0.5 ) );
     }
   return target;
 
@@ -92,11 +92,36 @@ char * prec_to_RRRR24 ( char *target, double r )
     }
   else if ( r <= 999.8 )
     {
-      sprintf ( target,"%04d", ( int ) ( r * 10.0 + 0.5) );
+      sprintf ( target,"%04d", ( int ) ( r * 10.0 + 0.5 ) );
     }
   else
     {
       strcpy ( target,"9998" );
+    }
+  return target;
+}
+
+/*!
+  \fn char * total_snow_depth_to_sss ( char *target, double r )
+  \brief converts tatal snow depth in m to sss (code table 3889)
+  \param r recent snow depth in meters
+  \param target the resulting string
+*/
+char * total_snow_depth_to_sss ( char *target, double r )
+{
+  int i;
+  i = ( int ) ( r * 1000.0 + 0.5 ); // convert to cm
+  if ( i > 0 && i <= 996 )
+    {
+      sprintf ( target, "%03d", i );
+    }
+  else if ( r > 0.0 && i == 0 )
+    {
+      sprintf ( target, "997" );
+    }
+  else
+    {
+      sprintf ( target, "999" );
     }
   return target;
 }
@@ -110,7 +135,7 @@ char * prec_to_RRRR24 ( char *target, double r )
 char * recent_snow_to_ss ( char *target, double r )
 {
   int i;
-  i = ( int ) ( r * 1000.0 + 0.5); // convert to mm
+  i = ( int ) ( r * 1000.0 + 0.5 ); // convert to mm
 
   if ( i == 0 )
     {
@@ -163,8 +188,10 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
   switch ( s->a->desc.y )
     {
     case 11: // 0 13 011 . Total precipitaction
-      if (s->val < 0.0)
-	return 0;
+      if ( s->val < 0.0 )
+        {
+          return 0;
+        }
       if ( s->itval ==  -3600 )
         {
           if ( syn->s3.RRR[0] == 0 )
@@ -285,6 +312,13 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
         }
       break;
+    case 13: // 0 13 013 . Total snow depth
+      if ( syn->s3.sss[0] == 0 )
+        {
+          total_snow_depth_to_sss ( syn->s3.sss, s->val );
+          syn->mask |= SYNOP_SEC3;
+        }
+      break;
     case 19: // 0 13 019 . Total precipitaction past 1 hour
       if ( syn->s3.RRR[0] == 0 )
         {
@@ -339,8 +373,10 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       break;
     case 23: // 0 13 023 . Total precipitaction past 24 hours
-      if (s->val < 0.0)
-	return 0;
+      if ( s->val < 0.0 )
+        {
+          return 0;
+        }
       if ( syn->s1.RRR[0] == 0 )
         {
           syn->s1.tr[0] = '4'; // 24 hour

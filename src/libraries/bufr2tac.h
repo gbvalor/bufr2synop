@@ -337,6 +337,7 @@ char * prec_to_RRRR24 ( char *target, double r );
 char * secs_to_tt ( char *tt, int secs );
 char * vism_to_VV ( char *target, double V );
 char * recent_snow_to_ss ( char *target, double r );
+char * total_snow_depth_to_sss ( char *target, double r );
 char * wind_to_dndnfnfnfn( char *target, double dd, double ff);
 
 int print_synop ( char *report, size_t lmax, struct synop_chunks *syn );
@@ -466,7 +467,7 @@ int bus012_ ( int *, unsigned int *, int *, int *, int *, int *, int * );
 int buprs0_ ( int * );
 int buprs1_ ( int * );
 int buprs3_ ( int *, int *, int *, int *, int *, int *, char ** );
-int bufrex_ ( int *, int *, int *, int *, int *, int *, int *, int *, int *, char **, char **, int *, double *, char **,                int * );
+int bufrex_ ( int *, int *, int *, int *, int *, int *, int *, int *, int *, char **, char **, int *, double *, char **, int * );
 int busel_ ( int *, int *, int *, int *, int * );
 int busel2_ ( int *, int *, int *,  char **, int *, char **, char **, char **, int * );
 int buukey_ ( int *, int *, int *, int *, int * );
