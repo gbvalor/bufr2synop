@@ -39,7 +39,9 @@ char *guess_WMO_region_temp ( struct temp_chunks *t )
     }
 
   if ( t->a.s1.II[0] == 0  || t->a.s1.iii[0] == 0 )
-    return t->a.s1.A1;
+    {
+      return t->a.s1.A1;
+    }
 
   if ( guess_WMO_region ( t->a.s1.A1, t->a.s1.Reg, t->a.s1.II, t->a.s1.iii ) != NULL )
     {
@@ -53,7 +55,9 @@ char *guess_WMO_region_temp ( struct temp_chunks *t )
       return t->a.s1.A1;
     }
   else
-    return NULL;
+    {
+      return NULL;
+    }
 }
 
 
@@ -78,7 +82,9 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s,
   struct temp_raw_wind_shear_data *w;
 
   if ( sq == NULL )
-    return 1;
+    {
+      return 1;
+    }
 
   t = &m->temp;
 
@@ -396,13 +402,18 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
   size_t i, j, isa = 0, isc = 0, ita = 0, itc = 0; // level counters
   size_t iwxa = 0, iwxc = 0, itb = 0, itd = 0;
   size_t iwd = 0, iwb = 0;
+  size_t isav = 0, iscv = 0; // valid data counters for standard levels
   struct temp_raw_point_data *d;
 
   if ( t == NULL || r == NULL )
-    return 1;
+    {
+      return 1;
+    }
 
   if ( r->n == 0 )
-    return 1;
+    {
+      return 1;
+    }
 
   // Some default
   t->a.s1.id[0] = '/';
@@ -412,9 +423,13 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
       d = & ( r->raw[i] ); // to make code easy
 
       if ( d->p < 10000.0 ) // to select which part
-        is_over_100 = 1;
+        {
+          is_over_100 = 1;
+        }
       else
-        is_over_100 = 0;
+        {
+          is_over_100 = 0;
+        }
 
       // Surface data
       if ( d->flags & TEMP_POINT_MASK_SURFACE )
@@ -431,26 +446,40 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
           ix = ( int ) ( d->p * 0.01 + 0.5 ); // hPa
           ix = ( ix / 10 ) % 100; // coded
           if ( is_over_100 )
-            sprintf ( t->c.s2.std[isc].PnPn, "%02d", ix ); // PnPn
+            {
+              sprintf ( t->c.s2.std[isc].PnPn, "%02d", ix );  // PnPn
+            }
           else
-            sprintf ( t->a.s2.std[isa].PnPn, "%02d", ix ); // PnPn
+            {
+              sprintf ( t->a.s2.std[isa].PnPn, "%02d", ix );  // PnPn
+            }
 
           ix = ( int ) ( d->h + 0.5 );
           if ( d->p <= 50000.0 )
             {
               if ( is_over_100 )
-                sprintf ( t->c.s2.std[isc].hnhnhn, "%03d", ( ( ix + 5 ) / 10 ) % 1000 );
+                {
+                  sprintf ( t->c.s2.std[isc].hnhnhn, "%03d", ( ( ix + 5 ) / 10 ) % 1000 );
+                }
               else
-                sprintf ( t->a.s2.std[isa].hnhnhn, "%03d", ( ( ix + 5 ) / 10 ) % 1000 );
+                {
+                  sprintf ( t->a.s2.std[isa].hnhnhn, "%03d", ( ( ix + 5 ) / 10 ) % 1000 );
+                }
             }
           else
             {
               if ( is_over_100 )
-                sprintf ( t->c.s2.std[isc].hnhnhn, "%03d", ix % 1000 );
+                {
+                  sprintf ( t->c.s2.std[isc].hnhnhn, "%03d", ix % 1000 );
+                }
               else if ( ix >= 0 )
-                sprintf ( t->a.s2.std[isa].hnhnhn, "%03d", ix % 1000 );
+                {
+                  sprintf ( t->a.s2.std[isa].hnhnhn, "%03d", ix % 1000 );
+                }
               else
-                sprintf ( t->a.s2.std[isa].hnhnhn, "%03d", ( -ix + 500 ) % 1000 );
+                {
+                  sprintf ( t->a.s2.std[isa].hnhnhn, "%03d", ( -ix + 500 ) % 1000 );
+                }
             }
           if ( is_over_100 )
             {
@@ -467,6 +496,12 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
                   isc += 1;
                   t->c.s2.n = isc;
                 }
+              if ( d->T != MISSING_REAL  || d->Td != MISSING_REAL ||
+                   d->ff != MISSING_REAL || d->dd != MISSING_REAL )
+                {
+                  // data present
+                  iscv += 1;
+                }
             }
           else
             {
@@ -482,6 +517,12 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
                 {
                   isa += 1;
                   t->a.s2.n = isa;
+                }
+              if ( d->T != MISSING_REAL  || d->Td != MISSING_REAL ||
+                   d->ff != MISSING_REAL || d->dd != MISSING_REAL )
+                {
+                  // data present
+                  isav += 1;
                 }
             }
         }
@@ -566,7 +607,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
         {
           if ( is_over_100 )
             {
-              sprintf ( t->d.s5.th[itd].nini, "%d%d", ( ( int ) itd - 1 ) %9 + 1, ( ( int ) itd - 1 ) %9 + 1 );
+              sprintf ( t->d.s5.th[itd].nini, "%d%d", ( ( int ) itd ) %9 + 1, ( ( int ) itd ) %9 + 1 );
               ix = ( int ) ( d->p * 0.1 + 0.5 );
               sprintf ( t->d.s5.th[itd].PnPnPn, "%03d", ix ); // PnPnPn
               kelvin_to_TTTa ( t->d.s5.th[itd].TnTnTan, d->T ); // TnTnTan
@@ -604,7 +645,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
         {
           if ( is_over_100 )
             {
-              sprintf ( t->d.s6.wd[iwd].nini, "%d%d", ( ( int ) iwd - 1 ) %9 + 1, ( ( int ) iwd - 1 ) %9 + 1 );
+              sprintf ( t->d.s6.wd[iwd].nini, "%d%d", ( ( int ) iwd ) %9 + 1, ( ( int ) iwd ) %9 + 1 );
               ix = ( int ) ( d->p * 0.1 + 0.5 );
               sprintf ( t->d.s6.wd[iwd].PnPnPn, "%03d", ix ); // PnPnPn
               wind_to_dndnfnfnfn ( t->d.s6.wd[iwd].dndnfnfnfn, d->dd, d->ff ); // dndnfnfnfn
@@ -638,26 +679,46 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
     }
 
   // Now we set some bit masks
-  if ( isa )
-    t->a.mask |= TEMP_SEC_2;
-  if ( isc )
-    t->c.mask |= TEMP_SEC_2;
+  if ( isav )
+    {
+      t->a.mask |= TEMP_SEC_2;
+    }
+  if ( iscv )
+    {
+      t->c.mask |= TEMP_SEC_2;
+    }
   if ( ita )
-    t->a.mask |= TEMP_SEC_3;
+    {
+      t->a.mask |= TEMP_SEC_3;
+    }
   if ( itc )
-    t->c.mask |= TEMP_SEC_3;
+    {
+      t->c.mask |= TEMP_SEC_3;
+    }
   if ( iwxa )
-    t->a.mask |= TEMP_SEC_4;
+    {
+      t->a.mask |= TEMP_SEC_4;
+    }
   if ( iwxc )
-    t->c.mask |= TEMP_SEC_4;
+    {
+      t->c.mask |= TEMP_SEC_4;
+    }
   if ( itb )
-    t->b.mask |= TEMP_SEC_5;
+    {
+      t->b.mask |= TEMP_SEC_5;
+    }
   if ( itd )
-    t->d.mask |= TEMP_SEC_5;
+    {
+      t->d.mask |= TEMP_SEC_5;
+    }
   if ( iwb )
-    t->b.mask |= TEMP_SEC_6;
+    {
+      t->b.mask |= TEMP_SEC_6;
+    }
   if ( iwd )
-    t->d.mask |= TEMP_SEC_6;
+    {
+      t->d.mask |= TEMP_SEC_6;
+    }
 
   return 0;
 }
@@ -675,25 +736,35 @@ int parse_temp_raw_wind_shear_data ( struct temp_chunks *t, struct temp_raw_wind
   struct temp_raw_wind_shear_point *d;
 
   if ( t == NULL || w == NULL )
-    return 1;
+    {
+      return 1;
+    }
 
   if ( w->n == 0 )
-    return 1;
+    {
+      return 1;
+    }
 
   for ( i = 0; i < w->n; i++ )
     {
       d = & ( w->raw[i] ); // to make code easy
 
       if ( d->p < 10000.0 ) // to select which part
-        is_over_100 = 1;
+        {
+          is_over_100 = 1;
+        }
       else
-        is_over_100 = 0;
+        {
+          is_over_100 = 0;
+        }
 
       // set pnpnpn on aux
       if ( is_over_100 )
         {
           if ( t ->c.s4.n == 0 )
-            continue;
+            {
+              continue;
+            }
 
           ix = ( int ) ( d->p * 0.1 + 0.5 );
           sprintf ( aux, "%03d", ix % 1000 ); // PnPnPn
@@ -718,7 +789,9 @@ int parse_temp_raw_wind_shear_data ( struct temp_chunks *t, struct temp_raw_wind
       else
         {
           if ( t ->a.s4.n == 0 )
-            continue;
+            {
+              continue;
+            }
           ix = ( int ) ( d->p * 0.01 + 0.5 );
           sprintf ( aux, "%03d", ix % 1000 ); // PnPnPn.
           // checks for a significant wind level in section 4 with same pnpnpn

@@ -526,7 +526,7 @@ char * print_temp_b_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
           c += sprintf ( c, " %s", t->b.s6.wd[i].dndnfnfnfn );
         }
     }
-  
+
   if ( c != c0 )
     {
       *sec6 = c;
@@ -580,8 +580,53 @@ char * print_temp_b_sec8 ( char **sec8, size_t lmax, struct temp_chunks *t )
 
   if ( check_len ( sec8, 12 ) && t->b.s8.h[0] )
     {
-      c += sprintf ( c, " 41414" );
-      c += sprintf ( c, " %s%s%s%s%s", t->b.s8.Nh, t->b.s8.Cl, t->b.s8.h, t->b.s8.Cm, t->b.s8.Ch );
+      c += sprintf ( c, " 41414 " );
+      if ( t->b.s8.Nh[0] )
+        {
+          c += sprintf ( c, "%s", t->b.s8.Nh );
+        }
+      else
+        {
+          c += sprintf ( c, "/" );
+        }
+
+      if ( t->b.s8.Cl[0] )
+        {
+          c += sprintf ( c, "%s", t->b.s8.Cl );
+        }
+      else
+        {
+          c += sprintf ( c, "/" );
+        }
+
+      if ( t->b.s8.h[0] )
+        {
+          c += sprintf ( c, "%s", t->b.s8.h );
+        }
+      else
+        {
+          c += sprintf ( c, "/" );
+        }
+
+      if ( t->b.s8.Cm[0] )
+        {
+          c += sprintf ( c, "%s", t->b.s8.Cm );
+        }
+      else
+        {
+          c += sprintf ( c, "/" );
+        }
+
+      if ( t->b.s8.Ch[0] )
+        {
+          c += sprintf ( c, "%s", t->b.s8.Ch );
+        }
+      else
+        {
+          c += sprintf ( c, "/" );
+        }
+
+      //c += sprintf ( c, " %s%s%s%s%s", t->b.s8.Nh, t->b.s8.Cl, t->b.s8.h, t->b.s8.Cm, t->b.s8.Ch );
     }
 
   if ( c != c0 )

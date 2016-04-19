@@ -137,17 +137,19 @@ char * kelvin_to_TTTT ( char *target, double T )
 char * kelvin_to_TTTa ( char *target, double T )
 {
   int ix;
-  
-  if (T == MISSING_REAL)
-  {
-    sprintf(target, "///");
-    return target;
-  }
-  
+
+  if ( T == MISSING_REAL )
+    {
+      sprintf ( target, "///" );
+      return target;
+    }
+
   ix = ( int ) ( 10.0 * ( T - 273.15 ) );
 
   if ( ix >= 0 )
-    ix &= ~1;
+    {
+      ix &= ~1;
+    }
   else
     {
       ix = ( -ix );
@@ -169,14 +171,16 @@ char * dewpoint_depression_to_DnDn ( char * target, double T, double Td )
   int ix;
   double dpd = T - Td;
 
-  if (T == MISSING_REAL || Td == MISSING_REAL)
-  {
-    strcpy( target, "//");
-    return target;
-  }
-  
+  if ( T == MISSING_REAL || Td == MISSING_REAL )
+    {
+      strcpy ( target, "//" );
+      return target;
+    }
+
   if ( dpd < 0.0 )
-    return NULL;
+    {
+      return NULL;
+    }
 
   if ( dpd > 50.0 )
     {
@@ -601,7 +605,9 @@ int temp_parse_x12 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
               s->r->raw[s->r->n - 1].T = MISSING_REAL;
             }
           else
-            s->r->raw[s->r->n - 1].T = s->val;
+            {
+              s->r->raw[s->r->n - 1].T = s->val;
+            }
         }
       break;
 
@@ -613,7 +619,9 @@ int temp_parse_x12 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
               s->r->raw[s->r->n - 1].Td = MISSING_REAL;
             }
           else
-            s->r->raw[s->r->n - 1].Td = s->val;
+            {
+              s->r->raw[s->r->n - 1].Td = s->val;
+            }
         }
       break;
 
