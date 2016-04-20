@@ -175,6 +175,12 @@
 */
 #define SUBSET_MASK_HAVE_GUST (131072)
 
+/*!
+ \def SUBSET_MASK_HAVE_GUST10
+ \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having wind gust observation other than 10 minutes
+*/
+#define SUBSET_MASK_HAVE_GUST10 ( 2 * 131072)
+
 
 #define REPORT_LENGTH (16384)
 

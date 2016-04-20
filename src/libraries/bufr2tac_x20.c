@@ -156,6 +156,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         return 0;
       vism_to_VV ( syn->s1.VV, s->val );
       break;
+      
     case 3: // 0 20 003 . Present weather
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -185,6 +186,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           s->mask |= ( SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW | SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1 | SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2 );
         }
       break;
+      
     case 4: // 0 20 004 . Past weather (1)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -210,6 +212,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           syn->mask |= SYNOP_SEC1;
         }
       break;
+      
     case 5: // 0 20 005 . Past weather (2)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -235,6 +238,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           syn->mask |= SYNOP_SEC1;
         }
       break;
+      
     case 10: // 0 20 010 . Cloud cover (total)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         return 0;
@@ -264,6 +268,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           syn->mask |= SYNOP_SEC3;
         }
       break;
+      
     case 12: // 0 20 012 . Cloud type
       if ( s->clayer == 0 )
         {
@@ -298,8 +303,8 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             sprintf ( syn->s3.nub[s->clayer - 1].C, "%1d", s->ival % 10 );
           syn->mask |= SYNOP_SEC3;
         }
-
       break;
+
     case 13: // 0 20 013 . Height of base of cloud
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         return 0;
@@ -308,6 +313,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       else
         m_to_hh ( syn->s3.nub[s->clayer - 1].hshs, s->val );
       break;
+
     case 62: // 0 20 062 . State of the ground (with or without snow)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         return 0;

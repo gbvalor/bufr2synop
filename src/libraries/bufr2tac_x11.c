@@ -146,8 +146,10 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
-      if ( s->itval == -600 )
+      if ( s->itval == -600)
         {
+	  if (syn->mask & SUBSET_MASK_HAVE_GUST10)
+	    break;
           sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "910" );
           if ( syn->s0.iw[0] == '4' )
             {
@@ -165,6 +167,8 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%03d", ( int ) ( s->val + 0.5 ) );
             }
           syn->s3.d9.n++;
+	  syn->mask |= SUBSET_MASK_HAVE_GUST10;
+          syn->mask |= SYNOP_SEC3;
         }
       else if ( s->itval )
         {
@@ -260,6 +264,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "00" );
               sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%03d", ( int ) ( s->val + 0.5 ) );
             }
+          syn->mask |= SYNOP_SEC3;
           syn->s3.d9.n++;
         }
       else if ( s->itval )

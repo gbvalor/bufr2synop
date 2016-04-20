@@ -222,53 +222,33 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       break;
 
     case 31: // 0 14 031 Total sunshine
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
       if ( s->itval == ( -24 * 3600 ) )
         {
-          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-            {
-              sprintf ( syn->s3.SSS, "///" );
-            }
-          else
-            {
-              sprintf ( syn->s3.SSS, "%03d", s->ival / 6 );
-            }
+          sprintf ( syn->s3.SSS, "%03d", s->ival / 6 );
         }
       else if ( s->itval == -3600 )
         {
-          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-            {
-              sprintf ( syn->s3.SS, "//" );
-            }
-          else
-            {
-              sprintf ( syn->s3.SS, "%02d", s->ival / 6 );
-            }
+          sprintf ( syn->s3.SS, "%02d", s->ival / 6 );
         }
       syn->mask |= SYNOP_SEC3;
       break;
 
     case 32: // 0 14 032 Total sunshine (hours)
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
       if ( s->itval == ( -24 * 3600 ) )
         {
-          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-            {
-              sprintf ( syn->s3.SSS, "///" );
-            }
-          else
-            {
-              sprintf ( syn->s3.SSS, "%03d", s->ival * 10 );
-            }
+          sprintf ( syn->s3.SSS, "%03d", s->ival * 10 );
         }
       else if ( s->itval == -3600 )
         {
-          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-            {
-              sprintf ( syn->s3.SS, "//" );
-            }
-          else
-            {
-              sprintf ( syn->s3.SS, "%02d", s->ival * 10 );
-            }
+          sprintf ( syn->s3.SS, "%02d", s->ival * 10 );
         }
       syn->mask |= SYNOP_SEC3;
       break;

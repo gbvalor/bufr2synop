@@ -487,10 +487,10 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
             {
               c += sprintf ( c, " 55%s", syn->s3.SSS );
             } 
-          else if ( syn->s3.j524[0][0] == '0' || syn->s3.j524[1][0] == '1' ||
-                    syn->s3.j524[2][0] == '2' || syn->s3.j524[3][0] == '3' ||
-                    syn->s3.j524[4][0] == '4' || syn->s3.j524[5][0] == '5' ||
-                    syn->s3.j524[6][0] == '6' )
+          else if ( syn->s3.j524[0][0] || syn->s3.j524[1][0] ||
+                    syn->s3.j524[2][0] || syn->s3.j524[3][0] ||
+                    syn->s3.j524[4][0] || syn->s3.j524[5][0] ||
+                    syn->s3.j524[6][0] )
             {
               c += sprintf ( c, " 55%s", syn->s3.SSS );
             }
@@ -499,7 +499,7 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
             {
               if ( syn->s3.j524[i][0] )
                 {
-                  sprintf ( c, " %s%s", syn->s3.j524[i], syn->s3.FFFF24[i] );
+                  c += sprintf ( c, " %s%s", syn->s3.j524[i], syn->s3.FFFF24[i] );
                 }
             }
         }
@@ -511,19 +511,19 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
             {
               c += sprintf ( c, " 553%s", syn->s3.SS );
             } 
-          else if ( syn->s3.j5[0][0] == '0' || syn->s3.j5[1][0] == '1' ||
-                    syn->s3.j5[2][0] == '2' || syn->s3.j5[3][0] == '3' ||
-                    syn->s3.j5[4][0] == '4' || syn->s3.j5[5][0] == '5' ||
-                    syn->s3.j5[6][0] == '6')
+          else if ( syn->s3.j5[0][0] || syn->s3.j5[1][0] ||
+                    syn->s3.j5[2][0] || syn->s3.j5[3][0] ||
+                    syn->s3.j5[4][0] || syn->s3.j5[5][0] ||
+                    syn->s3.j5[6][0] )
             {
               c += sprintf ( c, " 553%s", syn->s3.SS );
             }
-
+           
           for ( i = 0; i < 7; i++ )
             {
               if ( syn->s3.j5[i][0] )
                 {
-                  sprintf ( c, " %s%s", syn->s3.j5[i], syn->s3.FFFF[i] );
+                  c += sprintf ( c, " %s%s", syn->s3.j5[i], syn->s3.FFFF[i] );
                 }
             }
         }

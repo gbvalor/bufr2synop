@@ -214,7 +214,8 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
        ( ( s->mask & SUBSET_MASK_HAVE_YEAR ) == 0 ) ||
        ( ( s->mask & SUBSET_MASK_HAVE_MONTH ) == 0 ) ||
        ( ( s->mask & SUBSET_MASK_HAVE_DAY ) == 0 ) ||
-       ( ( s->mask & SUBSET_MASK_HAVE_HOUR ) == 0 )
+       ( ( s->mask & SUBSET_MASK_HAVE_HOUR ) == 0 ) ||
+       ( ( s->mask & SUBSET_MASK_HAVE_MINUTE ) == 0 )
      )
     {
       sprintf ( err,"bufr2tac: parse_subset_as_synop(): lack of mandatory descriptor in sequence" );
@@ -317,6 +318,8 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
 
   /****** Final Adjust ***********/
   // fix YYGG according with YYYYMMDDHHmm
+  if ( syn->e.mm[0] == 0 )
+    sprintf ( syn->e.mm, "00" );
   synop_YYYYMMDDHHmm_to_YYGG ( syn );
   if ( strcmp ( syn->e.mm,"00" ) )
     {
