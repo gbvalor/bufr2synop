@@ -296,6 +296,25 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
         }
     }
 
+  // adjust radiation
+  if ( ( syn->mask & SYNOP_SEC3 ) && ( syn->s3.SS[0] == '\0' ) &&
+       ( syn->s3.j5[0][0] || syn->s3.j5[1][0] ||
+         syn->s3.j5[2][0] || syn->s3.j5[3][0] ||
+         syn->s3.j5[4][0] || syn->s3.j5[5][0] ||
+         syn->s3.j5[6][0] ) )
+    {
+      sprintf ( syn->s3.SS, "//" );
+    }
+
+  if ( ( syn->mask & SYNOP_SEC3 ) && ( syn->s3.SSS[0] == '\0' ) &&
+       ( syn->s3.j524[0][0] || syn->s3.j524[1][0] ||
+         syn->s3.j524[2][0] || syn->s3.j524[3][0] ||
+         syn->s3.j524[4][0] || syn->s3.j524[5][0] ||
+         syn->s3.j524[6][0] ) )
+    {
+      sprintf ( syn->s3.SSS, "///" );
+    }
+
   /****** Final Adjust ***********/
   // fix YYGG according with YYYYMMDDHHmm
   synop_YYYYMMDDHHmm_to_YYGG ( syn );

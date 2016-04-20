@@ -110,14 +110,18 @@ char * prec_to_RRRR24 ( char *target, double r )
 char * total_snow_depth_to_sss ( char *target, double r )
 {
   int i;
-  i = ( int ) ( r * 1000.0 + 0.5 ); // convert to cm
+  i = ( int ) ( r * 100.0 + 0.5 ); // convert to cm
   if ( i > 0 && i <= 996 )
     {
       sprintf ( target, "%03d", i );
     }
-  else if ( r > 0.0 && i == 0 )
+  else if ( i == -1 )
     {
       sprintf ( target, "997" );
+    }
+  else if ( i == -2 )
+    {
+      sprintf ( target, "998" );
     }
   else
     {
