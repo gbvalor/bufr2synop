@@ -23,8 +23,8 @@ At the moment includes the following reports:
 
 The software is based in bufrdc library from ECMWF. Before version 0.7 this package should to be 
 installed. Since version 0.7, a library for decode a wide subset of BUFR reports has been written 
-from scratch. This is a fast and light bufr decoder. Anyway it still uses the bufr tables installed
-by ECMWF packages so it still need to be installed. You can grab ECMWF library from 
+from scratch. This is a fast and light bufr decoder. Anyway it still uses the bufr tables 
+installed by ECMWF packages so it need to be installed. You can grab ECMWF library from 
 
 https://software.ecmwf.int/wiki/display/BUFR/Releases
 
@@ -69,18 +69,18 @@ Assume you built the package. you will have four binaries:
     
 And also the libraries :
 
-- libbufrdeco  A light and very fast bufr decode library. It still in beta phase but it can decode all BUFR types
-               needed to get the target TAC reports.   
-- libbufr2tac  Used by binaries bufr2synop and bufrtotac to transform a decoded bufr into a TAC (Traditional
-               Alphanumeric Form). Before version 0.7 this library was named bufr2synop. It seems the new name is 
-               the right name.
+- libbufrdeco  A light and very fast bufr decode library. It still in beta phase but it can 
+               decode all BUFR types needed to get the target TAC reports.   
+- libbufr2tac  Used by binaries bufr2synop and bufrtotac to transform a decoded bufr into a 
+               TAC (Traditional Alphanumeric Form). Before version 0.7 this library was named 
+               bufr2synop. It seems the new name is the right name.
 
 
 INSTALL
 -------
 
-See 'INSTALL' file in this package to get details. If you use default settings, then install will 
-install all the files in '/usr/local' directory. So you will need root privileges. As example
+See 'INSTALL' file in this package to get details. If you use default settings, then install 
+will install all the files in '/usr/local' directory. So you will need root privileges. As example
 
   sudo make install
 
