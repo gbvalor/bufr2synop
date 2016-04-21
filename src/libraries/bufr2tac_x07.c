@@ -58,6 +58,27 @@ int syn_parse_x07 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       s->alt = s->val;
       break;
+    case 4: // 0 07 004 . Pressure at standard level
+      if ( s->ival == 100000 )
+        {
+          strcpy ( syn->s1.a3, "1" );
+        }
+      else if ( s->ival == 92500 )
+        {
+          strcpy ( syn->s1.a3, "2" );
+        }
+      else if ( s->ival == 85000 )
+        {
+          strcpy ( syn->s1.a3, "8" );
+        }
+      else if ( s->ival == 70000 )
+        {
+          strcpy ( syn->s1.a3, "7" );
+        }
+      else if ( s->ival == 50000 )
+        {
+          strcpy ( syn->s1.a3, "5" );
+        }
     default:
       break;
     }
