@@ -53,7 +53,7 @@ char * pascal_to_pnpnpn ( char *target, double P )
     }
   else
     {
-      ic = ( int ) ( P * 0.1 + 0.5);
+      ic = ( int ) ( P * 0.1 + 0.5 );
     }
   sprintf ( target, "%03d", ic % 1000 );
   return target;
@@ -98,18 +98,40 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       strcpy ( syn->s1.PoPoPoPo, aux );
       syn->mask |= SYNOP_SEC1;
       break;
+
+    case 9: // 0 10 009. Geopotential at standard level
+      sprintf ( syn->s1.hhh, "%03d", s->ival % 1000 );
+      syn->mask |= SYNOP_SEC1;
+      break;
+
     case 51: // 0 10 051 . Pressure reduced to mean sea level
       pascal_to_PPPP ( aux, s->val );
       strcpy ( syn->s1.PPPP, aux );
       syn->mask |= SYNOP_SEC1;
       break;
-    case 63: // 0 10 063 . Characteristic of pressure tendency
-      sprintf ( syn->s1.a, "%1d",s->ival );
-      syn->mask |= SYNOP_SEC1;
-      break;
+
     case 61: // 0 10 061 . 3-hour pressure change
       pascal_to_ppp ( aux, s->val );
       sprintf ( syn->s1.ppp, "%s", aux );
+      syn->mask |= SYNOP_SEC1;
+      break;
+
+    case 62: // 0 10 062 . 24-hour pressure change
+      pascal_to_ppp ( aux, s->val );
+      sprintf ( syn->s3.ppp24, "%s", aux );
+      if ( s->val >= 0 )
+        {
+          strcpy ( syn->s3.snp24, "8" );
+        }
+      else
+        {
+          strcpy ( syn->s3.snp24, "9" );
+        }
+      syn->mask |= SYNOP_SEC3;
+      break;
+
+    case 63: // 0 10 063 . Characteristic of pressure tendency
+      sprintf ( syn->s1.a, "%1d",s->ival );
       syn->mask |= SYNOP_SEC1;
       break;
     default:
@@ -205,8 +227,8 @@ int climat_parse_x10 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
             }
         }
       break;
-    case 9: // 0 10 009 . Heigh of geopotential 
-     if ( s->isq_val == 4 )
+    case 9: // 0 10 009 . Heigh of geopotential
+      if ( s->isq_val == 4 )
         {
           if ( s->is_normal == 0 )
             {

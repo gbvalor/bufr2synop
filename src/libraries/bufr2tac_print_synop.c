@@ -162,14 +162,24 @@ char * print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn )
           c += sprintf ( c, " 3%s", syn->s1.PoPoPoPo );
         }
 
-      // printf 4PPPP
-      if ( check_len ( sec1,6 ) && syn->s1.PPPP[0] )
+      // printf 4PPPP or 4a3hhh
+      if ( syn->s1.PPPP[0] )
         {
-          c += sprintf ( c, " 4%s", syn->s1.PPPP );
+          if ( check_len ( sec1,6 ) )
+            {
+              c += sprintf ( c, " 4%s", syn->s1.PPPP );
+            }
+        }
+      else if ( syn->s1.hhh[0] )
+        {
+          if ( check_len ( sec1,6 ) )
+            {
+              c += sprintf ( c, " 4%s%s", syn->s1.a3, syn->s1.hhh );
+            }
         }
 
       // printf 5appp
-      if ( check_len ( sec1,6 ) && ( syn->s1.a[0] || syn->s1.ppp[0] ) )
+      if ( ( syn->s1.a[0] || syn->s1.ppp[0] ) && check_len ( sec1,6 ) )
         {
           if ( syn->s1.a[0] == 0 )
             {
@@ -183,7 +193,7 @@ char * print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn )
         }
 
       // printf 6RRRtr
-      if ( check_len ( sec1,6 ) && ( syn->s1.tr[0] || syn->s1.RRR[0] ) )
+      if ( ( syn->s1.tr[0] || syn->s1.RRR[0] ) && check_len ( sec1,6 ) )
         {
           if ( syn->s1.tr[0] == 0 )
             {
@@ -196,7 +206,7 @@ char * print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn )
           c += sprintf ( c, " 6%s%s", syn->s1.RRR, syn->s1.tr );
         }
 
-      if ( check_len ( sec1,6 ) && ( syn->s1.ww[0] || syn->s1.W1[0] || syn->s1.W2[0] ) )
+      if ( ( syn->s1.ww[0] || syn->s1.W1[0] || syn->s1.W2[0] ) && check_len ( sec1,6 ) )
         {
           if ( syn->s1.ww[0] == 0 )
             {
@@ -486,7 +496,7 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
           if ( strcmp ( syn->s3.SSS, "///" ) )
             {
               c += sprintf ( c, " 55%s", syn->s3.SSS );
-            } 
+            }
           else if ( syn->s3.j524[0][0] || syn->s3.j524[1][0] ||
                     syn->s3.j524[2][0] || syn->s3.j524[3][0] ||
                     syn->s3.j524[4][0] || syn->s3.j524[5][0] ||
@@ -494,7 +504,7 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
             {
               c += sprintf ( c, " 55%s", syn->s3.SSS );
             }
-          
+
           for ( i = 0; i < 7; i++ )
             {
               if ( syn->s3.j524[i][0] )
@@ -510,7 +520,7 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
           if ( strcmp ( syn->s3.SS, "//" ) )
             {
               c += sprintf ( c, " 553%s", syn->s3.SS );
-            } 
+            }
           else if ( syn->s3.j5[0][0] || syn->s3.j5[1][0] ||
                     syn->s3.j5[2][0] || syn->s3.j5[3][0] ||
                     syn->s3.j5[4][0] || syn->s3.j5[5][0] ||
@@ -518,7 +528,7 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
             {
               c += sprintf ( c, " 553%s", syn->s3.SS );
             }
-           
+
           for ( i = 0; i < 7; i++ )
             {
               if ( syn->s3.j5[i][0] )
@@ -550,6 +560,12 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
       if ( syn->s3.FFFF508[0] && check_len ( sec3, 12 ) )
         {
           c += printf ( c, " 55508 4%s", syn->s3.FFFF508 );
+        }
+
+      // print 58ppp24 or 59ppo24
+      if ( syn->s3.ppp24[0] && check_len ( sec3, 6 ) )
+        {
+          c += printf ( c, " 5%s%s", syn->s3.snp24, syn->s3.ppp24 );
         }
 
       // printf 6RRRtr
