@@ -96,20 +96,21 @@ AN EXAMPLE OF USE
 In a working dir we want to get a BUFR archive from NOAA GTS and see the reports we can extract
 from it.
 
-1) Get a bufr bin file from NOAA. Is a cyclic directory file, with file names in the form sn.NNNN.bin 
-NNNN varying from 0000 to 0120. We choose first one. Don't worry, the file is also included in examples
-dir. (The file you can download is different for sure, the example in package is from Saturday 
-Oct 18 2014).
+1) Get a bufr bin file from NOAA. Is a cyclic directory file, with file names in the form 
+sn.NNNN.bin, NNNN varying from 0000 to 0120. We choose first one. Don't worry, the file is also 
+included in examples dir. (The file you can download is different for sure, the example in 
+package is from Saturday Oct 18 2014).
 
   wget http://weather.noaa.gov/pub/SL.us008001/DF.bf/DC.intl/sn.0000.bin
 
-2) Then use 'bufrnoaa' to get a lot of files. Every file is a bufr report. We do not want all kind of 
-bufr reports, just surface observations (land and oceanographic). We can just do
+2) Then use 'bufrnoaa' to get a lot of files. Every file is a bufr report. We do not want 
+all kind of bufr reports, just surface observations (land and oceanographic). We can just do
 
    bufrnoaa  -f -T SO -S ACIMNSVW -O B -i sn.0000.bin
 
-If we did this with examples 'sn.0000.bin' file we got 171 bufr files selected from 571 in the archive 
-sn.0000.bin. Let choose one bufr file '20141018211119_ISIN03_EGRR_182100.bufr' (also in examples dir) 
+If we did this with examples 'sn.0000.bin' file we got 171 bufr files selected from 571 in the 
+archive sn.0000.bin. Let choose one bufr file '20141018211119_ISIN03_EGRR_182100.bufr' (also 
+in examples dir) 
 
 To see the 'emulated' synop reports from this bufr file 
 
@@ -129,8 +130,8 @@ We can try also to get a traditional TEMP report from examples. Let use the new 
 
 We will get the four parts of a TEMP report.
  
-Since version 0.7 we also can do the same using bufrtotac which uses the own bufrdeco library. It works 
-with the same arguments than bufr2synop, so 
+Since version 0.7 we also can do the same using bufrtotac which uses the own bufrdeco library. 
+It works with the same arguments than bufr2synop, so 
 
    bufrtotac -i 20141018211119_ISIN03_EGRR_182100.bufr
 
