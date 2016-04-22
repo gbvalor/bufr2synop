@@ -191,6 +191,15 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 
   switch ( s->a->desc.y )
     {
+    case 3: // 0 13 003 . Relative humidity %
+      if ( s->ival < 0 || s->ival > 100 )
+        {
+          return 0;
+        }
+      sprintf ( syn->s1.UUU, "%03d", s->ival );
+      syn->mask |= SYNOP_SEC1;
+      break;
+
     case 11: // 0 13 011 . Total precipitaction
       if ( s->val < 0.0 )
         {

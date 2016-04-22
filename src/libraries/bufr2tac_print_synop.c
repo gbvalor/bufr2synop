@@ -150,10 +150,20 @@ char * print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn )
           c += sprintf ( c, " 1%s%s", syn->s1.sn1, syn->s1.TTT );
         }
 
-      // printf 2snTdTdTd
-      if ( check_len ( sec1,6 ) && syn->s1.TdTdTd[0] )
+      // printf 2snTdTdTd or 29UUU
+      if ( syn->s1.TdTdTd[0] )
         {
-          c += sprintf ( c, " 2%s%s", syn->s1.sn2, syn->s1.TdTdTd );
+          if ( check_len ( sec1,6 ) )
+            {
+              c += sprintf ( c, " 2%s%s", syn->s1.sn2, syn->s1.TdTdTd );
+            }
+        }
+      else if ( syn->s1.UUU[0] )
+        {
+          if ( check_len ( sec1,6 ) )
+            {
+              c += sprintf ( c, " 29%s", syn->s1.UUU );
+            }
         }
 
       // printf 3PoPoPoPo
