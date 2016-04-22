@@ -79,7 +79,7 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
       return 1;
     }
 
-  while ( fgets ( l, 180, t ) != NULL && i < BUFR_MAXLINES_TABLEC )
+  while ( fgets ( l, 180, t ) != NULL && i < BUFR_MAXLINES_TABLEB )
     {
       // supress the newline
       if ( ( c = strrchr ( l,'\n' ) ) != NULL )
@@ -263,7 +263,7 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
           return 1;
         }
       r->escale = 0;
-      r->inc_bits = ival;
+      r->inc_bits = (uint8_t) ival;
       b->state.bit_offset += r->inc_bits * b->sec3.subsets;
       b->state.local_bit_reserved = 0; // Clean the reserved bits
       return 0;
@@ -299,7 +299,7 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
           return 1;
         }
       strcpy ( r->unit, "NEW REFERENCE" );
-      r->ref = ( double ) tb->item[i].reference;
+      r->ref = tb->item[i].reference;
 
       // extracting inc_bits from next 6 bits
       if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), 6 ) == 0 )

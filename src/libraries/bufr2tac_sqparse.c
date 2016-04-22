@@ -179,8 +179,8 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
     {
       // psrse CLIMAT
       if ( parse_subset_as_climat ( m, st, sq, err ) == 0 )
-        {
-          return print_climat ( m->alphanum, REPORT_LENGTH, &m->climat );
+        {      
+           return print_climat ( m->alphanum, REPORT_LENGTH, &m->climat );
         }
     }
 
