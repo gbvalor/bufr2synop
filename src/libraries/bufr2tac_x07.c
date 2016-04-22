@@ -24,6 +24,37 @@
 #include "bufr2tac.h"
 
 /*!
+  \fn char * grad_to_ec ( char *target, double grad )
+  \brief Converts elevation in grads to ec (code table 1004)
+  \param grad the elevation angle (degrees)
+  \param target the resulting code
+*/
+char * grad_to_ec ( char *target, double grad )
+{
+  if ( grad < 5.0 )
+    strcpy ( target, "9" );
+  else if ( grad < 6.5 )
+    strcpy ( target, "8" );
+  else if ( grad < 8.0 )
+    strcpy ( target, "7" );
+  else if ( grad < 10.5 )
+    strcpy ( target, "6" );
+  else if ( grad < 13.5 )
+    strcpy ( target, "5" );
+  else if ( grad < 17.5 )
+    strcpy ( target, "4" );
+  else if ( grad < 25.0 )
+    strcpy ( target, "3" );
+  else if ( grad < 40.0 )
+    strcpy ( target, "2" );
+  else if ( grad >= 45.0 )
+    strcpy ( target, "1" );
+  else
+    strcpy ( target, "0" );
+  return target;
+}
+
+/*!
   \fn int syn_parse_x07 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
   \brief Parse a expanded descriptor with X = 07
   \param syn pointer to a struct \ref synop_chunks where to set the results
@@ -33,12 +64,6 @@
 */
 int syn_parse_x07 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 {
-
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    {
-      return 0;
-    }
-
   // this is to avoid warning
   if ( syn == NULL )
     {
@@ -50,6 +75,10 @@ int syn_parse_x07 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 1: // 0 07 001 . Heigh of station
     case 30: // 0 07 030 . Height of station ground above msl
     case 31: // 0 07 031 . Height of barometer above msl
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
       if ( syn->s0.h0h0h0h0[0] == 0 )
         {
           sprintf ( syn->s0.h0h0h0h0, "%04d", s->ival );
@@ -59,6 +88,10 @@ int syn_parse_x07 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       s->alt = s->val;
       break;
     case 4: // 0 07 004 . Pressure at standard level
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
       if ( s->ival == 100000 )
         {
           strcpy ( syn->s1.a3, "1" );
@@ -81,8 +114,23 @@ int syn_parse_x07 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       break;
 
+    case 21: // 0 07 021 . Elevation angle
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      grad_to_ec ( syn->s3.ec, s->val );
+      syn->mask |= SYNOP_SEC3;
+      break;
+
     case 32: // 0 07 032 Height of sensor above local ground
-      break; // no use at the moment
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          s->hsensor = -999.9; // clean value
+          return 0;
+        }
+      s->hsensor = s->val;
+      break;
 
     default:
       break;

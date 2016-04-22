@@ -23,6 +23,37 @@
  */
 #include "bufr2tac.h"
 
+/*!
+  \fn char * grad_to_D ( char *D, double grad )
+  \brief Converts true direction in grads to D (code table 0700)
+  \param grad the true direction (degrees)
+  \param D the resulting code
+*/
+char * grad_to_D ( char *D, double grad )
+{
+  if ( grad >= 22.5 && grad < 67.5 )
+    strcpy ( D, "1" );
+  else if ( grad >= 67.5 && grad < 112.5 )
+    strcpy ( D, "2" );
+  else if ( grad >= 112.5 && grad < 157.5 )
+    strcpy ( D, "3" );
+  else if ( grad >= 157.5 && grad < 202.5 )
+    strcpy ( D, "4" );
+  else if ( grad >= 202.5 && grad < 247.5 )
+    strcpy ( D, "5" );
+  else if ( grad >= 247.5 && grad < 292.5 )
+    strcpy ( D, "6" );
+  else if ( grad >= 292.5 && grad < 337.5 )
+    strcpy ( D, "7" );
+  else if ( ( grad >= 337.5 && grad <= 360.0 ) ||
+            ( grad >0.0 && grad < 22.5 ) )
+    strcpy ( D, "8" );
+  else if ( grad == 0.0 )
+    strcpy ( D, "0" );
+  else
+    strcpy ( D, "9" );
+  return D;
+}
 
 /*!
   \fn int syn_parse_x05 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
@@ -51,6 +82,12 @@ int syn_parse_x05 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       syn->s0.Ula[0] = syn->s0.LaLaLa[1];
       s->lat = s->val;
       break;
+      
+    case 21: // 0 05 021 . Bearing or azimut
+      grad_to_D ( syn->s3.Da, s->val );
+      syn->mask |= SYNOP_SEC3;
+      break
+      ;
     default:
       break;
     }
@@ -183,7 +220,7 @@ int temp_parse_x05 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
       t->b.s1.Ula[0] = t->b.s1.LaLaLa[1];
       t->c.s1.Ula[0] = t->c.s1.LaLaLa[1];
       t->d.s1.Ula[0] = t->d.s1.LaLaLa[1];
-      
+
       // check if set both LaLaLa and LoLoLoLo to set Qc
       if ( ( t->a.s1.Qc[0] == 0 ) && t->a.s1.LaLaLa[0] && t->a.s1.LoLoLoLo[0] )
         {

@@ -293,7 +293,10 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       break;
     case 113: // 0 12 113 . Ground minimum temperature, past 12 hours
-      if ( strcmp ( "6", guess_WMO_region_synop ( syn ) ) == 0 ) // region VI
+      if ( strcmp ( "6", syn->s0.A1 ) == 0 ||
+           strcmp ( "3", syn->s0.A1 ) == 0 ||
+           strcmp ( "2", syn->s0.A1 ) == 0
+         ) // region III or VI
         {
           if ( kelvin_to_snTT ( aux, s->val ) )
             {
@@ -301,7 +304,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               syn->mask |= SYNOP_SEC3;
             }
         }
-      else if ( strcmp ( "1", guess_WMO_region_synop ( syn ) ) == 0 )
+      else if ( strcmp ( "1", syn->s0.A1 ) == 0 )
         {
           if ( kelvin_to_TT ( aux, s->val ) )
             {

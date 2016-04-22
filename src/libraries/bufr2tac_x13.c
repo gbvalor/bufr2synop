@@ -402,6 +402,25 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           syn->mask |= SYNOP_SEC3;
         }
       break;
+
+    case 56: // 0 13 056 . Character and intensity of precipitation
+      if (strcmp (syn->s0.A1, "1") == 0) // Only for Region I
+      {
+	sprintf(aux, "%d", s->ival);
+	syn->s3.XoXoXoXo[2] = aux[0];
+        syn->mask |= SYNOP_SEC3;
+      }
+      break;
+
+    case 57: // 0 13 057 . Time of beginning or end of precipitation
+      if (strcmp (syn->s0.A1, "1") == 0) // Only for region I
+      {
+	sprintf(aux, "%d" , s->ival); 
+	syn->s3.XoXoXoXo[3] = aux[0];
+        syn->mask |= SYNOP_SEC3;
+      }
+      break;
+
     case 118: // 0 13 118 . Recent snow depth
       if ( syn->s3.d9.n < SYNOP_NMISC )
         {

@@ -376,38 +376,50 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               return 0;
             }
-          if ( s->ival >= 10 && s->ival < 20 )
+          if ( s->ival < 10 )
+            {
+              sprintf ( syn->s3.C, "%d", s->ival );
+              syn->mask |= SYNOP_SEC3;
+            }
+          else if ( s->ival >= 10 && s->ival < 20 )
             {
               sprintf ( syn->s1.Ch, "%1d", s->ival % 10 );
+              syn->mask |= SYNOP_SEC1;
             }
           else if ( s->ival >= 20 && s->ival < 30 )
             {
               sprintf ( syn->s1.Cm, "%1d", s->ival % 10 );
+              syn->mask |= SYNOP_SEC1;
             }
           else if ( s->ival >= 30 && s->ival < 40 )
             {
               sprintf ( syn->s1.Cl, "%1d", s->ival % 10 );
+              syn->mask |= SYNOP_SEC1;
             }
           else if ( s->ival == 59 )
             {
               sprintf ( syn->s1.Nh, "/" );
+              syn->mask |= SYNOP_SEC1;
             }
           else if ( s->ival == 60 )
             {
               sprintf ( syn->s1.Ch, "/" );
+              syn->mask |= SYNOP_SEC1;
             }
           else if ( s->ival == 61 )
             {
               sprintf ( syn->s1.Cm, "/" );
+              syn->mask |= SYNOP_SEC1;
             }
           else if ( s->ival == 62 )
             {
               sprintf ( syn->s1.Cl, "/" );
+              syn->mask |= SYNOP_SEC1;
             }
-          syn->mask |= SYNOP_SEC1;
         }
       else if ( s->clayer < 0 )
         {
+          // case of base of clouds below station level
           if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
             {
               return 0;
@@ -481,6 +493,25 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       break;
 
+    case 54: // 0 20 054 . True direction from which clouds are moving
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING || s->ival >= 10 )
+        {
+          return 0;
+        }
+      if ( s->clayer == 7 )
+        {
+          grad_to_D ( syn->s3.Dl, s->val );
+        }
+      else if ( s->clayer == 8 )
+        {
+          grad_to_D ( syn->s3.Dm, s->val );
+        }
+      else if ( s->clayer == 9 )
+        {
+          grad_to_D ( syn->s3.Dh, s->val );
+        }
+      syn->mask |= SYNOP_SEC3;
+      break;
 
     case 62: // 0 20 062 . State of the ground (with or without snow)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )

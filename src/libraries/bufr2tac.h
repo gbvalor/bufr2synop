@@ -228,6 +228,7 @@ struct bufr2tac_subset_state
   double lat; /*!< Latitude of station */
   double lon; /*!< longitude of station */
   double alt; /*!< Altitude (m)*/
+  double hsensor; /*!< Sensor height over station ground (m) */ 
   char name[80]; /*!< Name of observatory, if any */
   char country[80]; /*!< Name of state/country if known */
   time_t tobs; /*!< Unix time reference*/
@@ -345,6 +346,8 @@ char * vism_to_VV ( char *target, double V );
 char * recent_snow_to_ss ( char *target, double r );
 char * total_snow_depth_to_sss ( char *target, double r );
 char * wind_to_dndnfnfnfn( char *target, double dd, double ff);
+char * grad_to_D (char *D, double grad);
+char * grad_to_ec(char *target, double grad);
 
 int print_synop ( char *report, size_t lmax, struct synop_chunks *syn );
 char * print_synop_sec0 ( char **sec0, size_t lmax, struct synop_chunks *syn );
