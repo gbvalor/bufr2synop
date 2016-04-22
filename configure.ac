@@ -23,7 +23,7 @@ case "${CC}" in
                 CFLAGS="-O2 -Wall -Wextra -W -g"
                 ;;
         icc)
-                CFLAGS="-O2 -xHost -Wall -g"
+                CFLAGS="-O2 -xHost -fstack-protector -Wall -g"
                 ;;
 esac
 }
