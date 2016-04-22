@@ -79,6 +79,11 @@ int syn_parse_x07 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           strcpy ( syn->s1.a3, "5" );
         }
+      break;
+
+    case 32: // 0 07 032 Height of sensor above local ground
+      break; // no use at the moment
+
     default:
       break;
     }

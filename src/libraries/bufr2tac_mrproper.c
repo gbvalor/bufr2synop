@@ -59,6 +59,15 @@ void clean_syn_sec3 ( struct synop_sec3 *s )
   memset ( s, 0, sizeof ( struct synop_sec3 ) );
 }
 
+/*! \fn void clean_syn_sec4(struct synop_sec4 *s)
+    \brief clean a synop_sec4 struct
+    \param s pointer to the synop_sec4 struct
+*/
+void clean_syn_sec4 ( struct synop_sec4 *s )
+{
+  memset ( s, 0, sizeof ( struct synop_sec4 ) );
+}
+
 /*! \fn void clean_syn_sec5(struct synop_sec5 *s)
     \brief clean a synop_sec5 struct
     \param s pointer to the synop_sec5 struct

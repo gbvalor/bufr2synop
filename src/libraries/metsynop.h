@@ -48,16 +48,20 @@
 */
 #define SYNOP_SEC3 8
 
+/*! \def SYNOP_SEC4
+    \brief mask bit meaning section 4 or synop is solicited to or parsed with success
+*/
+#define SYNOP_SEC4 16
+
 /*! \def SYNOP_SEC5
     \brief mask bit meaning section 5 or synop is solicited to or parsed with success
 */
-#define SYNOP_SEC5 16
-
+#define SYNOP_SEC5 32
 
 /*! \def SYNOP_EXT
     \brief mask bit meaning date extension is parsed with success
 */
-#define SYNOP_EXT 32
+#define SYNOP_EXT 64
 
 /*! \def SYNOP_NNUB
     \brief number of optional nub3 struct to store the parsed results of 8.... groups
@@ -245,6 +249,18 @@ ture change. */
 };
 
 /*!
+  \struct synop_sec4
+  \brief contains some of substrings from section 4 when a report is parsed with success
+*/
+struct synop_sec4
+{
+  char N1[2]; /*!< Amount of cloud whose base is below the level of the station. (Code table 2700) */
+  char C1[2]; /*!< Genus of cloud whose base is below the level of the station. (Code table 0500) */
+  char H1H1[4]; /*!< Altitude of the upper surface of clouds reported by C, in hundreds of metres */
+  char Ct[2]; /*!< Description of the top of cloud whose base is below the level of the station. (Code table 0552) */
+};
+
+/*!
     \struct synop_sec5
     \brief contains some of substrings from section 5 when a report is parsed with success
 
@@ -269,6 +285,7 @@ struct synop_chunks
   struct synop_sec1 s1; /*!< struct with parsed section 1 */
   struct synop_sec2 s2; /*!< struct with parsed section 2 if present */
   struct synop_sec3 s3; /*!< struct with parsed section 3 if present */
+  struct synop_sec4 s4; /*!< struct with parsed section 4 if present */
   struct synop_sec5 s5; /*!< struct with parsed section 5 if present */
   char error[128]; /*!< string with error code if a wrong synop report is found */
 };
@@ -291,6 +308,7 @@ void clean_syn_sec0 ( struct synop_sec0 *s );
 void clean_syn_sec1 ( struct synop_sec1 *s );
 void clean_syn_sec2 ( struct synop_sec2 *s );
 void clean_syn_sec3 ( struct synop_sec3 *s );
+void clean_syn_sec4 ( struct synop_sec4 *s );
 void clean_syn_sec5 ( struct synop_sec5 *s );
 
 #endif

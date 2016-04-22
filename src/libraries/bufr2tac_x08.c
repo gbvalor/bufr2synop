@@ -65,6 +65,14 @@ int syn_parse_x08 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           s->clayer = 4;  // fourth cloud layer
         }
+      else if (s->ival == 10)
+      {
+	  s->clayer = -1; // base of cloud layer below level station and top over level station
+      }
+      else if (s->ival == 11)
+      {
+	  s->clayer = -2; // base and top of cloud layer below level station       
+	}
       break;
     case 22:  // 0 08 022 . Total number
     case 23:  // 0 08 023 . First-order statistics

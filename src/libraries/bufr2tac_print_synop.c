@@ -620,6 +620,60 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
 }
 
 /*!
+  \fn char * print_synop_sec4 (char **sec4, size_t lmax, struct synop_chunks *syn)
+  \brief Prints the synop section 4
+  \param sec4 the pointer where to print section
+  \param lmax max length permited
+  \param syn pointer to s atruct \ref synop_chunks where the parse results are set
+*/
+char * print_synop_sec4 ( char **sec4, size_t lmax, struct synop_chunks *syn )
+{
+  char *c = *sec4, *c0;
+
+  if ( syn->mask & SYNOP_SEC5 )
+    {
+      if ( check_len ( sec4, 4 ) )
+        {
+          c += sprintf ( c, " 444" );
+        }
+
+      // init point to write info.
+      // in case we finally write nothing in this section
+      c0 = c;
+
+      // printf N1C1H1H1Ct
+      if ( check_len ( sec4, 6 ) &&
+           ( syn->s4.N1[0] || syn->s4.C1[0] || syn->s4.H1H1[0] || syn->s4.Ct[0] ) )
+        {
+          if ( syn->s4.N1[0] == 0 )
+            {
+              syn->s4.N1[0] = '/';
+            }
+          if ( syn->s4.C1[0] == 0 )
+            {
+              syn->s4.C1[0] = '/';
+            }
+          if ( syn->s4.Ct[0] == 0 )
+            {
+              syn->s4.Ct[0] = '/';
+            }
+          if ( syn->s4.H1H1[0] == 0 )
+            {
+              strcpy ( syn->s4.H1H1 , "//" );
+            }
+          c += sprintf ( c, " %s%s%s%s", syn->s4.N1, syn->s4.C1, syn->s4.H1H1, syn->s4.Ct );
+        }
+
+      if ( c != c0 )
+        {
+          *sec4 = c;
+        }
+    }
+  return *sec4;
+}
+
+
+/*!
   \fn char * print_synop_sec5 (char **sec5, size_t lmax, struct synop_chunks *syn)
   \brief Prints the synop section 5
   \param sec5 the pointer where to print section
@@ -693,13 +747,15 @@ int print_synop ( char *report, size_t lmax, struct synop_chunks *syn )
 
   print_synop_sec0 ( &c, lmax, syn );
 
-  if ( syn->mask & ( SYNOP_SEC1 | SYNOP_SEC2 | SYNOP_SEC3 | SYNOP_SEC5 ) )
+  if ( syn->mask & ( SYNOP_SEC1 | SYNOP_SEC2 | SYNOP_SEC3 | SYNOP_SEC4 | SYNOP_SEC5 ) )
     {
       print_synop_sec1 ( &c, lmax - strlen ( report ), syn );
 
       print_synop_sec2 ( &c, lmax - strlen ( report ), syn );
 
       print_synop_sec3 ( &c, lmax - strlen ( report ), syn );
+
+      print_synop_sec4 ( &c, lmax - strlen ( report ), syn );
 
       print_synop_sec5 ( &c, lmax - strlen ( report ), syn );
     }
