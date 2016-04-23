@@ -27,7 +27,8 @@
 void print_usage ( void )
 {
   printf ( "Usage: \n" );
-  printf ( "  bufr2synop [-i input] [-I list_of_files] [-t bufrtable_dir][-o output][-s][-v][-j][-x][-c]\n" );
+  printf ( "%s %s\n", SELF, PACKAGE_VERSION);
+  printf ( "  bufr2synop [-i input] [-I list_of_files] [-t bufrtable_dir][-o output][-s][-v][-V][-j][-x][-c]\n" );
   printf ( "       -e Print some original output from ECMWF library\n" );
   printf ( "       -h. Show this help\n" );
   printf ( "       -i input. Pathname of the file with the bufr message to parse\n" );
@@ -37,7 +38,8 @@ void print_usage ( void )
   printf ( "       -o output. Pathname of output file. Default is standar output\n" );
   printf ( "       -s prints a long output with explained sequence of descriptors\n" );
   printf ( "       -t bufrtable_dir. Pathname of bufr tables directory. Ended with '/'\n" );
-  printf ( "       -v. Verbose output\n" );
+  printf ( "       -V. Verbose output\n" );
+  printf ( "       -v. Print version\n" );
   printf ( "       -x. The output is in xml format\n" );
 }
 
@@ -67,7 +69,7 @@ int read_args ( int _argc, char * _argv[] )
   /*
    Read input arguments using getop library
    */
-  while ( ( iopt = getopt ( _argc, _argv, "cDehi:jI:o:st:vx" ) ) != -1 )
+  while ( ( iopt = getopt ( _argc, _argv, "cDehi:jI:o:st:vVx" ) ) != -1 )
     switch ( iopt )
       {
       case 'i':
@@ -97,9 +99,13 @@ int read_args ( int _argc, char * _argv[] )
       case 'e':
         SHOW_ECMWF_OUTPUT = 1;
         break;
-      case 'v':
+      case 'V':
         VERBOSE = 1;
         break;
+      case 'v':
+        printf("%s %s\n", SELF, PACKAGE_VERSION);
+	exit (EXIT_SUCCESS);
+	break;
       case 's':
         SHOW_SEQUENCE = 1;
         break;

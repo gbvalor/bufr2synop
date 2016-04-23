@@ -7,7 +7,7 @@ bufr_decode_SOURCES = bufr_decode.c
 noinst_HEADERS = bufr2synop.h bufrtotac.h bufrnoaa.h
 
 # set the include path found by configure
-AM_CPPFLAGS= $(all_includes) -I$(top_srcdir)/src/bufrdeco -I$(top_srcdir)/src/libraries
+AM_CPPFLAGS= $(all_includes) -I/$(top_builddir) -I$(top_srcdir)/src/bufrdeco -I$(top_srcdir)/src/libraries
 
 # the library search path.
 bufr_decode_LDFLAGS = $(all_libraries)

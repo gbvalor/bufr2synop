@@ -1,5 +1,5 @@
 INCLUDE_DIRECTORIES( ${bufr2synop_SOURCE_DIR}/src/bufrdeco ${bufr2synop_SOURCE_DIR}/src/libraries 
-                     $(all_includes) )
+                     ${bufr2synop_SOURCE_DIR} $(all_includes) )
 
 LINK_DIRECTORIES( ${bufr2synop_SOURCE_DIR}/src/bufrdeco ${bufr2synop_SOURCE_DIR}/src/libraries 
                     /usr/lib /usr/lib64 /usr/local/lib /usr/local/lib64)

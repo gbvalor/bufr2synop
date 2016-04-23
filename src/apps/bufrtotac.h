@@ -24,6 +24,12 @@
 #include "bufrdeco.h"
 #include "bufr2tac.h"
 
+// To use package config.h
+#ifndef CONFIG_H
+# include "config.h"
+# define CONFIG_H
+#endif
+
 extern struct bufrdeco BUFR;
 extern struct bufrdeco_subset_sequence_data SEQ;
 extern struct bufrdeco_compressed_data_references REF;

@@ -24,6 +24,12 @@
 
 #include "bufr2tac.h"
 
+// To use package config.h
+#ifndef CONFIG_H
+# include "config.h"
+# define CONFIG_H
+#endif
+
 // Global vars
 extern unsigned char BUFR_MESSAGE[BUFR_LEN];
 extern char CNAMES[KELEM][64];

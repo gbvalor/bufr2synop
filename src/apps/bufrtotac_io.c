@@ -26,6 +26,7 @@
 
 void print_usage ( void )
 {
+  printf ( "%s %s\n", SELF, PACKAGE_VERSION);
   printf ( "Usage: \n" );
   printf ( "%s -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-c][-h]\n" , SELF);
   printf ( "       -h Print this help\n" );
@@ -36,7 +37,8 @@ void print_usage ( void )
   printf ( "       -o output. Pathname of output file. Default is standar output\n" );
   printf ( "       -s prints a long output with explained sequence of descriptors\n" );
   printf ( "       -t bufrtable_dir. Pathname of bufr tables directory. Ended with '/'\n" );
-  printf ( "       -v. Verbose output\n" );
+  printf ( "       -V. Verbose output\n" );
+  printf ( "       -v. Print version\n" );
   printf ( "       -x. The output is in xml format\n" );
 }
 
@@ -68,7 +70,7 @@ int read_args ( int _argc, char * _argv[] )
   /*
      Read input options
   */
-  while ( ( iopt = getopt ( _argc, _argv, "cDhi:jI:o:st:vx" ) ) !=-1 )
+  while ( ( iopt = getopt ( _argc, _argv, "cDhi:jI:o:st:vVx" ) ) !=-1 )
     switch ( iopt )
       {
      case 'i':
@@ -95,9 +97,13 @@ int read_args ( int _argc, char * _argv[] )
       case 'D':
         DEBUG = 1;
         break;
-      case 'v':
+      case 'V':
         VERBOSE = 1;
         break;
+      case 'v':
+        printf("%s %s\n", SELF, PACKAGE_VERSION);
+	exit (EXIT_SUCCESS);
+	break;
       case 's':
         SHOW_SEQUENCE = 1;
         break;
