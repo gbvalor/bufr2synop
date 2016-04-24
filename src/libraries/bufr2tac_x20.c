@@ -687,6 +687,12 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 27: // 0 20 027 . Phenomenon occurrence
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
+          if ( syn->s0.A1[0] == '6' ) // for Reg VI
+           {
+             // flag table width = 9 bits
+	     if (s->SnSn == 919 || s->SnSn == 918)
+                  syn->s3.d9.misc[syn->s3.d9.n - 1].SpSp[0] = 0;
+	   }
           return 0;
         }
       if ( syn->s0.A1[0] == '6' ) // for Reg VI
