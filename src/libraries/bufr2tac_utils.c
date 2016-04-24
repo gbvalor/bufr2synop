@@ -258,8 +258,8 @@ char *guess_WMO_region ( char *A1, char *Reg, const char *II, const char *iii )
             ( strcmp ( aux, "90000" ) >= 0 && strcmp ( aux, "98999" ) <= 0 ) )
     {
       // Reg 5. Pacific South
-      A1[0] = '4';
-      strcpy ( Reg,"IV" );
+      A1[0] = '5';
+      strcpy ( Reg,"V" );
     }
   else if ( strcmp ( II,"89" ) == 0 )
     {

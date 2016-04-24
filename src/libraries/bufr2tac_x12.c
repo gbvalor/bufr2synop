@@ -232,7 +232,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
         }
       break;
-      
+
     case 3: // 0 12 003 . Dewpoint temperature
     case 6: // 0 12 006 . Dewpoint temperature at 2 m
     case 103: // 0 12 103 . Dewpoint temperature
@@ -247,7 +247,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
         }
       break;
-      
+
     case 11: // 0 12 011 . Maximum temperature at heigh and over the period specified
     case 14: // 0 12 014 . Maximum temperature at 2 m , past 12 hours
     case 21: // 0 12 021 . Maximum temperature.
@@ -264,7 +264,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
         }
       break;
-      
+
     case 12: // 0 12 012 . Minimum temperature at heigh and over the period specified
     case 15: // 0 12 015 . Minimum temperature at 2 m , past 12 hours
     case 22: // 0 12 022 . Minimum temperature.
@@ -281,7 +281,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
         }
       break;
-      
+
     case 2: // 0 12 002 . Wet bulb temperature
     case 5: // 0 12 005 . Wet bulb temperature at 2 m
     case 102: // 0 12 102 . Wet bulb temperature
@@ -296,7 +296,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
         }
       break;
-      
+
     case 113: // 0 12 113 . Ground minimum temperature, past 12 hours
       if ( strcmp ( "6", syn->s0.A1 ) == 0 ||
            strcmp ( "3", syn->s0.A1 ) == 0 ||
@@ -327,8 +327,21 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
         }
       break;
-      
-    case 122: // 0 12 122 . Ground minimum temerature during last night
+
+    case 121: // 0 12 121 . Ground minimum temperature (at the time of observation)
+      if ( strcmp ( "2", syn->s0.A1 ) == 0 ) // region II
+        {
+          if ( kelvin_to_snTT ( aux, s->val ) )
+            {
+              syn->s3.XoXoXoXo[1] = aux[0];
+              syn->s3.XoXoXoXo[2] = aux[1];
+              syn->s3.XoXoXoXo[3] = aux[2];
+              syn->mask |= SYNOP_SEC3;
+            }
+        }
+      break;
+
+    case 122: // 0 12 122 . Ground minimum temerature during preceding night
       if ( strcmp ( "1", syn->s0.A1 ) == 0 ) // Only for Region I
         {
           if ( kelvin_to_TT ( aux, s->val ) )
@@ -346,8 +359,17 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               syn->mask |= SYNOP_SEC3;
             }
         }
+      else if ( strcmp ( "2", syn->s0.A1 ) == 0 ||
+                strcmp ( "3", syn->s0.A1 ) == 0 ) // Region II and III
+        {
+          if ( kelvin_to_snTT ( aux, s->val ) )
+            {
+              strcpy ( syn->s3.jjj, aux );
+              syn->mask |= SYNOP_SEC3;
+            }
+        }
       break;
-      
+
     default:
       break;
     }

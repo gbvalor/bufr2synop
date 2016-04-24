@@ -453,7 +453,8 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
       c0 = c;
 
       // printf 0XoXoXoXo
-      if ( syn->s3.XoXoXoXo[0] && check_len ( sec3,6 ) )
+      if ( syn->s3.XoXoXoXo[0] && ( strstr ( syn->s3.XoXoXoXo,"///" ) == NULL )
+           && check_len ( sec3,6 ) )
         {
           c += sprintf ( c, " 0%s", syn->s3.XoXoXoXo );
         }
@@ -635,7 +636,7 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
       while ( i < 4 && syn->s3.nub[i].hshs[0] )
         {
           if ( check_len ( sec3,6 ) )
-	    c += sprintf ( c, " 8%s%s%s", syn->s3.nub[i].Ns, syn->s3.nub[i].C, syn->s3.nub[i].hshs );
+            c += sprintf ( c, " 8%s%s%s", syn->s3.nub[i].Ns, syn->s3.nub[i].C, syn->s3.nub[i].hshs );
           i++;
         }
 
@@ -643,7 +644,7 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
       for ( i = 0; i < syn->s3.d9.n ; i++ )
         {
           if ( check_len ( sec3,6 ) )
-	    c += sprintf ( c, " %s%s", syn->s3.d9.misc[i].SpSp, syn->s3.d9.misc[i].spsp );
+            c += sprintf ( c, " %s%s", syn->s3.d9.misc[i].SpSp, syn->s3.d9.misc[i].spsp );
         }
 
 
@@ -669,7 +670,7 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
                 }
             }
         }
-        
+
       if ( c != c0 )
         {
           *sec3 = c;

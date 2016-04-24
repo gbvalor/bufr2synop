@@ -203,7 +203,7 @@ char * vism_to_VV ( char *target, double V )
 int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 {
   char aux[16];
-  
+
   switch ( s->a->desc.y )
     {
     case 1: // 0 20 001 . Horizontal visibility
@@ -315,6 +315,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       percent_to_okta ( syn->s1.N, s->val );
       break;
+      
     case 11: // 0 20 011 . Cloud amount
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -514,18 +515,71 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       syn->mask |= SYNOP_SEC3;
       break;
 
+    case 55: // 0 20 055 . State of sky in tropics
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( strcmp ( syn->s0.A1, "4" ) == 0 )
+        {  // For REG IV
+	  if (s->ival < 10)
+	  {
+	     sprintf ( aux,"%d", s->ival );
+	     syn->s3.XoXoXoXo[0] = aux[0];
+	  }
+	  else 
+	  {
+	    syn->s3.XoXoXoXo[0] = '/';
+	  }
+          // then copy data direction of cloud drift from 3 02 047 if any
+          if (syn->s3.Dl[0])
+	    syn->s3.XoXoXoXo[1] = syn->s3.Dl[0];  
+          if (syn->s3.Dm[0])
+	    syn->s3.XoXoXoXo[1] = syn->s3.Dm[0];  
+          if (syn->s3.Dh[0])
+	    syn->s3.XoXoXoXo[1] = syn->s3.Dh[0];  
+          syn->mask |= SYNOP_SEC3;
+	}
+      break;  
+      
     case 62: // 0 20 062 . State of the ground (with or without snow)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
           return 0;
         }
-      if ( s->ival < 10 )
+      if ( strcmp ( syn->s0.A1, "2" ) == 0 )
         {
-          sprintf ( syn->s3.E,"%d", s->ival );
+          // For REG II
+          if ( s->ival < 10 )
+            {
+              sprintf ( aux,"%d", s->ival );
+	      sprintf ( syn->s3.E, "%d", s->ival );
+              syn->s3.XoXoXoXo[0] = aux[0];
+            }
+          else if ( s->ival < 20 )
+            {
+              syn->s3.XoXoXoXo[0] = '/';
+              sprintf ( syn->s3.E1,"%d", s->ival % 10 );
+            }
+          if ( syn->s3.XoXoXoXo[1] == 0 )
+            {
+              // In case of still no snTgTg
+              syn->s3.XoXoXoXo[1] = '/';
+              syn->s3.XoXoXoXo[2] = '/';
+              syn->s3.XoXoXoXo[3] = '/';
+            }
         }
-      else if ( s->ival < 20 )
+      else
         {
-          sprintf ( syn->s3.E1,"%d", s->ival % 10 );
+          // The Other regs
+          if ( s->ival < 10 )
+            {
+              sprintf ( syn->s3.E,"%d", s->ival );
+            }
+          else if ( s->ival < 20 )
+            {
+              sprintf ( syn->s3.E1,"%d", s->ival % 10 );
+            }
         }
       syn->mask |= SYNOP_SEC3;
       break;
@@ -541,7 +595,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               sprintf ( aux, "%d", s->ival );
               syn->s3.R8[0][0] = aux[0]; // Ln
-              syn->mask |= (SYNOP_SEC3 | SYNOP_SEC3_8);
+              syn->mask |= ( SYNOP_SEC3 | SYNOP_SEC3_8 );
             }
         }
       break;
@@ -557,7 +611,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               sprintf ( aux, "%d", s->ival );
               syn->s3.R8[0][1] = aux[0]; // Lc
-              syn->mask |= (SYNOP_SEC3 | SYNOP_SEC3_8);
+              syn->mask |= ( SYNOP_SEC3 | SYNOP_SEC3_8 );
             }
         }
       break;
@@ -573,13 +627,13 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               sprintf ( aux, "%d", s->ival );
               syn->s3.R8[0][2] = aux[0]; // Ld
-              syn->mask |= (SYNOP_SEC3 | SYNOP_SEC3_8);
+              syn->mask |= ( SYNOP_SEC3 | SYNOP_SEC3_8 );
             }
         }
       break;
 
     case 104: // 0 20 104. Organization state of swarm or band of locusts
-       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
           return 0;
         }
@@ -589,13 +643,13 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               sprintf ( aux, "%d", s->ival );
               syn->s3.R8[0][3] = aux[0]; // Lg
-              syn->mask |= (SYNOP_SEC3 | SYNOP_SEC3_8);
+              syn->mask |= ( SYNOP_SEC3 | SYNOP_SEC3_8 );
             }
         }
       break;
 
     case 105: // 0 20 105. Size of swarm or band of locusts and duration of
-              // passage of swarm
+      // passage of swarm
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
           return 0;
@@ -606,7 +660,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               sprintf ( aux, "%d", s->ival );
               syn->s3.R8[1][0] = aux[0]; // Sl
-              syn->mask |= (SYNOP_SEC3 | SYNOP_SEC3_8);
+              syn->mask |= ( SYNOP_SEC3 | SYNOP_SEC3_8 );
             }
         }
       break;
@@ -622,12 +676,12 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               sprintf ( aux, "%d", s->ival );
               syn->s3.R8[1][1] = aux[0]; // dl
-              syn->mask |= (SYNOP_SEC3 | SYNOP_SEC3_8);
+              syn->mask |= ( SYNOP_SEC3 | SYNOP_SEC3_8 );
             }
         }
       break;
 
-     case 107: // 0 20 107. Direction of movements of locust swarm
+    case 107: // 0 20 107. Direction of movements of locust swarm
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
           return 0;
@@ -638,12 +692,12 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               sprintf ( aux, "%d", s->ival );
               syn->s3.R8[1][1] = aux[0]; // Dl
-              syn->mask |= (SYNOP_SEC3 | SYNOP_SEC3_8);
+              syn->mask |= ( SYNOP_SEC3 | SYNOP_SEC3_8 );
             }
         }
       break;
 
-      case 108: // 0 20 108. Extent of vegetation
+    case 108: // 0 20 108. Extent of vegetation
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
           return 0;
@@ -654,7 +708,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               sprintf ( aux, "%d", s->ival );
               syn->s3.R8[1][1] = aux[0]; // Dl
-              syn->mask |= (SYNOP_SEC3 | SYNOP_SEC3_8);
+              syn->mask |= ( SYNOP_SEC3 | SYNOP_SEC3_8 );
             }
         }
       break;
