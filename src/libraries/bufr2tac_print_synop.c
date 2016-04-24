@@ -465,13 +465,13 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
         }
 
       // printf 1snnTnTnTn
-      if (syn->s3.snn[0] && check_len ( sec3,6 ))
+      if ( syn->s3.snn[0] && check_len ( sec3,6 ) )
         {
           c += sprintf ( c, " 2%s%s", syn->s3.snn, syn->s3.TnTnTn );
         }
 
       // printf 3Ejjj
-      if ( ( syn->s3.E[0] || syn->s3.jjj[0] ) && check_len ( sec3,6 ))
+      if ( ( syn->s3.E[0] || syn->s3.jjj[0] ) && check_len ( sec3,6 ) )
         {
           if ( syn->s3.E[0] == 0 )
             {
@@ -485,7 +485,7 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
         }
 
       // printf 4E1sss
-      if ( ( syn->s3.E1[0] || syn->s3.sss[0] ) && check_len ( sec3,6 ))
+      if ( ( syn->s3.E1[0] || syn->s3.sss[0] ) && check_len ( sec3,6 ) )
         {
           if ( syn->s3.E1[0] == 0 )
             {
@@ -495,13 +495,16 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
             {
               strcpy ( syn->s3.sss, "///" );
             }
-          c += sprintf ( c, " 4%s%s", syn->s3.E1, syn->s3.sss );
+          if ( syn->s3.E1[0] != '/' || strcmp ( syn->s3.sss, "999" ) )
+            {
+              c += sprintf ( c, " 4%s%s", syn->s3.E1, syn->s3.sss );
+            }
         }
 
       /**** Radiation Sunshine gropus ***/
 
       // print 55SSS
-      if ( syn->s3.SSS[0] && check_len ( sec3,6 ))
+      if ( syn->s3.SSS[0] && check_len ( sec3,6 ) )
         {
           if ( strcmp ( syn->s3.SSS, "///" ) )
             {
@@ -525,7 +528,7 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
         }
 
       // print 553SS
-      if ( syn->s3.SS[0] && check_len ( sec3,6 ))
+      if ( syn->s3.SS[0] && check_len ( sec3,6 ) )
         {
           if ( strcmp ( syn->s3.SS, "//" ) )
             {
@@ -573,34 +576,34 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
         }
 
       // print 56DlDmDh
-      if (syn->s3.Dl[0] || syn->s3.Dm[0] || syn->s3.Dh[0])
-      {
-	if (syn->s3.Dl[0] == 0)
-	  syn->s3.Dl[0] = '/';
-	if (syn->s3.Dm[0] == 0)
-	  syn->s3.Dm[0] = '/';
-	if (syn->s3.Dh[0] == 0)
-	  syn->s3.Dh[0] = '/';
-	
-	if ( check_len ( sec3, 6) )
-	{
-	  c += sprintf ( c, " 56%s%s%s", syn->s3.Dl, syn->s3.Dm, syn->s3.Dh );
-	}
-      }
+      if ( syn->s3.Dl[0] || syn->s3.Dm[0] || syn->s3.Dh[0] )
+        {
+          if ( syn->s3.Dl[0] == 0 )
+            syn->s3.Dl[0] = '/';
+          if ( syn->s3.Dm[0] == 0 )
+            syn->s3.Dm[0] = '/';
+          if ( syn->s3.Dh[0] == 0 )
+            syn->s3.Dh[0] = '/';
 
-     // print 57CDeec
-      if (syn->s3.Da[0] || syn->s3.ec[0])
-      {
-	if (syn->s3.Da[0] == 0)
-	  syn->s3.Da[0] = '/';
-	if (syn->s3.ec[0] == 0)
-	  syn->s3.ec[0] = '/';
-	
-	if ( check_len ( sec3, 6) && syn->s3.C[0] )
-	{
-	  c += sprintf ( c, " 57%s%s%s", syn->s3.C, syn->s3.Da, syn->s3.ec );
-	}
-      }
+          if ( check_len ( sec3, 6 ) )
+            {
+              c += sprintf ( c, " 56%s%s%s", syn->s3.Dl, syn->s3.Dm, syn->s3.Dh );
+            }
+        }
+
+      // print 57CDeec
+      if ( syn->s3.Da[0] || syn->s3.ec[0] )
+        {
+          if ( syn->s3.Da[0] == 0 )
+            syn->s3.Da[0] = '/';
+          if ( syn->s3.ec[0] == 0 )
+            syn->s3.ec[0] = '/';
+
+          if ( check_len ( sec3, 6 ) && syn->s3.C[0] )
+            {
+              c += sprintf ( c, " 57%s%s%s", syn->s3.C, syn->s3.Da, syn->s3.ec );
+            }
+        }
 
       // print 58ppp24 or 59ppo24
       if ( syn->s3.ppp24[0] && check_len ( sec3, 6 ) )
@@ -631,16 +634,42 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
       i = 0;
       while ( i < 4 && syn->s3.nub[i].hshs[0] )
         {
-          c += sprintf ( c, " 8%s%s%s", syn->s3.nub[i].Ns, syn->s3.nub[i].C, syn->s3.nub[i].hshs );
+          if ( check_len ( sec3,6 ) )
+	    c += sprintf ( c, " 8%s%s%s", syn->s3.nub[i].Ns, syn->s3.nub[i].C, syn->s3.nub[i].hshs );
           i++;
         }
 
       // additional info
       for ( i = 0; i < syn->s3.d9.n ; i++ )
         {
-          c += sprintf ( c, " %s%s", syn->s3.d9.misc[i].SpSp, syn->s3.d9.misc[i].spsp );
+          if ( check_len ( sec3,6 ) )
+	    c += sprintf ( c, " %s%s", syn->s3.d9.misc[i].SpSp, syn->s3.d9.misc[i].spsp );
         }
 
+
+      // aditional regional info
+      if ( syn->mask & SYNOP_SEC3_8 )
+        {
+          if ( check_len ( sec3,6 ) )
+            c += sprintf ( c, " 80000" );
+          for ( i = 0; i < SYNOP_NMISC; i++ )
+            {
+              if ( ( syn->s3.R8[i][0] || syn->s3.R8[i][0] || syn->s3.R8[i][0] || syn->s3.R8[i][0] ) &&
+                   check_len ( sec3, 6 ) )
+                {
+                  if ( syn->s3.R8[i][0] == 0 )
+                    syn->s3.R8[i][0] = '/';
+                  if ( syn->s3.R8[i][1] == 0 )
+                    syn->s3.R8[i][1] = '/';
+                  if ( syn->s3.R8[i][2] == 0 )
+                    syn->s3.R8[i][2] = '/';
+                  if ( syn->s3.R8[i][3] == 0 )
+                    syn->s3.R8[i][3] = '/';
+                  c += sprintf ( c, " %ld%s", i, syn->s3.R8[i] );
+                }
+            }
+        }
+        
       if ( c != c0 )
         {
           *sec3 = c;

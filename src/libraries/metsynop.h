@@ -63,6 +63,12 @@
 */
 #define SYNOP_EXT 64
 
+/*! \def SYNOP_SEC3_8
+    \brief mask bit meaning optional/regional 8 part, section 3 for synop is solicited to or parsed with success
+*/
+#define SYNOP_SEC3_8 128
+
+
 /*! \def SYNOP_NNUB
     \brief number of optional nub3 struct to store the parsed results of 8.... groups
 */
@@ -244,6 +250,7 @@ ture change. */
   char RRR[4]; /*!< Amount of precipitation which has fallen during the period preceding the time of observation, as indicated by tR. (Code table 3590) */
   char tr[2]; /*!< Duration of period of reference for amount of precipitation, ending at the time of the report. (Code table 4019)  */
   char RRRR24[6]; /*!< Total amount of precipitation during the 24-hour period ending at the time of observation, in tenths of a millimetre. */
+  char R8[SYNOP_NMISC][6]; /*!< Optional regional groups after 80000 */
   struct nub3 nub[SYNOP_NNUB]; /*!< array of optional nub3 structs  */
   struct data9 d9; /*!< struct with optional 9SpSpss items */
 };

@@ -202,7 +202,8 @@ char * vism_to_VV ( char *target, double V )
 */
 int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 {
-
+  char aux[16];
+  
   switch ( s->a->desc.y )
     {
     case 1: // 0 20 001 . Horizontal visibility
@@ -528,6 +529,136 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       syn->mask |= SYNOP_SEC3;
       break;
+
+    case 101: // 0 20 101. Locust (acridian) name
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( strcmp ( syn->s0.A1, "1" ) == 0 ) // Only for Region I
+        {
+          if ( s->ival < 10 )
+            {
+              sprintf ( aux, "%d", s->ival );
+              syn->s3.R8[0][0] = aux[0]; // Ln
+              syn->mask |= (SYNOP_SEC3 | SYNOP_SEC3_8);
+            }
+        }
+      break;
+
+    case 102: // 0 20 102. Locust (maturity) color
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( strcmp ( syn->s0.A1, "1" ) == 0 ) // Only for Region I
+        {
+          if ( s->ival < 10 )
+            {
+              sprintf ( aux, "%d", s->ival );
+              syn->s3.R8[0][1] = aux[0]; // Lc
+              syn->mask |= (SYNOP_SEC3 | SYNOP_SEC3_8);
+            }
+        }
+      break;
+
+    case 103: // 0 20 103. Stage of development of locusts
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( strcmp ( syn->s0.A1, "1" ) == 0 ) // Only for Region I
+        {
+          if ( s->ival < 10 )
+            {
+              sprintf ( aux, "%d", s->ival );
+              syn->s3.R8[0][2] = aux[0]; // Ld
+              syn->mask |= (SYNOP_SEC3 | SYNOP_SEC3_8);
+            }
+        }
+      break;
+
+    case 104: // 0 20 104. Organization state of swarm or band of locusts
+       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( strcmp ( syn->s0.A1, "1" ) == 0 ) // Only for Region I
+        {
+          if ( s->ival < 10 )
+            {
+              sprintf ( aux, "%d", s->ival );
+              syn->s3.R8[0][3] = aux[0]; // Lg
+              syn->mask |= (SYNOP_SEC3 | SYNOP_SEC3_8);
+            }
+        }
+      break;
+
+    case 105: // 0 20 105. Size of swarm or band of locusts and duration of
+              // passage of swarm
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( strcmp ( syn->s0.A1, "1" ) == 0 ) // Only for Region I
+        {
+          if ( s->ival < 10 )
+            {
+              sprintf ( aux, "%d", s->ival );
+              syn->s3.R8[1][0] = aux[0]; // Sl
+              syn->mask |= (SYNOP_SEC3 | SYNOP_SEC3_8);
+            }
+        }
+      break;
+
+    case 106: // 0 20 106. Locust population density
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( strcmp ( syn->s0.A1, "1" ) == 0 ) // Only for Region I
+        {
+          if ( s->ival < 10 )
+            {
+              sprintf ( aux, "%d", s->ival );
+              syn->s3.R8[1][1] = aux[0]; // dl
+              syn->mask |= (SYNOP_SEC3 | SYNOP_SEC3_8);
+            }
+        }
+      break;
+
+     case 107: // 0 20 107. Direction of movements of locust swarm
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( strcmp ( syn->s0.A1, "1" ) == 0 ) // Only for Region I
+        {
+          if ( s->ival < 10 )
+            {
+              sprintf ( aux, "%d", s->ival );
+              syn->s3.R8[1][1] = aux[0]; // Dl
+              syn->mask |= (SYNOP_SEC3 | SYNOP_SEC3_8);
+            }
+        }
+      break;
+
+      case 108: // 0 20 108. Extent of vegetation
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( strcmp ( syn->s0.A1, "1" ) == 0 ) // Only for Region I
+        {
+          if ( s->ival < 8 )
+            {
+              sprintf ( aux, "%d", s->ival );
+              syn->s3.R8[1][1] = aux[0]; // Dl
+              syn->mask |= (SYNOP_SEC3 | SYNOP_SEC3_8);
+            }
+        }
+      break;
+
     default:
       break;
     }
