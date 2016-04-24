@@ -64,6 +64,18 @@ int descriptor_to_integer ( int *id, struct bufr_descriptor *d)
   return 0;
 }
 
+uint32_t get_flag_value ( uint8_t width, uint8_t index)
+{
+  if (width == index)
+    return (uint32_t) 1;
+  else if (width < index)
+    return (uint32_t) 0;
+  else if (width <= 32)
+    return (((uint32_t) 1) << (width - index));
+  else
+    return (uint32_t) 0;
+}
+
 /*!
   \fn char * charray_to_string(char *s, unsigned char *buf, size_t size)
   \brief get a null termitated c-string from an array of unsigned chars

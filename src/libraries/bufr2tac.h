@@ -239,6 +239,7 @@ struct bufr2tac_subset_state
   int month; /*!< month for some normal values */
   int is_normal; /*!< if 1, the values are normal of a defined period */
   int mask; /*!< mask which contain several information from the subset data taken at the moment */
+  int SnSn; /*!< Latest int value of Synop suplementary information */
   struct temp_raw_data *r; /*!< pointer to a struct where to set the data from a temp profile being parsed */
   struct temp_raw_wind_shear_data *w; /*!< pointer to a struct where to set the data from a temp profile being parsed */
 };
@@ -335,6 +336,7 @@ char * kelvin_to_TTTa(char *target, double T);
 char * dewpoint_depression_to_DnDn ( char * target, double T, double Td);
 char * m_to_h ( char *target, double h );
 char * m_to_hh ( char *target, double h );
+char * m_to_RR ( char *target, double m );
 char * pascal_to_ppp ( char *target, double P );
 char * pascal_to_pnpnpn ( char *target, double P );
 char * pascal_to_PPPP ( char *target, double P );

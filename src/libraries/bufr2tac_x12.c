@@ -341,7 +341,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       break;
 
-    case 122: // 0 12 122 . Ground minimum temerature during preceding night
+    case 122: // 0 12 122 . Ground minimum temperature during preceding night
       if ( strcmp ( "1", syn->s0.A1 ) == 0 ) // Only for Region I
         {
           if ( kelvin_to_TT ( aux, s->val ) )

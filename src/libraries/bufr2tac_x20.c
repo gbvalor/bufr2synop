@@ -193,6 +193,31 @@ char * vism_to_VV ( char *target, double V )
 }
 
 /*!
+  \fn char * m_to_RR ( char *target, double m )
+  \brief Convert distance (m) in RR code (3570)
+  \param m the distance/diameter (m)
+  \param target the resulting RR string
+*/
+char * m_to_RR ( char *target, double m )
+{
+  int ix;
+  ix = ( int ) ( m * 1000.0 + 0.5 );
+
+  if ( m > 0.4 )
+    strcpy ( target, "98" );
+  if ( m > 0.0 && m < 0.00065 )
+    sprintf ( target, "%02d", ( int ) ( m * 10000.0 + 0.5 ) );
+  else if ( ix <= 55 )
+    sprintf ( target, "%02d", ix );
+  else if ( ix <= 400 )
+    sprintf ( target, "%02d", ( ix / 10 ) + 50 );
+  else
+    strcpy ( target, "99" );
+  return target;
+}
+
+
+/*!
   \fn int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
   \brief Parse a expanded descriptor with X = 20
   \param syn pointer to a struct \ref synop_chunks where to set the results
@@ -315,7 +340,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       percent_to_okta ( syn->s1.N, s->val );
       break;
-      
+
     case 11: // 0 20 011 . Cloud amount
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -495,24 +520,243 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       break;
 
-    case 54: // 0 20 054 . True direction from which clouds are moving
-      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING || s->ival >= 10 )
+    case 21: // 0 20 021 . Type of precipitation
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
           return 0;
         }
-      if ( s->clayer == 7 )
+
+      if ( syn->s0.A1[0] == '6' ) // for Reg VI
         {
-          grad_to_D ( syn->s3.Dl, s->val );
+          // flag table width = 30 bits
+          if ( s->ival & ( 1 << ( 30 - 15 ) ) &&
+               ( s->ival & ( 1 << ( 30 - 16 ) ) ) == 0  &&
+               ( s->ival & ( 1 << ( 30 - 20 ) ) ) == 0
+             )
+            {
+              // Only Glaze
+              strcpy ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "934" );
+              s->SnSn = 934;
+              // here we increase counter
+              syn->s3.d9.n++;
+            }
+          else if ( s->ival & ( 1 << ( 30 - 16 ) ) &&
+                    ( s->ival & ( 1 << ( 30 - 15 ) ) ) == 0  &&
+                    ( s->ival & ( 1 << ( 30 - 20 ) ) ) == 0
+                  )
+            {
+              // Only Rime
+              strcpy ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "935" );
+              s->SnSn = 935;
+              // here we increase counter
+              syn->s3.d9.n++;
+            }
+          else if ( s->ival & ( 1 << ( 30 - 20 ) ) &&
+                    ( s->ival & ( 1 << ( 30 - 15 ) ) ) == 0  &&
+                    ( s->ival & ( 1 << ( 30 - 16 ) ) ) == 0
+                  )
+            {
+              // Only Wet snow
+              strcpy ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "937" );
+              s->SnSn = 937;
+              // here we increase counter
+              syn->s3.d9.n++;
+            }
+          else if ( s->ival & ( 1 << ( 30 - 15 ) ) ||
+                    s->ival & ( 1 << ( 30 - 16 ) ) ||
+                    s->ival & ( 1 << ( 30 - 20 ) ) )
+            {
+              // Compound deposit
+              strcpy ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "936" );
+              s->SnSn = 936;
+              // here we increase counter
+              syn->s3.d9.n++;
+            }
         }
-      else if ( s->clayer == 8 )
+      break;
+
+    case 23: // 0 20 023 . Other weather phenomena
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
-          grad_to_D ( syn->s3.Dm, s->val );
+          return 0;
         }
-      else if ( s->clayer == 9 )
+
+      if ( syn->s0.A1[0] == '6' ) // for Reg VI
         {
-          grad_to_D ( syn->s3.Dh, s->val );
+          // flag table width = 18 bits
+          if ( s->ival & ( 1 << ( 18 - 1 ) ) )
+            {
+              // Dust/sand whirl
+              syn->s3.d9.misc[syn->s3.d9.n].spsp[0] = '5'; // moderate intensity
+              syn->s3.d9.misc[syn->s3.d9.n].spsp[1] = '/'; // at the moment
+              strcpy ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "919" );
+              s->SnSn = 919;
+              // here we increase counter
+              syn->s3.d9.n++;
+            }
+          else if ( ( s->ival & ( 1 << ( 18 - 9 ) ) ) ||
+                    ( s->ival & ( 1 << ( 18 - 10 ) ) )
+                  )
+            {
+              // Funnel clouds
+              syn->s3.d9.misc[syn->s3.d9.n].spsp[0] = '3'; // assumed less than 3 Km from station
+              syn->s3.d9.misc[syn->s3.d9.n].spsp[1] = '/'; // at the moment
+              strcpy ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "919" );
+              s->SnSn = 919;
+              // here we increase counter
+              syn->s3.d9.n++;
+            }
+          else if ( s->ival & ( 1 << ( 18 - 12 ) ) )
+            {
+              syn->s3.d9.misc[syn->s3.d9.n].spsp[0] = '0'; // assumed less than 3 Km from station
+              syn->s3.d9.misc[syn->s3.d9.n].spsp[1] = '/'; // at the moment
+              strcpy ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "919" );
+              s->SnSn = 919;
+              // here we increase counter
+              syn->s3.d9.n++;
+            }
+          else if ( s->ival & ( 1 << ( 18 - 2 ) ) )
+            {
+              syn->s3.d9.misc[syn->s3.d9.n].spsp[0] = '2'; // FIXME What kind of squall ?
+              syn->s3.d9.misc[syn->s3.d9.n].spsp[1] = '/'; // at the moment
+              strcpy ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "918" );
+              s->SnSn = 918;
+              // here we increase counter
+              syn->s3.d9.n++;
+            }
         }
-      syn->mask |= SYNOP_SEC3;
+      break;
+
+    case 24: // 0 20 024 . Intensity of phenomena
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( syn->s0.A1[0] == '6' ) // for Reg VI
+        {
+          if ( s->SnSn == 919 )
+            {
+              if ( syn->s3.d9.misc[syn->s3.d9.n - 1].spsp[0] == '5' )
+                {
+                  if ( s->ival == 1 )
+                    syn->s3.d9.misc[syn->s3.d9.n - 1].spsp[0] = '4';
+                  else if ( s->ival == 3 || s->ival == 4 )
+                    syn->s3.d9.misc[syn->s3.d9.n - 1].spsp[0] = '6';
+                }
+            }
+        }
+      break;
+
+    case 25: // 0 20 025 . Obscuration
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+
+      if ( syn->s0.A1[0] == '6' ) // for Reg VI
+        {
+          // flag table width = 21 bits
+          if ( s->ival & ( 1 << ( 21 - 1 ) ) )
+            {
+              // Dust/sand whirl
+              syn->s3.d9.misc[syn->s3.d9.n].spsp[0] = '1'; // We next willl modify
+              strcpy ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "929" );
+              s->SnSn = 929;
+              // here we increase counter
+              syn->s3.d9.n++;
+            }
+
+        }
+      break;
+
+    case 26: // 9 29 926 . Character of obscuration
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( syn->s0.A1[0] == '6' ) // for Reg VI
+        {
+          if ( s->SnSn == 929 )
+            {
+              if ( s->ival == 6 )
+                syn->s3.d9.misc[syn->s3.d9.n - 1].spsp[0] = '6';
+            }
+        }
+      break;
+
+    case 27: // 0 20 027 . Phenomenon occurrence
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( syn->s0.A1[0] == '6' ) // for Reg VI
+        {
+          // flag table width = 9 bits
+	  if (s->SnSn == 919 || s->SnSn == 918)
+	  {
+	    if ((s->ival && (1 << (9 - 3))) == 0)
+	      syn->s3.d9.misc[syn->s3.d9.n - 1].SpSp[0] = 0; // No valid group
+	  }
+        }
+      break;
+
+    case 40: // 9 29 040 . Evolution of drift of snow
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( syn->s0.A1[0] == '6' ) // for Reg VI
+        {
+          if ( s->SnSn == 929 )
+            {
+              sprintf ( aux, "%d", s->ival % 10 );
+              syn->s3.d9.misc[syn->s3.d9.n - 1].spsp[1] = aux[0]; // S8'
+            }
+        }
+      break;
+
+    case 54: // 0 20 054 . True direction from which clouds are moving
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( syn->s0.A1[0] == '6' ) // for Reg VI
+        {
+          grad_to_D ( aux, s->val );
+          if ( s->SnSn == 919 || s->SnSn == 918 )
+            {
+              syn->s3.d9.misc[syn->s3.d9.n - 1].spsp[1] = aux[0];
+            }
+          else if ( s->clayer == 7 )
+            {
+              grad_to_D ( syn->s3.Dl, s->val );
+            }
+          else if ( s->clayer == 8 )
+            {
+              grad_to_D ( syn->s3.Dm, s->val );
+            }
+          else if ( s->clayer == 9 )
+            {
+              grad_to_D ( syn->s3.Dh, s->val );
+            }
+          syn->mask |= SYNOP_SEC3;
+        }
+      else  // other Regions
+        {
+          if ( s->clayer == 7 )
+            {
+              grad_to_D ( syn->s3.Dl, s->val );
+            }
+          else if ( s->clayer == 8 )
+            {
+              grad_to_D ( syn->s3.Dm, s->val );
+            }
+          else if ( s->clayer == 9 )
+            {
+              grad_to_D ( syn->s3.Dh, s->val );
+            }
+          syn->mask |= SYNOP_SEC3;
+        }
       break;
 
     case 55: // 0 20 055 . State of sky in tropics
@@ -521,27 +765,28 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           return 0;
         }
       if ( strcmp ( syn->s0.A1, "4" ) == 0 )
-        {  // For REG IV
-	  if (s->ival < 10)
-	  {
-	     sprintf ( aux,"%d", s->ival );
-	     syn->s3.XoXoXoXo[0] = aux[0];
-	  }
-	  else 
-	  {
-	    syn->s3.XoXoXoXo[0] = '/';
-	  }
+        {
+          // For REG IV
+          if ( s->ival < 10 )
+            {
+              sprintf ( aux,"%d", s->ival );
+              syn->s3.XoXoXoXo[0] = aux[0];
+            }
+          else
+            {
+              syn->s3.XoXoXoXo[0] = '/';
+            }
           // then copy data direction of cloud drift from 3 02 047 if any
-          if (syn->s3.Dl[0])
-	    syn->s3.XoXoXoXo[1] = syn->s3.Dl[0];  
-          if (syn->s3.Dm[0])
-	    syn->s3.XoXoXoXo[1] = syn->s3.Dm[0];  
-          if (syn->s3.Dh[0])
-	    syn->s3.XoXoXoXo[1] = syn->s3.Dh[0];  
+          if ( syn->s3.Dl[0] )
+            syn->s3.XoXoXoXo[1] = syn->s3.Dl[0];
+          if ( syn->s3.Dm[0] )
+            syn->s3.XoXoXoXo[1] = syn->s3.Dm[0];
+          if ( syn->s3.Dh[0] )
+            syn->s3.XoXoXoXo[1] = syn->s3.Dh[0];
           syn->mask |= SYNOP_SEC3;
-	}
-      break;  
-      
+        }
+      break;
+
     case 62: // 0 20 062 . State of the ground (with or without snow)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -553,7 +798,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           if ( s->ival < 10 )
             {
               sprintf ( aux,"%d", s->ival );
-	      sprintf ( syn->s3.E, "%d", s->ival );
+              sprintf ( syn->s3.E, "%d", s->ival );
               syn->s3.XoXoXoXo[0] = aux[0];
             }
           else if ( s->ival < 20 )
@@ -582,6 +827,32 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
         }
       syn->mask |= SYNOP_SEC3;
+      break;
+
+    case 66: // 0 20 066 . Max diameter of hailstones
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( strcmp ( syn->s0.A1, "1" ) == 0 ) // Only for Region I
+        {
+          m_to_RR ( syn->s3.d9.misc[syn->s3.d9.n].spsp, s->val );
+          strcpy ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "932" );
+          s->SnSn = 932;
+          // here we increase counter
+          syn->s3.d9.n++;
+        }
+      break;
+
+    case 67: // 0 20 067 . Diameter of deposit
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          return 0;
+        }
+      if ( strcmp ( syn->s0.A1, "1" ) == 0 ) // Only for Region I
+        {
+          m_to_RR ( syn->s3.d9.misc[syn->s3.d9.n - 1].spsp, s->val );
+        }
       break;
 
     case 101: // 0 20 101. Locust (acridian) name

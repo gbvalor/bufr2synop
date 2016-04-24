@@ -151,6 +151,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 	  if (syn->mask & SUBSET_MASK_HAVE_GUST10)
 	    break;
           sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "910" );
+	  s->SnSn = 910;
           if ( syn->s0.iw[0] == '4' )
             {
               s->val *= 1.94384449;
@@ -178,6 +179,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               secs_to_tt ( syn->s5.d9.misc[syn->s5.d9.n].spsp, s->itval );
               syn->s5.d9.n++;
               sprintf ( syn->s5.d9.misc[syn->s5.d9.n].SpSp, "911" );
+	      s->SnSn = 911;
               if ( syn->s0.iw[0] == '4' )
                 {
                   s->val *= 1.94384449;
@@ -202,6 +204,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               secs_to_tt ( syn->s3.d9.misc[syn->s3.d9.n].spsp, s->itval );
               syn->s3.d9.n++;
               sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "911" );
+	      s->SnSn = 911;
               if ( syn->s0.iw[0] == '4' )
                 {
                   s->val *= 1.94384449;
