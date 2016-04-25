@@ -407,7 +407,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       break;
 
     case 12: // 0 20 012 . Cloud type
-      if ( s->clayer == 0 || s->clayer == 7 )
+      if ( s->clayer == 0 || s->clayer == 7 || s->clayer == 8 )
         {
           if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
             {
