@@ -47,9 +47,9 @@ int syn_parse_x08 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
           s->clayer = 0; // clean vertical significance;
-	  return 0;
+          return 0;
         }
-        
+
       if ( s->ival == 21 )
         {
           s->clayer = 1;  // first cloud layer
@@ -74,7 +74,12 @@ int syn_parse_x08 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           s->clayer = -2; // base and top of cloud layer below level station
         }
+      else if ( s->ival <= 9 && s->ival >= 7 )
+        {
+          s->clayer = s->ival;
+        }
       break;
+
     case 22:  // 0 08 022 . Total number
     case 23:  // 0 08 023 . First-order statistics
     case 24:  // 0 08 024 . Difference statistics
@@ -91,6 +96,7 @@ int syn_parse_x08 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           s->isq = 1;
         }
       break;
+
     default:
       break;
     }

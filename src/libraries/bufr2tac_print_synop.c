@@ -641,7 +641,7 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
         }
 
       // additional info
-      for ( i = 0; i < syn->s3.d9.n ; i++ )
+      for ( i = 0; i < syn->s3.d9.n && i < SYNOP_NMISC ; i++ )
         {
           if ( syn->s3.d9.misc[i].SpSp[0] && syn->s3.d9.misc[i].spsp[0] && check_len ( sec3,6 ) )
             c += sprintf ( c, " %s%s", syn->s3.d9.misc[i].SpSp, syn->s3.d9.misc[i].spsp );
