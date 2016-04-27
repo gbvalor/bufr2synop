@@ -456,6 +456,14 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
       if ( syn->s3.XoXoXoXo[0] && ( strstr ( syn->s3.XoXoXoXo,"///" ) == NULL )
            && check_len ( sec3,6 ) )
         {
+          if ( syn->s3.XoXoXoXo[0] == 0 )
+            syn->s3.XoXoXoXo[0] = '/';
+          if ( syn->s3.XoXoXoXo[1] == 0 )
+            syn->s3.XoXoXoXo[1] = '/';
+          if ( syn->s3.XoXoXoXo[2] == 0 )
+            syn->s3.XoXoXoXo[2] = '/';
+          if ( syn->s3.XoXoXoXo[3] == 0 )
+            syn->s3.XoXoXoXo[3] = '/';
           c += sprintf ( c, " 0%s", syn->s3.XoXoXoXo );
         }
 

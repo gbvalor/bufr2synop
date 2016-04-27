@@ -356,7 +356,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
-      if ( s->clayer == 0 || s->clayer == 7 || s->clayer == 8)
+      if ( s->clayer == 0 || s->clayer == 7 || s->clayer == 8 )
         {
           if ( s->ival <= 8 )
             {
@@ -389,21 +389,21 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           syn->mask |= SYNOP_SEC4;
         }
       else if ( s->clayer > 0 && s->clayer < 5 )
-      {
-        if ( s->ival <= 8 )
-          {
-            sprintf ( syn->s3.nub[s->clayer - 1].Ns, "%1d", s->ival );
-          }
-        else if ( s->ival <= 10 )
-          {
-            sprintf ( syn->s3.nub[s->clayer - 1].Ns, "9" );
-          }
-        else if ( s->ival == 15 )
-          {
-            sprintf ( syn->s3.nub[s->clayer - 1].Ns, "/" );
-          }
-        syn->mask |= SYNOP_SEC3;
-      }
+        {
+          if ( s->ival <= 8 )
+            {
+              sprintf ( syn->s3.nub[s->clayer - 1].Ns, "%1d", s->ival );
+            }
+          else if ( s->ival <= 10 )
+            {
+              sprintf ( syn->s3.nub[s->clayer - 1].Ns, "9" );
+            }
+          else if ( s->ival == 15 )
+            {
+              sprintf ( syn->s3.nub[s->clayer - 1].Ns, "/" );
+            }
+          syn->mask |= SYNOP_SEC3;
+        }
       break;
 
     case 12: // 0 20 012 . Cloud type
@@ -473,22 +473,23 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
         }
       else if ( s->clayer > 0 && s->clayer < 5 )
-      {
-        if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-          {
-            sprintf ( syn->s3.nub[s->clayer - 1].C, "/" );
-            return 0;
-          }
-        if ( s->ival == 59 )
-          {
-            sprintf ( syn->s3.nub[s->clayer - 1].C, "/" );
-          }
-        else
-          {
-            sprintf ( syn->s3.nub[s->clayer - 1].C, "%1d", s->ival % 10 );
-          }
-        syn->mask |= SYNOP_SEC3;
-      }
+        {
+          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+            {
+              sprintf ( syn->s3.nub[s->clayer - 1].C, "/" );
+              return 0;
+            }
+          if ( s->ival == 59 || s->ival >= 10 )
+            {
+              sprintf ( syn->s3.nub[s->clayer - 1].C, "/" );
+            }
+          else
+            {
+              // C clouds for 8 groups SEC 3
+              sprintf ( syn->s3.nub[s->clayer - 1].C, "%1d", s->ival % 10 );
+            }
+          syn->mask |= SYNOP_SEC3;
+        }
       break;
 
     case 13: // 0 20 013 . Height of base of cloud
@@ -501,9 +502,9 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           m_to_h ( syn->s1.h, s->val );
         }
       else if ( s->clayer > 0 && s->clayer < 5 )
-      {
-        m_to_hh ( syn->s3.nub[s->clayer - 1].hshs, s->val );
-      }
+        {
+          m_to_hh ( syn->s3.nub[s->clayer - 1].hshs, s->val );
+        }
       break;
 
     case 14: // 0 20 014 . Height of Top of cloud
