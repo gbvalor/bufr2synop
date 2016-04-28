@@ -182,6 +182,10 @@ char * print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn )
         }
       else if ( syn->s1.hhh[0] )
         {
+          if ( syn->s1.a3[0] == 0 )
+            {
+              syn->s1.a3[0] = '/';
+            }
           if ( check_len ( sec1,6 ) )
             {
               c += sprintf ( c, " 4%s%s", syn->s1.a3, syn->s1.hhh );
