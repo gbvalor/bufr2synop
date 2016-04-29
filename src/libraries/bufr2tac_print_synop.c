@@ -461,13 +461,21 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
            && check_len ( sec3,6 ) )
         {
           if ( syn->s3.XoXoXoXo[0] == 0 )
-            syn->s3.XoXoXoXo[0] = '/';
+            {
+              syn->s3.XoXoXoXo[0] = '/';
+            }
           if ( syn->s3.XoXoXoXo[1] == 0 )
-            syn->s3.XoXoXoXo[1] = '/';
+            {
+              syn->s3.XoXoXoXo[1] = '/';
+            }
           if ( syn->s3.XoXoXoXo[2] == 0 )
-            syn->s3.XoXoXoXo[2] = '/';
+            {
+              syn->s3.XoXoXoXo[2] = '/';
+            }
           if ( syn->s3.XoXoXoXo[3] == 0 )
-            syn->s3.XoXoXoXo[3] = '/';
+            {
+              syn->s3.XoXoXoXo[3] = '/';
+            }
           c += sprintf ( c, " 0%s", syn->s3.XoXoXoXo );
         }
 
@@ -592,11 +600,17 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
       if ( syn->s3.Dl[0] || syn->s3.Dm[0] || syn->s3.Dh[0] )
         {
           if ( syn->s3.Dl[0] == 0 )
-            syn->s3.Dl[0] = '/';
+            {
+              syn->s3.Dl[0] = '/';
+            }
           if ( syn->s3.Dm[0] == 0 )
-            syn->s3.Dm[0] = '/';
+            {
+              syn->s3.Dm[0] = '/';
+            }
           if ( syn->s3.Dh[0] == 0 )
-            syn->s3.Dh[0] = '/';
+            {
+              syn->s3.Dh[0] = '/';
+            }
 
           if ( check_len ( sec3, 6 ) )
             {
@@ -608,9 +622,13 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
       if ( syn->s3.Da[0] || syn->s3.ec[0] )
         {
           if ( syn->s3.Da[0] == 0 )
-            syn->s3.Da[0] = '/';
+            {
+              syn->s3.Da[0] = '/';
+            }
           if ( syn->s3.ec[0] == 0 )
-            syn->s3.ec[0] = '/';
+            {
+              syn->s3.ec[0] = '/';
+            }
 
           if ( check_len ( sec3, 6 ) && syn->s3.C[0] )
             {
@@ -644,19 +662,21 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
         }
 
       // additional cloud layers
-      i = 0;
-      while ( i < 4 && syn->s3.nub[i].hshs[0] )
+      for ( i = 0; i < 4 ; i++ )
         {
-          if ( check_len ( sec3,6 ) )
-            c += sprintf ( c, " 8%s%s%s", syn->s3.nub[i].Ns, syn->s3.nub[i].C, syn->s3.nub[i].hshs );
-          i++;
+          if ( syn->s3.nub[i].hshs[0] &&  check_len ( sec3,6 ) )
+            {
+              c += sprintf ( c, " 8%s%s%s", syn->s3.nub[i].Ns, syn->s3.nub[i].C, syn->s3.nub[i].hshs );
+            }
         }
 
       // additional info
       for ( i = 0; i < syn->s3.d9.n && i < SYNOP_NMISC ; i++ )
         {
           if ( syn->s3.d9.misc[i].SpSp[0] && syn->s3.d9.misc[i].spsp[0] && check_len ( sec3,6 ) )
-            c += sprintf ( c, " %s%s", syn->s3.d9.misc[i].SpSp, syn->s3.d9.misc[i].spsp );
+            {
+              c += sprintf ( c, " %s%s", syn->s3.d9.misc[i].SpSp, syn->s3.d9.misc[i].spsp );
+            }
         }
 
 
@@ -664,20 +684,30 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
       if ( syn->mask & SYNOP_SEC3_8 )
         {
           if ( check_len ( sec3,6 ) )
-            c += sprintf ( c, " 80000" );
+            {
+              c += sprintf ( c, " 80000" );
+            }
           for ( i = 0; i < SYNOP_NMISC; i++ )
             {
               if ( ( syn->s3.R8[i][0] || syn->s3.R8[i][0] || syn->s3.R8[i][0] || syn->s3.R8[i][0] ) &&
                    check_len ( sec3, 6 ) )
                 {
                   if ( syn->s3.R8[i][0] == 0 )
-                    syn->s3.R8[i][0] = '/';
+                    {
+                      syn->s3.R8[i][0] = '/';
+                    }
                   if ( syn->s3.R8[i][1] == 0 )
-                    syn->s3.R8[i][1] = '/';
+                    {
+                      syn->s3.R8[i][1] = '/';
+                    }
                   if ( syn->s3.R8[i][2] == 0 )
-                    syn->s3.R8[i][2] = '/';
+                    {
+                      syn->s3.R8[i][2] = '/';
+                    }
                   if ( syn->s3.R8[i][3] == 0 )
-                    syn->s3.R8[i][3] = '/';
+                    {
+                      syn->s3.R8[i][3] = '/';
+                    }
                   c += sprintf ( c, " %ld%s", i, syn->s3.R8[i] );
                 }
             }

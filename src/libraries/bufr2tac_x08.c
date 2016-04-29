@@ -50,21 +50,21 @@ int syn_parse_x08 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           return 0;
         }
 
-      if ( s->ival == 21 )
+      if ( s->ival == 21 || s->ival == 1 )
         {
-          s->clayer = 1;  // first cloud layer
+          s->clayer = 1;  // first cloud layer or first no CB layer
         }
-      else if ( s->ival == 22 )
+      else if ( s->ival == 22 || s->ival == 2 )
         {
-          s->clayer = 2;  // second cloud layer
+          s->clayer = 2;  // second cloud layer or second no CB layer
         }
-      else if ( s->ival == 23 )
+      else if ( s->ival == 23 || s->ival == 3 )
         {
-          s->clayer = 3;  // third cloud layer
+          s->clayer = 3;  // third cloud layer or third no CB layer
         }
-      else if ( s->ival == 24 )
+      else if ( s->ival == 24 || s->ival == 4 )
         {
-          s->clayer = 4;  // fourth cloud layer
+          s->clayer = 4;  // fourth cloud layer or CB layer
         }
       else if ( s->ival == 10 )
         {
