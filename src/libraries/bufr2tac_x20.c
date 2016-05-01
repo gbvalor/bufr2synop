@@ -250,36 +250,85 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       break;
 
     case 3: // 0 20 003 . Present weather
-      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+      // there are some cases
+      // On current templates, sec1 WW is NOT preceeded by a time displacament descriptor
+      // In some national cases, a further complementary info about weather conditions is
+      // precedeed by two time displacament descriptors giving the time interval from where
+      // significant weather is described. In such cases we will use 902tt and 903tt
+      // as the indication of period and 966WW as weather
+      if ( ( s->i - 1 ) == s->k_itval  && ( s->i - 2 ) == s->k_jtval )
         {
-          s->mask |= ( SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW | SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1 | SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2 );
-          return 0;
-        }
-      if ( s->ival < 100 )
-        {
-          if ( syn->s1.ix[0] == '/' )
+          // check missing value
+          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
             {
-              strcpy ( syn->s1.ix,"1" );
+              return 0;
             }
-          sprintf ( syn->s1.ww, "%02d", s->ival );
-          syn->mask |= SYNOP_SEC1;
-        }
-      else if ( s->ival == 100 )
-        {
-          s->mask |=  SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW;
-        }
-      else if ( s->ival < 200 )
-        {
-          if ( syn->s1.ix[0] == '/' )
+          // check no significan weather.
+          if ( s->ival == 100 || s->ival == 508 )
             {
-              strcpy ( syn->s1.ix,"7" );
+              return 0;
             }
-          sprintf ( syn->s1.ww, "%02d", s->ival % 100 );
-          syn->mask |= SYNOP_SEC1;
+          // check if overflowed 9 struct
+          if ( ( syn->s3.d9.n + 2 ) >= SYNOP_NMISC )
+            {
+              return 0;
+            }
+          sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "902" );
+          secs_to_tt ( syn->s3.d9.misc[syn->s3.d9.n].spsp, s->jtval );
+          syn->s3.d9.n++;
+          sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "903" );
+          secs_to_tt ( syn->s3.d9.misc[syn->s3.d9.n].spsp, s->itval );
+          syn->s3.d9.n++;
+          sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "966" );
+          s->SnSn = 966;
+
+          if ( s->ival < 100 )
+            {
+              sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp , "%02d", s->ival );
+              syn->mask |= SYNOP_SEC3;
+            }
+          else if ( s->ival < 200 )
+            {
+              sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%02d", s->ival % 100 );
+              syn->mask |= SYNOP_SEC3;
+            }
+          syn->s3.d9.n++;
         }
-      else if ( s->ival == 508 )
+      else
         {
-          s->mask |= ( SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW | SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1 | SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2 );
+          // 7wwW1W2 group
+          if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+            {
+              s->mask |= ( SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW | SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1 | SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2 );
+              return 0;
+            }
+          if ( s->ival < 100 )
+            {
+              if ( syn->s1.ix[0] == '/' )
+                {
+                  strcpy ( syn->s1.ix,"1" );
+                }
+              sprintf ( syn->s1.ww, "%02d", s->ival );
+              syn->mask |= SYNOP_SEC1;
+            }
+          else if ( s->ival == 100 )
+            {
+              s->mask |=  SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW;
+            }
+          else if ( s->ival < 200 )
+            {
+              if ( syn->s1.ix[0] == '/' )
+                {
+                  strcpy ( syn->s1.ix,"7" );
+                }
+              sprintf ( syn->s1.ww, "%02d", s->ival % 100 );
+              syn->mask |= SYNOP_SEC1;
+            }
+          else if ( s->ival == 508 )
+            {
+              s->mask |= ( SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW | SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1 | SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2 );
+            }
+            //printf("%s%s* %s\n", syn->s0.II, syn->s0.iii, syn->s1.ww);
         }
       break;
 
@@ -1042,20 +1091,6 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
   if ( syn->s1.h[0] == '/' && syn->s1.N[0] == '0' )
     {
       syn->s1.h[0] = '9';
-    }
-
-  // Supress 7wwW1W2 if no significant weather
-  if ( ( syn->s1.ww[0] == 0 || ( syn->s1.ww[0] && ( strcmp ( syn->s1.ww,"04" ) < 0 ) ) ) &&
-       ( syn->s1.W1[0] == 0 || ( syn->s1.W1[0] && ( strcmp ( syn->s1.W1,"3" ) < 0 ) ) ) &&
-       ( syn->s1.W2[0] == 0 || ( syn->s1.W2[0] && ( strcmp ( syn->s1.W2,"3" ) < 0 ) ) ) )
-    {
-      syn->s1.ww[0] = 0;
-      syn->s1.W1[0] = 0;
-      syn->s1.W2[0] = 0;
-      if ( syn->s1.ix[0] == '1' )
-        {
-          syn->s1.ix[0] = '2';
-        }
     }
 
   return 0;

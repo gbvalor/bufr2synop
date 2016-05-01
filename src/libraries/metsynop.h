@@ -77,7 +77,7 @@
 /*! \def SYNOP_NMISC
     \brief number of misc3 struct to store the parsed results of 9SpSpspsp groups
 */
-#define SYNOP_NMISC 8
+#define SYNOP_NMISC 16
 
 /*! \struct synop_sec0
     \brief contains all possible substrings from section 0 when a report is parsed with success

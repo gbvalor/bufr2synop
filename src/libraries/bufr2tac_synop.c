@@ -249,6 +249,21 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
       syn->s1.ir[0] = '0';
     }
 
+  // Supress 7wwW1W2 if no significant weather
+  if ( ( syn->s1.ww[0] || syn->s1.W1[0] || syn->s1.W2[0] ) && 
+       ( syn->s1.ww[0] == 0 || syn->s1.ww[0] == '/' || ( strcmp ( syn->s1.ww,"04" ) < 0 ) ) &&
+       ( syn->s1.W1[0] == 0 || syn->s1.W1[0] == '/' || ( strcmp ( syn->s1.W1,"3" ) < 0 ) ) &&
+       ( syn->s1.W2[0] == 0 || syn->s1.W2[0] == '/' || ( strcmp ( syn->s1.W2,"3" ) < 0 ) ) )
+    {
+      syn->s1.ww[0] = 0;
+      syn->s1.W1[0] = 0;
+      syn->s1.W2[0] = 0;
+      s->mask |= ( SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW | SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1 | SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2 );
+      if ( syn->s1.ix[0] == '1' )
+        {
+          syn->s1.ix[0] = '2';
+        }
+    }
 
   // adjust iw
   if ( syn->s0.iw[0] == '/' && syn->s1.ff[0] != '/' )

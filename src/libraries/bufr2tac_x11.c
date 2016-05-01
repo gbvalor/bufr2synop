@@ -35,11 +35,15 @@ char * secs_to_tt ( char *tt, int secs )
 {
   int i;
 
-  if (secs < 0)
-    i = ( -secs ) / 360;
+  if ( secs < 0 )
+    {
+      i = ( -secs ) / 360;
+    }
   else
-    i = ( secs ) / 360;
-    
+    {
+      i = ( secs ) / 360;
+    }
+
   if ( i <= 60 )
     {
       sprintf ( tt, "%02d", i );
@@ -90,13 +94,13 @@ char * wind_to_dndnfnfnfn ( char * target, double dd, double ff )
 {
   int ix;
 
-  if (dd == MISSING_REAL || ff == MISSING_REAL)
-  {
-    strcpy(target, "/////");
-    return target;
-  }
-  
-  ix = ( int ) (( dd + 2.5 ) / 5) * 5 * 100 + ( int ) ( ff + 0.5 );
+  if ( dd == MISSING_REAL || ff == MISSING_REAL )
+    {
+      strcpy ( target, "/////" );
+      return target;
+    }
+
+  ix = ( int ) ( ( dd + 2.5 ) / 5 ) * 5 * 100 + ( int ) ( ff + 0.5 );
   sprintf ( target, "%05d", ix );
   return target;
 }
@@ -146,12 +150,14 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
-      if ( s->itval == -600)
+      if ( s->itval == -600 )
         {
-	  if (syn->mask & SUBSET_MASK_HAVE_GUST10)
-	    break;
+          if ( syn->mask & SUBSET_MASK_HAVE_GUST10 )
+            {
+              break;
+            }
           sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "910" );
-	  s->SnSn = 910;
+          s->SnSn = 910;
           if ( syn->s0.iw[0] == '4' )
             {
               s->val *= 1.94384449;
@@ -168,7 +174,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%03d", ( int ) ( s->val + 0.5 ) );
             }
           syn->s3.d9.n++;
-	  syn->mask |= SUBSET_MASK_HAVE_GUST10;
+          syn->mask |= SUBSET_MASK_HAVE_GUST10;
           syn->mask |= SYNOP_SEC3;
         }
       else if ( s->itval )
@@ -179,7 +185,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               secs_to_tt ( syn->s5.d9.misc[syn->s5.d9.n].spsp, s->itval );
               syn->s5.d9.n++;
               sprintf ( syn->s5.d9.misc[syn->s5.d9.n].SpSp, "911" );
-	      s->SnSn = 911;
+              s->SnSn = 911;
               if ( syn->s0.iw[0] == '4' )
                 {
                   s->val *= 1.94384449;
@@ -204,7 +210,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               secs_to_tt ( syn->s3.d9.misc[syn->s3.d9.n].spsp, s->itval );
               syn->s3.d9.n++;
               sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "911" );
-	      s->SnSn = 911;
+              s->SnSn = 911;
               if ( syn->s0.iw[0] == '4' )
                 {
                   s->val *= 1.94384449;
@@ -226,6 +232,36 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
         }
       break;
+
+    case 42: // 0 11 042 . Max wind speed (10-minutes mean)
+      if ( syn->s3.d9.n == SYNOP_NMISC )
+        {
+          return 0;
+        }
+      sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "907" );
+      secs_to_tt ( syn->s3.d9.misc[syn->s3.d9.n].spsp, s->itval );
+      syn->s3.d9.n++;
+      sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "912" );
+      s->SnSn = 912;
+      if ( syn->s0.iw[0] == '4' )
+        {
+          s->val *= 1.94384449;
+        }
+      if ( s->val < 100.0 )
+        {
+          sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%02d", ( int ) ( s->val + 0.5 ) );
+        }
+      else
+        {
+          sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp,"99" );
+          syn->s3.d9.n++;
+          sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "00" );
+          sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%03d", ( int ) ( s->val + 0.5 ) );
+        }
+      syn->s3.d9.n++;
+      syn->mask |= SYNOP_SEC3;
+      break;
+      
     case 43: // 0 11 043 . Max wind gust direction
       break;
     case 84: // 0 11 084 . Wind speed in knots
@@ -447,7 +483,9 @@ int temp_parse_x11 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
 {
 
   if ( t == NULL )
-    return 1;
+    {
+      return 1;
+    }
 
   switch ( s->a->desc.y )
     {
@@ -459,9 +497,9 @@ int temp_parse_x11 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
               s->r->raw[s->r->n - 1].dd = MISSING_REAL;
             }
           else
-	  {
-            s->r->raw[s->r->n - 1].dd = s->val;
-	  }
+            {
+              s->r->raw[s->r->n - 1].dd = s->val;
+            }
         }
       break;
 
@@ -473,9 +511,9 @@ int temp_parse_x11 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
               s->r->raw[s->r->n - 1].ff = MISSING_REAL;
             }
           else
-	  {
-            s->r->raw[s->r->n - 1].ff = s->val;
-	  }
+            {
+              s->r->raw[s->r->n - 1].ff = s->val;
+            }
         }
       break;
 
@@ -487,7 +525,9 @@ int temp_parse_x11 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
               s->w->raw[s->w->n - 1].ws_blw = MISSING_REAL;
             }
           else
-            s->w->raw[s->w->n - 1].ws_blw = s->val;
+            {
+              s->w->raw[s->w->n - 1].ws_blw = s->val;
+            }
         }
       break;
 
@@ -499,7 +539,9 @@ int temp_parse_x11 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
               s->w->raw[s->w->n - 1].ws_abv = MISSING_REAL;
             }
           else
-            s->w->raw[s->w->n - 1].ws_abv = s->val;
+            {
+              s->w->raw[s->w->n - 1].ws_abv = s->val;
+            }
         }
       break;
 
