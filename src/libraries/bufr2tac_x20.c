@@ -257,6 +257,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       // precedeed by two time displacament descriptors giving the time interval from where
       // significant weather is described. In such cases we will use 902tt and 903tt, or
       // 964.. if the period macthes with W1W2 period
+      // If WW = 20-29 and period matches last hour we then use 962.. group
       // as the indication of period and 966WW as weather
       if ( ( s->i - 1 ) == s->k_itval  && ( s->i - 2 ) == s->k_jtval )
         {
@@ -274,12 +275,23 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           // parse period
           if ( s->itval == 0 && s->jtval == s->tw1w2 )
             {
+              // Case of W1W2 interval
               if ( syn->s3.d9.n  == SYNOP_NMISC )
                 {
                   return 0;
                 }
               sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "964" );
               s->SnSn = 964;
+            }
+          else if ( s->itval == 0 && s->jtval == -3600 && syn->s1.ww[0] == '2' )
+            {
+              // case of ww 20-29 and period equal to last hour. We will use 962...
+              if ( syn->s3.d9.n  == SYNOP_NMISC )
+                {
+                  return 0;
+                }
+              sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "962" );
+              s->SnSn = 962;
             }
           else
             {
@@ -296,7 +308,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "966" );
               s->SnSn = 966;
             }
-            
+
           // now set the value
           if ( s->ival < 100 )
             {
@@ -310,7 +322,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
           syn->s3.d9.n++;
         }
-        
+
       //  Case 2)
       // Complementary present weather after 7wwW1W1 has been set.
       // If last itval == 0 the we assume that the info should be set on 960.. groups
