@@ -251,10 +251,12 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 
     case 3: // 0 20 003 . Present weather
       // there are some cases
+      // Case 1)
       // On current templates, sec1 WW is NOT preceeded by a time displacament descriptor
       // In some national cases, a further complementary info about weather conditions is
       // precedeed by two time displacament descriptors giving the time interval from where
-      // significant weather is described. In such cases we will use 902tt and 903tt
+      // significant weather is described. In such cases we will use 902tt and 903tt, or
+      // 964.. if the period macthes with W1W2 period
       // as the indication of period and 966WW as weather
       if ( ( s->i - 1 ) == s->k_itval  && ( s->i - 2 ) == s->k_jtval )
         {
@@ -268,19 +270,59 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               return 0;
             }
+
+          // parse period
+          if ( s->itval == 0 && s->jtval == s->tw1w2 )
+            {
+              if ( syn->s3.d9.n  == SYNOP_NMISC )
+                {
+                  return 0;
+                }
+              sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "964" );
+              s->SnSn = 964;
+            }
+          else
+            {
+              if ( ( syn->s3.d9.n + 2 ) >= SYNOP_NMISC )
+                {
+                  return 0;
+                }
+              sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "902" );
+              secs_to_tt ( syn->s3.d9.misc[syn->s3.d9.n].spsp, s->jtval );
+              syn->s3.d9.n++;
+              sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "903" );
+              secs_to_tt ( syn->s3.d9.misc[syn->s3.d9.n].spsp, s->itval );
+              syn->s3.d9.n++;
+              sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "966" );
+              s->SnSn = 966;
+            }
+            
+          // now set the value
+          if ( s->ival < 100 )
+            {
+              sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp , "%02d", s->ival );
+              syn->mask |= SYNOP_SEC3;
+            }
+          else if ( s->ival < 200 )
+            {
+              sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp, "%02d", s->ival % 100 );
+              syn->mask |= SYNOP_SEC3;
+            }
+          syn->s3.d9.n++;
+        }
+        
+      //  Case 2)
+      // Complementary present weather after 7wwW1W1 has been set.
+      // If last itval == 0 the we assume that the info should be set on 960.. groups
+      else if ( syn->s1.ww[0] && s->itval == 0 )
+        {
           // check if overflowed 9 struct
-          if ( ( syn->s3.d9.n + 2 ) >= SYNOP_NMISC )
+          if ( syn->s3.d9.n == SYNOP_NMISC )
             {
               return 0;
             }
-          sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "902" );
-          secs_to_tt ( syn->s3.d9.misc[syn->s3.d9.n].spsp, s->jtval );
-          syn->s3.d9.n++;
-          sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "903" );
-          secs_to_tt ( syn->s3.d9.misc[syn->s3.d9.n].spsp, s->itval );
-          syn->s3.d9.n++;
-          sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "966" );
-          s->SnSn = 966;
+          sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "960" );
+          s->SnSn = 960;
 
           if ( s->ival < 100 )
             {
@@ -328,7 +370,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               s->mask |= ( SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW | SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1 | SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2 );
             }
-            //printf("%s%s* %s\n", syn->s0.II, syn->s0.iii, syn->s1.ww);
+          //printf("%s%s* %s\n", syn->s0.II, syn->s0.iii, syn->s1.ww);
         }
       break;
 
@@ -338,6 +380,9 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           s->mask |=  SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1;
           return 0;
         }
+
+      // stores w1w2 period
+      s->tw1w2 = s->itval;
       if ( s->ival < 10 )
         {
           if ( syn->s1.ix[0] == '/' )

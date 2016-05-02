@@ -240,6 +240,7 @@ struct bufr2tac_subset_state
   int is_normal; /*!< if 1, the values are normal of a defined period */
   int mask; /*!< mask which contain several information from the subset data taken at the moment */
   int SnSn; /*!< Latest int value of Synop suplementary information */
+  int tw1w2; /*!< Period for synop w1w2 (seconds) */
   struct temp_raw_data *r; /*!< pointer to a struct where to set the data from a temp profile being parsed */
   struct temp_raw_wind_shear_data *w; /*!< pointer to a struct where to set the data from a temp profile being parsed */
 };
