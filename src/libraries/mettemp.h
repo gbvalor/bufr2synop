@@ -122,14 +122,14 @@
   \def TEMP_NTROP_MAX
   \brief Maximum number of standard levels in any part of a TEMP report
 */
-#define TEMP_NTROP_MAX (4)
+#define TEMP_NTROP_MAX (16)
 
 
 /*!
   \def TEMP_NMAXWIND_MAX
   \brief Maximum number of mwx wind level in any part of a TEMP report
 */
-#define TEMP_NMAXWIND_MAX (4)
+#define TEMP_NMAXWIND_MAX (16)
 
 /*!
   \def TEMP_NMAX_POINTS

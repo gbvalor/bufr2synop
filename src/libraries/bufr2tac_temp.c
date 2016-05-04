@@ -381,7 +381,13 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s,
   //print_temp_raw_wind_shear_data ( w );
 
   // Finally parse raw data to fill all needed points for a TEMP
-  parse_temp_raw_data ( t, r );
+  if ( parse_temp_raw_data ( t, r ) )
+    {
+      sprintf ( err,"bufr2tac: parse_temp_raw_data(): Too much significant points" );
+      free ( ( void * ) ( r ) );
+      free ( ( void * ) ( w ) );
+      return 1;
+    }
   parse_temp_raw_wind_shear_data ( t, w );
 
   // Free memory
@@ -494,6 +500,9 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
                   isc += 1;
                   t->c.s2.n = isc;
                 }
+              else
+                return 1;
+
               if ( d->T != MISSING_REAL  || d->Td != MISSING_REAL ||
                    d->ff != MISSING_REAL || d->dd != MISSING_REAL )
                 {
@@ -516,6 +525,9 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
                   isa += 1;
                   t->a.s2.n = isa;
                 }
+              else
+                return 1;
+
               if ( d->T != MISSING_REAL  || d->Td != MISSING_REAL ||
                    d->ff != MISSING_REAL || d->dd != MISSING_REAL )
                 {
@@ -540,6 +552,8 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
                   itc += 1;
                   t->c.s3.n = itc;
                 }
+              else
+                return 1;
             }
           else
             {
@@ -553,6 +567,8 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
                   ita += 1;
                   t->a.s3.n = ita;
                 }
+              else
+                return 1;
             }
         }
 
@@ -578,6 +594,8 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
                   iwxc += 1;
                   t->c.s4.n = iwxc;
                 }
+              else
+                return 1;
             }
           else
             {
@@ -597,6 +615,8 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
                   iwxa += 1;
                   t->a.s4.n = iwxa;
                 }
+              else
+                return 1;
             }
         }
 
@@ -615,6 +635,8 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
                   itd += 1;
                   t->d.s5.n = itd;
                 }
+              else
+                return 1;
             }
           else
             {
@@ -635,6 +657,8 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
                   itb += 1;
                   t->b.s5.n = itb;
                 }
+              else
+                return 1;
             }
         }
 
@@ -652,6 +676,9 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
                   iwd += 1;
                   t->d.s6.n = iwd;
                 }
+              else
+                return 1;
+
             }
           else
             {
@@ -672,6 +699,8 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
                   t->b.s6.n = iwb;
                   //printf("%lu\n", t->b.s6.n);
                 }
+              else
+                return 1;
             }
         }
     }
