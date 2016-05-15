@@ -462,7 +462,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
-      if ( s->clayer == 0 || s->clayer == 7 || s->clayer == 8 )
+      if ( s->clayer == 0 || s->clayer == 5 || s->clayer == 7 || s->clayer == 8 || s->clayer == 62)
         {
           if ( s->ival <= 8 )
             {
@@ -513,7 +513,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       break;
 
     case 12: // 0 20 012 . Cloud type
-      if ( s->clayer == 0 || s->clayer == 7 || s->clayer == 8 )
+      if ( s->clayer == 0 || s->clayer == 5 || s->clayer == 7 || s->clayer == 8 || s->clayer == 62)
         {
           if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
             {
@@ -603,7 +603,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
-      if ( s->clayer == 0 || s->clayer == 7 ) // first layer or low layer is for sec1
+      if ( s->clayer == 0 || s->clayer == 7 || s->clayer == 5 || s->clayer == 62 ) // first layer or low layer is for sec1
         {
           m_to_h ( syn->s1.h, s->val );
         }
@@ -790,7 +790,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       break;
 
-    case 26: // 9 29 926 . Character of obscuration
+    case 26: // 9 29 026 . Character of obscuration
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
           return 0;

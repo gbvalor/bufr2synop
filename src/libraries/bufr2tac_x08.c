@@ -78,6 +78,10 @@ int syn_parse_x08 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           s->clayer = s->ival;
         }
+      else if ( s->ival == 5 || s->ival == 62 ) 
+        {  // 5 should be used for N = 9 and 62 for N = 0
+          s->clayer = s->ival;
+        }
       break;
 
     case 22:  // 0 08 022 . Total number

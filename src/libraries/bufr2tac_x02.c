@@ -49,10 +49,20 @@ int syn_parse_x02 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 2: // 0 02 002 . Type of instrumentation for wind measurement
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         return 0;
+      if ( s->ival == 0)
+        strcpy ( syn->s0.iw, "0" );
+      else if (s->ival == 8)
+        strcpy ( syn->s0.iw, "1" );
+      else if (s->ival == 4)
+        strcpy ( syn->s0.iw, "3" );
+      else if (s->ival == 12)
+        strcpy ( syn->s0.iw, "4" );
+     
+      /*
       if ( s->ival & 4 )
         strcpy ( syn->s0.iw, "4" );
       else
-        strcpy ( syn->s0.iw, "1" );
+        strcpy ( syn->s0.iw, "1" );*/
       break;
     default:
       break;
