@@ -12,7 +12,7 @@ AM_CPPFLAGS= $(all_includes) -I/$(top_builddir) -I$(top_srcdir)/src/bufrdeco -I$
 # the library search path.
 bufr_decode_LDFLAGS = $(all_libraries)
 
-bufr_decode_LDADD = -lm -lgfortran -lbufr
+bufr_decode_LDADD = -lgfortran -lbufr -lm
 bufr2synop_SOURCES = bufr2synop.c bufr2synop_io.c 
 bufr2synop_LDADD = $(top_builddir)/src/libraries/libbufr2tac.la -lbufr -lgfortran -lm
 

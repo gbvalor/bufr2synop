@@ -1,4 +1,4 @@
-AC_INIT([bufr2synop], 0.7.7)
+AC_INIT([bufr2synop], 0.7.8)
 AC_CONFIG_SRCDIR([src/apps/bufr2synop.c])
 AM_INIT_AUTOMAKE
 
@@ -11,7 +11,7 @@ AM_PROG_LIBTOOL
 
 # Checks for libraries.
 # 
-AC_CHECK_LIB([bufr], [bufrread], , [AC_MSG_ERROR("You must install ECMWF bufrdc library")])
+# AC_CHECK_LIB([bufr], [bufrread], , [AC_MSG_ERROR("You must install ECMWF bufrdc library")])
 
 dnl
 dnl This block finds the compiler 
