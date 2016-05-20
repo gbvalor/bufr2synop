@@ -28,7 +28,9 @@ installed by ECMWF packages so it need to be installed. You can grab ECMWF libra
 
 https://software.ecmwf.int/wiki/display/BUFR/Releases
 
-Follow the instructions to build and install bufrdc library. Then, you can use this package.
+Follow the instructions to build and install bufrdc library. It is recommended to build bufrdc 
+with -DUNDERSCORE option to avoid problems when linked with C libraries. Then, you can use this 
+package.
 
 Note that the results from this library is not intended to match at %100 level to original
 alphanumeric reports. It cannot. Some variables in alphanumeric code rules can be coded in
