@@ -96,7 +96,8 @@ AN EXAMPLE OF USE
 -----------------
 
 In a working dir we want to get a BUFR archive from NOAA GTS and see the reports we can extract
-from it.
+from it. On some enviroments, do not forget to set BUFR_TABLES variable to directory containing 
+ECMWF bufr tables.
 
 1) Get a bufr bin file from NOAA. Is a cyclic directory file, with file names in the form 
 sn.NNNN.bin, NNNN varying from 0000 to 0120. We choose first one. Don't worry, the file is also 
