@@ -142,7 +142,14 @@ char * m_to_hh ( char *target, double h )
     }
   else if ( ih <= 9000 )
     {
-      sprintf ( target, "%2d", ( ih / 300 ) + 50 );
+      if ( ih < 1800 )
+        {
+          strcpy ( target, "50" );
+        }
+      else
+        {
+          sprintf ( target, "%2d", ( ih / 300 ) + 50 );
+        }
     }
   else if ( ih <= 21000 )
     {
@@ -462,7 +469,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
-      if ( s->clayer == 0 || s->clayer == 5 || s->clayer == 7 || s->clayer == 8 || s->clayer == 62)
+      if ( s->clayer == 0 || s->clayer == 5 || s->clayer == 7 || s->clayer == 8 || s->clayer == 62 )
         {
           if ( s->ival <= 8 )
             {
@@ -513,7 +520,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       break;
 
     case 12: // 0 20 012 . Cloud type
-      if ( s->clayer == 0 || s->clayer == 5 || s->clayer == 7 || s->clayer == 8 || s->clayer == 62)
+      if ( s->clayer == 0 || s->clayer == 5 || s->clayer == 7 || s->clayer == 8 || s->clayer == 62 )
         {
           if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
             {
