@@ -32,13 +32,19 @@
 char * kelvin_to_snTTT ( char *target, double T )
 {
   int ic;
-  if ( T < 150.0 || T > 340.0 )
+  double Tx = T;
+
+  if ( Tx > 15 && Tx < 34.0 ) // guess there is an scale error on coding , we better manage T * 10
+    {
+      Tx *= 10.0;
+    }
+  else if ( T < 150.0 || T > 340.0 )
     {
       return NULL;
     }
 
   // tenths of degree (Celsius)
-  ic = ( int ) ( floor ( 10.0 * ( T - 273.15 ) + 0.5 ) );
+  ic = ( int ) ( floor ( 10.0 * ( Tx - 273.15 ) + 0.5 ) );
   if ( ic < 0 )
     {
       sprintf ( target, "1%03d",  -ic );
@@ -248,10 +254,8 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       break;
 
-    case 11: // 0 12 011 . Maximum temperature at heigh and over the period specified
     case 14: // 0 12 014 . Maximum temperature at 2 m , past 12 hours
     case 21: // 0 12 021 . Maximum temperature.
-    case 111: // 0 12 111 . Maximum temperature at heigh and over the period specified
     case 114: // 0 12 114 . Maximum temperature at 2 m , past 12 hours
     case 116: // 0 12 116 . Maximum temperature at 2 m , past 24 hours
       if ( syn->s3.TxTxTx[0] == 0 && ( s->itval % ( 3*3600 ) ) == 0 ) // only for 3, 6 ... hours
@@ -265,13 +269,38 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       break;
 
-    case 12: // 0 12 012 . Minimum temperature at heigh and over the period specified
+    case 11: // 0 12 011 . Maximum temperature at heigh and over the period specified
+    case 111: // 0 12 111 . Maximum temperature at heigh and over the period specified
+      if ( syn->s3.TxTxTx[0] == 0 )
+        {
+          if ( kelvin_to_snTTT ( aux, s->val ) )
+            {
+              syn->s3.snx[0] = aux[0];
+              strcpy ( syn->s3.TxTxTx, aux + 1 );
+              syn->mask |= SYNOP_SEC3;
+            }
+        }
+      break;
+
+
     case 15: // 0 12 015 . Minimum temperature at 2 m , past 12 hours
     case 22: // 0 12 022 . Minimum temperature.
-    case 112: // 0 12 112 . Minimum temperature at heigh and over the period specified
     case 115: // 0 12 115 . Minimum temperature at 2 m , past 12 hours
     case 117: // 0 12 117 . Minimum temperature at 2 m , past 24 hours
       if ( syn->s3.TnTnTn[0] == 0 && ( s->itval % ( 3*3600 ) ) == 0 ) // only for 3, 6 ... hours
+        {
+          if ( kelvin_to_snTTT ( aux, s->val ) )
+            {
+              syn->s3.snn[0] = aux[0];
+              strcpy ( syn->s3.TnTnTn, aux + 1 );
+              syn->mask |= SYNOP_SEC3;
+            }
+        }
+      break;
+
+    case 12: // 0 12 012 . Minimum temperature at heigh and over the period specified
+    case 112: // 0 12 112 . Minimum temperature at heigh and over the period specified
+      if ( syn->s3.TnTnTn[0] == 0 ) 
         {
           if ( kelvin_to_snTTT ( aux, s->val ) )
             {
