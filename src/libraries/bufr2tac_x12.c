@@ -258,7 +258,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 21: // 0 12 021 . Maximum temperature.
     case 114: // 0 12 114 . Maximum temperature at 2 m , past 12 hours
     case 116: // 0 12 116 . Maximum temperature at 2 m , past 24 hours
-      if ( syn->s3.TxTxTx[0] == 0 && ( s->itval % ( 3*3600 ) ) == 0 ) // only for 3, 6 ... hours
+      if ( syn->s3.TxTxTx[0] == 0 && ( s->itval % ( 3 * 3600 ) ) == 0 ) // only for 3, 6 ... hours
         {
           if ( kelvin_to_snTTT ( aux, s->val ) )
             {
@@ -271,7 +271,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 
     case 11: // 0 12 011 . Maximum temperature at heigh and over the period specified
     case 111: // 0 12 111 . Maximum temperature at heigh and over the period specified
-      if ( syn->s3.TxTxTx[0] == 0 )
+      if ( syn->s3.TxTxTx[0] == 0 && ( (s->itval - s->jtval) % (12 * 3600) ) == 0 ) // only for 12 , 24 hours
         {
           if ( kelvin_to_snTTT ( aux, s->val ) )
             {
@@ -287,7 +287,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 22: // 0 12 022 . Minimum temperature.
     case 115: // 0 12 115 . Minimum temperature at 2 m , past 12 hours
     case 117: // 0 12 117 . Minimum temperature at 2 m , past 24 hours
-      if ( syn->s3.TnTnTn[0] == 0 && ( s->itval % ( 3*3600 ) ) == 0 ) // only for 3, 6 ... hours
+      if ( syn->s3.TnTnTn[0] == 0 && ( s->itval % ( 3 * 3600 ) ) == 0 ) // only for 3, 6 ... hours
         {
           if ( kelvin_to_snTTT ( aux, s->val ) )
             {
@@ -300,7 +300,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 
     case 12: // 0 12 012 . Minimum temperature at heigh and over the period specified
     case 112: // 0 12 112 . Minimum temperature at heigh and over the period specified
-      if ( syn->s3.TnTnTn[0] == 0 ) 
+      if ( syn->s3.TnTnTn[0] == 0 && ( (s->itval - s->jtval) % (12 * 3600) ) == 0) 
         {
           if ( kelvin_to_snTTT ( aux, s->val ) )
             {
