@@ -277,7 +277,7 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s,
        ( ( s->mask & SUBSET_MASK_HAVE_MONTH ) == 0 ) ||
        ( ( s->mask & SUBSET_MASK_HAVE_DAY ) == 0 ) ||
        ( ( s->mask & SUBSET_MASK_HAVE_HOUR ) == 0 ) ||
-       ( ( s->mask & SUBSET_MASK_HAVE_SECOND ) == 0 )
+       ( ( s->mask & SUBSET_MASK_HAVE_MINUTE ) == 0 )
      )
     {
       sprintf ( err,"bufr2tac: parse_subset_as_temp(): lack of mandatory descriptor in sequence" );
