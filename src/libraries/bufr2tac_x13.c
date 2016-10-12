@@ -102,6 +102,20 @@ char * prec_to_RRRR24 ( char *target, double r )
 }
 
 /*!
+  \fn char * prec_to_RxRxRxRx ( char *target, double r )
+  \brief converts a precipitation in Kg/m2 into a RxRxRxRx string
+  \param r the precipitation
+  \param target the resulting string
+*/
+char * prec_to_RxRxRxRx ( char *target, double r )
+{
+  sprintf ( target,"%04d", ( int ) ( r * 10.0 + 0.5 ) );
+  return target;
+}
+
+
+
+/*!
   \fn char * total_snow_depth_to_sss ( char *target, double r )
   \brief converts tatal snow depth in m to sss (code table 3889)
   \param r recent snow depth in meters
@@ -513,7 +527,7 @@ int climat_parse_x13 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
       break;
 
     case 52: // 0 13 052 . Highest daily amount of precipitation
-      prec_to_RRRR ( c->s4.RxRxRxRx, s->val );
+      prec_to_RxRxRxRx ( c->s4.RxRxRxRx, s->val );
       if ( s->more_days == 0 )
         {
           sprintf ( c->s4.yr, "%02d", s->day );
