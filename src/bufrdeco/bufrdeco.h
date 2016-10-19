@@ -555,7 +555,7 @@ struct bufrdeco
   struct bufr_sec3 sec3; /*!< Parsed sec3 */
   struct bufr_sec4 sec4; /*!< Parsed sec4 */
   struct bufr_tables *tables; /*!< Pointer to a the struct containing all tables needed for a single bufr */
-  struct bufrdeco_expanded_tree *tree; /*!< Pointer to a truct containing the parsed descriptor tree (without explansion) */
+  struct bufrdeco_expanded_tree *tree; /*!< Pointer to a struct containing the parsed descriptor tree (without explansion) */
   struct bufrdeco_decoding_data_state state; /*!< Struct with data needed when parsing bufr */
   struct bufrdeco_compressed_data_references refs; /*!< struct with data references in case of compressed bufr */
   struct bufrdeco_subset_sequence_data seq; /*!< sequence with data subset after parse */

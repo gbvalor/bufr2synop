@@ -128,7 +128,7 @@ int main ( int argc, char *argv[] )
       if ( DEBUG )
         printf ( "# %s\n", INPUTFILE );
 
-      // The following call to bufrdeco_read_bufr() it does the folowing tasks:
+      // The following call to bufrdeco_read_bufr() does the folowing tasks:
       // - Read the file and checks the marks at the begining and end to see wheter is a BUFR file
       // - Init the structs and allocate the needed memory if not done previously
       // - Splits and parse the BUFR sections (without expanding descriptors nor parsing data)
