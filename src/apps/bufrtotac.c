@@ -128,6 +128,11 @@ int main ( int argc, char *argv[] )
       if ( DEBUG )
         printf ( "# %s\n", INPUTFILE );
 
+      // The following call to bufrdeco_read_bufr() it does the folowing tasks:
+      // - Read the file and checks the marks at the begining and end to see wheter is a BUFR file
+      // - Init the structs and allocate the needed memory if not done previously
+      // - Splits and parse the BUFR sections (without expanding descriptors nor parsing data)
+      // - Reads the needed Table files and store them in memory.
       if ( bufrdeco_read_bufr ( &BUFR, INPUTFILE ) )
         {
           if ( DEBUG )
@@ -138,7 +143,7 @@ int main ( int argc, char *argv[] )
         }
 
       /* Try to guess a GTS header from filename*/
-      GTS_HEADER = guess_gts_header ( &BUFR.header , INPUTFILE );
+      GTS_HEADER = guess_gts_header ( &BUFR.header , INPUTFILE );  // GTS_HEADER = 1 if succeeded
       if ( GTS_HEADER && DEBUG )
         printf ( "#%s %s %s %s %s\n", BUFR.header.timestamp, BUFR.header.bname, BUFR.header.center,
                  BUFR.header.dtrel, BUFR.header.order );
