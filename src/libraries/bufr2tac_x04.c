@@ -24,6 +24,30 @@
 #include "bufr2tac.h"
 
 /*!
+  \fn int time_period_duration (struct bufr2tac_subset_state *s )
+  \brief Get time period duration in seconds
+  \param s pinter to struct \ref bufr2tac_subset_state
+  
+  Returns -1 if no duration is computed. Otherwise returns time duration in seconds
+*/
+int time_period_duration (struct bufr2tac_subset_state *s )
+{
+    if (s->k_itval == (s->k_jtval + 1))
+    {  // two consecutive time period displacements
+        if ( s->itval > s->jtval)
+       return (s->itval - s->jtval);
+       else
+         return -1;
+    }
+    // just a single time period displacement
+    if ( s->itval < 0)
+      return (-s->itval);
+    else
+      return -1;
+}
+
+
+/*!
   \fn int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
   \brief Parse a expanded descriptor with X = 04
   \param syn pointer to a struct \ref synop_chunks where to set the results

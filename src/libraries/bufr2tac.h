@@ -229,6 +229,7 @@ struct bufr2tac_subset_state
   double lon; /*!< longitude of station */
   double alt; /*!< Altitude (m)*/
   double hsensor; /*!< Sensor height over station ground (m) */ 
+  double hwsensor; /*!< Sensor height over water surface (m) */
   char name[80]; /*!< Name of observatory, if any */
   char country[80]; /*!< Name of state/country if known */
   time_t tobs; /*!< Unix time reference*/
@@ -327,6 +328,8 @@ int find_descriptor_interval ( int *haystack, size_t nlst, int needlemin, int ne
 int bufr_set_environment ( char *default_bufrtables, char *bufrtables_dir );
 int guess_gts_header ( struct gts_header *h, const char *f );
 int read_bufr ( unsigned char *bufr, char *filename, int *length );
+int time_period_duration (struct bufr2tac_subset_state *s );
+
 
 char * latlon_to_MMM ( char *target, double lat, double lon );
 char * kelvin_to_TTTT ( char *target, double T );

@@ -132,6 +132,15 @@ int syn_parse_x07 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       s->hsensor = s->val;
       break;
 
+    case 33: // 0 07 033 Height of sensor above water surface
+      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
+        {
+          s->hwsensor = -999.9; // clean value
+          return 0;
+        }
+      s->hwsensor = s->val;
+      break;
+
     default:
       break;
     }
