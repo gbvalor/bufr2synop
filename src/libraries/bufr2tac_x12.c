@@ -273,7 +273,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 111: // 0 12 111 . Maximum temperature at heigh and over the period specified
       if ( syn->s3.TxTxTx[0] == 0 && 
           ( s->hsensor >= 1.0 || s->hsensor <= 0) &&
-          ( time_period_duration (s) % (12 * 3600) ) == 0 ) // only for 12 , 24 hours
+          ( time_period_duration ( s ) % (12 * 3600) ) == 0 ) // only for 12 , 24 hours
         {
           if ( kelvin_to_snTTT ( aux, s->val ) )
             {
