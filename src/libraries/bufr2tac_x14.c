@@ -283,8 +283,8 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       else if ( tpd == 3600 )
         {
           sprintf ( syn->s3.SS, "%02d", s->ival * 10 );
+          syn->mask |= SYNOP_SEC3;
         }
-      syn->mask |= SYNOP_SEC3;
       break;
     default:
       break;
