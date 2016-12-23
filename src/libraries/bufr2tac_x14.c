@@ -237,10 +237,13 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       tpd = time_period_duration ( s );
       if ( tpd == ( 24 * 3600 ) )
         {
-          if ( strcmp ( "07", syn->s0.II ) == 0 && strcmp ( "06", syn->e.HH ) == 0 ) // France
+          if ( strcmp ( "07", syn->s0.II ) == 0 ) // France
             {
-              sprintf ( syn->s3.SSS, "%03d", s->ival / 6 );
-              syn->mask |= SYNOP_SEC3;
+              if ( strcmp ( "06", syn->e.HH ) == 0 )
+                {
+                  sprintf ( syn->s3.SSS, "%03d", s->ival / 6 );
+                  syn->mask |= SYNOP_SEC3;
+                }
             }
           else
             {
