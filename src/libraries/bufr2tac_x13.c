@@ -227,28 +227,39 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       tpd = time_period_duration ( s );
       if ( tpd ==  3600 )
         {
-          if ( syn->s3.RRR[0] == 0 &&
-               ( strcmp ( "01", syn->e.HH ) == 0 ||
-                 strcmp ( "02", syn->e.HH ) == 0 ||
-                 strcmp ( "04", syn->e.HH ) == 0 ||
-                 strcmp ( "05", syn->e.HH ) == 0 ||
-                 strcmp ( "07", syn->e.HH ) == 0 ||
-                 strcmp ( "08", syn->e.HH ) == 0 ||
-                 strcmp ( "10", syn->e.HH ) == 0 ||
-                 strcmp ( "11", syn->e.HH ) == 0 ||
-                 strcmp ( "13", syn->e.HH ) == 0 ||
-                 strcmp ( "14", syn->e.HH ) == 0 ||
-                 strcmp ( "16", syn->e.HH ) == 0 ||
-                 strcmp ( "17", syn->e.HH ) == 0 ||
-                 strcmp ( "19", syn->e.HH ) == 0 ||
-                 strcmp ( "20", syn->e.HH ) == 0 ||
-                 strcmp ( "22", syn->e.HH ) == 0 ||
-                 strcmp ( "23", syn->e.HH ) == 0 )
-             )
+          if ( syn->s3.RRR[0] == 0 )
             {
-              syn->s3.tr[0] = '5'; // 1 hour
-              prec_to_RRR ( syn->s3.RRR, s->val );
-              syn->mask |= SYNOP_SEC3;
+              if ( strcmp ( "6", syn->s0.A1 ) == 6 )
+                {
+                  // Only for Reg VI
+                  if ( strcmp ( "01", syn->e.HH ) == 0 ||
+                       strcmp ( "02", syn->e.HH ) == 0 ||
+                       strcmp ( "04", syn->e.HH ) == 0 ||
+                       strcmp ( "05", syn->e.HH ) == 0 ||
+                       strcmp ( "07", syn->e.HH ) == 0 ||
+                       strcmp ( "08", syn->e.HH ) == 0 ||
+                       strcmp ( "10", syn->e.HH ) == 0 ||
+                       strcmp ( "11", syn->e.HH ) == 0 ||
+                       strcmp ( "13", syn->e.HH ) == 0 ||
+                       strcmp ( "14", syn->e.HH ) == 0 ||
+                       strcmp ( "16", syn->e.HH ) == 0 ||
+                       strcmp ( "17", syn->e.HH ) == 0 ||
+                       strcmp ( "19", syn->e.HH ) == 0 ||
+                       strcmp ( "20", syn->e.HH ) == 0 ||
+                       strcmp ( "22", syn->e.HH ) == 0 ||
+                       strcmp ( "23", syn->e.HH ) == 0 )
+                    {
+                      syn->s3.tr[0] = '5'; // 1 hour
+                      prec_to_RRR ( syn->s3.RRR, s->val );
+                      syn->mask |= SYNOP_SEC3;
+                    }
+                }
+              else
+                {
+                  syn->s3.tr[0] = '5'; // 1 hour
+                  prec_to_RRR ( syn->s3.RRR, s->val );
+                  syn->mask |= SYNOP_SEC3;
+                }
             }
           else if ( syn->s5.RRR[0] == 0 )
             {
@@ -411,7 +422,8 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       if ( syn->s3.RRR[0] == 0 )
         {
           if ( strcmp ( "6", syn->s0.A1 ) == 6 )
-            { // Only for Reg VI
+            {
+              // Only for Reg VI
               if ( strcmp ( "01", syn->e.HH ) == 0 ||
                    strcmp ( "02", syn->e.HH ) == 0 ||
                    strcmp ( "04", syn->e.HH ) == 0 ||
