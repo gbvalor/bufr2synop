@@ -216,8 +216,10 @@ struct bufr2tac_subset_state
   int ival; /*!< the integer value in the descriptor */
   double val; /*!< the float value in the descriptor */
   int itval; /*!< Latest parsed time displacement in seconds */
+  int itmask; /*!< Latest time displacement descriptor mask */
   size_t k_itval; /*!< index in array of latest time displacemet descriptor */
-  int jtval; /*!< Prior to Latest parsed time displacement in seconds */
+  int jtval; /*!< Prior to latest parsed time displacement in seconds */
+  int jtmask; /*!< Prior to latest time displacement descriptor mask */
   size_t k_jtval; /*!< index in array of time prior to latest displacemet descriptor */
   int isq; /*!< if 1, the current atom data is in a Significant qualifier squence, and not computed */
   int isq_val; /*!< Value of a significant qualifier */

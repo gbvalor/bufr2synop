@@ -27,23 +27,45 @@
   \fn int time_period_duration (struct bufr2tac_subset_state *s )
   \brief Get time period duration in seconds
   \param s pinter to struct \ref bufr2tac_subset_state
-  
+
   Returns -1 if no duration is computed. Otherwise returns time duration in seconds
 */
-int time_period_duration (struct bufr2tac_subset_state *s )
+int time_period_duration ( struct bufr2tac_subset_state *s )
 {
-    if (s->k_itval == (s->k_jtval + 1))
-    {  // two consecutive time period displacements
-        if ( s->itval > s->jtval)
-       return (s->itval - s->jtval);
-       else
-         return -1;
+  if ( s->k_itval == ( s->k_jtval + 1 ) )
+    {
+      // two consecutive time period displacements
+      if ( ( s->itmask & DESCRIPTOR_VALUE_MISSING ) == 0  &&
+           ( s->jtmask & DESCRIPTOR_VALUE_MISSING ) == 0 )
+        {
+          return ( abs ( s->itval - s->jtval ) );
+        }
+      else if ( ( s->itmask & DESCRIPTOR_VALUE_MISSING )  &&
+                ( s->jtmask & DESCRIPTOR_VALUE_MISSING ) )
+        {
+          return 0;
+        }
+      else if ( ( s->itmask & DESCRIPTOR_VALUE_MISSING ) == 0 &&
+                ( s->jtmask & DESCRIPTOR_VALUE_MISSING ) )
+        {
+          return ( abs ( s->itval ) );
+        }
+      else if ( ( s->jtmask & DESCRIPTOR_VALUE_MISSING ) == 0 &&
+                ( s->itmask & DESCRIPTOR_VALUE_MISSING ) )
+        {
+          return -1;
+        }
     }
-    // just a single time period displacement
-    if ( s->itval < 0)
-      return (-s->itval);
-    else
-      return -1;
+
+  // just a single time period displacement
+  if ( (s->itmask & DESCRIPTOR_VALUE_MISSING ) == 0)
+  {
+    return ( abs ( s->itval ) );
+  }
+  else 
+  {
+    return 0;
+  }
 }
 
 
@@ -101,19 +123,22 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       sprintf ( syn->e.mm, "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
-      // store latest displacement in seconds
+    // store latest displacement in seconds
     case 23: // 0 04 023 . Time period of displacement (days)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
           s->k_jtval = s->k_itval;
           s->jtval = s->itval;
+          s->jtmask = s->itmask;
           s->k_itval = s->i;
           s->itval = 0;
           return 0;
         }
       s->k_jtval = s->k_itval;
       s->jtval = s->itval;
+      s->jtmask = s->itmask;
       s->k_itval = s->i;
+      s->itmask = s->a->mask;
       s->itval = s->ival * 86400;
       break;
     case 24: // 0 04 024 .  Time period of displacement (hours)
@@ -121,13 +146,16 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           s->k_jtval = s->k_itval;
           s->jtval = s->itval;
+          s->jtmask = s->itmask;
           s->k_itval = s->i;
           s->itval = 0;
           return 0;
         }
       s->k_jtval = s->k_itval;
       s->jtval = s->itval;
+      s->jtmask = s->itmask;
       s->k_itval = s->i;
+      s->itmask = s->a->mask;
       s->itval = s->ival * 3600;
       break;
     case 25: // 0 04 025  Time period of displacement (minutes)
@@ -135,13 +163,16 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           s->k_jtval = s->k_itval;
           s->jtval = s->itval;
+          s->jtmask = s->itmask;
           s->k_itval = s->i;
           s->itval = 0;
           return 0;
         }
       s->k_jtval = s->k_itval;
       s->jtval = s->itval;
+      s->jtmask = s->itmask;
       s->k_itval = s->i;
+      s->itmask = s->a->mask;
       s->itval = s->ival * 60;
       break;
     case 26: // 0 04 026 .  Time period of displacement (seconds)
@@ -149,13 +180,16 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           s->k_jtval = s->k_itval;
           s->jtval = s->itval;
+          s->jtmask = s->itmask;
           s->k_itval = s->i;
           s->itval = 0;
           return 0;
         }
       s->k_jtval = s->k_itval;
       s->jtval = s->itval;
+      s->jtmask = s->itmask;
       s->k_itval = s->i;
+      s->itmask = s->a->mask;
       s->itval = s->ival;
       break;
     default:
@@ -234,7 +268,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         }
       s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
-      // store latest displacement in seconds
+    // store latest displacement in seconds
     case 23: // 0 04 023 . Time period of displacement (days)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
