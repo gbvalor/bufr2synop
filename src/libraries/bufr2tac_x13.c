@@ -281,9 +281,15 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           if ( syn->s1.RRR[0] == 0 )
             {
-              syn->s1.tr[0] = '1'; // 6 hour
-              prec_to_RRR ( syn->s1.RRR, s->val );
-              syn->mask |= SYNOP_SEC1;
+              if ( strcmp ( "00", syn->e.HH ) &&
+                   strcmp ( "06", syn->e.HH ) &&
+                   strcmp ( "12", syn->e.HH ) &&
+                   strcmp ( "18", syn->e.HH ) )
+                {
+                  syn->s1.tr[0] = '1'; // 6 hour
+                  prec_to_RRR ( syn->s1.RRR, s->val );
+                  syn->mask |= SYNOP_SEC1;
+                }
             }
         }
       else if ( tpd == ( 9 * 3600 ) )
