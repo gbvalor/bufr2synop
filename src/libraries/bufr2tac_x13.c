@@ -267,24 +267,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( tpd == 10800 )
         {
-          /*
-          if ( strcmp ( "1", syn->s0.A1 ) == 0 ||
-               strcmp ( "7", syn->s0.A1 ) == 0 )
-            {
-              if ( (hr % 6) == 3)
-                {
-                  if ( syn->s3.tr[0] == '5' )
-                    {
-                      syn->s5.tr[0] = '5';
-                      strcpy ( syn->s5.RRR, syn->s3.RRR );
-                      syn->mask |= SYNOP_SEC5;
-                    }
-                  syn->s3.tr[0] = '7'; // 3 hour
-                  prec_to_RRR ( syn->s3.RRR, s->val );
-                  syn->mask |= SYNOP_SEC3;
-                }
-            }
-          else */if ( ( hr % 3 ) == 0 )
+          if ( ( hr % 3 ) == 0 )
             {
               if ( syn->s3.tr[0] == '5' )
                 {
@@ -367,7 +350,6 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
                   syn->mask |= SYNOP_SEC1;
                 }
             }
-
           // last chance
           if ( syn->s1.RRR[0] == 0 )
             {
@@ -551,6 +533,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
         }
       break;
+
     case 13: // 0 13 013 . Total snow depth
       if ( syn->s3.sss[0] == 0 )
         {
@@ -558,6 +541,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           syn->mask |= SYNOP_SEC3;
         }
       break;
+
     case 19: // 0 13 019 . Total precipitaction past 1 hour
       hr = hour_rounded ( syn );
       if ( syn->s3.RRR[0] == 0 )
@@ -584,25 +568,10 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           syn->mask |= SYNOP_SEC5;
         }
       break;
+
     case 20: // 0 13 020 . Total precipitation past 3 hours
       hr = hour_rounded ( syn );
-      /*if ( strcmp ( "1", syn->s0.A1 ) == 0  ||
-           strcmp ( "7", syn->s0.A1 ) == 0 )
-        {
-          if ( (hr % 6) == 3 )
-            {
-              if ( syn->s3.tr[0] == '5' )
-                {
-                  syn->s5.tr[0] = '5';
-                  strcpy ( syn->s5.RRR, syn->s3.RRR );
-                  syn->mask |= SYNOP_SEC5;
-                }
-              syn->s3.tr[0] = '7'; // 3 hour
-              prec_to_RRR ( syn->s3.RRR, s->val );
-              syn->mask |= SYNOP_SEC3;
-            }
-        }
-      else */if ( ( hr % 3 ) == 0 )
+      if ( ( hr % 3 ) == 0 )
         {
           if ( syn->s3.tr[0] == '5' )
             {
@@ -615,6 +584,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           syn->mask |= SYNOP_SEC3;
         }
       break;
+
     case 21: // 0 13 021 . Total precipitation past 6 hours
       hr = hour_rounded ( syn );
       if ( strcmp ( "1", syn->s0.A1 ) == 0 )
@@ -695,8 +665,8 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               syn->mask |= SYNOP_SEC1;
             }
         }
-
       break;
+
     case 22: // 0 13 022 . Total precipitation past 12 hours
       hr = hour_rounded ( syn );
       if ( strcmp ( "1", syn->s0.A1 ) == 0 )
@@ -767,6 +737,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
 
       break;
+
     case 23: // 0 13 023 . Total precipitaction past 24 hours
       if ( s->val < 0.0 )
         {
