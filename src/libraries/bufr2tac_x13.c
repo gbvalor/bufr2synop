@@ -683,7 +683,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           if ( ( hr % 3 ) == 0 )
             {
-              syn->s1.tr[0] = '1'; // 6 hour
+              syn->s1.tr[0] = '2'; // 12 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
               syn->mask |= SYNOP_SEC1;
             }
@@ -692,7 +692,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           if ( ( hr % 12 ) == 6 )
             {
-              syn->s1.tr[0] = '1'; // 6 hour
+              syn->s1.tr[0] = '2'; // 12 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
               syn->mask |= SYNOP_SEC1;
             }
@@ -701,7 +701,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           if ( hr == 12 )
             {
-              syn->s1.tr[0] = '1'; // 6 hour
+              syn->s1.tr[0] = '2'; // 12 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
               syn->mask |= SYNOP_SEC1;
             }
