@@ -293,7 +293,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
           else if ( strcmp ( "2", syn->s0.A1 ) == 0 )
             {
-              if ( ( hr % 12 )  == 6 )
+              if ( ( hr % 3 )  == 0 )
                 {
                   syn->s1.tr[0] = '1'; // 6 hour
                   prec_to_RRR ( syn->s1.RRR, s->val );
@@ -350,6 +350,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
                   syn->mask |= SYNOP_SEC1;
                 }
             }
+            s
           // last chance
           if ( syn->s1.RRR[0] == 0 )
             {
@@ -389,7 +390,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
           else if ( strcmp ( "2", syn->s0.A1 ) == 0 )
             {
-              if ( ( hr % 12 ) == 0 )
+              if ( ( hr % 3 ) == 0 )
                 {
                   syn->s1.tr[0] = '2'; // 12 hour
                   prec_to_RRR ( syn->s1.RRR, s->val );
@@ -598,7 +599,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( strcmp ( "2", syn->s0.A1 ) == 0 )
         {
-          if ( ( hr % 12 ) == 6 )
+          if ( ( hr % 3 ) == 0 )
             {
               syn->s1.tr[0] = '1'; // 6 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
@@ -658,7 +659,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 
       if ( syn->s1.RRR[0] == 0 )
         {
-          if ( ( hr % 12 ) == 0 )
+          if ( ( hr % 6 ) == 0 )
             {
               syn->s1.tr[0] = '1'; // 6 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
@@ -680,7 +681,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( strcmp ( "2", syn->s0.A1 ) == 0 )
         {
-          if ( ( hr % 12 ) == 6 )
+          if ( ( hr % 3 ) == 0 )
             {
               syn->s1.tr[0] = '1'; // 6 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
