@@ -350,7 +350,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
                   syn->mask |= SYNOP_SEC1;
                 }
             }
-            s
+        
           // last chance
           if ( syn->s1.RRR[0] == 0 )
             {
