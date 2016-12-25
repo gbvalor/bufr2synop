@@ -331,7 +331,7 @@ int bufr_set_environment ( char *default_bufrtables, char *bufrtables_dir );
 int guess_gts_header ( struct gts_header *h, const char *f );
 int read_bufr ( unsigned char *bufr, char *filename, int *length );
 int time_period_duration (struct bufr2tac_subset_state *s );
-
+int hour_rounded(struct synop_chunks *syn);
 
 char * latlon_to_MMM ( char *target, double lat, double lon );
 char * kelvin_to_TTTT ( char *target, double T );
@@ -356,6 +356,9 @@ char * total_snow_depth_to_sss ( char *target, double r );
 char * wind_to_dndnfnfnfn( char *target, double dd, double ff);
 char * grad_to_D (char *D, double grad);
 char * grad_to_ec(char *target, double grad);
+int check_kj_m2(double val);
+int check_j_cm2(double val);
+
 
 int print_synop ( char *report, size_t lmax, struct synop_chunks *syn );
 char * print_synop_sec0 ( char **sec0, size_t lmax, struct synop_chunks *syn );

@@ -200,7 +200,7 @@ char * recent_snow_to_ss ( char *target, double r )
 */
 int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 {
-  int tpd;
+  int tpd, hr;
   char aux[8];
 
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
@@ -225,40 +225,24 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           return 0;
         }
       tpd = time_period_duration ( s );
+      hr = hour_rounded ( syn );
       if ( tpd ==  3600 )
         {
           if ( syn->s3.RRR[0] == 0 )
             {
-              if ( strcmp ( "6", syn->s0.A1 ) == 6 )
+              if ( strcmp ( "1", syn->s0.A1 ) == 0 ||
+                   strcmp ( "2", syn->s0.A1 ) == 0 ||
+                   strcmp ( "3", syn->s0.A1 ) == 0 ||
+                   strcmp ( "4", syn->s0.A1 ) == 0 ||
+                   strcmp ( "5", syn->s0.A1 ) == 0 ||
+                   strcmp ( "6", syn->s0.A1 ) == 0 )
                 {
-                  // Only for Reg VI
-                  if ( strcmp ( "01", syn->e.HH ) == 0 ||
-                       strcmp ( "02", syn->e.HH ) == 0 ||
-                       strcmp ( "04", syn->e.HH ) == 0 ||
-                       strcmp ( "05", syn->e.HH ) == 0 ||
-                       strcmp ( "07", syn->e.HH ) == 0 ||
-                       strcmp ( "08", syn->e.HH ) == 0 ||
-                       strcmp ( "10", syn->e.HH ) == 0 ||
-                       strcmp ( "11", syn->e.HH ) == 0 ||
-                       strcmp ( "13", syn->e.HH ) == 0 ||
-                       strcmp ( "14", syn->e.HH ) == 0 ||
-                       strcmp ( "16", syn->e.HH ) == 0 ||
-                       strcmp ( "17", syn->e.HH ) == 0 ||
-                       strcmp ( "19", syn->e.HH ) == 0 ||
-                       strcmp ( "20", syn->e.HH ) == 0 ||
-                       strcmp ( "22", syn->e.HH ) == 0 ||
-                       strcmp ( "23", syn->e.HH ) == 0 )
-                    {
-                      syn->s3.tr[0] = '5'; // 1 hour
-                      prec_to_RRR ( syn->s3.RRR, s->val );
-                      syn->mask |= SYNOP_SEC3;
-                    }
-                }
-              else
-                {
+                  /*if ( hr % 3)
+                    {*/
                   syn->s3.tr[0] = '5'; // 1 hour
                   prec_to_RRR ( syn->s3.RRR, s->val );
                   syn->mask |= SYNOP_SEC3;
+                  /*}*/
                 }
             }
           else if ( syn->s5.RRR[0] == 0 )
@@ -283,11 +267,31 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( tpd == 10800 )
         {
-          if ( strcmp ( "03", syn->e.HH ) == 0 ||
-               strcmp ( "09", syn->e.HH ) == 0 ||
-               strcmp ( "15", syn->e.HH ) == 0 ||
-               strcmp ( "21", syn->e.HH ) == 0 )
+          /*
+          if ( strcmp ( "1", syn->s0.A1 ) == 0 ||
+               strcmp ( "7", syn->s0.A1 ) == 0 )
             {
+              if ( (hr % 6) == 3)
+                {
+                  if ( syn->s3.tr[0] == '5' )
+                    {
+                      syn->s5.tr[0] = '5';
+                      strcpy ( syn->s5.RRR, syn->s3.RRR );
+                      syn->mask |= SYNOP_SEC5;
+                    }
+                  syn->s3.tr[0] = '7'; // 3 hour
+                  prec_to_RRR ( syn->s3.RRR, s->val );
+                  syn->mask |= SYNOP_SEC3;
+                }
+            }
+          else */if ( ( hr % 3 ) == 0 )
+            {
+              if ( syn->s3.tr[0] == '5' )
+                {
+                  syn->s5.tr[0] = '5';
+                  strcpy ( syn->s5.RRR, syn->s3.RRR );
+                  syn->mask |= SYNOP_SEC5;
+                }
               syn->s3.tr[0] = '7'; // 3 hour
               prec_to_RRR ( syn->s3.RRR, s->val );
               syn->mask |= SYNOP_SEC3;
@@ -297,8 +301,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           if ( strcmp ( "1", syn->s0.A1 ) == 0 )
             {
-              if ( strcmp ( "12", syn->e.HH ) == 0 ||
-                   strcmp ( "00", syn->e.HH ) == 0 )
+              if ( ( hr % 12 ) == 0 )
                 {
                   syn->s1.tr[0] = '1'; // 6 hour
                   prec_to_RRR ( syn->s1.RRR, s->val );
@@ -307,8 +310,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
           else if ( strcmp ( "2", syn->s0.A1 ) == 0 )
             {
-              if ( strcmp ( "06", syn->e.HH ) == 0 ||
-                   strcmp ( "18", syn->e.HH ) == 0 )
+              if ( ( hr % 12 )  == 6 )
                 {
                   syn->s1.tr[0] = '1'; // 6 hour
                   prec_to_RRR ( syn->s1.RRR, s->val );
@@ -317,9 +319,9 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
           else if ( strcmp ( "3", syn->s0.A1 ) == 0 )
             {
-              if ( strcmp ( "00", syn->e.HH ) == 0 ||
-                   strcmp ( "06", syn->e.HH ) == 0 ||
-                   strcmp ( "18", syn->e.HH ) == 0 )
+              if ( hr == 0 ||
+                   hr == 6 ||
+                   hr == 18 )
                 {
                   syn->s1.tr[0] = '1'; // 6 hour
                   prec_to_RRR ( syn->s1.RRR, s->val );
@@ -328,10 +330,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
           else if ( strcmp ( "4", syn->s0.A1 ) == 0 )
             {
-              if ( strcmp ( "00", syn->e.HH ) == 0 ||
-                   strcmp ( "06", syn->e.HH ) == 0 ||
-                   strcmp ( "12", syn->e.HH ) == 0 ||
-                   strcmp ( "18", syn->e.HH ) == 0 )
+              if ( ( hr % 6 ) == 0 )
                 {
                   syn->s1.tr[0] = '1'; // 6 hour
                   prec_to_RRR ( syn->s1.RRR, s->val );
@@ -340,9 +339,9 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
           else if ( strcmp ( "5", syn->s0.A1 ) == 0 )
             {
-              if ( strcmp ( "06", syn->e.HH ) == 0 ||
-                   strcmp ( "12", syn->e.HH ) == 0 ||
-                   strcmp ( "18", syn->e.HH ) == 0 )
+              if ( hr == 6  ||
+                   hr == 12 ||
+                   hr == 18 )
                 {
                   syn->s1.tr[0] = '1'; // 6 hour
                   prec_to_RRR ( syn->s1.RRR, s->val );
@@ -351,8 +350,8 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
           else if ( strcmp ( "6", syn->s0.A1 ) == 0 )
             {
-              if ( strcmp ( "00", syn->e.HH ) == 0 ||
-                   strcmp ( "18", syn->e.HH ) == 0 )
+              if ( hr == 0 ||
+                   hr == 18 )
                 {
                   syn->s1.tr[0] = '1'; // 6 hour
                   prec_to_RRR ( syn->s1.RRR, s->val );
@@ -361,7 +360,18 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
           else if ( strcmp ( "7", syn->s0.A1 ) == 0 )
             {
-              if ( strcmp ( "06", syn->e.HH ) == 0 )
+              if ( hr == 6 )
+                {
+                  syn->s1.tr[0] = '1'; // 6 hour
+                  prec_to_RRR ( syn->s1.RRR, s->val );
+                  syn->mask |= SYNOP_SEC1;
+                }
+            }
+
+          // last chance
+          if ( syn->s1.RRR[0] == 0 )
+            {
+              if ( ( hr % 6 ) == 0 )
                 {
                   syn->s1.tr[0] = '1'; // 6 hour
                   prec_to_RRR ( syn->s1.RRR, s->val );
@@ -388,7 +398,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           if ( strcmp ( "1", syn->s0.A1 ) == 0 )
             {
-              if ( strcmp ( "18", syn->e.HH ) == 0 )
+              if ( hr == 18 )
                 {
                   syn->s1.tr[0] = '2'; // 12 hour
                   prec_to_RRR ( syn->s1.RRR, s->val );
@@ -397,7 +407,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
           else if ( strcmp ( "2", syn->s0.A1 ) == 0 )
             {
-              if ( strcmp ( "00", syn->e.HH ) == 0 || strcmp ( "12", syn->e.HH ) == 0 )
+              if ( ( hr % 12 ) == 0 )
                 {
                   syn->s1.tr[0] = '2'; // 12 hour
                   prec_to_RRR ( syn->s1.RRR, s->val );
@@ -406,7 +416,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
           else if ( strcmp ( "6", syn->s0.A1 ) == 0 )
             {
-              if ( strcmp ( "06", syn->e.HH ) == 0 || strcmp ( "18", syn->e.HH ) == 0 )
+              if ( ( hr % 12 ) == 6 )
                 {
                   syn->s1.tr[0] = '2'; // 12 hour
                   prec_to_RRR ( syn->s1.RRR, s->val );
@@ -415,11 +425,41 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
           else if ( strcmp ( "7", syn->s0.A1 ) == 0 )
             {
-              if ( strcmp ( "12", syn->e.HH ) == 0 )
+              if ( hr == 12 )
                 {
                   syn->s1.tr[0] = '2'; // 12 hour
                   prec_to_RRR ( syn->s1.RRR, s->val );
                   syn->mask |= SYNOP_SEC1;
+                }
+            }
+
+          // last chance
+          if ( syn->s1.RRR[0] == 0 )
+            {
+              if ( ( hr % 6 ) == 0 )
+                {
+                  syn->s1.tr[0] = '2'; // 12 hour
+                  prec_to_RRR ( syn->s1.RRR, s->val );
+                  syn->mask |= SYNOP_SEC1;
+                }
+              else if ( ( hr % 3 ) == 0 )
+                {
+                  if ( syn->s3.RRR[0] == 0 )
+                    {
+                      syn->s3.tr[0] = '2'; // 12 hour
+                      prec_to_RRR ( syn->s3.RRR, s->val );
+                      syn->mask |= SYNOP_SEC3;
+                    }
+                  else if ( syn->s3.tr[0] == '1' ||
+                            syn->s3.tr[0] == '5' )
+                    {
+                      strcpy ( syn->s5.tr, syn->s3.tr );
+                      strcpy ( syn->s5.RRR, syn->s3.RRR );
+                      syn->mask |= SYNOP_SEC5;
+                      syn->s3.tr[0] = '2'; // 12 hour
+                      prec_to_RRR ( syn->s3.RRR, s->val );
+                      syn->mask |= SYNOP_SEC3;
+                    }
                 }
             }
         }
@@ -442,7 +482,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           if ( strcmp ( "7", syn->s0.A1 ) == 0 )
             {
-              if ( strcmp ( "18", syn->e.HH ) == 0 )
+              if ( hr == 18 )
                 {
                   syn->s1.tr[0] = '3'; // 12 hour
                   prec_to_RRR ( syn->s1.RRR, s->val );
@@ -454,54 +494,55 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           if ( strcmp ( "1", syn->s0.A1 ) == 0 )
             {
-              if ( strcmp ( "06", syn->e.HH ) == 0 )
+              if ( hr == 6 )
                 {
                   syn->s1.tr[0] = '4'; // 24 hour
                   prec_to_RRR ( syn->s1.RRR, s->val );
                   syn->mask |= SYNOP_SEC1;
-
-                  prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
-                  syn->mask |= SYNOP_SEC3;
-
                 }
+              prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
+              syn->mask |= SYNOP_SEC3;
             }
           else if ( strcmp ( "2", syn->s0.A1 ) == 0 )
             {
-              if ( strcmp ( "00", syn->e.HH ) == 0 )
-                {
-                  prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
-                  syn->mask |= SYNOP_SEC3;
-                }
+              prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
+              syn->mask |= SYNOP_SEC3;
             }
           else if ( strcmp ( "3", syn->s0.A1 ) == 0 )
             {
-              if ( strcmp ( "12", syn->e.HH ) == 0 )
+              if ( hr == 12 )
                 {
                   syn->s1.tr[0] = '4'; // 24 hour
                   prec_to_RRR ( syn->s1.RRR, s->val );
                   syn->mask |= SYNOP_SEC1;
                 }
+              prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
+              syn->mask |= SYNOP_SEC3;
+            }
+          else if ( strcmp ( "4", syn->s0.A1 ) == 0 )
+            {
+              prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
+              syn->mask |= SYNOP_SEC3;
             }
           else if ( strcmp ( "5", syn->s0.A1 ) == 0 )
             {
-              if ( strcmp ( "00", syn->e.HH ) == 0 )
+              if ( hr == 0 )
                 {
                   syn->s1.tr[0] = '4'; // 24 hour
                   prec_to_RRR ( syn->s1.RRR, s->val );
                   syn->mask |= SYNOP_SEC1;
                 }
+              prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
+              syn->mask |= SYNOP_SEC3;
             }
           else if ( strcmp ( "6", syn->s0.A1 ) == 0 )
             {
-              if ( strcmp ( "06", syn->e.HH ) == 0 )
-                {
-                  prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
-                  syn->mask |= SYNOP_SEC3;
-                }
+              prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
+              syn->mask |= SYNOP_SEC3;
             }
           else if ( strcmp ( "7", syn->s0.A1 ) == 0 )
             {
-              if ( strcmp ( "00", syn->e.HH ) == 0 )
+              if ( hr == 0 )
                 {
                   syn->s1.tr[0] = '4'; // 24 hour
                   prec_to_RRR ( syn->s1.RRR, s->val );
@@ -518,38 +559,22 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       break;
     case 19: // 0 13 019 . Total precipitaction past 1 hour
+      hr = hour_rounded ( syn );
       if ( syn->s3.RRR[0] == 0 )
         {
-          if ( strcmp ( "6", syn->s0.A1 ) == 6 )
+          if ( strcmp ( "1", syn->s0.A1 ) == 0 ||
+               strcmp ( "2", syn->s0.A1 ) == 0 ||
+               strcmp ( "3", syn->s0.A1 ) == 0 ||
+               strcmp ( "4", syn->s0.A1 ) == 0 ||
+               strcmp ( "5", syn->s0.A1 ) == 0 ||
+               strcmp ( "6", syn->s0.A1 ) == 0 )
             {
-              // Only for Reg VI
-              if ( strcmp ( "01", syn->e.HH ) == 0 ||
-                   strcmp ( "02", syn->e.HH ) == 0 ||
-                   strcmp ( "04", syn->e.HH ) == 0 ||
-                   strcmp ( "05", syn->e.HH ) == 0 ||
-                   strcmp ( "07", syn->e.HH ) == 0 ||
-                   strcmp ( "08", syn->e.HH ) == 0 ||
-                   strcmp ( "10", syn->e.HH ) == 0 ||
-                   strcmp ( "11", syn->e.HH ) == 0 ||
-                   strcmp ( "13", syn->e.HH ) == 0 ||
-                   strcmp ( "14", syn->e.HH ) == 0 ||
-                   strcmp ( "16", syn->e.HH ) == 0 ||
-                   strcmp ( "17", syn->e.HH ) == 0 ||
-                   strcmp ( "19", syn->e.HH ) == 0 ||
-                   strcmp ( "20", syn->e.HH ) == 0 ||
-                   strcmp ( "22", syn->e.HH ) == 0 ||
-                   strcmp ( "23", syn->e.HH ) == 0 )
-                {
-                  syn->s3.tr[0] = '5'; // 1 hour
-                  prec_to_RRR ( syn->s3.RRR, s->val );
-                  syn->mask |= SYNOP_SEC3;
-                }
-            }
-          else
-            {
+              /*if ( hr % 3)
+                {*/
               syn->s3.tr[0] = '5'; // 1 hour
               prec_to_RRR ( syn->s3.RRR, s->val );
               syn->mask |= SYNOP_SEC3;
+              /*}*/
             }
         }
       else if ( syn->s5.RRR[0] == 0 )
@@ -560,21 +585,41 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       break;
     case 20: // 0 13 020 . Total precipitation past 3 hours
-      if ( strcmp ( "03", syn->e.HH ) == 0 ||
-           strcmp ( "09", syn->e.HH ) == 0 ||
-           strcmp ( "15", syn->e.HH ) == 0 ||
-           strcmp ( "21", syn->e.HH ) == 0 )
+      hr = hour_rounded ( syn );
+      /*if ( strcmp ( "1", syn->s0.A1 ) == 0  ||
+           strcmp ( "7", syn->s0.A1 ) == 0 )
         {
+          if ( (hr % 6) == 3 )
+            {
+              if ( syn->s3.tr[0] == '5' )
+                {
+                  syn->s5.tr[0] = '5';
+                  strcpy ( syn->s5.RRR, syn->s3.RRR );
+                  syn->mask |= SYNOP_SEC5;
+                }
+              syn->s3.tr[0] = '7'; // 3 hour
+              prec_to_RRR ( syn->s3.RRR, s->val );
+              syn->mask |= SYNOP_SEC3;
+            }
+        }
+      else */if ( ( hr % 3 ) == 0 )
+        {
+          if ( syn->s3.tr[0] == '5' )
+            {
+              syn->s5.tr[0] = '5';
+              strcpy ( syn->s5.RRR, syn->s3.RRR );
+              syn->mask |= SYNOP_SEC5;
+            }
           syn->s3.tr[0] = '7'; // 3 hour
           prec_to_RRR ( syn->s3.RRR, s->val );
           syn->mask |= SYNOP_SEC3;
         }
       break;
     case 21: // 0 13 021 . Total precipitation past 6 hours
+      hr = hour_rounded ( syn );
       if ( strcmp ( "1", syn->s0.A1 ) == 0 )
         {
-          if ( strcmp ( "12", syn->e.HH ) == 0 ||
-               strcmp ( "00", syn->e.HH ) == 0 )
+          if ( ( hr % 12 ) == 0 )
             {
               syn->s1.tr[0] = '1'; // 6 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
@@ -583,8 +628,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( strcmp ( "2", syn->s0.A1 ) == 0 )
         {
-          if ( strcmp ( "06", syn->e.HH ) == 0 ||
-               strcmp ( "18", syn->e.HH ) == 0 )
+          if ( ( hr % 12 ) == 6 )
             {
               syn->s1.tr[0] = '1'; // 6 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
@@ -593,9 +637,9 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( strcmp ( "3", syn->s0.A1 ) == 0 )
         {
-          if ( strcmp ( "00", syn->e.HH ) == 0 ||
-               strcmp ( "06", syn->e.HH ) == 0 ||
-               strcmp ( "18", syn->e.HH ) == 0 )
+          if ( hr == 0 ||
+               hr == 6 ||
+               hr == 18 )
             {
               syn->s1.tr[0] = '1'; // 6 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
@@ -604,10 +648,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( strcmp ( "4", syn->s0.A1 ) == 0 )
         {
-          if ( strcmp ( "00", syn->e.HH ) == 0 ||
-               strcmp ( "06", syn->e.HH ) == 0 ||
-               strcmp ( "12", syn->e.HH ) == 0 ||
-               strcmp ( "18", syn->e.HH ) == 0 )
+          if ( ( hr % 6 ) == 0 )
             {
               syn->s1.tr[0] = '1'; // 6 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
@@ -616,9 +657,9 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( strcmp ( "5", syn->s0.A1 ) == 0 )
         {
-          if ( strcmp ( "06", syn->e.HH ) == 0 ||
-               strcmp ( "12", syn->e.HH ) == 0 ||
-               strcmp ( "18", syn->e.HH ) == 0 )
+          if ( hr == 6 ||
+               hr == 12 ||
+               hr == 18 )
             {
               syn->s1.tr[0] = '1'; // 6 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
@@ -627,8 +668,8 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( strcmp ( "6", syn->s0.A1 ) == 0 )
         {
-          if ( strcmp ( "00", syn->e.HH ) == 0 ||
-               strcmp ( "18", syn->e.HH ) == 0 )
+          if ( hr == 0 ||
+               hr == 18 )
             {
               syn->s1.tr[0] = '1'; // 6 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
@@ -637,47 +678,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( strcmp ( "7", syn->s0.A1 ) == 0 )
         {
-          if ( strcmp ( "06", syn->e.HH ) == 0 )
-            {
-              syn->s1.tr[0] = '1'; // 6 hour
-              prec_to_RRR ( syn->s1.RRR, s->val );
-              syn->mask |= SYNOP_SEC1;
-            }
-        }
-      break;
-    case 22: // 0 13 022 . Total precipitation past 12 hours
-      if ( strcmp ( "1", syn->s0.A1 ) == 0 )
-        {
-          if ( strcmp ( "18", syn->e.HH ) == 0 )
-            {
-              syn->s1.tr[0] = '2'; // 12 hour
-              prec_to_RRR ( syn->s1.RRR, s->val );
-              syn->mask |= SYNOP_SEC1;
-            }
-        }
-      else if ( strcmp ( "2", syn->s0.A1 ) == 0 )
-        {
-          if ( strcmp ( "06", syn->e.HH ) == 0 ||
-               strcmp ( "18", syn->e.HH ) == 0 )
-            {
-              syn->s1.tr[0] = '1'; // 6 hour
-              prec_to_RRR ( syn->s1.RRR, s->val );
-              syn->mask |= SYNOP_SEC1;
-            }
-        }
-      else if ( strcmp ( "6", syn->s0.A1 ) == 0 )
-        {
-          if ( strcmp ( "06", syn->e.HH ) == 0 ||
-               strcmp ( "18", syn->e.HH ) == 0 )
-            {
-              syn->s1.tr[0] = '1'; // 6 hour
-              prec_to_RRR ( syn->s1.RRR, s->val );
-              syn->mask |= SYNOP_SEC1;
-            }
-        }
-      else if ( strcmp ( "7", syn->s0.A1 ) == 0 )
-        {
-          if ( strcmp ( "12", syn->e.HH ) == 0 )
+          if ( hr == 6 )
             {
               syn->s1.tr[0] = '1'; // 6 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
@@ -685,11 +686,23 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
         }
 
-      if ( strcmp ( "6", syn->s0.A1 ) == 0 || strcmp ( "1", syn->s0.A1 ) == 0 )
+      if ( syn->s1.RRR[0] == 0 )
         {
-          if ( strcmp ( "06", syn->e.HH ) == 0 ||  strcmp ( "18", syn->e.HH ) == 0 || syn->s1.RRR[0] == 0 )
+          if ( ( hr % 12 ) == 0 )
             {
-              // for regions I, VI
+              syn->s1.tr[0] = '1'; // 6 hour
+              prec_to_RRR ( syn->s1.RRR, s->val );
+              syn->mask |= SYNOP_SEC1;
+            }
+        }
+
+      break;
+    case 22: // 0 13 022 . Total precipitation past 12 hours
+      hr = hour_rounded ( syn );
+      if ( strcmp ( "1", syn->s0.A1 ) == 0 )
+        {
+          if ( hr == 18 )
+            {
               syn->s1.tr[0] = '2'; // 12 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
               syn->mask |= SYNOP_SEC1;
@@ -697,84 +710,120 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( strcmp ( "2", syn->s0.A1 ) == 0 )
         {
-          if ( strcmp ( "00", syn->e.HH ) == 0 ||  strcmp ( "12", syn->e.HH ) == 0  || syn->s1.RRR[0] == 0 )
+          if ( ( hr % 12 ) == 6 )
             {
-              // only for region II, VI
-              syn->s1.tr[0] = '2'; // 12 hour
+              syn->s1.tr[0] = '1'; // 6 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
               syn->mask |= SYNOP_SEC1;
             }
         }
-      else if ( syn->s1.RRR[0] == 0 || syn->s1.tr[0] == '4' )
+      else if ( strcmp ( "6", syn->s0.A1 ) == 0 )
         {
-          syn->s1.tr[0] = '2'; // 12 hour
-          prec_to_RRR ( syn->s1.RRR, s->val );
-          syn->mask |= SYNOP_SEC1;
+          if ( ( hr % 12 ) == 6 )
+            {
+              syn->s1.tr[0] = '1'; // 6 hour
+              prec_to_RRR ( syn->s1.RRR, s->val );
+              syn->mask |= SYNOP_SEC1;
+            }
         }
+      else if ( strcmp ( "7", syn->s0.A1 ) == 0 )
+        {
+          if ( hr == 12 )
+            {
+              syn->s1.tr[0] = '1'; // 6 hour
+              prec_to_RRR ( syn->s1.RRR, s->val );
+              syn->mask |= SYNOP_SEC1;
+            }
+        }
+
+      // Last chance
+      if ( syn->s1.RRR[0] == 0 )
+        {
+          if ( ( hr % 6 ) == 0 )
+            {
+              syn->s1.tr[0] = '2'; // 12 hour
+              prec_to_RRR ( syn->s1.RRR, s->val );
+              syn->mask |= SYNOP_SEC1;
+            }
+          else if ( ( hr % 3 ) == 0 )
+            {
+              if ( syn->s3.RRR[0] == 0 )
+                {
+                  syn->s3.tr[0] = '2'; // 12 hour
+                  prec_to_RRR ( syn->s3.RRR, s->val );
+                  syn->mask |= SYNOP_SEC3;
+                }
+              else if ( syn->s3.tr[0] == '1' ||
+                        syn->s3.tr[0] == '5' )
+                {
+                  strcpy ( syn->s5.tr, syn->s3.tr );
+                  strcpy ( syn->s5.RRR, syn->s3.RRR );
+                  syn->mask |= SYNOP_SEC5;
+                  syn->s3.tr[0] = '2'; // 12 hour
+                  prec_to_RRR ( syn->s3.RRR, s->val );
+                  syn->mask |= SYNOP_SEC3;
+                }
+            }
+        }
+
       break;
     case 23: // 0 13 023 . Total precipitaction past 24 hours
       if ( s->val < 0.0 )
         {
           return 0;
         }
+      hr = hour_rounded ( syn );
       if ( strcmp ( "1", syn->s0.A1 ) == 0 )
         {
-          if ( strcmp ( "06", syn->e.HH ) == 0 )
+          if ( hr == 6 )
             {
               syn->s1.tr[0] = '4'; // 24 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
               syn->mask |= SYNOP_SEC1;
-
-              prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
-              syn->mask |= SYNOP_SEC3;
-
             }
+          prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
+          syn->mask |= SYNOP_SEC3;
         }
       else if ( strcmp ( "2", syn->s0.A1 ) == 0 )
         {
-          if ( strcmp ( "00", syn->e.HH ) == 0 )
-            {
-              prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
-              syn->mask |= SYNOP_SEC3;
-            }
+          prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
+          syn->mask |= SYNOP_SEC3;
         }
       else if ( strcmp ( "3", syn->s0.A1 ) == 0 )
         {
-          if ( strcmp ( "12", syn->e.HH ) == 0 )
+          if ( hr == 12 )
             {
               syn->s1.tr[0] = '4'; // 24 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
               syn->mask |= SYNOP_SEC1;
-
-              prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
-              syn->mask |= SYNOP_SEC3;
-
             }
+          prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
+          syn->mask |= SYNOP_SEC3;
+        }
+      else if ( strcmp ( "4", syn->s0.A1 ) == 0 )
+        {
+          prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
+          syn->mask |= SYNOP_SEC3;
         }
       else if ( strcmp ( "5", syn->s0.A1 ) == 0 )
         {
-          if ( strcmp ( "00", syn->e.HH ) == 0 )
+          if ( hr == 0 )
             {
               syn->s1.tr[0] = '4'; // 24 hour
               prec_to_RRR ( syn->s1.RRR, s->val );
               syn->mask |= SYNOP_SEC1;
-
-              prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
-              syn->mask |= SYNOP_SEC3;
-
             }
+          prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
+          syn->mask |= SYNOP_SEC3;
         }
       else if ( strcmp ( "6", syn->s0.A1 ) == 0 )
         {
-          if ( strcmp ( "06", syn->e.HH ) == 0 )
-            {
-              prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
-              syn->mask |= SYNOP_SEC3;
-            }
+          prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
+          syn->mask |= SYNOP_SEC3;
         }
       else if ( strcmp ( "7", syn->s0.A1 ) == 0 )
         {
-          if ( strcmp ( "00", syn->e.HH ) == 0 )
+          if ( hr == 0 )
             {
               syn->s1.tr[0] = '4'; // 24 hour
               prec_to_RRR ( syn->s1.RRR, s->val );

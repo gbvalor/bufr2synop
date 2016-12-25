@@ -68,6 +68,36 @@ int time_period_duration ( struct bufr2tac_subset_state *s )
   }
 }
 
+/*!
+  \fn int hour_rounded(struct synop_chunks *syn)
+  \brief Get the rounded hour of a given date
+  \param syn pointer to the \ref synop_chunks struct
+
+  It returns the rounded hour if >= 0. If < 0 problems
+*/
+int hour_rounded(struct synop_chunks *syn)
+{
+    time_t t;
+    struct tm tim;
+    char aux[32];
+    
+    sprintf(aux, "%s%s%s%s%s", syn->e.YYYY,syn->e.MM,syn->e.DD,syn->e.HH, syn->e.mm);
+    memset(&tim, 0, sizeof(struct tm));
+    if (strlen(aux) == 12)
+    {
+      strptime(aux, "%Y%m%d%H%M", &tim);
+      t = mktime(&tim);
+      t += 1800;
+      gmtime_r(&t, &tim);
+      return tim.tm_hour;
+    }
+    else if (syn->e.mm[0] == 0 && syn->e.HH[0] )
+    {
+      return atoi(syn->e.HH);
+    }
+    else
+      return -1;
+}
 
 /*!
   \fn int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
