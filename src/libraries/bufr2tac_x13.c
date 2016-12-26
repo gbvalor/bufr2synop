@@ -350,7 +350,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
                   syn->mask |= SYNOP_SEC1;
                 }
             }
-        
+
           // last chance
           if ( syn->s1.RRR[0] == 0 )
             {
@@ -520,8 +520,19 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
           else if ( strcmp ( "6", syn->s0.A1 ) == 0 )
             {
-              prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
-              syn->mask |= SYNOP_SEC3;
+              if ( strcmp ( "07", syn->s0.II ) == 0 ) // France
+                {
+                  if ( strcmp ( "06", syn->e.HH ) == 0 )
+                    {
+                      prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
+                      syn->mask |= SYNOP_SEC3;
+                    }
+                }
+              else
+                {
+                  prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
+                  syn->mask |= SYNOP_SEC3;
+                }
             }
           else if ( strcmp ( "7", syn->s0.A1 ) == 0 )
             {
@@ -790,8 +801,19 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( strcmp ( "6", syn->s0.A1 ) == 0 )
         {
-          prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
-          syn->mask |= SYNOP_SEC3;
+          if ( strcmp ( "07", syn->s0.II ) == 0 ) // France
+            {
+              if ( strcmp ( "06", syn->e.HH ) == 0 )
+                {
+                  prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
+                  syn->mask |= SYNOP_SEC3;
+                }
+            }
+          else
+            {
+              prec_to_RRRR24 ( syn->s3.RRRR24, s->val );
+              syn->mask |= SYNOP_SEC3;
+            }
         }
       else if ( strcmp ( "7", syn->s0.A1 ) == 0 )
         {
