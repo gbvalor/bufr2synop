@@ -23,7 +23,6 @@
 */
 #include "bufr2tac.h"
 
-
 /*!
   \fn three_bytes_to_uint(const unsigned char *source)
   \brief returns the integer value from an array of three bytes, most significant first

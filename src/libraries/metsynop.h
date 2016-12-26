@@ -83,6 +83,7 @@
 */
 #define SYNOP_NMISC 20
 
+
 /*! \struct synop_sec0
     \brief contains all possible substrings from section 0 when a report is parsed with success
 */
