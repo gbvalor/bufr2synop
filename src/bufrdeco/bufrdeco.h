@@ -645,6 +645,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
 int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *key );
 int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_t source );
 int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key );
+int parse_csv_line ( int *nt, char *tk[], char *lin );
 
 // utilities for descriptors
 int two_bytes_to_descriptor ( struct bufr_descriptor *d, const uint8_t *source );
