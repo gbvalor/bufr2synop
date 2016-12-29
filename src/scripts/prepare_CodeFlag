@@ -1,0 +1,22 @@
+#!/bin/sh
+#  Script to transform original file from WMO to reduced version used by bufrdeco library
+#
+#  It send the result to standard output
+#
+# Use:
+#  prepare_CodeFlag path_to_original_wmo_file
+
+if test ${#} -lt 1 ; then
+  echo "usage:"
+  echo "prepare_CodeFlag path_to_original_wmo_file"
+  exit 1
+fi
+
+if test -s ${1} ; then
+  cat ${1} | cut -d "," -f 2- 
+else
+  echo "Cannot read file ${1}"
+  exit 1
+fi
+
+
