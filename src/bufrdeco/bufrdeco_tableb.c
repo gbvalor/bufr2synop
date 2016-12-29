@@ -48,7 +48,7 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
   size_t i = 0;
   uint32_t ix;
   char l[180];
-  char caux[26];
+  char caux[256];
   struct bufr_descriptor desc;
 
   if ( tb->path == NULL )
