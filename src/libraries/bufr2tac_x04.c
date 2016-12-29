@@ -24,6 +24,82 @@
 #include "bufr2tac.h"
 
 /*!
+  \fn int time_period_duration (struct bufr2tac_subset_state *s )
+  \brief Get time period duration in seconds
+  \param s pinter to struct \ref bufr2tac_subset_state
+
+  Returns -1 if no duration is computed. Otherwise returns time duration in seconds
+*/
+int time_period_duration ( struct bufr2tac_subset_state *s )
+{
+  if ( s->k_itval == ( s->k_jtval + 1 ) )
+    {
+      // two consecutive time period displacements
+      if ( ( s->itmask & DESCRIPTOR_VALUE_MISSING ) == 0  &&
+           ( s->jtmask & DESCRIPTOR_VALUE_MISSING ) == 0 )
+        {
+          return ( abs ( s->itval - s->jtval ) );
+        }
+      else if ( ( s->itmask & DESCRIPTOR_VALUE_MISSING )  &&
+                ( s->jtmask & DESCRIPTOR_VALUE_MISSING ) )
+        {
+          return 0;
+        }
+      else if ( ( s->itmask & DESCRIPTOR_VALUE_MISSING ) == 0 &&
+                ( s->jtmask & DESCRIPTOR_VALUE_MISSING ) )
+        {
+          return ( abs ( s->itval ) );
+        }
+      else if ( ( s->jtmask & DESCRIPTOR_VALUE_MISSING ) == 0 &&
+                ( s->itmask & DESCRIPTOR_VALUE_MISSING ) )
+        {
+          return -1;
+        }
+    }
+
+  // just a single time period displacement
+  if ( (s->itmask & DESCRIPTOR_VALUE_MISSING ) == 0)
+  {
+    return ( abs ( s->itval ) );
+  }
+  else 
+  {
+    return 0;
+  }
+}
+
+/*!
+  \fn int hour_rounded(struct synop_chunks *syn)
+  \brief Get the rounded hour of a given date
+  \param syn pointer to the \ref synop_chunks struct
+
+  It returns the rounded hour if >= 0. If < 0 problems
+*/
+int hour_rounded(struct synop_chunks *syn)
+{
+    time_t t;
+    struct tm tim;
+    char aux[32];
+    
+    sprintf(aux, "%s%s%s%s%s", syn->e.YYYY,syn->e.MM,syn->e.DD,syn->e.HH, syn->e.mm);
+    memset(&tim, 0, sizeof(struct tm));
+    if (strlen(aux) == 12)
+    {
+      strptime(aux, "%Y%m%d%H%M", &tim);
+      t = mktime(&tim);
+      t += 1800;
+      gmtime_r(&t, &tim);
+      return tim.tm_hour;
+    }
+    else if (syn->e.mm[0] == 0 && syn->e.HH[0] )
+    {
+      return atoi(syn->e.HH);
+    }
+    else
+      return -1;
+}
+
+/*!
   \fn int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
   \brief Parse a expanded descriptor with X = 04
   \param syn pointer to a struct \ref synop_chunks where to set the results
@@ -77,19 +153,22 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       sprintf ( syn->e.mm, "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
-      // store latest displacement in seconds
+    // store latest displacement in seconds
     case 23: // 0 04 023 . Time period of displacement (days)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
           s->k_jtval = s->k_itval;
           s->jtval = s->itval;
+          s->jtmask = s->itmask;
           s->k_itval = s->i;
           s->itval = 0;
           return 0;
         }
       s->k_jtval = s->k_itval;
       s->jtval = s->itval;
+      s->jtmask = s->itmask;
       s->k_itval = s->i;
+      s->itmask = s->a->mask;
       s->itval = s->ival * 86400;
       break;
     case 24: // 0 04 024 .  Time period of displacement (hours)
@@ -97,13 +176,16 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           s->k_jtval = s->k_itval;
           s->jtval = s->itval;
+          s->jtmask = s->itmask;
           s->k_itval = s->i;
           s->itval = 0;
           return 0;
         }
       s->k_jtval = s->k_itval;
       s->jtval = s->itval;
+      s->jtmask = s->itmask;
       s->k_itval = s->i;
+      s->itmask = s->a->mask;
       s->itval = s->ival * 3600;
       break;
     case 25: // 0 04 025  Time period of displacement (minutes)
@@ -111,13 +193,16 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           s->k_jtval = s->k_itval;
           s->jtval = s->itval;
+          s->jtmask = s->itmask;
           s->k_itval = s->i;
           s->itval = 0;
           return 0;
         }
       s->k_jtval = s->k_itval;
       s->jtval = s->itval;
+      s->jtmask = s->itmask;
       s->k_itval = s->i;
+      s->itmask = s->a->mask;
       s->itval = s->ival * 60;
       break;
     case 26: // 0 04 026 .  Time period of displacement (seconds)
@@ -125,13 +210,16 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           s->k_jtval = s->k_itval;
           s->jtval = s->itval;
+          s->jtmask = s->itmask;
           s->k_itval = s->i;
           s->itval = 0;
           return 0;
         }
       s->k_jtval = s->k_itval;
       s->jtval = s->itval;
+      s->jtmask = s->itmask;
       s->k_itval = s->i;
+      s->itmask = s->a->mask;
       s->itval = s->ival;
       break;
     default:
@@ -210,7 +298,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         }
       s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
-      // store latest displacement in seconds
+    // store latest displacement in seconds
     case 23: // 0 04 023 . Time period of displacement (days)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {

@@ -68,6 +68,10 @@
 */
 #define SYNOP_SEC3_8 128
 
+/*! \def SYNOP_BUFR
+    \brief mask bit meaning date synop is decoded from a BUFR 
+*/
+#define SYNOP_BUFR 256
 
 /*! \def SYNOP_NNUB
     \brief number of optional nub3 struct to store the parsed results of 8.... groups
@@ -78,6 +82,7 @@
     \brief number of misc3 struct to store the parsed results of 9SpSpspsp groups
 */
 #define SYNOP_NMISC 20
+
 
 /*! \struct synop_sec0
     \brief contains all possible substrings from section 0 when a report is parsed with success

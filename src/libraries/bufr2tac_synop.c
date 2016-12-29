@@ -332,6 +332,7 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
     }
 
   /****** Final Adjust ***********/
+  
   // fix YYGG according with YYYYMMDDHHmm
   if ( syn->e.mm[0] == 0 )
     sprintf ( syn->e.mm, "00" );
@@ -343,6 +344,9 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
     }
   syn->mask |= SYNOP_EXT;
 
+  // Marc as a synop from bufr
+  syn->mask |= SYNOP_BUFR;
+  
   // Fill some metreport fields
   if ( strlen ( syn->s0.II ) )
     {

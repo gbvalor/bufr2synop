@@ -216,8 +216,10 @@ struct bufr2tac_subset_state
   int ival; /*!< the integer value in the descriptor */
   double val; /*!< the float value in the descriptor */
   int itval; /*!< Latest parsed time displacement in seconds */
+  int itmask; /*!< Latest time displacement descriptor mask */
   size_t k_itval; /*!< index in array of latest time displacemet descriptor */
-  int jtval; /*!< Prior to Latest parsed time displacement in seconds */
+  int jtval; /*!< Prior to latest parsed time displacement in seconds */
+  int jtmask; /*!< Prior to latest time displacement descriptor mask */
   size_t k_jtval; /*!< index in array of time prior to latest displacemet descriptor */
   int isq; /*!< if 1, the current atom data is in a Significant qualifier squence, and not computed */
   int isq_val; /*!< Value of a significant qualifier */
@@ -229,6 +231,7 @@ struct bufr2tac_subset_state
   double lon; /*!< longitude of station */
   double alt; /*!< Altitude (m)*/
   double hsensor; /*!< Sensor height over station ground (m) */ 
+  double hwsensor; /*!< Sensor height over water surface (m) */
   char name[80]; /*!< Name of observatory, if any */
   char country[80]; /*!< Name of state/country if known */
   time_t tobs; /*!< Unix time reference*/
@@ -327,6 +330,8 @@ int find_descriptor_interval ( int *haystack, size_t nlst, int needlemin, int ne
 int bufr_set_environment ( char *default_bufrtables, char *bufrtables_dir );
 int guess_gts_header ( struct gts_header *h, const char *f );
 int read_bufr ( unsigned char *bufr, char *filename, int *length );
+int time_period_duration (struct bufr2tac_subset_state *s );
+int hour_rounded(struct synop_chunks *syn);
 
 char * latlon_to_MMM ( char *target, double lat, double lon );
 char * kelvin_to_TTTT ( char *target, double T );
@@ -351,6 +356,9 @@ char * total_snow_depth_to_sss ( char *target, double r );
 char * wind_to_dndnfnfnfn( char *target, double dd, double ff);
 char * grad_to_D (char *D, double grad);
 char * grad_to_ec(char *target, double grad);
+int check_kj_m2(double val);
+int check_j_cm2(double val);
+
 
 int print_synop ( char *report, size_t lmax, struct synop_chunks *syn );
 char * print_synop_sec0 ( char **sec0, size_t lmax, struct synop_chunks *syn );
