@@ -592,6 +592,7 @@ int bufr_read_tabled ( struct bufr_tabled *td, char *error );
 
 // Read bufr WMO csv 
 int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error );
+int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error );
 
 // Print and output functions
 void print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r );
