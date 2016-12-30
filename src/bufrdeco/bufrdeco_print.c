@@ -202,7 +202,8 @@ char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a )
           c += sprintf ( c, "%s", aux );
         }
       else if ( a->mask & DESCRIPTOR_HAVE_CODE_TABLE_STRING
-                || strstr ( a->unit, "CODE TABLE" ) == a->unit )
+                || strstr ( a->unit, "CODE TABLE" ) == a->unit 
+                || strstr ( a->unit, "Code table" ) == a->unit)
         {
           strcpy ( aux, a->ctable );
           aux[56] = '\0';

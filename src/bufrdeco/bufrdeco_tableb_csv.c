@@ -44,7 +44,7 @@ int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error )
   char *tk[16];
   struct bufr_descriptor desc;
 
-  if ( tb->path == NULL )
+  if ( tb->path[0] == 0 )
     {
       return 1;
     }
@@ -72,6 +72,9 @@ int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error )
       return 1;
     }
 
+  // read first line, it is ignored
+  fgets( l, 256, t);
+  
   while ( fgets ( l, 256, t ) != NULL && i < BUFR_MAXLINES_TABLEB )
     {
       // Parse line
@@ -88,12 +91,13 @@ int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error )
       tb->item[i].x = desc.x; // x
       tb->item[i].y = desc.y; // y
       strcpy ( tb->item[i].key, desc.c ); // key
-      if ( tb->x_start[desc.x] == 0 )
+      if ( tb->num[desc.x] == 0)
         {
           tb->x_start[desc.x] = i;  // marc the start
         }
       tb->y_ref[desc.x][desc.y] = i - tb->x_start[desc.x]; // marc the position from start of first x
-
+      (tb->num[desc.x])++;
+      
       // detailed name
       if (tk[2][0])
         sprintf(tb->item[i].name, "%s %s", tk[1], tk[2]);

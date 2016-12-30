@@ -470,7 +470,7 @@ struct bufr_tableb_decoded_item
   uint8_t changed; /*!< flag. If 0 = not changed from table B. If 1 Changed */
   uint8_t x; /*!< x value of descriptor */
   uint8_t y; /*!< y value of descriptor */
-  char key[8]; /*< c value of descriptor */
+  char key[8]; /*!< c value of descriptor */
   char name[64]; /*!< name */
   char unit[24]; /*!< unit */
   int32_t scale; /*!< escale */
@@ -493,10 +493,26 @@ struct bufr_tableb
   char old_path[256]; /*!< Cmplete path of prior file readed, used to avoid read two consecutive times the same file */
   size_t nlines; /*!< Current lines readed from file, i. e. used in array item[] */
   size_t x_start[64]; /*!< Index in array \a item[] for first x. x_start[j] is index for first descriptor which x == j */
-  uint8_t y_ref[64][256]; /*!< index for y since first x. x_ref[i][j] is index since x_start[i] where y == j */
   size_t num[64]; /*!< Amount of items for x. num[i] is the amount of items in array where x = i */
+  uint8_t y_ref[64][256]; /*!< index for y since first x. x_ref[i][j] is index since x_start[i] where y == j */
   struct bufr_tableb_decoded_item item[BUFR_MAXLINES_TABLEB]; /*!< Array with structs containing parsed lines readed from file */
 };
+
+
+/*!
+   \struct bufr_tablec_decoded_item
+   \brief Store parameters for a descriptor in table C, i. e. for Table code and flags
+   Remember this is NOT the C WMO tables
+*/
+struct bufr_tablec_decoded_item
+{
+  char key[8]; /*!< c value of descriptor */
+  uint8_t x; /*!< x value of descriptor */
+  uint8_t y; /*!< y value of descriptor */
+  uint32_t ival; /*!< code value */
+  char description[256]; /*!< Description string of code */ 
+};
+
 
 /*!
   \struct bufr_tablec
@@ -509,7 +525,9 @@ struct bufr_tablec
   size_t nlines; /*!< Current lines readed from file, i. e. used in array \a l[] */
   size_t x_start[64]; /*!< Index in array \a l[] for first x. x_start[j] is index for first descriptor which x == j */
   size_t num[64]; /*!< Amonut of lines for x. num[i] is the amount of items in array where x = i */
+  uint8_t y_ref[64][256]; /*!< index for first y since first x. x_ref[i][j] is index since x_start[i] where y == j */
   char l[BUFR_MAXLINES_TABLEC][96]; /*!< Array with lines readed from file */
+  struct bufr_tablec_decoded_item item[BUFR_MAXLINES_TABLEC]; /*!< Array of decoded lines */
 };
 
 /*!
@@ -643,6 +661,10 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec
                                       struct bufr_descriptor *d, uint32_t ival );
 char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d,
                                      uint64_t ival, uint8_t nbits );
+char * bufrdeco_explained_table_csv_val ( char *expl, size_t dim, struct bufr_tablec *tc, size_t *index,
+                                      struct bufr_descriptor *d, uint32_t ival );
+char * bufrdeco_explained_flag_csv_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d,
+                                     uint64_t ival, uint8_t nbits );
 int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b,
     const char *key );
 int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct bufr_descriptor *d );
@@ -650,6 +672,7 @@ int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *
 int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_t source );
 int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key );
 int parse_csv_line ( int *nt, char *tk[], char *lin );
+int bufr_find_tablec_csv_index ( size_t *index, struct bufr_tablec *tc, const char *key, uint32_t code );
 
 // utilities for descriptors
 int two_bytes_to_descriptor ( struct bufr_descriptor *d, const uint8_t *source );

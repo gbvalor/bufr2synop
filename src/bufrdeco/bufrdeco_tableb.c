@@ -51,7 +51,7 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
   char caux[256];
   struct bufr_descriptor desc;
 
-  if ( tb->path == NULL )
+  if ( tb->path[0] == 0 )
     {
       return 1;
     }
@@ -276,7 +276,8 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
   r->escale = tb->item[i].scale;
   strcpy ( r->name, tb->item[i].name );
   strcpy ( r->unit, tb->item[i].unit );
-  if ( strstr ( r->unit, "CODE TABLE" ) != r->unit &&  strstr ( r->unit,"FLAG" ) != r->unit )
+  if ( strstr ( r->unit, "CODE TABLE" ) != r->unit &&  strstr ( r->unit,"FLAG" ) != r->unit && 
+      strstr ( r->unit, "Code table" ) != r->unit &&  strstr ( r->unit,"Flag" ) != r->unit )
     {
       r->escale += b->state.added_scale;
       //r->reference += b->state.added_reference;
@@ -319,7 +320,7 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
       return 0;
     }
 
-  if ( strstr ( r->unit, "CCITTIA5" ) != NULL )
+  if ( strstr ( r->unit, "CCITT" ) != NULL)
     {
       if ( b->state.fixed_ccitt != 0 ) // can be changed by 2 08 YYY operator
         r->bits = 8 * b->state.fixed_ccitt;
@@ -460,7 +461,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
   reference = tb->item[i].reference;
 
   //printf(" escale = %d  reference = %d nbits = %lu\n", escale, reference, nbits);
-  if ( strstr ( a->unit, "CCITTIA5" ) != NULL )
+  if ( strstr ( a->unit, "CCITT" ) != NULL )
     {
       if ( b->state.fixed_ccitt != 0 ) // can be changed by 2 08 YYY operator
         nbits = 8 * b->state.fixed_ccitt;
@@ -495,7 +496,8 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
       a->associated = MISSING_INTEGER;
     }
     
-  if ( strstr ( a->unit, "CODE TABLE" ) != a->unit &&  strstr ( a->unit,"FLAG" ) != a->unit )
+  if ( strstr ( a->unit, "CODE TABLE" ) != a->unit &&  strstr ( a->unit,"FLAG" ) != a->unit &&
+      strstr ( a->unit, "Code table" ) != a->unit &&  strstr ( a->unit,"Flag" ) != a->unit )
     {  // case of numeric, no string nor code nor flag
        nbits += b->state.added_bit_length;
     }    
@@ -512,7 +514,8 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
 
   if ( has_data )
     {
-      if ( strstr ( a->unit, "CODE TABLE" ) != a->unit &&  strstr ( a->unit,"FLAG" ) != a->unit )
+      if ( strstr ( a->unit, "CODE TABLE" ) != a->unit &&  strstr ( a->unit,"FLAG" ) != a->unit &&
+      strstr ( a->unit, "Code table" ) != a->unit &&  strstr ( a->unit,"Flag" ) != a->unit  )
         {
           escale += b->state.added_scale;
           reference += b->state.added_reference;
@@ -533,7 +536,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
           a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10 ( ( double ) ( -escale ) );
         }
 
-      if ( strstr ( a->unit, "CODE TABLE" ) == a->unit )
+      if ( strstr ( a->unit, "CODE TABLE" ) == a->unit || strstr ( a->unit, "Code table" ) == a->unit)
         {
           ival = ( uint32_t ) ( a->val + 0.5 );
           a->mask |= DESCRIPTOR_IS_CODE_TABLE;
@@ -542,7 +545,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
               a->mask |= DESCRIPTOR_HAVE_CODE_TABLE_STRING;
             }
         }
-      else if ( strstr ( a->unit,"FLAG" ) == a->unit )
+      else if ( strstr ( a->unit,"FLAG" ) == a->unit || strstr ( a->unit,"Flag" ) == a->unit )
         {
           ival = ( uint32_t ) ( a->val + 0.5 );
           a->mask |= DESCRIPTOR_IS_FLAG_TABLE;
@@ -561,5 +564,3 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
 
   return 0;
 }
-
-

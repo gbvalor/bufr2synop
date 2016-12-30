@@ -59,7 +59,7 @@ int bufr_read_tabled ( struct bufr_tabled *td, char *error )
       return 1;
     }
 
-  while ( fgets ( td->l[i], 124, t ) != NULL && i < BUFR_MAXLINES_TABLEC )
+  while ( fgets ( td->l[i], 124, t ) != NULL && i < BUFR_MAXLINES_TABLED )
     {
       // supress the newline
       if ( ( c = strrchr ( td->l[i],'\n' ) ) != NULL )

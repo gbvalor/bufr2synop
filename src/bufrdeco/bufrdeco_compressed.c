@@ -474,7 +474,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
   strcpy ( a->unit, r->unit );
 
   // First we check about string fields
-  if ( strstr ( a->unit, "CCITTIA5" ) != NULL )
+  if ( strstr ( a->unit, "CCITT" ) != NULL )
     {
       if ( r->has_data == 0 )
         {
@@ -588,7 +588,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
   a->val = ( double ) ( ivals ) * pow10 ( ( double ) ( - r->escale ) );
 
   //printf("ival = %lf\n", a->val);
-  if ( strstr ( a->unit, "CODE TABLE" ) == a->unit )
+  if ( strstr ( a->unit, "CODE TABLE" ) == a->unit  || strstr ( a->unit, "Code table" ) == a->unit )
     {
       ival = ( uint32_t ) ( a->val + 0.5 );
       a->mask |= DESCRIPTOR_IS_CODE_TABLE;
@@ -597,7 +597,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
           a->mask |= DESCRIPTOR_HAVE_CODE_TABLE_STRING;
         }
     }
-  else if ( strstr ( a->unit,"FLAG" ) == a->unit )
+  else if ( strstr ( a->unit,"FLAG" ) == a->unit || strstr ( a->unit,"Flag" ) == a->unit)
     {
       ival = ( uint32_t ) ( a->val + 0.5 );
       a->mask |= DESCRIPTOR_IS_FLAG_TABLE;
