@@ -39,7 +39,7 @@ int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
   FILE *t;
   size_t ix = 0;
   size_t i = 0;
-  int j0, nj;
+  int j0, nj = 0;
   char oldkey[8];
   char caux[256];
   char laux[256];

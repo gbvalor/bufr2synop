@@ -580,8 +580,10 @@ struct bufrdeco
   char error[1024]; /*!< String with detected errors, if any */
 };
 
-extern const char DEFAULT_BUFRTABLES_DIR1[];
-extern const char DEFAULT_BUFRTABLES_DIR2[];
+extern const char DEFAULT_BUFRTABLES_ECMWF_DIR1[];
+extern const char DEFAULT_BUFRTABLES_ECMWF_DIR2[];
+extern const char DEFAULT_BUFRTABLES_WMO_CSV_DIR1[];
+extern const char DEFAULT_BUFRTABLES_WMO_CSV_DIR2[];
 extern const double pow10pos[8];
 extern const double pow10neg[8];
 extern const int32_t pow10pos_int[10];
@@ -603,14 +605,18 @@ int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s );
 
 // Read bufr functions
 int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename );
-int bufr_read_tables ( struct bufrdeco *b, char *tables_dir );
+int get_ecmwf_tablenames ( struct bufrdeco *b, const char *bufrtables_dir );
+int bufr_read_tables_ecmwf ( struct bufrdeco *b, char *tables_dir );
 int bufr_read_tableb ( struct bufr_tableb *tb, char *error );
 int bufr_read_tablec ( struct bufr_tablec *tc, char *error );
 int bufr_read_tabled ( struct bufr_tabled *td, char *error );
 
 // Read bufr WMO csv 
+int get_wmo_tablenames ( struct bufrdeco *b, const char *bufrtables_dir );
 int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error );
 int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error );
+int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error );
+int bufr_read_tables_wmo ( struct bufrdeco *b, char *tables_dir );
 
 // Print and output functions
 void print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r );

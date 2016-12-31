@@ -1,4 +1,4 @@
-AC_INIT([bufr2synop], 0.7.10)
+AC_INIT([bufr2synop], 0.8.0)
 AC_CONFIG_SRCDIR([src/apps/bufr2synop.c])
 AM_INIT_AUTOMAKE
 
@@ -29,4 +29,4 @@ esac
 }
 
 
-AC_OUTPUT(Makefile src/Makefile src/apps/Makefile src/bufrdeco/Makefile src/libraries/Makefile src/scripts/Makefile examples/Makefile) 
+AC_OUTPUT(Makefile src/Makefile src/apps/Makefile src/bufrdeco/Makefile src/libraries/Makefile src/scripts/Makefile examples/Makefile share/Makefile) 
