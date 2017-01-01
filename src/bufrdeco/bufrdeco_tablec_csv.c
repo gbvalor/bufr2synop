@@ -23,6 +23,8 @@
  */
 #include "bufrdeco.h"
 
+#define CSV_MAXL 1024
+
 /*!
   \fn int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error )
   \brief Reads a file with table C content (Code table and bit flags) according with csv WMO format
@@ -40,7 +42,7 @@ int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error )
   size_t i = 0;
   struct bufr_descriptor desc;
   char *tk[16];
-  char caux[256], l[256];
+  char caux[256], l[CSV_MAXL];
 
   if ( tc->path[0] == 0 )
     {
@@ -63,9 +65,9 @@ int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error )
     }
 
   // read first line, it is ignored
-  fgets ( l, 256, t );
-
-  while ( fgets ( l, 256, t ) != NULL && i < BUFR_MAXLINES_TABLEC )
+  fgets ( l, 512, t );
+ 
+  while ( fgets ( l, CSV_MAXL, t ) != NULL && i < BUFR_MAXLINES_TABLEC )
     {
 
       // Parse line
@@ -77,7 +79,7 @@ int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error )
 
       // Check if code contains other than non-numeric i.e. 'All' or '-'
       // In this case, the line is ignored
-      if ( strchr ( tk[1], '-' ) != NULL || strstr ( tk[1], "All" ) != NULL )
+      if ( tk[1][0] == 0 || strchr ( tk[1], '-' ) != NULL || strstr ( tk[1], "All" ) != NULL )
         continue;
 
       // Key
@@ -93,11 +95,21 @@ int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error )
 
       // Description
       c = & tc->item[i].description[0];
-      c += sprintf ( c,"%s", tk[2] );
-      if ( tk[3][0] && ( strlen ( tk[3] ) + strlen ( tc->item[i].description ) ) < 256 )
-        c += sprintf ( c," %s", tk[3] );
-      if ( tk[4][0] && ( strlen ( tk[4] ) + strlen ( tc->item[i].description ) ) < 256 )
-        c += sprintf ( c, " %s", tk[4] );
+      if ( strlen ( tk[2] ) < BUFR_EXPLAINED_LENGTH )
+        {
+          c += sprintf ( c,"%s", tk[2] );
+          if ( tk[3][0] && ( strlen ( tk[3] ) + strlen ( tc->item[i].description ) ) < BUFR_EXPLAINED_LENGTH )
+            {
+              c += sprintf ( c," %s", tk[3] );
+              if ( tk[4][0] && ( strlen ( tk[4] ) + strlen ( tc->item[i].description ) ) < BUFR_EXPLAINED_LENGTH )
+                c += sprintf ( c, " %s", tk[4] );
+            }
+        }
+      else
+        {
+          tk[2][BUFR_EXPLAINED_LENGTH - 1] = '\0';
+          c += sprintf ( c,"%s", tk[2] );
+        }
 
       if ( tc->num[desc.x] == 0 )
         {

@@ -84,6 +84,13 @@
 #define BUFR_NMAXSEQ (2 * 16384)
 
 /*!
+  \def BUFR_EXPLAINED_LENGTH
+  \brief Maximum length for a explained descriptor
+*/
+#define BUFR_EXPLAINED_LENGTH (256)
+
+
+/*!
    \def NMAXSEQ_DESCRIPTORS
    \brief Maximum nuber of unexpanded descriptors in a struct \ref bufr_sequence
 */
@@ -223,7 +230,7 @@ struct bufr_atom_data
   double val; /*!< Value for the bufr descriptor */
   uint32_t associated; /*!< value for associated field, if any */
   char cval[128]; /*!< String value for the bufr descriptor */
-  char ctable[256]; /*!< Explained meaning for a code table */
+  char ctable[BUFR_EXPLAINED_LENGTH]; /*!< Explained meaning for a code table */
 };
 
 /*!
@@ -510,7 +517,7 @@ struct bufr_tablec_decoded_item
   uint8_t x; /*!< x value of descriptor */
   uint8_t y; /*!< y value of descriptor */
   uint32_t ival; /*!< code value */
-  char description[256]; /*!< Description string of code */ 
+  char description[BUFR_EXPLAINED_LENGTH]; /*!< Description string of code */ 
 };
 
 

@@ -23,6 +23,8 @@
  */
 #include "bufrdeco.h"
 
+#define CSV_MAXL 1024
+
 /*!
   \fn int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
   \brief Reads a file with table D content according with WMO csv format
@@ -42,7 +44,7 @@ int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
   int j0, nj = 0;
   char oldkey[8];
   char caux[256];
-  char laux[256];
+  char laux[CSV_MAXL];
   struct bufr_descriptor desc;
 
   if ( td->path[0] == 0 )
@@ -66,20 +68,21 @@ int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
     }
 
   // read first line, it is ignored
-  fgets ( laux, 256, t );
+  fgets ( laux, CSV_MAXL, t );
 
   oldkey[0] = 0;
   j0 = 0;
 
-  while ( fgets ( laux, 256, t ) != NULL && i < BUFR_MAXLINES_TABLED )
+  while ( fgets ( laux, CSV_MAXL, t ) != NULL && i < BUFR_MAXLINES_TABLED )
     {
       // Parse line
+      printf("%s\n",laux);
       if ( parse_csv_line ( &nt, tk, laux ) < 0 )
         {
           sprintf ( error,"Error parsing csv line from table D file '%s'\n", td->path );
           return 1;
         }
-
+      printf("%d\n", nt);
       if ( strcmp ( oldkey, tk[0] ) )
         {
           if (oldkey[0])

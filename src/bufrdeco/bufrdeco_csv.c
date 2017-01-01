@@ -28,7 +28,8 @@
 #define CSV_IS_ITEM 4
 #define CSV_IS_SEPARATOR 8
 #define CSV_IS_CITED 16
-#define CSV_MAXL 256
+#define CSV_WAIT_SEPARATOR 32
+#define CSV_MAXL 1024
 
 const char CSV_SPACE[] = " \t\r";
 const char CSV_SEPARATOR = ',';
@@ -126,6 +127,22 @@ int parse_csv_line ( int *nt, char *tk[], char *lin )
                   latest_char = i;
                 }
             }
+          else if ( flag & CSV_WAIT_SEPARATOR)
+          {
+            if (c == CSV_SEPARATOR)
+            {
+              lin[i] = '\0';
+              k++;
+              flag = CSV_WAIT_ITEM;
+            }
+            else if ( c == CSV_FINAL )
+            {
+              lin[i] = '\0';
+              *nt = k + 1;
+              return 0;
+            }
+            continue;
+          }
         }
       else /* CITED */
         {
@@ -137,8 +154,7 @@ int parse_csv_line ( int *nt, char *tk[], char *lin )
           if ( c == CSV_CITE )
             {
               lin[i] = '\0';
-              flag = CSV_WAIT_ITEM;
-              k++;
+              flag = CSV_WAIT_SEPARATOR;
             }
           else if ( c == CSV_FINAL )
             {

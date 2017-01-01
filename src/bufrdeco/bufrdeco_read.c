@@ -238,7 +238,7 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
   free ( ( void * ) bufrx );
 
   // Now read tables needed for current readed bufr file
-  if ( bufr_read_tables_ecmwf ( b, NULL ) )
+  if ( bufr_read_tables_wmo ( b, NULL ) )
     {
       return 1;
     }
