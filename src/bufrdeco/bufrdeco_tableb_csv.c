@@ -39,7 +39,7 @@ int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error )
   size_t i = 0;
   int nt;
   uint32_t ix;
-  char l[256];
+  char l[CSV_MAXL];
   char caux[256];
   char *tk[16];
   struct bufr_descriptor desc;
@@ -73,9 +73,9 @@ int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error )
     }
 
   // read first line, it is ignored
-  fgets( l, 256, t);
+  fgets( l, CSV_MAXL, t);
   
-  while ( fgets ( l, 256, t ) != NULL && i < BUFR_MAXLINES_TABLEB )
+  while ( fgets ( l, CSV_MAXL, t ) != NULL && i < BUFR_MAXLINES_TABLEB )
     {
       // Parse line
       if (parse_csv_line(&nt, tk, l) < 0)
@@ -124,6 +124,7 @@ int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error )
   tb->x_start[0] = 0; // fix the start for x = 0
   fclose ( t );
   tb->nlines = i;
+  tb->wmo_table = 1;
   strcpy ( tb->old_path, tb->path ); // store latest path
   return 0;
 }

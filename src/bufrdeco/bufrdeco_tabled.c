@@ -82,6 +82,7 @@ int bufr_read_tabled ( struct bufr_tabled *td, char *error )
     }
   fclose ( t );
   td->nlines = i;
+  td->wmo_table = 0;
   strcpy ( td->old_path, td->path ); // store latest path
   return 0;
 }
@@ -161,7 +162,8 @@ int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufr
     }
 
   // reads the amount of possible values
-  if ( td->l[i][7] == ' ' )
+  nv = strtoul ( &td->l[i][7], &c, 10 );
+  /*if ( td->l[i][7] == ' ' )
     {
       nv = strtoul ( &td->l[i][7], &c, 10 );
     }
@@ -169,7 +171,7 @@ int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufr
     {
       sprintf ( b->error, "bufrdeco_tabled_get_descritors_array(): Error when parsing provided table D\n" );
       return 1;
-    }
+    }*/
   // s->level must be set by caller
   // s->father must be set by caller
 

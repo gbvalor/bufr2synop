@@ -237,10 +237,22 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
   b->sec4.bit_offset = 32; // the first bit in byte 4
   free ( ( void * ) bufrx );
 
-  // Now read tables needed for current readed bufr file
-  if ( bufr_read_tables_wmo ( b, NULL ) )
+  // Now read tables needed for current readed bufr file.
+  // Lowest version to use WMO csv Tables is 18
+  if ( b->sec1.master_version < 18 )
     {
-      return 1;
+      if ( bufr_read_tables_ecmwf ( b, NULL ) )
+        {
+          return 1;
+        }
     }
+  else
+    {
+      if ( bufr_read_tables_wmo ( b, NULL ) )
+        {
+          return 1;
+        }
+    }
+
   return 0;
 }

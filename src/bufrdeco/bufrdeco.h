@@ -89,6 +89,11 @@
 */
 #define BUFR_EXPLAINED_LENGTH (256)
 
+/*!
+  \def CSV_MAXL
+  \brief Maximum length in a string to be parsed as csv
+*/
+#define CSV_MAXL (2048)
 
 /*!
    \def NMAXSEQ_DESCRIPTORS
@@ -496,6 +501,7 @@ struct bufr_tableb_decoded_item
 */
 struct bufr_tableb
 {
+  int wmo_table; /*!< 1 when table is from WMO csv file, 0 otherwise */
   char path[256]; /*!< Complete path of current file readed */
   char old_path[256]; /*!< Cmplete path of prior file readed, used to avoid read two consecutive times the same file */
   size_t nlines; /*!< Current lines readed from file, i. e. used in array item[] */
@@ -527,12 +533,13 @@ struct bufr_tablec_decoded_item
 */
 struct bufr_tablec
 {
+  int wmo_table; /*!< 1 when table is from WMO csv file, 0 otherwise */
   char path[256]; /*!< Complete path of current file readed */
   char old_path[256]; /*!< Cmplete path of prior file readed, used to avoid read two consecutive times the same file */
   size_t nlines; /*!< Current lines readed from file, i. e. used in array \a l[] */
   size_t x_start[64]; /*!< Index in array \a l[] for first x. x_start[j] is index for first descriptor which x == j */
   size_t num[64]; /*!< Amonut of lines for x. num[i] is the amount of items in array where x = i */
-  uint8_t y_ref[64][256]; /*!< index for first y since first x. x_ref[i][j] is index since x_start[i] where y == j */
+  size_t y_ref[64][256]; /*!< index for first y since first x. x_ref[i][j] is index since x_start[i] where y == j */
   char l[BUFR_MAXLINES_TABLEC][96]; /*!< Array with lines readed from file */
   struct bufr_tablec_decoded_item item[BUFR_MAXLINES_TABLEC]; /*!< Array of decoded lines */
 };
@@ -543,6 +550,7 @@ struct bufr_tablec
 */
 struct bufr_tabled
 {
+  int wmo_table; /*!< 1 when table is from WMO csv file, 0 otherwise */
   char path[256]; /*!< Complete path of current file readed */
   char old_path[256]; /*!< Cmplete path of prior file readed, used to avoid read two consecutive times the same file */
   size_t nlines; /*!< Current lines readed from file, i. e. used in array \a l[] */
@@ -624,6 +632,9 @@ int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error );
 int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error );
 int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error );
 int bufr_read_tables_wmo ( struct bufrdeco *b, char *tables_dir );
+char * csv_quoted_string( char *out, char *in);
+int parse_csv_line ( int *nt, char *tk[], char *lin );
+
 
 // Print and output functions
 void print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r );
@@ -684,7 +695,6 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
 int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *key );
 int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_t source );
 int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key );
-int parse_csv_line ( int *nt, char *tk[], char *lin );
 int bufr_find_tablec_csv_index ( size_t *index, struct bufr_tablec *tc, const char *key, uint32_t code );
 
 // utilities for descriptors

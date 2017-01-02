@@ -1,6 +1,6 @@
 METASOURCES = AUTO
 
-bin_PROGRAMS = bufr2synop bufr_decode bufrnoaa bufrdeco_test bufrtotac
+bin_PROGRAMS = bufr2synop bufr_decode bufrnoaa bufrdeco_test bufrtotac build_bufrdeco_tables
 
 bufr_decode_SOURCES = bufr_decode.c
 
@@ -21,5 +21,7 @@ bufrnoaa_SOURCES = bufrnoaa.c bufrnoaa_io.c bufrnoaa_utils.c
 bufrdeco_test_SOURCES = bufrdeco_test.c
 bufrdeco_test_LDADD = $(top_builddir)/src/bufrdeco/libbufrdeco.la -lm 
 bufrtotac_SOURCES = bufrtotac.c bufrtotac_io.c
-bufrtotac_LDADD = $(top_builddir)/src/bufrdeco/libbufrdeco.la $(top_builddir)/src/libraries/libbufr2tac.la -lm 
+bufrtotac_LDADD = $(top_builddir)/src/bufrdeco/libbufrdeco.la $(top_builddir)/src/libraries/libbufr2tac.la -lm
+build_bufrdeco_tables_SOURCES = build_bufrdeco_tables.c
+build_bufrdeco_tables_LDADD = $(top_builddir)/src/bufrdeco/libbufrdeco.la -lm 
 EXTRA_DIST = CMakeLists.txt

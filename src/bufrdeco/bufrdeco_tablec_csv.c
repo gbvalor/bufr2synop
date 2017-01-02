@@ -23,8 +23,6 @@
  */
 #include "bufrdeco.h"
 
-#define CSV_MAXL 1024
-
 /*!
   \fn int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error )
   \brief Reads a file with table C content (Code table and bit flags) according with csv WMO format
@@ -65,8 +63,8 @@ int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error )
     }
 
   // read first line, it is ignored
-  fgets ( l, 512, t );
- 
+  fgets ( l, CSV_MAXL, t );
+
   while ( fgets ( l, CSV_MAXL, t ) != NULL && i < BUFR_MAXLINES_TABLEC )
     {
 
@@ -79,7 +77,7 @@ int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error )
 
       // Check if code contains other than non-numeric i.e. 'All' or '-'
       // In this case, the line is ignored
-      if ( tk[1][0] == 0 || strchr ( tk[1], '-' ) != NULL || strstr ( tk[1], "All" ) != NULL )
+      if ( tk[2][0] == 0 || strchr ( tk[2], '-' ) != NULL || strstr ( tk[2], "All" ) != NULL )
         continue;
 
       // Key
@@ -91,36 +89,43 @@ int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error )
       tc->item[i].y = desc.y;
 
       // Integer value
-      tc->item[i].ival = strtoul ( tk[1], &c, 10 );
+      tc->item[i].ival = strtoul ( tk[2], &c, 10 );
 
       // Description
       c = & tc->item[i].description[0];
-      if ( strlen ( tk[2] ) < BUFR_EXPLAINED_LENGTH )
+      if ( strlen ( tk[3] ) < BUFR_EXPLAINED_LENGTH )
         {
-          c += sprintf ( c,"%s", tk[2] );
-          if ( tk[3][0] && ( strlen ( tk[3] ) + strlen ( tc->item[i].description ) ) < BUFR_EXPLAINED_LENGTH )
+          c += sprintf ( c,"%s", tk[3] );
+          if ( tk[4][0] && ( strlen ( tk[4] ) + strlen ( tc->item[i].description ) ) < BUFR_EXPLAINED_LENGTH )
             {
-              c += sprintf ( c," %s", tk[3] );
-              if ( tk[4][0] && ( strlen ( tk[4] ) + strlen ( tc->item[i].description ) ) < BUFR_EXPLAINED_LENGTH )
-                c += sprintf ( c, " %s", tk[4] );
+              c += sprintf ( c," %s", tk[4] );
+              if ( tk[5][0] && ( strlen ( tk[5] ) + strlen ( tc->item[i].description ) ) < BUFR_EXPLAINED_LENGTH )
+              {
+                c += sprintf ( c, " %s", tk[5] );
+              }
             }
         }
       else
         {
-          tk[2][BUFR_EXPLAINED_LENGTH - 1] = '\0';
-          c += sprintf ( c,"%s", tk[2] );
+          tk[3][BUFR_EXPLAINED_LENGTH - 1] = '\0';
+          c += sprintf ( c,"%s", tk[3] );
         }
 
       if ( tc->num[desc.x] == 0 )
         {
           tc->x_start[desc.x] = i;  // marc the start
         }
-      tc->y_ref[desc.x][desc.y] = i - tc->x_start[desc.x]; // marc the position from start of first x
+      if ( tc->y_ref[desc.x][desc.y] == 0 )
+        {
+          tc->y_ref[desc.x][desc.y] = i - tc->x_start[desc.x]; // marc the position from start of first x
+        }
       ( tc->num[desc.x] ) ++;
+      //printf("%ld %s %d %d, %ld %ld\n", i, tc->item[i].key, tc->item[i].x, tc->item[i].y, tc->x_start[desc.x], tc->y_ref[desc.x][desc.y]);
       i++;
     }
   fclose ( t );
   tc->nlines = i;
+  tc->wmo_table = 1;
   strcpy ( tc->old_path, tc->path ); // store latest path
   return 0;
 }
@@ -230,8 +235,8 @@ char * bufrdeco_explained_flag_csv_val ( char *expl, size_t dim, struct bufr_tab
   // init description
   s = expl;
   s[0] = '\0';
-
-  for ( j = 0, test0 = 1; j < nbits && tc->item[i].x == d->x && tc->item[i].y == d->y ; i++ )
+  //printf ( "%ld %s %d %d %d %d\n", i, tc->item[i].key, tc->item[i].x, tc->item[i].y, d->x , d->y );
+  for ( j = 0, test0 = 1 ; j < nbits && ( tc->item[i].x == d->x ) && ( tc->item[i].y == d->y ) ; i++ )
     {
       v = tc->item[i].ival; // v is the bit number
       j++;
@@ -242,7 +247,7 @@ char * bufrdeco_explained_flag_csv_val ( char *expl, size_t dim, struct bufr_tab
           test0 = 1;
           if ( ival == 0 )
             {
-              if ( ( strlen ( expl ) && ( strlen ( expl ) + 1 ) ) < dim )
+              if ( strlen ( expl ) && ( strlen ( expl ) + 1 ) < dim )
                 {
                   s += sprintf ( s, "|" );
                 }
@@ -258,7 +263,7 @@ char * bufrdeco_explained_flag_csv_val ( char *expl, size_t dim, struct bufr_tab
 
       if ( v && ( test & ival ) != 0 )
         {
-          if ( ( strlen ( expl ) && ( strlen ( expl ) + 1 ) ) < dim )
+          if ( strlen ( expl ) && ( strlen ( expl ) + 1  ) < dim )
             {
               s += sprintf ( s, "|" );
             }
@@ -271,6 +276,7 @@ char * bufrdeco_explained_flag_csv_val ( char *expl, size_t dim, struct bufr_tab
         {
           continue;
         }
+      //printf ( "%s\n", expl );
     }
   // if match then we have finished the search
   return expl;

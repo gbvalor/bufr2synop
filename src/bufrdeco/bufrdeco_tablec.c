@@ -82,6 +82,7 @@ int bufr_read_tablec ( struct bufr_tablec *tc, char *error )
     }
   fclose ( t );
   tc->nlines = i;
+  tc->wmo_table = 0;
   strcpy ( tc->old_path, tc->path ); // store latest path
   return 0;
 }
@@ -144,6 +145,11 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec
   char *c;
   uint32_t nv, v,  nl;
   size_t  i, j;
+
+  if ( tc->wmo_table )
+    { // WMO case
+      return bufrdeco_explained_table_csv_val ( expl, dim, tc, index, d, ival );
+    }
 
   if ( *index == 0 )
     {
@@ -225,6 +231,11 @@ char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec 
   uint64_t test, test0;
   uint64_t nb, nx, v,  nl;
   size_t i, j;
+  
+  if ( tc->wmo_table )
+    { // WMO case
+      return bufrdeco_explained_flag_csv_val ( expl, dim, tc, d, ival, nbits );
+    }
 
   // Find first line for descriptor
   for ( i = 0; i <  tc->nlines; i++ )

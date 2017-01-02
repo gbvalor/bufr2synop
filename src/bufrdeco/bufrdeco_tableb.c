@@ -127,6 +127,7 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
   tb->x_start[0] = 0; // fix the start for x = 0
   fclose ( t );
   tb->nlines = i;
+  tb->wmo_table = 0;
   strcpy ( tb->old_path, tb->path ); // store latest path
   return 0;
 }

@@ -17,3 +17,7 @@ target_link_libraries(bufrdeco_test m bufrdeco)
 
 add_executable(bufrtotac bufrtotac.c bufrtotac_io.c)
 target_link_libraries(bufrtotac m bufrdeco bufr2tac)
+
+add_executable(build_bufrdeco_tables build_bufrdeco_tables.c)
+target_link_libraries(build_bufrdeco_tables m bufrdeco)
+

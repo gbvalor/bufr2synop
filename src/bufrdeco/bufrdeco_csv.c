@@ -29,57 +29,96 @@
 #define CSV_IS_SEPARATOR 8
 #define CSV_IS_CITED 16
 #define CSV_WAIT_SEPARATOR 32
-#define CSV_MAXL 1024
+#define CSV_IS_DOUBLE_QUOTED 64
 
 const char CSV_SPACE[] = " \t\r";
 const char CSV_SEPARATOR = ',';
 const char CSV_CITE = '\"';
 const char CSV_FINAL = '\n';
 
+
+/*!
+  \fn char * csv_quoted_string( char *out, char *in)
+  \brief Transform a string to a quoted string to be inserted in a csv file
+  \param out resulting string
+  \param in input string
+  
+  If problem returns NULL
+*/
+char * csv_quoted_string( char *out, char *in)
+{
+   size_t i = 0, j = 0;
+   
+   if ( in[0] == 0)
+     return NULL;
+   
+   out[j++] = '\"';
+   while (in[i] && j < (CSV_MAXL - 1)  && i < CSV_MAXL)
+   {
+       if (in[i] == '\"')
+       {
+           out[j++] = '\"';
+           out[j++] = '\"';
+           i++;
+       }
+       else
+         out[j++] = in[i++];
+   }
+   out[j++] = '\"';
+   out[j] = 0; // end of string
+   return out;
+}
+
+
 /*!
   \fn int parse_csv_line(int *nt, char *tk[], char *lin)
-  \brief Parse a csv line 
+  \brief Parse a csv line
   \param nt pointer to a integer. On success is the number of items found
   \param tk array of pointers. Every pointer is a item on success
-  \param lin input line which is modified in this routine to be splitted into items 
-  
+  \param lin input line which is modified in this routine to be splitted into items
+
   NOTE that input line is modified
   On success return 0, otherwise -1
 */
 int parse_csv_line ( int *nt, char *tk[], char *lin )
 {
-  size_t i, k = 0, l, latest_char = 0;
+  size_t i, j, k = 0, l, latest_char = 0;
   int flag;
-  char c;
+  char c, caux[CSV_MAXL];
 
   l = strlen ( lin );
   if ( l > CSV_MAXL || l == 0 )
     return -1;
 
+  // copy original string
+  strcpy ( caux, lin );
+
   flag = CSV_WAIT_ITEM;
 
-  for ( i = 0, k = 0; i < l; i++ )
+  for ( i = 0, j = 0, k = 0; i < l; i++ )
     {
-      c = lin[i];
+      c = caux[i]; // original char
 
       if ( ( flag & CSV_IS_CITED ) == 0 )
         {
           if ( flag & CSV_WAIT_ITEM )
             {
               if ( strchr ( CSV_SPACE, c ) != NULL )
-                continue;
+                {
+                  lin[j++] = c; // copy to target
+                  continue;
+                }
               else if ( c == CSV_CITE )
                 {
-                  lin[i] = '\0';
+                  lin[j++] = '\0'; // copy to target
                   flag |= CSV_IS_CITED;
                   continue;
                 }
               else if ( c == CSV_SEPARATOR )
                 {
                   /* item vacio */
-                  lin[i] = '\0';
-                  tk[k] = lin + i;
-                  k++;
+                  tk[k++] = lin + j;
+                  lin[j++] = '\0';
                   flag = CSV_WAIT_ITEM;
                   continue;
                 }
@@ -91,15 +130,16 @@ int parse_csv_line ( int *nt, char *tk[], char *lin )
                       return 0;
                     }
                   /* al menos un token, vacio */
-                  lin[i] = '\0';
-                  tk[k] = lin + i;
-                  *nt = k + 1;
+                  tk[k++] = lin + j;
+                  lin[j] = '\0';
+                  *nt = k;
                   return 0;
                 }
               else
                 {
-                  latest_char = i;
-                  tk[k] = lin + i;
+                  latest_char = j;
+                  tk[k] = lin + j;
+                  lin[j++] = c;
                   flag = CSV_IS_ITEM;
                   continue;
                 }
@@ -107,10 +147,14 @@ int parse_csv_line ( int *nt, char *tk[], char *lin )
           else if ( flag & CSV_IS_ITEM )
             {
               if ( strchr ( CSV_SPACE, c ) != NULL )
-                continue;
+                {
+                  lin[j++] = c;
+                  continue;
+                }
               else if ( c == CSV_SEPARATOR )
                 {
                   lin[latest_char + 1] = '\0';
+                  j = latest_char + 2;
                   k++;
                   flag = CSV_WAIT_ITEM | CSV_FINISHED_ITEM;
                   continue;
@@ -124,43 +168,66 @@ int parse_csv_line ( int *nt, char *tk[], char *lin )
                 }
               else
                 {
-                  latest_char = i;
+                  latest_char = j++;
                 }
             }
-          else if ( flag & CSV_WAIT_SEPARATOR)
-          {
-            if (c == CSV_SEPARATOR)
+          else if ( flag & CSV_WAIT_SEPARATOR )
             {
-              lin[i] = '\0';
-              k++;
-              flag = CSV_WAIT_ITEM;
+              if ( c == CSV_SEPARATOR )
+                {
+                  lin[j++] = '\0';
+                  k++;
+                  flag = CSV_WAIT_ITEM;
+                }
+              else if ( c == CSV_FINAL )
+                {
+                  lin[j++] = '\0';
+                  *nt = k + 1;
+                  return 0;
+                }
+              continue;
             }
-            else if ( c == CSV_FINAL )
-            {
-              lin[i] = '\0';
-              *nt = k + 1;
-              return 0;
-            }
-            continue;
-          }
         }
       else /* CITED */
         {
           if ( flag & CSV_WAIT_ITEM )
             {
-              tk[k] = lin + i;
+              tk[k] = lin + j;
               flag &= ( ~CSV_WAIT_ITEM ); // Clean wait item bit
             }
           if ( c == CSV_CITE )
             {
-              lin[i] = '\0';
-              flag = CSV_WAIT_SEPARATOR;
+              if ( caux[i + 1] == CSV_CITE )
+                {
+                  if ( flag & CSV_IS_DOUBLE_QUOTED )
+                    {
+                      flag &= ( ~CSV_IS_DOUBLE_QUOTED ) ; // Clean double quoted bit
+                      lin[j++] = '"';
+                      i++;
+                    }
+                  else
+                    {
+                      flag |= CSV_IS_DOUBLE_QUOTED;
+                      lin[j++] = '"';
+                      i++;
+                    }
+                    continue;
+                }
+              else
+                {
+                  lin[j++] = '\0';
+                  flag = CSV_WAIT_SEPARATOR;
+                }
             }
           else if ( c == CSV_FINAL )
             {
-              lin[i] = '\0';
+              lin[j++] = '\0';
               *nt = k + 1;
               return 0;
+            }
+          else
+            {
+              lin[j++] = c;
             }
           continue;
         }
