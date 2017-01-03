@@ -122,6 +122,12 @@ int main ( int argc, char *argv[] )
       return 1;
     }
 
+  // If needed mark to use ECMWF tables  
+  if ( ECMWF )
+    {
+      BUFR.mask |= BUFRDECO_USE_ECMWF_TABLES;
+    }
+
   /**** Big loop. a cycle per file ****/
   while ( get_bufrfile_path ( INPUTFILE, ERR ) )
     {
