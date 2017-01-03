@@ -26,14 +26,16 @@
 
 void print_usage ( void )
 {
-  printf ( "%s %s\n", SELF, PACKAGE_VERSION);
+  printf ( "%s %s\n", SELF, PACKAGE_VERSION );
   printf ( "Usage: \n" );
-  printf ( "%s -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-c][-h]\n" , SELF);
+  printf ( "%s -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-c][-h]\n" , SELF );
+  printf ( "       -c. The output is in csv format\n" );
+  printf ( "       -D. Print some debug info\n" );
+  printf ( "       -E. Use ECMWF package tables. Default is WMO csv tables\n" );
   printf ( "       -h Print this help\n" );
   printf ( "       -i Input file. Complete input path file for bufr file\n" );
-  printf ( "       -j. The output is in json format\n" );
-  printf ( "       -c. The output is in csv format\n" );
   printf ( "       -I list_of_files. Pathname of a file with the list of files to parse, one filename per line\n" );
+  printf ( "       -j. The output is in json format\n" );
   printf ( "       -o output. Pathname of output file. Default is standar output\n" );
   printf ( "       -s prints a long output with explained sequence of descriptors\n" );
   printf ( "       -t bufrtable_dir. Pathname of bufr tables directory. Ended with '/'\n" );
@@ -66,14 +68,15 @@ int read_args ( int _argc, char * _argv[] )
   XML = 0;
   JSON = 0;
   CSV= 0;
+  ECMWF = 0;
 
   /*
      Read input options
   */
-  while ( ( iopt = getopt ( _argc, _argv, "cDhi:jI:o:st:vVx" ) ) !=-1 )
+  while ( ( iopt = getopt ( _argc, _argv, "cDEhi:jI:o:st:vVx" ) ) !=-1 )
     switch ( iopt )
       {
-     case 'i':
+      case 'i':
         if ( strlen ( optarg ) < 256 )
           strcpy ( INPUTFILE, optarg );
         break;
@@ -97,13 +100,16 @@ int read_args ( int _argc, char * _argv[] )
       case 'D':
         DEBUG = 1;
         break;
+      case 'E':
+        ECMWF = 1;
+        break;
       case 'V':
         VERBOSE = 1;
         break;
       case 'v':
-        printf("%s %s\n", SELF, PACKAGE_VERSION);
-	exit (EXIT_SUCCESS);
-	break;
+        printf ( "%s %s\n", SELF, PACKAGE_VERSION );
+        exit ( EXIT_SUCCESS );
+        break;
       case 's':
         SHOW_SEQUENCE = 1;
         break;
@@ -135,7 +141,7 @@ int bufrdeco_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subset
   size_t i;
   int ksec1[40], res;
   int *kdtlst;
-  size_t nlst = (size_t) b->sec3.ndesc;
+  size_t nlst = ( size_t ) b->sec3.ndesc;
 
   // memory for kdtlst
   if ( ( kdtlst = ( int * ) calloc ( 1, nlst * sizeof ( int ) ) ) == NULL )
@@ -155,10 +161,10 @@ int bufrdeco_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subset
   ksec1[6] = b->sec1.subcategory_local;
 
   // Finaly we call to bufr2syn library
-  memset(m, 0, sizeof( struct metreport));
+  memset ( m, 0, sizeof ( struct metreport ) );
   m->h = &b->header;
   res = parse_subset_sequence ( m, &b->seq, st, kdtlst, nlst, ksec1, err );
-  free ((void *) kdtlst);
+  free ( ( void * ) kdtlst );
   return res;
 }
 
@@ -188,7 +194,7 @@ char * get_bufrfile_path ( char *filename, char *err )
     {
       if ( NFILES == 0 )
         {
-	  if (filename != INPUTFILE)
+          if ( filename != INPUTFILE )
             strcpy ( filename, INPUTFILE );
           return filename;
         }

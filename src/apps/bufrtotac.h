@@ -50,6 +50,7 @@ extern int CSV;
 extern int DEBUG;
 extern int VERBOSE; 
 extern int SHOW_SEQUENCE; 
+extern int ECMWF;
 extern FILE *FL;
 
 // functions

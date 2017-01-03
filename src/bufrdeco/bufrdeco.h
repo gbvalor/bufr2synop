@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2016 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -196,6 +196,12 @@
 #define BUFR_MAXLINES_TABLEB (2048)
 #define BUFR_MAXLINES_TABLEC (8192)
 #define BUFR_MAXLINES_TABLED (8192)
+
+/*!
+  \def BUFRDECO_USE_ECMWF_TABLES
+  \brief bit mask to force the use of ECMWF
+*/
+#define BUFRDECO_USE_ECMWF_TABLES (1)
 
 /*!
   \struct bufr_descriptor
@@ -580,7 +586,7 @@ struct bufr_tables
 */
 struct bufrdeco
 {
-
+  uint32_t mask; /*!< Array of bit mask */
   struct gts_header header; /*!< GTS data */
   struct bufr_sec0 sec0; /*!< Parsed sec0 */
   struct bufr_sec1 sec1; /*!< Parsed sec1 */

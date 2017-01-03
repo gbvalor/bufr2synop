@@ -104,6 +104,7 @@ int GTS_HEADER; /*!< If == 1 GTS header have been guessed from filename */
 int XML; /*!< If == 1 then output is in xml format */
 int JSON; /*!< If == 1 then output is in json format */
 int CSV; /*!< If == 1 then output is in csv format */
+int ECMWF; /*!< If == 1 then use tables from ECMWF package */
 FILE *FL; /*!< Buffer to read the list of files */
 
 int main ( int argc, char *argv[] )
