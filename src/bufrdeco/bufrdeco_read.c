@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2016 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -239,7 +239,8 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
 
   // Now read tables needed for current readed bufr file.
   // Lowest version to use WMO csv Tables is 18
-  if ( b->sec1.master_version < 18 )
+  /*
+   if ( b->sec1.master_version < 18 )
     {
       if ( bufr_read_tables_ecmwf ( b, NULL ) )
         {
@@ -253,6 +254,10 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
           return 1;
         }
     }
-
+    */
+      if ( bufr_read_tables_wmo ( b, NULL ) )
+        {
+          return 1;
+        }
   return 0;
 }
