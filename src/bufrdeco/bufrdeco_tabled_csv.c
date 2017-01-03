@@ -33,7 +33,7 @@
 */
 int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
 {
-  char aux[8], *c;
+  char aux[16], *c;
   char *tk[16];
   int nt;
   FILE *t;
@@ -76,9 +76,9 @@ int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
     {
       // Parse line
       //printf("%s\n",laux);
-      if ( parse_csv_line ( &nt, tk, laux ) < 0 )
+      if ( parse_csv_line ( &nt, tk, laux ) < 0 || nt != 2)
         {
-          sprintf ( error,"Error parsing csv line from table D file '%s'\n", td->path );
+          sprintf ( error,"Error parsing csv line from table D file '%s' found %d tokens in line %lu\n", td->path, nt, i );
           return 1;
         }
 
@@ -120,7 +120,7 @@ int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
       ( td->num[desc.x] ) ++;
 
       // Now emule ECMWF format
-      sprintf ( td->l[i], "           %s", tk[3] );
+      sprintf ( td->l[i], "           %s", tk[1] );
       i++;
     }
   fclose ( t );

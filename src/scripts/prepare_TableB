@@ -1,22 +1,28 @@
 #!/bin/sh
-#  Script to transform original file from WMO to reduced version used by bufrdeco library
+#  Script to transform original files from WMO and ECMWF to reduced version used by bufrdeco library
 #
 #  It send the result to standard output
 #
 # Use:
-#  prepare_TableB path_to_original_wmo_file
+#  prepare_TableB 
 
-if test ${#} -lt 1 ; then
-  echo "usage:"
-  echo "prepare_TableB path_to_original_wmo_file"
-  exit 1
-fi
+# Original table dirs, change it as your cobvenience
+WMO_DIR="/home/gbv/claves/bufr_tables"
+ECMWF_DIR="/usr/local/lib/bufrtables"
 
-if test -s ${1} ; then
-  cat ${1} | cut -d "," -f 4-
-else
-  echo "Cannot read file ${1}"
-  exit 1
-fi
+# converter
+CONVERTER=/usr/local/bin/build_bufrdeco_tables
 
+# versions
+WMO_VERSIONS="18_0_0 18_1_0 19_0_0 19_1_1 20_0_0 21_0_0 22_0_1 23_0_0 24_0_0 25_0_0 26_0_0 27_0_0"
+ECMWF_VERSIONS="13 14 15 16 17"
 
+# WMO table B process
+for ver in ${WMO_VERSIONS} ; do
+  ${CONVERTER} -i ${WMO_DIR}/BUFRCREX_${ver}/BUFRCREX_${ver}_TableB_en.txt -t B > BUFR_${ver}_TableB_en.csv
+done  
+
+# ECMWF table B process
+for ver in ${ECMWF_VERSIONS} ; do
+  ${CONVERTER} -i ${ECMWF_DIR}/B00000000000000${ver}000.TXT -t B -e > BUFR_${ver}_0_0_TableB_en.csv
+done

@@ -69,15 +69,15 @@ int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error )
     {
 
       // Parse line
-      if ( parse_csv_line ( &nt, tk, l ) < 0 )
+      if ( parse_csv_line ( &nt, tk, l ) < 0 || nt != 6 )
         {
-          sprintf ( error,"Error parsing csv line from table C file '%s'\n", tc->path );
+          sprintf ( error,"Error parsing csv line from table C file '%s'. Found %d fields in line %lu \n", tc->path, nt, i );
           return 1;
         }
 
       // Check if code contains other than non-numeric i.e. 'All' or '-'
       // In this case, the line is ignored
-      if ( tk[2][0] == 0 || strchr ( tk[2], '-' ) != NULL || strstr ( tk[2], "All" ) != NULL )
+      if ( tk[1][0] == 0 || strchr ( tk[1], '-' ) != NULL || strstr ( tk[1], "All" ) != NULL )
         continue;
 
       // Key
@@ -89,26 +89,31 @@ int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error )
       tc->item[i].y = desc.y;
 
       // Integer value
-      tc->item[i].ival = strtoul ( tk[2], &c, 10 );
+      tc->item[i].ival = strtoul ( tk[1], &c, 10 );
 
       // Description
       c = & tc->item[i].description[0];
-      if ( strlen ( tk[3] ) < BUFR_EXPLAINED_LENGTH )
+      if ( strlen ( tk[2] ) < BUFR_EXPLAINED_LENGTH )
         {
-          c += sprintf ( c,"%s", tk[3] );
-          if ( tk[4][0] && ( strlen ( tk[4] ) + strlen ( tc->item[i].description ) ) < BUFR_EXPLAINED_LENGTH )
+          c += sprintf ( c,"%s", tk[2] );
+          if ( tk[3][0] && ( strlen ( tk[3] ) + strlen ( tc->item[i].description ) ) < BUFR_EXPLAINED_LENGTH )
             {
-              c += sprintf ( c," %s", tk[4] );
-              if ( tk[5][0] && ( strlen ( tk[5] ) + strlen ( tc->item[i].description ) ) < BUFR_EXPLAINED_LENGTH )
-              {
-                c += sprintf ( c, " %s", tk[5] );
-              }
+              c += sprintf ( c," %s", tk[3] );
+              if ( tk[4][0] && ( strlen ( tk[4] ) + strlen ( tc->item[i].description ) ) < BUFR_EXPLAINED_LENGTH )
+                {
+                  c += sprintf ( c, " %s", tk[4] );
+                }
             }
         }
       else
         {
-          tk[3][BUFR_EXPLAINED_LENGTH - 1] = '\0';
-          c += sprintf ( c,"%s", tk[3] );
+          tk[2][BUFR_EXPLAINED_LENGTH - 1] = '\0';
+          c += sprintf ( c,"%s", tk[2] );
+        }
+
+      if ( tk[5][0] && ( strlen ( tk[5] ) + strlen ( tc->item[i].description ) ) < BUFR_EXPLAINED_LENGTH )
+        {
+          c += sprintf ( c,"%s", tk[5] );
         }
 
       if ( tc->num[desc.x] == 0 )
@@ -263,7 +268,7 @@ char * bufrdeco_explained_flag_csv_val ( char *expl, size_t dim, struct bufr_tab
 
       if ( v && ( test & ival ) != 0 )
         {
-          if ( strlen ( expl ) && ( strlen ( expl ) + 1  ) < dim )
+          if ( strlen ( expl ) && ( strlen ( expl ) + 1 ) < dim )
             {
               s += sprintf ( s, "|" );
             }

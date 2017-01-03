@@ -4,8 +4,7 @@
 #  It send the result to standard output
 #
 # Use:
-#  prepare_TableD 
-
+#  prepare_TableC path_to_original_wmo_file
 
 # Original table dirs, change it as your cobvenience
 WMO_DIR="/home/gbv/claves/bufr_tables"
@@ -18,14 +17,13 @@ CONVERTER=/usr/local/bin/build_bufrdeco_tables
 WMO_VERSIONS="18_0_0 18_1_0 19_0_0 19_1_1 20_0_0 21_0_0 22_0_1 23_0_0 24_0_0 25_0_0 26_0_0 27_0_0"
 ECMWF_VERSIONS="13 14 15 16 17"
 
-# WMO table D process
+# WMO table C process
 for ver in ${WMO_VERSIONS} ; do
-  ${CONVERTER} -i ${WMO_DIR}/BUFRCREX_${ver}/BUFR_${ver}_TableD_en.txt -t D > BUFR_${ver}_TableD_en.csv
+  ${CONVERTER} -i ${WMO_DIR}/BUFRCREX_${ver}/BUFRCREX_${ver}_CodeFlag_en.txt -t C > BUFR_${ver}_TableC_en.csv
 done  
 
-# ECMWF table D process
+# ECMWF table C process
 for ver in ${ECMWF_VERSIONS} ; do
-  ${CONVERTER} -i ${ECMWF_DIR}/D00000000000000${ver}000.TXT -t D -e > BUFR_${ver}_0_0_TableD_en.csv
+  ${CONVERTER} -i ${ECMWF_DIR}/C00000000000000${ver}000.TXT -t C -e > BUFR_${ver}_0_0_TableC_en.csv
 done
-
 

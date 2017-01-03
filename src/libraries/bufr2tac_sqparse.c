@@ -125,6 +125,10 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
         {
           strcpy ( st->type_report, "CLIMAT SHIP" );  // FM-71 CLIMAT SHIP
         }
+      else if ( find_descriptor ( kdtlst, nlst,307090 ) )
+        { // FIXME Some FM-14 are coded as category 1
+          strcpy ( st->type_report,"OOXX" );  // FM-14 synop-mobil
+        }
       break;
     case 2:
       if ( find_descriptor_interval ( kdtlst, nlst, 309050, 309051 ) )

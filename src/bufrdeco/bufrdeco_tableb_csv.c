@@ -78,7 +78,7 @@ int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error )
   while ( fgets ( l, CSV_MAXL, t ) != NULL && i < BUFR_MAXLINES_TABLEB )
     {
       // Parse line
-      if (parse_csv_line(&nt, tk, l) < 0)
+      if (parse_csv_line(&nt, tk, l) < 0 || nt != 7)
       {
         sprintf ( error,"Error parsing csv line from table B file '%s'\n", tb->path );
         return 1;

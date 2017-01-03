@@ -52,7 +52,7 @@ int main ( int argc, char *argv[] )
   char lin[CSV_MAXL], caux[CSV_MAXL], caux2[32];
   char *tk[16], *c;
   int nt;
-  uint32_t ix;
+  uint32_t ix = 0;
   long int il;
   struct bufr_descriptor desc;
 
@@ -149,8 +149,10 @@ int main ( int argc, char *argv[] )
     }
   else
     {
-      // first line 
-      printf("\"First line1 with missing info\"\n");  
+      // Decode ECMWF tables
+      // first line
+      printf ( "\"First line with missing info\"\n" );
+      caux[0] = 0;
       while ( fgets ( lin, CSV_MAXL, f ) != NULL )
         {
           // supress the newline
@@ -168,12 +170,12 @@ int main ( int argc, char *argv[] )
               uint32_t_to_descriptor ( &desc, ix );
               printf ( "\"%s\",", desc.c );
 
-              // detailed name
+              // detailed name and a void note
               bufr_charray_to_string ( caux, &lin[8], 64 );
               bufr_adjust_string ( caux ); // supress trailing blanks
-              printf ( "\"%s\",", caux );
+              printf ( "\"%s\",,", caux );
 
-              // tyoe
+              // type
               bufr_charray_to_string ( caux ,&lin[73], 24 );
               bufr_adjust_string ( caux );
               printf ( "\"%s\",", caux );
@@ -193,20 +195,65 @@ int main ( int argc, char *argv[] )
 
             case 'C':
             case 'c':
-              fs = & ( C_FIELDS[0] );
+
+              // write csv line with stored data if finished
+              if ( lin[12] != ' ' && caux[0] )
+                {
+                  printf ( "\"%s\",\"%u\",\"%s\",,,\n", caux2, ix, caux );
+                  caux[0] = 0;
+                }
+
+              if ( lin[0] != ' ' )
+                {
+                  memcpy ( caux2, lin, 6 );
+                  caux2[6] = '\0';
+                }
+
+              if ( lin[12] != ' ' )
+                {
+                  ix = strtol ( lin + 12, &c, 10 );
+                  strcpy ( caux, lin + 24 );
+                }
+              else
+                {
+                  if ( lin[22] != ' ' )
+                    {
+                      if ( strlen ( caux ) + strlen ( lin + 22 ) < BUFR_EXPLAINED_LENGTH )
+                        strcat ( caux, lin + 22 );
+                      else
+                        {
+                          // cut the explanation
+                          * ( lin + 22 + BUFR_EXPLAINED_LENGTH - strlen ( caux ) - 1 ) = '\0';
+                          strcat ( caux, lin + 22 );
+                        }
+                    }
+                  else
+                    { // this is valid for versions < 15
+                      if ( strlen ( caux ) + strlen ( lin + 24 ) < BUFR_EXPLAINED_LENGTH )
+                        strcat ( caux, lin + 24 );
+                      else
+                        {
+                          // cut the explanation
+                          * ( lin + 24 + BUFR_EXPLAINED_LENGTH - strlen ( caux ) - 1 ) = '\0';
+                          strcat ( caux, lin + 24 );
+                        }
+                    }
+                }
+
               break;
 
             case 'D':
             case 'd':
 
-              if (lin[1] != ' ')
-              {
-                 memcpy(caux2, lin + 1, 6);
-                 caux2[6] = '\0';
-              }
-              memcpy(caux, lin + 11, 6);
+              if ( lin[1] != ' ' )
+                {
+                  memcpy ( caux2, lin + 1, 6 );
+                  caux2[6] = '\0';
+                }
+
+              memcpy ( caux, lin + 11, 6 );
               caux[6] = '\0';
-              printf("\"%s\",\"%s\"\n", caux2, caux);
+              printf ( "\"%s\",\"%s\"\n", caux2, caux );
               break;
 
             default:

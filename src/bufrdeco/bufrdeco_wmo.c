@@ -91,25 +91,28 @@ int get_wmo_tablenames ( struct bufrdeco *b, const char *bufrtables_dir )
       case 11:
       case 12:
       case 13:
-      case 14:
-      case 15:
-      case 16:
-      case 17:
+        sprintf ( b->tables->b.path,"%sBUFR_13_0_0_TableB_en.csv", aux );
+        sprintf ( b->tables->c.path,"%sBUFR_13_0_0_TableC_en.csv", aux );
+        sprintf ( b->tables->d.path,"%sBUFR_13_0_0_TableD_en.csv", aux );
       case 18:
-        sprintf ( b->tables->b.path,"%sBUFR_18_0_0_TableB_en.csv", aux );
-        sprintf ( b->tables->c.path,"%sBUFR_18_0_0_CodeFlag_en.csv", aux );
-        sprintf ( b->tables->d.path,"%sBUFR_18_0_0_TableD_en.csv", aux );
+        sprintf ( b->tables->b.path,"%sBUFR_18_1_0_TableB_en.csv", aux );
+        sprintf ( b->tables->c.path,"%sBUFR_18_1_0_TableC_en.csv", aux );
+        sprintf ( b->tables->d.path,"%sBUFR_18_1_0_TableD_en.csv", aux );
         break;
       case 19:
         sprintf ( b->tables->b.path,"%sBUFR_19_1_1_TableB_en.csv", aux );
-        sprintf ( b->tables->c.path,"%sBUFR_19_1_1_CodeFlag_en.csv", aux );
+        sprintf ( b->tables->c.path,"%sBUFR_19_1_1_TableC_en.csv", aux );
         sprintf ( b->tables->d.path,"%sBUFR_19_1_1_TableD_en.csv", aux );
         break;
       case 22:
         sprintf ( b->tables->b.path,"%sBUFR_22_0_1_TableB_en.csv", aux );
-        sprintf ( b->tables->c.path,"%sBUFR_22_0_1_CodeFlag_en.csv", aux );
+        sprintf ( b->tables->c.path,"%sBUFR_22_0_1_TableC_en.csv", aux );
         sprintf ( b->tables->d.path,"%sBUFR_22_0_1_TableD_en.csv", aux );
         break;
+      case 14:
+      case 15:
+      case 16:
+      case 17:
       case 21:
       case 23:
       case 24:
@@ -117,12 +120,12 @@ int get_wmo_tablenames ( struct bufrdeco *b, const char *bufrtables_dir )
       case 26:
       case 27:
         sprintf ( b->tables->b.path,"%sBUFR_%d_0_0_TableB_en.csv", aux, b->sec1.master_version );
-        sprintf ( b->tables->c.path,"%sBUFR_%d_0_0_CodeFlag_en.csv", aux, b->sec1.master_version );
+        sprintf ( b->tables->c.path,"%sBUFR_%d_0_0_TableC_en.csv", aux, b->sec1.master_version );
         sprintf ( b->tables->d.path,"%sBUFR_%d_0_0_TableD_en.csv", aux, b->sec1.master_version );
         break;
       default:
         sprintf ( b->tables->b.path,"%sBUFR_27_0_0_TableB_en.csv", aux );
-        sprintf ( b->tables->c.path,"%sBUFR_27_0_0_CodeFlag_en.csv", aux );
+        sprintf ( b->tables->c.path,"%sBUFR_27_0_0_TableC_en.csv", aux );
         sprintf ( b->tables->d.path,"%sBUFR_26_0_0_TableD_en.csv", aux );
         break;
     }
