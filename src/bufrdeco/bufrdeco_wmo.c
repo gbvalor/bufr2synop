@@ -94,6 +94,7 @@ int get_wmo_tablenames ( struct bufrdeco *b, const char *bufrtables_dir )
         sprintf ( b->tables->b.path,"%sBUFR_13_0_0_TableB_en.csv", aux );
         sprintf ( b->tables->c.path,"%sBUFR_13_0_0_TableC_en.csv", aux );
         sprintf ( b->tables->d.path,"%sBUFR_13_0_0_TableD_en.csv", aux );
+        break;
       case 18:
         sprintf ( b->tables->b.path,"%sBUFR_18_1_0_TableB_en.csv", aux );
         sprintf ( b->tables->c.path,"%sBUFR_18_1_0_TableC_en.csv", aux );
