@@ -101,11 +101,11 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
       tb->y_ref[desc.x][desc.y] = i - tb->x_start[desc.x]; // marc the position from start of first x
 
       // detailed name
-      bufr_charray_to_string ( tb->item[i].name, &l[8], 64 );
+      bufr_charray_to_string ( tb->item[i].name, &l[8], 64);
       bufr_adjust_string ( tb->item[i].name ); // supress trailing blanks
 
       // tyoe
-      bufr_charray_to_string ( tb->item[i].unit ,&l[73], 24 );
+      bufr_charray_to_string ( tb->item[i].unit ,&l[73], 24);
       bufr_adjust_string ( tb->item[i].unit );
 
       // escale

@@ -73,17 +73,17 @@ int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error )
     }
 
   // read first line, it is ignored
-  fgets( l, CSV_MAXL, t);
-  
+  fgets ( l, CSV_MAXL, t );
+
   while ( fgets ( l, CSV_MAXL, t ) != NULL && i < BUFR_MAXLINES_TABLEB )
     {
       // Parse line
-      if (parse_csv_line(&nt, tk, l) < 0 || nt != 7)
-      {
-        sprintf ( error,"Error parsing csv line from table B file '%s'\n", tb->path );
-        return 1;
-      }
-          
+      if ( parse_csv_line ( &nt, tk, l ) < 0 || nt != 7 )
+        {
+          sprintf ( error,"Error parsing csv line from table B file '%s'\n", tb->path );
+          return 1;
+        }
+
       // First we build the descriptor
       ix = strtoul ( tk[0], &c, 10 );
       uint32_t_to_descriptor ( &desc, ix );
@@ -91,21 +91,34 @@ int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error )
       tb->item[i].x = desc.x; // x
       tb->item[i].y = desc.y; // y
       strcpy ( tb->item[i].key, desc.c ); // key
-      if ( tb->num[desc.x] == 0)
+      if ( tb->num[desc.x] == 0 )
         {
           tb->x_start[desc.x] = i;  // marc the start
         }
       tb->y_ref[desc.x][desc.y] = i - tb->x_start[desc.x]; // marc the position from start of first x
-      (tb->num[desc.x])++;
-      
+      ( tb->num[desc.x] )++;
+
       // detailed name
-      if (tk[2][0])
-        sprintf(tb->item[i].name, "%s %s", tk[1], tk[2]);
+      if ( tk[2][0] )
+        {
+          sprintf ( caux, "%s %s", tk[1], tk[2] );
+        }
       else
-        strcpy(tb->item[i].name, tk[1]);
-      
+        {
+          strcpy ( caux, tk[1] );
+        }
+
+      // Check about length
+      if ( strlen ( caux ) >= BUFR_TABLEB_NAME_LENGTH )
+        caux[BUFR_TABLEB_NAME_LENGTH - 1] = 0;
+      // and finally copy
+      strcpy ( tb->item[i].name, caux );
+
       // unit
-      strcpy(tb->item[i].unit, tk[3]);
+      strcpy(caux, tk[3]);
+      if ( strlen ( caux ) >= BUFR_TABLEB_UNIT_LENGTH )
+        caux[BUFR_TABLEB_UNIT_LENGTH - 1] = 0;
+      strcpy ( tb->item[i].unit, caux );
 
       // escale
       tb->item[i].scale_ori = strtol ( tk[4], &c, 10 );

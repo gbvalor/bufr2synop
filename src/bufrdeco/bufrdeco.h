@@ -204,6 +204,20 @@
 #define BUFRDECO_USE_ECMWF_TABLES (1)
 
 /*!
+  \def BUFR_TABLEB_NAME_LENGTH
+  \brief Max length (in chars) reserved for a name of variable in table B
+*/
+#define BUFR_TABLEB_NAME_LENGTH (128)
+
+/*!
+  \def BUFR_TABLEB_NAME_LENGTH
+  \brief Max length (in chars) reserved for the unit string in table B
+*/
+#define BUFR_TABLEB_UNIT_LENGTH (32)
+
+
+
+/*!
   \struct bufr_descriptor
   \brief BUFR descriptor
 */
@@ -236,8 +250,8 @@ struct bufr_atom_data
 {
   struct bufr_descriptor desc; /*!< struct \ref bufr_descriptor */
   uint32_t mask; /*!< Mask with for the type */
-  char name[92]; /*!< String with the name of descriptor */
-  char unit[32]; /*!< String with the name of units */
+  char name[BUFR_TABLEB_NAME_LENGTH]; /*!< String with the name of descriptor */
+  char unit[BUFR_TABLEB_UNIT_LENGTH]; /*!< String with the name of units */
   double val; /*!< Value for the bufr descriptor */
   uint32_t associated; /*!< value for associated field, if any */
   char cval[128]; /*!< String value for the bufr descriptor */
@@ -326,8 +340,8 @@ struct bufrdeco_compressed_ref
   char cref0[256]; /*!< Local reference in case of string */
   uint8_t inc_bits; /*!< number of inc bits for every subset  */
   int32_t escale; /*!< escale for a expanded data in subset */
-  char name[92]; /*!< String with the name of descriptor */
-  char unit[32]; /*!< String with the name of units */
+  char name[BUFR_TABLEB_NAME_LENGTH]; /*!< String with the name of descriptor */
+  char unit[BUFR_TABLEB_UNIT_LENGTH]; /*!< String with the name of units */
   struct bufr_descriptor desc; /*!< associated descriptor */
 };
 
@@ -489,8 +503,8 @@ struct bufr_tableb_decoded_item
   uint8_t x; /*!< x value of descriptor */
   uint8_t y; /*!< y value of descriptor */
   char key[8]; /*!< c value of descriptor */
-  char name[64]; /*!< name */
-  char unit[24]; /*!< unit */
+  char name[BUFR_TABLEB_NAME_LENGTH]; /*!< name */
+  char unit[BUFR_TABLEB_UNIT_LENGTH]; /*!< unit */
   int32_t scale; /*!< escale */
   int32_t scale_ori; /*!< escale as readed from table b */
   int32_t reference; /*!< reference */
