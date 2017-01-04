@@ -150,8 +150,23 @@ int main ( int argc, char *argv[] )
   else
     {
       // Decode ECMWF tables
-      // first line
-      printf ( "\"First line with missing info\"\n" );
+      // first line with the name of fields
+      switch ( TABLE_TYPE[0] )
+        {
+        case 'B':
+        case 'b':
+          printf ( "\"FXY\",\"ElementName_en\",\"Note_en\",\"BUFR_Unit\",\"BUFR_Scale\",\"BUFR_ReferenceValue\",\"BUFR_DataWidth_Bits\"\n" );
+          break;
+        case 'C':
+        case 'c':
+          printf ( "\"FXY\",\"CodeFigure\",\"EntryName_en\",\"EntryName_sub1_en\",\"EntryName_sub2_en\",\"Note_en\"\n" );
+          break;
+        case 'D':
+        case 'd':
+          printf ( "\"FXY1\",\"FXY2\"\n" );
+          break;
+        }
+
       caux[0] = 0;
       while ( fgets ( lin, CSV_MAXL, f ) != NULL )
         {
@@ -228,7 +243,8 @@ int main ( int argc, char *argv[] )
                         }
                     }
                   else
-                    { // this is valid for versions < 15
+                    {
+                      // this is valid for versions < 15
                       if ( strlen ( caux ) + strlen ( lin + 24 ) < BUFR_EXPLAINED_LENGTH )
                         strcat ( caux, lin + 24 );
                       else
@@ -261,6 +277,12 @@ int main ( int argc, char *argv[] )
               fclose ( f );
               exit ( EXIT_FAILURE );
             }
+        }
+
+      // In case of table C (codeFlag) we still have to write last line
+      if ( TABLE_TYPE[0] == 'C' || TABLE_TYPE[0] == 'c' )
+        {
+          printf ( "\"%s\",\"%u\",\"%s\",,,\n", caux2, ix, caux );
         }
     }
   fclose ( f );

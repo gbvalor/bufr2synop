@@ -1,4 +1,4 @@
-"First line with missing info"
+"FXY","ElementName_en","Note_en","BUFR_Unit","BUFR_Scale","BUFR_ReferenceValue","BUFR_DataWidth_Bits"
 "000001","TABLE A: ENTRY",,"CCITTIA5","0","0","24"
 "000002","TABLE A: DATA CATEGORY DESCRIPTION, LINE 1",,"CCITTIA5","0","0","256"
 "000003","TABLE A: DATA CATEGORY DESCRIPTION, LINE 2",,"CCITTIA5","0","0","256"

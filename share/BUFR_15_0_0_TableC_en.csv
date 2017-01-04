@@ -1,4 +1,4 @@
-"First line with missing info"
+"FXY","CodeFigure","EntryName_en","EntryName_sub1_en","EntryName_sub2_en","Note_en"
 "001003","0","ANTARCTICA",,,
 "001003","1","REGION I",,,
 "001003","2","REGION II",,,
@@ -5051,3 +5051,4 @@
 "040025","0","GOOD",,,
 "040025","1","BAD",,,
 "040025","2","RESERVED",,,
+"040025","3","MISSING VALUE",,,
