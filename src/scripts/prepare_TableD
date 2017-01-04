@@ -7,7 +7,7 @@
 #  prepare_TableD 
 
 
-# Original table dirs, change it as your cobvenience
+# Original table dirs, change it as your convenience
 WMO_DIR="/home/gbv/claves/bufr_tables"
 ECMWF_DIR="/usr/local/lib/bufrtables"
 

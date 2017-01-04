@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004-2016 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2004-2017 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This file is part of bufr2synop                                       *
