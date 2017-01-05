@@ -1,15 +1,19 @@
 <map id="bufrdeco_decode_replicated_subsequence" name="bufrdeco_decode_replicated_subsequence">
-<area shape="rect" id="node2" href="$bufrdeco__data_8c.html#a37d001fbe5872fa6c77e8316af1dcd0f" title="decode the data from a subset in a recursive way " alt="" coords="244,242,417,283"/>
-<area shape="rect" id="node3" href="$bufrdeco_8h.html#a60d5f3460cfd609e245a5e2342d2ee4d" title="Get data from a table B descriptor. " alt="" coords="494,189,635,216"/>
-<area shape="rect" id="node12" href="$bufrdeco__data_8c.html#aac640b0a169dcc99097be9053118bcea" title="doubles the allocated space for a struct bufrdeco_subset_sequence_data whenever is posible ..." alt="" coords="483,357,646,398"/>
-<area shape="rect" id="node13" href="$bufrdeco_8h.html#a3169d30f8c32460fa68a2117129e4e44" title="parse a descritor with f = 2 " alt="" coords="465,305,664,332"/>
-<area shape="rect" id="node4" href="$bufrdeco_8h.html#a63cd52cc5e630568bc0f26f31c482850" title="bufrdeco_explained\l_flag_val" alt="" coords="724,57,863,98"/>
-<area shape="rect" id="node5" href="$bufrdeco_8h.html#a5ca586d5a56717d14b44265233e6fb8c" title="bufrdeco_explained\l_table_val" alt="" coords="724,122,863,163"/>
-<area shape="rect" id="node7" href="$bufrdeco_8h.html#a11c794f59590b7351b8d487fe88fffb8" title="Get a string from an array of bits. " alt="" coords="716,305,871,332"/>
-<area shape="rect" id="node8" href="$bufrdeco_8h.html#a3ea14e425c4a8b2f8ccefa1f2b4b2737" title="Read bits from an array of uint8_t and set them as an uint32_t. " alt="" coords="723,188,863,215"/>
-<area shape="rect" id="node10" href="$bufrdeco_8h.html#a1d2fc8f6683d9697a36ca71eb513ef34" title="Get an int32_t from bits according with bufr criteria to change the reference of a descritor..." alt="" coords="718,239,869,281"/>
-<area shape="rect" id="node11" href="$bufrdeco_8h.html#a22d23c4377cba5193d77a3b38c0f8d79" title="check if a descriptor is a local descriptor " alt="" coords="721,5,866,32"/>
-<area shape="rect" id="node6" href="$bufrdeco__tablec_8c.html#ad8d448ff1be2d834e11626259bb6b891" title="Find the index of a line in table C for a given key of a descriptor. " alt="" coords="923,129,1076,156"/>
-<area shape="rect" id="node9" href="$bufrdeco__utils_8c.html#ae9927049c61078aa71a7504498ffa548" title="Read bits from an array of uint8_t and set them as an uint32_t. " alt="" coords="926,188,1073,215"/>
-<area shape="rect" id="node14" href="$bufrdeco_8h.html#aac640b0a169dcc99097be9053118bcea" title="doubles the allocated space for a struct bufrdeco_subset_sequence_data whenever is posible ..." alt="" coords="712,357,875,398"/>
+<area shape="rect" id="node2" href="$bufrdeco__data_8c.html#a37d001fbe5872fa6c77e8316af1dcd0f" title="decode the data from a subset in a recursive way " alt="" coords="240,242,407,283"/>
+<area shape="rect" id="node3" href="$bufrdeco_8h.html#a60d5f3460cfd609e245a5e2342d2ee4d" title="Get data from a table B descriptor. " alt="" coords="482,189,618,216"/>
+<area shape="rect" id="node16" href="$bufrdeco__data_8c.html#aac640b0a169dcc99097be9053118bcea" title="doubles the allocated space for a struct bufrdeco_subset_sequence_data whenever is posible ..." alt="" coords="471,357,629,398"/>
+<area shape="rect" id="node17" href="$bufrdeco_8h.html#a3169d30f8c32460fa68a2117129e4e44" title="parse a descritor with f = 2 " alt="" coords="455,305,645,332"/>
+<area shape="rect" id="node4" href="$bufrdeco_8h.html#a63cd52cc5e630568bc0f26f31c482850" title="bufrdeco_explained\l_flag_val" alt="" coords="705,57,840,98"/>
+<area shape="rect" id="node6" href="$bufrdeco_8h.html#a5ca586d5a56717d14b44265233e6fb8c" title="bufrdeco_explained\l_table_val" alt="" coords="705,122,840,163"/>
+<area shape="rect" id="node11" href="$bufrdeco_8h.html#a11c794f59590b7351b8d487fe88fffb8" title="Get a string from an array of bits. " alt="" coords="696,305,849,332"/>
+<area shape="rect" id="node12" href="$bufrdeco_8h.html#a3ea14e425c4a8b2f8ccefa1f2b4b2737" title="Read bits from an array of uint8_t and set them as an uint32_t. " alt="" coords="703,188,842,215"/>
+<area shape="rect" id="node14" href="$bufrdeco_8h.html#a1d2fc8f6683d9697a36ca71eb513ef34" title="Get an int32_t from bits according with bufr criteria to change the reference of a descritor..." alt="" coords="699,239,847,281"/>
+<area shape="rect" id="node15" href="$bufrdeco_8h.html#a22d23c4377cba5193d77a3b38c0f8d79" title="check if a descriptor is a local descriptor " alt="" coords="701,5,844,32"/>
+<area shape="rect" id="node5" href="$bufrdeco_8h.html#aedf04f38cfc82ad41f88d2afdce93425" title="bufrdeco_explained\l_flag_csv_val" alt="" coords="908,31,1043,73"/>
+<area shape="rect" id="node7" href="$bufrdeco__tablec_8c.html#ad8d448ff1be2d834e11626259bb6b891" title="Find the index of a line in table C for a given key of a descriptor. " alt="" coords="900,163,1051,189"/>
+<area shape="rect" id="node8" href="$bufrdeco_8h.html#af3c1494150fd7a77b8c0a552a4a319a6" title="bufrdeco_explained\l_table_csv_val" alt="" coords="908,97,1043,138"/>
+<area shape="rect" id="node9" href="$bufrdeco__tablec__csv_8c.html#ad80ff4f66ba77bd2a3ea558182e77a25" title="bufr_find_tablec_csv\l_index" alt="" coords="1099,97,1237,138"/>
+<area shape="rect" id="node10" href="$bufrdeco_8h.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary " alt="" coords="1285,104,1433,131"/>
+<area shape="rect" id="node13" href="$bufrdeco__utils_8c.html#ae9927049c61078aa71a7504498ffa548" title="Read bits from an array of uint8_t and set them as an uint32_t. " alt="" coords="902,213,1049,240"/>
+<area shape="rect" id="node18" href="$bufrdeco_8h.html#aac640b0a169dcc99097be9053118bcea" title="doubles the allocated space for a struct bufrdeco_subset_sequence_data whenever is posible ..." alt="" coords="693,357,852,398"/>
 </map>

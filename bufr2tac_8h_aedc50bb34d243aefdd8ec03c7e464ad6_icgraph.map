@@ -1,0 +1,8 @@
+<map id="total_snow_depth_to_sss" name="total_snow_depth_to_sss">
+<area shape="rect" id="node2" href="$bufr2tac__x13_8c.html#a2647c457f4548120a3906acd6cb52eb8" title="Parse a expanded descriptor with X = 13. " alt="" coords="216,35,324,61"/>
+<area shape="rect" id="node3" href="$bufr2tac__synop_8c.html#a3178eb404dc66ceccd7a08a3c719c2aa" title="parses a subset sequence as an Land fixed SYNOP FM&#45;12, SHIP FM&#45;13 or SYNOP&#45;mobil FM&#45;14 report ..." alt="" coords="372,35,528,61"/>
+<area shape="rect" id="node4" href="$bufr2tac__sqparse_8c.html#a7b839bfd63c95d7fdbad26be3c1d86be" title="Parse a sequence of expanded descriptors for a subset. " alt="" coords="576,35,735,61"/>
+<area shape="rect" id="node5" href="$bufr2synop_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="834,5,885,32"/>
+<area shape="rect" id="node6" href="$bufrtotac__io_8c.html#a3baaf7cbcd5761ee638cfdc060f6f2da" title="bufrdeco_parse_subset\l_sequence" alt="" coords="783,57,936,98"/>
+<area shape="rect" id="node7" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="984,64,1035,91"/>
+</map>

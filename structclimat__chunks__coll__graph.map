@@ -3,7 +3,7 @@
 <area shape="rect" id="node3" href="$structclimat__sec1.html" title="contains all possible substrings from section 1 when a report is parsed with success ..." alt="" coords="120,5,211,32"/>
 <area shape="rect" id="node4" href="$structclimat__sec2.html" title="contains all possible substrings from section 2 when a report is parsed with success ..." alt="" coords="235,5,325,32"/>
 <area shape="rect" id="node5" href="$structclimat__sec3.html" title="contains all possible substrings from section 3 when a report is parsed with success ..." alt="" coords="349,5,440,32"/>
-<area shape="rect" id="node6" href="$structclimat__old.html" title="contains all possible substrings from old CLIMAT format when a report is parsed with success ..." alt="" coords="464,5,547,32"/>
+<area shape="rect" id="node6" href="$structclimat__old.html" title="contains all possible substrings from old CLIMAT format when a report is parsed with success ..." alt="" coords="465,5,546,32"/>
 <area shape="rect" id="node7" href="$structclimat__sec4.html" title="contains all possible substrings from section 4 when a report is parsed with success ..." alt="" coords="571,5,661,32"/>
-<area shape="rect" id="node8" href="$structreport__date__ext.html" title="contains extensions, not in wmo. Date/time UTC information " alt="" coords="685,5,797,32"/>
+<area shape="rect" id="node8" href="$structreport__date__ext.html" title="contains extensions, not in wmo. Date/time UTC information " alt="" coords="685,5,795,32"/>
 </map>

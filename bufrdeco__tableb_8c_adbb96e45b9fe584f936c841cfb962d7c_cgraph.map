@@ -1,5 +1,5 @@
 <map id="bufr_read_tableb" name="bufr_read_tableb">
-<area shape="rect" id="node2" href="$bufrdeco_8h.html#a86b51c0d7a12669b2664dbba50c5e328" title="bufr_adjust_string" alt="" coords="187,5,313,32"/>
-<area shape="rect" id="node3" href="$bufrdeco_8h.html#a454f64137d0cf7e0c4b3e018a52ddd9a" title="get a null termitated c&#45;string from an array of unsigned chars " alt="" coords="175,56,325,83"/>
-<area shape="rect" id="node4" href="$bufrdeco_8h.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary " alt="" coords="175,107,325,133"/>
+<area shape="rect" id="node2" href="$bufrdeco_8h.html#a86b51c0d7a12669b2664dbba50c5e328" title="bufr_adjust_string" alt="" coords="183,5,306,32"/>
+<area shape="rect" id="node3" href="$bufrdeco_8h.html#a454f64137d0cf7e0c4b3e018a52ddd9a" title="get a null termitated c&#45;string from an array of unsigned chars " alt="" coords="171,56,318,83"/>
+<area shape="rect" id="node4" href="$bufrdeco_8h.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary " alt="" coords="171,107,319,133"/>
 </map>

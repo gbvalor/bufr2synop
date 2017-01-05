@@ -1,7 +1,7 @@
 <map id="temp_parse_x06" name="temp_parse_x06">
-<area shape="rect" id="node2" href="$bufr2tac__temp_8c.html#a592db452b503cfcb75c74616ffe39548" title="parse_subset_as_temp" alt="" coords="171,35,328,61"/>
-<area shape="rect" id="node3" href="$bufr2tac__sqparse_8c.html#a7b839bfd63c95d7fdbad26be3c1d86be" title="Parse a sequence of expanded descriptors for a subset. " alt="" coords="376,35,540,61"/>
-<area shape="rect" id="node4" href="$bufr2synop_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="643,5,694,32"/>
-<area shape="rect" id="node5" href="$bufrtotac__io_8c.html#a3baaf7cbcd5761ee638cfdc060f6f2da" title="bufrdeco_parse_subset\l_sequence" alt="" coords="588,57,749,98"/>
-<area shape="rect" id="node6" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="797,64,848,91"/>
+<area shape="rect" id="node2" href="$bufr2tac__temp_8c.html#a592db452b503cfcb75c74616ffe39548" title="parse_subset_as_temp" alt="" coords="171,35,321,61"/>
+<area shape="rect" id="node3" href="$bufr2tac__sqparse_8c.html#a7b839bfd63c95d7fdbad26be3c1d86be" title="Parse a sequence of expanded descriptors for a subset. " alt="" coords="369,35,528,61"/>
+<area shape="rect" id="node4" href="$bufr2synop_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="627,5,678,32"/>
+<area shape="rect" id="node5" href="$bufrtotac__io_8c.html#a3baaf7cbcd5761ee638cfdc060f6f2da" title="bufrdeco_parse_subset\l_sequence" alt="" coords="576,57,729,98"/>
+<area shape="rect" id="node6" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="777,64,828,91"/>
 </map>

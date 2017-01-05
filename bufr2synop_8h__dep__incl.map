@@ -1,4 +1,4 @@
 <map id="src/apps/bufr2synop.h" name="src/apps/bufr2synop.h">
-<area shape="rect" id="node2" href="$bufr2synop_8c.html" title="decodes a bufr file using ECMWF bufr library and tries to pass the decoded reports to synop&#45;format ..." alt="" coords="5,80,163,107"/>
-<area shape="rect" id="node3" href="$bufr2synop__io_8c.html" title="file with the i/o code for binary bufr2synop " alt="" coords="187,80,362,107"/>
+<area shape="rect" id="node2" href="$bufr2synop_8c.html" title="decodes a bufr file using ECMWF bufr library and tries to pass the decoded reports to synop&#45;format ..." alt="" coords="5,80,152,107"/>
+<area shape="rect" id="node3" href="$bufr2synop__io_8c.html" title="file with the i/o code for binary bufr2synop " alt="" coords="176,80,339,107"/>
 </map>

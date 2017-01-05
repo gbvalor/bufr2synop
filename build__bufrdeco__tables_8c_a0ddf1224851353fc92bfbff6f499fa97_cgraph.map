@@ -1,0 +1,8 @@
+<map id="main" name="main">
+<area shape="rect" id="node2" href="$bufrdeco_8h.html#a86b51c0d7a12669b2664dbba50c5e328" title="bufr_adjust_string" alt="" coords="117,5,239,32"/>
+<area shape="rect" id="node3" href="$bufrdeco_8h.html#a454f64137d0cf7e0c4b3e018a52ddd9a" title="get a null termitated c&#45;string from an array of unsigned chars " alt="" coords="105,56,251,83"/>
+<area shape="rect" id="node4" href="$bufrdeco_8h.html#a9b61369e66d3b78fd6ebe99f79f06c1b" title="Transform a string to a quoted string to be inserted in a csv file. " alt="" coords="115,107,241,133"/>
+<area shape="rect" id="node5" href="$bufrdeco_8h.html#a9685dcec12aa968d7146aa55965dda5e" title="Parse a csv line. " alt="" coords="125,157,231,184"/>
+<area shape="rect" id="node6" href="$build__bufrdeco__tables_8c.html#aa1187b70998f73cdb598833d6afaa30a" title="print_usage" alt="" coords="134,208,222,235"/>
+<area shape="rect" id="node7" href="$bufrdeco_8h.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary " alt="" coords="104,259,252,285"/>
+</map>

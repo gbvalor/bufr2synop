@@ -1,7 +1,6 @@
 <map id="syn_parse_x12" name="syn_parse_x12">
-<area shape="rect" id="node2" href="$bufr2tac_8h.html#a895702a2caf61966ef4cbeb09148a5f9" title="Try to find WMO region if it is not already set and WMO Block and number index are known..." alt="" coords="160,5,341,32"/>
-<area shape="rect" id="node4" href="$bufr2tac__x12_8c.html#ad12e0de5dff810a8bb54b0b68f290c0b" title="converts a kelvin temperature value into a snTT string " alt="" coords="195,56,306,83"/>
-<area shape="rect" id="node5" href="$bufr2tac__x12_8c.html#a8455459dcca0ceec32211bd841d31845" title="converts a kelvin temperature value into a snTTT string " alt="" coords="191,107,311,133"/>
-<area shape="rect" id="node6" href="$bufr2tac__x12_8c.html#ad0d01b08b1904abc632ad56960546d35" title="converts a kelvin temperature value into a TT string " alt="" coords="202,157,299,184"/>
-<area shape="rect" id="node3" href="$bufr2tac_8h.html#a294969d52c0ebb804a4ceaf8ae37379a" title="get WMO region A1 and Reg items from II and iii (WMO index) " alt="" coords="389,5,528,32"/>
+<area shape="rect" id="node2" href="$bufr2tac__x12_8c.html#ad12e0de5dff810a8bb54b0b68f290c0b" title="converts a kelvin temperature value into a snTT string " alt="" coords="177,5,288,32"/>
+<area shape="rect" id="node3" href="$bufr2tac__x12_8c.html#a8455459dcca0ceec32211bd841d31845" title="converts a kelvin temperature value into a snTTT string " alt="" coords="173,56,292,83"/>
+<area shape="rect" id="node4" href="$bufr2tac__x12_8c.html#ad0d01b08b1904abc632ad56960546d35" title="converts a kelvin temperature value into a TT string " alt="" coords="184,107,281,133"/>
+<area shape="rect" id="node5" href="$bufr2tac_8h.html#a5ae35365caffb4fc87ce5534d9c517ee" title="Get time period duration in seconds. " alt="" coords="161,157,304,184"/>
 </map>

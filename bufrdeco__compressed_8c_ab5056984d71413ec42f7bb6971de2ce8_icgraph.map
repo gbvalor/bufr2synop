@@ -1,5 +1,5 @@
 <map id="bufrdeco_parse_compressed" name="bufrdeco_parse_compressed">
-<area shape="rect" id="node2" href="$bufrdeco__data_8c.html#a90316581dc8355c7a63928ac3063fb32" title="User interface to decode a BUFR subset. " alt="" coords="248,5,407,47"/>
-<area shape="rect" id="node3" href="$bufrdeco__data_8c.html#a9775040e8bec8247de95cb4bc0afcfd0" title="Parse and get a struct bufrdeco_subset_sequence_data. " alt="" coords="455,5,601,47"/>
-<area shape="rect" id="node4" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="649,13,700,39"/>
+<area shape="rect" id="node2" href="$bufrdeco__data_8c.html#a90316581dc8355c7a63928ac3063fb32" title="User interface to decode a BUFR subset. " alt="" coords="240,5,395,47"/>
+<area shape="rect" id="node3" href="$bufrdeco__data_8c.html#a9775040e8bec8247de95cb4bc0afcfd0" title="Parse and get a struct bufrdeco_subset_sequence_data. " alt="" coords="443,5,583,47"/>
+<area shape="rect" id="node4" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="631,13,681,39"/>
 </map>

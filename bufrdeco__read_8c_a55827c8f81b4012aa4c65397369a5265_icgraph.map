@@ -1,5 +1,0 @@
-<map id="get_ecmwf_tablenames" name="get_ecmwf_tablenames">
-<area shape="rect" id="node2" href="$bufrdeco__read_8c.html#abd43e15b30951a6fc340f0b91b80abba" title="Read the tables according with bufr file data from a bufr table directory. " alt="" coords="215,5,335,32"/>
-<area shape="rect" id="node3" href="$bufrdeco__read_8c.html#ae3cfc6802c196511223adc0a6324e4af" title="Read bufr file and does preliminary and first decode pass. " alt="" coords="383,5,521,32"/>
-<area shape="rect" id="node4" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="569,5,620,32"/>
-</map>

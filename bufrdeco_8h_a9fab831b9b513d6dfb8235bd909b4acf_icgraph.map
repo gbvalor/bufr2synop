@@ -1,7 +1,7 @@
 <map id="bufrdeco_decode_replicated_subsequence" name="bufrdeco_decode_replicated_subsequence">
-<area shape="rect" id="node2" href="$bufrdeco__data_8c.html#a37d001fbe5872fa6c77e8316af1dcd0f" title="decode the data from a subset in a recursive way " alt="" coords="244,71,417,112"/>
-<area shape="rect" id="node3" href="$bufrdeco__data_8c.html#a90316581dc8355c7a63928ac3063fb32" title="User interface to decode a BUFR subset. " alt="" coords="481,5,640,47"/>
-<area shape="rect" id="node6" href="$bufrdeco__data_8c.html#a9fab831b9b513d6dfb8235bd909b4acf" title="Decodes a replicated sequence. " alt="" coords="465,71,656,112"/>
-<area shape="rect" id="node4" href="$bufrdeco__data_8c.html#a9775040e8bec8247de95cb4bc0afcfd0" title="Parse and get a struct bufrdeco_subset_sequence_data. " alt="" coords="704,5,851,47"/>
-<area shape="rect" id="node5" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="899,13,949,39"/>
+<area shape="rect" id="node2" href="$bufrdeco__data_8c.html#a37d001fbe5872fa6c77e8316af1dcd0f" title="decode the data from a subset in a recursive way " alt="" coords="240,71,407,112"/>
+<area shape="rect" id="node3" href="$bufrdeco__data_8c.html#a90316581dc8355c7a63928ac3063fb32" title="User interface to decode a BUFR subset. " alt="" coords="471,5,625,47"/>
+<area shape="rect" id="node6" href="$bufrdeco__data_8c.html#a9fab831b9b513d6dfb8235bd909b4acf" title="Decodes a replicated sequence. " alt="" coords="455,71,641,112"/>
+<area shape="rect" id="node4" href="$bufrdeco__data_8c.html#a9775040e8bec8247de95cb4bc0afcfd0" title="Parse and get a struct bufrdeco_subset_sequence_data. " alt="" coords="689,5,829,47"/>
+<area shape="rect" id="node5" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="877,13,928,39"/>
 </map>

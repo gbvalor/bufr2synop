@@ -1,6 +1,9 @@
 <map id="syn_parse_x20" name="syn_parse_x20">
-<area shape="rect" id="node2" href="$bufr2tac__x20_8c.html#a2805b0fe1c412f596244fb45ac2276c5" title="converts the altitude of cloud layer into h string code " alt="" coords="186,5,250,32"/>
-<area shape="rect" id="node3" href="$bufr2tac__x20_8c.html#aa15b83fbcb9c0b59c298e147d6cf2b43" title="converts the altitude of cloud layer into hh string code " alt="" coords="183,56,253,83"/>
-<area shape="rect" id="node4" href="$bufr2tac__x20_8c.html#a61ca536702ce875119cacb4e21ad492d" title="Converts percent cloud cover into okta. " alt="" coords="160,107,276,133"/>
-<area shape="rect" id="node5" href="$bufr2tac__x20_8c.html#a2a1ba30a264f1b2621c4250c160210f3" title="Convert horizontal visibilty in meters to a VV string. " alt="" coords="173,157,263,184"/>
+<area shape="rect" id="node2" href="$bufr2tac_8h.html#a2d6c7cc2545be067cb3bcb474b552a39" title="Converts true direction in grads to D (code table 0700) " alt="" coords="176,5,259,32"/>
+<area shape="rect" id="node3" href="$bufr2tac__x20_8c.html#a2805b0fe1c412f596244fb45ac2276c5" title="converts the altitude of cloud layer into h string code " alt="" coords="185,56,249,83"/>
+<area shape="rect" id="node4" href="$bufr2tac__x20_8c.html#aa15b83fbcb9c0b59c298e147d6cf2b43" title="converts the altitude of cloud layer into hh string code " alt="" coords="182,107,253,133"/>
+<area shape="rect" id="node5" href="$bufr2tac__x20_8c.html#ab4192bf8073d5e91fdd69fdf3bf35b7d" title="Convert distance (m) in RR code (3570) " alt="" coords="180,157,255,184"/>
+<area shape="rect" id="node6" href="$bufr2tac__x20_8c.html#a61ca536702ce875119cacb4e21ad492d" title="Converts percent cloud cover into okta. " alt="" coords="161,208,273,235"/>
+<area shape="rect" id="node7" href="$bufr2tac_8h.html#a3cd2ef5e4af1ea878c9eab35d614eddf" title="get tt code from seconds " alt="" coords="178,259,257,285"/>
+<area shape="rect" id="node8" href="$bufr2tac__x20_8c.html#a2a1ba30a264f1b2621c4250c160210f3" title="Convert horizontal visibilty in meters to a VV string. " alt="" coords="173,309,261,336"/>
 </map>

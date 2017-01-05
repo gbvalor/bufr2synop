@@ -1,5 +1,8 @@
 <map id="syn_parse_x13" name="syn_parse_x13">
-<area shape="rect" id="node2" href="$bufr2tac__x13_8c.html#ac59fd926302695d96285ad9466a2f173" title="converts a precipitation in Kg/m2 into a RRR string " alt="" coords="179,5,275,32"/>
-<area shape="rect" id="node3" href="$bufr2tac__x13_8c.html#a4bbfdd9b6850c7cf939f2491c3ab8693" title="converts a precipitation in Kg/m2 into a RRRR24 string " alt="" coords="168,56,287,83"/>
-<area shape="rect" id="node4" href="$bufr2tac__x13_8c.html#a88a82c62e5e6c3b0dd7abb2121340c87" title="converts recent snow in m to ss (code table 3870) " alt="" coords="160,107,295,133"/>
+<area shape="rect" id="node2" href="$bufr2tac_8h.html#a94ed8d14cd9b222898681702dfdfde42" title="Get the rounded hour of a given date. " alt="" coords="191,5,294,32"/>
+<area shape="rect" id="node3" href="$bufr2tac__x13_8c.html#ac59fd926302695d96285ad9466a2f173" title="converts a precipitation in Kg/m2 into a RRR string " alt="" coords="193,56,292,83"/>
+<area shape="rect" id="node4" href="$bufr2tac__x13_8c.html#a4bbfdd9b6850c7cf939f2491c3ab8693" title="converts a precipitation in Kg/m2 into a RRRR24 string " alt="" coords="181,107,304,133"/>
+<area shape="rect" id="node5" href="$bufr2tac__x13_8c.html#a88a82c62e5e6c3b0dd7abb2121340c87" title="converts recent snow in m to ss (code table 3870) " alt="" coords="178,157,307,184"/>
+<area shape="rect" id="node6" href="$bufr2tac_8h.html#a5ae35365caffb4fc87ce5534d9c517ee" title="Get time period duration in seconds. " alt="" coords="171,208,314,235"/>
+<area shape="rect" id="node7" href="$bufr2tac__x13_8c.html#afc6e264fbfbe80423d23d7311068cfba" title="converts tatal snow depth in m to sss (code table 3889) " alt="" coords="161,259,324,285"/>
 </map>

@@ -1,11 +1,12 @@
 <map id="synop_chunks" name="synop_chunks">
-<area shape="rect" id="node2" href="$structsynop__sec0.html" title="contains all possible substrings from section 0 when a report is parsed with success ..." alt="" coords="5,184,97,211"/>
-<area shape="rect" id="node3" href="$structsynop__sec1.html" title="contains all possible substrings from section 1 when a report is parsed with success ..." alt="" coords="121,184,213,211"/>
-<area shape="rect" id="node4" href="$structsynop__sec2.html" title="contains all possible substrings from section 2 when a report is parsed with success (still incomplet..." alt="" coords="237,184,329,211"/>
-<area shape="rect" id="node5" href="$structsynop__sec3.html" title="contains most of substrings from section 3 when a report is parsed with success " alt="" coords="469,184,561,211"/>
-<area shape="rect" id="node6" href="$structdata9.html" title="data9" alt="" coords="395,95,449,121"/>
-<area shape="rect" id="node10" href="$structsynop__sec5.html" title="contains some of substrings from section 5 when a report is parsed with success " alt="" coords="353,184,445,211"/>
-<area shape="rect" id="node7" href="$structmisc3.html" title="struct with mixed info for group SpSpspsp at section at section 3. " alt="" coords="393,5,451,32"/>
-<area shape="rect" id="node8" href="$structnub3.html" title="struct with info for a cloud group at section 3 " alt="" coords="490,95,541,121"/>
-<area shape="rect" id="node9" href="$structreport__date__ext.html" title="contains extensions, not in wmo. Date/time UTC information " alt="" coords="586,184,698,211"/>
+<area shape="rect" id="node2" href="$structsynop__sec0.html" title="contains all possible substrings from section 0 when a report is parsed with success ..." alt="" coords="5,184,96,211"/>
+<area shape="rect" id="node3" href="$structsynop__sec1.html" title="contains all possible substrings from section 1 when a report is parsed with success ..." alt="" coords="120,184,211,211"/>
+<area shape="rect" id="node4" href="$structsynop__sec2.html" title="contains all possible substrings from section 2 when a report is parsed with success (still incomplet..." alt="" coords="235,184,325,211"/>
+<area shape="rect" id="node5" href="$structsynop__sec3.html" title="contains most of substrings from section 3 when a report is parsed with success " alt="" coords="464,184,555,211"/>
+<area shape="rect" id="node6" href="$structdata9.html" title="data9" alt="" coords="389,95,443,121"/>
+<area shape="rect" id="node11" href="$structsynop__sec5.html" title="contains some of substrings from section 5 when a report is parsed with success " alt="" coords="349,184,440,211"/>
+<area shape="rect" id="node7" href="$structmisc3.html" title="struct with mixed info for group SpSpspsp at section at section 3. " alt="" coords="387,5,445,32"/>
+<area shape="rect" id="node8" href="$structnub3.html" title="struct with info for a cloud group at section 3 " alt="" coords="484,95,535,121"/>
+<area shape="rect" id="node9" href="$structreport__date__ext.html" title="contains extensions, not in wmo. Date/time UTC information " alt="" coords="579,184,688,211"/>
+<area shape="rect" id="node10" href="$structsynop__sec4.html" title="contains some of substrings from section 4 when a report is parsed with success " alt="" coords="712,184,803,211"/>
 </map>

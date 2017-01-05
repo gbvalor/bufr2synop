@@ -1,7 +1,7 @@
 <map id="print_climat" name="print_climat">
-<area shape="rect" id="node2" href="$bufr2tac__print__climat_8c.html#aa939a683ae4c9ed1f91cafcde4b28b75" title="Prints the climat section 0 (header) " alt="" coords="143,5,265,32"/>
-<area shape="rect" id="node3" href="$bufr2tac__print__climat_8c.html#a77d6143656da9eaa0162772e58317c57" title="Prints the climat section 1. " alt="" coords="143,56,265,83"/>
-<area shape="rect" id="node4" href="$bufr2tac__print__climat_8c.html#ac67afa2fc3606b2f2c07be7449317363" title="Prints the climat section 2. " alt="" coords="143,107,265,133"/>
-<area shape="rect" id="node5" href="$bufr2tac__print__climat_8c.html#ab9cee0ba8a9ea6c365780cd6c3d57c81" title="Prints the climat section 3. " alt="" coords="143,157,265,184"/>
-<area shape="rect" id="node6" href="$bufr2tac__print__climat_8c.html#a620217c173296817c453a4b1920442e7" title="Prints the climat section 4. " alt="" coords="143,208,265,235"/>
+<area shape="rect" id="node2" href="$bufr2tac__print__climat_8c.html#aa939a683ae4c9ed1f91cafcde4b28b75" title="Prints the climat section 0 (header) " alt="" coords="140,5,263,32"/>
+<area shape="rect" id="node3" href="$bufr2tac__print__climat_8c.html#a77d6143656da9eaa0162772e58317c57" title="Prints the climat section 1. " alt="" coords="140,56,263,83"/>
+<area shape="rect" id="node4" href="$bufr2tac__print__climat_8c.html#ac67afa2fc3606b2f2c07be7449317363" title="Prints the climat section 2. " alt="" coords="140,107,263,133"/>
+<area shape="rect" id="node5" href="$bufr2tac__print__climat_8c.html#ab9cee0ba8a9ea6c365780cd6c3d57c81" title="Prints the climat section 3. " alt="" coords="140,157,263,184"/>
+<area shape="rect" id="node6" href="$bufr2tac__print__climat_8c.html#a620217c173296817c453a4b1920442e7" title="Prints the climat section 4. " alt="" coords="140,208,263,235"/>
 </map>

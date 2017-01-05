@@ -1,3 +1,6 @@
 <map id="bufrdeco_explained_table_val" name="bufrdeco_explained_table_val">
-<area shape="rect" id="node2" href="$bufrdeco__tablec_8c.html#ad8d448ff1be2d834e11626259bb6b891" title="Find the index of a line in table C for a given key of a descriptor. " alt="" coords="192,13,345,39"/>
+<area shape="rect" id="node2" href="$bufrdeco__tablec_8c.html#ad8d448ff1be2d834e11626259bb6b891" title="Find the index of a line in table C for a given key of a descriptor. " alt="" coords="188,5,339,32"/>
+<area shape="rect" id="node3" href="$bufrdeco_8h.html#af3c1494150fd7a77b8c0a552a4a319a6" title="bufrdeco_explained\l_table_csv_val" alt="" coords="196,57,331,98"/>
+<area shape="rect" id="node4" href="$bufrdeco__tablec__csv_8c.html#ad80ff4f66ba77bd2a3ea558182e77a25" title="bufr_find_tablec_csv\l_index" alt="" coords="387,57,525,98"/>
+<area shape="rect" id="node5" href="$bufrdeco_8h.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary " alt="" coords="573,64,721,91"/>
 </map>

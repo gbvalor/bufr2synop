@@ -1,10 +1,10 @@
 <map id="src/apps/bufr2synop.c" name="src/apps/bufr2synop.c">
-<area shape="rect" id="node2" href="$bufr2synop_8h.html" title="Include header file for binary bufr2synop. " alt="" coords="457,80,555,107"/>
-<area shape="rect" id="node3" href="$bufr2tac_8h.html" title="bufr2tac.h" alt="" coords="465,155,547,181"/>
-<area shape="rect" id="node11" href="$bufrdeco_8h.html" title="Include header file for bufrdeco library. " alt="" coords="355,229,441,256"/>
-<area shape="rect" id="node13" href="$metsynop_8h.html" title="Main header file for synop related tasks. " alt="" coords="619,229,710,256"/>
-<area shape="rect" id="node15" href="$metbuoy_8h.html" title="Main header file for buoy related tasks. " alt="" coords="843,229,926,256"/>
-<area shape="rect" id="node16" href="$mettemp_8h.html" title="Main header file for temp report related tasks. " alt="" coords="735,229,819,256"/>
-<area shape="rect" id="node17" href="$metclimat_8h.html" title="metclimat.h" alt="" coords="951,229,1040,256"/>
-<area shape="rect" id="node14" href="$metcommon_8h.html" title="Main header file for common report structures. " alt="" coords="726,304,833,331"/>
+<area shape="rect" id="node2" href="$bufr2synop_8h.html" title="Include header file for binary bufr2synop. " alt="" coords="490,80,585,107"/>
+<area shape="rect" id="node3" href="$bufr2tac_8h.html" title="bufr2tac.h" alt="" coords="450,155,529,181"/>
+<area shape="rect" id="node11" href="$bufrdeco_8h.html" title="Include header file for bufrdeco library. " alt="" coords="344,229,427,256"/>
+<area shape="rect" id="node13" href="$metsynop_8h.html" title="Main header file for synop related tasks. " alt="" coords="603,229,690,256"/>
+<area shape="rect" id="node15" href="$metbuoy_8h.html" title="Main header file for buoy related tasks. " alt="" coords="820,229,900,256"/>
+<area shape="rect" id="node16" href="$mettemp_8h.html" title="Main header file for temp report related tasks. " alt="" coords="714,229,795,256"/>
+<area shape="rect" id="node17" href="$metclimat_8h.html" title="metclimat.h" alt="" coords="925,229,1011,256"/>
+<area shape="rect" id="node14" href="$metcommon_8h.html" title="Main header file for common report structures. " alt="" coords="703,304,806,331"/>
 </map>
