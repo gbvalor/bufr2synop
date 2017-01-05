@@ -21,10 +21,22 @@ At the moment includes the following reports:
   - FM 38-XI  TEMP MOBIL
   - FM 71-XII CLIMAT
 
-The software is based in bufrdc library from ECMWF. Before version 0.7 this package should to be 
-installed. Since version 0.7, a library for decode a wide subset of BUFR reports has been written 
-from scratch. This is a fast and light bufr decoder. Anyway it still uses the bufr tables 
-installed by ECMWF packages so it need to be installed. You can grab ECMWF library from 
+The BUFR file tables was provided by bufrdc library from ECMWF. Since version 0.8.1 (Released on
+05-Jan-2017) these files are no needed anymore. NOW BUFR2SYNOP PACKAGE PROVIDES ALL NEEDED BUFR 
+TABLES. Tables used here are from ECMWF files for version 17 and older. From version 18 up to now 
+(version 27), the more detailed tables from WMO are used. Source files from WMO are the 
+Machine readable text and xml files we can get here 
+
+http://www.wmo.int/pages/prog/www/WMOCodes/WMO306_vI2/LatestVERSION/LatestVERSION.html
+
+Anyway, a conversion is made to convert them as optimized CSV files. The included app 
+build_bufrdeco_tables is used to the conversion of both ECMWF and WMO source files.
+
+Backward compatibilty from older versions are and the use of ECMWF tables is also preserved. 
+Before version 0.7 this package should to be installed. Since version 0.7, a library for 
+decode a wide subset of BUFR reports was wrote from scratch. This is a fast and light
+bufr decoder. If you want to use the bufr tables from ECMWF you need to install that package 
+You can grab ECMWF library from 
 
 https://software.ecmwf.int/wiki/display/BUFR/Releases
 
@@ -61,13 +73,16 @@ Assume you built the package. you will have four binaries:
 
 - bufr2synop . 
     Main binary to extract alphanumeric reports using ECMWF decode library.
-- bufrtorac .
-    The same than bufr2ynop but using the own bufrdeco library. It is several times faster  
+- bufrtotac .
+    The same than bufr2ynop but using the own bufrdeco library and tables. It is several times faster  
 - bufr_decode . 
     A binary extracted and adapted from ECMWF bufrdc library. Is an example of use for 
     ECMWF bufrdc library
 - bufrnoaa
     An utility to extract and select bufr files from NOAA bin archives.
+- build_bufrdeco_tables
+    A binary to convert BUFR table files from ECMWF and WMO to table files used by bufrdeco library
+    
     
 And also the libraries :
 
