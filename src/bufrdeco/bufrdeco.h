@@ -41,19 +41,19 @@
 
 /*!
   \def BUFR_LEN
-  \brief max length of a bufrfile
+  \brief Max length of a BUFR file
 */
 #define BUFR_LEN 512000
 
 /*!
    \def BUFR_OBS_DATA_MASK
-   \brief bit mask for Observed data
+   \brief Bit mask for Observed data
 */
 #define BUFR_OBS_DATA_MASK 128
 
 /*!
    \def BUFR_COMPRESSED_DATA_MASK
-   \brief bit mask for Observed data
+   \brief Bit mask for compressed data
 */
 #define BUFR_COMPRESSED_DATA_MASK 64
 
@@ -70,18 +70,37 @@
 #define MISSING_INTEGER (2147483647)
 
 /*!
+  \def BUFR_MAXLINES_TABLEB
+  \brief The maximum expected lines in a Table B file 
+*/
+#define BUFR_MAXLINES_TABLEB (2048)
+
+/*!
+  \def BUFR_MAXLINES_TABLEC
+  \brief The maximum expected lines in a Table C file 
+*/
+#define BUFR_MAXLINES_TABLEC (8192)
+
+
+/*!
+  \def BUFR_MAXLINES_TABLED
+  \brief The maximum expected lines in a Table D file 
+*/
+#define BUFR_MAXLINES_TABLED (8192)
+
+
+/*!
   \def MAXLINES_TABLEC
   \brief The maximum expected lines in a Table C file
 */
-#define MAXLINES_TABLEC (8192)
+#define MAXLINES_TABLEC BUFR_MAXLINES_TABLEC
 
 /*!
-  \def NMAXSEQ
-  \brief Maximum expected descriptor in a expanded sequence for a single subset
+  \def BUFR_NMAXSEQ
+  \brief Maximum expected descriptors in a expanded sequence for a single subset
 */
-#define NMAXSEQ (16384)
-
 #define BUFR_NMAXSEQ (2 * 16384)
+// #define NMAXSEQ (16384)
 
 /*!
   \def BUFR_EXPLAINED_LENGTH
@@ -176,7 +195,7 @@
 
 /*!
   \def BUFR_LEN_UNEXPANDED_DESCRIPTOR
-  \brief Max amount of unexpanded descriptor in a SEC3
+  \brief Max amount of unexpanded descriptors in a SEC3
 */
 #define BUFR_LEN_UNEXPANDED_DESCRIPTOR (512)
 
@@ -192,10 +211,6 @@
   \brief Max length in bytes for a sec3
 */
 #define BUFR_LEN_SEC3 (8 + 2 * BUFR_LEN_UNEXPANDED_DESCRIPTOR)
-
-#define BUFR_MAXLINES_TABLEB (2048)
-#define BUFR_MAXLINES_TABLEC (8192)
-#define BUFR_MAXLINES_TABLED (8192)
 
 /*!
   \def BUFRDECO_USE_ECMWF_TABLES
