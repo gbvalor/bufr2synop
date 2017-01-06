@@ -101,11 +101,11 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error )
       tb->y_ref[desc.x][desc.y] = i - tb->x_start[desc.x]; // marc the position from start of first x
 
       // detailed name
-      bufr_charray_to_string ( tb->item[i].name, &l[8], 64);
+      bufr_charray_to_string ( tb->item[i].name, &l[8], 64 );
       bufr_adjust_string ( tb->item[i].name ); // supress trailing blanks
 
       // tyoe
-      bufr_charray_to_string ( tb->item[i].unit ,&l[73], 24);
+      bufr_charray_to_string ( tb->item[i].unit ,&l[73], 24 );
       bufr_adjust_string ( tb->item[i].unit );
 
       // escale
@@ -264,7 +264,7 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
           return 1;
         }
       r->escale = 0;
-      r->inc_bits = (uint8_t) ival;
+      r->inc_bits = ( uint8_t ) ival;
       b->state.bit_offset += r->inc_bits * b->sec3.subsets;
       b->state.local_bit_reserved = 0; // Clean the reserved bits
       return 0;
@@ -277,8 +277,8 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
   r->escale = tb->item[i].scale;
   strcpy ( r->name, tb->item[i].name );
   strcpy ( r->unit, tb->item[i].unit );
-  if ( strstr ( r->unit, "CODE TABLE" ) != r->unit &&  strstr ( r->unit,"FLAG" ) != r->unit && 
-      strstr ( r->unit, "Code table" ) != r->unit &&  strstr ( r->unit,"Flag" ) != r->unit )
+  if ( strstr ( r->unit, "CODE TABLE" ) != r->unit &&  strstr ( r->unit,"FLAG" ) != r->unit &&
+       strstr ( r->unit, "Code table" ) != r->unit &&  strstr ( r->unit,"Flag" ) != r->unit )
     {
       r->escale += b->state.added_scale;
       //r->reference += b->state.added_reference;
@@ -321,7 +321,7 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
       return 0;
     }
 
-  if ( strstr ( r->unit, "CCITT" ) != NULL)
+  if ( strstr ( r->unit, "CCITT" ) != NULL )
     {
       if ( b->state.fixed_ccitt != 0 ) // can be changed by 2 08 YYY operator
         r->bits = 8 * b->state.fixed_ccitt;
@@ -439,7 +439,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
   strcpy ( a->unit, tb->item[i].unit );
   escale = tb->item[i].scale;
   nbits = tb->item[i].nbits;
-  
+
   if ( b->state.changing_reference != 255 )
     {
       // The descriptor operator 2 03 YYY is on action
@@ -496,13 +496,14 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
     {
       a->associated = MISSING_INTEGER;
     }
-    
+
   if ( strstr ( a->unit, "CODE TABLE" ) != a->unit &&  strstr ( a->unit,"FLAG" ) != a->unit &&
-      strstr ( a->unit, "Code table" ) != a->unit &&  strstr ( a->unit,"Flag" ) != a->unit )
-    {  // case of numeric, no string nor code nor flag
-       nbits += b->state.added_bit_length;
-    }    
-    
+       strstr ( a->unit, "Code table" ) != a->unit &&  strstr ( a->unit,"Flag" ) != a->unit )
+    {
+      // case of numeric, no string nor code nor flag
+      nbits += b->state.added_bit_length;
+    }
+
   if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
     {
       sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get bits from '%s'\n", d->c );
@@ -516,12 +517,12 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
   if ( has_data )
     {
       if ( strstr ( a->unit, "CODE TABLE" ) != a->unit &&  strstr ( a->unit,"FLAG" ) != a->unit &&
-      strstr ( a->unit, "Code table" ) != a->unit &&  strstr ( a->unit,"Flag" ) != a->unit  )
+           strstr ( a->unit, "Code table" ) != a->unit &&  strstr ( a->unit,"Flag" ) != a->unit )
         {
           escale += b->state.added_scale;
           reference += b->state.added_reference;
-	  if (b->state.factor_reference > 1)
-	    reference *= b->state.factor_reference;
+          if ( b->state.factor_reference > 1 )
+            reference *= b->state.factor_reference;
         }
       // Get a numeric number
       if ( escale >= 0 && escale < 8 )
@@ -537,7 +538,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
           a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10 ( ( double ) ( -escale ) );
         }
 
-      if ( strstr ( a->unit, "CODE TABLE" ) == a->unit || strstr ( a->unit, "Code table" ) == a->unit)
+      if ( strstr ( a->unit, "CODE TABLE" ) == a->unit || strstr ( a->unit, "Code table" ) == a->unit )
         {
           ival = ( uint32_t ) ( a->val + 0.5 );
           a->mask |= DESCRIPTOR_IS_CODE_TABLE;

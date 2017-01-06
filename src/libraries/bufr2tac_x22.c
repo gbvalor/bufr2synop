@@ -288,7 +288,7 @@ int temp_parse_x22 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
           t->a.mask |= TEMP_SEC_7; // have sec7 data
         }
       break;
-      
+
     default:
       break;
     }

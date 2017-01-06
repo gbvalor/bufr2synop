@@ -160,7 +160,7 @@ int main ( int argc, char *argv[] )
   SUBSET.sequence = DATARRAY;
   SUBSET.nd = 0;
   SUBSET.dim = BUFR_NMAXSEQ;
-  
+
   /**** Big loop. a cycle per file ****/
   while ( get_bufrfile_path ( INPUTFILE, ERR ) )
     {
@@ -361,9 +361,9 @@ int main ( int argc, char *argv[] )
 
           // clean sequence
           //memset ( &SUBSET, 0, sizeof ( struct bufr_subset_sequence_data ) ); /***/
-          memset ( SUBSET.sequence, 0, (sizeof( struct bufr_atom_data)) * BUFR_NMAXSEQ  );
-	  SUBSET.nd = 0;
-	  
+          memset ( SUBSET.sequence, 0, ( sizeof ( struct bufr_atom_data ) ) * BUFR_NMAXSEQ );
+          SUBSET.nd = 0;
+
           // clean REPORT
           memset ( &REPORT, 0, sizeof ( struct metreport ) );
 
@@ -384,7 +384,7 @@ int main ( int argc, char *argv[] )
           if ( KERR )
             continue;
 
-	  for ( j = 0 ; j < ktdexl && j < KSUBS ; j++ )
+          for ( j = 0 ; j < ktdexl && j < KSUBS ; j++ )
             {
               i = nsub * KELEM + j;
               LINAUX[0] = '\0'; // clean the output line

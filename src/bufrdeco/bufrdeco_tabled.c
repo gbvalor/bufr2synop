@@ -45,7 +45,7 @@ int bufr_read_tabled ( struct bufr_tabled *td, char *error )
     }
 
   // Check if we've already readed this table.
-  if ( strcmp ( td->path, td->old_path ) == 0)
+  if ( strcmp ( td->path, td->old_path ) == 0 )
     {
       return 0; // all done
     }
@@ -134,7 +134,7 @@ int bufr_find_tabled_index ( size_t *index, struct bufr_tabled *td, const char *
  \param s target struct \ref bufr_sequence
  \param b pointer to the basic container struct \ref bufrdeco
  \param key string in the form FXXYYY which is the key of descriptor we want to find out, F = 3
- 
+
  If the sequence has been filled with success then returns 0, otherwise returns 1
 */
 int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key )

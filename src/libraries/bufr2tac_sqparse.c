@@ -35,7 +35,7 @@
 int find_descriptor ( int *haystack, size_t nlst, int needle )
 {
   size_t i = 0;
-  while ( (i < nlst) && (haystack[i] != needle)  )
+  while ( ( i < nlst ) && ( haystack[i] != needle ) )
     {
       i++;
     }
@@ -59,8 +59,8 @@ int find_descriptor ( int *haystack, size_t nlst, int needle )
 int find_descriptor_interval ( int *haystack, size_t nlst, int needlemin, int needlemax )
 {
   size_t i = 0;
-  
-  while ( (i < nlst) && ( haystack[i] > needlemax || haystack[i] < needlemin ) )
+
+  while ( ( i < nlst ) && ( haystack[i] > needlemax || haystack[i] < needlemin ) )
     {
       i++;
     }
@@ -113,7 +113,7 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
           strcpy ( st->type_report,"BBXX" );  // FM-13 ship
         }
       else if ( find_descriptor_interval ( kdtlst, nlst, 308001, 308003 ) ||
-	        find_descriptor ( kdtlst, nlst,315009 ) ||
+                find_descriptor ( kdtlst, nlst,315009 ) ||
                 find_descriptor ( kdtlst, nlst,1005 ) ||
                 find_descriptor ( kdtlst, nlst,2036 ) ||
                 find_descriptor ( kdtlst, nlst,2149 ) ||
@@ -126,7 +126,8 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
           strcpy ( st->type_report, "CLIMAT SHIP" );  // FM-71 CLIMAT SHIP
         }
       else if ( find_descriptor ( kdtlst, nlst,307090 ) )
-        { // FIXME Some FM-14 are coded as category 1
+        {
+          // FIXME Some FM-14 are coded as category 1
           strcpy ( st->type_report,"OOXX" );  // FM-14 synop-mobil
         }
       break;
@@ -176,15 +177,15 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
       // psrse TEMP
       if ( parse_subset_as_temp ( m, st, sq, err ) == 0 )
         {
-          return print_temp(m);  
+          return print_temp ( m );
         }
     }
   else if ( strcmp ( st->type_report,"CLIMAT" ) == 0 )
     {
       // psrse CLIMAT
       if ( parse_subset_as_climat ( m, st, sq, err ) == 0 )
-        {      
-           return print_climat ( m->alphanum, REPORT_LENGTH, &m->climat );
+        {
+          return print_climat ( m->alphanum, REPORT_LENGTH, &m->climat );
         }
     }
 

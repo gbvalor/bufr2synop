@@ -71,20 +71,20 @@
 
 /*!
   \def BUFR_MAXLINES_TABLEB
-  \brief The maximum expected lines in a Table B file 
+  \brief The maximum expected lines in a Table B file
 */
 #define BUFR_MAXLINES_TABLEB (2048)
 
 /*!
   \def BUFR_MAXLINES_TABLEC
-  \brief The maximum expected lines in a Table C file 
+  \brief The maximum expected lines in a Table C file
 */
 #define BUFR_MAXLINES_TABLEC (8192)
 
 
 /*!
   \def BUFR_MAXLINES_TABLED
-  \brief The maximum expected lines in a Table D file 
+  \brief The maximum expected lines in a Table D file
 */
 #define BUFR_MAXLINES_TABLED (8192)
 
@@ -558,7 +558,7 @@ struct bufr_tablec_decoded_item
   uint8_t x; /*!< x value of descriptor */
   uint8_t y; /*!< y value of descriptor */
   uint32_t ival; /*!< code value */
-  char description[BUFR_EXPLAINED_LENGTH]; /*!< Description string of code */ 
+  char description[BUFR_EXPLAINED_LENGTH]; /*!< Description string of code */
 };
 
 
@@ -661,13 +661,13 @@ int bufr_read_tableb ( struct bufr_tableb *tb, char *error );
 int bufr_read_tablec ( struct bufr_tablec *tc, char *error );
 int bufr_read_tabled ( struct bufr_tabled *td, char *error );
 
-// Read bufr WMO csv 
+// Read bufr WMO csv
 int get_wmo_tablenames ( struct bufrdeco *b, const char *bufrtables_dir );
 int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error );
 int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error );
 int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error );
 int bufr_read_tables_wmo ( struct bufrdeco *b, char *tables_dir );
-char * csv_quoted_string( char *out, char *in);
+char * csv_quoted_string ( char *out, char *in );
 int parse_csv_line ( int *nt, char *tk[], char *lin );
 
 
@@ -721,9 +721,9 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec
 char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d,
                                      uint64_t ival, uint8_t nbits );
 char * bufrdeco_explained_table_csv_val ( char *expl, size_t dim, struct bufr_tablec *tc, size_t *index,
-                                      struct bufr_descriptor *d, uint32_t ival );
+    struct bufr_descriptor *d, uint32_t ival );
 char * bufrdeco_explained_flag_csv_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d,
-                                     uint64_t ival, uint8_t nbits );
+    uint64_t ival, uint8_t nbits );
 int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b,
     const char *key );
 int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct bufr_descriptor *d );

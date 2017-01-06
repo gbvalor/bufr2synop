@@ -115,7 +115,7 @@ int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error )
       strcpy ( tb->item[i].name, caux );
 
       // unit
-      strcpy(caux, tk[3]);
+      strcpy ( caux, tk[3] );
       if ( strlen ( caux ) >= BUFR_TABLEB_UNIT_LENGTH )
         caux[BUFR_TABLEB_UNIT_LENGTH - 1] = 0;
       strcpy ( tb->item[i].unit, caux );

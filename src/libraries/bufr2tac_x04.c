@@ -58,14 +58,14 @@ int time_period_duration ( struct bufr2tac_subset_state *s )
     }
 
   // just a single time period displacement
-  if ( (s->itmask & DESCRIPTOR_VALUE_MISSING ) == 0)
-  {
-    return ( abs ( s->itval ) );
-  }
-  else 
-  {
-    return 0;
-  }
+  if ( ( s->itmask & DESCRIPTOR_VALUE_MISSING ) == 0 )
+    {
+      return ( abs ( s->itval ) );
+    }
+  else
+    {
+      return 0;
+    }
 }
 
 /*!
@@ -75,28 +75,28 @@ int time_period_duration ( struct bufr2tac_subset_state *s )
 
   It returns the rounded hour if >= 0. If < 0 problems
 */
-int hour_rounded(struct synop_chunks *syn)
+int hour_rounded ( struct synop_chunks *syn )
 {
-    time_t t;
-    struct tm tim;
-    char aux[32];
-    
-    sprintf(aux, "%s%s%s%s%s", syn->e.YYYY,syn->e.MM,syn->e.DD,syn->e.HH, syn->e.mm);
-    memset(&tim, 0, sizeof(struct tm));
-    if (strlen(aux) == 12)
+  time_t t;
+  struct tm tim;
+  char aux[32];
+
+  sprintf ( aux, "%s%s%s%s%s", syn->e.YYYY,syn->e.MM,syn->e.DD,syn->e.HH, syn->e.mm );
+  memset ( &tim, 0, sizeof ( struct tm ) );
+  if ( strlen ( aux ) == 12 )
     {
-      strptime(aux, "%Y%m%d%H%M", &tim);
-      t = mktime(&tim);
+      strptime ( aux, "%Y%m%d%H%M", &tim );
+      t = mktime ( &tim );
       t += 1800;
-      gmtime_r(&t, &tim);
+      gmtime_r ( &t, &tim );
       return tim.tm_hour;
     }
-    else if (syn->e.mm[0] == 0 && syn->e.HH[0] )
+  else if ( syn->e.mm[0] == 0 && syn->e.HH[0] )
     {
-      return atoi(syn->e.HH);
+      return atoi ( syn->e.HH );
     }
-    else
-      return -1;
+  else
+    return -1;
 }
 
 /*!

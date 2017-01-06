@@ -42,31 +42,31 @@ const char CSV_FINAL = '\n';
   \brief Transform a string to a quoted string to be inserted in a csv file
   \param out resulting string
   \param in input string
-  
+
   If problem returns NULL
 */
-char * csv_quoted_string( char *out, char *in)
+char * csv_quoted_string ( char *out, char *in )
 {
-   size_t i = 0, j = 0;
-   
-   if ( in[0] == 0)
-     return NULL;
-   
-   out[j++] = '\"';
-   while (in[i] && j < (CSV_MAXL - 1)  && i < CSV_MAXL)
-   {
-       if (in[i] == '\"')
-       {
-           out[j++] = '\"';
-           out[j++] = '\"';
-           i++;
-       }
-       else
-         out[j++] = in[i++];
-   }
-   out[j++] = '\"';
-   out[j] = 0; // end of string
-   return out;
+  size_t i = 0, j = 0;
+
+  if ( in[0] == 0 )
+    return NULL;
+
+  out[j++] = '\"';
+  while ( in[i] && j < ( CSV_MAXL - 1 )  && i < CSV_MAXL )
+    {
+      if ( in[i] == '\"' )
+        {
+          out[j++] = '\"';
+          out[j++] = '\"';
+          i++;
+        }
+      else
+        out[j++] = in[i++];
+    }
+  out[j++] = '\"';
+  out[j] = 0; // end of string
+  return out;
 }
 
 
@@ -211,7 +211,7 @@ int parse_csv_line ( int *nt, char *tk[], char *lin )
                       lin[j++] = '"';
                       i++;
                     }
-                    continue;
+                  continue;
                 }
               else
                 {

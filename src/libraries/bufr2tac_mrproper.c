@@ -256,7 +256,7 @@ void clean_climat_chunks ( struct climat_chunks *c )
   clean_climat_sec1 ( & ( c->s1 ) );
   clean_climat_sec2 ( & ( c->s2 ) );
   clean_climat_sec3 ( & ( c->s3 ) );
-  clean_climat_sec4 ( & ( c->s4 ) ); 
-  clean_climat_old ( & (c->o) );
+  clean_climat_sec4 ( & ( c->s4 ) );
+  clean_climat_old ( & ( c->o ) );
   c->error[0] = '\0';
 }

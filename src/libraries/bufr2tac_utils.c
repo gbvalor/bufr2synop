@@ -52,27 +52,27 @@ int integer_to_descriptor ( struct bufr_descriptor *d, int id )
 /*!
   \fn int descriptor_to_integer(int *id, struct bufr_descriptor *d)
   \brief parse a descriptor and sets an integer in the decimal formas fxxyyy
-  \param id pointer to target integer 
+  \param id pointer to target integer
   \param d pointer to a struct \ref bufr_descriptor with the source
 */
-int descriptor_to_integer ( int *id, struct bufr_descriptor *d)
+int descriptor_to_integer ( int *id, struct bufr_descriptor *d )
 {
   if ( d == NULL )
     return 1;
-  *id = 100000 * d->f + 1000 * d->x + d->y; 
+  *id = 100000 * d->f + 1000 * d->x + d->y;
   return 0;
 }
 
-uint32_t get_flag_value ( uint8_t width, uint8_t index)
+uint32_t get_flag_value ( uint8_t width, uint8_t index )
 {
-  if (width == index)
-    return (uint32_t) 1;
-  else if (width < index)
-    return (uint32_t) 0;
-  else if (width <= 32)
-    return (((uint32_t) 1) << (width - index));
+  if ( width == index )
+    return ( uint32_t ) 1;
+  else if ( width < index )
+    return ( uint32_t ) 0;
+  else if ( width <= 32 )
+    return ( ( ( uint32_t ) 1 ) << ( width - index ) );
   else
-    return (uint32_t) 0;
+    return ( uint32_t ) 0;
 }
 
 /*!
@@ -177,25 +177,25 @@ int YYYYMMDDHHmm_to_met_datetime ( struct met_datetime *t, const char *source )
   \param target string with result as output
   \param t pointer to source struct \ref met_datetime
 */
-char *met_datetime_to_YYGG (char *target, struct met_datetime *t)
+char *met_datetime_to_YYGG ( char *target, struct met_datetime *t )
 {
   time_t tx;
   struct tm tim;
-  
-  tx = ((t->t + 1800) / 3600) * 3600 ; // rounding to next whole hour
-  memset (&tim, 0, sizeof(struct tm));
-  gmtime_r(&tx, &tim);
-  
-  strftime(target, 8, "%d%H", &tim);
-    
+
+  tx = ( ( t->t + 1800 ) / 3600 ) * 3600 ; // rounding to next whole hour
+  memset ( &tim, 0, sizeof ( struct tm ) );
+  gmtime_r ( &tx, &tim );
+
+  strftime ( target, 8, "%d%H", &tim );
+
   return target;
 }
 
-int round_met_datetime_to_hour(struct met_datetime *target, struct met_datetime *source)
+int round_met_datetime_to_hour ( struct met_datetime *target, struct met_datetime *source )
 {
-  target->t = ((source->t + 1800) / 3600) * 3600 ; // rounding to next whole hour
-  memset (&target->tim, 0, sizeof(struct tm));
-  gmtime_r(&target->t, &target->tim);
+  target->t = ( ( source->t + 1800 ) / 3600 ) * 3600 ; // rounding to next whole hour
+  memset ( &target->tim, 0, sizeof ( struct tm ) );
+  gmtime_r ( &target->t, &target->tim );
   strftime ( target->datime, 16, "%Y%m%d%H%M", &target->tim );
   return 0;
 }

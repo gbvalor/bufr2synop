@@ -79,10 +79,10 @@ int main ( int argc, char *argv[] )
   if ( read_args ( argc, argv ) < 0 )
     exit ( EXIT_FAILURE );
 
-  bufrdeco_init(&BUFR);
-  
+  bufrdeco_init ( &BUFR );
+
   // Check read file
-  if ( bufrdeco_read_bufr ( &BUFR, ENTRADA) )
+  if ( bufrdeco_read_bufr ( &BUFR, ENTRADA ) )
     {
       printf ( "%s", BUFR.error );
       exit ( EXIT_FAILURE );
@@ -104,17 +104,17 @@ int main ( int argc, char *argv[] )
 
   for ( subset = 0; subset < BUFR.sec3.subsets ; subset++ )
     {
-      if ( (seq = bufrdeco_get_subset_sequence_data ( &BUFR )) == NULL)
+      if ( ( seq = bufrdeco_get_subset_sequence_data ( &BUFR ) ) == NULL )
         {
           printf ( "# %s", BUFR.error );
           bufrdeco_close ( &BUFR );
           exit ( EXIT_FAILURE );
         }
-      bufrdeco_print_subset_sequence_data( seq );
+      bufrdeco_print_subset_sequence_data ( seq );
     }
 
   printf ( "So far so good !!\n" );
-  bufrdeco_close(&BUFR);
+  bufrdeco_close ( &BUFR );
   exit ( EXIT_SUCCESS );
 }
 

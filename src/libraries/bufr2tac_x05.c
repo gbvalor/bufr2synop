@@ -82,7 +82,7 @@ int syn_parse_x05 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       syn->s0.Ula[0] = syn->s0.LaLaLa[1];
       s->lat = s->val;
       break;
-      
+
     case 21: // 0 05 021 . Bearing or azimut
       grad_to_D ( syn->s3.Da, s->val );
       syn->mask |= SYNOP_SEC3;

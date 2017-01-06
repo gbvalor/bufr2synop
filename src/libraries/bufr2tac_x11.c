@@ -261,7 +261,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       syn->s3.d9.n++;
       syn->mask |= SYNOP_SEC3;
       break;
-      
+
     case 43: // 0 11 043 . Max wind gust direction
       break;
     case 84: // 0 11 084 . Wind speed in knots

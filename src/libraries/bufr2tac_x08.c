@@ -78,8 +78,9 @@ int syn_parse_x08 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           s->clayer = s->ival;
         }
-      else if ( s->ival == 5 || s->ival == 62 ) 
-        {  // 5 should be used for N = 9 and 62 for N = 0
+      else if ( s->ival == 5 || s->ival == 62 )
+        {
+          // 5 should be used for N = 9 and 62 for N = 0
           s->clayer = s->ival;
         }
       break;
@@ -173,7 +174,7 @@ int climat_parse_x08 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           switch ( s->isq_val )
             {
-              // days of missing data
+            // days of missing data
             case 1: // pressure
               sprintf ( c->s1.mpmp, "%02d", s->ival );
               c->mask |= CLIMAT_SEC1;
@@ -224,7 +225,7 @@ int climat_parse_x08 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           switch ( s->isq_val )
             {
-              // years of missing data
+            // years of missing data
             case 1: // pressure
               sprintf ( c->s2.ypyp, "%02d", s->ival );
               c->mask |= CLIMAT_SEC2;

@@ -147,7 +147,8 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec
   size_t  i, j;
 
   if ( tc->wmo_table )
-    { // WMO case
+    {
+      // WMO case
       return bufrdeco_explained_table_csv_val ( expl, dim, tc, index, d, ival );
     }
 
@@ -231,9 +232,10 @@ char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec 
   uint64_t test, test0;
   uint64_t nb, nx, v,  nl;
   size_t i, j;
-  
+
   if ( tc->wmo_table )
-    { // WMO case
+    {
+      // WMO case
       return bufrdeco_explained_flag_csv_val ( expl, dim, tc, d, ival, nbits );
     }
 

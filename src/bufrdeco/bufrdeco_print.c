@@ -181,7 +181,7 @@ char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a )
 {
   char aux[256], *c;
   size_t nlimit, climit;
-  
+
   c = target;
   c += sprintf ( c, "%u %02u %03u ", a->desc.f, a->desc.x, a->desc.y );
   strcpy ( aux, a->name );
@@ -204,8 +204,8 @@ char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a )
           c += sprintf ( c, "%s", aux );
         }
       else if ( a->mask & DESCRIPTOR_HAVE_CODE_TABLE_STRING
-                || strstr ( a->unit, "CODE TABLE" ) == a->unit 
-                || strstr ( a->unit, "Code table" ) == a->unit)
+                || strstr ( a->unit, "CODE TABLE" ) == a->unit
+                || strstr ( a->unit, "Code table" ) == a->unit )
         {
           strcpy ( aux, a->ctable );
           aux[64] = '\0';
@@ -223,31 +223,31 @@ char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a )
         {
           c += sprintf ( c, "%17.10e ", a->val );
         }
-      
+
     }
 
-        // Now print remaining chars in a->name or a->ctable
-      nlimit = 64;
-      climit = 64;
-      while ((strlen (a->name) > nlimit && nlimit < BUFR_TABLEB_NAME_LENGTH) || 
-             (strlen (a->ctable) > climit && climit < BUFR_EXPLAINED_LENGTH) ) 
-      {
-         aux[0] = 0;
-         if (strlen (a->name) > nlimit && nlimit < BUFR_TABLEB_NAME_LENGTH)
-           strcpy(aux, a->name + nlimit);
-         if (strlen(aux) > 64)
-           aux[64] = 0;
-         c += sprintf(c, "\n                 %-64s", aux);
-         aux[0] = 0;
-         if (strlen (a->ctable) > climit && climit < BUFR_EXPLAINED_LENGTH)
-           strcpy(aux, a->ctable + climit);
-         if (strlen(aux) > 64)
-           aux[64] = 0;
-         c += sprintf(c, "                                       %s", aux);
-         nlimit += 64;
-         climit += 64;
-      }
-  
+  // Now print remaining chars in a->name or a->ctable
+  nlimit = 64;
+  climit = 64;
+  while ( ( strlen ( a->name ) > nlimit && nlimit < BUFR_TABLEB_NAME_LENGTH ) ||
+          ( strlen ( a->ctable ) > climit && climit < BUFR_EXPLAINED_LENGTH ) )
+    {
+      aux[0] = 0;
+      if ( strlen ( a->name ) > nlimit && nlimit < BUFR_TABLEB_NAME_LENGTH )
+        strcpy ( aux, a->name + nlimit );
+      if ( strlen ( aux ) > 64 )
+        aux[64] = 0;
+      c += sprintf ( c, "\n                 %-64s", aux );
+      aux[0] = 0;
+      if ( strlen ( a->ctable ) > climit && climit < BUFR_EXPLAINED_LENGTH )
+        strcpy ( aux, a->ctable + climit );
+      if ( strlen ( aux ) > 64 )
+        aux[64] = 0;
+      c += sprintf ( c, "                                       %s", aux );
+      nlimit += 64;
+      climit += 64;
+    }
+
   return target;
 }
 

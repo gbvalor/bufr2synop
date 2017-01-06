@@ -18,17 +18,17 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 /*!
-   \file build_bufrdeco_tables.c 
+   \file build_bufrdeco_tables.c
    \brief This file includes the code for build_bufrdeco_tables binary
-   
-   \a build_bufrdeco_tables is the tool to convert original BUFR files from ECMWF package 
-   and WMO machine readable files into the format used by the decode library \a bufrdeco 
+
+   \a build_bufrdeco_tables is the tool to convert original BUFR files from ECMWF package
+   and WMO machine readable files into the format used by the decode library \a bufrdeco
    included in this package. \a bufrdeco uses BUFR table files in csv format like WMO but supressing
    some fields from original WMO files.
-   
-   Because of WMO has not released csv table files for versions prior to 18, it is needed to build 
+
+   Because of WMO has not released csv table files for versions prior to 18, it is needed to build
    them since version 13 using ECMWF table files. Version 13 is backward compatible with prior versions.
-   
+
    Following the ECMWF way to set the CodeFlag tables as C Tables, the original WMO CodeFlag Tables are named
    as C tables. Original WMO C tables with descriptors operators an A tables are no needed in this package.
 */

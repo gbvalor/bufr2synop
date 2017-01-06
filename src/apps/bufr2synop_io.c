@@ -27,7 +27,7 @@
 void print_usage ( void )
 {
   printf ( "Usage: \n" );
-  printf ( "%s %s\n", SELF, PACKAGE_VERSION);
+  printf ( "%s %s\n", SELF, PACKAGE_VERSION );
   printf ( "  bufr2synop [-i input] [-I list_of_files] [-t bufrtable_dir][-o output][-s][-v][-V][-j][-x][-c]\n" );
   printf ( "       -e Print some original output from ECMWF library\n" );
   printf ( "       -h. Show this help\n" );
@@ -103,9 +103,9 @@ int read_args ( int _argc, char * _argv[] )
         VERBOSE = 1;
         break;
       case 'v':
-        printf("%s %s\n", SELF, PACKAGE_VERSION);
-	exit (EXIT_SUCCESS);
-	break;
+        printf ( "%s %s\n", SELF, PACKAGE_VERSION );
+        exit ( EXIT_SUCCESS );
+        break;
       case 's':
         SHOW_SEQUENCE = 1;
         break;

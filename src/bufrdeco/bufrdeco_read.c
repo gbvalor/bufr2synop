@@ -237,7 +237,7 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
   b->sec4.bit_offset = 32; // the first bit in byte 4
   free ( ( void * ) bufrx );
 
-   if ( b->mask & BUFRDECO_USE_ECMWF_TABLES )
+  if ( b->mask & BUFRDECO_USE_ECMWF_TABLES )
     {
       if ( bufr_read_tables_ecmwf ( b, NULL ) )
         {

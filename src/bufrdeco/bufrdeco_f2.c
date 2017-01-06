@@ -113,7 +113,7 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
         }
       strcpy ( a->name, "SIGNIFY CHARACTER" );
       strcpy ( a->unit, "CCITTIA5" ); // unit
-      if ( s->nd < (s->dim - 1))
+      if ( s->nd < ( s->dim - 1 ) )
         {
           ( s->nd ) ++;
         }
@@ -287,7 +287,7 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
         }
       rf->inc_bits = ival;
       b->state.bit_offset += rf->inc_bits * 8 * b->sec3.subsets;
-      if ( r->nd <  (BUFR_NMAXSEQ - 1))
+      if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
         {
           r->nd += 1;
         }
@@ -350,7 +350,7 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
 
     case 37:
       break;
-      
+
     default:
       sprintf ( b->error, "bufrdeco_parse_f2_descriptor(): Still no proccessed descriptor '%s' in "
                 "current library version\n", d->c );

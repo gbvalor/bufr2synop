@@ -597,7 +597,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
           a->mask |= DESCRIPTOR_HAVE_CODE_TABLE_STRING;
         }
     }
-  else if ( strstr ( a->unit,"FLAG" ) == a->unit || strstr ( a->unit,"Flag" ) == a->unit)
+  else if ( strstr ( a->unit,"FLAG" ) == a->unit || strstr ( a->unit,"Flag" ) == a->unit )
     {
       ival = ( uint32_t ) ( a->val + 0.5 );
       a->mask |= DESCRIPTOR_IS_FLAG_TABLE;

@@ -47,7 +47,7 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr2tac_subset_state *
   clean_climat_chunks ( c );
 
   // reject if still not coded type
-  if ( strcmp ( s->type_report,"CLIMAT" ) ) 
+  if ( strcmp ( s->type_report,"CLIMAT" ) )
     {
       sprintf ( err,"bufr2tac: parse_subset_as_climat(): '%s' reports still not decoded in this software", s->type_report );
       return 1;
@@ -159,6 +159,6 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr2tac_subset_state *
       return 1;  // Bad date/time . Is a report from future!
     }
 
-    
+
   return 0;
 }

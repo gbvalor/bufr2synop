@@ -20,7 +20,7 @@
  ***************************************************************************/
 /*!
    \file metcommon.h
-   \brief Main header file for common report structures 
+   \brief Main header file for common report structures
 */
 #ifndef METCOMMON_H
 #define METCOMMON_H

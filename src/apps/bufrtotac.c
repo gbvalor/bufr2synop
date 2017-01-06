@@ -122,7 +122,7 @@ int main ( int argc, char *argv[] )
       return 1;
     }
 
-  // If needed mark to use ECMWF tables  
+  // If needed mark to use ECMWF tables
   if ( ECMWF )
     {
       BUFR.mask |= BUFRDECO_USE_ECMWF_TABLES;

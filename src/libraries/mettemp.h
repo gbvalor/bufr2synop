@@ -189,7 +189,7 @@ This is an extact of table, Note that is bit 1 is most significance in this case
 
 /*!
   \struct temp_raw_point_data
-  \brief Stores data of a sounding profile in raw format, as given in bufr 
+  \brief Stores data of a sounding profile in raw format, as given in bufr
 */
 struct temp_raw_point_data
 {
@@ -207,9 +207,9 @@ struct temp_raw_point_data
 
 /*!
   \struct  temp_raw_data
-  \brief Stores the array of all data profile points as it in bufr sequence 
+  \brief Stores the array of all data profile points as it in bufr sequence
 */
-struct temp_raw_data 
+struct temp_raw_data
 {
   size_t n; /*!< Current number of elements */
   struct temp_raw_point_data raw[TEMP_NMAX_POINTS * 4]; /*!< Array of raw data points */
@@ -231,10 +231,10 @@ struct temp_raw_wind_shear_point
 };
 
 /*!
-  \struct temp_raw_wind_shear_data 
+  \struct temp_raw_wind_shear_data
   \brief array of Wind shear data points at a pressure level
  */
-struct temp_raw_wind_shear_data 
+struct temp_raw_wind_shear_data
 {
   size_t n; /*!< Current number of elements */
   struct temp_raw_wind_shear_point raw[TEMP_NMAX_POINTS];
@@ -271,7 +271,7 @@ struct temp_std_level_data
 */
 struct temp_max_wind_data
 {
-  int  no_last_wind; /*!< Flag to set that this is not the latest wind data */ 
+  int  no_last_wind; /*!< Flag to set that this is not the latest wind data */
   char PmPmPm[4]; /*!< Pressure in hPa of wind maximum level */
   char dmdmfmfmfm[8]; /*!< true max wind direction in tens of degree and wind speed */
   char vbvb[4]; /*!< Diference of winds . 1 km below */
@@ -304,7 +304,7 @@ struct temp_wind_point
 /*!
   \struct temp_acd_sec1
   \brief Stores section 1 for parts A, C and D of a TEMP report
-*/ 
+*/
 struct temp_acd_sec1
 {
   char MiMi[4]; /*!< MiMi item. (Code table 2582) */
@@ -331,7 +331,7 @@ struct temp_acd_sec1
 /*!
   \struct temp_b_sec1
   \brief Stores section 1 for parts B of a TEMP report
-*/ 
+*/
 struct temp_b_sec1
 {
   char MiMi[4]; /*!< MiMi item. (Code table 2582) */
@@ -353,7 +353,7 @@ struct temp_b_sec1
   char Ulo[2]; /*!< Units digit in the reported longitude. */
   char h0h0h0h0[6]; /*!< Elevation of a mobile land station  */
   char im[2]; /*!< Indicator for units of elevation, and confidence factor for accuracy of elevation. (Code table 1845) */
-}; 
+};
 
 /*!
   \struct temp_a_sec2
@@ -364,7 +364,7 @@ struct temp_a_sec2
   size_t n; /*!< current number of standard levels */
   struct temp_main_level_data lev0; /*!< data at starting point */
   struct temp_std_level_data std[TEMP_NSTAND_MAX]; /*!< Array with data at standard levels */
-}; 
+};
 
 /*!
   \struct temp_c_sec2
@@ -374,7 +374,7 @@ struct temp_c_sec2
 {
   size_t n; /*!< current number of standard levels */
   struct temp_std_level_data std[TEMP_NSTAND_MAX]; /*!< Array with data at standard levels */
-}; 
+};
 
 /*!
   \struct temp_ac_sec3
@@ -384,7 +384,7 @@ struct temp_ac_sec3
 {
   size_t n; /*!< current number of troppopause levels */
   struct temp_main_level_data trop[TEMP_NTROP_MAX]; /*!< data at starting tropopause */
-}; 
+};
 
 /*!
   \struct temp_ac_sec4
@@ -394,12 +394,12 @@ struct temp_ac_sec4
 {
   size_t n; /*! current number of maxwind levels */
   struct temp_max_wind_data windx[TEMP_NMAXWIND_MAX];
-}; 
+};
 
 /*!
   \struct temp_sec7
-  \brief Section 7 for a part of TEMP report 
-*/ 
+  \brief Section 7 for a part of TEMP report
+*/
 struct temp_sec7
 {
   char sr[2]; /*!< Solar radiation correction (code table 3849)*/
@@ -447,7 +447,7 @@ struct temp_b_sec8
 /*!
   \struct temp_a
   \brief Contains part A of a TEMP REPORT
-*/ 
+*/
 struct temp_a
 {
   int mask; /*!< Bit mask about parsed sections */
@@ -457,12 +457,12 @@ struct temp_a
   struct temp_ac_sec3 s3; /*!< section 3 for part A */
   struct temp_ac_sec4 s4; /*!< section 4 for part A */
   struct temp_sec7 s7; /*!< section 7 for part A */
-}; 
+};
 
 /*!
   \struct temp_b
   \brief Contains part B of a TEMP REPORT
-*/ 
+*/
 struct temp_b
 {
   int mask; /*!< Bit mask about parsed sections */
@@ -472,12 +472,12 @@ struct temp_b
   struct temp_bd_sec6 s6; /*!< section 6 for part B */
   struct temp_sec7 s7; /*!< section 7 for part B */
   struct temp_b_sec8 s8; /*!< section 8 for part B */
-}; 
+};
 
 /*!
   \struct temp_c
   \brief Contains part C of a TEMP REPORT
-*/ 
+*/
 struct temp_c
 {
   int mask; /*!< Bit mask about parsed sections */
@@ -492,7 +492,7 @@ struct temp_c
 /*!
   \struct temp_d
   \brief Contains part D of a TEMP REPORT
-*/ 
+*/
 struct temp_d
 {
   int mask; /*!< Bit mask about parsed sections */
@@ -510,7 +510,7 @@ struct temp_d
 struct temp_chunks
 {
   int mask; /*!< bit mask with parsed parts info */
-  struct met_datetime t; /*!< Nominal GTS report release date and time (it is not the starting of soubding) */ 
+  struct met_datetime t; /*!< Nominal GTS report release date and time (it is not the starting of soubding) */
   struct temp_a a; /*!< Part A */
   struct temp_b b; /*!< Part B */
   struct temp_c c; /*!< Part C */

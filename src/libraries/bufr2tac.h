@@ -230,7 +230,7 @@ struct bufr2tac_subset_state
   double lat; /*!< Latitude of station */
   double lon; /*!< longitude of station */
   double alt; /*!< Altitude (m)*/
-  double hsensor; /*!< Sensor height over station ground (m) */ 
+  double hsensor; /*!< Sensor height over station ground (m) */
   double hwsensor; /*!< Sensor height over water surface (m) */
   char name[80]; /*!< Name of observatory, if any */
   char country[80]; /*!< Name of state/country if known */
@@ -295,7 +295,7 @@ void clean_climat_chunks ( struct climat_chunks *c );
 
 int set_environment ( char *default_bufrtables, char *bufrtables_dir );
 int integer_to_descriptor ( struct bufr_descriptor *d, int id );
-int descriptor_to_integer ( int *id, struct bufr_descriptor *d);
+int descriptor_to_integer ( int *id, struct bufr_descriptor *d );
 unsigned int three_bytes_to_uint ( const unsigned char *source );
 char * charray_to_string ( char *s, unsigned char *buf, size_t size );
 char * adjust_string ( char *s );
@@ -312,13 +312,13 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
 int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq,
                            char *err );
 int parse_subset_as_climat ( struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq,
-                           char *err );
+                             char *err );
 int YYYYMMDDHHmm_to_met_datetime ( struct met_datetime *t, const char *source );
-int round_met_datetime_to_hour(struct met_datetime *target, struct met_datetime *source);
+int round_met_datetime_to_hour ( struct met_datetime *target, struct met_datetime *source );
 int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn );
-char *met_datetime_to_YYGG (char *target, struct met_datetime *t);
+char *met_datetime_to_YYGG ( char *target, struct met_datetime *t );
 int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b );
-int check_date_from_future(struct metreport *m);
+int check_date_from_future ( struct metreport *m );
 char *guess_WMO_region ( char *A1, char *Reg, const char *II, const char *iii );
 char * guess_WMO_region_synop ( struct synop_chunks *syn );
 char *guess_WMO_region_temp ( struct temp_chunks *temp );
@@ -330,16 +330,16 @@ int find_descriptor_interval ( int *haystack, size_t nlst, int needlemin, int ne
 int bufr_set_environment ( char *default_bufrtables, char *bufrtables_dir );
 int guess_gts_header ( struct gts_header *h, const char *f );
 int read_bufr ( unsigned char *bufr, char *filename, int *length );
-int time_period_duration (struct bufr2tac_subset_state *s );
-int hour_rounded(struct synop_chunks *syn);
+int time_period_duration ( struct bufr2tac_subset_state *s );
+int hour_rounded ( struct synop_chunks *syn );
 
 char * latlon_to_MMM ( char *target, double lat, double lon );
 char * kelvin_to_TTTT ( char *target, double T );
 char * kelvin_to_snTTT ( char *target, double T );
 char * kelvin_to_snTT ( char *target, double T );
 char * kelvin_to_TT ( char *target, double T );
-char * kelvin_to_TTTa(char *target, double T);
-char * dewpoint_depression_to_DnDn ( char * target, double T, double Td);
+char * kelvin_to_TTTa ( char *target, double T );
+char * dewpoint_depression_to_DnDn ( char * target, double T, double Td );
 char * m_to_h ( char *target, double h );
 char * m_to_hh ( char *target, double h );
 char * m_to_RR ( char *target, double m );
@@ -353,11 +353,11 @@ char * secs_to_tt ( char *tt, int secs );
 char * vism_to_VV ( char *target, double V );
 char * recent_snow_to_ss ( char *target, double r );
 char * total_snow_depth_to_sss ( char *target, double r );
-char * wind_to_dndnfnfnfn( char *target, double dd, double ff);
-char * grad_to_D (char *D, double grad);
-char * grad_to_ec(char *target, double grad);
-int check_kj_m2(double val);
-int check_j_cm2(double val);
+char * wind_to_dndnfnfnfn ( char *target, double dd, double ff );
+char * grad_to_D ( char *D, double grad );
+char * grad_to_ec ( char *target, double grad );
+int check_kj_m2 ( double val );
+int check_j_cm2 ( double val );
 
 
 int print_synop ( char *report, size_t lmax, struct synop_chunks *syn );
@@ -381,41 +381,41 @@ char * print_climat_sec2 ( char **sec2, size_t lmax, struct climat_chunks *cl );
 char * print_climat_sec3 ( char **sec3, size_t lmax, struct climat_chunks *cl );
 char * print_climat_sec4 ( char **sec4, size_t lmax, struct climat_chunks *cl );
 
-int print_temp (struct metreport *m);
-int print_temp_a (char *report, size_t lmax, struct temp_chunks *t);
-char * print_temp_a_sec1 (char **sec1, size_t lmax, struct temp_chunks *t);
-char * print_temp_a_sec2 (char **sec2, size_t lmax, struct temp_chunks *t);
-char * print_temp_a_sec3 (char **sec3, size_t lmax, struct temp_chunks *t);
-char * print_temp_a_sec4 (char **sec4, size_t lmax, struct temp_chunks *t);
-char * print_temp_a_sec7 (char **sec7, size_t lmax, struct temp_chunks *t);
-int print_temp_b (char *report, size_t lmax, struct temp_chunks *t);
-char * print_temp_b_sec1 (char **sec1, size_t lmax, struct temp_chunks *t);
-char * print_temp_b_sec5 (char **sec5, size_t lmax, struct temp_chunks *t);
-char * print_temp_b_sec6 (char **sec6, size_t lmax, struct temp_chunks *t);
-char * print_temp_b_sec7 (char **sec7, size_t lmax, struct temp_chunks *t);
-char * print_temp_b_sec8 (char **sec8, size_t lmax, struct temp_chunks *t);
-int print_temp_c (char *report, size_t lmax, struct temp_chunks *t);
-char * print_temp_c_sec1 (char **sec1, size_t lmax, struct temp_chunks *t);
-char * print_temp_c_sec2 (char **sec2, size_t lmax, struct temp_chunks *t);
-char * print_temp_c_sec3 (char **sec3, size_t lmax, struct temp_chunks *t);
-char * print_temp_c_sec4 (char **sec4, size_t lmax, struct temp_chunks *t);
-char * print_temp_c_sec7 (char **sec7, size_t lmax, struct temp_chunks *t);
-int print_temp_d (char *report, size_t lmax, struct temp_chunks *t);
-char * print_temp_d_sec1 (char **sec1, size_t lmax, struct temp_chunks *t);
-char * print_temp_d_sec5 (char **sec5, size_t lmax, struct temp_chunks *t);
-char * print_temp_d_sec6 (char **sec6, size_t lmax, struct temp_chunks *t);
-char * print_temp_d_sec7 (char **sec7, size_t lmax, struct temp_chunks *t);
-char * print_temp_d_sec8 (char **sec8, size_t lmax, struct temp_chunks *t);
+int print_temp ( struct metreport *m );
+int print_temp_a ( char *report, size_t lmax, struct temp_chunks *t );
+char * print_temp_a_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t );
+char * print_temp_a_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t );
+char * print_temp_a_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t );
+char * print_temp_a_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t );
+char * print_temp_a_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t );
+int print_temp_b ( char *report, size_t lmax, struct temp_chunks *t );
+char * print_temp_b_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t );
+char * print_temp_b_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t );
+char * print_temp_b_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t );
+char * print_temp_b_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t );
+char * print_temp_b_sec8 ( char **sec8, size_t lmax, struct temp_chunks *t );
+int print_temp_c ( char *report, size_t lmax, struct temp_chunks *t );
+char * print_temp_c_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t );
+char * print_temp_c_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t );
+char * print_temp_c_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t );
+char * print_temp_c_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t );
+char * print_temp_c_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t );
+int print_temp_d ( char *report, size_t lmax, struct temp_chunks *t );
+char * print_temp_d_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t );
+char * print_temp_d_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t );
+char * print_temp_d_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t );
+char * print_temp_d_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t );
+char * print_temp_d_sec8 ( char **sec8, size_t lmax, struct temp_chunks *t );
 
-int parse_temp_raw_data (struct temp_chunks *t, struct temp_raw_data *r );
-int parse_temp_raw_wind_shear_data (struct temp_chunks *t, struct temp_raw_wind_shear_data *w );
+int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r );
+int parse_temp_raw_wind_shear_data ( struct temp_chunks *t, struct temp_raw_wind_shear_data *w );
 int print_temp_raw_data ( struct temp_raw_data *r );
 int print_temp_raw_wind_shear_data ( struct temp_raw_wind_shear_data *w );
 
 int print_csv ( FILE *f, struct metreport *m );
 int print_json ( FILE *f, struct metreport *m );
 int print_xml ( FILE *f, struct metreport *m );
-int print_plain(FILE *f, struct metreport *m);
+int print_plain ( FILE *f, struct metreport *m );
 
 int syn_parse_x01 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
 int syn_parse_x02 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );

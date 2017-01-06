@@ -44,7 +44,6 @@ int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
   char caux[256];
   char laux[CSV_MAXL];
   struct bufr_descriptor desc;
-  int kk;
 
   if ( td->path[0] == 0 )
     {
@@ -76,7 +75,7 @@ int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
     {
       // Parse line
       //printf("%s\n",laux);
-      if ( parse_csv_line ( &nt, tk, laux ) < 0 || nt != 2)
+      if ( parse_csv_line ( &nt, tk, laux ) < 0 || nt != 2 )
         {
           sprintf ( error,"Error parsing csv line from table D file '%s' found %d tokens in line %lu\n", td->path, nt, i );
           return 1;
@@ -124,7 +123,7 @@ int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
       i++;
     }
   fclose ( t );
-  
+
   // Last sequence
   sprintf ( aux, "%s%3d", oldkey, nj );
   td->l[j0][1] = aux[0];

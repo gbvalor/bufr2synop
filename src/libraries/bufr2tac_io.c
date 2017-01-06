@@ -69,4 +69,4 @@ int read_bufr ( unsigned char *bufr, char *filename, int *length )
     return -3;
 
   return 0;
-} 
+}

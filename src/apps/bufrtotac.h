@@ -33,8 +33,8 @@
 extern struct bufrdeco BUFR;
 extern struct bufrdeco_subset_sequence_data SEQ;
 extern struct bufrdeco_compressed_data_references REF;
-extern struct metreport REPORT; 
-extern struct bufr2tac_subset_state STATE; 
+extern struct metreport REPORT;
+extern struct bufr2tac_subset_state STATE;
 
 extern const char SELF[];
 extern char ERR[256];
@@ -48,8 +48,8 @@ extern int XML;
 extern int JSON;
 extern int CSV;
 extern int DEBUG;
-extern int VERBOSE; 
-extern int SHOW_SEQUENCE; 
+extern int VERBOSE;
+extern int SHOW_SEQUENCE;
 extern int ECMWF;
 extern FILE *FL;
 
@@ -57,5 +57,5 @@ extern FILE *FL;
 void print_usage ( void );
 int read_args ( int _argc, char * _argv[] );
 char * get_bufrfile_path ( char *filename, char *err );
-int bufrdeco_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subset_state *st, struct bufrdeco *b, 
-				     char *err );
+int bufrdeco_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subset_state *st, struct bufrdeco *b,
+                                     char *err );

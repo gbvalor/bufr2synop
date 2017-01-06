@@ -30,9 +30,9 @@
 
   Returns 1 if success, 0 otherwise
 */
-int check_kj_m2(double val)
+int check_kj_m2 ( double val )
 {
-    return (fabs(val) < 1.0e7) ? 1 : 0;
+  return ( fabs ( val ) < 1.0e7 ) ? 1 : 0;
 }
 
 /*!
@@ -42,9 +42,9 @@ int check_kj_m2(double val)
 
   Returns 1 if success, 0 otherwise
 */
-int check_j_cm2(double val)
+int check_j_cm2 ( double val )
 {
-    return (fabs(val) < 1.0e8) ? 1 : 0;
+  return ( fabs ( val ) < 1.0e8 ) ? 1 : 0;
 }
 
 
@@ -82,8 +82,8 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       tpd = time_period_duration ( s );
       if ( tpd == ( 24 * 3600 ) )
         {
-          if (check_j_cm2 (s->val) == 0)
-              return 0;
+          if ( check_j_cm2 ( s->val ) == 0 )
+            return 0;
           if ( strcmp ( "07", syn->s0.II ) == 0 ) // France
             {
               if ( strcmp ( "06", syn->e.HH ) == 0 )
@@ -118,8 +118,8 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( tpd == 3600 )
         {
-          if (check_kj_m2 (s->val) == 0)
-              return 0;
+          if ( check_kj_m2 ( s->val ) == 0 )
+            return 0;
           if ( s->ival >= 0 )
             {
               strcpy ( syn->s3.j5[4], "4" );
@@ -140,8 +140,8 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
-      if (check_j_cm2 (s->val) == 0)
-         return 0;
+      if ( check_j_cm2 ( s->val ) == 0 )
+        return 0;
       strcpy ( syn->s3.j524[6], "6" );
       sprintf ( syn->s3.FFFF24[6], "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
       syn->mask |= SYNOP_SEC3;
@@ -155,8 +155,8 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       tpd = time_period_duration ( s );
       if ( tpd == ( 24 * 3600 ) )
         {
-          if (check_j_cm2 (s->val) == 0)
-              return 0;
+          if ( check_j_cm2 ( s->val ) == 0 )
+            return 0;
           if ( strcmp ( "07", syn->s0.II ) == 0 ) // France
             {
               if ( strcmp ( "06", syn->e.HH ) == 0 )
@@ -173,8 +173,8 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( tpd == 3600 )
         {
-          if (check_kj_m2 (s->val) == 0)
-              return 0;
+          if ( check_kj_m2 ( s->val ) == 0 )
+            return 0;
           strcpy ( syn->s3.j5[6], "6" );
           sprintf ( syn->s3.FFFF[6], "%04d", ( int ) ( s->val / 1000.0 + 0.5 ) );
         }
@@ -189,8 +189,8 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       tpd = time_period_duration ( s );
       if ( tpd == ( 24 * 3600 ) )
         {
-          if (check_j_cm2 (s->val) == 0)
-              return 0;
+          if ( check_j_cm2 ( s->val ) == 0 )
+            return 0;
           if ( strcmp ( "07", syn->s0.II ) == 0 ) // France
             {
               if ( strcmp ( "06", syn->e.HH ) == 0 )
@@ -205,10 +205,10 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               syn->mask |= SYNOP_SEC3;
             }
         }
-      else if ( tpd == 3600)
+      else if ( tpd == 3600 )
         {
-          if (check_kj_m2 (s->val) == 0)
-              return 0;
+          if ( check_kj_m2 ( s->val ) == 0 )
+            return 0;
           sprintf ( syn->s3.FFFF407, "%04d", ( int ) ( s->val / 1000.0 + 0.5 ) );
         }
       syn->mask |= SYNOP_SEC3;
@@ -223,8 +223,8 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       tpd = time_period_duration ( s );
       if ( tpd == ( 24 * 3600 ) )
         {
-          if (check_j_cm2 (s->val) == 0)
-              return 0;
+          if ( check_j_cm2 ( s->val ) == 0 )
+            return 0;
           if ( strcmp ( "07", syn->s0.II ) == 0 ) // France
             {
               if ( strcmp ( "06", syn->e.HH ) == 0 )
@@ -259,8 +259,8 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( tpd == 3600 )
         {
-          if (check_kj_m2 (s->val) == 0)
-              return 0;
+          if ( check_kj_m2 ( s->val ) == 0 )
+            return 0;
           if ( s->ival >= 0 )
             {
               strcpy ( syn->s3.j5[0], "0" );
@@ -283,8 +283,8 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       tpd = time_period_duration ( s );
       if ( tpd == ( 24 * 3600 ) )
         {
-          if (check_j_cm2 (s->val) == 0)
-              return 0;
+          if ( check_j_cm2 ( s->val ) == 0 )
+            return 0;
           if ( strcmp ( "07", syn->s0.II ) == 0 ) // France
             {
               if ( strcmp ( "06", syn->e.HH ) == 0 )
@@ -303,8 +303,8 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( tpd == 3600 )
         {
-          if (check_kj_m2 (s->val) == 0)
-              return 0;
+          if ( check_kj_m2 ( s->val ) == 0 )
+            return 0;
           strcpy ( syn->s3.j5[2], "2" );
           sprintf ( syn->s3.FFFF[2], "%04d", ( int ) ( s->val / 1000.0 + 0.5 ) );
         }
@@ -319,8 +319,8 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       tpd = time_period_duration ( s );
       if ( tpd == ( 24 * 3600 ) )
         {
-          if (check_j_cm2 (s->val) == 0)
-              return 0;
+          if ( check_j_cm2 ( s->val ) == 0 )
+            return 0;
           if ( strcmp ( "07", syn->s0.II ) == 0 ) // France
             {
               if ( strcmp ( "06", syn->e.HH ) == 0 )
@@ -339,8 +339,8 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( tpd == 3600 )
         {
-          if (check_kj_m2 (s->val) == 0)
-              return 0;
+          if ( check_kj_m2 ( s->val ) == 0 )
+            return 0;
           strcpy ( syn->s3.j5[3], "3" );
           sprintf ( syn->s3.FFFF[3], "%04d", ( int ) ( s->val / 1000.0 + 0.5 ) );
         }
@@ -356,8 +356,8 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       tpd = time_period_duration ( s );
       if ( tpd == ( 24 * 3600 ) )
         {
-          if (check_j_cm2 (s->val) == 0)
-              return 0;
+          if ( check_j_cm2 ( s->val ) == 0 )
+            return 0;
           if ( strcmp ( "07", syn->s0.II ) == 0 ) // France
             {
               if ( strcmp ( "06", syn->e.HH ) == 0 )
@@ -374,8 +374,8 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( tpd == 3600 )
         {
-          if (check_kj_m2 (s->val) == 0)
-              return 0;
+          if ( check_kj_m2 ( s->val ) == 0 )
+            return 0;
           sprintf ( syn->s3.FFFF408, "%04d", ( int ) ( s->val / 1000.0 + 0.5 ) );
         }
       syn->mask |= SYNOP_SEC3;
@@ -389,8 +389,8 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       tpd = time_period_duration ( s );
       if ( tpd == ( 24 * 3600 ) )
         {
-          if (check_j_cm2 (s->val) == 0)
-              return 0;
+          if ( check_j_cm2 ( s->val ) == 0 )
+            return 0;
           if ( strcmp ( "07", syn->s0.II ) == 0 ) // France
             {
               if ( strcmp ( "06", syn->e.HH ) == 0 )
@@ -407,8 +407,8 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( tpd == 3600 )
         {
-          if (check_kj_m2 (s->val) == 0)
-              return 0;
+          if ( check_kj_m2 ( s->val ) == 0 )
+            return 0;
           sprintf ( syn->s3.SS, "%02d", s->ival / 6 );
           syn->mask |= SYNOP_SEC3;
         }
@@ -422,8 +422,8 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       tpd = time_period_duration ( s );
       if ( tpd == ( 24 * 3600 ) )
         {
-          if (check_j_cm2 (s->val) == 0)
-              return 0;
+          if ( check_j_cm2 ( s->val ) == 0 )
+            return 0;
           if ( strcmp ( "07", syn->s0.II ) == 0 ) // France
             {
               if ( strcmp ( "06", syn->e.HH ) == 0 )
@@ -440,8 +440,8 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( tpd == 3600 )
         {
-          if (check_kj_m2 (s->val) == 0)
-              return 0;
+          if ( check_kj_m2 ( s->val ) == 0 )
+            return 0;
           sprintf ( syn->s3.SS, "%02d", s->ival * 10 );
           syn->mask |= SYNOP_SEC3;
         }

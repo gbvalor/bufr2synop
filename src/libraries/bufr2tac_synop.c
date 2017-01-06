@@ -250,7 +250,7 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
     }
 
   // Supress 7wwW1W2 if no significant weather
-  if ( ( syn->s1.ww[0] || syn->s1.W1[0] || syn->s1.W2[0] ) && 
+  if ( ( syn->s1.ww[0] || syn->s1.W1[0] || syn->s1.W2[0] ) &&
        ( syn->s1.ww[0] == 0 || syn->s1.ww[0] == '/' || ( strcmp ( syn->s1.ww,"04" ) < 0 ) ) &&
        ( syn->s1.W1[0] == 0 || syn->s1.W1[0] == '/' || ( strcmp ( syn->s1.W1,"3" ) < 0 ) ) &&
        ( syn->s1.W2[0] == 0 || syn->s1.W2[0] == '/' || ( strcmp ( syn->s1.W2,"3" ) < 0 ) ) )
@@ -332,7 +332,7 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
     }
 
   /****** Final Adjust ***********/
-  
+
   // fix YYGG according with YYYYMMDDHHmm
   if ( syn->e.mm[0] == 0 )
     sprintf ( syn->e.mm, "00" );
@@ -346,7 +346,7 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
 
   // Marc as a synop from bufr
   syn->mask |= SYNOP_BUFR;
-  
+
   // Fill some metreport fields
   if ( strlen ( syn->s0.II ) )
     {

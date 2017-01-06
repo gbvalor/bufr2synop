@@ -39,7 +39,7 @@ const char DEFAULT_BUFRTABLES_WMO_CSV_DIR2[] = "/usr/share/bufr2synop/";
        BUFR_XX_Y_Z_TableB_en for table B
        BUFR_XX_Y_Z_CodeFlag for Code table and Flag table. This is equivalent to table C in ECMWF package
        BUFR_XX_Y_Z_TableD_en for table D
-       
+
   XX is the Version number of master table used
   Y is the revision (currently ignored)
   Z is minor revision (currently ignored)
@@ -79,56 +79,56 @@ int get_wmo_tablenames ( struct bufrdeco *b, const char *bufrtables_dir )
       strcpy ( aux, bufrtables_dir );
     }
 
-  switch ( b->sec1.master_version)
-  {
-      case 4:
-      case 5:
-      case 6:    
-      case 7:    
-      case 8:    
-      case 9:    
-      case 10:    
-      case 11:
-      case 12:
-      case 13:
-        sprintf ( b->tables->b.path,"%sBUFR_13_0_0_TableB_en.csv", aux );
-        sprintf ( b->tables->c.path,"%sBUFR_13_0_0_TableC_en.csv", aux );
-        sprintf ( b->tables->d.path,"%sBUFR_13_0_0_TableD_en.csv", aux );
-        break;
-      case 18:
-        sprintf ( b->tables->b.path,"%sBUFR_18_1_0_TableB_en.csv", aux );
-        sprintf ( b->tables->c.path,"%sBUFR_18_1_0_TableC_en.csv", aux );
-        sprintf ( b->tables->d.path,"%sBUFR_18_1_0_TableD_en.csv", aux );
-        break;
-      case 19:
-        sprintf ( b->tables->b.path,"%sBUFR_19_1_1_TableB_en.csv", aux );
-        sprintf ( b->tables->c.path,"%sBUFR_19_1_1_TableC_en.csv", aux );
-        sprintf ( b->tables->d.path,"%sBUFR_19_1_1_TableD_en.csv", aux );
-        break;
-      case 22:
-        sprintf ( b->tables->b.path,"%sBUFR_22_0_1_TableB_en.csv", aux );
-        sprintf ( b->tables->c.path,"%sBUFR_22_0_1_TableC_en.csv", aux );
-        sprintf ( b->tables->d.path,"%sBUFR_22_0_1_TableD_en.csv", aux );
-        break;
-      case 14:
-      case 15:
-      case 16:
-      case 17:
-      case 21:
-      case 23:
-      case 24:
-      case 25:
-      case 26:
-      case 27:
-        sprintf ( b->tables->b.path,"%sBUFR_%d_0_0_TableB_en.csv", aux, b->sec1.master_version );
-        sprintf ( b->tables->c.path,"%sBUFR_%d_0_0_TableC_en.csv", aux, b->sec1.master_version );
-        sprintf ( b->tables->d.path,"%sBUFR_%d_0_0_TableD_en.csv", aux, b->sec1.master_version );
-        break;
-      default:
-        sprintf ( b->tables->b.path,"%sBUFR_27_0_0_TableB_en.csv", aux );
-        sprintf ( b->tables->c.path,"%sBUFR_27_0_0_TableC_en.csv", aux );
-        sprintf ( b->tables->d.path,"%sBUFR_26_0_0_TableD_en.csv", aux );
-        break;
+  switch ( b->sec1.master_version )
+    {
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+    case 10:
+    case 11:
+    case 12:
+    case 13:
+      sprintf ( b->tables->b.path,"%sBUFR_13_0_0_TableB_en.csv", aux );
+      sprintf ( b->tables->c.path,"%sBUFR_13_0_0_TableC_en.csv", aux );
+      sprintf ( b->tables->d.path,"%sBUFR_13_0_0_TableD_en.csv", aux );
+      break;
+    case 18:
+      sprintf ( b->tables->b.path,"%sBUFR_18_1_0_TableB_en.csv", aux );
+      sprintf ( b->tables->c.path,"%sBUFR_18_1_0_TableC_en.csv", aux );
+      sprintf ( b->tables->d.path,"%sBUFR_18_1_0_TableD_en.csv", aux );
+      break;
+    case 19:
+      sprintf ( b->tables->b.path,"%sBUFR_19_1_1_TableB_en.csv", aux );
+      sprintf ( b->tables->c.path,"%sBUFR_19_1_1_TableC_en.csv", aux );
+      sprintf ( b->tables->d.path,"%sBUFR_19_1_1_TableD_en.csv", aux );
+      break;
+    case 22:
+      sprintf ( b->tables->b.path,"%sBUFR_22_0_1_TableB_en.csv", aux );
+      sprintf ( b->tables->c.path,"%sBUFR_22_0_1_TableC_en.csv", aux );
+      sprintf ( b->tables->d.path,"%sBUFR_22_0_1_TableD_en.csv", aux );
+      break;
+    case 14:
+    case 15:
+    case 16:
+    case 17:
+    case 21:
+    case 23:
+    case 24:
+    case 25:
+    case 26:
+    case 27:
+      sprintf ( b->tables->b.path,"%sBUFR_%d_0_0_TableB_en.csv", aux, b->sec1.master_version );
+      sprintf ( b->tables->c.path,"%sBUFR_%d_0_0_TableC_en.csv", aux, b->sec1.master_version );
+      sprintf ( b->tables->d.path,"%sBUFR_%d_0_0_TableD_en.csv", aux, b->sec1.master_version );
+      break;
+    default:
+      sprintf ( b->tables->b.path,"%sBUFR_27_0_0_TableB_en.csv", aux );
+      sprintf ( b->tables->c.path,"%sBUFR_27_0_0_TableC_en.csv", aux );
+      sprintf ( b->tables->d.path,"%sBUFR_26_0_0_TableD_en.csv", aux );
+      break;
     }
   return 0;
 }
@@ -151,7 +151,7 @@ int bufr_read_tables_wmo ( struct bufrdeco *b, char *tables_dir )
       return 1;
     }
 
-   // If tables still not initialized then do it
+  // If tables still not initialized then do it
   if ( b->tables == NULL && bufrdeco_init_tables ( & ( b->tables ) ) )
     {
       sprintf ( b->error, "bufrdeco_read_tables_ecmwf(): Cannot allocate memory for tables\n" );

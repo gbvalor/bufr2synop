@@ -101,10 +101,10 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     }
 
   //set WMO region if we know II and iii and still no set A1
-  if ((syn->s0.A1[0] == 0) && syn->s0.II[0] && syn->s0.iii[0])
-  {
-     guess_WMO_region ( syn->s0.A1, syn->s0.Reg, syn->s0.II, syn->s0.iii );  
-  }
+  if ( ( syn->s0.A1[0] == 0 ) && syn->s0.II[0] && syn->s0.iii[0] )
+    {
+      guess_WMO_region ( syn->s0.A1, syn->s0.Reg, syn->s0.II, syn->s0.iii );
+    }
   return 0;
 }
 
