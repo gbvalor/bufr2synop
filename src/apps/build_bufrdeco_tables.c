@@ -48,7 +48,7 @@ int IS_WMO;
 int A_FIELDS[8] = {1,2,-1,-1,-1,-1,-1,-1}; // fields selected for table A type
 int B_FIELDS[8] = {3,4,5,6,7,8,9,-1}; // fields selected for table B type
 int C_FIELDS[8] = {1,3,4,5,6,7,-1,-1}; // Fields selected for CodeFlag (C) type.
-int D_FIELDS[8] = {3,6,-1,-1,-1,-1,-1,-1}; // Fields selected for D type (Common sequences)
+int D_FIELDS[8] = {3,6,4,7,-1,-1,-1,-1}; // Fields selected for D type (Common sequences)
 
 void print_usage ( void )
 {
@@ -179,7 +179,7 @@ int main ( int argc, char *argv[] )
           break;
         case 'D':
         case 'd':
-          printf ( "\"FXY1\",\"FXY2\"\n" );
+          printf ( "\"FXY1\",\"FXY2\",\"Title_en\",\"ElementName_en\"\n" );
           break;
         }
 
@@ -285,7 +285,7 @@ int main ( int argc, char *argv[] )
 
               memcpy ( caux, lin + 11, 6 );
               caux[6] = '\0';
-              printf ( "\"%s\",\"%s\"\n", caux2, caux );
+              printf ( "\"%s\",\"%s\",,\n", caux2, caux );
               break;
 
             default:
