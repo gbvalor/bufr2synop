@@ -219,6 +219,24 @@
 #define BUFRDECO_USE_ECMWF_TABLES (1)
 
 /*!
+  \def BUFRDECO_OUTPUT_HTML
+  \brief bit mask to format output as html
+*/
+#define BUFRDECO_OUTPUT_HTML (2)
+
+/*!
+  \def BUFRDECO_OUTPUT_JSON
+  \brief bit mask to format output as json
+*/
+#define BUFRDECO_OUTPUT_JSON (4)
+
+/*!
+  \def BUFRDECO_OUTPUT_XML
+  \brief bit mask to format output as xml
+*/
+#define BUFRDECO_OUTPUT_XML (8)
+
+/*!
   \def BUFR_TABLEB_NAME_LENGTH
   \brief Max length (in chars) reserved for a name of variable in table B
 */
@@ -673,14 +691,23 @@ int parse_csv_line ( int *nt, char *tk[], char *lin );
 
 // Print and output functions
 void print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r );
+void fprint_bufrdeco_compressed_ref ( FILE *f, struct bufrdeco_compressed_ref *r );
 void print_bufrdeco_compressed_data_references ( struct bufrdeco_compressed_data_references *r );
+void fprint_bufrdeco_compressed_data_references ( FILE *f, struct bufrdeco_compressed_data_references *r );
 void print_sec0_info ( struct bufrdeco *b );
 void print_sec1_info ( struct bufrdeco *b );
 void print_sec3_info ( struct bufrdeco *b );
 void print_sec4_info ( struct bufrdeco *b );
+int sprint_sec0_info ( char *target, size_t lmax, struct bufrdeco *b);
+int sprint_sec1_info ( char *target, size_t lmax, struct bufrdeco *b);
+int sprint_sec3_info ( char *target, size_t lmax, struct bufrdeco *b);
+int sprint_sec4_info ( char *target, size_t lmax, struct bufrdeco *b);
 void bufrdeco_print_tree ( struct bufrdeco *b );
+void bufrdeco_fprint_tree ( FILE *f, struct bufrdeco *b );
 void bufrdeco_print_atom_data_stdout ( struct bufr_atom_data *a );
+void bufrdeco_print_atom_data_file ( FILE *f, struct bufr_atom_data *a );
 void bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *s );
+void bufrdeco_fprint_subset_sequence_data ( FILE *f, struct bufrdeco_subset_sequence_data *s );
 char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a );
 
 // To parse. General
