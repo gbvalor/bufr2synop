@@ -44,9 +44,9 @@ int sprint_sec0_info ( char *target, size_t lmax, struct bufrdeco *b )
 {
   char caux[512], *c;
 
-  if (b->mask & BUFRDECO_OUTPUT_HTML)
-      return sprint_sec0_info_html(target, lmax, b);
-  
+  if ( b->mask & BUFRDECO_OUTPUT_HTML )
+    return sprint_sec0_info_html ( target, lmax, b );
+
   c = caux;
   c += sprintf ( c, "#### SEC 0 INFO ###\n" );
   c += sprintf ( c, "Bufr length:           %5u\n", b->sec0.bufr_length );
@@ -80,8 +80,8 @@ int sprint_sec1_info ( char *target, size_t lmax, struct bufrdeco *b )
 {
   char caux[2048], *c;
 
-  if (b->mask & BUFRDECO_OUTPUT_HTML)
-      return sprint_sec1_info_html(target, lmax, b);
+  if ( b->mask & BUFRDECO_OUTPUT_HTML )
+    return sprint_sec1_info_html ( target, lmax, b );
 
   c = caux;
   c += sprintf ( c, "\n#### SEC 1 INFO ###\n" );
@@ -138,8 +138,8 @@ int sprint_sec3_info ( char *target, size_t lmax, struct bufrdeco *b )
   size_t i;
   char caux[4096], *c;
 
-  if (b->mask & BUFRDECO_OUTPUT_HTML)
-      return sprint_sec3_info_html(target, lmax, b);
+  if ( b->mask & BUFRDECO_OUTPUT_HTML )
+    return sprint_sec3_info_html ( target, lmax, b );
 
   c = caux;
   c += sprintf ( c, "\n#### SEC 3 INFO ###\n" );
@@ -183,8 +183,8 @@ int sprint_sec4_info ( char *target, size_t lmax, struct bufrdeco *b )
 {
   char caux[4096], *c;
 
-  if (b->mask & BUFRDECO_OUTPUT_HTML)
-      return sprint_sec4_info_html(target, lmax, b);
+  if ( b->mask & BUFRDECO_OUTPUT_HTML )
+    return sprint_sec4_info_html ( target, lmax, b );
 
   c = caux;
   c += sprintf ( c, "\n#### SEC 4 INFO ###\n" );
@@ -297,7 +297,11 @@ int bufrdeco_fprint_tree_recursive ( FILE *f, struct bufrdeco *b, struct bufr_se
 */
 void bufrdeco_fprint_tree ( FILE *f, struct bufrdeco *b )
 {
+  if ( b->mask & BUFRDECO_OUTPUT_HTML )
+    fprintf ( f, "<pre>\n" );
   bufrdeco_fprint_tree_recursive ( f, b, NULL );
+  if ( b->mask & BUFRDECO_OUTPUT_HTML )
+    fprintf ( f, "</pre>\n" );
 };
 
 
@@ -428,6 +432,9 @@ void bufrdeco_fprint_subset_sequence_data ( FILE *f, struct bufrdeco_subset_sequ
   char aux[1024];
   for ( i = 0; i < s->nd ; i++ )
     {
+      if (i && s->sequence[i].seq != s->sequence[i - 1].seq )
+         fprintf( f, "\n");  
+        
       fprintf ( f, "%5lu:  %s\n", i, bufrdeco_print_atom_data ( aux, &s->sequence[i] ) );
     }
 }
