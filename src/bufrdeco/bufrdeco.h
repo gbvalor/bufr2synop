@@ -289,6 +289,8 @@ struct bufr_atom_data
   uint32_t associated; /*!< value for associated field, if any */
   char cval[128]; /*!< String value for the bufr descriptor */
   char ctable[BUFR_EXPLAINED_LENGTH]; /*!< Explained meaning for a code table */
+  struct bufr_sequence *seq; /*!< Pointer to the struct bufr_sequence to which this descriptor belongs to */
+  size_t ns; /*!< Element in bufr_sequence to which this descriptor belongs to */
 };
 
 /*!
@@ -346,6 +348,9 @@ struct bufr_sequence
   struct bufr_descriptor lseq[NMAXSEQ_DESCRIPTORS]; /*!< Array of unexpanded descriptors */
   struct bufr_sequence *sons[NMAXSEQ_DESCRIPTORS]; /*!< Array of pointers to sons. It must be NULL
    except for sequence descriptors.  */
+  int iseq; /*< number of sequence when parsing a tree. for recursion level 0 in sec3 is asigned 0. 
+                Is the index in member seq in struct bufereco_expanded_tree */
+  char name[BUFR_EXPLAINED_LENGTH];
 };
 
 /*!
@@ -597,6 +602,19 @@ struct bufr_tablec
   struct bufr_tablec_decoded_item item[BUFR_MAXLINES_TABLEC]; /*!< Array of decoded lines */
 };
 
+
+/*!
+  \struct bufr_tabled_decoded_item
+  \brief Store parameters for a line in table D (sequence of descritors)
+*/
+struct bufr_tabled_decoded_item 
+{
+  char key[8]; /*!< c key value of sequence descriptor */
+  char key2[8]; /*!< c key 2 of sequence element */
+  char description[BUFR_EXPLAINED_LENGTH]; /*!< Explained name of sequence */
+  char description2[BUFR_EXPLAINED_LENGTH]; /*!< Explained name of elemet of sequence */
+};
+
 /*!
   \struct bufr_tabled
   \brief Store a table D readed from a file formated and named as ECMWF bufrdc package
@@ -610,6 +628,7 @@ struct bufr_tabled
   size_t x_start[64]; /*!< Index in array \a l[] for first x. x_start[j] is index for first descriptor which x == j */
   size_t num[64]; /*!< Amonut of lines for x. num[i] is the amount of items in array where x = i */
   char l[BUFR_MAXLINES_TABLED][128]; /*!< Array with lines readed from file */
+  struct bufr_tabled_decoded_item item[BUFR_MAXLINES_TABLED];
 };
 
 /*!

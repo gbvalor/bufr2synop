@@ -161,17 +161,15 @@ int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufr
       return 1; // descritor not found
     }
 
+  // Get the name of common sequence
+  if (td->item[i].description[0])
+     strcpy(s->name, td->item[i].description);
+  else
+     s->name[0] = 0;
+  
   // reads the amount of possible values
   nv = strtoul ( &td->l[i][7], &c, 10 );
-  /*if ( td->l[i][7] == ' ' )
-    {
-      nv = strtoul ( &td->l[i][7], &c, 10 );
-    }
-  else
-    {
-      sprintf ( b->error, "bufrdeco_tabled_get_descritors_array(): Error when parsing provided table D\n" );
-      return 1;
-    }*/
+
   // s->level must be set by caller
   // s->father must be set by caller
 

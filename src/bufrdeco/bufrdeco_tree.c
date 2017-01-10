@@ -68,6 +68,8 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
       strcpy ( l->key, "000000" );
       l->level = 0;
       l->father = NULL; // This layer is God, it has not father
+      l->iseq = 0;
+      strcpy(l->name, "Main sequence from SEC3");
       // here we get ndesc and lsec array
       if ( get_unexpanded_descriptor_array_from_sec3 ( l, b ) )
         {
@@ -91,6 +93,7 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
       strcpy ( l->key, key );
       l->level = father->level + 1;
       l->father = father;
+      l->iseq = nl - 1;
       //printf ("level=%lu ", l->level);
       // here we get ndesc and lsec array from table d
       if ( bufrdeco_tabled_get_descriptors_array ( l, b, key ) )
