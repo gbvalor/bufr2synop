@@ -31,23 +31,27 @@
  else \
  { \
     return 1; \
- }  
+ }
 
 /*!
   \fn void sprint_sec0_info( char *target, size_t lmax, struct bufrdeco *b )
   \brief Prints info from sec0
-  \param target string target 
+  \param target string target
   \param lmax available size in target
   \param b pointer to the source struct \ref bufrdeco
 */
 int sprint_sec0_info ( char *target, size_t lmax, struct bufrdeco *b )
 {
   char caux[512], *c;
+
+  if (b->mask & BUFRDECO_OUTPUT_HTML)
+      return sprint_sec0_info_html(target, lmax, b);
+  
   c = caux;
   c += sprintf ( c, "#### SEC 0 INFO ###\n" );
   c += sprintf ( c, "Bufr length:           %5u\n", b->sec0.bufr_length );
   c += sprintf ( c, "Bufr edition:          %5u\n", b->sec0.edition );
-  strcat_protected(target, caux, lmax);
+  strcat_protected ( target, caux, lmax );
   return 0;
 }
 
@@ -60,23 +64,26 @@ void print_sec0_info ( struct bufrdeco *b )
 {
   char caux[512];
   caux[0] = 0;
-  sprint_sec0_info(caux, 512, b);
-  printf ( "%s", caux);
+  sprint_sec0_info ( caux, 512, b );
+  printf ( "%s", caux );
 }
 
 
 /*!
   \fn void sprint_sec1_info( char *target, size_t lmax, struct bufrdeco *b )
   \brief Prints info from sec1
-  \param target string target 
+  \param target string target
   \param lmax available size in target
   \param b pointer to the source struct \ref bufrdeco
 */
 int sprint_sec1_info ( char *target, size_t lmax, struct bufrdeco *b )
 {
   char caux[2048], *c;
-  c = caux;
 
+  if (b->mask & BUFRDECO_OUTPUT_HTML)
+      return sprint_sec1_info_html(target, lmax, b);
+
+  c = caux;
   c += sprintf ( c, "\n#### SEC 1 INFO ###\n" );
   c += sprintf ( c, "Sec1 length:           %5u\n", b->sec1.length );
   c += sprintf ( c, "Bufr master table:     %5u\n", b->sec1.master );
@@ -102,7 +109,7 @@ int sprint_sec1_info ( char *target, size_t lmax, struct bufrdeco *b )
       c += sprintf ( c, "             '%s'\n", b->tables->c.path );
       c += sprintf ( c, "             '%s'\n", b->tables->d.path );
     }
-  strcat_protected(target, caux, lmax);
+  strcat_protected ( target, caux, lmax );
   return 0;
 }
 
@@ -115,14 +122,14 @@ void print_sec1_info ( struct bufrdeco *b )
 {
   char caux[2048];
   caux[0] = 0;
-  sprint_sec1_info(caux, 2048, b);
-  printf ( "%s", caux);
+  sprint_sec1_info ( caux, 2048, b );
+  printf ( "%s", caux );
 }
 
 /*!
   \fn void sprint_sec3_info( char *target, size_t lmax, struct bufrdeco *b )
   \brief Prints info from sec3
-  \param target string target 
+  \param target string target
   \param lmax available size in target
   \param b pointer to the source struct \ref bufrdeco
 */
@@ -130,6 +137,9 @@ int sprint_sec3_info ( char *target, size_t lmax, struct bufrdeco *b )
 {
   size_t i;
   char caux[4096], *c;
+
+  if (b->mask & BUFRDECO_OUTPUT_HTML)
+      return sprint_sec3_info_html(target, lmax, b);
 
   c = caux;
   c += sprintf ( c, "\n#### SEC 3 INFO ###\n" );
@@ -142,9 +152,9 @@ int sprint_sec3_info ( char *target, size_t lmax, struct bufrdeco *b )
   for ( i = 0; i < b->sec3.ndesc; i++ )
     {
       c += sprintf ( c, "  %3lu:                      %u %02u %03u\n", i, b->sec3.unexpanded[i].f,
-               b->sec3.unexpanded[i].x, b->sec3.unexpanded[i].y );
+                     b->sec3.unexpanded[i].x, b->sec3.unexpanded[i].y );
     }
-  strcat_protected(target, caux, lmax);
+  strcat_protected ( target, caux, lmax );
   return 0;
 }
 
@@ -157,15 +167,15 @@ void print_sec3_info ( struct bufrdeco *b )
 {
   char caux[4096];
   caux[0] = 0;
-  sprint_sec3_info(caux, 4096, b);
-  printf ( "%s", caux);
+  sprint_sec3_info ( caux, 4096, b );
+  printf ( "%s", caux );
 }
 
 
 /*!
   \fn void sprint_sec4_info( char *target, size_t lmax, struct bufrdeco *b )
   \brief Prints info from sec4
-  \param target string target 
+  \param target string target
   \param lmax available size in target
   \param b pointer to the source struct \ref bufrdeco
 */
@@ -173,10 +183,13 @@ int sprint_sec4_info ( char *target, size_t lmax, struct bufrdeco *b )
 {
   char caux[4096], *c;
 
+  if (b->mask & BUFRDECO_OUTPUT_HTML)
+      return sprint_sec4_info_html(target, lmax, b);
+
   c = caux;
   c += sprintf ( c, "\n#### SEC 4 INFO ###\n" );
   c += sprintf ( c, "Sec4 length:           %5u\n", b->sec4.length );
-  strcat_protected(target, caux, lmax);
+  strcat_protected ( target, caux, lmax );
   return 0;
 }
 
@@ -189,8 +202,8 @@ void print_sec4_info ( struct bufrdeco *b )
 {
   char caux[256];
   caux[0] = 0;
-  sprint_sec4_info(caux, 256, b);
-  printf ( "%s", caux);
+  sprint_sec4_info ( caux, 256, b );
+  printf ( "%s", caux );
 }
 
 /*!
@@ -204,7 +217,7 @@ void print_sec4_info ( struct bufrdeco *b )
 */
 int bufrdeco_fprint_tree_recursive ( FILE *f, struct bufrdeco *b, struct bufr_sequence *seq )
 {
-  size_t i, j;
+  size_t i, j, k;
   struct bufr_sequence *l;
 
   if ( seq == NULL )
@@ -216,22 +229,56 @@ int bufrdeco_fprint_tree_recursive ( FILE *f, struct bufrdeco *b, struct bufr_se
       l = seq;
     }
 
+
+  /*for ( j = 0; j < l->level; j++ )
+    {
+      fprintf ( f, "        " );
+    }
+  fprintf(f, "%s\n", l->name);*/
+
   for ( i = 0; i < l->ndesc; i++ )
     {
       // we search for descriptors woth f == 3
 
       for ( j = 0; j < l->level; j++ )
         {
-          fprintf ( f, "        " );
+          fprintf ( f, "        |" );
         }
-      fprintf ( f,  "%u %02u %03u\n", l->lseq[i].f, l->lseq[i].x,l->lseq[i].y );
+      fprintf ( f,  "%u %02u %03u", l->lseq[i].f, l->lseq[i].x,l->lseq[i].y );
 
       if ( l->lseq[i].f != 3 )
         {
+          if ( l->lseq[i].f == 0 )
+            {
+              if ( bufr_find_tableb_index ( &k, & ( b->tables->b ), l->lseq[i].c ) )
+                fprintf ( f , "\n" );
+              else
+                fprintf ( f , ": %s\n", b->tables->b.item[k].name );
+            }
+          else if ( l->lseq[i].f == 1 )
+            {
+              if ( l->lseq[i].y == 0 )
+                {
+                  if ( l->lseq[i].x == 1 )
+                    fprintf ( f, ": Replicator for %d descriptor after next delayed descriptor. The number of replications is set in the delayed descriptor.\n", l->lseq[i].x );
+                  else
+                    fprintf ( f, ": Replicator for %d descriptors after next delayed descriptor. The number of replications is set in the delayed descriptor.\n", l->lseq[i].x );
+                }
+              else
+                {
+                  if ( l->lseq[i].x == 1 )
+                    fprintf ( f, ": Replicator for next %d descriptor %d times\n", l->lseq[i].x, l->lseq[i].y );
+                  else
+                    fprintf ( f, ": Replicator for next %d descriptors %d times\n", l->lseq[i].x, l->lseq[i].y );
+                }
+            }
+          else
+            fprintf ( f, "\n" );
           continue;
         }
 
       // we then recursively parse the son
+      fprintf ( f, ": %s\n", l->sons[i]->name );
       if ( bufrdeco_fprint_tree_recursive ( f, b, l->sons[i] ) )
         {
           return 1;
@@ -275,7 +322,7 @@ void bufrdeco_print_atom_data_file ( FILE *f, struct bufr_atom_data *a )
 {
   char aux[1024];
   bufrdeco_print_atom_data ( aux, a );
-  fprintf (f,  "%s\n",aux );
+  fprintf ( f,  "%s\n",aux );
 }
 
 /*!
@@ -285,7 +332,7 @@ void bufrdeco_print_atom_data_file ( FILE *f, struct bufr_atom_data *a )
 */
 void bufrdeco_print_atom_data_stdout ( struct bufr_atom_data *a )
 {
-  bufrdeco_print_atom_data_file (stdout, a);
+  bufrdeco_print_atom_data_file ( stdout, a );
 }
 
 /*!
@@ -394,7 +441,7 @@ void bufrdeco_fprint_subset_sequence_data ( FILE *f, struct bufrdeco_subset_sequ
 */
 void bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *s )
 {
-  bufrdeco_fprint_subset_sequence_data ( stdout, s);  
+  bufrdeco_fprint_subset_sequence_data ( stdout, s );
 }
 
 /*!
@@ -424,7 +471,7 @@ void fprint_bufrdeco_compressed_ref ( FILE *f, struct bufrdeco_compressed_ref *r
 */
 void print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r )
 {
-  fprint_bufrdeco_compressed_ref (stdout, r);
+  fprint_bufrdeco_compressed_ref ( stdout, r );
 }
 
 /*!

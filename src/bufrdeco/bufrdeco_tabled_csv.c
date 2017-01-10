@@ -75,14 +75,25 @@ int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
     {
       // Parse line
       //printf("%s\n",laux);
-      if ( parse_csv_line ( &nt, tk, laux ) < 0 || nt != 2 )
+      if ( parse_csv_line ( &nt, tk, laux ) < 0 || ( nt != 2 && nt != 4) )
         {
           sprintf ( error,"Error parsing csv line from table D file '%s' found %d tokens in line %lu\n", td->path, nt, i );
           return 1;
         }
 
-      /*printf ( "%d\n", nt );
-      for ( kk = 0; kk < nt; kk++ ) printf ( "%d %s\n", kk, tk[kk] );*/
+      // item fields
+      strcpy(td->item[i].key, tk[0]);
+      strcpy(td->item[i].key2, tk[1]);
+
+      if (nt == 4 && tk[2][0])
+        strcpy(td->item[i].description, tk[2]);
+      else
+        td->item[i].description[0] = 0;
+
+      if (nt == 4 && tk[3][0])
+        strcpy(td->item[i].description2, tk[3]);
+      else
+        td->item[i].description2[0] = 0;
 
       if ( strcmp ( oldkey, tk[0] ) )
         {

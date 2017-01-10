@@ -51,6 +51,7 @@ extern int DEBUG;
 extern int VERBOSE;
 extern int SHOW_SEQUENCE;
 extern int ECMWF;
+extern int HTML;
 extern FILE *FL;
 
 // functions

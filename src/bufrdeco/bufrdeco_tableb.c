@@ -192,6 +192,15 @@ int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *
 
   ix = strtoul ( key, &c, 10 );
   uint32_t_to_descriptor ( &desc, ix );
+
+  // first chance
+  i0 = tb->x_start[desc.x] + tb->y_ref[desc.x][desc.y];
+  if ( tb->item[i0].x == desc.x && tb->item[i0].y == desc.y)
+  {
+     *index = i0;
+     return 0;
+  }
+  // Second chance
   i0 = tb->x_start[desc.x];
   for ( i = i0 ; i < i0 + tb->num[desc.x] ; i++ )
     {

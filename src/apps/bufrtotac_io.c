@@ -69,11 +69,12 @@ int read_args ( int _argc, char * _argv[] )
   JSON = 0;
   CSV= 0;
   ECMWF = 0;
+  HTML = 0;
 
   /*
      Read input options
   */
-  while ( ( iopt = getopt ( _argc, _argv, "cDEhi:jI:o:st:vVx" ) ) !=-1 )
+  while ( ( iopt = getopt ( _argc, _argv, "cDEhi:jHI:o:st:vVx" ) ) !=-1 )
     switch ( iopt )
       {
       case 'i':
@@ -102,6 +103,9 @@ int read_args ( int _argc, char * _argv[] )
         break;
       case 'E':
         ECMWF = 1;
+        break;
+      case 'H':
+        HTML = 1;
         break;
       case 'V':
         VERBOSE = 1;

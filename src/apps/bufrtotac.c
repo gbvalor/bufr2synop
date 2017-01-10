@@ -105,6 +105,7 @@ int XML; /*!< If == 1 then output is in xml format */
 int JSON; /*!< If == 1 then output is in json format */
 int CSV; /*!< If == 1 then output is in csv format */
 int ECMWF; /*!< If == 1 then use tables from ECMWF package */
+int HTML; /*!< If == 1 then output is in HTML format */
 FILE *FL; /*!< Buffer to read the list of files */
 
 int main ( int argc, char *argv[] )
@@ -124,9 +125,10 @@ int main ( int argc, char *argv[] )
 
   // If needed mark to use ECMWF tables
   if ( ECMWF )
-    {
       BUFR.mask |= BUFRDECO_USE_ECMWF_TABLES;
-    }
+
+  if ( HTML )
+      BUFR.mask |= BUFRDECO_OUTPUT_HTML;
 
   /**** Big loop. a cycle per file ****/
   while ( get_bufrfile_path ( INPUTFILE, ERR ) )
