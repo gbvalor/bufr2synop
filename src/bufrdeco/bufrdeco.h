@@ -736,6 +736,8 @@ void bufrdeco_fprint_subset_sequence_data_html ( FILE *f, struct bufrdeco_subset
 void bufrdeco_fprint_subset_sequence_data ( FILE *f, struct bufrdeco_subset_sequence_data *s );
 char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a );
 char * bufrdeco_print_atom_data_html ( char *target, struct bufr_atom_data *a );
+char * get_formatted_value_from_escale ( char *fmt, int32_t escale, double val );
+
 
 // To parse. General
 int bufrdeco_parse_tree ( struct bufrdeco *b );

@@ -391,14 +391,7 @@ char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a )
         }
       else
         {
-          if (a->escale >= 0)
-          {
-            sprintf(aux,"%%17.%dlf " , a->escale); 
-            c += sprintf ( c, aux, a->val );
-          }
-          else
-            c += sprintf( c, "%17.0lf " , a->val);
-          //c += sprintf ( c, "%17.10e ", a->val );
+          c += sprintf ( c, "%s ", get_formatted_value_from_escale ( aux, a->escale, a->val ) );
         }
 
     }

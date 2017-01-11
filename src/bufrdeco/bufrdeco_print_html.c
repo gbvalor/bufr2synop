@@ -44,10 +44,10 @@ int sprint_sec0_info_html ( char *target, size_t lmax, struct bufrdeco *b )
 {
   char caux[512], *c;
   c = caux;
-  c += sprintf ( c, "<table class='bufr_sec0'>\n<caption>SEC 0 INFO</caption>\n");
+  c += sprintf ( c, "<table class='bufr_sec0'>\n<caption>SEC 0 INFO</caption>\n" );
   c += sprintf ( c, "<tr><td>Bufr length</td><td>%5u</td></tr>\n", b->sec0.bufr_length );
   c += sprintf ( c, "<tr><td>Bufr edition</td><td>%5u</td></tr>\n", b->sec0.edition );
-  c += sprintf ( c, "</table>\n");
+  c += sprintf ( c, "</table>\n" );
   strcat_protected ( target, caux, lmax );
   return 0;
 }
@@ -64,7 +64,7 @@ int sprint_sec1_info_html ( char *target, size_t lmax, struct bufrdeco *b )
   char caux[2048], *c;
   c = caux;
 
-  c += sprintf ( c, "<table class='bufr_sec1'>\n<caption>SEC 1 INFO</caption>\n");
+  c += sprintf ( c, "<table class='bufr_sec1'>\n<caption>SEC 1 INFO</caption>\n" );
   c += sprintf ( c, "<tr><td>Sec1 length</td><td>%5u</td></tr>\n", b->sec1.length );
   c += sprintf ( c, "<tr><td>Bufr master table</td><td>%5u</td></tr>\n", b->sec1.master );
   c += sprintf ( c, "<tr><td>Centre</td><td>%5u</td></tr>\n", b->sec1.centre );
@@ -90,7 +90,7 @@ int sprint_sec1_info_html ( char *target, size_t lmax, struct bufrdeco *b )
       c += sprintf ( c, "'%s'<br>\n", b->tables->c.path );
       c += sprintf ( c, "'%s'</td></tr>\n", b->tables->d.path );
     }
-  c += sprintf ( c, "</table>\n");
+  c += sprintf ( c, "</table>\n" );
   strcat_protected ( target, caux, lmax );
   return 0;
 }
@@ -109,7 +109,7 @@ int sprint_sec3_info_html ( char *target, size_t lmax, struct bufrdeco *b )
 
 
   c = caux;
-  c += sprintf ( c, "<table class='bufr_sec3'>\n<caption>SEC 3 INFO</caption>\n");
+  c += sprintf ( c, "<table class='bufr_sec3'>\n<caption>SEC 3 INFO</caption>\n" );
   c += sprintf ( c, "<tr><td>Sec3 length</td><td>%5u\n", b->sec3.length );
   c += sprintf ( c, "<tr><td>Subsets</td><td>%5u\n", b->sec3.subsets );
   c += sprintf ( c, "<tr><td>Observed</td><td>%5u\n", b->sec3.observed );
@@ -120,7 +120,7 @@ int sprint_sec3_info_html ( char *target, size_t lmax, struct bufrdeco *b )
       c += sprintf ( c, "<tr><td>%3lu:</td><td>%u %02u %03u</td></tr>\n", i, b->sec3.unexpanded[i].f,
                      b->sec3.unexpanded[i].x, b->sec3.unexpanded[i].y );
     }
-  c += sprintf ( c, "</table>\n");
+  c += sprintf ( c, "</table>\n" );
   strcat_protected ( target, caux, lmax );
   return 0;
 }
@@ -137,9 +137,9 @@ int sprint_sec4_info_html ( char *target, size_t lmax, struct bufrdeco *b )
   char caux[4096], *c;
   c = caux;
 
-  c += sprintf ( c, "<table class='bufr_sec4'>\n<caption>SEC 4 INFO</caption>\n");
+  c += sprintf ( c, "<table class='bufr_sec4'>\n<caption>SEC 4 INFO</caption>\n" );
   c += sprintf ( c, "<tr><td>Sec4 length</td><td>%5u</td></tr>\n", b->sec4.length );
-  c += sprintf ( c, "</table>\n");
+  c += sprintf ( c, "</table>\n" );
   strcat_protected ( target, caux, lmax );
   return 0;
 }
@@ -158,8 +158,8 @@ char * bufrdeco_print_atom_data_html ( char *target, struct bufr_atom_data *a )
 
   c = target;
   c += sprintf ( c, "<td>%u %02u %03u</td>", a->desc.f, a->desc.x, a->desc.y );
-  c += sprintf ( c, "<td>%s</td>", a->name);
-  c += sprintf ( c, "<td>%s</td>", a->unit);
+  c += sprintf ( c, "<td>%s</td>", a->name );
+  c += sprintf ( c, "<td>%s</td>", a->unit );
   if ( a->mask & DESCRIPTOR_VALUE_MISSING )
     {
       c += sprintf ( c, "<td>MISSING</td><td></td>" );
@@ -184,14 +184,8 @@ char * bufrdeco_print_atom_data_html ( char *target, struct bufr_atom_data *a )
         }
       else
         {
-          if (a->escale >= 0)
-          {
-            sprintf(aux,"<td align='right'>%%17.%dlf</td><td></td>" , a->escale); 
-            c += sprintf ( c, aux, a->val );
-          }
-          else
-            c += sprintf( c, "<td align='right'>%17.0lf</td><td></td>" , a->val);
-         }
+          c += sprintf ( c, "<td align='right'>%s</td><td></td>" , get_formatted_value_from_escale ( aux, a->escale, a->val ) );
+        }
     }
   return target;
 }
@@ -205,13 +199,13 @@ void bufrdeco_fprint_subset_sequence_data_html ( FILE *f, struct bufrdeco_subset
 {
   size_t i;
   char aux[1024];
-  
-  fprintf( f, "<table class='bufr_subset'>\n");
+
+  fprintf ( f, "<table class='bufr_subset'>\n" );
   for ( i = 0; i < s->nd ; i++ )
     {
       fprintf ( f, "<tr><td>%5lu:</td>%s</tr>\n", i, bufrdeco_print_atom_data_html ( aux, &s->sequence[i] ) );
     }
-  fprintf( f, "</table>\n");  
+  fprintf ( f, "</table>\n" );
 }
 
 /*!
@@ -221,5 +215,5 @@ void bufrdeco_fprint_subset_sequence_data_html ( FILE *f, struct bufrdeco_subset
 */
 void bufrdeco_print_subset_sequence_data_html ( struct bufrdeco_subset_sequence_data *s )
 {
-  return bufrdeco_fprint_subset_sequence_data_html(stdout, s);
+  return bufrdeco_fprint_subset_sequence_data_html ( stdout, s );
 }

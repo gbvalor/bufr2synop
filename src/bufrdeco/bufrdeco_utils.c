@@ -343,7 +343,7 @@ int is_a_short_delayed_descriptor ( struct bufr_descriptor *d )
 {
   if ( ( d->f == 0 ) &&
        ( d->x == 31 ) &&
-       ( d->y == 0) )
+       ( d->y == 0 ) )
     return 1;
   else
     return 0;
@@ -365,4 +365,21 @@ int is_a_local_descriptor ( struct bufr_descriptor *d )
     return 1;
   else
     return 0;
+}
+
+/*!
+   \fn char *get_formatted_value_from_escale ( char *fmt, int32_t escale, double val )
+
+*/
+char *get_formatted_value_from_escale ( char *fmt, int32_t escale, double val )
+{
+  char aux[16];
+  if ( escale >= 0 )
+    {
+      sprintf ( aux,"%%17.%dlf " , escale );
+      sprintf ( fmt, aux, val );
+    }
+  else
+    sprintf ( fmt, "%17.0lf " , val );
+  return fmt;
 }
