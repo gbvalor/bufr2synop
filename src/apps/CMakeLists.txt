@@ -21,3 +21,5 @@ target_link_libraries(bufrtotac m bufrdeco bufr2tac)
 add_executable(build_bufrdeco_tables build_bufrdeco_tables.c)
 target_link_libraries(build_bufrdeco_tables m bufrdeco)
 
+add_executable(update_tableD update_tableD.c)
+target_link_libraries(update_tableD m bufrdeco)

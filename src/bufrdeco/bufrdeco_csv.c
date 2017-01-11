@@ -50,7 +50,7 @@ char * csv_quoted_string ( char *out, char *in )
   size_t i = 0, j = 0;
 
   if ( in[0] == 0 )
-    return NULL;
+    return in;
 
   out[j++] = '\"';
   while ( in[i] && j < ( CSV_MAXL - 1 )  && i < CSV_MAXL )
