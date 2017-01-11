@@ -190,7 +190,10 @@ int main ( int argc, char *argv[] )
             {
               if ( ( subset == 0 ) && BUFR.sec3.compressed )
                 print_bufrdeco_compressed_data_references ( & ( BUFR.refs ) );
-              bufrdeco_print_subset_sequence_data ( seq );
+              if (BUFR.mask & BUFRDECO_OUTPUT_HTML )
+                bufrdeco_print_subset_sequence_data_html ( seq );
+              else  
+                bufrdeco_print_subset_sequence_data ( seq );
             }
 
           if ( BUFR.sec3.ndesc &&  bufrdeco_parse_subset_sequence ( &REPORT, &STATE, &BUFR, ERR ) )
@@ -213,6 +216,10 @@ int main ( int argc, char *argv[] )
               if ( subset == 0 )
                 fprintf ( stdout, "TYPE,FILE,DATETIME,INDEX,NAME,COUNTRY,LATITUDE,LONGITUDE,ALTITUDE,REPORT\n" );
               print_csv ( stdout, &REPORT );
+            }
+          else if ( HTML )
+            {
+              print_html ( stdout, &REPORT );
             }
           else
             {

@@ -416,6 +416,7 @@ int print_csv ( FILE *f, struct metreport *m );
 int print_json ( FILE *f, struct metreport *m );
 int print_xml ( FILE *f, struct metreport *m );
 int print_plain ( FILE *f, struct metreport *m );
+int print_html ( FILE *f, struct metreport *m );
 
 int syn_parse_x01 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
 int syn_parse_x02 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );

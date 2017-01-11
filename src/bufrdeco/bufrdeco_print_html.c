@@ -143,3 +143,83 @@ int sprint_sec4_info_html ( char *target, size_t lmax, struct bufrdeco *b )
   strcat_protected ( target, caux, lmax );
   return 0;
 }
+
+/*!
+  \fn char * bufrdeco_print_atom_data_html ( char *target, struct bufr_atom_data *a )
+  \brief print the data in a struct \ref bufr_atom_data to a string as cells of table rows
+  \param target string where to print the result
+  \param a pointer to struct ref \ref bufr_atom_data with data to print
+
+  Returns a pointer to result string
+*/
+char * bufrdeco_print_atom_data_html ( char *target, struct bufr_atom_data *a )
+{
+  char aux[256], *c;
+
+  c = target;
+  c += sprintf ( c, "<td>%u %02u %03u</td>", a->desc.f, a->desc.x, a->desc.y );
+  c += sprintf ( c, "<td>%s</td>", a->name);
+  c += sprintf ( c, "<td>%s</td>", a->unit);
+  if ( a->mask & DESCRIPTOR_VALUE_MISSING )
+    {
+      c += sprintf ( c, "<td>MISSING</td><td></td>" );
+    }
+  else
+    {
+      if ( a->mask & DESCRIPTOR_HAVE_STRING_VALUE )
+        {
+          c += sprintf ( c, "<td></td><td>%s</td>\n", a->cval );
+        }
+      else if ( a->mask & DESCRIPTOR_HAVE_CODE_TABLE_STRING
+                || strstr ( a->unit, "CODE TABLE" ) == a->unit
+                || strstr ( a->unit, "Code table" ) == a->unit )
+        {
+          c += sprintf ( c, "<td align='right'>%17u</td>", ( uint32_t ) a->val );
+          c += sprintf ( c, "<td>%s</td>\n", a->ctable );
+        }
+      else if ( a->mask & DESCRIPTOR_HAVE_FLAG_TABLE_STRING )
+        {
+          c += sprintf ( c, "<td align='right'>0x%08X</td>", ( uint32_t ) a->val );
+          c += sprintf ( c, "<td>%s</td>\n", a->ctable );
+        }
+      else
+        {
+          if (a->escale >= 0)
+          {
+            sprintf(aux,"<td align='right'>%%17.%dlf</td><td></td>" , a->escale); 
+            c += sprintf ( c, aux, a->val );
+          }
+          else
+            c += sprintf( c, "<td align='right'>%17.0lf</td><td></td>" , a->val);
+         }
+    }
+  return target;
+}
+
+/*!
+  \fn void bufrdeco_fprint_subset_sequence_data_html ( struct bufrdeco_subset_sequence_data *s )
+  \brief Prints a struct \ref bufrdeco_subset_sequence_data as an html table
+  \param s pointer to the struct to print
+*/
+void bufrdeco_fprint_subset_sequence_data_html ( FILE *f, struct bufrdeco_subset_sequence_data *s )
+{
+  size_t i;
+  char aux[1024];
+  
+  fprintf( f, "<table class='bufr_subset'>\n");
+  for ( i = 0; i < s->nd ; i++ )
+    {
+      fprintf ( f, "<tr><td>%5lu:</td>%s</tr>\n", i, bufrdeco_print_atom_data_html ( aux, &s->sequence[i] ) );
+    }
+  fprintf( f, "</table>\n");  
+}
+
+/*!
+  \fn void bufrdeco_fprint_subset_sequence_data_html ( struct bufrdeco_subset_sequence_data *s )
+  \brief Prints a struct \ref bufrdeco_subset_sequence_data as an html table
+  \param s pointer to the struct to print
+*/
+void bufrdeco_print_subset_sequence_data_html ( struct bufrdeco_subset_sequence_data *s )
+{
+  return bufrdeco_fprint_subset_sequence_data_html(stdout, s);
+}

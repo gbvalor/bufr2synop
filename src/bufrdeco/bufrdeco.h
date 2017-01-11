@@ -286,6 +286,7 @@ struct bufr_atom_data
   char name[BUFR_TABLEB_NAME_LENGTH]; /*!< String with the name of descriptor */
   char unit[BUFR_TABLEB_UNIT_LENGTH]; /*!< String with the name of units */
   double val; /*!< Value for the bufr descriptor */
+  int32_t escale; /*!< Escale applied to get the data */ 
   uint32_t associated; /*!< value for associated field, if any */
   char cval[128]; /*!< String value for the bufr descriptor */
   char ctable[BUFR_EXPLAINED_LENGTH]; /*!< Explained meaning for a code table */
@@ -730,8 +731,11 @@ void bufrdeco_fprint_tree ( FILE *f, struct bufrdeco *b );
 void bufrdeco_print_atom_data_stdout ( struct bufr_atom_data *a );
 void bufrdeco_print_atom_data_file ( FILE *f, struct bufr_atom_data *a );
 void bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *s );
+void bufrdeco_print_subset_sequence_data_html ( struct bufrdeco_subset_sequence_data *s );
+void bufrdeco_fprint_subset_sequence_data_html ( FILE *f, struct bufrdeco_subset_sequence_data *s );
 void bufrdeco_fprint_subset_sequence_data ( FILE *f, struct bufrdeco_subset_sequence_data *s );
 char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a );
+char * bufrdeco_print_atom_data_html ( char *target, struct bufr_atom_data *a );
 
 // To parse. General
 int bufrdeco_parse_tree ( struct bufrdeco *b );
@@ -787,6 +791,7 @@ int two_bytes_to_descriptor ( struct bufr_descriptor *d, const uint8_t *source )
 int uint32_t_to_descriptor ( struct bufr_descriptor *d, uint32_t id );
 int is_a_delayed_descriptor ( struct bufr_descriptor *d );
 int is_a_local_descriptor ( struct bufr_descriptor *d );
+int is_a_short_delayed_descriptor ( struct bufr_descriptor *d );
 
 // Utilities for strings
 char * bufr_adjust_string ( char *s );

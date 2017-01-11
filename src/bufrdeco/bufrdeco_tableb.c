@@ -413,7 +413,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
   size_t i, nbits = 0;
   uint32_t ival;
   uint8_t has_data;
-  int32_t escale = 0, reference = 0;
+  int32_t /*escale = 0,*/ reference = 0;
   struct bufr_tableb *tb;
 
   tb = & ( b->tables->b );
@@ -446,7 +446,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
   a->mask = 0;
   strcpy ( a->name, tb->item[i].name );
   strcpy ( a->unit, tb->item[i].unit );
-  escale = tb->item[i].scale;
+  a->escale = tb->item[i].scale;
   nbits = tb->item[i].nbits;
 
   if ( b->state.changing_reference != 255 )
@@ -528,23 +528,23 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
       if ( strstr ( a->unit, "CODE TABLE" ) != a->unit &&  strstr ( a->unit,"FLAG" ) != a->unit &&
            strstr ( a->unit, "Code table" ) != a->unit &&  strstr ( a->unit,"Flag" ) != a->unit )
         {
-          escale += b->state.added_scale;
+          a->escale += b->state.added_scale;
           reference += b->state.added_reference;
           if ( b->state.factor_reference > 1 )
             reference *= b->state.factor_reference;
         }
       // Get a numeric number
-      if ( escale >= 0 && escale < 8 )
+      if ( a->escale >= 0 && a->escale < 8 )
         {
-          a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10neg[ ( size_t ) escale];
+          a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10neg[ ( size_t ) a->escale];
         }
-      else if ( escale < 0 && escale > -8 )
+      else if ( a->escale < 0 && a->escale > -8 )
         {
-          a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10pos[ ( size_t ) ( -escale )];
+          a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10pos[ ( size_t ) ( -a->escale )];
         }
       else
         {
-          a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10 ( ( double ) ( -escale ) );
+          a->val = ( double ) ( ( int32_t ) ival + reference ) * pow10 ( ( double ) ( -a->escale ) );
         }
 
       if ( strstr ( a->unit, "CODE TABLE" ) == a->unit || strstr ( a->unit, "Code table" ) == a->unit )

@@ -229,13 +229,6 @@ int bufrdeco_fprint_tree_recursive ( FILE *f, struct bufrdeco *b, struct bufr_se
       l = seq;
     }
 
-
-  /*for ( j = 0; j < l->level; j++ )
-    {
-      fprintf ( f, "        " );
-    }
-  fprintf(f, "%s\n", l->name);*/
-
   for ( i = 0; i < l->ndesc; i++ )
     {
       // we search for descriptors woth f == 3
@@ -252,6 +245,9 @@ int bufrdeco_fprint_tree_recursive ( FILE *f, struct bufrdeco *b, struct bufr_se
             {
               if ( bufr_find_tableb_index ( &k, & ( b->tables->b ), l->lseq[i].c ) )
                 fprintf ( f , "\n" );
+              else if ( is_a_delayed_descriptor ( & l->lseq[i] ) ||
+                        is_a_short_delayed_descriptor ( & l->lseq[i] ) )
+                fprintf ( f , ":* %s\n", b->tables->b.item[k].name );
               else
                 fprintf ( f , ": %s\n", b->tables->b.item[k].name );
             }
@@ -260,16 +256,16 @@ int bufrdeco_fprint_tree_recursive ( FILE *f, struct bufrdeco *b, struct bufr_se
               if ( l->lseq[i].y == 0 )
                 {
                   if ( l->lseq[i].x == 1 )
-                    fprintf ( f, ": Replicator for %d descriptor after next delayed descriptor. The number of replications is set in the delayed descriptor.\n", l->lseq[i].x );
+                    fprintf ( f, ":* Replicator for %d descriptor after next delayed descriptor which set the number of replications.\n", l->lseq[i].x );
                   else
-                    fprintf ( f, ": Replicator for %d descriptors after next delayed descriptor. The number of replications is set in the delayed descriptor.\n", l->lseq[i].x );
+                    fprintf ( f, ":* Replicator for %d descriptors after next delayed descriptor which set the number of replications.\n", l->lseq[i].x );
                 }
               else
                 {
                   if ( l->lseq[i].x == 1 )
-                    fprintf ( f, ": Replicator for next %d descriptor %d times\n", l->lseq[i].x, l->lseq[i].y );
+                    fprintf ( f, ":* Replicator for next %d descriptor %d times\n", l->lseq[i].x, l->lseq[i].y );
                   else
-                    fprintf ( f, ": Replicator for next %d descriptors %d times\n", l->lseq[i].x, l->lseq[i].y );
+                    fprintf ( f, ":* Replicator for next %d descriptors %d times\n", l->lseq[i].x, l->lseq[i].y );
                 }
             }
           else
@@ -278,7 +274,7 @@ int bufrdeco_fprint_tree_recursive ( FILE *f, struct bufrdeco *b, struct bufr_se
         }
 
       // we then recursively parse the son
-      fprintf ( f, ": %s\n", l->sons[i]->name );
+      fprintf ( f, ":-> %s\n", l->sons[i]->name );
       if ( bufrdeco_fprint_tree_recursive ( f, b, l->sons[i] ) )
         {
           return 1;
@@ -312,7 +308,11 @@ void bufrdeco_fprint_tree ( FILE *f, struct bufrdeco *b )
 */
 void bufrdeco_print_tree ( struct bufrdeco *b )
 {
+  if ( b->mask & BUFRDECO_OUTPUT_HTML )
+    printf ( "<pre>\n" );
   bufrdeco_fprint_tree_recursive ( stdout, b, NULL );
+  if ( b->mask & BUFRDECO_OUTPUT_HTML )
+    printf ( "</pre>\n" );
 };
 
 
@@ -391,7 +391,14 @@ char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a )
         }
       else
         {
-          c += sprintf ( c, "%17.10e ", a->val );
+          if (a->escale >= 0)
+          {
+            sprintf(aux,"%%17.%dlf " , a->escale); 
+            c += sprintf ( c, aux, a->val );
+          }
+          else
+            c += sprintf( c, "%17.0lf " , a->val);
+          //c += sprintf ( c, "%17.10e ", a->val );
         }
 
     }
@@ -432,9 +439,9 @@ void bufrdeco_fprint_subset_sequence_data ( FILE *f, struct bufrdeco_subset_sequ
   char aux[1024];
   for ( i = 0; i < s->nd ; i++ )
     {
-      if (i && s->sequence[i].seq != s->sequence[i - 1].seq )
-         fprintf( f, "\n");  
-        
+      if ( i && s->sequence[i].seq != s->sequence[i - 1].seq )
+        fprintf ( f, "\n" );
+
       fprintf ( f, "%5lu:  %s\n", i, bufrdeco_print_atom_data ( aux, &s->sequence[i] ) );
     }
 }

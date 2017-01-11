@@ -333,6 +333,24 @@ int is_a_delayed_descriptor ( struct bufr_descriptor *d )
 }
 
 /*!
+  \fn int is_a_short_delayed_descriptor ( struct bufr_descriptor *d )
+  \brief check if a descriptor is a short delayed descriptor
+  \param d pointer to a struct \ref bufr_descriptor to check
+
+  If is a delayed desccriptor return 1, 0 otherwise.
+*/
+int is_a_short_delayed_descriptor ( struct bufr_descriptor *d )
+{
+  if ( ( d->f == 0 ) &&
+       ( d->x == 31 ) &&
+       ( d->y == 0) )
+    return 1;
+  else
+    return 0;
+}
+
+
+/*!
   \fn int is_a_local_descriptor ( struct bufr_descriptor *d )
   \brief check if a descriptor is a local descriptor
   \param d pointer to a struct \ref bufr_descriptor to check

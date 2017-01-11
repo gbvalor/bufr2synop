@@ -41,3 +41,24 @@ int print_plain ( FILE *f, struct metreport *m )
     fprintf ( f, "%s\n", m->alphanum4 );
   return 0;
 }
+
+/*!
+  \fn  int print_html ( FILE *f, struct metreport *m )
+  \brief Print in a file the report decoded to Traditional Alphanumeric Code in plain html format. A line per report
+  \param f pointer to file where to write to
+  \param m pointer to struct \ref metreport where the decoded report is stored
+*/
+int print_html ( FILE *f, struct metreport *m )
+{
+  fprintf(f, "<pre>");
+  if ( m->alphanum[0] )
+    fprintf ( f, "%s\n", m->alphanum );
+  if ( m->alphanum2[0] )
+    fprintf ( f, "%s\n", m->alphanum2 );
+  if ( m->alphanum3[0] )
+    fprintf ( f, "%s\n", m->alphanum3 );
+  if ( m->alphanum4[0] )
+    fprintf ( f, "%s\n", m->alphanum4 );
+  fprintf(f, "</pre>");
+  return 0;
+}
