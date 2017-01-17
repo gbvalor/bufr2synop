@@ -44,11 +44,15 @@ extern char ENTRADA[256], PREFIX[64];
 extern struct stat INSTAT;
 extern char SEL[64], SELS[64], SELO[64], SELU[64];
 extern char OWN[];
+extern char HEADER_MARK;
+extern char FINAL_SEP[4];
+extern char SEP[];
 
 // Functions
 int is_bufr ( unsigned char *b );
 int is_endb ( unsigned char *b );
 int is_head ( unsigned char *b );
+int is_head_custom ( unsigned char *b, char mark );
 int timeval_substract ( struct timeval *result, struct timeval *x, struct timeval *y );
 int read_args ( int _argc, char * _argv[] );
 void print_usage ( void );

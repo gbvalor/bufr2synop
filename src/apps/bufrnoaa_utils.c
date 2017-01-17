@@ -52,6 +52,21 @@ int is_head ( unsigned char *b )
 }
 
 /*!
+ \fn int is_head_custom(unsigned char *b, char mark)
+ \brief checks if an unsigned char from an array is the first char of repeated mark char four times
+ \param b pointer to unsigned char to check
+ \param mark char to be found repeated four times since \a b 
+  Returns 1 if success, 0 othewise
+*/
+int is_head_custom ( unsigned char *b, char mark )
+{
+  if ( b[0] == mark && b[1] == mark && b[2] == mark && b[3] == mark )
+    return 1;
+  return 0;
+}
+
+
+/*!
  \fn int is_endb(unsigned char *b)
  \brief checks if an unsigned char from an array is the first char of '7777'
  \param b pointer to unsigned char to check

@@ -29,6 +29,7 @@ void print_usage ( void )
   printf ( "bufrnoaa -i input_file [-h][-f][-l][-F prefix][-T T2_selection][-O selo][-S sels][-U selu]\n" );
   printf ( "   -h Print this help\n" );
   printf ( "   -i Input file. Complete input path file for NOAA *.bin bufr archive file\n" );
+  printf ( "   -2 Input file is formatted in alternative form: Headers has '#' instead of '*' marks and no sep after '7777'\n");
   printf ( "   -l list the names of reports in input file\n" );
   printf ( "   -f Extract selected reports and write them in files, one per bufr message, as \n" );
   printf ( "      example '20110601213442_ISIE06_SBBR_012100_RRB.bufr'. First field in name is input file timestamp \n" );
@@ -72,16 +73,22 @@ int read_args ( int _argc, char * _argv[] )
   COLECT = 0;
   LISTF = 0;
   VERBOSE = 1;
-
+  HEADER_MARK = '*';
+  strcpy(FINAL_SEP, SEP);
+  
   /*
      Read input options
   */
-  while ( ( iopt = getopt ( _argc, _argv, "hi:flF:O:qS:T:U:" ) ) !=-1 )
+  while ( ( iopt = getopt ( _argc, _argv, "h2i:flF:O:qS:T:U:" ) ) !=-1 )
     switch ( iopt )
       {
       case 'i':
         if ( strlen ( optarg ) < 256 )
           strcpy ( ENTRADA, optarg );
+        break;
+      case '2':
+        HEADER_MARK = '#';
+        FINAL_SEP[0] = 0;
         break;
       case 'f':
         INDIVIDUAL = 1;

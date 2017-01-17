@@ -199,10 +199,12 @@ char SELS[64]; /*!< Selection string for A1 when T2='S' (argument -S)   */
 char SELU[64]; /*!< Selection string for A1 when T2='U' (argument -U)   */
 char SELO[64]; /*!< Selection string for A1 when T2='O' (argument -O) */
 char PREFIX[64];
+char HEADER_MARK; /*!< Header mark character who is repeated four times at the begining */
 
 struct stat INSTAT;
 char OWN[] = "bufrnoaa";
 char SEP[] = "\r\r\n";
+char FINAL_SEP[4];
 
 
 int main ( int argc, char *argv[] )
@@ -274,13 +276,13 @@ int main ( int argc, char *argv[] )
           switch ( STAGE )
             {
             case 0: // begining, searching header init
-              if ( is_head ( &b[0] ) )
+              if ( is_head_custom ( &b[0] , HEADER_MARK ) )
                 {
                   memset ( &header[0], 0, 64 * sizeof ( unsigned char ) );
-                  header[0] = '*';
-                  header[1] = '*';
-                  header[2] = '*';
-                  header[3] = '*';
+                  header[0] = HEADER_MARK;
+                  header[1] = HEADER_MARK;
+                  header[2] = HEADER_MARK;
+                  header[3] = HEADER_MARK;
                   nh = 4;
                   STAGE = 1;
                 }
@@ -294,7 +296,7 @@ int main ( int argc, char *argv[] )
                   nerr++;
                   break;
                 }
-              if ( is_head ( &b[0] ) )
+              if ( is_head_custom ( &b[0] , HEADER_MARK ) )
                 {
                   STAGE = 2;
                   //header[nh++] = '\0';
@@ -383,9 +385,9 @@ int main ( int argc, char *argv[] )
                 }
 
               // Has been detected some void and fakes bufr
-              if ( b[0] == '*' &&
-                   b[1] == '*' &&
-                   b[2] == '*'
+              if ( b[0] == HEADER_MARK &&
+                   b[1] == HEADER_MARK &&
+                   b[2] == HEADER_MARK
                  )
                 {
                   // Ooops. a fake bufr
@@ -450,6 +452,8 @@ int main ( int argc, char *argv[] )
                                   exit ( EXIT_FAILURE );
                                 }
                               // finally \r\r\n
+                              if (FINAL_SEP[0])
+                              {
                               if ( ( nw = fwrite ( &SEP[0], sizeof ( char ), 3, ficol ) ) != 3 )
                                 {
                                   printf ( "%s: Error: Writen %lu bytes instead of 3 chars separing messages in %s\n", OWN, nw, namex );
@@ -457,6 +461,7 @@ int main ( int argc, char *argv[] )
                                   fclose ( ficout );
                                   exit ( EXIT_FAILURE );
                                 }
+                              }
                             }
                         }
                     }
