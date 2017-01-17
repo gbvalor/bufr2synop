@@ -36,6 +36,7 @@ void print_usage ( void )
   printf ( "       -i Input file. Complete input path file for bufr file\n" );
   printf ( "       -I list_of_files. Pathname of a file with the list of files to parse, one filename per line\n" );
   printf ( "       -j. The output is in json format\n" );
+  printf ( "       -n. Do not try to decode to TAC, just parse BUFR report\n" );
   printf ( "       -o output. Pathname of output file. Default is standar output\n" );
   printf ( "       -s prints a long output with explained sequence of descriptors\n" );
   printf ( "       -t bufrtable_dir. Pathname of bufr tables directory. Ended with '/'\n" );
@@ -70,11 +71,12 @@ int read_args ( int _argc, char * _argv[] )
   CSV= 0;
   ECMWF = 0;
   HTML = 0;
+  NOTAC = 0;
 
   /*
      Read input options
   */
-  while ( ( iopt = getopt ( _argc, _argv, "cDEhi:jHI:o:st:vVx" ) ) !=-1 )
+  while ( ( iopt = getopt ( _argc, _argv, "cDEhi:jHI:no:st:vVx" ) ) !=-1 )
     switch ( iopt )
       {
       case 'i':
@@ -87,6 +89,9 @@ int read_args ( int _argc, char * _argv[] )
       case 'I':
         if ( strlen ( optarg ) < 256 )
           strcpy ( LISTOFFILES, optarg );
+        break;
+      case 'n':
+        NOTAC = 1;
         break;
       case 'o':
         if ( strlen ( optarg ) < 256 )
@@ -164,7 +169,7 @@ int bufrdeco_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subset
   ksec1[5] = b->sec1.category;
   ksec1[6] = b->sec1.subcategory_local;
 
-  // Finaly we call to bufr2syn library
+  // Finaly we call to bufr2tac library
   memset ( m, 0, sizeof ( struct metreport ) );
   m->h = &b->header;
   res = parse_subset_sequence ( m, &b->seq, st, kdtlst, nlst, ksec1, err );

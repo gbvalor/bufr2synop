@@ -52,6 +52,7 @@ extern int VERBOSE;
 extern int SHOW_SEQUENCE;
 extern int ECMWF;
 extern int HTML;
+extern int NOTAC;
 extern FILE *FL;
 
 // functions

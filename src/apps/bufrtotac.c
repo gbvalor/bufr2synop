@@ -106,6 +106,7 @@ int JSON; /*!< If == 1 then output is in json format */
 int CSV; /*!< If == 1 then output is in csv format */
 int ECMWF; /*!< If == 1 then use tables from ECMWF package */
 int HTML; /*!< If == 1 then output is in HTML format */
+int NOTAC; /*!< if ==1 then do not decode to TAC */
 FILE *FL; /*!< Buffer to read the list of files */
 
 int main ( int argc, char *argv[] )
@@ -125,10 +126,10 @@ int main ( int argc, char *argv[] )
 
   // If needed mark to use ECMWF tables
   if ( ECMWF )
-      BUFR.mask |= BUFRDECO_USE_ECMWF_TABLES;
+    BUFR.mask |= BUFRDECO_USE_ECMWF_TABLES;
 
   if ( HTML )
-      BUFR.mask |= BUFRDECO_OUTPUT_HTML;
+    BUFR.mask |= BUFRDECO_OUTPUT_HTML;
 
   /**** Big loop. a cycle per file ****/
   while ( get_bufrfile_path ( INPUTFILE, ERR ) )
@@ -190,40 +191,46 @@ int main ( int argc, char *argv[] )
             {
               if ( ( subset == 0 ) && BUFR.sec3.compressed )
                 print_bufrdeco_compressed_data_references ( & ( BUFR.refs ) );
-              if (BUFR.mask & BUFRDECO_OUTPUT_HTML )
+              if ( BUFR.mask & BUFRDECO_OUTPUT_HTML )
                 bufrdeco_print_subset_sequence_data_html ( seq );
-              else  
+              else
                 bufrdeco_print_subset_sequence_data ( seq );
             }
 
-          if ( BUFR.sec3.ndesc &&  bufrdeco_parse_subset_sequence ( &REPORT, &STATE, &BUFR, ERR ) )
+          if ( ! NOTAC )
             {
-              if ( DEBUG )
-                fprintf ( stderr, "# %s\n", ERR );
-            }
-          if ( XML )
-            {
-              if ( subset == 0 )
-                fprintf ( stdout, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
-              print_xml ( stdout, &REPORT );
-            }
-          else if ( JSON )
-            {
-              print_json ( stdout, &REPORT );
-            }
-          else if ( CSV )
-            {
-              if ( subset == 0 )
-                fprintf ( stdout, "TYPE,FILE,DATETIME,INDEX,NAME,COUNTRY,LATITUDE,LONGITUDE,ALTITUDE,REPORT\n" );
-              print_csv ( stdout, &REPORT );
-            }
-          else if ( HTML )
-            {
-              print_html ( stdout, &REPORT );
-            }
-          else
-            {
-              print_plain ( stdout, &REPORT );
+              // Here we perform the decode to TAC  
+              if ( BUFR.sec3.ndesc &&  bufrdeco_parse_subset_sequence ( &REPORT, &STATE, &BUFR, ERR ) )
+                {
+                  if ( DEBUG )
+                    fprintf ( stderr, "# %s\n", ERR );
+                }
+              
+              // And here print the results
+              if ( XML )
+                {
+                  if ( subset == 0 )
+                    fprintf ( stdout, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
+                  print_xml ( stdout, &REPORT );
+                }
+              else if ( JSON )
+                {
+                  print_json ( stdout, &REPORT );
+                }
+              else if ( CSV )
+                {
+                  if ( subset == 0 )
+                    fprintf ( stdout, "TYPE,FILE,DATETIME,INDEX,NAME,COUNTRY,LATITUDE,LONGITUDE,ALTITUDE,REPORT\n" );
+                  print_csv ( stdout, &REPORT );
+                }
+              else if ( HTML )
+                {
+                  print_html ( stdout, &REPORT );
+                }
+              else
+                {
+                  print_plain ( stdout, &REPORT );
+                }
             }
         }
     fin:
