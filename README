@@ -149,7 +149,7 @@ We can try also to get a traditional TEMP report from examples. Let use the new 
 We will get the four parts of a TEMP report.
  
 Since version 0.7 we also can do the same using bufrtotac which uses the own bufrdeco library. 
-It works with the same arguments than bufr2synop, so 
+It works with the same arguments than bufr2synop, which is deprecated, so 
 
    bufrtotac -i 20141018211119_ISIN03_EGRR_182100.bufr
 
@@ -157,7 +157,14 @@ and
 
    bufrtotac -i 20150705121512_ISCD01_LIIB_050000.bufr 
 
-should produce the same output, but a lot faster.
+should produce the same output, but a lot faster. It is recommended the use of 'bufrtotac' instead of 'bufr2synop'.
+
+In case you just want to get BUFR details just add '-V -n' arguments
+
+   bufrtotac -i 20150705121512_ISCD01_LIIB_050000.bufr -V -n
+
+you will get a long output with all details for all subsets of descriptors, including the expanded tree. Option '-n' supresses
+the conversion to TAC. 
 
 There are some more options for bufrnoaa, bufrtotac and bufr2synop. You can see a list using 
 
