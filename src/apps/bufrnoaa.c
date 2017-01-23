@@ -454,7 +454,7 @@ int main ( int argc, char *argv[] )
                               // finally \r\r\n
                               if (FINAL_SEP[0])
                               {
-                              if ( ( nw = fwrite ( &SEP[0], sizeof ( char ), 3, ficol ) ) != 3 )
+                              if ( ( nw = fwrite ( &FINAL_SEP[0], sizeof ( char ), 3, ficol ) ) != 3 )
                                 {
                                   printf ( "%s: Error: Writen %lu bytes instead of 3 chars separing messages in %s\n", OWN, nw, namex );
                                   fclose ( ficin );

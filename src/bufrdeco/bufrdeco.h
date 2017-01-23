@@ -693,6 +693,7 @@ int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s );
 
 // Read bufr functions
 int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename );
+int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, size_t size );
 int get_ecmwf_tablenames ( struct bufrdeco *b, const char *bufrtables_dir );
 int bufr_read_tables_ecmwf ( struct bufrdeco *b, char *tables_dir );
 int bufr_read_tableb ( struct bufr_tableb *tb, char *error );

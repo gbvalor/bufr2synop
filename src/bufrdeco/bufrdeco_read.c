@@ -41,10 +41,9 @@
  */
 int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
 {
-  int aux;
+  int aux, res;
   uint8_t *bufrx = NULL; /*!< pointer to a memory buffer where we write raw bufr file */
-  uint8_t *c;
-  size_t ix, ud, n = 0;
+  size_t n = 0;
   FILE *fp;
   struct stat st;
 
@@ -92,27 +91,53 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
   // close the file
   fclose ( fp );
 
+  res = bufrdeco_read_buffer(b, bufrx, n);
+  free(bufrx);
+  return res;
+}  
+
+/*!
+  \fn int bufrdeco_read_buffer ( struct bufrdeco *b, uint8_t *bufrx, size_t size  )
+  \brief Read a memory buffer and does preliminary and first decode pass
+  \param b pointer to struct \ref bufrdeco
+  \param bufrx buffer already allocated by caller
+  \param size size of BUFR in buffer
+
+  This function does the folowing tasks:
+  - Splits and parse the BUFR sections (without expanding descriptors nor parsing data)
+  - Reads the needed Table files and store them in memory.
+
+  Returns 0 if all is OK, 1 otherwise
+ */
+int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, size_t size )
+{
+  uint8_t *c;
+  size_t ix, ud;
+
   // Some fast checks
-  if ( n < 8 )
+  if ( ( size + 4 ) >= BUFR_LEN )
     {
-      sprintf ( b->error, "bufrdeco_read_bufr(): Too few bytes for a bufr\n" );
-      free ( ( void * ) bufrx );
+      sprintf ( b->error, "bufrdeco_init_buffer(): Buffer provided too large. Consider increase BUFR_LEN\n");
+      return 1;
+    }
+
+  if ( size < 8 )
+    {
+      sprintf ( b->error, "bufrdeco_init_buffer(): Too few bytes for a bufr\n" );
       return 1;
     }
 
   // check if begins with BUFR
   if ( bufrx[0] != 'B' || bufrx[1] != 'U' || bufrx[2] != 'F' || bufrx[3] != 'R' )
     {
-      sprintf ( b->error, "bufrdeco_read_bufr(): file '%s' does not begin with 'BUFR' chars\n", filename );
-      free ( ( void * ) bufrx );
+      sprintf ( b->error, "bufrdeco_init_buffer(): bufr file does not begin with 'BUFR' chars\n" );
       return 1;
     }
 
   // check if end with '7777'
-  if ( bufrx[n - 4] != '7' || bufrx[n - 3] != '7' || bufrx[n - 2] != '7' || bufrx[n - 1] != '7' )
+  if ( bufrx[size - 4] != '7' || bufrx[size - 3] != '7' || bufrx[size - 2] != '7' || bufrx[size - 1] != '7' )
     {
-      sprintf ( b->error, "bufrdeco_read_bufr(): file '%s' does not end with '7777' chars\n", filename );
-      free ( ( void * ) bufrx );
+      sprintf ( b->error, "bufrdeco_init_buffer(): bufe file does not end with '7777' chars\n" );
       return 1;
     }
 
@@ -123,11 +148,10 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
   // length of whole message
   b->sec0.bufr_length = three_bytes_to_uint32 ( &bufrx[4] );
   // check if length is correct
-  if ( b->sec0.bufr_length != ( uint32_t ) n )
+  if ( b->sec0.bufr_length != ( uint32_t ) size )
     {
-      sprintf ( b->error, "bufrdeco_read_bufr(): file '%s' have %u bytes and it says %u\n", filename,
-                ( uint32_t ) n, b->sec0.bufr_length );
-      free ( ( void * ) bufrx );
+      sprintf ( b->error, "bufrdeco_init_buffer(): bufr file have %u bytes and it says %u\n",
+                ( uint32_t ) size, b->sec0.bufr_length );
       return 1;
     }
 
@@ -136,8 +160,7 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
 
   if ( b->sec0.edition < 3 )
     {
-      sprintf ( b->error, "bufrdeco_read_bufr(): Bufr edition must be 3 or superior and this file is coded with version %u\n", b->sec0.edition );
-      free ( ( void * ) bufrx );
+      sprintf ( b->error, "bufrdeco_init_buffer(): Bufr edition must be 3 or superior and this file is coded with version %u\n", b->sec0.edition );
       return 1;
     }
 
@@ -190,7 +213,7 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
       b->sec1.second = c[21];
       break;
     default:
-      sprintf ( b->error, "bufrdeco_read_bufr(): This file is coded with version %u and is not supported\n", b->sec0.edition );
+      sprintf ( b->error, "bufrdeco_read_buffer(): This file is coded with version %u and is not supported\n", b->sec0.edition );
       free ( ( void * ) bufrx );
       return 1;
     }
@@ -235,7 +258,6 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
   memcpy ( b->sec4.raw, c, b->sec4.length + 4 );
 
   b->sec4.bit_offset = 32; // the first bit in byte 4
-  free ( ( void * ) bufrx );
 
   if ( b->mask & BUFRDECO_USE_ECMWF_TABLES )
     {
