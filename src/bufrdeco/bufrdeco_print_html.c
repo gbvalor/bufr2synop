@@ -225,3 +225,35 @@ void bufrdeco_print_subset_sequence_data_html ( struct bufrdeco_subset_sequence_
 {
   return bufrdeco_fprint_subset_sequence_data_html ( stdout, s );
 }
+
+/*!
+  \fn void bufrdeco_fprint_subset_sequence_data_tagged_html ( struct bufrdeco_subset_sequence_data *s, char *id )
+  \brief Prints a struct \ref bufrdeco_subset_sequence_data as an html table
+  \param s pointer to the struct to print
+  \param id string with id for the subset 
+*/
+void bufrdeco_fprint_subset_sequence_data_tagged_html ( FILE *f, struct bufrdeco_subset_sequence_data *s, char *id)
+{
+  size_t i;
+  char aux[1024];
+
+  fprintf ( f, "\n<div class='bufr_subset' id='%s'>\n", id);
+  fprintf ( f, "<table>\n" );
+  for ( i = 0; i < s->nd ; i++ )
+    {
+      fprintf ( f, "<tr><td>%5lu:</td>%s</tr>\n", i, bufrdeco_print_atom_data_html ( aux, &s->sequence[i] ) );
+    }
+  fprintf ( f, "</table>\n" );
+  fprintf ( f, "</div><br>\n" );
+}
+
+/*!
+  \fn void bufrdeco_fprint_subset_sequence_data_tagged_html ( struct bufrdeco_subset_sequence_data *s, char *id )
+  \brief Prints a struct \ref bufrdeco_subset_sequence_data as an html table
+  \param s pointer to the struct to print
+  \param id string with id for the subset 
+*/
+void bufrdeco_print_subset_sequence_data_tagged_html ( struct bufrdeco_subset_sequence_data *s, char *id )
+{
+  return bufrdeco_fprint_subset_sequence_data_tagged_html ( stdout, s, id );
+}

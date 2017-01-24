@@ -107,14 +107,16 @@ int CSV; /*!< If == 1 then output is in csv format */
 int ECMWF; /*!< If == 1 then use tables from ECMWF package */
 int HTML; /*!< If == 1 then output is in HTML format */
 int NOTAC; /*!< if == 1 then do not decode to TAC */
-int FIRST_SUBSET; /*!< First subset in output */
-int LAST_SUBSET; /*!< Last subset in output */
+int FIRST_SUBSET; /*!< First subset index in output. First available is 0 */
+int LAST_SUBSET; /*!< Last subset index in output. First available is 0 */
 FILE *FL; /*!< Buffer to read the list of files */
 
 int main ( int argc, char *argv[] )
 {
   size_t subset;
+  char subset_id[16];
   struct bufrdeco_subset_sequence_data *seq;
+  
 
   if ( read_args ( argc, argv ) < 0 )
     exit ( EXIT_FAILURE );
@@ -202,7 +204,10 @@ int main ( int argc, char *argv[] )
               if ( ( subset == 0 ) && BUFR.sec3.compressed )
                 print_bufrdeco_compressed_data_references ( & ( BUFR.refs ) );
               if ( BUFR.mask & BUFRDECO_OUTPUT_HTML )
-                bufrdeco_print_subset_sequence_data_html ( seq );
+              {
+                sprintf(subset_id, "subset_%lu", subset);  
+                bufrdeco_print_subset_sequence_data_tagged_html ( seq, subset_id );
+              }
               else
                 bufrdeco_print_subset_sequence_data ( seq );
             }
