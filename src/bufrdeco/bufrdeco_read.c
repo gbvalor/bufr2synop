@@ -91,10 +91,10 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
   // close the file
   fclose ( fp );
 
-  res = bufrdeco_read_buffer(b, bufrx, n);
-  free(bufrx);
+  res = bufrdeco_read_buffer ( b, bufrx, n );
+  free ( bufrx );
   return res;
-}  
+}
 
 /*!
   \fn int bufrdeco_read_buffer ( struct bufrdeco *b, uint8_t *bufrx, size_t size  )
@@ -117,7 +117,7 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, size_t size )
   // Some fast checks
   if ( ( size + 4 ) >= BUFR_LEN )
     {
-      sprintf ( b->error, "bufrdeco_init_buffer(): Buffer provided too large. Consider increase BUFR_LEN\n");
+      sprintf ( b->error, "bufrdeco_init_buffer(): Buffer provided too large. Consider increase BUFR_LEN\n" );
       return 1;
     }
 

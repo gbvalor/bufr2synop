@@ -151,6 +151,20 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
           s->mask |= SUBSET_MASK_HAVE_NAME;
         }
       break;
+    case 87: // 0 01 087. WMO marine observing platform extended identifier
+      if ( s->a->val < 100000000 )
+        {
+          sprintf ( aux, "%07.0lf", s->a->val );
+          b->s0.A1[0] = aux[0];
+          b->s0.A1[1] = 0;
+          b->s0.bw[0] = aux[1];
+          b->s0.bw[1] = 0;
+          if ( ( ( int ) ( s->a->val ) % 100000 ) < 1000 )
+            strcpy ( b->s0.nbnbnb , & aux[4] );
+          else
+            strcpy ( b->s0.nbnbnb , & aux[2] );
+        }
+      break;
     case 101: // 0 01 101
       if ( strlen ( s->a->ctable ) <= 80 )
         {

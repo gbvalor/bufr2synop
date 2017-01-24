@@ -106,7 +106,9 @@ int JSON; /*!< If == 1 then output is in json format */
 int CSV; /*!< If == 1 then output is in csv format */
 int ECMWF; /*!< If == 1 then use tables from ECMWF package */
 int HTML; /*!< If == 1 then output is in HTML format */
-int NOTAC; /*!< if ==1 then do not decode to TAC */
+int NOTAC; /*!< if == 1 then do not decode to TAC */
+int FIRST_SUBSET; /*!< First subset in output */
+int LAST_SUBSET; /*!< Last subset in output */
 FILE *FL; /*!< Buffer to read the list of files */
 
 int main ( int argc, char *argv[] )
@@ -180,6 +182,10 @@ int main ( int argc, char *argv[] )
 
       for ( subset = 0; subset < BUFR.sec3.subsets ; subset++ )
         {
+          // Here we get all subsets since 0. FIRST_SUBSET here is not significant
+          if ( subset > (size_t) LAST_SUBSET)
+              break;
+
           if ( ( seq = bufrdeco_get_subset_sequence_data ( &BUFR ) ) == NULL )
             {
               if ( DEBUG )
@@ -187,6 +193,10 @@ int main ( int argc, char *argv[] )
               goto fin;
             }
 
+          // But here we filter the subset array to show since FIRST_SUBSET
+          if (subset < (size_t) FIRST_SUBSET)
+              continue;
+          
           if ( VERBOSE )
             {
               if ( ( subset == 0 ) && BUFR.sec3.compressed )
@@ -242,6 +252,3 @@ int main ( int argc, char *argv[] )
   bufrdeco_close ( &BUFR );
   exit ( EXIT_SUCCESS );
 }
-
-
-

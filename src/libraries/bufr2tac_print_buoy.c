@@ -51,11 +51,11 @@ char * print_buoy_sec0 ( char **sec0, size_t lmax, struct buoy_chunks *b )
       c += sprintf ( c, " %s%s", b->s0.MiMi, b->s0.MjMj );
     }
 
-  if ( check_len ( sec0,6 ) && b->s0.A1[0] && b->s0.bw[0] && b->s0.nbnbnb[0] )
+  if ( check_len ( sec0,8 ) && b->s0.A1[0] && b->s0.bw[0] && b->s0.nbnbnb[0] )
     {
       c += sprintf ( c, " %s%s%s", b->s0.A1, b->s0.bw, b->s0.nbnbnb );
     }
-  else if ( check_len ( sec0, 10 ) && b->s0.D_D )
+  else if ( check_len ( sec0, 10 ) && b->s0.D_D[0] )
     {
       c += sprintf ( c, " %s", b->s0.D_D );
     }

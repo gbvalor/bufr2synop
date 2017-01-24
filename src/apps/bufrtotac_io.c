@@ -39,6 +39,7 @@ void print_usage ( void )
   printf ( "       -n. Do not try to decode to TAC, just parse BUFR report\n" );
   printf ( "       -o output. Pathname of output file. Default is standar output\n" );
   printf ( "       -s prints a long output with explained sequence of descriptors\n" );
+  printf ( "       -S first..last . Print only results for subsets in range first..last (First subset available is 0). Default is all subsets\n" );
   printf ( "       -t bufrtable_dir. Pathname of bufr tables directory. Ended with '/'\n" );
   printf ( "       -V. Verbose output\n" );
   printf ( "       -v. Print version\n" );
@@ -56,6 +57,8 @@ void print_usage ( void )
 int read_args ( int _argc, char * _argv[] )
 {
   int iopt;
+  char *c;
+  char aux[128];
 
   // Initial and default values
   INPUTFILE[0] = '\0';
@@ -72,11 +75,13 @@ int read_args ( int _argc, char * _argv[] )
   ECMWF = 0;
   HTML = 0;
   NOTAC = 0;
+  FIRST_SUBSET = 0;
+  LAST_SUBSET = BUFR_LEN;
 
   /*
      Read input options
   */
-  while ( ( iopt = getopt ( _argc, _argv, "cDEhi:jHI:no:st:vVx" ) ) !=-1 )
+  while ( ( iopt = getopt ( _argc, _argv, "cDEhi:jHI:no:S:st:vVx" ) ) !=-1 )
     switch ( iopt )
       {
       case 'i':
@@ -121,6 +126,32 @@ int read_args ( int _argc, char * _argv[] )
         break;
       case 's':
         SHOW_SEQUENCE = 1;
+        break;
+      case 'S':
+        // Process subset sequence to show  
+        if ( strlen ( optarg ) < 128 &&
+             strspn ( optarg, "0123456789." ) == strlen ( optarg ) )
+          {
+            if ( strstr ( optarg, ".." ) != NULL )
+              {
+                strcpy ( aux, optarg );
+                c = strstr ( aux, ".." );
+                if ( strlen ( c ) > 2 )
+                  {
+                    LAST_SUBSET = atoi ( c + 2 );
+                  }
+                *c = '\0';
+                if ( aux[0] )
+                  {
+                    FIRST_SUBSET = atoi ( aux );
+                  }
+              }
+            else
+              {
+                FIRST_SUBSET = atoi ( optarg );
+                LAST_SUBSET = FIRST_SUBSET;
+              }
+          }
         break;
       case 'x':
         XML = 1;

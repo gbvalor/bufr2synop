@@ -53,6 +53,7 @@ extern int SHOW_SEQUENCE;
 extern int ECMWF;
 extern int HTML;
 extern int NOTAC;
+extern int FIRST_SUBSET, LAST_SUBSET;
 extern FILE *FL;
 
 // functions
