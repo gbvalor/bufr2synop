@@ -163,34 +163,34 @@ char * bufrdeco_print_atom_data_html ( char *target, struct bufr_atom_data *a )
   char aux[256], *c;
 
   c = target;
-  c += sprintf ( c, "<td>%u %02u %03u</td>", a->desc.f, a->desc.x, a->desc.y );
-  c += sprintf ( c, "<td>%s</td>", a->name );
-  c += sprintf ( c, "<td>%s</td>", a->unit );
+  c += sprintf ( c, "<td class='desc'>%u %02u %03u</td>", a->desc.f, a->desc.x, a->desc.y );
+  c += sprintf ( c, "<td class='name'>%s</td>", a->name );
+  c += sprintf ( c, "<td class='unit'>%s</td>", a->unit );
   if ( a->mask & DESCRIPTOR_VALUE_MISSING )
     {
-      c += sprintf ( c, "<td>MISSING</td><td></td>" );
+      c += sprintf ( c, "<td class='missing'>MISSING</td><td></td>" );
     }
   else
     {
       if ( a->mask & DESCRIPTOR_HAVE_STRING_VALUE )
         {
-          c += sprintf ( c, "<td></td><td>%s</td>\n", a->cval );
+          c += sprintf ( c, "<td></td><td class='cval'>%s</td>\n", a->cval );
         }
       else if ( a->mask & DESCRIPTOR_HAVE_CODE_TABLE_STRING
                 || strstr ( a->unit, "CODE TABLE" ) == a->unit
                 || strstr ( a->unit, "Code table" ) == a->unit )
         {
-          c += sprintf ( c, "<td align='right'>%17u</td>", ( uint32_t ) a->val );
-          c += sprintf ( c, "<td>%s</td>\n", a->ctable );
+          c += sprintf ( c, "<td class='ival'>%17u</td>", ( uint32_t ) a->val );
+          c += sprintf ( c, "<td class='ctable'>%s</td>\n", a->ctable );
         }
       else if ( a->mask & DESCRIPTOR_HAVE_FLAG_TABLE_STRING )
         {
-          c += sprintf ( c, "<td align='right'>0x%08X</td>", ( uint32_t ) a->val );
-          c += sprintf ( c, "<td>%s</td>\n", a->ctable );
+          c += sprintf ( c, "<td class='hval'>0x%08X</td>", ( uint32_t ) a->val );
+          c += sprintf ( c, "<td class='ctable'>%s</td>\n", a->ctable );
         }
       else
         {
-          c += sprintf ( c, "<td align='right'>%s</td><td></td>" , get_formatted_value_from_escale ( aux, a->escale, a->val ) );
+          c += sprintf ( c, "<td class='rval'>%s</td><td></td>" , get_formatted_value_from_escale ( aux, a->escale, a->val ) );
         }
     }
   return target;
@@ -241,7 +241,7 @@ void bufrdeco_fprint_subset_sequence_data_tagged_html ( FILE *f, struct bufrdeco
   fprintf ( f, "<table>\n" );
   for ( i = 0; i < s->nd ; i++ )
     {
-      fprintf ( f, "<tr><td>%5lu:</td>%s</tr>\n", i, bufrdeco_print_atom_data_html ( aux, &s->sequence[i] ) );
+      fprintf ( f, "<tr><td class='ndesc'>#%5lu</td>%s</tr>\n", i, bufrdeco_print_atom_data_html ( aux, &s->sequence[i] ) );
     }
   fprintf ( f, "</table>\n" );
   fprintf ( f, "</div><br>\n" );
