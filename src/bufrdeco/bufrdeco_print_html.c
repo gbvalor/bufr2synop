@@ -240,6 +240,7 @@ void bufrdeco_fprint_subset_sequence_data_tagged_html ( FILE *f, struct bufrdeco
   fprintf ( f, "\n<div class='bufr_subset' id='%s'>\n", id);
   fprintf ( f, "<table>\n" );
   fprintf ( f, "<caption>%s</caption>\n", id); 
+  fprintf ( f, "<tr><th></th><th>Descriptor</th><th>Name</th><th>Unit</th><th>Value</th><th>Description</th></tr>\n");
   for ( i = 0; i < s->nd ; i++ )
     {
       fprintf ( f, "<tr><td class='ndesc'>#%lu</td>%s</tr>\n", i, bufrdeco_print_atom_data_html ( aux, &s->sequence[i] ) );
