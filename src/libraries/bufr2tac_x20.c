@@ -421,7 +421,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               strcpy ( syn->s1.ix,"7" );
             }
-          sprintf ( syn->s1.W1, "%d", s->ival % 10 );
+          sprintf ( syn->s1.W1, "%d", abs(s->ival) % 10 );
           syn->mask |= SYNOP_SEC1;
         }
       break;
@@ -451,7 +451,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               strcpy ( syn->s1.ix,"7" );
             }
-          sprintf ( syn->s1.W2, "%d", s->ival % 10 );
+          sprintf ( syn->s1.W2, "%d", abs(s->ival) % 10 );
           syn->mask |= SYNOP_SEC1;
         }
       break;

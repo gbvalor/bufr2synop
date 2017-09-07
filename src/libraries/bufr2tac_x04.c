@@ -396,7 +396,7 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           sprintf ( c->e.YYYY, "%04d", s->ival );
           s->mask |= SUBSET_MASK_HAVE_YEAR;
-          sprintf ( c->s0.JJJ, "%03d", s->ival % 1000 );
+          sprintf ( c->s0.JJJ, "%03d", abs(s->ival) % 1000 );
           c->mask |= CLIMAT_SEC0;
         }
       break;

@@ -95,7 +95,7 @@ char *guess_WMO_region_synop ( struct synop_chunks *syn )
 int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
 {
   size_t is;
-  char aux[16];
+  char aux[32];
   struct synop_chunks *syn;
 
   // An auxiliar pointer

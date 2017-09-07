@@ -75,7 +75,7 @@ char *guess_WMO_region_temp ( struct temp_chunks *t )
 int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
 {
   size_t is;
-  char aux[16];
+  char aux[32];
   struct temp_chunks *t;
   struct met_datetime dtm;
   struct temp_raw_data *r;
@@ -90,9 +90,6 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s,
 
   // clean data
   clean_temp_chunks ( t );
-
-  // clean r
-  memset ( &r, 0, sizeof ( struct temp_raw_point_data ) );
 
   // allocate memory for array of points in raw form
   if ( ( r = calloc ( 1, sizeof ( struct temp_raw_data ) ) ) == NULL )

@@ -74,7 +74,7 @@ int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b )
 int parse_subset_as_buoy ( struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
 {
   size_t is;
-  char aux[16];
+  char aux[32];
   struct buoy_chunks *b;
 
   //

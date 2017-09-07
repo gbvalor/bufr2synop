@@ -159,6 +159,7 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
               b->mask |= BUOY_SEC3;
             }
         }
+      break;  
     case 12: // 0 22 012 wind wave period in seconds
       if ( b->s2.PwaPwa[0] == 0 )
         {

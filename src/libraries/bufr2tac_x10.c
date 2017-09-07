@@ -100,7 +100,7 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       break;
 
     case 9: // 0 10 009. Geopotential at standard level
-      sprintf ( syn->s1.hhh, "%03d", s->ival % 1000 );
+      sprintf ( syn->s1.hhh, "%03d", abs(s->ival) % 1000 );
       syn->mask |= SYNOP_SEC1;
       break;
 
