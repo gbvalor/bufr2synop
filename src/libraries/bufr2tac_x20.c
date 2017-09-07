@@ -31,31 +31,31 @@
 */
 char * percent_to_okta ( char *target, double perc )
 {
-  if ( perc < 12.5 )
+  if ( perc == 0.0 )
     {
       strcpy ( target,"0" );
     }
-  else if ( perc < 25.0 )
+  else if ( perc < (25.0 - 6.25))
     {
       strcpy ( target,"1" );
     }
-  else if ( perc < 37.5 )
+  else if ( perc < (37.5 - 6.25))
     {
       strcpy ( target,"2" );
     }
-  else if ( perc < 50.0 )
+  else if ( perc < (50.0 - 6.25))
     {
       strcpy ( target,"3" );
     }
-  else if ( perc < 62.5 )
+  else if ( perc < (62.5 -6.25))
     {
       strcpy ( target,"4" );
     }
-  else if ( perc < 75.0 )
+  else if ( perc < (75.0 - 6.25))
     {
       strcpy ( target,"5" );
     }
-  else if ( perc < 87.5 )
+  else if ( perc < (87.5 - 6.25))
     {
       strcpy ( target,"6" );
     }

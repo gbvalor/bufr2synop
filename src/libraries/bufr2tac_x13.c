@@ -35,10 +35,10 @@ char * prec_to_RRR ( char *target, double r )
     {
       strcpy ( target,"000" );
     }
-  /*else if ( r < 0.1 )
+  else if ( r > -0.11 && r < -0.09 ) // this is an approach to -0.1
     {
       strcpy ( target,"990" );
-    }*/
+    }
   else if ( r < 0.95 )
     {
       sprintf ( target, "99%d", ( int ) ( r * 10.0 + 0.5 ) );
@@ -219,10 +219,11 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       syn->mask |= SYNOP_SEC1;
       break;
 
-    case 11: // 0 13 011 . Total precipitaction
-      if ( s->val < 0.0 )
+    case 11: // 0 13 011 . Total precipitation
+        if ( s->val < 0.0 )
         {
-          return 0;
+           if (s->val < -0.11 || s->val > -0.09)  
+             return 0; 
         }
       tpd = time_period_duration ( s );
       hr = hour_rounded ( syn );
