@@ -409,7 +409,7 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           if ( check_kj_m2 ( s->val ) == 0 )
             return 0;
-          sprintf ( syn->s3.SS, "%02d", s->ival / 6 );
+          sprintf ( syn->s3.SS, "%02d", abs(s->ival / 6) % 100 );
           syn->mask |= SYNOP_SEC3;
         }
       break;

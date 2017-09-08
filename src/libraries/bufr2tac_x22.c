@@ -45,11 +45,11 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 3: // 0 22 003 Direction of swell waves
       if ( syn->s2.dw1dw1[0] == 0 )
         {
-          sprintf ( syn->s2.dw1dw1, "%02d", ( s->ival + 5 ) /10 );
+          sprintf ( syn->s2.dw1dw1, "%02d", abs(( s->ival + 5 ) /10) % 100 );
         }
       else if ( syn->s2.dw2dw2[0] == 0 )
         {
-          sprintf ( syn->s2.dw2dw2, "%02d", ( s->ival + 5 ) /10 );
+          sprintf ( syn->s2.dw2dw2, "%02d", abs(( s->ival + 5 ) /10) % 100 );
         }
       syn->mask |= SYNOP_SEC2; // have sec2 data
       break;
@@ -161,6 +161,7 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         }
       break;  
     case 12: // 0 22 012 wind wave period in seconds
+    case 74: // 0 22 074 significant wave period in seconds    
       if ( b->s2.PwaPwa[0] == 0 )
         {
           sprintf ( b->s2.PwaPwa, "%02d", ( int ) ( s->val ) );
@@ -171,6 +172,7 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         }
       break;
     case 22: // 0 22 022 wind wave heigh in meters
+    case 70: // 0 22 070 significant wave height in meters    
       if ( b->s2.HwaHwa[0] == 0 )
         {
           sprintf ( b->s2.HwaHwa, "%02d", ( int ) ( s->val * 2.0 + 0.01 ) ); // 0.5 m units

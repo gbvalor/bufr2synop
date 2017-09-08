@@ -125,7 +125,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     {
     case 1: // 0 11 001 . Wind direction
     case 11: // 0 11 011 . Wind direction at 10 meters
-      sprintf ( syn->s1.dd, "%02d", ( s->ival + 5 ) / 10 );
+      sprintf ( syn->s1.dd, "%02d", abs((s->ival + 5 ) / 10) % 100 );
       syn->mask |= SYNOP_SEC1;
       break;
     case 2: // 0 11 002 . Wind speed
@@ -385,7 +385,7 @@ int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
     {
     case 1: // 0 11 001 . Wind direction
     case 11: // 0 11 011 . Wind direction at 10m
-      sprintf ( b->s1.dd, "%02d", ( s->ival + 5 ) / 10 );
+      sprintf ( b->s1.dd, "%02d", abs((s->ival + 5 ) / 10) % 100 );
       b->mask |= BUOY_SEC1;
       break;
     case 2: // 0 11 002 . Wind speed
