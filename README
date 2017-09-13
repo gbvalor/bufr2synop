@@ -42,7 +42,7 @@ https://software.ecmwf.int/wiki/display/BUFR/Releases
 
 Follow the instructions to build and install bufrdc library. It is recommended to build bufrdc 
 with -DUNDERSCORE option to avoid problems when linked with C libraries. Then, you can use this 
-package.
+package. Since version v0.10 you should use '--enable-bufrdc=yes' in configure stage (see below) 
 
 Note that the results from this library is not intended to match at %100 level to original
 alphanumeric reports. It cannot. Some variables in alphanumeric code rules can be coded in
@@ -65,17 +65,21 @@ package from a tarball you must do configure and make. From bufr2synop directory
 
   ./configure
 
-and to build the package
+If you want to use some apps using ECMWF bufrdc library you should use
+
+  ./configure --enable-bufrdc=yes
+  
+To build the package
 
   make
 
-Assume you built the package. you will have four binaries:
+Assume you built the package. you will have up to five binaries:
 
-- bufr2synop . 
+- bufr2synop . (if enabled bufrdc)
     Main binary to extract alphanumeric reports using ECMWF decode library.
 - bufrtotac .
     The same than bufr2ynop but using the own bufrdeco library and tables. It is several times faster  
-- bufr_decode . 
+- bufr_decode . (if enabled bufrdc)
     A binary extracted and adapted from ECMWF bufrdc library. Is an example of use for 
     ECMWF bufrdc library
 - bufrnoaa

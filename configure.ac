@@ -1,4 +1,4 @@
-AC_INIT([bufr2synop], 0.9.3)
+AC_INIT([bufr2synop], 0.10)
 AC_CONFIG_SRCDIR([src/apps/bufr2synop.c])
 AM_INIT_AUTOMAKE
 
@@ -28,5 +28,16 @@ case "${CC}" in
 esac
 }
 
+dnl
+dnl enable for ECMWF bufrdc library support (legacy features)
+dnl
+AC_ARG_ENABLE([bufrdc],
+[  --enable-bufrdc    Enable legacy use of ECMWF bufrdc library],
+[case "${enableval}" in
+  yes) bufrdc=true ;;
+  no)  bufrdc=false ;;
+  *) AC_MSG_ERROR([bad value ${enableval} for --enable-bufrdc]) ;;
+esac],[bufrdc=false])
+AM_CONDITIONAL([BUFRDC], [test x$bufrdc = xtrue])
 
 AC_OUTPUT(Makefile src/Makefile src/apps/Makefile src/bufrdeco/Makefile src/libraries/Makefile src/scripts/Makefile examples/Makefile share/Makefile) 
