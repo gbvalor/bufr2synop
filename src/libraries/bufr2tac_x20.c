@@ -365,7 +365,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
           if ( s->ival < 100 )
             {
-              if ( syn->s1.ix[0] == '/' )
+              if ( syn->s1.ix[0] == '/' && ( ( s->mask & SUBSET_MASK_HAVE_TYPE_STATION ) == 0 ) )
                 {
                   strcpy ( syn->s1.ix, "1" );
                 }
@@ -388,7 +388,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
           else if ( s->ival < 200 )
             {
-              if ( syn->s1.ix[0] == '/' )
+              if ( syn->s1.ix[0] == '/' && ( ( s->mask & SUBSET_MASK_HAVE_TYPE_STATION ) == 0 ) )
                 {
                   strcpy ( syn->s1.ix, "7" );
                 }
@@ -401,7 +401,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
           else if ( s->ival == 508 )
             {
-              if ( syn->s1.ix[0] == '/' )
+              if ( syn->s1.ix[0] == '/' && ( ( s->mask & SUBSET_MASK_HAVE_TYPE_STATION ) == 0 ) )
                 {
                   strcpy ( syn->s1.ix, "5" );
                 }
@@ -413,7 +413,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
           else if ( s->ival == 509 )
             {
-              if ( syn->s1.ix[0] == '/' )
+              if ( syn->s1.ix[0] == '/' && ( ( s->mask & SUBSET_MASK_HAVE_TYPE_STATION ) == 0 ) )
                 {
                   strcpy ( syn->s1.ix, "6" );
                 }
@@ -439,11 +439,11 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       s->tw1w2 = s->itval;
       if ( s->ival < 10 )
         {
-          if ( syn->s1.ix[0] == '/' )
+          if ( syn->s1.ix[0] == '/' && ( ( s->mask & SUBSET_MASK_HAVE_TYPE_STATION ) == 0 ) )
             {
               strcpy ( syn->s1.ix,"1" );
             }
-          else if ( syn->s1.ix[0] == '\0' )
+          else if ( syn->s1.ix[0] == '/' )
             {
               if ( s->type == 1 || s->type == 2 )
                 {
@@ -459,7 +459,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( s->ival == 10 )
         {
-          if ( syn->s1.ix[0] == '\0' )
+          if ( syn->s1.ix[0] == '/' && ( ( s->mask & SUBSET_MASK_HAVE_TYPE_STATION ) == 0 ) )
             {
               if ( s->type == 1 || s->type == 2 )
                 {
@@ -474,7 +474,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else
         {
-          if ( syn->s1.ix[0] == '/' )
+          if ( syn->s1.ix[0] == '/' && ( ( s->mask & SUBSET_MASK_HAVE_TYPE_STATION ) == 0 ) )
             {
               strcpy ( syn->s1.ix,"7" );
             }
@@ -495,11 +495,11 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       if ( s->ival < 10 )
         {
-          if ( syn->s1.ix[0] == '/' )
+          if ( syn->s1.ix[0] == '/' && ( ( s->mask & SUBSET_MASK_HAVE_TYPE_STATION ) == 0 ) )
             {
               strcpy ( syn->s1.ix,"1" );
             }
-          else if ( syn->s1.ix[0] == '\0' )
+          else if ( syn->s1.ix[0] == '/' )
             {
               if ( s->type == 1 || s->type == 2 )
                 {
@@ -515,7 +515,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( s->ival == 10 )
         {
-          if ( syn->s1.ix[0] == '\0' )
+          if ( syn->s1.ix[0] == '/' && ( ( s->mask & SUBSET_MASK_HAVE_TYPE_STATION ) == 0 ) )
             {
               if ( s->type == 1 || s->type == 2 )
                 {
@@ -530,9 +530,9 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else
         {
-          if ( syn->s1.ix[0] == '/' )
+          if ( syn->s1.ix[0] == '/' && ( ( s->mask & SUBSET_MASK_HAVE_TYPE_STATION ) == 0 ) )
             {
-              strcpy ( syn->s1.ix,"7" );
+              strcpy ( syn->s1.ix, "7" );
             }
           else if ( s->type == 0 || s->type == 2 )
             {
