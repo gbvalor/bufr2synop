@@ -30,9 +30,8 @@ const char DEFAULT_BUFRTABLES_WMO_CSV_DIR1[] = "/usr/local/share/bufr2synop/";
 const char DEFAULT_BUFRTABLES_WMO_CSV_DIR2[] = "/usr/share/bufr2synop/";
 
 /*!
-  \fn int get_wmo_tablenames ( struct bufrdeco *b, const char *bufrtables_dir)
+  \fn int get_wmo_tablenames ( struct bufrdeco *b)
   \brief Get the complete pathnames for WMO csv table files needed by a bufr message
-  \param bufrtables_dir string with path to bufr file tables dir
   \param b pointer for a struct \ref bufrdeco
 
   For WMO files this format is adopted
@@ -44,12 +43,12 @@ const char DEFAULT_BUFRTABLES_WMO_CSV_DIR2[] = "/usr/share/bufr2synop/";
   Y is the revision (currently ignored)
   Z is minor revision (currently ignored)
 */
-int get_wmo_tablenames ( struct bufrdeco *b, const char *bufrtables_dir )
+int get_wmo_tablenames ( struct bufrdeco *b )
 {
   struct stat st;
   char aux[256];
 
-  if ( bufrtables_dir == NULL )
+  if ( b->bufrtables_dir[0] == '\0' )
     {
       // try to guess directory
       if ( stat ( DEFAULT_BUFRTABLES_WMO_CSV_DIR1, &st ) )
@@ -76,7 +75,7 @@ int get_wmo_tablenames ( struct bufrdeco *b, const char *bufrtables_dir )
     }
   else
     {
-      strcpy ( aux, bufrtables_dir );
+      strcpy ( aux, b->bufrtables_dir );
     }
 
   switch ( b->sec1.master_version )
@@ -134,20 +133,19 @@ int get_wmo_tablenames ( struct bufrdeco *b, const char *bufrtables_dir )
 }
 
 /*!
-  \fn int bufr_read_tables_wmo (struct bufrdeco *b, char *tables_dir)
+  \fn int bufr_read_tables_wmo (struct bufrdeco *b)
   \brief Read the tables according with bufr file data from a bufr table directory
   \param b basic struct with needed data
-  \param tables_dir complete path string for directory with WMOF bufr tables. Must be ended with a '/' . If NULL then is the default
 
   The default directories where to search bufr tables are stored in \ref DEFAULT_BUFRTABLES_WMO_CSV_DIR1 and \ref DEFAULT_BUFRTABLES_WMO_CSV_DIR2
 */
-int bufr_read_tables_wmo ( struct bufrdeco *b, char *tables_dir )
+int bufr_read_tables_wmo ( struct bufrdeco *b )
 {
 
   // get tablenames
-  if ( get_wmo_tablenames ( b, tables_dir ) )
+  if ( get_wmo_tablenames ( b ) )
     {
-      sprintf ( b->error, "bufrdeco_read_tables_ecmwf(): Cannot find bufr tebles\n" );
+      sprintf ( b->error, "bufrdeco_read_tables_ecmwf(): Cannot find bufr tables\n" );
       return 1;
     }
 

@@ -131,10 +131,13 @@ int main ( int argc, char *argv[] )
   // If needed mark to use ECMWF tables
   if ( ECMWF )
     BUFR.mask |= BUFRDECO_USE_ECMWF_TABLES;
-
+  
   if ( HTML )
     BUFR.mask |= BUFRDECO_OUTPUT_HTML;
 
+  /**** Set bufr tables dir ****/
+  strcpy(BUFR.bufrtables_dir , BUFRTABLES_DIR);
+  
   /**** Big loop. a cycle per file ****/
   while ( get_bufrfile_path ( INPUTFILE, ERR ) )
     {

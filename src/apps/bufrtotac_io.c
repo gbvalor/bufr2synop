@@ -31,7 +31,9 @@ void print_usage ( void )
   printf ( "%s -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-c][-h]\n" , SELF );
   printf ( "       -c. The output is in csv format\n" );
   printf ( "       -D. Print some debug info\n" );
+#ifdef USE_BUFRDC
   printf ( "       -E. Use ECMWF package tables. Default is WMO csv tables\n" );
+#endif
   printf ( "       -h Print this help\n" );
   printf ( "       -i Input file. Complete input path file for bufr file\n" );
   printf ( "       -I list_of_files. Pathname of a file with the list of files to parse, one filename per line\n" );
@@ -112,7 +114,9 @@ int read_args ( int _argc, char * _argv[] )
         DEBUG = 1;
         break;
       case 'E':
+#ifdef USE_BUFRDC          
         ECMWF = 1;
+#endif
         break;
       case 'H':
         HTML = 1;

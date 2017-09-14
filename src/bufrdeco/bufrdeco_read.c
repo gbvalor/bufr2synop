@@ -261,14 +261,14 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, size_t size )
 
   if ( b->mask & BUFRDECO_USE_ECMWF_TABLES )
     {
-      if ( bufr_read_tables_ecmwf ( b, NULL ) )
+      if ( bufr_read_tables_ecmwf ( b ) )
         {
           return 1;
         }
     }
   else
     {
-      if ( bufr_read_tables_wmo ( b, NULL ) )
+      if ( bufr_read_tables_wmo ( b ) )
         {
           return 1;
         }

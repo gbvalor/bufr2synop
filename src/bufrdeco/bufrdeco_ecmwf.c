@@ -43,12 +43,12 @@ const char DEFAULT_BUFRTABLES_ECMWF_DIR2[] = "/usr/lib/bufrtables/";
        - yyy - Version number of master table used
        - zzz - Version number of local table used
 */
-int get_ecmwf_tablenames ( struct bufrdeco *b, const char *bufrtables_dir )
+int get_ecmwf_tablenames ( struct bufrdeco *b )
 {
   struct stat st;
   char aux[256];
 
-  if ( bufrtables_dir == NULL )
+  if ( b->bufrtables_dir[0] == '\0' )
     {
       // try to guess directory
       if ( stat ( DEFAULT_BUFRTABLES_ECMWF_DIR1, &st ) )
@@ -75,7 +75,7 @@ int get_ecmwf_tablenames ( struct bufrdeco *b, const char *bufrtables_dir )
     }
   else
     {
-      strcpy ( aux, bufrtables_dir );
+      strcpy ( aux, b->bufrtables_dir );
     }
 
   sprintf ( b->tables->b.path,"%sB%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
@@ -158,17 +158,16 @@ int get_ecmwf_tablenames ( struct bufrdeco *b, const char *bufrtables_dir )
   \fn int bufr_read_tables_ecmwf (struct bufrdeco *b, char *tables_dir)
   \brief Read the tables according with bufr file data from a bufr table directory
   \param b basic struct with needed data
-  \param tables_dir complete path string for directory with ECMWF bufr tables. Must be ended with a '/' . If NULL then is the default
 
   The default directories where to search bufr tables are stored in \ref DEFAULT_BUFRTABLES_ECMWF_DIR1 and \ref DEFAULT_BUFRTABLES_ECMWF_DIR2
 */
-int bufr_read_tables_ecmwf ( struct bufrdeco *b, char *tables_dir )
+int bufr_read_tables_ecmwf ( struct bufrdeco *b )
 {
 
   // get tablenames
-  if ( get_ecmwf_tablenames ( b, tables_dir ) )
+  if ( get_ecmwf_tablenames ( b ) )
     {
-      sprintf ( b->error, "bufrdeco_read_tables_ecmwf(): Cannot find bufr tebles\n" );
+      sprintf ( b->error, "bufrdeco_read_tables_ecmwf(): Cannot find bufr tables\n" );
       return 1;
     }
 

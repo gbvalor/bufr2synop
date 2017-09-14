@@ -35,27 +35,27 @@ char * percent_to_okta ( char *target, double perc )
     {
       strcpy ( target,"0" );
     }
-  else if ( perc < (25.0 - 6.25))
+  else if ( perc < ( 25.0 - 6.25 ) )
     {
       strcpy ( target,"1" );
     }
-  else if ( perc < (37.5 - 6.25))
+  else if ( perc < ( 37.5 - 6.25 ) )
     {
       strcpy ( target,"2" );
     }
-  else if ( perc < (50.0 - 6.25))
+  else if ( perc < ( 50.0 - 6.25 ) )
     {
       strcpy ( target,"3" );
     }
-  else if ( perc < (62.5 -6.25))
+  else if ( perc < ( 62.5 -6.25 ) )
     {
       strcpy ( target,"4" );
     }
-  else if ( perc < (75.0 - 6.25))
+  else if ( perc < ( 75.0 - 6.25 ) )
     {
       strcpy ( target,"5" );
     }
-  else if ( perc < (87.5 - 6.25))
+  else if ( perc < ( 87.5 - 6.25 ) )
     {
       strcpy ( target,"6" );
     }
@@ -367,28 +367,63 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               if ( syn->s1.ix[0] == '/' )
                 {
-                  strcpy ( syn->s1.ix,"1" );
+                  strcpy ( syn->s1.ix, "1" );
+                }
+              else if ( s->type == 1 || s->type == 2 )
+                {
+                  strcpy ( syn->s1.ix, "1" );
+                }
+              else if ( s->type == 0 )
+                {
+                  strcpy ( syn->s1.ix, "4" );
                 }
               sprintf ( syn->s1.ww, "%02d", s->ival );
               syn->mask |= SYNOP_SEC1;
             }
           else if ( s->ival == 100 )
             {
+              strcpy ( syn->s1.ix, "5" );
+              syn->mask |= SYNOP_SEC1;
               s->mask |=  SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW;
             }
           else if ( s->ival < 200 )
             {
               if ( syn->s1.ix[0] == '/' )
                 {
-                  strcpy ( syn->s1.ix,"7" );
+                  strcpy ( syn->s1.ix, "7" );
+                }
+              else if ( s->type == 0 || s->type == 2 )
+                {
+                  strcpy ( syn->s1.ix, "7" );
                 }
               sprintf ( syn->s1.ww, "%02d", s->ival % 100 );
               syn->mask |= SYNOP_SEC1;
             }
           else if ( s->ival == 508 )
             {
+              if ( syn->s1.ix[0] == '/' )
+                {
+                  strcpy ( syn->s1.ix, "5" );
+                }
+              else if ( s->type == 0 || s->type == 2 )
+                {
+                  strcpy ( syn->s1.ix, "5" );
+                }
               s->mask |= ( SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW | SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1 | SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2 );
             }
+          else if ( s->ival == 509 )
+            {
+              if ( syn->s1.ix[0] == '/' )
+                {
+                  strcpy ( syn->s1.ix, "6" );
+                }
+              else if ( s->type == 0 || s->type == 2 )
+                {
+                  strcpy ( syn->s1.ix, "6" );
+                }
+              s->mask |= ( SUBSET_MASK_HAVE_NO_SIGNIFICANT_WW | SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1 | SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2 );
+            }
+
           //printf("%s%s* %s\n", syn->s0.II, syn->s0.iii, syn->s1.ww);
         }
       break;
@@ -408,11 +443,33 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               strcpy ( syn->s1.ix,"1" );
             }
+          else if ( syn->s1.ix[0] == '\0' )
+            {
+              if ( s->type == 1 || s->type == 2 )
+                {
+                  strcpy ( syn->s1.ix, "1" );
+                }
+              else if ( s->type == 0 )
+                {
+                  strcpy ( syn->s1.ix, "4" );
+                }
+            }
           sprintf ( syn->s1.W1, "%d", s->ival );
           syn->mask |= SYNOP_SEC1;
         }
       else if ( s->ival == 10 )
         {
+          if ( syn->s1.ix[0] == '\0' )
+            {
+              if ( s->type == 1 || s->type == 2 )
+                {
+                  strcpy ( syn->s1.ix, "2" );
+                }
+              else if ( s->type == 0 )
+                {
+                  strcpy ( syn->s1.ix, "5" );
+                }
+            }
           s->mask |= SUBSET_MASK_HAVE_NO_SIGNIFICANT_W1;
         }
       else
@@ -421,7 +478,11 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               strcpy ( syn->s1.ix,"7" );
             }
-          sprintf ( syn->s1.W1, "%d", abs(s->ival) % 10 );
+          else if ( s->type == 0 || s->type == 2 )
+            {
+              strcpy ( syn->s1.ix, "7" );
+            }
+          sprintf ( syn->s1.W1, "%d", abs ( s->ival ) % 10 );
           syn->mask |= SYNOP_SEC1;
         }
       break;
@@ -438,11 +499,33 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               strcpy ( syn->s1.ix,"1" );
             }
+          else if ( syn->s1.ix[0] == '\0' )
+            {
+              if ( s->type == 1 || s->type == 2 )
+                {
+                  strcpy ( syn->s1.ix, "1" );
+                }
+              else if ( s->type == 0 )
+                {
+                  strcpy ( syn->s1.ix, "4" );
+                }
+            }
           sprintf ( syn->s1.W2, "%d", s->ival );
           syn->mask |= SYNOP_SEC1;
         }
       else if ( s->ival == 10 )
         {
+          if ( syn->s1.ix[0] == '\0' )
+            {
+              if ( s->type == 1 || s->type == 2 )
+                {
+                  strcpy ( syn->s1.ix, "2" );
+                }
+              else if ( s->type == 0 )
+                {
+                  strcpy ( syn->s1.ix, "5" );
+                }
+            }
           s->mask |= SUBSET_MASK_HAVE_NO_SIGNIFICANT_W2;
         }
       else
@@ -451,7 +534,11 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               strcpy ( syn->s1.ix,"7" );
             }
-          sprintf ( syn->s1.W2, "%d", abs(s->ival) % 10 );
+          else if ( s->type == 0 || s->type == 2 )
+            {
+              strcpy ( syn->s1.ix, "7" );
+            }
+          sprintf ( syn->s1.W2, "%d", abs ( s->ival ) % 10 );
           syn->mask |= SYNOP_SEC1;
         }
       break;
@@ -1268,3 +1355,4 @@ int temp_parse_x20 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
     }
   return 0;
 }
+

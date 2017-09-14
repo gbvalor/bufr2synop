@@ -665,6 +665,7 @@ struct bufrdeco
   struct bufrdeco_decoding_data_state state; /*!< Struct with data needed when parsing bufr */
   struct bufrdeco_compressed_data_references refs; /*!< struct with data references in case of compressed bufr */
   struct bufrdeco_subset_sequence_data seq; /*!< sequence with data subset after parse */
+  char bufrtables_dir[256]; /*!< string with the path of bufr table directories */
   char error[1024]; /*!< String with detected errors, if any */
 };
 
@@ -694,18 +695,18 @@ int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s );
 // Read bufr functions
 int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename );
 int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, size_t size );
-int get_ecmwf_tablenames ( struct bufrdeco *b, const char *bufrtables_dir );
-int bufr_read_tables_ecmwf ( struct bufrdeco *b, char *tables_dir );
+int get_ecmwf_tablenames ( struct bufrdeco *b );
+int bufr_read_tables_ecmwf ( struct bufrdeco *b );
 int bufr_read_tableb ( struct bufr_tableb *tb, char *error );
 int bufr_read_tablec ( struct bufr_tablec *tc, char *error );
 int bufr_read_tabled ( struct bufr_tabled *td, char *error );
 
 // Read bufr WMO csv
-int get_wmo_tablenames ( struct bufrdeco *b, const char *bufrtables_dir );
+int get_wmo_tablenames ( struct bufrdeco *b );
 int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error );
 int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error );
 int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error );
-int bufr_read_tables_wmo ( struct bufrdeco *b, char *tables_dir );
+int bufr_read_tables_wmo ( struct bufrdeco *b );
 char * csv_quoted_string ( char *out, char *in );
 int parse_csv_line ( int *nt, char *tk[], char *lin );
 
@@ -774,7 +775,6 @@ size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source
                                 size_t bit_length );
 
 // Utilities for tables
-int get_ecmwf_tablenames ( struct bufrdeco *b, const char *bufrtables_dir );
 char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec *tc, size_t *index,
                                       struct bufr_descriptor *d, uint32_t ival );
 char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d,
