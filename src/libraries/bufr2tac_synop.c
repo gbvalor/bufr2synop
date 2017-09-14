@@ -31,6 +31,7 @@
 int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
 {
   char aux[20];
+  char tz[64];
   time_t t;
   struct tm tim;
 
@@ -48,6 +49,13 @@ int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
       return 1;
     }
 
+  // Get current TZ 
+  strcpy( tz, getenv("TZ"));
+  
+  // Set TZ to UTC 
+  setenv("TZ", "UTC", 1);
+  tzset();
+
   memset ( &tim, 0, sizeof ( struct tm ) );
   strptime ( aux, "%Y%m%d%H%M", &tim );
 
@@ -55,6 +63,11 @@ int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
   gmtime_r ( &t, &tim );
   sprintf ( syn->s0.YY, "%02d", tim.tm_mday );
   sprintf ( syn->s0.GG, "%02d", tim.tm_hour );
+  
+  // Revert TZ changes
+  setenv("TZ", tz, 1);
+  tzset();
+    
   return 0;
 }
 
