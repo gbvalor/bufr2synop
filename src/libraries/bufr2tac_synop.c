@@ -51,14 +51,14 @@ int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
 
   // Get current TZ
   tz[0] = '\0';
-  c = getenv("TZ");
-  if ( c != NULL && c[0] && strlen(c) < 256 )
-   {
-     strcpy( tz, c);
-   }
-   
-  // Set TZ to UTC 
-  setenv("TZ", "UTC", 1);
+  c = getenv ( "TZ" );
+  if ( c != NULL && c[0] && strlen ( c ) < 256 )
+    {
+      strcpy ( tz, c );
+    }
+
+  // Set TZ to UTC
+  setenv ( "TZ", "UTC", 1 );
   tzset();
 
   memset ( &tim, 0, sizeof ( struct tm ) );
@@ -68,13 +68,18 @@ int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
   gmtime_r ( &t, &tim );
   sprintf ( syn->s0.YY, "%02d", tim.tm_mday );
   sprintf ( syn->s0.GG, "%02d", tim.tm_hour );
-  
+
   // Revert TZ changes
-  if (tz[0])
-  {
-    setenv("TZ", tz, 1);
-    tzset();
-  }  
+  if ( tz[0] )
+    {
+      setenv ( "TZ", tz, 1 );
+      tzset();
+    }
+  else
+    {
+      unsetenv ( "TZ" );
+    }
+
   return 0;
 }
 
