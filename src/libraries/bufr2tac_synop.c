@@ -31,7 +31,7 @@
 int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
 {
   char aux[20];
-  char tz[64];
+  char tz[256], *c;
   time_t t;
   struct tm tim;
 
@@ -49,9 +49,14 @@ int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
       return 1;
     }
 
-  // Get current TZ 
-  strcpy( tz, getenv("TZ"));
-  
+  // Get current TZ
+  tz[0] = '\0';
+  c = getenv("TZ");
+  if ( c != NULL && c[0] && strlen(c) < 256 )
+   {
+     strcpy( tz, c);
+   }
+   
   // Set TZ to UTC 
   setenv("TZ", "UTC", 1);
   tzset();
@@ -65,12 +70,13 @@ int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
   sprintf ( syn->s0.GG, "%02d", tim.tm_hour );
   
   // Revert TZ changes
-  setenv("TZ", tz, 1);
-  tzset();
-    
+  if (tz[0])
+  {
+    setenv("TZ", tz, 1);
+    tzset();
+  }  
   return 0;
 }
-
 
 /*!
   \fn char *guess_WMO_region_synop(struct synop_chunks *syn)
