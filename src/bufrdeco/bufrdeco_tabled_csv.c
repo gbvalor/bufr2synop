@@ -33,7 +33,7 @@
 */
 int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
 {
-  char aux[16], *c;
+  char aux[32], *c;
   char *tk[16];
   int nt;
   FILE *t;

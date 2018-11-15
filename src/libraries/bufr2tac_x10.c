@@ -106,7 +106,7 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 
     case 51: // 0 10 051 . Pressure reduced to mean sea level
       pascal_to_PPPP ( aux, s->val );
-      memcpy ( syn->s1.PPPP, aux, 3 );
+      memcpy ( syn->s1.PPPP, aux, 4 );
       syn->s1.PPPP[4] = 0;
       syn->mask |= SYNOP_SEC1;
       break;

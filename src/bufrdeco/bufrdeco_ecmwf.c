@@ -46,7 +46,7 @@ const char DEFAULT_BUFRTABLES_ECMWF_DIR2[] = "/usr/lib/bufrtables/";
 int get_ecmwf_tablenames ( struct bufrdeco *b )
 {
   struct stat st;
-  char aux[256];
+  char aux[128];
 
   if ( b->bufrtables_dir[0] == '\0' )
     {

@@ -46,7 +46,7 @@ const char DEFAULT_BUFRTABLES_WMO_CSV_DIR2[] = "/usr/share/bufr2synop/";
 int get_wmo_tablenames ( struct bufrdeco *b )
 {
   struct stat st;
-  char aux[256];
+  char aux[128];
 
   if ( b->bufrtables_dir[0] == '\0' )
     {
