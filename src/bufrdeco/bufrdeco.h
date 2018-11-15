@@ -527,7 +527,7 @@ struct bufr_sec3
 */
 struct bufr_sec4
 {
-  uint32_t length; /*< length of sec4 in bytes */
+  uint32_t length; /*!< length of sec4 in bytes */
   size_t bit_offset; /*!< Offset to current first bit in raw data sec4 to parse */
   uint8_t raw[BUFR_LEN]; /*!< Pointer to a raw data for sec4 as in original BUFR file */
 };
