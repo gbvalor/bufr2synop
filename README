@@ -24,7 +24,7 @@ At the moment includes the following reports:
 The BUFR file tables was provided by bufrdc library from ECMWF. Since version 0.8.1 (Released on
 05-Jan-2017) these files are no needed anymore. NOW BUFR2SYNOP PACKAGE PROVIDES ALL NEEDED BUFR 
 TABLES. Tables used here are from ECMWF files for version 17 and older. From version 18 up to now 
-(version 27), the more detailed tables from WMO are used. Source files from WMO are the 
+(version 31), the more detailed tables from WMO are used. Source files from WMO are the 
 Machine readable text and xml files we can get here 
 
 http://www.wmo.int/pages/prog/www/WMOCodes/WMO306_vI2/LatestVERSION/LatestVERSION.html
