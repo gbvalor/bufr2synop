@@ -373,7 +373,7 @@ int is_a_local_descriptor ( struct bufr_descriptor *d )
 */
 char *get_formatted_value_from_escale ( char *fmt, int32_t escale, double val )
 {
-  char aux[16];
+  char aux[32];
   if ( escale >= 0 )
     {
       sprintf ( aux,"%%17.%dlf " , escale );

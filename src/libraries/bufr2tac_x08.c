@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -158,6 +158,8 @@ int buoy_parse_x08 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 */
 int climat_parse_x08 ( struct climat_chunks *c, struct bufr2tac_subset_state *s )
 {
+  char caux[16];
+  
   if ( c == NULL )
     {
       return 1;
@@ -198,7 +200,9 @@ int climat_parse_x08 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
             case 7: // Maximum temperature
               if ( s->ival < 10 )
                 {
-                  sprintf ( c->s1.mtx, "%d", s->ival );
+                  sprintf ( caux, "%d", s->ival );
+                  c->s1.mtx[0] = caux[0];
+                  c->s1.mtx[1] = 0;
                 }
               else
                 {
@@ -209,7 +213,9 @@ int climat_parse_x08 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
             case 8: // Minimum temperature
               if ( s->ival < 10 )
                 {
-                  sprintf ( c->s1.mtn, "%d", s->ival );
+                  sprintf ( caux, "%d", s->ival );
+                  c->s1.mtn[0] = caux[0];
+                  c->s1.mtn[1] = 0;
                 }
               else
                 {

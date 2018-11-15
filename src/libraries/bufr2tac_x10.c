@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -106,19 +106,22 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 
     case 51: // 0 10 051 . Pressure reduced to mean sea level
       pascal_to_PPPP ( aux, s->val );
-      strcpy ( syn->s1.PPPP, aux );
+      memcpy ( syn->s1.PPPP, aux, 3 );
+      syn->s1.PPPP[4] = 0;
       syn->mask |= SYNOP_SEC1;
       break;
 
     case 61: // 0 10 061 . 3-hour pressure change
       pascal_to_ppp ( aux, s->val );
-      sprintf ( syn->s1.ppp, "%s", aux );
+      memcpy(syn->s1.ppp, aux, 3);
+      syn->s1.ppp[3] = 0;
       syn->mask |= SYNOP_SEC1;
       break;
 
     case 62: // 0 10 062 . 24-hour pressure change
       pascal_to_ppp ( aux, s->val );
-      sprintf ( syn->s3.ppp24, "%s", aux );
+      memcpy ( syn->s3.ppp24, aux, 3 );
+      syn->s3.ppp24[3] = 0;
       if ( s->val >= 0 )
         {
           strcpy ( syn->s3.snp24, "8" );
@@ -176,7 +179,8 @@ int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       break;
     case 61: // 0 10 061 . 3-hour pressure change
       pascal_to_ppp ( aux, s->val );
-      sprintf ( b->s1.ppp, "%s", aux );
+      memcpy( b->s1.ppp, aux, 3 );
+      b->s1.ppp[3] = 0;
       b->mask |= BUOY_SEC1;
       break;
 

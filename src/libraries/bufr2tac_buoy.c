@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -55,7 +55,7 @@ int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b )
   gmtime_r ( &t, &tim );
   sprintf ( b->s0.YY, "%02d", tim.tm_mday );
   sprintf ( b->s0.GG, "%02d", tim.tm_hour );
-  sprintf ( b->s0.MM, "%02d", tim.tm_mon + 1 );
+  sprintf ( b->s0.MM, "%02d", (tim.tm_mon + 1) % 100 );
   sprintf ( b->s0.J, "%d", tim.tm_year % 10 );
   sprintf ( b->s0.gg, "%02d", tim.tm_min );
 

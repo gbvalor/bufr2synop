@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -127,7 +127,7 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
     {
     case 3: // 0 01 003
       if ( s->ival > 0 )
-        sprintf ( b->s0.A1, "%d", s->ival );
+        sprintf ( b->s0.A1, "%d", s->ival % 10);
       else if ( s->ival == 0 )
         sprintf ( b->s0.A1, "7" );
       break;
@@ -138,9 +138,9 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       break;
     case 5: // 0 01 005
       if ( s->ival < 1000 )
-        sprintf ( b->s0.nbnbnb, "%03d", s->ival );
+        sprintf ( b->s0.nbnbnb, "%03d", s->ival % 1000);
       else
-        sprintf ( b->s0.nbnbnb, "%05d", s->ival ); // note this is a nnnnn extension
+        sprintf ( b->s0.nbnbnb, "%05d", s->ival % 100000 ); // note this is a nnnnn extension
       break;
     case 15: // 0 01 015
       if ( strlen ( s->a->cval ) <= 80 )

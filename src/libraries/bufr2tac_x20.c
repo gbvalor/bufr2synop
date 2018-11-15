@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -560,7 +560,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           if ( s->ival <= 8 )
             {
-              sprintf ( syn->s1.Nh, "%1d", s->ival );
+              sprintf ( syn->s1.Nh, "%1d", abs(s->ival) % 10 );
             }
           else if ( s->ival <= 10 )
             {
@@ -576,7 +576,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           if ( s->ival <= 8 )
             {
-              sprintf ( syn->s4.N1, "%1d", s->ival );
+              sprintf ( syn->s4.N1, "%1d", abs(s->ival) % 10 );
             }
           else if ( s->ival <= 10 )
             {
@@ -615,7 +615,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
           if ( s->ival < 10 )
             {
-              sprintf ( syn->s3.C, "%d", s->ival );
+              sprintf ( syn->s3.C, "%d", abs(s->ival) % 10 );
               syn->mask |= SYNOP_SEC3;
             }
           else if ( s->ival >= 10 && s->ival < 20 )
@@ -668,7 +668,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
           else if ( s->ival < 10 )
             {
-              sprintf ( syn->s4.C1, "%1d", s->ival );
+              sprintf ( syn->s4.C1, "%1d", abs (s->ival) % 10 );
               syn->mask |= SYNOP_SEC4;
             }
         }
@@ -726,7 +726,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       if ( s->clayer < 0 && s->ival < 10 ) // base below station level
         {
-          sprintf ( syn->s4.Ct, "%d", s->ival );
+          sprintf ( syn->s4.Ct, "%d", abs(s->ival) % 10 );
           syn->mask |= SYNOP_SEC4;
         }
       break;
@@ -1069,7 +1069,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           // The Other regs
           if ( s->ival < 10 )
             {
-              sprintf ( syn->s3.E,"%d", s->ival );
+              sprintf ( syn->s3.E,"%d", abs(s->ival) % 10 );
             }
           else if ( s->ival < 20 )
             {
@@ -1295,7 +1295,7 @@ int temp_parse_x20 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
         }
       if ( s->ival <= 8 )
         {
-          sprintf ( t->b.s8.Nh, "%1d", s->ival );
+          sprintf ( t->b.s8.Nh, "%1d", abs(s->ival) % 10 );
         }
       else if ( s->ival <= 10 )
         {

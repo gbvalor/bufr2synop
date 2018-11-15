@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -511,7 +511,7 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
                     }
                   else
                     {
-                      sprintf ( c->s4.yax, "%02d", s->day + 50 );
+                      sprintf ( c->s4.yax, "%02d", (s->day + 50) % 100 );
                     }
                   c->mask |= CLIMAT_SEC4;
                 }
@@ -529,7 +529,7 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
                     }
                   else
                     {
-                      sprintf ( c->s4.yan, "%02d", s->day + 50 );
+                      sprintf ( c->s4.yan, "%02d", (s->day + 50) % 100 );
                     }
                   c->mask |= CLIMAT_SEC4;
                 }
@@ -632,7 +632,7 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
             }
           else
             {
-              sprintf ( c->s4.yx, "%02d", s->day + 50 );
+              sprintf ( c->s4.yx, "%02d", (s->day + 50) % 100 );
             }
           c->mask |= CLIMAT_SEC4;
         }
@@ -652,7 +652,7 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
             }
           else
             {
-              sprintf ( c->s4.yn, "%02d", s->day + 50 );
+              sprintf ( c->s4.yn, "%02d", (s->day + 50) % 100 );
             }
           c->mask |= CLIMAT_SEC4;
         }
