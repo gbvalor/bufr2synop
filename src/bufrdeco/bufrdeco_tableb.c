@@ -280,6 +280,7 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
     }
 
   i = tb->x_start[d->x] + tb->y_ref[d->x][d->y];
+
   memcpy ( & ( r->desc ), d, sizeof ( struct bufr_descriptor ) );
   r->ref = tb->item[i].reference;
   r->bits = tb->item[i].nbits + b->state.added_bit_length;

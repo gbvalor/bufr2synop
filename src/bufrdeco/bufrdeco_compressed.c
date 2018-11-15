@@ -166,15 +166,15 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
             {
               // case of delayed;
               replicator.ixdel = i + 1;
-              replicator.ndesc = l->lseq[i].x;
+              replicator.ndesc = seq->lseq[i].x;
               rf = & ( r->refs[r->nd] );
               // here we read ndesc from delayed replicator descriptor
               {
                 // First associated field
-                res = bufrdeco_tableb_compressed ( rf, b, & ( l->lseq[i + 1] ), 1 );
+                res = bufrdeco_tableb_compressed ( rf, b, & ( seq->lseq[i + 1] ), 1 );
                 if ( res > 0 )
                   {
-                    return 1; // case of error
+                     return 1; // case of error
                   }
                 else if ( res == 0 )
                   {
@@ -193,10 +193,11 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
                   }
 
                 // then the data itself
-                if ( bufrdeco_tableb_compressed ( rf, b, & ( l->lseq[i + 1] ), 0 ) )
+                if ( bufrdeco_tableb_compressed ( rf, b, & ( seq->lseq[i + 1] ), 0 ) )
                   {
                     return 1;
                   }
+
                 //print_bufrdeco_compressed_ref ( rf );
                 if ( r->nd < ( BUFR_NMAXSEQ -1 ) )
                   {
