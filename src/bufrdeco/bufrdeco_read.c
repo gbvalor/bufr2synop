@@ -242,7 +242,7 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, size_t size )
     b->sec3.compressed = 0;
 
   // loop of unexpanded descriptors
-  for ( ix = 7, ud = 0; ix < b->sec3.length && ud < BUFR_LEN_UNEXPANDED_DESCRIPTOR; ix += 2 )
+  for ( ix = 7, ud = 0; (ix + 1) < b->sec3.length && ud < BUFR_LEN_UNEXPANDED_DESCRIPTOR; ix += 2 )
     {
       two_bytes_to_descriptor ( &b->sec3.unexpanded[ud], &c[ix] );
       if ( b->sec3.unexpanded[ud].f || b->sec3.unexpanded[ud].x || b->sec3.unexpanded[ud].y )

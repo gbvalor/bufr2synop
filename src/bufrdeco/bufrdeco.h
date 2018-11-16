@@ -349,9 +349,9 @@ struct bufr_sequence
   struct bufr_descriptor lseq[NMAXSEQ_DESCRIPTORS]; /*!< Array of unexpanded descriptors */
   struct bufr_sequence *sons[NMAXSEQ_DESCRIPTORS]; /*!< Array of pointers to sons. It must be NULL
    except for sequence descriptors.  */
-  int iseq; /*< number of sequence when parsing a tree. for recursion level 0 in sec3 is asigned 0. 
+  int iseq; /*!< number of sequence when parsing a tree. for recursion level 0 in sec3 is asigned 0. 
                 Is the index in member seq in struct bufereco_expanded_tree */
-  char name[BUFR_EXPLAINED_LENGTH];
+  char name[BUFR_EXPLAINED_LENGTH]; /*!< Name of sequence if any */
 };
 
 /*!
@@ -395,7 +395,10 @@ struct bufrdeco_compressed_data_references
   struct bufrdeco_compressed_ref *refs; /*!< pointer to allocated array */
 };
 
-
+/*!
+  \struct bufr_sec0
+  \brief Store de parsed section 0
+*/
 struct bufr_sec0
 {
   uint32_t bufr_length; /*!< Original Bufr file size in bytes */

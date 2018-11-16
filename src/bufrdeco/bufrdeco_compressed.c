@@ -19,7 +19,7 @@
  ***************************************************************************/
 /*!
  \file bufrdeco_compressed.c
- \brief This file has the code to deal with compressed a compressed bufr report
+ \brief This file has the code to deal with compressed bufr reports
 */
 #include "bufrdeco.h"
 
