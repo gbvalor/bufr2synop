@@ -462,7 +462,7 @@ void fprint_bufrdeco_compressed_ref ( FILE *f, struct bufrdeco_compressed_ref *r
   if ( r->cref0[0] == '\0' )
     {
       fprintf ( f, "bits=%2u, ref=%10d, escale=%3d,",  r->bits, r->ref, r->escale );
-      fprintf ( f, "ref0=%10u, inc_bits=%2u ", r->ref0, r->inc_bits );
+      fprintf ( f, " bit0=%10lu, ref0=%10u, inc_bits=%2u ", r->bit0, r->ref0, r->inc_bits );
       fprintf ( f, "%s %s\n",r->name, r->unit );
     }
   else

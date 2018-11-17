@@ -195,11 +195,11 @@ int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *
 
   // first chance
   i0 = tb->x_start[desc.x] + tb->y_ref[desc.x][desc.y];
-  if ( tb->item[i0].x == desc.x && tb->item[i0].y == desc.y)
-  {
-     *index = i0;
-     return 0;
-  }
+  if ( tb->item[i0].x == desc.x && tb->item[i0].y == desc.y )
+    {
+      *index = i0;
+      return 0;
+    }
   // Second chance
   i0 = tb->x_start[desc.x];
   for ( i = i0 ; i < i0 + tb->num[desc.x] ; i++ )
@@ -244,12 +244,13 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
   // if mode 1 then we search for associated_bits
   if ( mode && b->state.assoc_bits == 0 )
     {
+      // This is not an associated field, return -1
       return -1;
     }
-
+  
   if ( mode )
     {
-      r->is_associated = 1;
+      r->is_associated = 1; // Mark this reference as asociated
     }
 
   if ( is_a_local_descriptor ( d ) )
@@ -261,50 +262,66 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
       r->bit0 = b->state.bit_offset; // OFFSET
       strcpy ( r->name, "LOCAL DESCRIPTOR" );
       strcpy ( r->unit, "UNKNOWN" );
+
+      // get bits for ref0
       if ( get_bits_as_uint32_t ( &r->ref0, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ),
                                   b->state.local_bit_reserved ) == 0 )
         {
           sprintf ( b->error, "bufrdeco_tableb_compressed(): Cannot get bits from '%s'\n", d->c );
           return 1;
         }
+
+      // and get 6 bits for inc_bits
       if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), 6 ) == 0 )
         {
           sprintf ( b->error, "bufrdeco_tableb_compressed(): Cannot get 6 bits for inc_bits from '%s'\n", d->c );
           return 1;
         }
+
       r->escale = 0;
-      r->inc_bits = ( uint8_t ) ival;
+      r->inc_bits = ( uint8_t ) ival; // set the inc_bits
+      // Update the bit offset
       b->state.bit_offset += r->inc_bits * b->sec3.subsets;
       b->state.local_bit_reserved = 0; // Clean the reserved bits
+
+      // All is done for this local descriptor
       return 0;
     }
 
+  // build the index for tableB
   i = tb->x_start[d->x] + tb->y_ref[d->x][d->y];
 
+  // copy the descriptor to reference member desc
   memcpy ( & ( r->desc ), d, sizeof ( struct bufr_descriptor ) );
-  r->ref = tb->item[i].reference;
-  r->bits = tb->item[i].nbits + b->state.added_bit_length;
-  r->escale = tb->item[i].scale;
-  strcpy ( r->name, tb->item[i].name );
-  strcpy ( r->unit, tb->item[i].unit );
+  r->ref = tb->item[i].reference_ori; // copy the reference value from tableB, first from original
+  r->bits = tb->item[i].nbits + b->state.added_bit_length; // copy the bits from tableB
+  r->escale = tb->item[i].scale; // copy the scale from Tableb
+  strcpy ( r->name, tb->item[i].name ); // copy the name
+  strcpy ( r->unit, tb->item[i].unit ); // copy the unit name
+
+  // Add the added_scaled if not flag or code table
   if ( strstr ( r->unit, "CODE TABLE" ) != r->unit &&  strstr ( r->unit,"FLAG" ) != r->unit &&
        strstr ( r->unit, "Code table" ) != r->unit &&  strstr ( r->unit,"Flag" ) != r->unit )
     {
       r->escale += b->state.added_scale;
-      //r->reference += b->state.added_reference;
     }
-  r->bit0 = b->state.bit_offset; // OFFSET
+  r->bit0 = b->state.bit_offset; // Sets the reference offset to current state offset
   r->cref0[0] = '\0'; // default
   r->ref0 = 0 ; // default
+
+  // check if is changing reference then we change reference value
   if ( b->state.changing_reference != 255 )
     {
       // The descriptor operator 2 03 YYY is on action
+      // get the bits
       if ( get_bits_as_uint32_t ( &ival, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), r->bits ) == 0 )
         {
           sprintf ( b->error, "bufrdeco_tableb_compressed(): Cannot get bits from '%s'\n", d->c );
           return 1;
         }
-      // Change the reference value
+
+      // Change the reference value in tableB with value previously readed
+      // (we still have the original value in reference_ori)
       if ( get_table_b_reference_from_uint32_t ( & ( tb->item[i].reference ), b->state.changing_reference, ival ) )
         {
           sprintf ( b->error, "bufrdeco_tableb_val(): Cannot change reference in 2 03 YYY operator for '%s'\n", d->c );
@@ -333,6 +350,8 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
 
   if ( strstr ( r->unit, "CCITT" ) != NULL )
     {
+      // Case of CCITT string as unit
+
       if ( b->state.fixed_ccitt != 0 ) // can be changed by 2 08 YYY operator
         r->bits = 8 * b->state.fixed_ccitt;
 
@@ -350,13 +369,15 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
       r->inc_bits = ival;
       r->ref0 = 0;
 
-      // Set the bit_offset
+      // Set the bit_offset after all bits needed by this element in all subsets
       b->state.bit_offset += r->inc_bits * 8 * b->sec3.subsets;
 
+      // all is done here !!
       return 0;
     }
 
   // is a numeric field, i.e, a data value, a flag code or a code
+  // get reference value
   if ( mode ) // case of associated field
     {
       if ( get_bits_as_uint32_t ( &r->ref0, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), b->state.assoc_bits ) == 0 )
@@ -365,7 +386,7 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
           return 1;
         }
       // patch for delayed descriptor: it allways have data
-      if ( d->x == 31 )
+      if ( is_a_delayed_descriptor ( d ) )
         r->has_data = 1;
     }
   else // case of data
@@ -376,17 +397,17 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
           return 1;
         }
       // patch for delayed descriptor: it allways have data
-      if ( d->x == 31 )
+      if ( is_a_delayed_descriptor ( d ) )
         r->has_data = 1;
     }
 
-  // extracting inc_bits from next 6 bits
+  // extracting inc_bits from next 6 bits for inc_bits
   if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), 6 ) == 0 )
     {
       sprintf ( b->error, "bufrdeco_tableb_compressed(): Cannot get 6 bits for inc_bits from '%s'\n", d->c );
       return 1;
     }
-  r->inc_bits = ival;
+   r->inc_bits = ival;
 
   // if is a delayed descriptor then inc_bits MUST be 0.
   if ( is_a_delayed_descriptor ( d ) && r->inc_bits )
@@ -394,7 +415,7 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
       sprintf ( b->error, "bufrdeco_tableb_compressed(): Found a delayed descriptor with inc_bits != 0\n" );
       return 1;
     }
-  // Set the bit_offset
+  // Set the bit_offset after all bits needed by this element in all subsets
   b->state.bit_offset += r->inc_bits * b->sec3.subsets;
 
   return 0;

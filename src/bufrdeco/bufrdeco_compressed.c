@@ -76,18 +76,21 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
 {
   int res;
   size_t i;
-  struct bufr_sequence *seq;
+  struct bufr_sequence *seq; // auxiliar pointer
   struct bufrdeco_compressed_ref *rf;
   struct bufr_replicator replicator;
 
   if ( l == NULL )
     {
-      //inits the array
+      // inits the array
+      // At the moment there are no structs bufrdeco_compressed ref
       r->nd = 0;
+      // set the auxiliar pointer at the begining
       seq = & ( b->tree->seq[0] );
+      // Cleans the state of parsing
       memset ( & ( b->state ), 0, sizeof ( struct bufrdeco_decoding_data_state ) );
+      // and set some other initial values
       b->state.bit_offset = 0;
-      // also reset reference and bits inc
       b->state.added_bit_length = 0;
       b->state.added_scale = 0;
       b->state.added_reference = 0;
@@ -99,44 +102,27 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
     }
   else
     {
+      // This is the case when layer of sequence is no 0, i.e. has been called recursively
+      // We just set the auxiliar index
       seq = l;
     }
 
   // loop for a sequence
   for ( i = 0; i < seq->ndesc ; i++ )
     {
+      // switch according to 'f' of the descriptor of sequence
       switch ( seq->lseq[i].f )
         {
         case 0:
           // Get data from table B
-          rf = & ( r->refs[r->nd] );
+          rf = & ( r->refs[r->nd] ); // pointer to the target struct bufrdeco_compressed ref
 
-          // First associated field
-          res = bufrdeco_tableb_compressed ( rf, b, & ( seq->lseq[i] ), 1 );
-          if ( res > 0 )
-            {
-              return 1; // case of error
-            }
-          else if ( res == 0 )
-            {
-              // associated field read with success
-              if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
-                {
-                  r->nd += 1;
-                }
-              else
-                {
-                  sprintf ( b->error, "bufr_parse_compressed_recursive(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
-                  return 1;
-                }
-              rf = & ( r->refs[r->nd] );
-            }
-
-          // then the data itself
+          // First the the data itself
           if ( bufrdeco_tableb_compressed ( rf, b, & ( seq->lseq[i] ), 0 ) )
             {
               return 1;
             }
+
           //print_bufrdeco_compressed_ref ( rf );
           if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
             {
@@ -147,6 +133,32 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
               sprintf ( b->error, "bufr_parse_compressed_recursive(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
               return 1;
             }
+
+          // Then we check for an associated field
+          // If is not an associated field returned value is -1
+          rf = & ( r->refs[r->nd] );
+          res = bufrdeco_tableb_compressed ( rf, b, & ( seq->lseq[i] ), 1 );
+          if ( res > 0 )
+            {
+              return 1; // case of error
+            }
+          else if ( res == 0 )
+            {
+              // print_bufrdeco_compressed_ref ( rf );
+              // associated field read with success
+              if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
+                {
+                  r->nd += 1;
+                }
+              else
+                {
+                  sprintf ( b->error, "bufr_parse_compressed_recursive(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
+                  return 1;
+                }
+              // Update the pointer to the target struct bufrdeco_compressed ref
+              i++; // Update main loop index
+            }
+
           break;
 
         case 1:
@@ -168,47 +180,24 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
               replicator.ixdel = i + 1;
               replicator.ndesc = seq->lseq[i].x;
               rf = & ( r->refs[r->nd] );
-              // here we read ndesc from delayed replicator descriptor
-              {
-                // First associated field
-                res = bufrdeco_tableb_compressed ( rf, b, & ( seq->lseq[i + 1] ), 1 );
-                if ( res > 0 )
-                  {
-                     return 1; // case of error
-                  }
-                else if ( res == 0 )
-                  {
-                    //print_bufrdeco_compressed_ref ( rf );
-                    // associated field read with success
-                    if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
-                      {
-                        r->nd += 1;
-                      }
-                    else
-                      {
-                        sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
-                        return 1;
-                      }
-                    rf = & ( r->refs[r->nd] );
-                  }
 
-                // then the data itself
-                if ( bufrdeco_tableb_compressed ( rf, b, & ( seq->lseq[i + 1] ), 0 ) )
-                  {
-                    return 1;
-                  }
+              // The the data itself to get the loops
+              if ( bufrdeco_tableb_compressed ( rf, b, & ( seq->lseq[i + 1] ), 0 ) )
+                {
+                  return 1;
+                }
 
-                //print_bufrdeco_compressed_ref ( rf );
-                if ( r->nd < ( BUFR_NMAXSEQ -1 ) )
-                  {
-                    r->nd += 1;
-                  }
-                else
-                  {
-                    sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
-                    return 1;
-                  }
-              }
+              //print_bufrdeco_compressed_ref ( rf );
+              if ( r->nd < ( BUFR_NMAXSEQ -1 ) )
+                {
+                  r->nd += 1;
+                }
+              else
+                {
+                  sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
+                  return 1;
+                }
+
               replicator.nloops = ( size_t ) rf->ref0;
 
               // call to decode a replicated subsequence
@@ -266,6 +255,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
   if ( rep->nloops == 0 )
     return 0;
 
+
   // The big loop
   for ( ixloop = 0; ixloop < rep->nloops; ixloop++ )
     {
@@ -277,45 +267,46 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
             case 0:
               // Get data from table B
               rf = & ( r->refs[r->nd] );
-              {
-                // First associated field
-                res = bufrdeco_tableb_compressed ( rf, b, & ( l->lseq[i] ), 1 );
-                if ( res > 0 )
-                  {
-                    return 1; // case of error
-                  }
-                else if ( res == 0 )
-                  {
-                    //print_bufrdeco_compressed_ref ( rf );
-                    // associated field read with success
-                    if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
-                      {
-                        r->nd += 1;
-                      }
-                    else
-                      {
-                        sprintf ( b->error, "bufr_parse_compressed_recursive(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
-                        return 1;
-                      }
-                    rf = & ( r->refs[r->nd] );
-                  }
 
-                // then the data itself
-                if ( bufrdeco_tableb_compressed ( rf, b, & ( l->lseq[i] ), 0 ) )
-                  {
-                    return 1;
-                  }
-                //print_bufrdeco_compressed_ref ( rf );
-                if ( r->nd < ( BUFR_NMAXSEQ -1 ) )
-                  {
-                    r->nd += 1;
-                  }
-                else
-                  {
-                    sprintf ( b->error, "bufr_parse_compressed_recursive(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
-                    return 1;
-                  }
-              }
+              // First then the data itself
+              if ( bufrdeco_tableb_compressed ( rf, b, & ( l->lseq[i] ), 0 ) )
+                {
+                  return 1;
+                }
+              //print_bufrdeco_compressed_ref ( rf );
+              if ( r->nd < ( BUFR_NMAXSEQ -1 ) )
+                {
+                  r->nd += 1;
+                }
+              else
+                {
+                  sprintf ( b->error, "bufr_parse_compressed_recursive(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
+                  return 1;
+                }
+
+              // Then associated field
+              rf = & ( r->refs[r->nd] );
+              res = bufrdeco_tableb_compressed ( rf, b, & ( l->lseq[i] ), 1 );
+              if ( res > 0 )
+                {
+                  return 1; // case of error
+                }
+              else if ( res == 0 )
+                {
+                  //print_bufrdeco_compressed_ref ( rf );
+                  // associated field read with success
+                  if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
+                    {
+                      r->nd += 1;
+                    }
+                  else
+                    {
+                      sprintf ( b->error, "bufr_parse_compressed_recursive(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
+                      return 1;
+                    }
+                  b->state.assoc_bits = 0; // Set again the assoc_bits to 0
+                }
+
               break;
 
             case 1:
@@ -337,51 +328,28 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                   replicator.ixdel = i + 1;
                   replicator.ndesc = l->lseq[i].x;
                   rf = & ( r->refs[r->nd] );
-                  // here we read ndesc from delayed replicator descriptor
-                  {
-                    // First associated field
-                    res = bufrdeco_tableb_compressed ( rf, b, & ( l->lseq[i + 1] ), 1 );
-                    if ( res > 0 )
-                      {
-                        return 1; // case of error
-                      }
-                    else if ( res == 0 )
-                      {
-                        //print_bufrdeco_compressed_ref ( rf );
-                        // associated field read with success
-                        if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
-                          {
-                            r->nd += 1;
-                          }
-                        else
-                          {
-                            sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
-                            return 1;
-                          }
-                        rf = & ( r->refs[r->nd] );
-                      }
 
-                    // then the data itself
-                    if ( bufrdeco_tableb_compressed ( rf, b, & ( l->lseq[i + 1] ), 0 ) )
-                      {
-                        return 1;
-                      }
-                    //print_bufrdeco_compressed_ref ( rf );
-                    if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
-                      {
-                        r->nd += 1;
-                      }
-                    else
-                      {
-                        sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
-                        return 1;
-                      }
-                  }
+                  // The data itself to get the loops
+                  if ( bufrdeco_tableb_compressed ( rf, b, & ( l->lseq[i + 1] ), 0 ) )
+                    {
+                      return 1;
+                    }
+                  //print_bufrdeco_compressed_ref ( rf );
+                  if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
+                    {
+                      r->nd += 1;
+                    }
+                  else
+                    {
+                      sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
+                      return 1;
+                    }
                   replicator.nloops = ( size_t ) rf->ref0;
-
-                  bufrdeco_decode_replicated_subsequence_compressed ( r, &replicator, b );
-                  ixd += replicator.ndesc + 1; // update ixd properly
                 }
+
+              bufrdeco_decode_replicated_subsequence_compressed ( r, &replicator, b );
+              ixd += replicator.ndesc + 1; // update ixd properly
+
               //i = rep->ixdel + rep->ndesc; // update i properly
               break;
             case 2:
@@ -473,7 +441,9 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
   strcpy ( a->name, r->name );
   //unit
   strcpy ( a->unit, r->unit );
-
+  //scale 
+  a->escale = r->escale;
+  
   // First we check about string fields
   if ( strstr ( a->unit, "CCITT" ) != NULL )
     {
@@ -514,6 +484,8 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
   // now we check for associated data
   if ( r->is_associated )
     {
+      strcpy(a->name, "Associated value");  
+      strcpy(a->unit, "Associated unit");
       if ( r->has_data == 0 )
         {
           a->associated = MISSING_INTEGER;
@@ -645,6 +617,18 @@ int bufr_decode_subset_data_compressed ( struct bufrdeco_subset_sequence_data *s
         return 1;
 
       if ( r->refs[i].is_associated == 0 )
+        {
+          if ( s->nd < ( s->dim - 1 ) )
+            ( s->nd ) ++;
+          else if ( bufrdeco_increase_data_array ( s ) == 0 )
+            ( s->nd ) ++;
+          else
+            {
+              sprintf ( b->error, "bufr_decode_subset_data_compressed(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n" );
+              return 1;
+            }
+        }
+      else
         {
           if ( s->nd < ( s->dim - 1 ) )
             ( s->nd ) ++;
