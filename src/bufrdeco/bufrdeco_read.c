@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -186,7 +186,7 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, size_t size )
       if ( c[12] > 80 )
         b->sec1.year = 1900 + c[12];
       else
-        b->sec1.year = 2900 + c[12];
+        b->sec1.year = 2000 + c[12];
       b->sec1.month = c[13];
       b->sec1.day = c[14];
       b->sec1.hour = c[15];

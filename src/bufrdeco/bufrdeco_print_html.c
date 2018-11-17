@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -61,7 +61,7 @@ int sprint_sec0_info_html ( char *target, size_t lmax, struct bufrdeco *b )
 */
 int sprint_sec1_info_html ( char *target, size_t lmax, struct bufrdeco *b )
 {
-  char caux[2048], *c;
+  char caux[4096], *c;
   c = caux;
 
   c += sprintf ( c, "<div class='bufr_sec1'>\n");
@@ -83,7 +83,10 @@ int sprint_sec1_info_html ( char *target, size_t lmax, struct bufrdeco *b )
   c += sprintf ( c, "<tr><td>Hour</td><td>%5u</td></tr>\n", b->sec1.hour );
   c += sprintf ( c, "<tr><td>Minute</td><td>%5u</td></tr>\n", b->sec1.minute );
   c += sprintf ( c, "<tr><td>Second</td><td>%5u</td></tr>\n", b->sec1.second );
-  c += sprintf ( c, "<tr><td>Aditional space</td><td>%5u</td></tr>\n", b->sec1.length - 22 );
+  if (b->sec0.edition == 3)
+    c += sprintf ( c, "<tr><td>Aditional space</td><td>%5u</td></tr>\n", b->sec1.length - 17 );
+  else    
+    c += sprintf ( c, "<tr><td>Aditional space</td><td>%5u</td></tr>\n", b->sec1.length - 22 );
 
   if ( b->tables->b.path[0] )
     {
@@ -107,7 +110,7 @@ int sprint_sec1_info_html ( char *target, size_t lmax, struct bufrdeco *b )
 int sprint_sec3_info_html ( char *target, size_t lmax, struct bufrdeco *b )
 {
   size_t i;
-  char caux[4096], *c;
+  char caux[8192], *c;
 
 
   c = caux;
@@ -138,7 +141,7 @@ int sprint_sec3_info_html ( char *target, size_t lmax, struct bufrdeco *b )
 */
 int sprint_sec4_info_html ( char *target, size_t lmax, struct bufrdeco *b )
 {
-  char caux[4096], *c;
+  char caux[8192], *c;
   c = caux;
 
   c += sprintf ( c, "<div class='bufr_sec4'>\n");
