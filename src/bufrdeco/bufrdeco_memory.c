@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -259,14 +259,14 @@ int bufrdeco_init ( struct bufrdeco *b )
   // allocate memory for Tables
   if ( bufrdeco_init_tables ( &b->tables ) )
     {
-      sprintf ( b->error,"init_bufrdeco(): Cannot allocate space for tables\n" );
+      sprintf ( b->error,"bufrdeco_init(): Cannot allocate space for tables\n" );
       return 1;
     }
 
   // allocate memory for expanded tree of descriptors
   if ( bufrdeco_init_expanded_tree ( &b->tree ) )
     {
-      sprintf ( b->error,"init_bufrdeco(): Cannot allocate space for expanded tree of descriptors\n" );
+      sprintf ( b->error,"bufrdeco_init(): Cannot allocate space for expanded tree of descriptors\n" );
       return 1;
     }
 
@@ -311,5 +311,64 @@ int bufrdeco_close ( struct bufrdeco *b )
   bufrdeco_free_compressed_data_references ( & ( b->refs ) );
   bufrdeco_free_expanded_tree ( & ( b->tree ) );
   bufrdeco_free_tables ( & ( b->tables ) );
+  bufrdeco_free_bitmap_array ( & ( b->bitmap ) );
   return 0;
+}
+
+int bufrdeco_allocate_bitmap ( struct bufrdeco *b )
+{
+    size_t nba = b->bitmap.nba;
+    
+    if (nba < BUFR_MAX_BITMAPS )
+    {
+        if ( b->bitmap.bmap[nba] != NULL)
+        {
+           // the bitmap already is allocated  
+           return 0;
+        }   
+        // let's try to allocate it!
+        if ( (b->bitmap.bmap[nba] = ( struct bufrdeco_bitmap * ) calloc ( 1, sizeof ( struct bufrdeco_bitmap ) ) ) == NULL )
+        {
+           sprintf ( b->error,"bufrdeco_allocate_bitmap(): Cannot allocate space for struct bufrdeco_bitmap\n" );
+           return 1;
+        }
+        // Update de counter
+        (b->bitmap.nba)++;
+        return 0;
+    }
+    else
+    {
+       sprintf ( b->error,"bufrdeco_allocate_bitmap(): Too much bitmaps to allocate. The limit is %d\n" , BUFR_MAX_BITMAPS );
+       return 1;
+    }
+}
+
+// Clean all allocated bitmaps, but still is in memory
+int bufrdeco_clean_bitmaps ( struct bufrdeco *b)
+{
+    size_t i;
+
+    for (i = 0; i < b->bitmap.nba ; i++)
+    {
+        if ( b->bitmap.bmap[i] == NULL)
+           continue;
+        memset (& (b->bitmap.bmap[i]) , 0 , sizeof (struct bufrdeco_bitmap));
+    }
+    return 0;  
+}
+
+int bufrdeco_free_bitmap_array ( struct bufrdeco_bitmap_array *a)
+{
+    size_t i;
+
+    for (i = 0; i < a->nba ; i++)
+    {
+        if (a->bmap[i] == NULL)
+           continue;
+        
+        free ( (void*) a->bmap[i] );
+        a->bmap[i] = NULL;
+    }
+    a->nba = 0;
+    return 0;
 }

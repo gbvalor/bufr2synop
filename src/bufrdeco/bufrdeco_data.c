@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -74,6 +74,12 @@ int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struc
       return 1;
     }
 
+  // also we clean the possible defined bitmaps in prior subsets
+  if ( bufrdeco_clean_bitmaps( b ))
+  {
+      return 1;
+  }
+    
   // Then we get the data from an already parsed descriptor tree
   if ( b->sec3.compressed )
     {
@@ -97,6 +103,7 @@ int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struc
           return 1;
         }
     }
+    
   // Finally we update the subset counter
   ( b->state.subset ) ++;
   return 0;

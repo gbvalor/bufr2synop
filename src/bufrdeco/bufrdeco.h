@@ -207,6 +207,24 @@
 #define BUFR_MAX_EXPANDED_SEQUENCES (128)
 
 /*!
+  \def BUFR_MAX_QUALITY_DATA
+  \brief Max amount of quality data which is maped by a struct \ref bufrdeco_bitmap_element
+*/
+#define BUFR_MAX_QUALITY_DATA (8)
+
+/*!
+  \def BUFR_MAX_BITMAP_PRESENT_DATA
+  \brief Max number of data present in a bitmap definition 
+*/
+#define BUFR_MAX_BITMAP_PRESENT_DATA (4096)
+
+/*!
+  \def BUFR_MAX_BITMAPS
+  \brief Max number of structs \ref bufrdeco_bitmap that can be allocated  in a strcut \ref bufrdeco_bitmap_array
+*/
+#define BUFR_MAX_BITMAPS (8)
+
+/*!
   \def BUFR_LEN_SEC3
   \brief Max length in bytes for a sec3
 */
@@ -292,6 +310,8 @@ struct bufr_atom_data
   char ctable[BUFR_EXPLAINED_LENGTH]; /*!< Explained meaning for a code table */
   struct bufr_sequence *seq; /*!< Pointer to the struct bufr_sequence to which this descriptor belongs to */
   size_t ns; /*!< Element in bufr_sequence to which this descriptor belongs to */
+  struct bufr_atom_data *is_bitmaped_by; /*!< Pointer to struct bufr_atom_data which bitmap this one */ 
+  struct bufr_atom_data *bitmap_to; /*!< Pointer to struct bufr_atom_data which this one is mapping to */
 };
 
 /*!
@@ -305,6 +325,37 @@ struct bufrdeco_subset_sequence_data
   size_t nd; /*!< number of current amount of data used in sequence */
   struct bufr_atom_data *sequence; /*!< the array of data associated to a expanded sequence */
 };
+
+/*!
+   \struct bufrdeco_bitmap_element
+   \brief Stores data for a bitmap  
+*/
+struct bufrdeco_bitmap_element 
+{
+  struct bufr_atom_data *bitmap_to; /*!< Pointer to struct bufr_atom_data which this one is mapping to */
+  struct bufr_atom_data *quality_given_by[BUFR_MAX_QUALITY_DATA]; /*!< array of pointers to struct bufr_atom_data which gives quality data to the one is mapping to */
+};
+
+/*!
+  \struct bufrdeco_bitmap
+  \brief Stores all structs \ref bufrdeco_bitmap_element for a bufr bitmap
+*/
+struct bufrdeco_bitmap
+{
+    size_t nb; /*!< Amount of elements used (data present) in the bitmap */
+    struct bufrdeco_bitmap_element element[BUFR_MAX_BITMAP_PRESENT_DATA];
+};
+
+/*!
+  \struct bufrdeco_bitmap_array
+  \brief Stores all structs \ref bufrdeco_bitmap for a bufr bitmap
+*/
+struct bufrdeco_bitmap_array
+{
+    size_t nba; /*!< Amount of bitmaps used */
+    struct bufrdeco_bitmap *bmap[BUFR_MAX_BITMAPS]; /*!< array of pointers to struct bufrdeco */
+};
+
 
 /*!
   \struct bufrdeco_decoding_data_state
@@ -323,6 +374,7 @@ struct bufrdeco_decoding_data_state
   uint8_t changing_reference; /*!< Changing reference as descriptor 2 03 YYY */
   uint8_t fixed_ccitt; /*!< Length in octests for a CCITT var. Changed with descriptor 2 08 YYY . default 0 (or 1)*/
   uint8_t local_bit_reserved; /*!< bits reserved for the inmediately local descriptor */
+  struct bufrdeco_bitmap *bitmap; /*!< Pointer to an active bitmap. If not bitmap definded then is NULL */ 
 };
 
 /*!
@@ -668,6 +720,7 @@ struct bufrdeco
   struct bufrdeco_decoding_data_state state; /*!< Struct with data needed when parsing bufr */
   struct bufrdeco_compressed_data_references refs; /*!< struct with data references in case of compressed bufr */
   struct bufrdeco_subset_sequence_data seq; /*!< sequence with data subset after parse */
+  struct bufrdeco_bitmap_array bitmap; /*!< Stores data for bit-maps */
   char bufrtables_dir[256]; /*!< string with the path of bufr table directories */
   char error[1024]; /*!< String with detected errors, if any */
 };
@@ -793,6 +846,12 @@ int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *
 int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_t source );
 int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key );
 int bufr_find_tablec_csv_index ( size_t *index, struct bufr_tablec *tc, const char *key, uint32_t code );
+
+// utilities for bitmaps
+int bufrdeco_allocate_bitmap ( struct bufrdeco *b );
+int bufrdeco_clean_bitmaps ( struct bufrdeco *b);
+int bufrdeco_free_bitmap_array ( struct bufrdeco_bitmap_array *a);
+
 
 // utilities for descriptors
 int two_bytes_to_descriptor ( struct bufr_descriptor *d, const uint8_t *source );

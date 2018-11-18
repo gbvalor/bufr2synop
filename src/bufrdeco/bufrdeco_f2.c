@@ -173,6 +173,18 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
       break;
 
     case 22:
+      // Quality information follows
+      // The values of Class 33 elements which follow relate to
+      // the data defined by the data present bit-map.
+      //
+      // Here we just add a bufrdeco_bitmap struct set the currunt bitmap
+      if ( bufrdeco_allocate_bitmap ( b ) )
+      {
+          // Cannot allocate another bitmap
+          return 1;
+      }
+      // Set the new current bitmap
+      b->state.bitmap = b->bitmap.bmap[b->bitmap.nba - 1];
       break;
 
     case 36:
@@ -320,7 +332,7 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
             b->state.factor_reference = pow10pos_int[d->y];
           else
             {
-              sprintf ( b->error, "bufrdeco_parse_f2_descriptor(): Too much %u increase bits for operator '%s'", d->y,
+              sprintf ( b->error, "bufrdeco_parse_f2_compressed(): Too much %u increase bits for operator '%s'", d->y,
                         d->c );
               return 1;
             }
@@ -343,6 +355,18 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
       break;
 
     case 22:
+      // Quality information follows
+      // The values of Class 33 elements which follow relate to
+      // the data defined by the data present bit-map.
+      //
+      // Here we just add a bufrdeco_bitmap struct set the currunt bitmap
+      if ( bufrdeco_allocate_bitmap ( b ) )
+      {
+          // Cannot allocate another bitmap
+          return 1;
+      }
+      // Set the new current bitmap
+      b->state.bitmap = b->bitmap.bmap[b->bitmap.nba - 1];
       break;
 
     case 36:
@@ -352,7 +376,7 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
       break;
 
     default:
-      sprintf ( b->error, "bufrdeco_parse_f2_descriptor(): Still no proccessed descriptor '%s' in "
+      sprintf ( b->error, "bufrdeco_parse_f2_compressed(): Still no proccessed descriptor '%s' in "
                 "current library version\n", d->c );
       return 1;
     }
