@@ -277,7 +277,7 @@ struct bufr_replicator
 
 /*!
   \struct bufr_atom_data
-  \brief Contains all the information for a single descriptor in a expanded squence
+  \brief Contains all the information for a single data related with a descriptor in a expanded squence
 */
 struct bufr_atom_data
 {
@@ -285,8 +285,8 @@ struct bufr_atom_data
   uint32_t mask; /*!< Mask with for the type */
   char name[BUFR_TABLEB_NAME_LENGTH]; /*!< String with the name of descriptor */
   char unit[BUFR_TABLEB_UNIT_LENGTH]; /*!< String with the name of units */
-  double val; /*!< Value for the bufr descriptor */
-  int32_t escale; /*!< Escale applied to get the data */ 
+  double val; /*!< Final value for the bufr descriptor data */
+  int32_t escale; /*!< Scale applied to get the data */ 
   uint32_t associated; /*!< value for associated field, if any */
   char cval[128]; /*!< String value for the bufr descriptor */
   char ctable[BUFR_EXPLAINED_LENGTH]; /*!< Explained meaning for a code table */
