@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -179,10 +179,10 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
       //
       // Here we just add a bufrdeco_bitmap struct set the currunt bitmap
       if ( bufrdeco_allocate_bitmap ( b ) )
-      {
+        {
           // Cannot allocate another bitmap
           return 1;
-      }
+        }
       // Set the new current bitmap
       b->state.bitmap = b->bitmap.bmap[b->bitmap.nba - 1];
       break;
@@ -361,10 +361,10 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
       //
       // Here we just add a bufrdeco_bitmap struct set the currunt bitmap
       if ( bufrdeco_allocate_bitmap ( b ) )
-      {
+        {
           // Cannot allocate another bitmap
           return 1;
-      }
+        }
       // Set the new current bitmap
       b->state.bitmap = b->bitmap.bmap[b->bitmap.nba - 1];
       break;

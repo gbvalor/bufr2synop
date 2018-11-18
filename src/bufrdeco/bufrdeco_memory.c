@@ -317,58 +317,59 @@ int bufrdeco_close ( struct bufrdeco *b )
 
 int bufrdeco_allocate_bitmap ( struct bufrdeco *b )
 {
-    size_t nba = b->bitmap.nba;
-    
-    if (nba < BUFR_MAX_BITMAPS )
+  size_t nba = b->bitmap.nba;
+
+  if ( nba < BUFR_MAX_BITMAPS )
     {
-        if ( b->bitmap.bmap[nba] != NULL)
+      if ( b->bitmap.bmap[nba] != NULL )
         {
-           // the bitmap already is allocated  
-           return 0;
-        }   
-        // let's try to allocate it!
-        if ( (b->bitmap.bmap[nba] = ( struct bufrdeco_bitmap * ) calloc ( 1, sizeof ( struct bufrdeco_bitmap ) ) ) == NULL )
-        {
-           sprintf ( b->error,"bufrdeco_allocate_bitmap(): Cannot allocate space for struct bufrdeco_bitmap\n" );
-           return 1;
+          // the bitmap already is allocated
+          return 0;
         }
-        // Update de counter
-        (b->bitmap.nba)++;
-        return 0;
+      // let's try to allocate it!
+      if ( ( b->bitmap.bmap[nba] = ( struct bufrdeco_bitmap * ) calloc ( 1, sizeof ( struct bufrdeco_bitmap ) ) ) == NULL )
+        {
+          sprintf ( b->error,"bufrdeco_allocate_bitmap(): Cannot allocate space for struct bufrdeco_bitmap\n" );
+          return 1;
+        }
+      // Update de counter
+      ( b->bitmap.nba )++;
+      return 0;
     }
-    else
+  else
     {
-       sprintf ( b->error,"bufrdeco_allocate_bitmap(): Too much bitmaps to allocate. The limit is %d\n" , BUFR_MAX_BITMAPS );
-       return 1;
+      sprintf ( b->error,"bufrdeco_allocate_bitmap(): Too much bitmaps to allocate. The limit is %d\n" , BUFR_MAX_BITMAPS );
+      return 1;
     }
 }
 
 // Clean all allocated bitmaps, but still is in memory
-int bufrdeco_clean_bitmaps ( struct bufrdeco *b)
+int bufrdeco_clean_bitmaps ( struct bufrdeco *b )
 {
-    size_t i;
+  size_t i;
 
-    for (i = 0; i < b->bitmap.nba ; i++)
+  for ( i = 0; i < b->bitmap.nba ; i++ )
     {
-        if ( b->bitmap.bmap[i] == NULL)
-           continue;
-        memset (& (b->bitmap.bmap[i]) , 0 , sizeof (struct bufrdeco_bitmap));
+      if ( b->bitmap.bmap[i] == NULL )
+        continue;
+      memset ( b->bitmap.bmap[i] , 0 , sizeof ( struct bufrdeco_bitmap ) );
     }
-    return 0;  
+  b->bitmap.nba = 0;  
+  return 0;
 }
 
-int bufrdeco_free_bitmap_array ( struct bufrdeco_bitmap_array *a)
+int bufrdeco_free_bitmap_array ( struct bufrdeco_bitmap_array *a )
 {
-    size_t i;
+  size_t i;
 
-    for (i = 0; i < a->nba ; i++)
+  for ( i = 0; i < a->nba ; i++ )
     {
-        if (a->bmap[i] == NULL)
-           continue;
-        
-        free ( (void*) a->bmap[i] );
-        a->bmap[i] = NULL;
+      if ( a->bmap[i] == NULL )
+        continue;
+
+      free ( ( void* ) a->bmap[i] );
+      a->bmap[i] = NULL;
     }
-    a->nba = 0;
-    return 0;
+  a->nba = 0;
+  return 0;
 }
