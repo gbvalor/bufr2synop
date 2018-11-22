@@ -383,3 +383,37 @@ char *get_formatted_value_from_escale ( char *fmt, int32_t escale, double val )
     sprintf ( fmt, "%17.0lf " , val );
   return fmt;
 }
+
+/*!
+   \fn int bufrdeco_add_to_bitmap( struct bufrdeco_bitmap *bm, struct bufr_atom_data *a)
+   \brief Push a struct \ref bufrdeco_bitmap_element in a \ref bufrdeco_bitmap 
+
+   If no space to push returns 1, otherwise 0
+*/
+int bufrdeco_add_to_bitmap( struct bufrdeco_bitmap *bm, uint32_t index)
+{
+    if (bm->nb < BUFR_MAX_BITMAP_PRESENT_DATA)
+    {
+        bm->element[bm->nb].bitmap_to = index;
+        (bm->nb)++;
+        return 0;
+    }
+    return 1;
+}
+
+/*!
+   \fn int bufrdeco_add_to_bitmap_compressed( struct bufrdeco_bitmap_compressed *bm, struct bufrdeco_compressed_ref *r)
+   \brief Push a struct \ref bufrdeco_bitmap_element in a \ref bufrdeco_bitmap 
+
+   If no space to push returns 1, otherwise 0
+*/
+int bufrdeco_add_to_bitmap_compressed( struct bufrdeco_bitmap_compressed *bm, uint32_t index)
+{
+    if (bm->nb < BUFR_MAX_BITMAP_PRESENT_DATA)
+    {
+        bm->element[bm->nb].bitmap_to = index;
+        (bm->nb)++;
+        return 0;
+    }
+    return 1;
+}

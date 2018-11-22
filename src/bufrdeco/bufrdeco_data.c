@@ -75,11 +75,11 @@ int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struc
     }
 
   // also we clean the possible defined bitmaps in prior subsets
-  if ( bufrdeco_clean_bitmaps( b ))
-  {
+  if ( bufrdeco_clean_bitmaps ( b ) )
+    {
       return 1;
-  }
-    
+    }
+
   // Then we get the data from an already parsed descriptor tree
   if ( b->sec3.compressed )
     {
@@ -103,7 +103,7 @@ int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struc
           return 1;
         }
     }
-    
+
   // Finally we update the subset counter
   ( b->state.subset ) ++;
   return 0;
@@ -176,6 +176,9 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
       b->state.fixed_ccitt = 0;
       b->state.local_bit_reserved = 0;
       b->state.factor_reference = 1;
+      b->state.quality_active = 0;
+      b->state.bitmaping = 0;
+      b->state.bitmap = NULL;
     }
   else
     {
@@ -193,11 +196,11 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
             {
               return 1;
             }
-          
+
           // Add info about common sequence to which bufr_atom_data belongs
           s->sequence[s->nd].seq = seq;
           s->sequence[s->nd].ns = i;
-          
+
           //bufr_print_atom_data_stdout(& ( s->sequence[s->nd] ));
           if ( s->nd < ( s->dim - 1 ) )
             {
@@ -224,7 +227,19 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
               replicator.ixdel = i;
               replicator.ndesc = seq->lseq[i].x;
               replicator.nloops = seq->lseq[i].y;
+
+              // Check if this replicator is for a bit-map defining
+              if ( b->state.bitmaping )
+                {
+                  b->state.bitmaping = replicator.nloops; // set it properly
+                }
+
+
               bufrdeco_decode_replicated_subsequence ( s, &replicator, b );
+
+              // and then set again bitamping to 0, because it is finished
+              b->state.bitmaping = 0;
+
               i += replicator.ndesc;
             }
           else
@@ -240,8 +255,15 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
               // Add info about common sequence to which bufr_atom_data belongs
               s->sequence[s->nd].seq = seq;
               s->sequence[s->nd].ns = i + 1;
-              
+
               replicator.nloops = ( size_t ) ( s->sequence[s->nd].val );
+
+              // Check if this replicator is for a bit-map defining
+              if ( b->state.bitmaping )
+                {
+                  b->state.bitmaping = replicator.nloops; // set it properly
+                }
+
               if ( s->nd < ( s->dim - 1 ) )
                 {
                   ( s->nd ) ++;
@@ -257,6 +279,10 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
                   return 1;
                 }
               bufrdeco_decode_replicated_subsequence ( s, &replicator, b );
+
+              // and then set again bitamping to 0, because it is finished
+              b->state.bitmaping = 0;
+
               i += replicator.ndesc + 1;
             }
           //i = replicator.ixdel + replicator.ndesc; // update i properly
@@ -318,6 +344,16 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
               if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[i] ) ) )
                 {
                   return 1;
+                }
+
+              // Case of defining bitmap 0 31 031
+              if ( l->lseq[i].x == 31 && l->lseq[i].y == 31 && b->state.bitmaping )
+                {
+                  if ( s->sequence[s->nd].val == 0.0 ) // Check if it is meaning present data
+                    {
+                      s->sequence[s->nd - b->state.bitmaping].is_bitmaped_by =  s->nd;
+                      s->sequence[s->nd].bitmap_to =  s->nd - b->state.bitmaping;
+                    }
                 }
 
               if ( s->nd < ( s->dim - 1 ) )

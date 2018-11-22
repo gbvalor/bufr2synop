@@ -310,8 +310,8 @@ struct bufr_atom_data
   char ctable[BUFR_EXPLAINED_LENGTH]; /*!< Explained meaning for a code table */
   struct bufr_sequence *seq; /*!< Pointer to the struct bufr_sequence to which this descriptor belongs to */
   size_t ns; /*!< Element in bufr_sequence to which this descriptor belongs to */
-  struct bufr_atom_data *is_bitmaped_by; /*!< Pointer to struct bufr_atom_data which bitmap this one */ 
-  struct bufr_atom_data *bitmap_to; /*!< Pointer to struct bufr_atom_data which this one is mapping to */
+  uint32_t is_bitmaped_by; /*!< Index of element in a struct \ref bufrdeco_subset_sequence_data which bitmap this one */ 
+  uint32_t bitmap_to; /*!< Index of element in a struct \ref bufrdeco_subset_sequence_data which this one is mapping to */
 };
 
 /*!
@@ -332,8 +332,8 @@ struct bufrdeco_subset_sequence_data
 */
 struct bufrdeco_bitmap_element 
 {
-  struct bufr_atom_data *bitmap_to; /*!< Pointer to struct bufr_atom_data which this one is mapping to */
-  struct bufr_atom_data *quality_given_by[BUFR_MAX_QUALITY_DATA]; /*!< array of pointers to struct bufr_atom_data which gives quality data to the one is mapping to */
+  uint32_t bitmap_to; /*!< Pointer to struct bufr_atom_data which this one is mapping to */
+  uint32_t quality_given_by[BUFR_MAX_QUALITY_DATA]; /*!< array of pointers to struct bufr_atom_data which gives quality data to the one is mapping to */
 };
 
 /*!
@@ -356,6 +356,36 @@ struct bufrdeco_bitmap_array
     struct bufrdeco_bitmap *bmap[BUFR_MAX_BITMAPS]; /*!< array of pointers to struct bufrdeco */
 };
 
+/*!
+   \struct bufrdeco_bitmap_compressed_element
+   \brief Stores data for a bitmap_compressed  
+*/
+struct bufrdeco_bitmap_compressed_element 
+{
+  uint32_t bitmap_to; /*!< Index in a struct \ref bufr_compressed_data_references which  is mapping to */
+  uint32_t quality_given_by[BUFR_MAX_QUALITY_DATA]; /*!< array of indexes in a struct \ref bufr_compressed_data_references which gives quality data to the one is mapping to */
+};
+
+/*!
+  \struct bufrdeco_bitmap_compressed
+  \brief Stores all structs \ref bufrdeco_bitmap_compressed_element for a bufr bitmap compressed
+*/
+struct bufrdeco_bitmap_compressed
+{
+    struct bufrdeco_compressed_data_references *rf;
+    size_t nb; /*!< Amount of elements used (data present) in the bitmap_compressed */
+    struct bufrdeco_bitmap_compressed_element element[BUFR_MAX_BITMAP_PRESENT_DATA];
+};
+
+/*!
+  \struct bufrdeco_bitmap_compressed_array
+  \brief Stores all structs \ref bufrdeco_bitmap_compressed for a bufr bitmap_compressed
+*/
+struct bufrdeco_bitmap_compressed_array
+{
+    size_t nba; /*!< Amount of bitmaps used */
+    struct bufrdeco_bitmap_compressed *bmap[BUFR_MAX_BITMAPS]; /*!< array of pointers to struct bufrdeco */
+};
 
 /*!
   \struct bufrdeco_decoding_data_state
@@ -374,7 +404,10 @@ struct bufrdeco_decoding_data_state
   uint8_t changing_reference; /*!< Changing reference as descriptor 2 03 YYY */
   uint8_t fixed_ccitt; /*!< Length in octests for a CCITT var. Changed with descriptor 2 08 YYY . default 0 (or 1)*/
   uint8_t local_bit_reserved; /*!< bits reserved for the inmediately local descriptor */
-  struct bufrdeco_bitmap *bitmap; /*!< Pointer to an active bitmap. If not bitmap definded then is NULL */ 
+  uint8_t quality_active; /*!< If != 0 then all 33 class descriptros are refered to a defined bitmap */
+  int32_t bitmaping; /*!< If != 0 then is the backard count reference defined by replicator descriptor after 2 36 000 operator */
+  struct bufrdeco_bitmap *bitmap; /*!< Pointer to an active bitmap. If not bitmap defined then is NULL */ 
+  struct bufrdeco_bitmap_compressed *bitmap_compressed; /*!< Pointer to an active bitmap. If not bitmap defined then is NULL */ 
 };
 
 /*!
@@ -434,6 +467,8 @@ struct bufrdeco_compressed_ref
   char name[BUFR_TABLEB_NAME_LENGTH]; /*!< String with the name of descriptor */
   char unit[BUFR_TABLEB_UNIT_LENGTH]; /*!< String with the name of units */
   struct bufr_descriptor desc; /*!< associated descriptor */
+  uint32_t is_bitmaped_by; /*!< Index element in a struct \ref bufr_compressed_data_references which bitmap this one */ 
+  uint32_t bitmap_to; /*!< Index element in a struct \ref bufr_compressed_data_references which this one is mapping to */
 };
 
 /*!
@@ -721,6 +756,7 @@ struct bufrdeco
   struct bufrdeco_compressed_data_references refs; /*!< struct with data references in case of compressed bufr */
   struct bufrdeco_subset_sequence_data seq; /*!< sequence with data subset after parse */
   struct bufrdeco_bitmap_array bitmap; /*!< Stores data for bit-maps */
+  struct bufrdeco_bitmap_compressed_array bitmapc; /*!< Stores data for bit-maps in case od compressed bufr*/
   char bufrtables_dir[256]; /*!< string with the path of bufr table directories */
   char error[1024]; /*!< String with detected errors, if any */
 };
@@ -851,7 +887,11 @@ int bufr_find_tablec_csv_index ( size_t *index, struct bufr_tablec *tc, const ch
 int bufrdeco_allocate_bitmap ( struct bufrdeco *b );
 int bufrdeco_clean_bitmaps ( struct bufrdeco *b);
 int bufrdeco_free_bitmap_array ( struct bufrdeco_bitmap_array *a);
-
+int bufrdeco_add_to_bitmap( struct bufrdeco_bitmap *bm, uint32_t index);
+int bufrdeco_allocate_bitmap_compressed ( struct bufrdeco *b );
+int bufrdeco_clean_bitmaps_compressed ( struct bufrdeco *b);
+int bufrdeco_free_bitmap_compressed_array ( struct bufrdeco_bitmap_compressed_array *a);
+int bufrdeco_add_to_bitmap_compressed( struct bufrdeco_bitmap_compressed *bm, uint32_t index);
 
 // utilities for descriptors
 int two_bytes_to_descriptor ( struct bufr_descriptor *d, const uint8_t *source );

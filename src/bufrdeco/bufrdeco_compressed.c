@@ -99,6 +99,9 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
       b->state.fixed_ccitt = 0;
       b->state.local_bit_reserved = 0;
       b->state.factor_reference = 1;
+      b->state.quality_active = 0;
+      b->state.bitmaping = 0;
+      b->state.bitmap = NULL;
     }
   else
     {
@@ -171,8 +174,18 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
               replicator.ixdel = i;
               replicator.ndesc = seq->lseq[i].x;
               replicator.nloops = seq->lseq[i].y;
+
+              // Check if this replicator is for a bit-map defining
+              if ( b->state.bitmaping )
+                {
+                  b->state.bitmaping = replicator.nloops; // set it properly
+                }
+
               // call to decode a replicated subsequence
               bufrdeco_decode_replicated_subsequence_compressed ( r, &replicator, b );
+
+              // and then set again bitamping to 0, because it is finished
+              b->state.bitmaping = 0;
             }
           else
             {
@@ -200,8 +213,17 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
 
               replicator.nloops = ( size_t ) rf->ref0;
 
+              // Check if this replicator is for a bit-map defining
+              if ( b->state.bitmaping )
+                {
+                  b->state.bitmaping = replicator.nloops; // set it properly
+                }
+
               // call to decode a replicated subsequence
               bufrdeco_decode_replicated_subsequence_compressed ( r, &replicator, b );
+
+              // and then set again bitamping to 0, because it is finished
+              b->state.bitmaping = 0;
             }
           i = replicator.ixdel + replicator.ndesc; // update i properly
           break;
@@ -273,6 +295,19 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                 {
                   return 1;
                 }
+
+              // Case of defining bitmap 0 31 031
+              if ( l->lseq[i].x == 31 && l->lseq[i].y == 31 && b->state.bitmaping )
+                {
+                  if ( rf->ref0 == 0 ) // Assume if ref0 == 0 then all subsets are present in same bits
+                    {
+                      r->refs[r->nd - b->state.bitmaping].is_bitmaped_by = ( uint32_t ) r->nd ;
+                      rf->bitmap_to = r->nd - b->state.bitmaping;
+                      //printf ( "%d\n", r->nd - b->state.bitmaping );
+                    }
+                }
+
+
               //print_bufrdeco_compressed_ref ( rf );
               if ( r->nd < ( BUFR_NMAXSEQ -1 ) )
                 {
@@ -441,9 +476,20 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
   strcpy ( a->name, r->name );
   //unit
   strcpy ( a->unit, r->unit );
-  //scale 
+  //scale
   a->escale = r->escale;
-  
+
+  // possible bitmaps
+  if ( r->is_bitmaped_by )
+    {
+      a->is_bitmaped_by = r->is_bitmaped_by;
+    }
+
+  if ( r->bitmap_to )
+    {
+      a->bitmap_to = r->bitmap_to;
+    }
+
   // First we check about string fields
   if ( strstr ( a->unit, "CCITT" ) != NULL )
     {
@@ -484,8 +530,8 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
   // now we check for associated data
   if ( r->is_associated )
     {
-      strcpy(a->name, "Associated value");  
-      strcpy(a->unit, "Associated unit");
+      strcpy ( a->name, "Associated value" );
+      strcpy ( a->unit, "Associated unit" );
       if ( r->has_data == 0 )
         {
           a->associated = MISSING_INTEGER;

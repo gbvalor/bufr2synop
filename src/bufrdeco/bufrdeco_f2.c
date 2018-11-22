@@ -177,7 +177,32 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
       // The values of Class 33 elements which follow relate to
       // the data defined by the data present bit-map.
       //
-      // Here we just add a bufrdeco_bitmap struct set the currunt bitmap
+      // Here we jsut activate the quality_active flag
+      b->state.quality_active = 1;
+      break;
+
+    case 35:
+      // Cancel backward data reference
+      //
+      // This operator terminates all previously defined backward
+      // reference and cancels any previously defined
+      // data present bit-map; it causes the next data present
+      // bit-map to refer to the data descriptors which
+      // immediately precede the operator to which it relates.
+
+      // Set the bitmap pointer to NULL.
+      b->state.bitmap = NULL;
+      break;
+
+    case 36:
+      // Define data present bit-map
+      //
+      // This operator defines the data present bit-map which
+      // follows for possible re-use; only one data present
+      // bit-map may be defined between this operator and the
+      // cancel use defined data present bit-map operator.
+
+      // Here we just add a bufrdeco_bitmap struct set the current bitmap
       if ( bufrdeco_allocate_bitmap ( b ) )
         {
           // Cannot allocate another bitmap
@@ -185,12 +210,27 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
         }
       // Set the new current bitmap
       b->state.bitmap = b->bitmap.bmap[b->bitmap.nba - 1];
-      break;
+      
+      // Now set the bitmaping backward count to 1 to flag that next replicator descriptor must be set it properly
+      b->state.bitmaping = 1;
 
-    case 36:
       break;
 
     case 37:
+      //  if y = 0000 use defined data present bit-map
+      //  This operator causes the defined data present bit-map to be used again.
+      //
+      //  if y = 255  Cancel use defined data present bit-map
+      // This operator cancels the re-use of the defined data present bit-map.
+      if ( d->y == 0 )
+        {
+          if ( b->bitmap.nba && b->state.bitmap == NULL )
+            b->state.bitmap =  b->bitmap.bmap[b->bitmap.nba - 1];
+        }
+      else if ( d->y == 255 )
+        {
+          b->state.bitmap = NULL;
+        }
       break;
 
     default:
@@ -359,20 +399,60 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
       // The values of Class 33 elements which follow relate to
       // the data defined by the data present bit-map.
       //
-      // Here we just add a bufrdeco_bitmap struct set the currunt bitmap
-      if ( bufrdeco_allocate_bitmap ( b ) )
+      // Here we jsut activate the quality_active flag
+      b->state.quality_active = 1;
+      break;
+
+    case 35:
+      // Cancel backward data reference
+      //
+      // This operator terminates all previously defined backward
+      // reference and cancels any previously defined
+      // data present bit-map; it causes the next data present
+      // bit-map to refer to the data descriptors which
+      // immediately precede the operator to which it relates.
+
+      // Set the bitmap pointer to NULL.
+      b->state.bitmap_compressed = NULL;
+      break;
+
+    case 36:
+      // Define data present bit-map
+      //
+      // This operator defines the data present bit-map which
+      // follows for possible re-use; only one data present
+      // bit-map may be defined between this operator and the
+      // cancel use defined data present bit-map operator.
+
+      // Here we just add a bufrdeco_bitmap struct set the current bitmap
+      if ( bufrdeco_allocate_bitmap_compressed( b ) ) 
         {
           // Cannot allocate another bitmap
           return 1;
         }
       // Set the new current bitmap
-      b->state.bitmap = b->bitmap.bmap[b->bitmap.nba - 1];
-      break;
+      b->state.bitmap_compressed = b->bitmapc.bmap[b->bitmap.nba - 1];
+      
+      // Now set the bitmaping backward count to 1 to flag that next replicator descriptor must be set it properly
+      b->state.bitmaping = 1;
 
-    case 36:
       break;
 
     case 37:
+      //  if y = 0000 use defined data present bit-map
+      //  This operator causes the defined data present bit-map to be used again.
+      //
+      //  if y = 255  Cancel use defined data present bit-map
+      // This operator cancels the re-use of the defined data present bit-map.
+      if ( d->y == 0 )
+        {
+          if ( b->bitmapc.nba && b->state.bitmap_compressed == NULL )
+            b->state.bitmap_compressed =  b->bitmapc.bmap[b->bitmap.nba - 1];
+        }
+      else if ( d->y == 255 )
+        {
+          b->state.bitmap_compressed = NULL;
+        }
       break;
 
     default:

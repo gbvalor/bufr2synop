@@ -421,6 +421,12 @@ char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a )
       climit += 64;
     }
 
+  if (a->is_bitmaped_by != 0)
+      c += sprintf(c, " *IS BITMAPED BY #%u*", a->is_bitmaped_by);
+
+  if (a->bitmap_to != 0)
+      c += sprintf(c, " *BITMAP TO #%u*", a->bitmap_to);
+
   return target;
 }
 
