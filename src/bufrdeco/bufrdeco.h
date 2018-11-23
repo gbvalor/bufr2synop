@@ -312,6 +312,7 @@ struct bufr_atom_data
   size_t ns; /*!< Element in bufr_sequence to which this descriptor belongs to */
   uint32_t is_bitmaped_by; /*!< Index of element in a struct \ref bufrdeco_subset_sequence_data which bitmap this one */ 
   uint32_t bitmap_to; /*!< Index of element in a struct \ref bufrdeco_subset_sequence_data which this one is mapping to */
+  uint32_t quality_to; 
 };
 
 /*!
@@ -327,23 +328,15 @@ struct bufrdeco_subset_sequence_data
 };
 
 /*!
-   \struct bufrdeco_bitmap_element
-   \brief Stores data for a bitmap  
-*/
-struct bufrdeco_bitmap_element 
-{
-  uint32_t bitmap_to; /*!< Pointer to struct bufr_atom_data which this one is mapping to */
-  uint32_t quality_given_by[BUFR_MAX_QUALITY_DATA]; /*!< array of pointers to struct bufr_atom_data which gives quality data to the one is mapping to */
-};
-
-/*!
   \struct bufrdeco_bitmap
   \brief Stores all structs \ref bufrdeco_bitmap_element for a bufr bitmap
 */
 struct bufrdeco_bitmap
 {
     size_t nb; /*!< Amount of elements used (data present) in the bitmap */
-    struct bufrdeco_bitmap_element element[BUFR_MAX_BITMAP_PRESENT_DATA];
+    uint32_t bitmap_to[BUFR_MAX_BITMAP_PRESENT_DATA]; /*!< Array of indexes in a sequence which bitmaps to */
+    size_t nq; /*!< Amount of quality vars */
+    uint32_t quality_given_by[BUFR_MAX_QUALITY_DATA]; /*!< array of indexes to first quality value related to bitmap_to[0] */
 };
 
 /*!
@@ -357,16 +350,6 @@ struct bufrdeco_bitmap_array
 };
 
 /*!
-   \struct bufrdeco_bitmap_compressed_element
-   \brief Stores data for a bitmap_compressed  
-*/
-struct bufrdeco_bitmap_compressed_element 
-{
-  uint32_t bitmap_to; /*!< Index in a struct \ref bufr_compressed_data_references which  is mapping to */
-  uint32_t quality_given_by[BUFR_MAX_QUALITY_DATA]; /*!< array of indexes in a struct \ref bufr_compressed_data_references which gives quality data to the one is mapping to */
-};
-
-/*!
   \struct bufrdeco_bitmap_compressed
   \brief Stores all structs \ref bufrdeco_bitmap_compressed_element for a bufr bitmap compressed
 */
@@ -374,7 +357,9 @@ struct bufrdeco_bitmap_compressed
 {
     struct bufrdeco_compressed_data_references *rf;
     size_t nb; /*!< Amount of elements used (data present) in the bitmap_compressed */
-    struct bufrdeco_bitmap_compressed_element element[BUFR_MAX_BITMAP_PRESENT_DATA];
+    uint32_t bitmap_to[BUFR_MAX_BITMAP_PRESENT_DATA];
+    size_t nq; /*!< Amount of quality vars */
+    uint32_t quality_given_by[BUFR_MAX_QUALITY_DATA]; /*!< array of indexes to first quality value related to bitmap_to[0] */
 };
 
 /*!
@@ -469,6 +454,7 @@ struct bufrdeco_compressed_ref
   struct bufr_descriptor desc; /*!< associated descriptor */
   uint32_t is_bitmaped_by; /*!< Index element in a struct \ref bufr_compressed_data_references which bitmap this one */ 
   uint32_t bitmap_to; /*!< Index element in a struct \ref bufr_compressed_data_references which this one is mapping to */
+  uint32_t quality_to; 
 };
 
 /*!

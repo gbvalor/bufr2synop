@@ -394,7 +394,7 @@ int bufrdeco_add_to_bitmap( struct bufrdeco_bitmap *bm, uint32_t index)
 {
     if (bm->nb < BUFR_MAX_BITMAP_PRESENT_DATA)
     {
-        bm->element[bm->nb].bitmap_to = index;
+        bm->bitmap_to[bm->nb] = index;
         (bm->nb)++;
         return 0;
     }
@@ -411,7 +411,7 @@ int bufrdeco_add_to_bitmap_compressed( struct bufrdeco_bitmap_compressed *bm, ui
 {
     if (bm->nb < BUFR_MAX_BITMAP_PRESENT_DATA)
     {
-        bm->element[bm->nb].bitmap_to = index;
+        bm->bitmap_to[bm->nb] = index;
         (bm->nb)++;
         return 0;
     }

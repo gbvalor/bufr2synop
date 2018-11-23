@@ -325,7 +325,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
 */
 int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *s, struct bufr_replicator *r, struct bufrdeco *b )
 {
-  size_t i;
+  size_t i, k;
   size_t ixloop; // Index for loop
   size_t ixd; // Index for descriptor
   struct bufr_sequence *l = r->s; // sequence
@@ -354,6 +354,25 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                       s->sequence[s->nd - b->state.bitmaping].is_bitmaped_by =  s->nd;
                       s->sequence[s->nd].bitmap_to =  s->nd - b->state.bitmaping;
                     }
+                }
+
+              // Process quality data
+              if ( b->state.quality_active &&
+                   l->lseq[i].x == 33 )
+                {
+                  if ( ixloop == 0 )
+                    {
+                      k = b->bitmap.bmap[b->bitmap.nba - 1]->nq;
+                      b->bitmap.bmap[b->bitmap.nba - 1]->quality_given_by[k] = s->nd;
+                      if ( k < BUFR_MAX_QUALITY_DATA )
+                        ( b->bitmap.bmap[b->bitmap.nba - 1]->nq )++;
+                      else
+                        {
+                          sprintf ( b->error, "bufr_decode_data_subset_recursive(): No more space for quality vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n" );
+                          return 1;
+                        }
+                    }
+                  s->sequence[s->nd].quality_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];  
                 }
 
               if ( s->nd < ( s->dim - 1 ) )
