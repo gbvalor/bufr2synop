@@ -312,7 +312,6 @@ int bufrdeco_close ( struct bufrdeco *b )
   bufrdeco_free_expanded_tree ( & ( b->tree ) );
   bufrdeco_free_tables ( & ( b->tables ) );
   bufrdeco_free_bitmap_array ( & ( b->bitmap ) );
-  bufrdeco_free_bitmap_compressed_array ( & ( b->bitmapc ) );
   return 0;
 }
 
@@ -344,37 +343,6 @@ int bufrdeco_allocate_bitmap ( struct bufrdeco *b )
     }
 }
 
-int bufrdeco_allocate_bitmap_compressed ( struct bufrdeco *b )
-{
-  size_t nba = b->bitmapc.nba;
-
-  if ( nba < BUFR_MAX_BITMAPS )
-    {
-      if ( b->bitmapc.bmap[nba] != NULL )
-        {
-          // the bitmap already is allocated
-          return 0;
-        }
-      // let's try to allocate it!
-      if ( ( b->bitmapc.bmap[nba] = ( struct bufrdeco_bitmap_compressed * ) calloc ( 1, sizeof ( struct bufrdeco_bitmap_compressed ) ) ) == NULL )
-        {
-          sprintf ( b->error,"bufrdeco_allocate_bitmap_compressed(): Cannot allocate space for struct bufrdeco_bitmap_compressed\n" );
-          return 1;
-        }
-     
-      // set the references array
-      b->bitmapc.bmap[nba]->rf = &(b->refs);
-     
-      // Update de counter
-      ( b->bitmapc.nba )++;
-      return 0;
-    }
-  else
-    {
-      sprintf ( b->error,"bufrdeco_allocate_bitmap_compressed(): Too much bitmaps compressed to allocate. The limit is %d\n" , BUFR_MAX_BITMAPS );
-      return 1;
-    }
-}
 
 
 // Clean all allocated bitmaps, but still is in memory
@@ -393,25 +361,6 @@ int bufrdeco_clean_bitmaps ( struct bufrdeco *b )
 }
 
 
-// Clean all allocated bitmaps compressed, but still is in memory
-int bufrdeco_clean_bitmaps_compressed ( struct bufrdeco *b )
-{
-  size_t i;
-
-  for ( i = 0; i < b->bitmapc.nba ; i++ )
-    {
-      if ( b->bitmapc.bmap[i] == NULL )
-        continue;
-      memset ( b->bitmapc.bmap[i] , 0 , sizeof ( struct bufrdeco_bitmap_compressed ) );
-      // set the references array
-      b->bitmapc.bmap[i]->rf = &(b->refs);
-    }
-  b->bitmapc.nba = 0;  
-  return 0;
-}
-
-
-
 int bufrdeco_free_bitmap_array ( struct bufrdeco_bitmap_array *a )
 {
   size_t i;
@@ -428,18 +377,3 @@ int bufrdeco_free_bitmap_array ( struct bufrdeco_bitmap_array *a )
   return 0;
 }
 
-int bufrdeco_free_bitmap_compressed_array ( struct bufrdeco_bitmap_compressed_array *a )
-{
-  size_t i;
-
-  for ( i = 0; i < a->nba ; i++ )
-    {
-      if ( a->bmap[i] == NULL )
-        continue;
-
-      free ( ( void* ) a->bmap[i] );
-      a->bmap[i] = NULL;
-    }
-  a->nba = 0;
-  return 0;
-}

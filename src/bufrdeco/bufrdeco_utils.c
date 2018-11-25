@@ -400,20 +400,3 @@ int bufrdeco_add_to_bitmap( struct bufrdeco_bitmap *bm, uint32_t index)
     }
     return 1;
 }
-
-/*!
-   \fn int bufrdeco_add_to_bitmap_compressed( struct bufrdeco_bitmap_compressed *bm, struct bufrdeco_compressed_ref *r)
-   \brief Push a struct \ref bufrdeco_bitmap_element in a \ref bufrdeco_bitmap 
-
-   If no space to push returns 1, otherwise 0
-*/
-int bufrdeco_add_to_bitmap_compressed( struct bufrdeco_bitmap_compressed *bm, uint32_t index)
-{
-    if (bm->nb < BUFR_MAX_BITMAP_PRESENT_DATA)
-    {
-        bm->bitmap_to[bm->nb] = index;
-        (bm->nb)++;
-        return 0;
-    }
-    return 1;
-}

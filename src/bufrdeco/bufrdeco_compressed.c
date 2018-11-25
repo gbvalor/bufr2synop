@@ -303,7 +303,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                     {
                       r->refs[r->nd - b->state.bitmaping].is_bitmaped_by = ( uint32_t ) r->nd ;
                       rf->bitmap_to = r->nd - b->state.bitmaping;
-                      //printf ( "%d\n", r->nd - b->state.bitmaping );
+                      bufrdeco_add_to_bitmap ( b->bitmap.bmap[b->bitmap.nba - 1], r->nd - b->state.bitmaping );
                     }
                 }
 
@@ -313,19 +313,19 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                 {
                   if ( ixloop == 0 )
                     {
-                      k = b->bitmapc.bmap[b->bitmapc.nba - 1]->nq;
-                      b->bitmapc.bmap[b->bitmapc.nba - 1]->quality_given_by[k] = r->nd;
+                      k = b->bitmap.bmap[b->bitmap.nba - 1]->nq; // index un quality_given_by array to set
+                      b->bitmap.bmap[b->bitmap.nba - 1]->quality_given_by[k] = r->nd; // Set the value
+                      // update the number of quality variables for the bitmap
                       if ( k < BUFR_MAX_QUALITY_DATA )
-                        ( b->bitmapc.bmap[b->bitmapc.nba - 1]->nq )++;
+                        ( b->bitmap.bmap[b->bitmap.nba - 1]->nq )++;
                       else
                         {
-                          sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): No more space for quality vars in bitmapc. Check BUFR_MAX_QUALITY_DATA\n" );
+                          sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): No more space for quality vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n" );
                           return 1;
                         }
                     }
-                  rf->quality_to = b->bitmapc.bmap[b->bitmapc.nba - 1]->bitmap_to[ixloop];  
-                  //printf("quality %d\n", rf->quality_to);
-      
+                  rf->quality_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+
                 }
 
               //print_bufrdeco_compressed_ref ( rf );
@@ -413,6 +413,58 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                 {
                   return 1;
                 }
+
+              // Case of subsituted values
+              if ( b->state.subs_active && l->lseq[i].x == 23 && l->lseq[i].y == 255 )
+                {
+                  k = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop]; // ref which is bitmaped_to
+                  // Get the bitmaped descriptor k
+                  rf = & ( r->refs[r->nd] );
+                  if ( ixloop == 0 )
+                    {
+                      b->bitmap.bmap[b->bitmap.nba - 1]->subs = r->nd;
+                    }
+                  if ( bufrdeco_tableb_compressed ( rf, b, & ( l->lseq[k] ), 0 ) )
+                    {
+                      return 1;
+                    }
+                  if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
+                    {
+                      r->nd += 1;
+                    }
+                  else
+                    {
+                      sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
+                      return 1;
+                    }
+
+                }
+
+              // Case of repaced/retained values
+              if ( b->state.retained_active && l->lseq[i].x == 32 && l->lseq[i].y == 255 )
+                {
+                  k = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                  // Get the bitmaped descriptor k
+                  rf = & ( r->refs[r->nd] );
+                  if ( ixloop == 0 )
+                    {
+                      b->bitmap.bmap[b->bitmap.nba - 1]->retain = r->nd;
+                    }
+                  if ( bufrdeco_tableb_compressed ( rf, b, & ( l->lseq[k] ), 0 ) )
+                    {
+                      return 1;
+                    }
+                  if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
+                    {
+                      r->nd += 1;
+                    }
+                  else
+                    {
+                      sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
+                      return 1;
+                    }
+                }
+
               if ( l->lseq[i].x == 5 ) // cases wich produces a new ref
                 {
                   if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
@@ -510,12 +562,13 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
       a->bitmap_to = r->bitmap_to;
     }
 
+  // Possible quality
   if ( r->quality_to )
     {
       a->quality_to = r->quality_to;
     }
 
-    
+
   // First we check about string fields
   if ( strstr ( a->unit, "CCITT" ) != NULL )
     {
@@ -616,7 +669,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
           sprintf ( b->error, "get_bufr_atom_data_from_compressed_data_ref(): Cannot get inc_bits from '%s'\n", r->desc.c );
           return 1;
         }
-      //printf("has=%u, ref=%u, ref0=%u, ival0=%u\n", has_data, r->ref, r->ref0, ival0);
+
       if ( has_data )
         {
           ivals = r->ref + ( int32_t ) ( r->ref0 + ival0 );

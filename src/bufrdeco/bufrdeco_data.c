@@ -177,6 +177,10 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
       b->state.local_bit_reserved = 0;
       b->state.factor_reference = 1;
       b->state.quality_active = 0;
+      b->state.subs_active = 0;
+      b->state.retained_active = 0;
+      b->state.stat1_active = 0;
+      b->state.dstat_active = 0;
       b->state.bitmaping = 0;
       b->state.bitmap = NULL;
     }
@@ -353,6 +357,8 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                     {
                       s->sequence[s->nd - b->state.bitmaping].is_bitmaped_by =  s->nd;
                       s->sequence[s->nd].bitmap_to =  s->nd - b->state.bitmaping;
+                      // Add reference to bitmap
+                      bufrdeco_add_to_bitmap( b->bitmap.bmap[b->bitmap.nba - 1], s->nd - b->state.bitmaping);
                     }
                 }
 

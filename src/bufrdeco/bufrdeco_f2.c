@@ -179,8 +179,72 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
       //
       // Here we jsut activate the quality_active flag
       b->state.quality_active = 1;
+      b->state.subs_active = 0;
+      b->state.retained_active = 0;
+      b->state.stat1_active = 0;
+      b->state.dstat_active = 0;
       break;
 
+    case 23:
+      if ( d->y == 0 )
+        {
+          // Substituted operator values
+          //
+          // The substituted values which follow relate to the data
+          // defined by the data present bit-map.
+          b->state.quality_active = 0;
+          b->state.subs_active = 1;
+          b->state.retained_active = 0;
+          b->state.stat1_active = 0;
+          b->state.dstat_active = 0;
+        }
+      break;
+
+    case 24:
+      if ( d->y == 0 )
+        {
+          // First-order statistical values follow
+          //
+          // The statistical values which follow relate to the data
+          // defined by the data present bit-map.
+          b->state.quality_active = 0;
+          b->state.subs_active = 0;
+          b->state.retained_active = 0;
+          b->state.stat1_active = 1;
+          b->state.dstat_active = 0;
+        }
+      break;
+
+    case 25:
+      if ( d->y == 0 )
+        {
+          // Difference statistical values follow
+          //
+          // The statistical values which follow relate to the data
+          // defined by the data present bit-map.
+          b->state.quality_active = 0;
+          b->state.subs_active = 0;
+          b->state.retained_active = 0;
+          b->state.stat1_active = 0;
+          b->state.dstat_active = 1;
+        }
+      break;
+
+    case 32:
+      if ( d->y == 0 )
+        {
+          // Replaced/retained values follow
+          //
+          // The replaced/retained values which follow relate to the
+          // data defined by the data present bit-map.
+          b->state.quality_active = 0;
+          b->state.subs_active = 0;
+          b->state.retained_active = 1;
+          b->state.stat1_active = 0;
+          b->state.dstat_active = 0;
+        }
+      break;
+      
     case 35:
       // Cancel backward data reference
       //
@@ -210,7 +274,7 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
         }
       // Set the new current bitmap
       b->state.bitmap = b->bitmap.bmap[b->bitmap.nba - 1];
-      
+
       // Now set the bitmaping backward count to 1 to flag that next replicator descriptor must be set it properly
       b->state.bitmaping = 1;
 
@@ -401,8 +465,73 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
       //
       // Here we jsut activate the quality_active flag
       b->state.quality_active = 1;
+      b->state.subs_active = 0;
+      b->state.retained_active = 0;
+      b->state.stat1_active = 0;
+      b->state.dstat_active = 0;
       break;
 
+    case 23:
+      if ( d->y == 0 )
+        {
+          // Substituted operator values
+          //
+          // The substituted values which follow relate to the data
+          // defined by the data present bit-map.
+          b->state.quality_active = 0;
+          b->state.subs_active = 1;
+          b->state.retained_active = 0;
+          b->state.stat1_active = 0;
+          b->state.dstat_active = 0;
+        }
+      break;
+
+    case 24:
+      if ( d->y == 0 )
+        {
+          // First-order statistical values follow
+          //
+          // The statistical values which follow relate to the data
+          // defined by the data present bit-map.
+          b->state.quality_active = 0;
+          b->state.subs_active = 0;
+          b->state.retained_active = 0;
+          b->state.stat1_active = 1;
+          b->state.dstat_active = 0;
+        }
+      break;
+
+    case 25:
+      if ( d->y == 0 )
+        {
+          // Difference statistical values follow
+          //
+          // The statistical values which follow relate to the data
+          // defined by the data present bit-map.
+          b->state.quality_active = 0;
+          b->state.subs_active = 0;
+          b->state.retained_active = 0;
+          b->state.stat1_active = 0;
+          b->state.dstat_active = 1;
+        }
+      break;
+
+    case 32:
+      if ( d->y == 0 )
+        {
+          // Replaced/retained values follow
+          //
+          // The replaced/retained values which follow relate to the
+          // data defined by the data present bit-map.
+          b->state.quality_active = 0;
+          b->state.subs_active = 0;
+          b->state.retained_active = 1;
+          b->state.stat1_active = 0;
+          b->state.dstat_active = 0;
+        }
+      break;
+      
+      
     case 35:
       // Cancel backward data reference
       //
@@ -413,7 +542,7 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
       // immediately precede the operator to which it relates.
 
       // Set the bitmap pointer to NULL.
-      b->state.bitmap_compressed = NULL;
+      b->state.bitmap = NULL;
       break;
 
     case 36:
@@ -425,14 +554,14 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
       // cancel use defined data present bit-map operator.
 
       // Here we just add a bufrdeco_bitmap struct set the current bitmap
-      if ( bufrdeco_allocate_bitmap_compressed( b ) ) 
+      if ( bufrdeco_allocate_bitmap ( b ) )
         {
           // Cannot allocate another bitmap
           return 1;
         }
       // Set the new current bitmap
-      b->state.bitmap_compressed = b->bitmapc.bmap[b->bitmap.nba - 1];
-      
+      b->state.bitmap = b->bitmap.bmap[b->bitmap.nba - 1];
+
       // Now set the bitmaping backward count to 1 to flag that next replicator descriptor must be set it properly
       b->state.bitmaping = 1;
 
@@ -446,12 +575,12 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
       // This operator cancels the re-use of the defined data present bit-map.
       if ( d->y == 0 )
         {
-          if ( b->bitmapc.nba && b->state.bitmap_compressed == NULL )
-            b->state.bitmap_compressed =  b->bitmapc.bmap[b->bitmap.nba - 1];
+          if ( b->bitmap.nba && b->state.bitmap == NULL )
+            b->state.bitmap =  b->bitmap.bmap[b->bitmap.nba - 1];
         }
       else if ( d->y == 255 )
         {
-          b->state.bitmap_compressed = NULL;
+          b->state.bitmap = NULL;
         }
       break;
 
