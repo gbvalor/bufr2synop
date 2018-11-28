@@ -427,8 +427,8 @@ char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a )
   if (a->bitmap_to != 0)
       c += sprintf(c, " *BITMAP TO #%u*", a->bitmap_to);
 
-  if (a->quality_to != 0)
-      c += sprintf(c, " *QUALIFIES #%u*", a->quality_to);
+  if (a->related_to != 0)
+      c += sprintf(c, " *RELATED TO #%u*", a->related_to);
 
   return target;
 }

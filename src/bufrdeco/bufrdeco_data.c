@@ -358,7 +358,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                       s->sequence[s->nd - b->state.bitmaping].is_bitmaped_by =  s->nd;
                       s->sequence[s->nd].bitmap_to =  s->nd - b->state.bitmaping;
                       // Add reference to bitmap
-                      bufrdeco_add_to_bitmap( b->bitmap.bmap[b->bitmap.nba - 1], s->nd - b->state.bitmaping);
+                      bufrdeco_add_to_bitmap( b->bitmap.bmap[b->bitmap.nba - 1], s->nd - b->state.bitmaping, s->nd);
                     }
                 }
 
@@ -369,7 +369,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                   if ( ixloop == 0 )
                     {
                       k = b->bitmap.bmap[b->bitmap.nba - 1]->nq;
-                      b->bitmap.bmap[b->bitmap.nba - 1]->quality_given_by[k] = s->nd;
+                      b->bitmap.bmap[b->bitmap.nba - 1]->quality[k] = s->nd;
                       if ( k < BUFR_MAX_QUALITY_DATA )
                         ( b->bitmap.bmap[b->bitmap.nba - 1]->nq )++;
                       else
@@ -378,7 +378,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                           return 1;
                         }
                     }
-                  s->sequence[s->nd].quality_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];  
+                  s->sequence[s->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];  
                 }
 
               if ( s->nd < ( s->dim - 1 ) )

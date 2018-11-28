@@ -386,17 +386,79 @@ char *get_formatted_value_from_escale ( char *fmt, int32_t escale, double val )
 
 /*!
    \fn int bufrdeco_add_to_bitmap( struct bufrdeco_bitmap *bm, struct bufr_atom_data *a)
-   \brief Push a struct \ref bufrdeco_bitmap_element in a \ref bufrdeco_bitmap 
+   \brief Push a struct \ref bufrdeco_bitmap_element in a \ref bufrdeco_bitmap
 
    If no space to push returns 1, otherwise 0
 */
-int bufrdeco_add_to_bitmap( struct bufrdeco_bitmap *bm, uint32_t index)
+int bufrdeco_add_to_bitmap ( struct bufrdeco_bitmap *bm, uint32_t index_to, uint32_t index_by )
 {
-    if (bm->nb < BUFR_MAX_BITMAP_PRESENT_DATA)
+  if ( bm->nb < BUFR_MAX_BITMAP_PRESENT_DATA )
     {
-        bm->bitmap_to[bm->nb] = index;
-        (bm->nb)++;
-        return 0;
+      bm->bitmap_to[bm->nb] = index_to;
+      bm->bitmaped_by[bm->nb] = index_by;
+      ( bm->nb )++;
+      return 0;
+    }
+  return 1;
+}
+
+int get_bitmaped_info ( struct bufrdeco_bitmap_related_vars *brv, uint32_t target, struct bufrdeco *b )
+{
+  size_t i, j, k;
+  uint32_t delta;
+  struct bufrdeco_bitmap *bm;
+
+  brv->target = target;
+  for ( i = 0; i < b->bitmap.nba ; i++ )
+    {
+      bm = b->bitmap.bmap[i];  
+      for ( j = 0; j < bm->nb ; j++ )
+        {
+          if ( bm->bitmap_to[j] == target )
+            { 
+              brv->nba = i;
+              brv->nb = j;
+              brv->bitmaped_by = bm->bitmaped_by[j];
+              delta = bm->bitmaped_by[j] - bm->bitmaped_by[0];
+              // quality data
+              if (bm->nq)
+              {
+                for (k = 0; k < bm->nq; k++)
+                {
+                   brv->qualified_by[k] = bm->quality[k] + delta;    
+                }
+              }
+              
+              // substituded
+              if (bm->subs)
+                  brv->substituted = bm->subs + delta;
+              
+              if (bm->retain )
+                  brv->retained = bm->retain + delta;
+              
+              if (bm->ns1)
+              {
+                for (k = 0; k < bm->ns1; k++)
+                {
+                   brv->stat1[k] = bm->stat1[k] + delta;    
+                   brv->stat1_desc[k] = bm->stat1[k];    
+                }
+              }
+
+              if (bm->nds)
+              {
+                for (k = 0; k < bm->nds; k++)
+                {
+                   brv->dstat[k] = bm->dstat[k] + delta;    
+                   brv->stat1_desc[k] = bm->dstat[k];    
+                }
+              }
+   
+              return 0;
+            }
+          else if ( b->bitmap.bmap[i]->bitmap_to[j] > target )
+            break;
+        }
     }
     return 1;
 }

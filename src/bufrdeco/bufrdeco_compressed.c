@@ -75,7 +75,7 @@ int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, s
 int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_references *r, struct bufr_sequence *l, struct bufrdeco *b )
 {
   int res;
-  size_t i;
+  size_t i, k;
   struct bufr_sequence *seq; // auxiliar pointer
   struct bufrdeco_compressed_ref *rf;
   struct bufr_replicator replicator;
@@ -126,7 +126,38 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
               return 1;
             }
 
-          //print_bufrdeco_compressed_ref ( rf );
+          //case of first order statistics
+          if ( b->state.stat1_active &&
+               seq->lseq[i].x == 8 && seq->lseq[i].y == 23 )
+            {
+              k = b->bitmap.bmap[b->bitmap.nba - 1]->ns1; // index un stqts
+              b->bitmap.bmap[b->bitmap.nba - 1]->stat1_desc[k] = r->nd; // Set the value of statistical parameter
+              // update the number of quality variables for the bitmap
+              if ( k < BUFR_MAX_QUALITY_DATA )
+                ( b->bitmap.bmap[b->bitmap.nba - 1]->ns1 )++;
+              else
+                {
+                  sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): No more space for first order statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n" );
+                  return 1;
+                }
+            }
+
+          //case of difference statistics
+          if ( b->state.dstat_active &&
+               seq->lseq[i].x == 8 && seq->lseq[i].y == 24 )
+            {
+              k = b->bitmap.bmap[b->bitmap.nba - 1]->nds; // index un stqts
+              b->bitmap.bmap[b->bitmap.nba - 1]->dstat_desc[k] = r->nd; // Set the value of statistical parameter
+              // update the number of quality variables for the bitmap
+              if ( k < BUFR_MAX_QUALITY_DATA )
+                ( b->bitmap.bmap[b->bitmap.nba - 1]->nds )++;
+              else
+                {
+                  sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): No more space for difference statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n" );
+                  return 1;
+                }
+            }
+
           if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
             {
               r->nd += 1;
@@ -161,6 +192,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
               // Update the pointer to the target struct bufrdeco_compressed ref
               i++; // Update main loop index
             }
+
 
           break;
 
@@ -303,7 +335,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                     {
                       r->refs[r->nd - b->state.bitmaping].is_bitmaped_by = ( uint32_t ) r->nd ;
                       rf->bitmap_to = r->nd - b->state.bitmaping;
-                      bufrdeco_add_to_bitmap ( b->bitmap.bmap[b->bitmap.nba - 1], r->nd - b->state.bitmaping );
+                      bufrdeco_add_to_bitmap ( b->bitmap.bmap[b->bitmap.nba - 1], r->nd - b->state.bitmaping, r->nd );
                     }
                 }
 
@@ -314,7 +346,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                   if ( ixloop == 0 )
                     {
                       k = b->bitmap.bmap[b->bitmap.nba - 1]->nq; // index un quality_given_by array to set
-                      b->bitmap.bmap[b->bitmap.nba - 1]->quality_given_by[k] = r->nd; // Set the value
+                      b->bitmap.bmap[b->bitmap.nba - 1]->quality[k] = r->nd; // Set the value
                       // update the number of quality variables for the bitmap
                       if ( k < BUFR_MAX_QUALITY_DATA )
                         ( b->bitmap.bmap[b->bitmap.nba - 1]->nq )++;
@@ -324,8 +356,48 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                           return 1;
                         }
                     }
-                  rf->quality_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                  rf->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
 
+                }
+
+              //case of first order statistics
+              if ( b->state.stat1_active &&
+                   l->lseq[i].x == 8 && l->lseq[i].y == 23 )
+                {
+                  if ( ixloop == 0 )
+                    {
+                      k = b->bitmap.bmap[b->bitmap.nba - 1]->ns1; // index un stqts
+                      b->bitmap.bmap[b->bitmap.nba - 1]->stat1_desc[k] = r->nd; // Set the value of statistical parameter
+                      // update the number of quality variables for the bitmap
+                      if ( k < BUFR_MAX_QUALITY_DATA )
+                        ( b->bitmap.bmap[b->bitmap.nba - 1]->ns1 )++;
+                      else
+                        {
+                          sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): No more space for first order statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n" );
+                          return 1;
+                        }
+                    }
+                  rf->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                }
+
+              //case of difference statistics
+              if ( b->state.dstat_active &&
+                   l->lseq[i].x == 8 && l->lseq[i].y == 24 )
+                {
+                  if ( ixloop == 0 )
+                    {
+                      k = b->bitmap.bmap[b->bitmap.nba - 1]->nds; // index un stqts
+                      b->bitmap.bmap[b->bitmap.nba - 1]->dstat_desc[k] = r->nd; // Set the value of statistical parameter
+                      // update the number of quality variables for the bitmap
+                      if ( k < BUFR_MAX_QUALITY_DATA )
+                        ( b->bitmap.bmap[b->bitmap.nba - 1]->nds )++;
+                      else
+                        {
+                          sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): No more space for difference statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n" );
+                          return 1;
+                        }
+                    }
+                  rf->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
                 }
 
               //print_bufrdeco_compressed_ref ( rf );
@@ -407,6 +479,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
 
               //i = rep->ixdel + rep->ndesc; // update i properly
               break;
+
             case 2:
               // Case of operator descriptor
               if ( bufrdeco_parse_f2_compressed ( r, & ( l->lseq[i] ), b ) )
@@ -428,6 +501,8 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                     {
                       return 1;
                     }
+                  rf->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+
                   if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
                     {
                       r->nd += 1;
@@ -437,7 +512,6 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                       sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
                       return 1;
                     }
-
                 }
 
               // Case of repaced/retained values
@@ -454,6 +528,92 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                     {
                       return 1;
                     }
+
+                  rf->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                  if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
+                    {
+                      r->nd += 1;
+                    }
+                  else
+                    {
+                      sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
+                      return 1;
+                    }
+                }
+
+              // Case of first order statistics
+              //
+              // This operator shall signify a data item containing a
+              // first-order statistical value of the type indicated by
+              // the preceding 0 08 023 element descriptor; the
+              // element descriptor to which the first-order statistic
+              // relates is obtained by the application of the data
+              // present bit-map associated with the first-order
+              // statistical values follow operator; first-order statistical
+              // values shall be represented as defined by this element
+              // descriptor.
+              if ( b->state.stat1_active && l->lseq[i].x == 24 && l->lseq[i].y == 255 )
+                {
+                  k = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+
+                  // Get the bitmaped descriptor k
+                  rf = & ( r->refs[r->nd] );
+                  if ( ixloop == 0 )
+                    {
+                      b->bitmap.bmap[b->bitmap.nba - 1]->stat1[b->bitmap.bmap[b->bitmap.nba - 1]->ns1 -1] = r->nd;
+                    }
+
+                  if ( bufrdeco_tableb_compressed ( rf, b, & ( r->refs[k].desc ), 0 ) )
+                    {
+                      return 1;
+                    }
+                  rf->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                  if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
+                    {
+                      r->nd += 1;
+                    }
+                  else
+                    {
+                      sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
+                      return 1;
+                    }
+                }
+
+              // Case of difference statistics
+              //
+              // This operator shall signify a data item containing a
+              // difference statistical value of the type indicated by
+              // the preceding 0 08 024 element descriptor; the
+              // element descriptor to which the difference statistical
+              // value relates is obtained by the application of the
+              // data present bit-map associated with the difference
+              // statistical values follow operator; difference statistical
+              // values shall be represented as defined by this
+              // element descriptor, but with a reference value of –2**n
+              // and a data width of (n+1), where n is the data width
+              // given by the original descriptor. This special reference
+              // value allows the statistical difference values to
+              // be centred around zero.
+              if ( b->state.stat1_active && l->lseq[i].x == 25 && l->lseq[i].y == 255 )
+                {
+                  k = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+
+                  // Get the bitmaped descriptor k
+                  rf = & ( r->refs[r->nd] );
+                  if ( ixloop == 0 )
+                    {
+                      b->bitmap.bmap[b->bitmap.nba - 1]->stat1[b->bitmap.bmap[b->bitmap.nba - 1]->nds -1] = r->nd;
+                    }
+
+                  if ( bufrdeco_tableb_compressed ( rf, b, & ( r->refs[k].desc ), 0 ) )
+                    {
+                      return 1;
+                    }
+
+                  // here is where we change ref and bits
+                  rf->ref = - ( ( int32_t ) 1 << rf->bits );
+                  rf->bits++;
+                  rf->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
                   if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
                     {
                       r->nd += 1;
@@ -478,11 +638,13 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                     }
                 }
               break;
+
             case 3:
               // Case of sequence descriptor
               if ( bufrdeco_parse_compressed_recursive ( r, l->sons[i], b ) )
                 return 1;
               break;
+
             default:
               // this case is not possible
               sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): Found bad 'f' in descriptor\n" );
@@ -563,9 +725,9 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
     }
 
   // Possible quality
-  if ( r->quality_to )
+  if ( r->related_to )
     {
-      a->quality_to = r->quality_to;
+      a->related_to = r->related_to;
     }
 
 
