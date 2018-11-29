@@ -594,7 +594,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
               // given by the original descriptor. This special reference
               // value allows the statistical difference values to
               // be centred around zero.
-              if ( b->state.stat1_active && l->lseq[i].x == 25 && l->lseq[i].y == 255 )
+              if ( b->state.dstat_active && l->lseq[i].x == 25 && l->lseq[i].y == 255 )
                 {
                   k = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
 

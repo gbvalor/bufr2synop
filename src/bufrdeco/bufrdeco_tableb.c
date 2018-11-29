@@ -247,7 +247,7 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
       // This is not an associated field, return -1
       return -1;
     }
-  
+
   if ( mode )
     {
       r->is_associated = 1; // Mark this reference as asociated
@@ -407,7 +407,7 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
       sprintf ( b->error, "bufrdeco_tableb_compressed(): Cannot get 6 bits for inc_bits from '%s'\n", d->c );
       return 1;
     }
-   r->inc_bits = ival;
+  r->inc_bits = ival;
 
   // if is a delayed descriptor then inc_bits MUST be 0.
   if ( is_a_delayed_descriptor ( d ) && r->inc_bits )
@@ -469,7 +469,12 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
   strcpy ( a->name, tb->item[i].name );
   strcpy ( a->unit, tb->item[i].unit );
   a->escale = tb->item[i].scale;
-  nbits = tb->item[i].nbits;
+
+  // Case of difference statistics active
+  if ( b->state.dstat_active )
+    nbits = tb->item[i].nbits + 1;
+  else
+    nbits = tb->item[i].nbits;
 
   if ( b->state.changing_reference != 255 )
     {
@@ -490,7 +495,11 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
       return 0;
     }
 
-  reference = tb->item[i].reference;
+  // case of difference statistics active  
+  if ( b->state.dstat_active )
+    reference = - ( ( int32_t ) 1 << ( tb->item[i].nbits ) );
+  else
+    reference = tb->item[i].reference;
 
   //printf(" escale = %d  reference = %d nbits = %lu\n", escale, reference, nbits);
   if ( strstr ( a->unit, "CCITT" ) != NULL )
