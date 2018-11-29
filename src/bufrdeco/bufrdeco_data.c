@@ -153,7 +153,7 @@ int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s )
 */
 int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *s, struct bufr_sequence *l, struct bufrdeco *b )
 {
-  size_t i;
+  size_t i, k;
   struct bufr_sequence *seq;
   struct bufr_replicator replicator;
 
@@ -201,6 +201,40 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
               return 1;
             }
 
+          //case of first order statistics
+          if ( b->state.stat1_active &&
+               seq->lseq[i].x == 8 && seq->lseq[i].y == 23 )
+            {
+              k = b->bitmap.bmap[b->bitmap.nba - 1]->ns1; // index un stqts
+              b->bitmap.bmap[b->bitmap.nba - 1]->stat1_desc[k] = s->nd; // Set the value of statistical parameter
+              // update the number of quality variables for the bitmap
+              if ( k < BUFR_MAX_QUALITY_DATA )
+                ( b->bitmap.bmap[b->bitmap.nba - 1]->ns1 )++;
+              else
+                {
+                  sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): No more space for first order statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n" );
+                  return 1;
+                }
+            }
+
+          //case of difference statistics
+          if ( b->state.dstat_active &&
+               seq->lseq[i].x == 8 && seq->lseq[i].y == 24 )
+            {
+              k = b->bitmap.bmap[b->bitmap.nba - 1]->nds; // index un stqts
+              b->bitmap.bmap[b->bitmap.nba - 1]->dstat_desc[k] = s->nd; // Set the value of statistical parameter
+              // update the number of quality variables for the bitmap
+              if ( k < BUFR_MAX_QUALITY_DATA )
+                ( b->bitmap.bmap[b->bitmap.nba - 1]->nds )++;
+              else
+                {
+                  sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): No more space for difference statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n" );
+                  return 1;
+                }
+            }
+
+            
+            
           // Add info about common sequence to which bufr_atom_data belongs
           s->sequence[s->nd].seq = seq;
           s->sequence[s->nd].ns = i;
@@ -381,6 +415,46 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                   s->sequence[s->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];  
                 }
 
+              //case of first order statistics
+              if ( b->state.stat1_active &&
+                   l->lseq[i].x == 8 && l->lseq[i].y == 23 )
+                {
+                  if ( ixloop == 0 )
+                    {
+                      k = b->bitmap.bmap[b->bitmap.nba - 1]->ns1; // index un stqts
+                      b->bitmap.bmap[b->bitmap.nba - 1]->stat1_desc[k] = s->nd; // Set the value of statistical parameter
+                      // update the number of quality variables for the bitmap
+                      if ( k < BUFR_MAX_QUALITY_DATA )
+                        ( b->bitmap.bmap[b->bitmap.nba - 1]->ns1 )++;
+                      else
+                        {
+                          sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): No more space for first order statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n" );
+                          return 1;
+                        }
+                    }
+                  s->sequence[s->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                }
+
+              //case of difference statistics
+              if ( b->state.dstat_active &&
+                   l->lseq[i].x == 8 && l->lseq[i].y == 24 )
+                {
+                  if ( ixloop == 0 )
+                    {
+                      k = b->bitmap.bmap[b->bitmap.nba - 1]->nds; // index un stqts
+                      b->bitmap.bmap[b->bitmap.nba - 1]->dstat_desc[k] = s->nd; // Set the value of statistical parameter
+                      // update the number of quality variables for the bitmap
+                      if ( k < BUFR_MAX_QUALITY_DATA )
+                        ( b->bitmap.bmap[b->bitmap.nba - 1]->nds )++;
+                      else
+                        {
+                          sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): No more space for difference statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n" );
+                          return 1;
+                        }
+                    }
+                  s->sequence[s->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                }
+
               if ( s->nd < ( s->dim - 1 ) )
                 {
                   ( s->nd ) ++;
@@ -445,6 +519,8 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                 {
                   return 1;
                 }
+                
+                
               break;
 
             case 3:
