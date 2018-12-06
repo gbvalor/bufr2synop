@@ -64,7 +64,7 @@ int sprint_sec1_info_html ( char *target, size_t lmax, struct bufrdeco *b )
   char caux[4096], *c;
   c = caux;
 
-  c += sprintf ( c, "<div class='bufr_sec1'>\n");
+  c += sprintf ( c, "<div class='bufr_sec1'>\n" );
   c += sprintf ( c, "<table>\n<caption>SEC 1 INFO</caption>\n" );
   c += sprintf ( c, "<tr><td>Sec1 length</td><td>%5u</td></tr>\n", b->sec1.length );
   c += sprintf ( c, "<tr><td>Bufr master table</td><td>%5u</td></tr>\n", b->sec1.master );
@@ -83,9 +83,9 @@ int sprint_sec1_info_html ( char *target, size_t lmax, struct bufrdeco *b )
   c += sprintf ( c, "<tr><td>Hour</td><td>%5u</td></tr>\n", b->sec1.hour );
   c += sprintf ( c, "<tr><td>Minute</td><td>%5u</td></tr>\n", b->sec1.minute );
   c += sprintf ( c, "<tr><td>Second</td><td>%5u</td></tr>\n", b->sec1.second );
-  if (b->sec0.edition == 3)
+  if ( b->sec0.edition == 3 )
     c += sprintf ( c, "<tr><td>Aditional space</td><td>%5u</td></tr>\n", b->sec1.length - 17 );
-  else    
+  else
     c += sprintf ( c, "<tr><td>Aditional space</td><td>%5u</td></tr>\n", b->sec1.length - 22 );
 
   if ( b->tables->b.path[0] )
@@ -114,7 +114,7 @@ int sprint_sec3_info_html ( char *target, size_t lmax, struct bufrdeco *b )
 
 
   c = caux;
-  c += sprintf ( c, "<div class='bufr_sec3'>\n");
+  c += sprintf ( c, "<div class='bufr_sec3'>\n" );
   c += sprintf ( c, "<table>\n<caption>SEC 3 INFO</caption>\n" );
   c += sprintf ( c, "<tr><td>Sec3 length</td><td>%5u\n", b->sec3.length );
   c += sprintf ( c, "<tr><td>Subsets</td><td>%5u\n", b->sec3.subsets );
@@ -144,7 +144,7 @@ int sprint_sec4_info_html ( char *target, size_t lmax, struct bufrdeco *b )
   char caux[8192], *c;
   c = caux;
 
-  c += sprintf ( c, "<div class='bufr_sec4'>\n");
+  c += sprintf ( c, "<div class='bufr_sec4'>\n" );
   c += sprintf ( c, "<table>\n<caption>SEC 4 INFO</caption>\n" );
   c += sprintf ( c, "<tr><td>Sec4 length</td><td>%5u</td></tr>\n", b->sec4.length );
   c += sprintf ( c, "</table>\n" );
@@ -158,10 +158,11 @@ int sprint_sec4_info_html ( char *target, size_t lmax, struct bufrdeco *b )
   \brief print the data in a struct \ref bufr_atom_data to a string as cells of table rows
   \param target string where to print the result
   \param a pointer to struct ref \ref bufr_atom_data with data to print
+  \param ss index of subset in bufr
 
   Returns a pointer to result string
 */
-char * bufrdeco_print_atom_data_html ( char *target, struct bufr_atom_data *a )
+char * bufrdeco_print_atom_data_html ( char *target, struct bufr_atom_data *a, uint32_t ss )
 {
   char aux[256], *c;
 
@@ -171,29 +172,64 @@ char * bufrdeco_print_atom_data_html ( char *target, struct bufr_atom_data *a )
   c += sprintf ( c, "<td class='unit'>%s</td>", a->unit );
   if ( a->mask & DESCRIPTOR_VALUE_MISSING )
     {
-      c += sprintf ( c, "<td class='missing'>MISSING</td><td></td>" );
+      if ( a->is_bitmaped_by != 0 )
+        c += sprintf ( c, "<td class='missing'>MISSING</td><td>NOTE: Bitmaped by <a href='#d%u_%u'>#%u</a></td>", ss, a->is_bitmaped_by, a->is_bitmaped_by );
+      else if ( a->bitmap_to != 0 )
+        c += sprintf ( c, "<td class='missing'>MISSING</td><td>NOTE: Bitmap to <a href='#d%u_%u'>#%u</a></td>", ss, a->bitmap_to, a->bitmap_to );
+      else if ( a->related_to != 0 )
+        c += sprintf ( c, "<td class='missing'>MISSING</td><td>NOTE: Related to <a href='#d%u_%u'>#%u</a></td>", ss, a->related_to, a->related_to );
+      else
+        c += sprintf ( c, "<td class='missing'>MISSING</td><td></td>" );
     }
   else
     {
       if ( a->mask & DESCRIPTOR_HAVE_STRING_VALUE )
         {
-          c += sprintf ( c, "<td></td><td class='cval'>%s</td>\n", a->cval );
+          if ( a->is_bitmaped_by != 0 )
+            c += sprintf ( c, "<td></td><td class='cval'>%s<br>NOTE: Bitmaped by <a href='#d%u_%u'>#%u</a></td>\n", a->cval, ss, a->is_bitmaped_by, a->is_bitmaped_by );
+          else if ( a->bitmap_to != 0 )
+            c += sprintf ( c, "<td></td><td class='cval'>%s<br>NOTE: Bitmap to <a href='#d%u_%u'>#%u</a></td>\n", a->cval, ss, a->bitmap_to, a->bitmap_to );
+          else if ( a->related_to != 0 )
+            c += sprintf ( c, "<td></td><td class='cval'>%s<br>NOTE: Related to <a href='#d%u_%u'>#%u</a></td>\n", a->cval, ss, a->related_to, a->related_to );
+          else
+            c += sprintf ( c, "<td></td><td class='cval'>%s</td>\n", a->cval );
         }
       else if ( a->mask & DESCRIPTOR_HAVE_CODE_TABLE_STRING
                 || strstr ( a->unit, "CODE TABLE" ) == a->unit
                 || strstr ( a->unit, "Code table" ) == a->unit )
         {
           c += sprintf ( c, "<td class='ival'>%17u</td>", ( uint32_t ) a->val );
-          c += sprintf ( c, "<td class='ctable'>%s</td>\n", a->ctable );
+          if ( a->is_bitmaped_by != 0 )
+            c += sprintf ( c, "<td class='ctable'>%s<br>NOTE: Bitmaped by <a href='#d%u_%u'>#%u</a></td>\n", a->ctable, ss, a->is_bitmaped_by, a->is_bitmaped_by );
+          else if ( a->bitmap_to != 0 )
+            c += sprintf ( c, "<td class='ctable'>%s<br>NOTE: Bitmap to <a href='#d%u_%u'>#%u</a></td>\n", a->ctable, ss, a->bitmap_to, a->bitmap_to  );
+          else if ( a->related_to != 0 )
+            c += sprintf ( c, "<td class='ctable'>%s<br>NOTE: Related to <a href='#d%u_%u'>#%u</a></td>\n", a->ctable, ss, a->related_to, a->related_to  );
+          else
+            c += sprintf ( c, "<td class='ctable'>%s</td>\n", a->ctable );
         }
       else if ( a->mask & DESCRIPTOR_HAVE_FLAG_TABLE_STRING )
         {
           c += sprintf ( c, "<td class='hval'>0x%08X</td>", ( uint32_t ) a->val );
-          c += sprintf ( c, "<td class='ctable'>%s</td>\n", a->ctable );
+          if ( a->is_bitmaped_by != 0 )
+            c += sprintf ( c, "<td class='ctable'>%s<br>NOTE: Bitmaped by <a href='#%du_%u'>#%u</a></td>\n", a->ctable, ss, a->is_bitmaped_by, a->is_bitmaped_by );
+          else if ( a->bitmap_to != 0 )
+            c += sprintf ( c, "<td class='ctable'>%s<br>NOTE: Bitmap to <a href='#d%u_%u'>#%u</a></td>\n", a->ctable, ss, a->bitmap_to, a->bitmap_to  );
+          else if ( a->related_to != 0 )
+            c += sprintf ( c, "<td class='ctable'>%s<br>NOTE: Related to <a href='#d%u_%u'>#%u</a></td>\n", a->ctable, ss, a->related_to, a->related_to  );
+          else
+            c += sprintf ( c, "<td class='ctable'>%s</td>\n", a->ctable );
         }
       else
         {
-          c += sprintf ( c, "<td class='rval'>%s</td><td></td>" , get_formatted_value_from_escale ( aux, a->escale, a->val ) );
+          if ( a->is_bitmaped_by != 0 )
+            c += sprintf ( c, "<td class='rval'>%s</td><td>NOTE: Bitmaped by <a href='#d%u_%u'>#%u</a></td>" , get_formatted_value_from_escale ( aux, a->escale, a->val ), ss, a->is_bitmaped_by, a->is_bitmaped_by );
+          else if ( a->bitmap_to != 0 )
+            c += sprintf ( c, "<td class='rval'>%s</td><td>NOTE: Bitmap to <a href='#d%u_%u'>#%u</a></td>" , get_formatted_value_from_escale ( aux, a->escale, a->val ) , ss, a->bitmap_to, a->bitmap_to );
+          else if ( a->related_to != 0 )
+            c += sprintf ( c, "<td class='rval'>%s</td><td>NOTE: Related to <a href='#d%u_%u'>#%u</a></td>" , get_formatted_value_from_escale ( aux, a->escale, a->val ), ss, a->related_to, a->related_to );
+          else
+            c += sprintf ( c, "<td class='rval'>%s</td><td></td>" , get_formatted_value_from_escale ( aux, a->escale, a->val ) );
         }
     }
   return target;
@@ -209,11 +245,11 @@ void bufrdeco_fprint_subset_sequence_data_html ( FILE *f, struct bufrdeco_subset
   size_t i;
   char aux[1024];
 
-  fprintf ( f, "<div class='bufr_subset'>\n");
+  fprintf ( f, "<div class='bufr_subset'>\n" );
   fprintf ( f, "<table>\n" );
   for ( i = 0; i < s->nd ; i++ )
     {
-      fprintf ( f, "<tr><td>%5lu:</td>%s</tr>\n", i, bufrdeco_print_atom_data_html ( aux, &s->sequence[i] ) );
+      fprintf ( f, "<tr><td>%5lu:</td>%s</tr>\n", i, bufrdeco_print_atom_data_html ( aux, &s->sequence[i], s->ss ) );
     }
   fprintf ( f, "</table>\n" );
   fprintf ( f, "</div>\n" );
@@ -233,20 +269,20 @@ void bufrdeco_print_subset_sequence_data_html ( struct bufrdeco_subset_sequence_
   \fn void bufrdeco_fprint_subset_sequence_data_tagged_html ( struct bufrdeco_subset_sequence_data *s, char *id )
   \brief Prints a struct \ref bufrdeco_subset_sequence_data as an html table
   \param s pointer to the struct to print
-  \param id string with id for the subset 
+  \param id string with id for the subset
 */
-void bufrdeco_fprint_subset_sequence_data_tagged_html ( FILE *f, struct bufrdeco_subset_sequence_data *s, char *id)
+void bufrdeco_fprint_subset_sequence_data_tagged_html ( FILE *f, struct bufrdeco_subset_sequence_data *s, char *id )
 {
   size_t i;
   char aux[1024];
 
-  fprintf ( f, "\n<div class='bufr_subset' id='%s'>\n", id);
+  fprintf ( f, "\n<div class='bufr_subset' id='%s'>\n", id );
   fprintf ( f, "<table>\n" );
-  fprintf ( f, "<caption>%s</caption>\n", id); 
-  fprintf ( f, "<tr><th></th><th>Descriptor</th><th>Name</th><th>Unit</th><th>Value</th><th>Description</th></tr>\n");
+  fprintf ( f, "<caption>%s</caption>\n", id );
+  fprintf ( f, "<tr><th></th><th>Descriptor</th><th>Name</th><th>Unit</th><th>Value</th><th>Description</th></tr>\n" );
   for ( i = 0; i < s->nd ; i++ )
     {
-      fprintf ( f, "<tr><td class='ndesc'>#%lu</td>%s</tr>\n", i, bufrdeco_print_atom_data_html ( aux, &s->sequence[i] ) );
+      fprintf ( f, "<tr><td class='ndesc' id='d_%u_%lu' >#%lu</td>%s</tr>\n", s->ss, i, i, bufrdeco_print_atom_data_html ( aux, &s->sequence[i], s->ss ) );
     }
   fprintf ( f, "</table>\n" );
   fprintf ( f, "</div>\n" );
@@ -256,7 +292,7 @@ void bufrdeco_fprint_subset_sequence_data_tagged_html ( FILE *f, struct bufrdeco
   \fn void bufrdeco_fprint_subset_sequence_data_tagged_html ( struct bufrdeco_subset_sequence_data *s, char *id )
   \brief Prints a struct \ref bufrdeco_subset_sequence_data as an html table
   \param s pointer to the struct to print
-  \param id string with id for the subset 
+  \param id string with id for the subset
 */
 void bufrdeco_print_subset_sequence_data_tagged_html ( struct bufrdeco_subset_sequence_data *s, char *id )
 {

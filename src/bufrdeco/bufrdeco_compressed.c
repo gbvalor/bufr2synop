@@ -897,6 +897,9 @@ int bufr_decode_subset_data_compressed ( struct bufrdeco_subset_sequence_data *s
       s->nd = 0;
     }
 
+  // The subset index
+  s->ss = b->state.subset;
+    
   // then get sequence
   for ( i = 0; i < r->nd; i++ )
     {

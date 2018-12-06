@@ -162,6 +162,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
     {
       //memset ( s, 0, sizeof ( struct bufr_subset_sequence_data ) );
       s->nd = 0;
+      s->ss = b->state.subset;
       seq = & ( b->tree->seq[0] );
       if ( b->state.subset == 0 )
         {

@@ -324,6 +324,7 @@ struct bufrdeco_subset_sequence_data
 {
   size_t dim; /*!< Amount of bufr_atom_data currently allocated */
   size_t nd; /*!< number of current amount of data used in sequence */
+  uint32_t ss; /*!< Index of subset in the bufr report */
   struct bufr_atom_data *sequence; /*!< the array of data associated to a expanded sequence */
 };
 
@@ -829,7 +830,7 @@ void bufrdeco_fprint_subset_sequence_data_html ( FILE *f, struct bufrdeco_subset
 void bufrdeco_fprint_subset_sequence_data_tagged_html ( FILE *f, struct bufrdeco_subset_sequence_data *s, char *id);
 void bufrdeco_fprint_subset_sequence_data ( FILE *f, struct bufrdeco_subset_sequence_data *s );
 char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a );
-char * bufrdeco_print_atom_data_html ( char *target, struct bufr_atom_data *a );
+char * bufrdeco_print_atom_data_html ( char *target, struct bufr_atom_data *a, uint32_t ss );
 char * get_formatted_value_from_escale ( char *fmt, int32_t escale, double val );
 
 
