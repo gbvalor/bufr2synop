@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2019 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -44,7 +44,11 @@ char * kelvin_to_snTTT ( char *target, double T )
     }
 
   // tenths of degree (Celsius)
-  ic = ( int ) ( floor ( 10.0 * ( Tx - 273.15 ) + 0.5 ) );
+  // Patch introduced on 22-Dec-2019 due to some roundings errors from India and Australia
+  // not converting properly from Kelvin to Celsius for Tmax and Tmin
+  // Changed '0.5' to '0.45'
+  //ic = ( int ) ( floor ( 10.0 * ( Tx - 273.15 ) + 0.5 ) );
+  ic = ( int ) ( floor ( 10.0 * ( Tx - 273.15 ) + 0.45 ) );
   if ( ic < 0 )
     {
       sprintf ( target, "1%03d",  -ic );
