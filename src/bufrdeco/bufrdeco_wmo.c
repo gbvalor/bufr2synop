@@ -122,15 +122,17 @@ int get_wmo_tablenames ( struct bufrdeco *b )
     case 28:
     case 29:
     case 30:
-    case 31:    
+    case 31:
+    case 32:
+    case 33:
       sprintf ( b->tables->b.path,"%sBUFR_%d_0_0_TableB_en.csv", aux, b->sec1.master_version );
       sprintf ( b->tables->c.path,"%sBUFR_%d_0_0_TableC_en.csv", aux, b->sec1.master_version );
       sprintf ( b->tables->d.path,"%sBUFR_%d_0_0_TableD_en.csv", aux, b->sec1.master_version );
       break;
     default:
-      sprintf ( b->tables->b.path,"%sBUFR_31_0_0_TableB_en.csv", aux );
-      sprintf ( b->tables->c.path,"%sBUFR_31_0_0_TableC_en.csv", aux );
-      sprintf ( b->tables->d.path,"%sBUFR_31_0_0_TableD_en.csv", aux );
+      sprintf ( b->tables->b.path,"%sBUFR_33_0_0_TableB_en.csv", aux );
+      sprintf ( b->tables->c.path,"%sBUFR_33_0_0_TableC_en.csv", aux );
+      sprintf ( b->tables->d.path,"%sBUFR_33_0_0_TableD_en.csv", aux );
       break;
     }
   return 0;
