@@ -114,7 +114,7 @@ FILE *FL; /*!< Buffer to read the list of files */
 int main ( int argc, char *argv[] )
 {
   size_t subset;
-  char subset_id[16];
+  char subset_id[32];
   struct bufrdeco_subset_sequence_data *seq;
   
 
