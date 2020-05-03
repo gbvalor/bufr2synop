@@ -15,7 +15,7 @@ ECMWF_DIR="/usr/local/lib/bufrtables"
 CONVERTER=/usr/local/bin/build_bufrdeco_tables
 
 # versions
-WMO_VERSIONS="18_0_0 18_1_0 19_0_0 19_1_1 20_0_0 21_0_0 22_0_1 23_0_0 24_0_0 25_0_0 26_0_0 27_0_0 28_0_0 29_0_0 30_0_0 31_0_0 32_0_0 33_0_0"
+WMO_VERSIONS="18_0_0 18_1_0 19_0_0 19_1_1 20_0_0 21_0_0 22_0_1 23_0_0 24_0_0 25_0_0 26_0_0 27_0_0 28_0_0 29_0_0 30_0_0 31_0_0 32_0_0 33_0_0 34_0_0"
 ECMWF_VERSIONS="13 14 15 16 17"
 
 # WMO table D process
