@@ -845,7 +845,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
     }
 
   // Get a numeric number
-  a->val = ( double ) ( ivals ) * pow10 ( ( double ) ( - r->escale ) );
+  a->val = ( double ) ( ivals ) * exp10 ( ( double ) ( - r->escale ) );
 
   //printf("ival = %lf\n", a->val);
   if ( strstr ( a->unit, "CODE TABLE" ) == a->unit  || strstr ( a->unit, "Code table" ) == a->unit )
