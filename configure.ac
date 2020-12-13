@@ -20,10 +20,10 @@ dnl
 { 
 case "${CC}" in
         gcc*)
-                CFLAGS="-O2 -Wall -Wextra -W -g"
+                CFLAGS="$CFLAGS -O2 -Wall -Wextra -W -g"
                 ;;
         icc)
-                CFLAGS="-O2 -xHost -fstack-protector -Wall -g"
+                CFLAGS="$CFLAGS -O2 -xHost -fstack-protector -Wall -g"
                 ;;
 esac
 }

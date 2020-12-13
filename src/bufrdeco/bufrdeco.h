@@ -43,7 +43,7 @@
   \def BUFR_LEN
   \brief Max length of a BUFR file
 */
-#define BUFR_LEN 512000
+#define BUFR_LEN (512000)
 
 /*!
    \def BUFR_OBS_DATA_MASK
