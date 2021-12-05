@@ -1,4 +1,4 @@
-AC_INIT([bufr2synop], 0.13.0)
+AC_INIT([bufr2synop], 0.14.0)
 AC_CONFIG_SRCDIR([src/apps/bufr2synop.c])
 AM_INIT_AUTOMAKE
 
