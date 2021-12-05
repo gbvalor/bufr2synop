@@ -15,5 +15,8 @@ dist_pkgdata_DATA = BUFR_13_0_0_TableB_en.csv  BUFR_15_0_0_TableC_en.csv  BUFR_1
 	BUFR_31_0_0_TableB_en.csv  BUFR_31_0_0_TableC_en.csv  BUFR_31_0_0_TableD_en.csv \
 	BUFR_32_0_0_TableB_en.csv  BUFR_32_0_0_TableC_en.csv  BUFR_32_0_0_TableD_en.csv \
 	BUFR_33_0_0_TableB_en.csv  BUFR_33_0_0_TableC_en.csv  BUFR_33_0_0_TableD_en.csv \
-	BUFR_34_0_0_TableB_en.csv  BUFR_34_0_0_TableC_en.csv  BUFR_34_0_0_TableD_en.csv 
+	BUFR_34_0_0_TableB_en.csv  BUFR_34_0_0_TableC_en.csv  BUFR_34_0_0_TableD_en.csv \
+	BUFR_35_0_0_TableB_en.csv  BUFR_35_0_0_TableC_en.csv  BUFR_35_0_0_TableD_en.csv \
+	BUFR_36_0_0_TableB_en.csv  BUFR_36_0_0_TableC_en.csv  BUFR_36_0_0_TableD_en.csv \
+	BUFR_37_0_0_TableB_en.csv  BUFR_37_0_0_TableC_en.csv  BUFR_37_0_0_TableD_en.csv 
 	

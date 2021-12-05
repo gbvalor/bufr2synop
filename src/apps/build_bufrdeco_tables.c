@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2021 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -50,6 +50,10 @@ int B_FIELDS[8] = {3,4,5,6,7,8,9,-1}; // fields selected for table B type
 int C_FIELDS[8] = {1,3,4,5,6,7,-1,-1}; // Fields selected for CodeFlag (C) type.
 int D_FIELDS[8] = {3,6,4,7,-1,-1,-1,-1}; // Fields selected for D type (Common sequences)
 
+int B_FIELDS_2[8] = {2,3,4,5,6,7,8,-1}; // fields selected for table B type for version >= 35
+int C_FIELDS_2[8] = {0,2,3,4,5,6,-1,-1}; // Fields selected for CodeFlag (C) type for version >= 35.
+int D_FIELDS_2[8] = {2,5,3,6,-1,-1,-1,-1}; // Fields selected for D type (Common sequences)
+
 void print_usage ( void )
 {
   printf ( "%s %s\n", SELF, PACKAGE_VERSION );
@@ -58,6 +62,7 @@ void print_usage ( void )
   printf ( "       -h Print this help\n" );
   printf ( "       -e Source ECMWF, default WMO\n" );
   printf ( "       -t table_type. (A = TableA, B = TableB, C = CodeFlag, D = TableD)\n" );
+  printf ( "       -2 Versión 35 or newest\n");
 }
 
 
@@ -76,7 +81,7 @@ int main ( int argc, char *argv[] )
   TABLE_TYPE[0] = 0;
   INPUT_FILE[0] = 0;
   IS_WMO = 1;
-  while ( ( iopt = getopt ( argc, argv, "hei:t:" ) ) !=-1 )
+  while ( ( iopt = getopt ( argc, argv, "hei:t:2" ) ) !=-1 )
     switch ( iopt )
       {
       case 'i':
@@ -86,6 +91,9 @@ int main ( int argc, char *argv[] )
       case 't':
         if ( strlen ( optarg ) < 8 )
           strcpy ( TABLE_TYPE, optarg );
+        break;
+      case '2':
+        IS_WMO = 2;
         break;
       case 'e':
       case 'E':
@@ -125,15 +133,24 @@ int main ( int argc, char *argv[] )
           break;
         case 'B':
         case 'b':
-          fs = & ( B_FIELDS[0] );
+          if (IS_WMO == 1)  
+            fs = & ( B_FIELDS[0] );
+          else
+            fs = & ( B_FIELDS_2[0] );
           break;
         case 'C':
         case 'c':
-          fs = & ( C_FIELDS[0] );
+          if (IS_WMO == 1)  
+            fs = & ( C_FIELDS[0] );
+          else
+            fs = & ( C_FIELDS_2[0] );
           break;
         case 'D':
         case 'd':
-          fs = & ( D_FIELDS[0] );
+          if (IS_WMO == 1)  
+            fs = & ( D_FIELDS[0] );
+          else
+            fs = & ( D_FIELDS_2[0] );
           break;
         default:
           fprintf ( stderr, "%s: Error, bad '%s' table type\n", SELF, TABLE_TYPE );
