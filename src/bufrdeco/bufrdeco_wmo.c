@@ -113,6 +113,7 @@ int get_wmo_tablenames ( struct bufrdeco *b )
     case 15:
     case 16:
     case 17:
+    case 20:    
     case 21:
     case 23:
     case 24:
