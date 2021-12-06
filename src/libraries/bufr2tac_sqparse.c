@@ -95,6 +95,7 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
                 find_descriptor ( kdtlst, nlst,307091 ) ||
                 find_descriptor ( kdtlst, nlst,307092 ) ||
                 find_descriptor ( kdtlst, nlst,307096 ) ||
+                find_descriptor ( kdtlst, nlst,307182 ) ||
                 ksec1[6] == 0 || ksec1[6] == 1 || ksec1[6] == 2 )
         {
           strcpy ( st->type_report,"AAXX" );  // FM-12 synop

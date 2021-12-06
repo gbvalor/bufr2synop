@@ -378,6 +378,22 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       break;
 
+    case 120: // 0 12 120 . Ground temperature  
+      if ( strcmp ( "2", syn->s0.A1 ) == 0 ) // Only for Region II
+        {
+          if ( kelvin_to_snTT ( aux, s->val ) )
+            {
+                if ( syn->s3.E1[0] )
+                   syn->s3.XoXoXoXo[0] = '/';
+                else if ( syn->s3.E[0] )
+                   syn->s3.XoXoXoXo[0] = syn->s3.E[0];
+                syn->s3.XoXoXoXo[1] = aux[0];
+                syn->s3.XoXoXoXo[2] = aux[1];
+                syn->s3.XoXoXoXo[3] = aux[2];
+            }    
+        }    
+      break;
+      
     case 122: // 0 12 122 . Ground minimum temperature during preceding night
       if ( strcmp ( "1", syn->s0.A1 ) == 0 ) // Only for Region I
         {
