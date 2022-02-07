@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -666,7 +666,34 @@ char * print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
         {
           if ( syn->s3.nub[i].hshs[0] &&  check_len ( sec3,6 ) )
             {
-              c += sprintf ( c, " 8%s%s%s", syn->s3.nub[i].Ns, syn->s3.nub[i].C, syn->s3.nub[i].hshs );
+              if ( syn->s3.nub[i].Ns[0] == 0 && syn->s3.nub[i].C[0] == 0)
+                {
+                   c += sprintf ( c, " 8//%s", syn->s3.nub[i].hshs); // Detected cloud but no anymore info
+                }
+              else
+                {  
+                   c += sprintf ( c, " 8" );
+                   if ( syn->s3.nub[i].Ns[0] )
+                     {
+                        c += sprintf ( c, "%s", syn->s3.nub[i].Ns);
+                     }
+                   else
+                     {  
+                        c += sprintf ( c, "/");
+                     }
+
+                   if ( syn->s3.nub[i].C[0] )
+                     {
+                        c += sprintf ( c, "%s", syn->s3.nub[i].C);
+                     }
+                   else
+                     {
+                        c += sprintf ( c, "/");
+                     }
+
+                   c += sprintf ( c, "%s", syn->s3.nub[i].hshs);                  
+                   
+                }   
             }
         }
 

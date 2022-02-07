@@ -127,6 +127,59 @@ char * m_to_h ( char *target, double h )
 }
 
 /*!
+  \fn char * m_to_9h ( char *target, double h )
+  \brief converts the altitude of cloud layer into 9h string code
+  \param h the altitude in meters
+  \param target the resulting 9x coded string
+*/
+char * m_to_9h ( char *target, double h )
+{
+  if ( h < 50.0 )
+    {
+      strcpy ( target,"90" );
+    }
+  else if ( h < 100.0 )
+    {
+      strcpy ( target,"91" );
+    }
+  else if ( h < 200.0 )
+    {
+      strcpy ( target,"92" );
+    }
+  else if ( h < 300.0 )
+    {
+      strcpy ( target,"93" );
+    }
+  else if ( h < 600.0 )
+    {
+      strcpy ( target,"94" );
+    }
+  else if ( h < 1000.0 )
+    {
+      strcpy ( target,"95" );
+    }
+  else if ( h < 1500.0 )
+    {
+      strcpy ( target,"96" );
+    }
+  else if ( h < 2000.0 )
+    {
+      strcpy ( target,"97" );
+    }
+  else if ( h < 2500.0 )
+    {
+      strcpy ( target,"98" );
+    }
+  else
+    {
+      strcpy ( target,"99" );
+    }
+  return target;
+
+}
+
+
+/*!
   \fn char * m_to_hh ( char *target, double h )
   \brief converts the altitude of cloud layer into hh string code
   \param h the altitude in meters
@@ -703,7 +756,14 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( s->clayer > 0 && s->clayer < 5 )
         {
-          m_to_hh ( syn->s3.nub[s->clayer - 1].hshs, s->val );
+          if ( syn->s3.nub[s->clayer - 1].Ns[0] )
+            {
+              m_to_hh ( syn->s3.nub[s->clayer - 1].hshs, s->val );
+            }
+          else
+            {
+              m_to_9h ( syn->s3.nub[s->clayer - 1].hshs, s->val );
+            }
         }
       break;
 

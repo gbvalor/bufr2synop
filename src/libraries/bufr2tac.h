@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -342,6 +342,7 @@ char * kelvin_to_TTTa ( char *target, double T );
 char * dewpoint_depression_to_DnDn ( char * target, double T, double Td );
 char * m_to_h ( char *target, double h );
 char * m_to_hh ( char *target, double h );
+char * m_to_9h ( char *target, double h );
 char * m_to_RR ( char *target, double m );
 char * pascal_to_ppp ( char *target, double P );
 char * pascal_to_pnpnpn ( char *target, double P );
