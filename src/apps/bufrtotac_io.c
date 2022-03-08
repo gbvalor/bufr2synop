@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -28,7 +28,7 @@ void print_usage ( void )
 {
   printf ( "%s %s\n", SELF, PACKAGE_VERSION );
   printf ( "Usage: \n" );
-  printf ( "%s -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-c][-h]\n" , SELF );
+  printf ( "%s -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-X][-c][-h]\n" , SELF );
   printf ( "       -c. The output is in csv format\n" );
   printf ( "       -D. Print some debug info\n" );
 #ifdef USE_BUFRDC
@@ -46,6 +46,7 @@ void print_usage ( void )
   printf ( "       -V. Verbose output\n" );
   printf ( "       -v. Print version\n" );
   printf ( "       -x. The output is in xml format\n" );
+  printf ( "       -X. Try to extract an embebed bufr in a file seraching for a first '7777' after first 'BUFR'\n");
 }
 
 /*!
@@ -74,6 +75,7 @@ int read_args ( int _argc, char * _argv[] )
   XML = 0;
   JSON = 0;
   CSV= 0;
+  EXTRACT = 0;
   ECMWF = 0;
   HTML = 0;
   NOTAC = 0;
@@ -83,7 +85,7 @@ int read_args ( int _argc, char * _argv[] )
   /*
      Read input options
   */
-  while ( ( iopt = getopt ( _argc, _argv, "cDEhi:jHI:no:S:st:vVx" ) ) !=-1 )
+  while ( ( iopt = getopt ( _argc, _argv, "cDEhi:jHI:no:S:st:vVxX" ) ) !=-1 )
     switch ( iopt )
       {
       case 'i':
@@ -162,6 +164,9 @@ int read_args ( int _argc, char * _argv[] )
         break;
       case 'c':
         CSV = 1;
+        break;
+      case 'X':
+        EXTRACT = 1;
         break;
       case 'h':
       default:

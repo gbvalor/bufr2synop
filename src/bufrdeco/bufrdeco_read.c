@@ -96,6 +96,113 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
   return res;
 }
 
+
+/*!
+  \fn int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename )
+  \brief Read file and try to find a bufr report inserted in. Once found do the same that bufrdeco_read_file()
+  \param b pointer to struct \ref bufrdeco
+  \param filename complete path of BUFR file
+
+
+  This function does the folowing tasks:
+  - Try to find first buffer of bytes begining with 'BUFR' chars and ending with '7777'. This will be considered as a bufr file.
+  - Read the file and checks the marks at the begining and end to see wheter is a BUFR file
+  - Init the structs and allocate the needed memory if not done previously
+  - Splits and parse the BUFR sections (without expanding descriptors nor parsing data)
+  - Reads the needed Table files and store them in memory.
+
+  Returns 0 if all is OK, 1 otherwise
+ */
+int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename )
+{
+  int aux, res;
+  uint8_t *bufrx = NULL, *pbeg = NULL; /*!< pointer to a memory buffer where we write raw bufr file */
+  size_t n = 0, beg, end, size = 0;
+  FILE *fp;
+  struct stat st;
+
+  /* Stat input file */
+  if ( stat ( filename, &st ) < 0 )
+    {
+      sprintf ( b->error, "bufrdeco_read_bufr(): cannot stat file '%s'\n", filename );
+      return 1;
+    }
+
+  /* Alloc nedeed memory for bufr */
+  if ( S_ISREG ( st.st_mode ) || S_ISLNK ( st.st_mode ) )
+    {
+      if ( ( bufrx = ( uint8_t * ) calloc ( 1, st.st_size + 4 ) ) == NULL )
+        {
+          sprintf ( b->error, "bufrdeco_read_bufr(): cannot alloc memory for file '%s'\n", filename );
+          return 1;
+        }
+    }
+  else
+    {
+      sprintf ( b->error, "bufrdeco_read_bufr(): '%s' is not a regular file nor symbolic link\n", filename );
+      return 1;
+    }
+
+  /* Inits bufr struct */
+  if ( ( st.st_size + 4 ) >= BUFR_LEN )
+    {
+      sprintf ( b->error, "File '%s' too large. Consider increase BUFR_LEN\n", filename );
+      free ( ( void * ) bufrx );
+      return 1;
+    }
+
+  // Open and read the file
+  if ( ( fp = fopen ( filename, "r" ) ) == NULL )
+    {
+      sprintf ( b->error, "bufrdeco_read_bufr(): cannot open file '%s'\n", filename );
+      free ( ( void * ) bufrx );
+      return 1;
+    }
+
+  beg = end = st.st_size;
+  while ( ( aux = fgetc ( fp ) ) != EOF && ( int ) n < st.st_size )
+    {
+      bufrx[n++] = ( uint8_t ) aux;
+
+      // check if first 'BUFR' item has been found
+      if ( n >= 4 &&
+           bufrx[n - 4] == 'B' &&
+           bufrx[n - 3] == 'U' &&
+           bufrx[n - 2] == 'F' &&
+           bufrx[n - 1] == 'R' )
+        {
+          beg = n - 4;
+          pbeg = &bufrx[ n - 4];
+        }
+
+      // check if first '7777' has been found after first 'BUFR'
+      if ( n > 4 &&
+           beg < ( (size_t) st.st_size - 4 ) &&
+           bufrx[n - 4] == '7' &&
+           bufrx[n - 3] == '7' &&
+           bufrx[n - 2] == '7' &&
+           bufrx[n - 1] == '7' )
+        {
+          end = n - 1;
+          size = end - beg + 1;
+        }
+    }
+
+
+  // close the file
+  fclose ( fp );
+
+  if ( size < 8 )
+    {
+      sprintf ( b->error, "bufrdeco_extract_bufr(): not found a '7777' item after 'BUFR'\n" );
+      return 1;
+    }
+  res = bufrdeco_read_buffer ( b, pbeg, size );
+  free ( bufrx );
+  return res;
+}
+
+
 /*!
   \fn int bufrdeco_read_buffer ( struct bufrdeco *b, uint8_t *bufrx, size_t size  )
   \brief Read a memory buffer and does preliminary and first decode pass
@@ -117,27 +224,27 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, size_t size )
   // Some fast checks
   if ( ( size + 4 ) >= BUFR_LEN )
     {
-      sprintf ( b->error, "bufrdeco_init_buffer(): Buffer provided too large. Consider increase BUFR_LEN\n" );
+      sprintf ( b->error, "bufrdeco_read_buffer(): Buffer provided too large. Consider increase BUFR_LEN\n" );
       return 1;
     }
 
   if ( size < 8 )
     {
-      sprintf ( b->error, "bufrdeco_init_buffer(): Too few bytes for a bufr\n" );
+      sprintf ( b->error, "bufrdeco_read_buffer(): Too few bytes for a bufr\n" );
       return 1;
     }
 
   // check if begins with BUFR
   if ( bufrx[0] != 'B' || bufrx[1] != 'U' || bufrx[2] != 'F' || bufrx[3] != 'R' )
     {
-      sprintf ( b->error, "bufrdeco_init_buffer(): bufr file does not begin with 'BUFR' chars\n" );
+      sprintf ( b->error, "bufrdeco_read_buffer(): bufr file does not begin with 'BUFR' chars\n" );
       return 1;
     }
 
   // check if end with '7777'
   if ( bufrx[size - 4] != '7' || bufrx[size - 3] != '7' || bufrx[size - 2] != '7' || bufrx[size - 1] != '7' )
     {
-      sprintf ( b->error, "bufrdeco_init_buffer(): bufe file does not end with '7777' chars\n" );
+      sprintf ( b->error, "bufrdeco_read_buffer(): bufe file does not end with '7777' chars\n" );
       return 1;
     }
 
@@ -150,7 +257,7 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, size_t size )
   // check if length is correct
   if ( b->sec0.bufr_length != ( uint32_t ) size )
     {
-      sprintf ( b->error, "bufrdeco_init_buffer(): bufr file have %u bytes and it says %u\n",
+      sprintf ( b->error, "bufrdeco_read_buffer(): bufr file have %u bytes and it says %u\n",
                 ( uint32_t ) size, b->sec0.bufr_length );
       return 1;
     }
@@ -160,7 +267,7 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, size_t size )
 
   if ( b->sec0.edition < 3 )
     {
-      sprintf ( b->error, "bufrdeco_init_buffer(): Bufr edition must be 3 or superior and this file is coded with version %u\n", b->sec0.edition );
+      sprintf ( b->error, "bufrdeco_read_buffer(): Bufr edition must be 3 or superior and this file is coded with version %u\n", b->sec0.edition );
       return 1;
     }
 
@@ -242,7 +349,7 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, size_t size )
     b->sec3.compressed = 0;
 
   // loop of unexpanded descriptors
-  for ( ix = 7, ud = 0; (ix + 1) < b->sec3.length && ud < BUFR_LEN_UNEXPANDED_DESCRIPTOR; ix += 2 )
+  for ( ix = 7, ud = 0; ( ix + 1 ) < b->sec3.length && ud < BUFR_LEN_UNEXPANDED_DESCRIPTOR; ix += 2 )
     {
       two_bytes_to_descriptor ( &b->sec3.unexpanded[ud], &c[ix] );
       if ( b->sec3.unexpanded[ud].f || b->sec3.unexpanded[ud].x || b->sec3.unexpanded[ud].y )

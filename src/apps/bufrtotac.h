@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2012 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -47,6 +47,7 @@ extern int GTS_HEADER;
 extern int XML;
 extern int JSON;
 extern int CSV;
+extern int EXTRACT;
 extern int DEBUG;
 extern int VERBOSE;
 extern int SHOW_SEQUENCE;

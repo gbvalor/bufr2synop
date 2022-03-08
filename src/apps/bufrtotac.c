@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -104,6 +104,7 @@ int GTS_HEADER; /*!< If == 1 GTS header have been guessed from filename */
 int XML; /*!< If == 1 then output is in xml format */
 int JSON; /*!< If == 1 then output is in json format */
 int CSV; /*!< If == 1 then output is in csv format */
+int EXTRACT; /*!< if != 0 then the decoder tries to extract an embebed bufr in a file seraching for a first '7777' after first 'BUFR' */ 
 int ECMWF; /*!< If == 1 then use tables from ECMWF package */
 int HTML; /*!< If == 1 then output is in HTML format */
 int NOTAC; /*!< if == 1 then do not decode to TAC */
@@ -150,7 +151,11 @@ int main ( int argc, char *argv[] )
       // - Init the structs and allocate the needed memory if not done previously
       // - Splits and parse the BUFR sections (without expanding descriptors nor parsing data)
       // - Reads the needed Table files and store them in memory.
-      if ( bufrdeco_read_bufr ( &BUFR, INPUTFILE ) )
+      // 
+      // If EXTRACT != 0 then the function bufrdeco_extract_bufr() is used instead of bufrdeco_read_bufr()
+      // This act in the same way, but search and extract the first BUFR embebed in a file. 
+      if ( ( EXTRACT && bufrdeco_extract_bufr ( &BUFR, INPUTFILE ) ) ||
+           ( EXTRACT == 0 && bufrdeco_read_bufr ( &BUFR, INPUTFILE ) ) )
         {
           if ( DEBUG )
             printf ( "# %s\n", BUFR.error );

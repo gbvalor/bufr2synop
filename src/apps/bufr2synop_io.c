@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -43,7 +43,6 @@ void print_usage ( void )
   printf ( "       -x. The output is in xml format\n" );
 }
 
-
 /*!
  \fn int read_args( int _argc, char * _argv[])
  \brief read input arguments with the aid of getopt
@@ -65,7 +64,7 @@ int read_args ( int _argc, char * _argv[] )
   XML = 0;
   JSON = 0;
   CSV= 0;
-
+  
   /*
    Read input arguments using getop library
    */

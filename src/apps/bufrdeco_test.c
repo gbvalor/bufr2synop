@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                 *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,15 +23,16 @@
 #include "bufrdeco.h"
 
 struct bufrdeco BUFR;
-
+int EXTRACT;
 char ENTRADA[256];
 
 void print_usage ( void )
 {
   printf ( "Usage: \n" );
-  printf ( "bufrdeco_test -i input_file [-h]\n" );
+  printf ( "bufrdeco_test -i input_file [-h][-X]\n" );
   printf ( "   -h Print this help\n" );
   printf ( "   -i Input file. Complete input path file for bufr file\n" );
+  printf ( "   -X. Extract first BUFR buffer found in input file (from first 'BUFR' item to next '7777')\n" );
 }
 
 /*!
@@ -46,12 +47,17 @@ int read_args ( int _argc, char * _argv[] )
 {
   int iopt;
 
+  // Default values
+  EXTRACT = 0;
   /*
      Read input options
   */
-  while ( ( iopt = getopt ( _argc, _argv, "hi:" ) ) !=-1 )
+  while ( ( iopt = getopt ( _argc, _argv, "hi:X" ) ) !=-1 )
     switch ( iopt )
       {
+      case 'X':
+        EXTRACT = 1;
+        break;
       case 'i':
         if ( strlen ( optarg ) < 256 )
           strcpy ( ENTRADA, optarg );
@@ -82,7 +88,15 @@ int main ( int argc, char *argv[] )
   bufrdeco_init ( &BUFR );
 
   // Check read file
-  if ( bufrdeco_read_bufr ( &BUFR, ENTRADA ) )
+  if ( EXTRACT )
+    {
+      if ( bufrdeco_extract_bufr ( &BUFR, ENTRADA ) )
+        {
+          printf ( "%s", BUFR.error );
+          exit ( EXIT_FAILURE );
+        }
+    }
+  else if ( bufrdeco_read_bufr ( &BUFR, ENTRADA ) )
     {
       printf ( "%s", BUFR.error );
       exit ( EXIT_FAILURE );
