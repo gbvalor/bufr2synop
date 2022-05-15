@@ -98,7 +98,7 @@ char * print_synop_sec0 ( char **sec0, size_t lmax, struct synop_chunks *syn )
 
   if ( strcmp ( syn->s0.MiMi, "OO" ) == 0 )
     {
-      if ( syn->s0.MMM[0] && syn->s0.Ula && syn->s0.Ulo )
+      if ( syn->s0.MMM[0] && syn->s0.Ula[0] && syn->s0.Ulo[0] )
         {
           c += sprintf ( c, " %s%s%s", syn->s0.MMM, syn->s0.Ula, syn->s0.Ulo );
         }
