@@ -39,7 +39,7 @@ int bufr_read_tablec ( struct bufr_tablec *tc, char *error )
   size_t i = 0;
   char caux[256];
 
-  if ( tc->path == NULL )
+  if ( tc->path[0] == '\0' )
     {
       return 1;
     }

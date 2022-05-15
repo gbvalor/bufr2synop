@@ -188,7 +188,7 @@ char * print_temp_a_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
           c += sprintf ( c, " /////" );
         }
 
-      if ( t->a.s1.MMM[0] && t->a.s1.Ula && t->a.s1.Ulo )
+      if ( t->a.s1.MMM[0] && t->a.s1.Ula[0] && t->a.s1.Ulo[0] )
         {
           c += sprintf ( c, " %s%s%s", t->a.s1.MMM, t->a.s1.Ula, t->a.s1.Ulo );
         }
@@ -451,7 +451,7 @@ char * print_temp_b_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
           c += sprintf ( c, " /////" );
         }
 
-      if ( t->b.s1.MMM[0] && t->b.s1.Ula && t->b.s1.Ulo )
+      if ( t->b.s1.MMM[0] && t->b.s1.Ula[0] && t->b.s1.Ulo[0] )
         {
           c += sprintf ( c, " %s%s%s", t->b.s1.MMM, t->b.s1.Ula, t->b.s1.Ulo );
         }
@@ -715,7 +715,7 @@ char * print_temp_c_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
           c += sprintf ( c, " /////" );
         }
 
-      if ( t->c.s1.MMM[0] && t->c.s1.Ula && t->c.s1.Ulo )
+      if ( t->c.s1.MMM[0] && t->c.s1.Ula[0] && t->c.s1.Ulo[0] )
         {
           c += sprintf ( c, " %s%s%s", t->c.s1.MMM, t->c.s1.Ula, t->c.s1.Ulo );
         }
@@ -969,7 +969,7 @@ char * print_temp_d_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
           c += sprintf ( c, " /////" );
         }
 
-      if ( t->d.s1.MMM[0] && t->d.s1.Ula && t->d.s1.Ulo )
+      if ( t->d.s1.MMM[0] && t->d.s1.Ula[0] && t->d.s1.Ulo[0] )
         {
           c += sprintf ( c, " %s%s%s", t->d.s1.MMM, t->d.s1.Ula, t->d.s1.Ulo );
         }
