@@ -1,0 +1,41 @@
+
+#cmakedefine PACKAGE_NAME "@PACKAGE_NAME@"
+
+#cmakedefine PACKAGE_VERSION "@PACKAGE_VERSION@"
+
+#cmakedefine PACKAGE_STRING "@PACKAGE_STRING@"
+
+#cmakedefine VERSION "${PROJECT_VERSION}"
+
+#cmakedefine VERSION_MAJOR ${PROJECT_VERSION_MAJOR}
+
+#cmakedefine VERSION_MINOR ${PROJECT_VERSION_MINOR}
+
+#cmakedefine VERSION_PATCH ${PROJECT_VERSION_PATCH}
+
+#cmakedefine USING_ICC @USING_ICC@
+
+#cmakedefine USING_GCC @USING_GCC@
+
+#cmakedefine BUILD_USING_CMAKE @BUILD_USING_CMAKE@
+
+#cmakedefine HAVE_ATAN2 @HAVE_ATAN2@
+
+#cmakedefine HAVE_FLOOR @HAVE_FLOOR@
+
+#cmakedefine HAVE_STRING_H @HAVE_STRING_H@
+
+#cmakedefine HAVE_STRSTR @HAVE_STRSTR@
+
+#cmakedefine HAVE_STDLIB_H @HAVE_STDLIB_H@
+
+#cmakedefine HAVE_GETENV @HAVE_GETENV@
+
+#cmakedefine HAVE_UNISTD_H @HAVE_UNISTD_H@
+
+#cmakedefine HAVE_READ @HAVE_READ@ 
+
+#cmakedefine HAVE_SYS_TIME_H @HAVE_SYS_TIME_H@
+
+#cmakedefine HAVE_GETTIMEOFDAY @HAVE_GETTIMEOFDAY@
+
