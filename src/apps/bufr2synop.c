@@ -19,9 +19,11 @@
  ***************************************************************************/
 /*!
  \file bufr2synop.c
- \brief decodes a bufr file using ECMWF bufr library and tries to pass the decoded reports to synop-format
+ \brief decode+s a bufr file using ECMWF bufr library and tries to pass the decoded reports to synop-format
 
 */
+#ifdef USE_BUFRDC
+
 #include "bufr2synop.h"
 
 /*!
@@ -540,3 +542,4 @@ int main ( int argc, char *argv[] )
 
 }
 
+#endif //USE_BUFRDC

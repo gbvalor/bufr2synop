@@ -64,10 +64,10 @@
 *
 *******************************************************************
 */
-
-#include <stdio.h>
+#ifdef USE_BUFRDC
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 /*!
   \def KVALS
   \brief dimension of arrays of doubles
@@ -104,6 +104,7 @@ int busel_ ( int *, int *, int *, int *, int * );
 int busel2_ ( int *, int *, int *,  char **, int *, char **, char **, char **, int * );
 int buukey_ ( int *, int *, int *, int *, int * );
 int buprt_ ( int *, int *, int *, int *, char **, char **, char **, int *, double *, int *, int *, int * );
+int readbufr( FILE*, char (*)[512000], int *);
 
 int main ( int argc, char *argv[] )
 {
@@ -218,3 +219,4 @@ int main ( int argc, char *argv[] )
 
 }
 
+#endif // USE_BUFRDC

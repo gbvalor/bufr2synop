@@ -21,6 +21,7 @@
  \file bufr2synop.h
  \brief Include header file for binary bufr2synop
 */
+#ifdef USE_BUFRDC
 
 #include "bufr2tac.h"
 
@@ -85,3 +86,5 @@ extern struct bufr2tac_subset_state STATE;
 void print_usage ( void );
 int read_args ( int _argc, char * _argv[] );
 char * get_bufrfile_path ( char *filename, char *err );
+
+#endif // USE_BUFRDC

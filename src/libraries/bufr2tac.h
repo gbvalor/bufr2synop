@@ -44,9 +44,9 @@
 #include "metclimat.h"
 //#define DEBUG
 
-#define USE_ECMWF_BUFRDC
+//#define USE_BUFRDC
 
-#ifdef USE_ECMWF_BUFRDC
+#ifdef USE_BUFRDC
 /*!
   \def KELEM
   \brief max dimension of elements for a single report
@@ -65,7 +65,7 @@
 */
 #define KSUBS (KVALS / KELEM)
 
-#endif
+#endif // USE_BUFRDC
 
 /*!
  \def SUBSET_MASK_LATITUDE_SOUTH

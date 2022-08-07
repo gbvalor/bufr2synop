@@ -21,6 +21,7 @@
  \file bufr2synop_io.c
  \brief file with the i/o code for binary bufr2synop
  */
+#ifdef USE_BUFRDC 
 
 #include "bufr2synop.h"
 
@@ -183,3 +184,5 @@ char * get_bufrfile_path ( char *filename, char *err )
       return NULL;
     }
 }
+
+#endif // USE_BUFRDC
