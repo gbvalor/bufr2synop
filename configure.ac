@@ -1,12 +1,13 @@
-AC_INIT([bufr2synop], 0.15.0)
+AC_INIT([bufr2synop],[0.16.0])
 AC_CONFIG_SRCDIR([src/apps/bufr2synop.c])
 AM_INIT_AUTOMAKE
 
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS(config.h)
 
-AC_LANG_C
+AC_LANG([C])
 AC_PROG_CC
-AM_PROG_LIBTOOL
+LT_INIT
+AC_CONFIG_MACRO_DIR([m4])
 
 
 # Checks for libraries.
@@ -44,4 +45,5 @@ AC_ARG_ENABLE([bufrdc],
 esac],[bufrdc=false])
 AM_CONDITIONAL([BUFRDC], [test x$bufrdc = xtrue])
 
-AC_OUTPUT(Makefile src/Makefile src/apps/Makefile src/bufrdeco/Makefile src/libraries/Makefile src/scripts/Makefile examples/Makefile share/Makefile) 
+AC_CONFIG_FILES([Makefile src/Makefile src/apps/Makefile src/bufrdeco/Makefile src/libraries/Makefile src/scripts/Makefile examples/Makefile share/Makefile])
+AC_OUTPUT 

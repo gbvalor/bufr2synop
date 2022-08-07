@@ -27,7 +27,7 @@ TABLES. Tables used here are from ECMWF files for version 17 and older. From ver
 (version 33), the more detailed tables from WMO are used. Source files from WMO are the 
 Machine readable text and xml files we can get here 
 
-http://www.wmo.int/pages/prog/www/WMOCodes/WMO306_vI2/LatestVERSION/LatestVERSION.html
+https://community.wmo.int/activity-areas/wis/latest-version
 
 Anyway, a conversion is made to convert them as optimized CSV files. The included app 
 build_bufrdeco_tables is used to the conversion of both ECMWF and WMO source files.

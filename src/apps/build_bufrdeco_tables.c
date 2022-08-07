@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2021 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -50,9 +50,16 @@ int B_FIELDS[8] = {3,4,5,6,7,8,9,-1}; // fields selected for table B type
 int C_FIELDS[8] = {1,3,4,5,6,7,-1,-1}; // Fields selected for CodeFlag (C) type.
 int D_FIELDS[8] = {3,6,4,7,-1,-1,-1,-1}; // Fields selected for D type (Common sequences)
 
-int B_FIELDS_2[8] = {2,3,4,5,6,7,8,-1}; // fields selected for table B type for version >= 35
-int C_FIELDS_2[8] = {0,2,3,4,5,6,-1,-1}; // Fields selected for CodeFlag (C) type for version >= 35.
-int D_FIELDS_2[8] = {2,5,3,6,-1,-1,-1,-1}; // Fields selected for D type (Common sequences)
+int B_FIELDS_2[8] = {2,3,4,5,6,7,8,-1}; // fields selected for table B type for 38 > version >= 35
+int C_FIELDS_2[8] = {0,2,3,4,5,6,-1,-1}; // Fields selected for CodeFlag (C) type for 38 > version >= 35.
+int D_FIELDS_2[8] = {2,5,3,6,-1,-1,-1,-1}; // Fields selected for D type (Common sequences) for 38 > version >= 35
+
+int B_FIELDS_3[8] = {2,3,11,4,5,6,7,-1}; // fields selected for table B type for version >= 38
+int C_FIELDS_3[8] = {0,2,3,4,5,6,-1,-1}; // Fields selected for CodeFlag (C) type for version >= 38.
+int D_FIELDS_3[8] = {2,5,3,6,-1,-1,-1,-1}; // Fields selected for D type (Common sequences) for version >= 38
+
+
+
 
 void print_usage ( void )
 {
@@ -62,7 +69,8 @@ void print_usage ( void )
   printf ( "       -h Print this help\n" );
   printf ( "       -e Source ECMWF, default WMO\n" );
   printf ( "       -t table_type. (A = TableA, B = TableB, C = CodeFlag, D = TableD)\n" );
-  printf ( "       -2 Versión 35 or newest\n");
+  printf ( "       -2 Version 35, 36 or 37\n");
+  printf ( "       -3 Version 38 or newest\n");
 }
 
 
@@ -81,7 +89,7 @@ int main ( int argc, char *argv[] )
   TABLE_TYPE[0] = 0;
   INPUT_FILE[0] = 0;
   IS_WMO = 1;
-  while ( ( iopt = getopt ( argc, argv, "hei:t:2" ) ) !=-1 )
+  while ( ( iopt = getopt ( argc, argv, "hei:t:23" ) ) !=-1 )
     switch ( iopt )
       {
       case 'i':
@@ -94,6 +102,9 @@ int main ( int argc, char *argv[] )
         break;
       case '2':
         IS_WMO = 2;
+        break;
+      case '3':
+        IS_WMO = 3;
         break;
       case 'e':
       case 'E':
@@ -135,22 +146,28 @@ int main ( int argc, char *argv[] )
         case 'b':
           if (IS_WMO == 1)  
             fs = & ( B_FIELDS[0] );
-          else
+          else if (IS_WMO == 2)
             fs = & ( B_FIELDS_2[0] );
+          else 
+            fs = & ( B_FIELDS_3[0] );
           break;
         case 'C':
         case 'c':
           if (IS_WMO == 1)  
             fs = & ( C_FIELDS[0] );
-          else
+          else if (IS_WMO == 2)
             fs = & ( C_FIELDS_2[0] );
+          else
+            fs = & ( C_FIELDS_3[0] );
           break;
         case 'D':
         case 'd':
           if (IS_WMO == 1)  
             fs = & ( D_FIELDS[0] );
-          else
+          else if (IS_WMO == 2)
             fs = & ( D_FIELDS_2[0] );
+          else
+            fs = & ( D_FIELDS_3[0] );
           break;
         default:
           fprintf ( stderr, "%s: Error, bad '%s' table type\n", SELF, TABLE_TYPE );

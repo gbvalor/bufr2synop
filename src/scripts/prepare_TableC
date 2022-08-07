@@ -16,6 +16,7 @@ CONVERTER=/usr/local/bin/build_bufrdeco_tables
 # versions
 WMO_VERSIONS="18_0_0 18_1_0 19_0_0 19_1_1 20_0_0 21_0_0 22_0_1 23_0_0 24_0_0 25_0_0 26_0_0 27_0_0 28_0_0 29_0_0 30_0_0 31_0_0 32_0_0 33_0_0 34_0_0"
 WMO_VERSIONS_2="35_0_0 36_0_0 37_0_0"
+WMO_VERSIONS_3="38_1_0"
 
 ECMWF_VERSIONS="13 14 15 16 17"
 
@@ -31,6 +32,13 @@ for ver in ${WMO_VERSIONS_2} ; do
     ${CONVERTER} -2 -i ${WMO_DIR}/BUFRCREX_${ver}/BUFRCREX_CodeFlag_en.txt -t C > BUFR_${ver}_TableC_en.csv
   fi  
 done  
+
+for ver in ${WMO_VERSIONS_3} ; do
+  if test ! -s BUFR_${ver}_TableC_en.csv ; then
+    ${CONVERTER} -3 -i ${WMO_DIR}/BUFRCREX_${ver}/BUFRCREX_CodeFlag_en.txt -t C > BUFR_${ver}_TableC_en.csv
+  fi  
+done  
+
 
 # ECMWF table C process
 for ver in ${ECMWF_VERSIONS} ; do
