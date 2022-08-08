@@ -81,7 +81,7 @@ To build the package
         make
 
         
-### BUILD USING GNU AUTMAKE/AUTOTOOLS ###
+### BUILD USING GNU AUTOMAKE/AUTOTOOLS ###
 
 Assumimg you are in root source directory *bufr2synop/* you should build an install in a separate directory
 tree. Let assume you'll build in a new *bunfr2synop/buld/* directory
@@ -148,9 +148,14 @@ or
 
 Because new shared libraries may be installed, is recommended to execute **ldconfig** command
 
-        /sbin/ldconfig
+        sudo /sbin/ldconfig
+        
+or
+
+        su -c "/sbin/ldconfig"
         
 
+        
 ## EXAMPLES OF USE ##
 
 In a working dir we want to get a **BUFR** archive from **NOAA GTS gateway** and see the reports we can extract
