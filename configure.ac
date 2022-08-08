@@ -1,3 +1,15 @@
+###########################################################################
+#   Project: bufr2synop                                                   #
+#                                                                         #
+#   Copyright (C) 2016-2022 by Guillermo Ballester Valor                  #
+#   gbvalor@ogimet.com                                                    #
+#                                                                         #
+#   GNU General Public License v2 or above                                #
+###########################################################################
+#
+#  configure.ac for bufr2synop project
+#
+
 AC_INIT([bufr2synop],[0.17.0])
 AC_CONFIG_SRCDIR([src/apps/bufr2synop.c])
 AM_INIT_AUTOMAKE

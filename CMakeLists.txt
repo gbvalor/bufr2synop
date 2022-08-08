@@ -28,6 +28,8 @@ SET(VERSION_PATCH ${PROJECT_VERSION_PATCH})
 SET(PACKAGE_STRING "${PROJECT_NAME} ${PROJECT_VERSION}")
 SET(BUILD_USING_CMAKE 1)
 
+message (STATUS "** Configuring package ${PROJECT_NAME}. Version ${PROJECT_VERSION} **")
+
 # current source and build directory at compile time will be in include directories 
 SET (CMAKE_INCLUDE_CURRENT_DIR ON)
 

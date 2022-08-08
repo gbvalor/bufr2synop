@@ -58,7 +58,7 @@ use *--enable-bufrdc=yes* in configure stage (see below) use it.
 ### BUILD USING GNU AUTMAKE/AUTOTOOLS ###
 
 If you uses git repository, first time you clone the code you need to set the autotools files. 
-To achieve this just from bufr2synop directory
+To achieve this just from *bufr2synop/* directory
 
         make -f Makefile.cvs
 
@@ -79,6 +79,32 @@ If you want to use some apps using **ECMWF bufrdc library** you should use
 To build the package
 
         make
+
+        
+### BUILD USING GNU AUTMAKE/AUTOTOOLS ###
+
+Assumimg you are in root source directory *bufr2synop/* you should build an install in a separate directory
+tree. Let assume you'll build in a new *bunfr2synop/buld/* directory
+
+        mkdir build
+        cd build
+
+Then configure using cmake
+
+        cmake .. 
+        
+if you want to use **ECMWF BUFRDC** package you shoud configue with
+
+        cmake .. -DBUFRDC=1
+        
+but this option **is deprecated**. 
+
+To build the package
+
+        make
+
+        
+## WHAT WE GET AFTER A SUCCESSFULL BUILD?
 
 Assume you built the package. you will have up to five binaries:
 
@@ -104,6 +130,10 @@ And also the libraries :
                      ***bufr2synop***. It seems the new name is the right name.
 
 
+Note that if you build using GNU autotools you will get both static and dynamic vesions of libraries. Using cmake
+you just get shared libraries.
+
+
 ## INSTALL ##
 
 See *INSTALL* file in this package to get details. If you use default settings, then install
@@ -116,6 +146,10 @@ or
         su -c "make install"
 
 
+Because new shared libraries may be installed, is recommended to execute **ldconfig** command
+
+        /sbin/ldconfig
+        
 
 ## EXAMPLES OF USE ##
 
