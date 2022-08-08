@@ -54,7 +54,7 @@ char *bufrdeco_get_version(char *version, char *build, char *builder, int *versi
     {
        c = build;
 #ifdef __INTEL_COMPILER
-       c += sprintf(build, "using INTEL C compiler icc %s ", __VERSION__);
+       c += sprintf(build, "using INTEL C compiler icc %s ", __INTEL_COMPILER);
 #elifdef __GNUC__ 
        c += sprintf(build, "using GNU C compiler gcc %d.%d.%d ", __GNUC__ , __GNUC_MINOR__ , __GNUC_PATCHLEVEL__);
 #endif
