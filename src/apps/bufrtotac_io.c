@@ -79,9 +79,9 @@ char *bufrtotac_get_version(char *version, char *build, char *builder, int *vers
   if (build)
     {
        c = build;
-#ifdef __INTEL_COMPILER
-       c += sprintf(build, "using INTEL C compiler icc %s ", __INTEL_COMPILER);
-#elifdef __GNUC__ 
+#if defined(__INTEL_COMPILER)
+       c += sprintf(build, "using INTEL C compiler icc %d.%d ", __INTEL_COMPILER, __INTEL_COMPILER_UPDATE);
+#elif defined(__GNUC__) 
        c += sprintf(build, "using GNU C compiler gcc %d.%d.%d ", __GNUC__ , __GNUC_MINOR__ , __GNUC_PATCHLEVEL__);
 #endif
        sprintf(c,"at %s %s",__DATE__,__TIME__);
@@ -111,7 +111,7 @@ void print_version()
    bufr2tac_get_version(version, build, builder, NULL, NULL, NULL);
    printf ("Linked to bufr2tac library version '%s' built %s and %s.\n", version, build, builder);
    bufrdeco_get_version(version, build, builder, NULL, NULL, NULL);
-   printf ("Linked to decobufr library version '%s' built %s and %s.\n", version, build, builder);
+   printf ("Linked to bufrdeco library version '%s' built %s and %s.\n", version, build, builder);
 }
 
 
