@@ -1,10 +1,20 @@
+###########################################################################
+#   Project: bufr2synop                                                   #
+#                                                                         #
+#   Copyright (C) 2016-2022 by Guillermo Ballester Valor                  #
+#   gbvalor@ogimet.com                                                    #
+#                                                                         #
+#   GNU General Public License v2 or above                                #
+###########################################################################
 #
 # CMakeLists.txt for bufr2synop/src/apps
 #
 
-INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} ${bufr2synop_SOURCE_DIR}/src/bufrdeco ${bufr2synop_SOURCE_DIR}/src/libraries ${all_includes} )
+INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} ${bufr2synop_SOURCE_DIR}/src/bufrdeco 
+                     ${bufr2synop_SOURCE_DIR}/src/libraries ${all_includes} )
 
-LINK_DIRECTORIES( ${bufr2synop_SOURCE_DIR}/src/bufrdeco ${bufr2synop_SOURCE_DIR}/src/libraries ${dir_libs})
+LINK_DIRECTORIES( ${bufr2synop_SOURCE_DIR}/src/bufrdeco ${bufr2synop_SOURCE_DIR}/src/libraries 
+                  ${dir_libs})
 
 IF (BUFRDC)
 

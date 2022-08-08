@@ -1,4 +1,12 @@
-#
+###########################################################################
+#   Project: bufr2synop                                                   #
+#                                                                         #
+#   Copyright (C) 2016-2022 by Guillermo Ballester Valor                  #
+#   gbvalor@ogimet.com                                                    #
+#                                                                         #
+#   GNU General Public License v2 or above                                #
+###########################################################################
+# 
 # CMalkeLists.txt file for bufr2synop/src/bufrdeco
 #
 
@@ -6,7 +14,7 @@ INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} ${all_includes})
 
 LINK_DIRECTORIES( ${dir_libs} )
 
-add_library(bufrdeco bufrdeco_read.c bufrdeco_tableb.c bufrdeco_tablec.c bufrdeco_tabled.c 
+add_library(bufrdeco SHARED bufrdeco_read.c bufrdeco_tableb.c bufrdeco_tablec.c bufrdeco_tabled.c 
         bufrdeco_utils.c bufrdeco_tree.c bufrdeco_data.c bufrdeco_compressed.c bufrdeco_f2.c 
         bufrdeco_print.c bufrdeco_memory.c bufrdeco_csv.c bufrdeco_tableb_csv.c bufrdeco_tablec_csv.c 
         bufrdeco_tabled_csv.c bufrdeco_ecmwf.c bufrdeco_wmo.c bufrdeco_print_html.c)

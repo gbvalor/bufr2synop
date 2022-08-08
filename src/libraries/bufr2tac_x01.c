@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -152,6 +152,8 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         }
       break;
     case 87: // 0 01 087. WMO marine observing platform extended identifier
+             // See https://community.wmo.int/rules-allocating-wmo-numbers
+             // A1bwnnn is equivalent to A1Bwnnnnn when nnnnn < 1000 
       if ( s->a->val < 100000000 )
         {
           sprintf ( aux, "%07.0lf", s->a->val );

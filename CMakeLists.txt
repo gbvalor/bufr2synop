@@ -1,6 +1,15 @@
+###########################################################################
+#   Project: bufr2synop                                                   #
+#                                                                         #
+#   Copyright (C) 2016-2022 by Guillermo Ballester Valor                  #
+#   gbvalor@ogimet.com                                                    #
+#                                                                         #
+#   GNU General Public License v2 or above                                #
+###########################################################################
 #
 # CMadkeLists.txt for root directory for project bufr2synop
 #
+
 CMAKE_MINIMUM_REQUIRED (VERSION 2.8.12)
 
 # Next line is to set versioºn 
