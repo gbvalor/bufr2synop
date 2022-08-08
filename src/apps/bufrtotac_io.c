@@ -111,7 +111,7 @@ void print_version()
    bufr2tac_get_version(version, build, builder, NULL, NULL, NULL);
    printf ("Linked to bufr2tac library version '%s' built %s and %s.\n", version, build, builder);
    bufrdeco_get_version(version, build, builder, NULL, NULL, NULL);
-   printf ("Linked to decobufr library version '%s' built %s and %s.\n", version, build, builder);
+   printf ("Linked to bufrdeco library version '%s' built %s and %s.\n", version, build, builder);
 }
 
 
