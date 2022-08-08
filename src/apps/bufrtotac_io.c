@@ -75,16 +75,18 @@ char *bufrtotac_get_version(char *version, char *build, char *builder, int *vers
   sprintf(version, "%s", VERSION);
   // default values
   sscanf(version, "%d.%d.%d", &major, &minor, &patch);
+
   if (build)
     {
        c = build;
-#ifdef __GNUC__ 
-       c += sprintf(build, "using GNU C compiler gcc %d.%d.%d ", __GNUC__ , __GNUC_MINOR__ , __GNUC_PATCHLEVEL__);
-#elif def __INTEL_COMPILER
+#ifdef __INTEL_COMPILER
        c += sprintf(build, "using INTEL C compiler icc %s ", __VERSION__);
+#elifdef __GNUC__ 
+       c += sprintf(build, "using GNU C compiler gcc %d.%d.%d ", __GNUC__ , __GNUC_MINOR__ , __GNUC_PATCHLEVEL__);
 #endif
        sprintf(c,"at %s %s",__DATE__,__TIME__);
     }
+
   if (builder)
 #ifdef BUILD_USING_CMAKE
     strcpy(builder, "cmake");
