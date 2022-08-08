@@ -835,6 +835,9 @@ char * bufrdeco_print_atom_data_html ( char *target, struct bufr_atom_data *a, u
 char * get_formatted_value_from_escale ( char *fmt, int32_t escale, double val );
 
 
+// Abut build and version
+char *bufrdeco_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch);
+
 // To parse. General
 int bufrdeco_parse_tree ( struct bufrdeco *b );
 int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struct bufrdeco_compressed_data_references *r, struct bufrdeco *b );

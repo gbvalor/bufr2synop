@@ -287,6 +287,7 @@ struct metreport
 };
 
 /* Functions definitions */
+char *bufr2tac_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch);
 
 void clean_buoy_chunks ( struct buoy_chunks *b );
 void clean_synop_chunks ( struct synop_chunks *s );

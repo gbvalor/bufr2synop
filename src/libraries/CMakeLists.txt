@@ -7,14 +7,14 @@
 #   GNU General Public License v2 or above                                #
 ###########################################################################
 #
-# CMakeLists.txt for bufr2synop/src/link_libraries
+# CMakeLists.txt for bufr2synop/src/libraries
 #
 
-INCLUDE_DIRECTORIES( ${bufr2synop_SOURCE_DIR}/src/bufrdeco ${all_includes})
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR} ${bufr2synop_SOURCE_DIR}/src/bufrdeco ${all_includes})
 LINK_DIRECTORIES(${bufr2synop_SOURCE_DIR}/src/librerias ${dir_libs})
 
-add_library(bufr2tac SHARED bufr2tac.h metbuoy.h metsynop.h mettemp.h metclimat.h metcommon.h
-    bufr2tac_buoy.c bufr2tac_csv.c bufr2tac_env.c 
+add_library(bufr2tac SHARED bufr2tac.h bufr2tac.c metbuoy.h metsynop.h mettemp.h metclimat.h 
+    metcommon.h bufr2tac_buoy.c bufr2tac_csv.c bufr2tac_env.c 
     bufr2tac_io.c bufr2tac_json.c bufr2tac_mrproper.c bufr2tac_print.c bufr2tac_sqparse.c 
     bufr2tac_tablec.c bufr2tac_synop.c bufr2tac_temp.c bufr2tac_utils.c bufr2tac_x01.c 
     bufr2tac_x02.c bufr2tac_x04.c bufr2tac_x05.c bufr2tac_x06.c bufr2tac_x07.c 

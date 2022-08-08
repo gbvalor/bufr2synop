@@ -21,13 +21,17 @@
  \file bufrtotac_io.c
  \brief file with the i/o code for binary bufrtotac
  */
+#ifndef CONFIG_H
+# include "config.h"
+# define CONFIG_H
+#endif
 
 #include "bufrtotac.h"
 
 void print_usage ( void )
 {
-  printf ( "%s %s\n", SELF, PACKAGE_VERSION );
-  printf ( "Usage: \n" );
+  print_version ();
+  printf ( "\nUsage: \n" );
   printf ( "%s -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-X][-c][-h]\n" , SELF );
   printf ( "       -c. The output is in csv format\n" );
   printf ( "       -D. Print some debug info\n" );
@@ -48,6 +52,66 @@ void print_usage ( void )
   printf ( "       -x. The output is in xml format\n" );
   printf ( "       -X. Try to extract an embebed bufr in a file seraching for a first '7777' after first 'BUFR'\n");
 }
+
+/*!
+  \fn char *bufrtotac_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch)
+  \brief Get strings with version information and build date and time
+  \param version  pointer to string with version as result if not NULL
+  \param build pointer to string with compiler and compilation date and time if not NULL 
+  \param builder pointer to string with builder utility. 'cmake' or 'autotools' if not NULL 
+  \param version_major pointer to string with version_major component if not NULL
+  \param version_minor pointer to string with version_minor component if not NULL
+  \param version_patch pointer to string with version_patch component if not NULL
+  
+  Retuns string pointer \ref version.  
+ */
+char *bufrtotac_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch)
+{
+  int major = 0, minor = 0, patch = 0;
+  char *c;
+  
+  if (version == NULL)
+    return NULL;
+  sprintf(version, "%s", VERSION);
+  // default values
+  sscanf(version, "%d.%d.%d", &major, &minor, &patch);
+  if (build)
+    {
+       c = build;
+#ifdef __GNUC__ 
+       c += sprintf(build, "using GNU C compiler gcc %d.%d.%d ", __GNUC__ , __GNUC_MINOR__ , __GNUC_PATCHLEVEL__);
+#elif def __INTEL_COMPILER
+       c += sprintf(build, "using INTEL C compiler icc %s ", __VERSION__);
+#endif
+       sprintf(c,"at %s %s",__DATE__,__TIME__);
+    }
+  if (builder)
+#ifdef BUILD_USING_CMAKE
+    strcpy(builder, "cmake");
+#else
+    strcpy(builder, "autotools");
+#endif    
+  if (version_major)
+    *version_major = major;
+  if (version_minor)
+    *version_minor = minor;
+  if (version_patch)
+    *version_patch = patch;
+  return version;  
+}
+
+void print_version()
+{
+   char version[16], build[128], builder[32];
+
+   bufrtotac_get_version(version, build, builder, NULL, NULL, NULL);
+   printf ("%s: Version '%s' built %s and %s.\n" , SELF, VERSION, build, builder);
+   bufr2tac_get_version(version, build, builder, NULL, NULL, NULL);
+   printf ("Linked to bufr2tac library version '%s' built %s and %s.\n", version, build, builder);
+   bufrdeco_get_version(version, build, builder, NULL, NULL, NULL);
+   printf ("Linked to decobufr library version '%s' built %s and %s.\n", version, build, builder);
+}
+
 
 /*!
   \fn int read_args( int _argc, char * _argv[])
@@ -127,7 +191,7 @@ int read_args ( int _argc, char * _argv[] )
         VERBOSE = 1;
         break;
       case 'v':
-        printf ( "%s %s\n", SELF, PACKAGE_VERSION );
+        print_version();
         exit ( EXIT_SUCCESS );
         break;
       case 's':

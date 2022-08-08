@@ -21,13 +21,20 @@
    \file bufrnoaa_io.c
    \brief File with I/O code for bufrnoaa binary
 */
+#ifndef CONFIG_H
+# include "config.h"
+# define CONFIG_H
+#endif
+
 #include "bufrnoaa.h"
 
 void print_usage ( void )
 {
+  print_version();
   printf ( "Usage: \n" );
-  printf ( "bufrnoaa -i input_file [-h][-f][-l][-F prefix][-T T2_selection][-O selo][-S sels][-U selu]\n" );
+  printf ( "\n%s -i input_file [-h][-v][-f][-l][-F prefix][-T T2_selection][-O selo][-S sels][-U selu]\n" , OWN);
   printf ( "   -h Print this help\n" );
+  printf ( "   -v Print information about build and version\n" );
   printf ( "   -i Input file. Complete input path file for NOAA *.bin bufr archive file\n" );
   printf ( "   -2 Input file is formatted in alternative form: Headers has '#' instead of '*' marks and no sep after '7777'\n");
   printf ( "   -l list the names of reports in input file\n" );
@@ -48,6 +55,61 @@ void print_usage ( void )
   printf ( "      By default all A1 are selected\n" );
   printf ( "   -U sels. String with selection for A1 when T2='U'\n" );
   printf ( "      By default all A1 are selected\n" );
+}
+
+/*!
+  \fn char *bufrnoaa_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch)
+  \brief Get strings with version information and build date and time
+  \param version  pointer to string with version as result if not NULL
+  \param build pointer to string with compiler and compilation date and time if not NULL 
+  \param builder pointer to string with builder utility. 'cmake' or 'autotools' if not NULL 
+  \param version_major pointer to string with version_major component if not NULL
+  \param version_minor pointer to string with version_minor component if not NULL
+  \param version_patch pointer to string with version_patch component if not NULL
+  
+  Retuns string pointer \ref version.  
+ */
+char *bufrnoaa_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch)
+{
+  int major = 0, minor = 0, patch = 0;
+  char *c;
+  
+  if (version == NULL)
+    return NULL;
+  sprintf(version, "%s", VERSION);
+  // default values
+  sscanf(version, "%d.%d.%d", &major, &minor, &patch);
+  if (build)
+    {
+       c = build;
+#ifdef __GNUC__ 
+       c += sprintf(build, "using GNU C compiler gcc %d.%d.%d ", __GNUC__ , __GNUC_MINOR__ , __GNUC_PATCHLEVEL__);
+#elif def __INTEL_COMPILER
+       c += sprintf(build, "using INTEL C compiler icc %s ", __VERSION__);
+#endif
+       sprintf(c,"at %s %s",__DATE__,__TIME__);
+    }
+  if (builder)
+#ifdef BUILD_USING_CMAKE
+    strcpy(builder, "cmake");
+#else
+    strcpy(builder, "autotools");
+#endif    
+  if (version_major)
+    *version_major = major;
+  if (version_minor)
+    *version_minor = minor;
+  if (version_patch)
+    *version_patch = patch;
+  return version;  
+}
+
+void print_version()
+{
+   char version[16], build[64], builder[32];
+
+   bufrnoaa_get_version(version, build, builder, NULL, NULL, NULL);
+   printf ("%s: Version '%s' built %s and %s.\n" , OWN, VERSION, build, builder);
 }
 
 /*!
@@ -79,7 +141,7 @@ int read_args ( int _argc, char * _argv[] )
   /*
      Read input options
   */
-  while ( ( iopt = getopt ( _argc, _argv, "h2i:flF:O:qS:T:U:" ) ) !=-1 )
+  while ( ( iopt = getopt ( _argc, _argv, "hv2i:flF:O:qS:T:U:" ) ) !=-1 )
     switch ( iopt )
       {
       case 'i':
@@ -131,6 +193,10 @@ int read_args ( int _argc, char * _argv[] )
             strcpy ( SELU, optarg );
           }
         break;
+      case 'v':
+          print_version();
+          exit ( EXIT_SUCCESS );
+        break;  
       case 'h':
       default:
         print_usage();

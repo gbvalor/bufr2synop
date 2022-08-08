@@ -1,3 +1,15 @@
+###########################################################################
+#   Project: bufr2synop                                                   #
+#                                                                         #
+#   Copyright (C) 2016-2022 by Guillermo Ballester Valor                  #
+#   gbvalor@ogimet.com                                                    #
+#                                                                         #
+#   GNU General Public License v2 or above                                #
+###########################################################################
+#
+#  Makefile.am for bufr2synop/src/libraries
+#
+
 METASOURCES = AUTO
 
 # set the include path found by configure
@@ -7,7 +19,7 @@ include_HEADERS = bufr2tac.h metbuoy.h metsynop.h mettemp.h metclimat.h metcommo
 
 lib_LTLIBRARIES = libbufr2tac.la
 
-libbufr2tac_la_SOURCES = bufr2tac_buoy.c bufr2tac_csv.c bufr2tac_env.c \
+libbufr2tac_la_SOURCES = bufr2tac.h bufr2tac.c bufr2tac_buoy.c bufr2tac_csv.c bufr2tac_env.c \
 	bufr2tac_io.c bufr2tac_json.c bufr2tac_mrproper.c bufr2tac_print.c bufr2tac_sqparse.c \
 	bufr2tac_tablec.c bufr2tac_synop.c bufr2tac_temp.c bufr2tac_utils.c bufr2tac_x01.c \
 	bufr2tac_x02.c bufr2tac_x04.c bufr2tac_x05.c bufr2tac_x06.c bufr2tac_x07.c \
