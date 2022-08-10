@@ -40,7 +40,7 @@ int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error )
   int nt;
   uint32_t ix;
   char l[CSV_MAXL];
-  char caux[256];
+  char caux[512];
   char *tk[16];
   struct bufr_descriptor desc;
 

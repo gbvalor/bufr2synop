@@ -106,7 +106,7 @@
   \def BUFR_EXPLAINED_LENGTH
   \brief Maximum length for a explained descriptor
 */
-#define BUFR_EXPLAINED_LENGTH (256)
+#define BUFR_EXPLAINED_LENGTH (512)
 
 /*!
   \def CSV_MAXL

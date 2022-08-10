@@ -134,6 +134,8 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       break;
 
     case 63: // 0 10 063 . Characteristic of pressure tendency
+      if ( s->ival > 9 || s->ival < 0)
+        return 1;
       sprintf ( syn->s1.a, "%1d",s->ival );
       syn->mask |= SYNOP_SEC1;
       break;

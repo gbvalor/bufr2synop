@@ -81,6 +81,8 @@ int syn_parse_x07 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       if ( syn->s0.h0h0h0h0[0] == 0 )
         {
+          if (s->ival > 9999 || s->ival < -9999)
+            return 1;
           sprintf ( syn->s0.h0h0h0h0, "%04d", s->ival );
           syn->s0.im[0] = '1';// set unit as m
           s->mask |= SUBSET_MASK_HAVE_ALTITUDE;

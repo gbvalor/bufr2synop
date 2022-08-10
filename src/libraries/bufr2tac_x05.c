@@ -78,7 +78,9 @@ int syn_parse_x05 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         s->mask |= SUBSET_MASK_LATITUDE_SOUTH; // Sign for latitude
       s->mask |= SUBSET_MASK_HAVE_LATITUDE;
       ia = ( int ) ( fabs ( s->val ) * 10.0 + 0.5 );
-      sprintf ( syn->s0.LaLaLa, "%03d",ia );
+      if (ia > 999 || ia < 0)
+        return 1;
+      sprintf ( syn->s0.LaLaLa, "%03d", ia );
       syn->s0.Ula[0] = syn->s0.LaLaLa[1];
       s->lat = s->val;
       break;

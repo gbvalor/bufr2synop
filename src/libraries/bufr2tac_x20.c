@@ -396,6 +396,10 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "960" );
           s->SnSn = 960;
 
+          if ( s->ival < 0 )
+            {
+              return 0;
+            }
           if ( s->ival < 100 )
             {
               sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp , "%02d", s->ival );
