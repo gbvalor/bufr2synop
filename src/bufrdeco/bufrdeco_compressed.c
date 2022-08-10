@@ -809,7 +809,8 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
     }
 
   // numeric data
-  if ( r->has_data == 0 )
+  if ( r->has_data == 0 || 
+    r->inc_bits > 31 ) // ¿no more than 31 bits for numeric data?
     {
       a->val = MISSING_REAL;
       a->mask |= DESCRIPTOR_VALUE_MISSING;
@@ -828,7 +829,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
       // extract inc_bits data
       if ( get_bits_as_uint32_t ( &ival0, &has_data, &b->sec4.raw[4], & bit_offset, r->inc_bits ) == 0 )
         {
-          sprintf ( b->error, "get_bufr_atom_data_from_compressed_data_ref(): Cannot get inc_bits from '%s'\n", r->desc.c );
+          sprintf ( b->error, "get_bufr_atom_data_from_compressed_data_ref(): Cannot get %d inc_bits from '%s'\n", r->inc_bits , r->desc.c );
           return 1;
         }
 
