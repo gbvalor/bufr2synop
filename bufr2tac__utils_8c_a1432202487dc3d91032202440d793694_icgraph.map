@@ -1,3 +1,4 @@
 <map id="guess_gts_header" name="guess_gts_header">
-<area shape="rect" id="node2" href="$bufr2synop_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="180,5,231,32"/>
+<area shape="rect" id="node1" title="Guess the WMO GTS header from filename." alt="" coords="104,5,232,32"/>
+<area shape="rect" id="node2" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,5,56,32"/>
 </map>

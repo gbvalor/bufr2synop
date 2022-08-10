@@ -1,9 +1,12 @@
 <map id="parse_csv_line" name="parse_csv_line">
-<area shape="rect" id="node2" href="$bufrdeco__tableb__csv_8c.html#ada092a9bc1d9651f8188268e7edfecce" title="Read a Table B file from a WMO csv formatted file and set the result in a struct bufr_tableb. " alt="" coords="161,5,303,32"/>
-<area shape="rect" id="node6" href="$bufrdeco__tablec__csv_8c.html#a5e814612492ff724c62bcbd72e939a87" title="Reads a file with table C content (Code table and bit flags) according with csv WMO format..." alt="" coords="161,56,303,83"/>
-<area shape="rect" id="node7" href="$bufrdeco__tabled__csv_8c.html#adba20cd58c355e1283d7cf0832324d51" title="Reads a file with table D content according with WMO csv format. " alt="" coords="160,107,304,133"/>
-<area shape="rect" id="node8" href="$build__bufrdeco__tables_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="207,157,257,184"/>
-<area shape="rect" id="node3" href="$bufrdeco__wmo_8c.html#aab232fe5ed0b1b04148df8b31181fc50" title="Read the tables according with bufr file data from a bufr table directory. " alt="" coords="352,56,503,83"/>
-<area shape="rect" id="node4" href="$bufrdeco__read_8c.html#ae3cfc6802c196511223adc0a6324e4af" title="Read bufr file and does preliminary and first decode pass. " alt="" coords="551,56,684,83"/>
-<area shape="rect" id="node5" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="732,56,783,83"/>
+<area shape="rect" id="node1" title="Parse a csv line." alt="" coords="896,81,1003,108"/>
+<area shape="rect" id="node2" href="$bufrdeco__tableb__csv_8c.html#ada092a9bc1d9651f8188268e7edfecce" title="Read a Table B file from a WMO csv formatted file and set the result in a struct bufr_tableb." alt="" coords="702,5,847,32"/>
+<area shape="rect" id="node8" href="$bufrdeco__tablec__csv_8c.html#a5e814612492ff724c62bcbd72e939a87" title="Reads a file with table C content (Code table and bit flags) according with csv WMO format." alt="" coords="702,56,847,83"/>
+<area shape="rect" id="node9" href="$bufrdeco__tabled__csv_8c.html#adba20cd58c355e1283d7cf0832324d51" title="Reads a file with table D content according with WMO csv format." alt="" coords="701,107,848,133"/>
+<area shape="rect" id="node10" href="$build__bufrdeco__tables_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="749,157,800,184"/>
+<area shape="rect" id="node3" href="$bufrdeco__wmo_8c.html#aa5f096837d0765e70e5fa48a05c493ff" title="Read the tables according with bufr file data from a bufr table directory." alt="" coords="499,56,653,83"/>
+<area shape="rect" id="node4" href="$bufrdeco__read_8c.html#a24b31d8da871a691ca06579c7cf92ab5" title="Read a memory buffer and does preliminary and first decode pass." alt="" coords="303,56,451,83"/>
+<area shape="rect" id="node5" href="$bufrdeco__read_8c.html#ad44753d6491d1785ed3fe38af6557da6" title="Read file and try to find a bufr report inserted in. Once found do the same that bufrdeco_read_file()" alt="" coords="104,31,255,57"/>
+<area shape="rect" id="node7" href="$bufrdeco__read_8c.html#ae3cfc6802c196511223adc0a6324e4af" title="Read bufr file and does preliminary and first decode pass." alt="" coords="111,81,248,108"/>
+<area shape="rect" id="node6" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,56,56,83"/>
 </map>

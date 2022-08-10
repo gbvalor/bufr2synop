@@ -1,0 +1,11 @@
+<map id="bufr_read_tables_ecmwf" name="bufr_read_tables_ecmwf">
+<area shape="rect" id="node1" title=" " alt="" coords="5,157,172,184"/>
+<area shape="rect" id="node2" href="$bufrdeco__tableb_8c.html#adbb96e45b9fe584f936c841cfb962d7c" title="Read a Table B file and set the result in a struct bufr_tableb." alt="" coords="241,56,360,83"/>
+<area shape="rect" id="node6" href="$bufrdeco__tablec_8c.html#a77f656761635cd3b472aca002f29aa54" title="Reads a file with table C content according with ECMWF format." alt="" coords="241,107,360,133"/>
+<area shape="rect" id="node7" href="$bufrdeco__tabled_8c.html#ad425183fbc0e44b92ad333f12bd41f4e" title="Reads a file with table D content according with ECMWF format." alt="" coords="241,157,361,184"/>
+<area shape="rect" id="node8" href="$bufrdeco__memory_8c.html#a0576a87972353fb9e7a569fa1f905e03" title="Init a struct bufr_tables allocating space." alt="" coords="231,208,370,235"/>
+<area shape="rect" id="node9" href="$bufrdeco__ecmwf_8c.html#aad20c8d270274cd0237ab0823003fcfd" title=" " alt="" coords="220,259,381,285"/>
+<area shape="rect" id="node3" href="$bufrdeco__utils_8c.html#ae2667eaa0605459867e88af6219e9592" title=" " alt="" coords="442,5,569,32"/>
+<area shape="rect" id="node4" href="$bufrdeco__utils_8c.html#a454f64137d0cf7e0c4b3e018a52ddd9a" title="get a null termitated c&#45;string from an array of unsigned chars" alt="" coords="429,56,581,83"/>
+<area shape="rect" id="node5" href="$bufrdeco__utils_8c.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary" alt="" coords="429,107,581,133"/>
+</map>

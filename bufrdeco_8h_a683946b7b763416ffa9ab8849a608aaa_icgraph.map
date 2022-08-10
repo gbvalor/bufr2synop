@@ -1,7 +1,8 @@
 <map id="bufrdeco_init_compressed_data_references" name="bufrdeco_init_compressed_data_references">
-<area shape="rect" id="node2" href="$bufrdeco__memory_8c.html#a8c43c02c2203d3b7b482fd86999478a4" title="Clean a struct bufrdeco_compressed_data_references. " alt="" coords="225,5,412,47"/>
-<area shape="rect" id="node3" href="$bufrdeco__compressed_8c.html#ab5056984d71413ec42f7bb6971de2ce8" title="Parse a compressed data bufr. " alt="" coords="225,71,412,98"/>
-<area shape="rect" id="node4" href="$bufrdeco__data_8c.html#a90316581dc8355c7a63928ac3063fb32" title="User interface to decode a BUFR subset. " alt="" coords="460,64,615,105"/>
-<area shape="rect" id="node5" href="$bufrdeco__data_8c.html#a9775040e8bec8247de95cb4bc0afcfd0" title="Parse and get a struct bufrdeco_subset_sequence_data. " alt="" coords="663,64,803,105"/>
-<area shape="rect" id="node6" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="851,71,901,98"/>
+<area shape="rect" id="node1" title="Init a struct bufrdeco_compressed_data_references." alt="" coords="745,35,924,76"/>
+<area shape="rect" id="node2" href="$bufrdeco__memory_8c.html#a8c43c02c2203d3b7b482fd86999478a4" title="Clean a struct bufrdeco_compressed_data_references." alt="" coords="504,5,696,47"/>
+<area shape="rect" id="node3" href="$bufrdeco__compressed_8c.html#ab5056984d71413ec42f7bb6971de2ce8" title="Parse a compressed data bufr." alt="" coords="503,71,697,98"/>
+<area shape="rect" id="node4" href="$bufrdeco__data_8c.html#a90316581dc8355c7a63928ac3063fb32" title="User interface to decode a BUFR subset." alt="" coords="296,64,455,105"/>
+<area shape="rect" id="node5" href="$bufrdeco__data_8c.html#a0e0289d12b117e4df8f37f14486d3d71" title="Parse and get a struct bufrdeco_subset_sequence_data." alt="" coords="104,64,248,105"/>
+<area shape="rect" id="node6" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,71,56,98"/>
 </map>

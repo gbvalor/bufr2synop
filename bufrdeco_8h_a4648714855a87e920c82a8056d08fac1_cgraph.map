@@ -1,3 +1,8 @@
 <map id="bufrdeco_print_tree" name="bufrdeco_print_tree">
-<area shape="rect" id="node2" href="$bufrdeco__print_8c.html#af9fef1838b7470615e265969b2e9c012" title="Print a tree of descriptors in a recursive way. " alt="" coords="184,5,315,47"/>
+<area shape="rect" id="node1" title="Print a tree of descriptors." alt="" coords="5,56,140,83"/>
+<area shape="rect" id="node2" href="$bufrdeco__print_8c.html#ae8a394b99aa70839d87876b867e69d29" title="Print a tree of descriptors to a file in a recursive way." alt="" coords="188,49,328,90"/>
+<area shape="rect" id="node3" href="$bufrdeco__tableb_8c.html#a28461deb41aac5215ca930d1c3378b20" title="found a descriptor index in a struct bufr_tableb" alt="" coords="381,5,535,32"/>
+<area shape="rect" id="node5" href="$bufrdeco__utils_8c.html#ac1a6900782df9782c8e1b5d1b373db13" title="check if a descriptor is a delayed descriptor" alt="" coords="376,56,540,83"/>
+<area shape="rect" id="node6" href="$bufrdeco__utils_8c.html#aecab28a7bcc79da2d78872c77ec3e5fc" title="check if a descriptor is a short delayed descriptor" alt="" coords="391,107,525,149"/>
+<area shape="rect" id="node4" href="$bufrdeco__utils_8c.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary" alt="" coords="588,5,740,32"/>
 </map>

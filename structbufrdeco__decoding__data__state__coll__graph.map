@@ -1,0 +1,4 @@
+<map id="bufrdeco_decoding_data_state" name="bufrdeco_decoding_data_state">
+<area shape="rect" id="node1" title="stores the state when expanding a sequence." alt="" coords="5,95,173,136"/>
+<area shape="rect" id="node2" href="$structbufrdeco__bitmap.html" title="Stores all structs bufrdeco_bitmap_element for a bufr bitmap." alt="" coords="29,5,150,32"/>
+</map>

@@ -1,3 +1,4 @@
 <map id="buoy_parse_x01" name="buoy_parse_x01">
-<area shape="rect" id="node2" href="$bufr2tac_8h.html#aef21370a9e78b1263e5bdc0a58a6d596" title="Supress trailing blanks of a string. " alt="" coords="169,5,264,32"/>
+<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 01." alt="" coords="5,5,121,32"/>
+<area shape="rect" id="node2" href="$bufr2tac__utils_8c.html#aef21370a9e78b1263e5bdc0a58a6d596" title="Supress trailing blanks of a string." alt="" coords="169,5,267,32"/>
 </map>

@@ -1,4 +1,5 @@
 <map id="synop_sec5" name="synop_sec5">
-<area shape="rect" id="node2" href="$structdata9.html" title="data9" alt="" coords="23,95,78,121"/>
-<area shape="rect" id="node3" href="$structmisc3.html" title="struct with mixed info for group SpSpspsp at section at section 3. " alt="" coords="22,5,79,32"/>
+<area shape="rect" id="node1" title="contains some of substrings from section 5 when a report is parsed with success" alt="" coords="5,184,96,211"/>
+<area shape="rect" id="node2" href="$structdata9.html" title=" " alt="" coords="23,95,78,121"/>
+<area shape="rect" id="node3" href="$structmisc3.html" title="struct with mixed info for group SpSpspsp at section at section 3." alt="" coords="21,5,80,32"/>
 </map>

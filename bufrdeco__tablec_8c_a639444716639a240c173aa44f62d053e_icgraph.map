@@ -1,0 +1,11 @@
+<map id="bufrdeco_explained_flag_val" name="bufrdeco_explained_flag_val">
+<area shape="rect" id="node1" title=" " alt="" coords="1197,63,1335,104"/>
+<area shape="rect" id="node2" href="$bufrdeco__compressed_8c.html#a3e953cbb9de497fded8393b666902bf2" title="Get atom data from a descriptor for a given subset." alt="" coords="959,21,1149,63"/>
+<area shape="rect" id="node7" href="$bufrdeco__tableb_8c.html#a60d5f3460cfd609e245a5e2342d2ee4d" title="Get data from a table B descriptor." alt="" coords="985,99,1123,126"/>
+<area shape="rect" id="node3" href="$bufrdeco__compressed_8c.html#ad2f986d73d85c08ffa6560d80c244b33" title="Get data for a given subset in a compressed data bufr." alt="" coords="517,5,659,47"/>
+<area shape="rect" id="node4" href="$bufrdeco__data_8c.html#a90316581dc8355c7a63928ac3063fb32" title="User interface to decode a BUFR subset." alt="" coords="296,51,455,92"/>
+<area shape="rect" id="node5" href="$bufrdeco__data_8c.html#a0e0289d12b117e4df8f37f14486d3d71" title="Parse and get a struct bufrdeco_subset_sequence_data." alt="" coords="104,51,248,92"/>
+<area shape="rect" id="node6" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,58,56,85"/>
+<area shape="rect" id="node8" href="$bufrdeco__data_8c.html#a9fab831b9b513d6dfb8235bd909b4acf" title="Decodes a replicated sequence." alt="" coords="721,92,911,133"/>
+<area shape="rect" id="node9" href="$bufrdeco__data_8c.html#a37d001fbe5872fa6c77e8316af1dcd0f" title="decode the data from a subset in a recursive way" alt="" coords="503,95,673,136"/>
+</map>

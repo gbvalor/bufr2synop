@@ -1,4 +1,5 @@
 <map id="syn_parse_x05" name="syn_parse_x05">
-<area shape="rect" id="node2" href="$bufr2tac__x05_8c.html#ad68900eb9017ce4ad199514a9d94a959" title="Converts true direction in grads to D (code table 0700) " alt="" coords="175,5,257,32"/>
-<area shape="rect" id="node3" href="$bufr2tac_8h.html#af3fb0411bdf6ebe59e26ee090c400358" title="convert latitude and longitude to a MMM string " alt="" coords="161,56,271,83"/>
+<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 05." alt="" coords="5,31,113,57"/>
+<area shape="rect" id="node2" href="$bufr2tac__x05_8c.html#a2d6c7cc2545be067cb3bcb474b552a39" title="Converts true direction in grads to D (code table 0700)" alt="" coords="178,5,259,32"/>
+<area shape="rect" id="node3" href="$bufr2tac__x06_8c.html#af3fb0411bdf6ebe59e26ee090c400358" title="convert latitude and longitude to a MMM string" alt="" coords="161,56,276,83"/>
 </map>

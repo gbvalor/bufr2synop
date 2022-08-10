@@ -1,3 +1,4 @@
 <map id="temp_parse_x20" name="temp_parse_x20">
-<area shape="rect" id="node2" href="$bufr2tac__x20_8c.html#a2805b0fe1c412f596244fb45ac2276c5" title="converts the altitude of cloud layer into h string code " alt="" coords="171,5,235,32"/>
+<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 20." alt="" coords="5,5,124,32"/>
+<area shape="rect" id="node2" href="$bufr2tac__x20_8c.html#adaedba1439baa9937e6c9ed31a81ae32" title="converts the altitude of cloud layer into h string code" alt="" coords="172,5,237,32"/>
 </map>

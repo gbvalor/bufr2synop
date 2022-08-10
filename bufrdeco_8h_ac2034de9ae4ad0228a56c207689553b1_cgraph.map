@@ -1,12 +1,14 @@
 <map id="bufrdeco_parse_compressed_recursive" name="bufrdeco_parse_compressed_recursive">
-<area shape="rect" id="node2" href="$bufrdeco__compressed_8c.html#a12eb30c4bdf4d68d2839d15dacbcf647" title="decodes a repicated subsequence " alt="" coords="240,162,427,203"/>
-<area shape="rect" id="node3" href="$bufrdeco_8h.html#a92e5e1f8a8fad97564ab7e83cb1300cc" title="get data from table B when parsing compressed data references " alt="" coords="717,115,907,141"/>
-<area shape="rect" id="node10" href="$bufrdeco_8h.html#a995fbc664903f38e5ddb916067aec107" title="parse a descritor with f = 2 in case of compressed bufr " alt="" coords="709,224,915,251"/>
-<area shape="rect" id="node11" href="$bufrdeco__compressed_8c.html#ac2034de9ae4ad0228a56c207689553b1" title="Parse recursively the compressed data in a bufr report to get references where to get data for every ..." alt="" coords="475,162,661,203"/>
-<area shape="rect" id="node4" href="$bufrdeco_8h.html#a22d23c4377cba5193d77a3b38c0f8d79" title="check if a descriptor is a local descriptor " alt="" coords="972,5,1115,32"/>
-<area shape="rect" id="node5" href="$bufrdeco_8h.html#a3ea14e425c4a8b2f8ccefa1f2b4b2737" title="Read bits from an array of uint8_t and set them as an uint32_t. " alt="" coords="974,224,1113,251"/>
-<area shape="rect" id="node7" href="$bufrdeco_8h.html#a1d2fc8f6683d9697a36ca71eb513ef34" title="Get an int32_t from bits according with bufr criteria to change the reference of a descritor..." alt="" coords="969,57,1117,98"/>
-<area shape="rect" id="node8" href="$bufrdeco_8h.html#a11c794f59590b7351b8d487fe88fffb8" title="Get a string from an array of bits. " alt="" coords="967,173,1120,200"/>
-<area shape="rect" id="node9" href="$bufrdeco_8h.html#ac1a6900782df9782c8e1b5d1b373db13" title="check if a descriptor is a delayed descriptor " alt="" coords="963,123,1124,149"/>
-<area shape="rect" id="node6" href="$bufrdeco__utils_8c.html#ae9927049c61078aa71a7504498ffa548" title="Read bits from an array of uint8_t and set them as an uint32_t. " alt="" coords="1172,224,1319,251"/>
+<area shape="rect" id="node1" title="Parse recursively the compressed data in a bufr report to get references where to get data for every ..." alt="" coords="5,103,200,145"/>
+<area shape="rect" id="node2" href="$bufrdeco__compressed_8c.html#a12eb30c4bdf4d68d2839d15dacbcf647" title="decodes a repicated subsequence" alt="" coords="248,103,437,145"/>
+<area shape="rect" id="node4" href="$bufrdeco__f2_8c.html#a995fbc664903f38e5ddb916067aec107" title="parse a descritor with f = 2 in case of compressed bufr" alt="" coords="485,56,697,83"/>
+<area shape="rect" id="node9" href="$bufrdeco__tableb_8c.html#a92e5e1f8a8fad97564ab7e83cb1300cc" title="get data from table B when parsing compressed data references" alt="" coords="493,165,689,192"/>
+<area shape="rect" id="node3" href="$bufrdeco__utils_8c.html#a109df194c2d821c3cf7b2242389a8859" title=" " alt="" coords="507,111,675,137"/>
+<area shape="rect" id="node5" href="$bufrdeco__memory_8c.html#a38f7dd296da40c3cc2ac80071f936f37" title=" " alt="" coords="745,5,919,32"/>
+<area shape="rect" id="node6" href="$bufrdeco__utils_8c.html#a11c794f59590b7351b8d487fe88fffb8" title="Get a string from an array of bits." alt="" coords="755,56,909,83"/>
+<area shape="rect" id="node7" href="$bufrdeco__utils_8c.html#a3ea14e425c4a8b2f8ccefa1f2b4b2737" title="Read bits from an array of uint8_t and set them as an uint32_t." alt="" coords="763,107,901,133"/>
+<area shape="rect" id="node8" href="$bufrdeco__utils_8c.html#ae9927049c61078aa71a7504498ffa548" title="Read bits from an array of uint8_t and set them as an uint32_t." alt="" coords="967,107,1112,133"/>
+<area shape="rect" id="node10" href="$bufrdeco__utils_8c.html#a1d2fc8f6683d9697a36ca71eb513ef34" title="Get an int32_t from bits according with bufr criteria to change the reference of a descritor...." alt="" coords="759,158,905,199"/>
+<area shape="rect" id="node11" href="$bufrdeco__utils_8c.html#ac1a6900782df9782c8e1b5d1b373db13" title="check if a descriptor is a delayed descriptor" alt="" coords="750,224,914,251"/>
+<area shape="rect" id="node12" href="$bufrdeco__utils_8c.html#a22d23c4377cba5193d77a3b38c0f8d79" title="check if a descriptor is a local descriptor" alt="" coords="759,275,905,301"/>
 </map>

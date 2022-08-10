@@ -1,8 +1,9 @@
 <map id="bufrdeco_parse_f2_compressed" name="bufrdeco_parse_f2_compressed">
-<area shape="rect" id="node2" href="$bufrdeco__compressed_8c.html#a12eb30c4bdf4d68d2839d15dacbcf647" title="decodes a repicated subsequence " alt="" coords="259,5,445,47"/>
-<area shape="rect" id="node3" href="$bufrdeco__compressed_8c.html#ac2034de9ae4ad0228a56c207689553b1" title="Parse recursively the compressed data in a bufr report to get references where to get data for every ..." alt="" coords="493,5,680,47"/>
-<area shape="rect" id="node4" href="$bufrdeco__compressed_8c.html#ab5056984d71413ec42f7bb6971de2ce8" title="Parse a compressed data bufr. " alt="" coords="728,13,915,39"/>
-<area shape="rect" id="node5" href="$bufrdeco__data_8c.html#a90316581dc8355c7a63928ac3063fb32" title="User interface to decode a BUFR subset. " alt="" coords="963,5,1117,47"/>
-<area shape="rect" id="node6" href="$bufrdeco__data_8c.html#a9775040e8bec8247de95cb4bc0afcfd0" title="Parse and get a struct bufrdeco_subset_sequence_data. " alt="" coords="1165,5,1305,47"/>
-<area shape="rect" id="node7" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="1353,13,1404,39"/>
+<area shape="rect" id="node1" title="parse a descritor with f = 2 in case of compressed bufr" alt="" coords="1225,66,1437,93"/>
+<area shape="rect" id="node2" href="$bufrdeco__compressed_8c.html#a12eb30c4bdf4d68d2839d15dacbcf647" title="decodes a repicated subsequence" alt="" coords="988,29,1177,71"/>
+<area shape="rect" id="node3" href="$bufrdeco__compressed_8c.html#ac2034de9ae4ad0228a56c207689553b1" title="Parse recursively the compressed data in a bufr report to get references where to get data for every ..." alt="" coords="745,29,940,71"/>
+<area shape="rect" id="node4" href="$bufrdeco__compressed_8c.html#ab5056984d71413ec42f7bb6971de2ce8" title="Parse a compressed data bufr." alt="" coords="503,37,697,63"/>
+<area shape="rect" id="node5" href="$bufrdeco__data_8c.html#a90316581dc8355c7a63928ac3063fb32" title="User interface to decode a BUFR subset." alt="" coords="296,29,455,71"/>
+<area shape="rect" id="node6" href="$bufrdeco__data_8c.html#a0e0289d12b117e4df8f37f14486d3d71" title="Parse and get a struct bufrdeco_subset_sequence_data." alt="" coords="104,29,248,71"/>
+<area shape="rect" id="node7" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,37,56,63"/>
 </map>

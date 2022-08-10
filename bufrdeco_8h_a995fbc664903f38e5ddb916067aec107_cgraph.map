@@ -1,5 +1,7 @@
 <map id="bufrdeco_parse_f2_compressed" name="bufrdeco_parse_f2_compressed">
-<area shape="rect" id="node2" href="$bufrdeco_8h.html#a11c794f59590b7351b8d487fe88fffb8" title="Get a string from an array of bits. " alt="" coords="259,5,412,32"/>
-<area shape="rect" id="node3" href="$bufrdeco_8h.html#a3ea14e425c4a8b2f8ccefa1f2b4b2737" title="Read bits from an array of uint8_t and set them as an uint32_t. " alt="" coords="266,56,405,83"/>
-<area shape="rect" id="node4" href="$bufrdeco__utils_8c.html#ae9927049c61078aa71a7504498ffa548" title="Read bits from an array of uint8_t and set them as an uint32_t. " alt="" coords="460,56,607,83"/>
+<area shape="rect" id="node1" title="parse a descritor with f = 2 in case of compressed bufr" alt="" coords="5,56,217,83"/>
+<area shape="rect" id="node2" href="$bufrdeco__memory_8c.html#a38f7dd296da40c3cc2ac80071f936f37" title=" " alt="" coords="265,5,439,32"/>
+<area shape="rect" id="node3" href="$bufrdeco__utils_8c.html#a11c794f59590b7351b8d487fe88fffb8" title="Get a string from an array of bits." alt="" coords="275,56,429,83"/>
+<area shape="rect" id="node4" href="$bufrdeco__utils_8c.html#a3ea14e425c4a8b2f8ccefa1f2b4b2737" title="Read bits from an array of uint8_t and set them as an uint32_t." alt="" coords="283,107,421,133"/>
+<area shape="rect" id="node5" href="$bufrdeco__utils_8c.html#ae9927049c61078aa71a7504498ffa548" title="Read bits from an array of uint8_t and set them as an uint32_t." alt="" coords="487,107,632,133"/>
 </map>

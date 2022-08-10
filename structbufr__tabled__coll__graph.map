@@ -1,0 +1,4 @@
+<map id="bufr_tabled" name="bufr_tabled">
+<area shape="rect" id="node1" title="Store a table D readed from a file formated and named as ECMWF bufrdc package." alt="" coords="51,95,139,121"/>
+<area shape="rect" id="node2" href="$structbufr__tabled__decoded__item.html" title="Store parameters for a line in table D (sequence of descritors)" alt="" coords="5,5,184,32"/>
+</map>

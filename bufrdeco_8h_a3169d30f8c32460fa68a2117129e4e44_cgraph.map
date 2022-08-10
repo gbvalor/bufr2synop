@@ -1,4 +1,6 @@
 <map id="bufrdeco_parse_f2_descriptor" name="bufrdeco_parse_f2_descriptor">
-<area shape="rect" id="node2" href="$bufrdeco_8h.html#aac640b0a169dcc99097be9053118bcea" title="doubles the allocated space for a struct bufrdeco_subset_sequence_data whenever is posible ..." alt="" coords="244,5,403,47"/>
-<area shape="rect" id="node3" href="$bufrdeco_8h.html#a11c794f59590b7351b8d487fe88fffb8" title="Get a string from an array of bits. " alt="" coords="247,71,400,98"/>
+<area shape="rect" id="node1" title="parse a descritor with f = 2" alt="" coords="5,64,204,91"/>
+<area shape="rect" id="node2" href="$bufrdeco__memory_8c.html#a38f7dd296da40c3cc2ac80071f936f37" title=" " alt="" coords="252,5,425,32"/>
+<area shape="rect" id="node3" href="$bufrdeco__data_8c.html#aac640b0a169dcc99097be9053118bcea" title="doubles the allocated space for a struct bufrdeco_subset_sequence_data whenever is posible" alt="" coords="257,57,420,98"/>
+<area shape="rect" id="node4" href="$bufrdeco__utils_8c.html#a11c794f59590b7351b8d487fe88fffb8" title="Get a string from an array of bits." alt="" coords="261,123,416,149"/>
 </map>

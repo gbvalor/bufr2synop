@@ -1,7 +1,8 @@
 <map id="print_temp_a" name="print_temp_a">
-<area shape="rect" id="node2" href="$bufr2tac__print__temp_8c.html#aa5888464e3c10dbf3b715416397db332" title="Prints the section 1 of part A of a TEMP report. " alt="" coords="148,5,279,32"/>
-<area shape="rect" id="node3" href="$bufr2tac__print__temp_8c.html#a6557384103b689d61afaae748dd09c97" title="Prints the section 2 of part A of a TEMP report. " alt="" coords="148,56,279,83"/>
-<area shape="rect" id="node4" href="$bufr2tac__print__temp_8c.html#ab060d15ae2f4ac2ee0759e921a7592e8" title="Prints the section 3 of part A of a TEMP report. " alt="" coords="148,107,279,133"/>
-<area shape="rect" id="node5" href="$bufr2tac__print__temp_8c.html#ac08892cebb611d97ada1a6339bad6ef2" title="Prints the section 4 of part A of a TEMP report. " alt="" coords="148,157,279,184"/>
-<area shape="rect" id="node6" href="$bufr2tac__print__temp_8c.html#a013c6f76f815e5f69440330a5fb66bf6" title="Prints the section 7 of part A of a TEMP report. " alt="" coords="148,208,279,235"/>
+<area shape="rect" id="node1" title="Prints the part A of a TEMP report into a string." alt="" coords="5,107,103,133"/>
+<area shape="rect" id="node2" href="$bufr2tac__print__temp_8c.html#a8d7627af99e2c125ef5baaf1a2834cef" title="Prints the section 1 of part A of a TEMP report." alt="" coords="151,5,281,32"/>
+<area shape="rect" id="node3" href="$bufr2tac__print__temp_8c.html#aba9f872c5e2a48cf8668b48032594da4" title="Prints the section 2 of part A of a TEMP report." alt="" coords="151,56,281,83"/>
+<area shape="rect" id="node4" href="$bufr2tac__print__temp_8c.html#a53138b47a4d5afa9fb2e17bda089b3f0" title="Prints the section 3 of part A of a TEMP report." alt="" coords="151,107,281,133"/>
+<area shape="rect" id="node5" href="$bufr2tac__print__temp_8c.html#a51ebafb2b05e6c8140f34e738b9ad285" title="Prints the section 4 of part A of a TEMP report." alt="" coords="151,157,281,184"/>
+<area shape="rect" id="node6" href="$bufr2tac__print__temp_8c.html#ae668436231bfe4f1cf7c7856aa674bb4" title="Prints the section 7 of part A of a TEMP report." alt="" coords="151,208,281,235"/>
 </map>

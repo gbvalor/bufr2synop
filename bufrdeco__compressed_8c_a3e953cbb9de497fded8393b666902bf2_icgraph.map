@@ -1,6 +1,7 @@
 <map id="bufrdeco_get_atom_data_from_compressed_data_ref" name="bufrdeco_get_atom_data_from_compressed_data_ref">
-<area shape="rect" id="node2" href="$bufrdeco__compressed_8c.html#ad2f986d73d85c08ffa6560d80c244b33" title="Get data for a given subset in a compressed data bufr. " alt="" coords="237,5,375,47"/>
-<area shape="rect" id="node3" href="$bufrdeco__data_8c.html#a90316581dc8355c7a63928ac3063fb32" title="User interface to decode a BUFR subset. " alt="" coords="423,5,577,47"/>
-<area shape="rect" id="node4" href="$bufrdeco__data_8c.html#a9775040e8bec8247de95cb4bc0afcfd0" title="Parse and get a struct bufrdeco_subset_sequence_data. " alt="" coords="625,5,765,47"/>
-<area shape="rect" id="node5" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="813,13,864,39"/>
+<area shape="rect" id="node1" title="Get atom data from a descriptor for a given subset." alt="" coords="693,5,884,47"/>
+<area shape="rect" id="node2" href="$bufrdeco__compressed_8c.html#ad2f986d73d85c08ffa6560d80c244b33" title="Get data for a given subset in a compressed data bufr." alt="" coords="503,5,645,47"/>
+<area shape="rect" id="node3" href="$bufrdeco__data_8c.html#a90316581dc8355c7a63928ac3063fb32" title="User interface to decode a BUFR subset." alt="" coords="296,5,455,47"/>
+<area shape="rect" id="node4" href="$bufrdeco__data_8c.html#a0e0289d12b117e4df8f37f14486d3d71" title="Parse and get a struct bufrdeco_subset_sequence_data." alt="" coords="104,5,248,47"/>
+<area shape="rect" id="node5" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,13,56,39"/>
 </map>

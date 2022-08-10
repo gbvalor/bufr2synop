@@ -1,3 +1,5 @@
 <map id="print_bufrdeco_compressed_data_references" name="print_bufrdeco_compressed_data_references">
-<area shape="rect" id="node2" href="$bufrdeco__print_8c.html#ab197d618cb0b93baa896c79a47e014f8" title="prints a struct bufrdeco_compressed_ref " alt="" coords="233,13,435,39"/>
+<area shape="rect" id="node1" title="prints a struct bufrdeco_compressed_references" alt="" coords="5,5,192,47"/>
+<area shape="rect" id="node2" href="$bufrdeco__print_8c.html#ab197d618cb0b93baa896c79a47e014f8" title="prints a struct bufrdeco_compressed_ref" alt="" coords="240,13,449,39"/>
+<area shape="rect" id="node3" href="$bufrdeco__print_8c.html#a3ce7128cd685013c3ace38147a6f9823" title="prints a struct bufrdeco_compressed_ref" alt="" coords="497,13,712,39"/>
 </map>

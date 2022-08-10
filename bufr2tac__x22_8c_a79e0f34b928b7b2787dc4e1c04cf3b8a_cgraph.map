@@ -1,4 +1,5 @@
 <map id="buoy_parse_x22" name="buoy_parse_x22">
-<area shape="rect" id="node2" href="$bufr2tac_8h.html#ad9180c6833f9d5c360f7981ebcc08933" title="converts a kelvin temperature value into a snTTT string " alt="" coords="169,5,288,32"/>
-<area shape="rect" id="node3" href="$bufr2tac_8h.html#a280bd9a2974e8e37064efcad2c7ad7a7" title="converts a kelvin temperature value into a TTTT string " alt="" coords="171,56,286,83"/>
+<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 22." alt="" coords="5,31,121,57"/>
+<area shape="rect" id="node2" href="$bufr2tac__x12_8c.html#ad9180c6833f9d5c360f7981ebcc08933" title="converts a kelvin temperature value into a snTTT string" alt="" coords="169,5,287,32"/>
+<area shape="rect" id="node3" href="$bufr2tac__x12_8c.html#a280bd9a2974e8e37064efcad2c7ad7a7" title="converts a kelvin temperature value into a TTTT string" alt="" coords="173,56,283,83"/>
 </map>

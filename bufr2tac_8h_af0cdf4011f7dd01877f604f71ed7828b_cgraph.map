@@ -1,3 +1,4 @@
 <map id="syn_parse_x07" name="syn_parse_x07">
-<area shape="rect" id="node2" href="$bufr2tac__x07_8c.html#aed49a7452595fff40a9dbbb5a768cf27" title="Converts elevation in grads to ec (code table 1004) " alt="" coords="161,5,248,32"/>
+<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 07." alt="" coords="5,5,113,32"/>
+<area shape="rect" id="node2" href="$bufr2tac__x07_8c.html#a461980f0e24404f0cbfb4721bbdf72a4" title="Converts elevation in grads to ec (code table 1004)" alt="" coords="161,5,248,32"/>
 </map>

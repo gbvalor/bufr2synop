@@ -1,4 +1,5 @@
 <map id="bufrdeco_expanded_tree" name="bufrdeco_expanded_tree">
-<area shape="rect" id="node2" href="$structbufr__sequence.html" title="Stores an unexpanded sequence of descriptors. " alt="" coords="34,96,141,123"/>
-<area shape="rect" id="node3" href="$structbufr__descriptor.html" title="BUFR descriptor. " alt="" coords="34,5,141,32"/>
+<area shape="rect" id="node1" title="Array of structs bufr_sequence." alt="" coords="5,187,172,213"/>
+<area shape="rect" id="node2" href="$structbufr__sequence.html" title="Stores an unexpanded sequence of descriptors." alt="" coords="34,96,143,123"/>
+<area shape="rect" id="node3" href="$structbufr__descriptor.html" title="BUFR descriptor." alt="" coords="32,5,145,32"/>
 </map>

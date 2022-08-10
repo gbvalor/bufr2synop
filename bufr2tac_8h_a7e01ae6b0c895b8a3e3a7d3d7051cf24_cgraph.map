@@ -1,4 +1,5 @@
 <map id="syn_parse_x01" name="syn_parse_x01">
-<area shape="rect" id="node2" href="$bufr2tac_8h.html#aef21370a9e78b1263e5bdc0a58a6d596" title="Supress trailing blanks of a string. " alt="" coords="183,5,278,32"/>
-<area shape="rect" id="node3" href="$bufr2tac_8h.html#a294969d52c0ebb804a4ceaf8ae37379a" title="get WMO region A1 and Reg items from II and iii (WMO index) " alt="" coords="161,56,300,83"/>
+<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 01." alt="" coords="5,31,113,57"/>
+<area shape="rect" id="node2" href="$bufr2tac__utils_8c.html#aef21370a9e78b1263e5bdc0a58a6d596" title="Supress trailing blanks of a string." alt="" coords="182,5,279,32"/>
+<area shape="rect" id="node3" href="$bufr2tac__utils_8c.html#a294969d52c0ebb804a4ceaf8ae37379a" title="get WMO region A1 and Reg items from II and iii (WMO index)" alt="" coords="161,56,300,83"/>
 </map>

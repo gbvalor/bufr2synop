@@ -1,3 +1,4 @@
 <map id="bufr_sec3" name="bufr_sec3">
-<area shape="rect" id="node2" href="$structbufr__descriptor.html" title="BUFR descriptor. " alt="" coords="5,5,112,32"/>
+<area shape="rect" id="node1" title="Store a parsed sec3 from a bufr file." alt="" coords="22,95,102,121"/>
+<area shape="rect" id="node2" href="$structbufr__descriptor.html" title="BUFR descriptor." alt="" coords="5,5,119,32"/>
 </map>

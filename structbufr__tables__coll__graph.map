@@ -1,7 +1,9 @@
 <map id="bufr_tables" name="bufr_tables">
-<area shape="rect" id="node2" href="$structbufr__tableb.html" title="Store a table B readed from a file formated and named as ECMWF bufrdc package. " alt="" coords="89,95,173,121"/>
-<area shape="rect" id="node3" href="$structbufr__tableb__decoded__item.html" title="Store parameters for a descriptor in table b, i. e. with f = 0. " alt="" coords="5,5,180,32"/>
-<area shape="rect" id="node4" href="$structbufr__tablec.html" title="Store a table C readed from a file formated and named as ECMWF bufrdc package. " alt="" coords="229,95,313,121"/>
-<area shape="rect" id="node5" href="$structbufr__tablec__decoded__item.html" title="Store parameters for a descriptor in table C, i. e. for Table code and flags Remember this is NOT the..." alt="" coords="204,5,379,32"/>
-<area shape="rect" id="node6" href="$structbufr__tabled.html" title="Store a table D readed from a file formated and named as ECMWF bufrdc package. " alt="" coords="338,95,423,121"/>
+<area shape="rect" id="node1" title="Contains all tables needed to parse a bufr file." alt="" coords="254,184,341,211"/>
+<area shape="rect" id="node2" href="$structbufr__tableb.html" title="Store a table B readed from a file formated and named as ECMWF bufrdc package." alt="" coords="98,95,185,121"/>
+<area shape="rect" id="node3" href="$structbufr__tableb__decoded__item.html" title="Store parameters for a descriptor in table b, i. e. with f = 0." alt="" coords="5,5,184,32"/>
+<area shape="rect" id="node4" href="$structbufr__tablec.html" title="Store a table C readed from a file formated and named as ECMWF bufrdc package." alt="" coords="254,95,341,121"/>
+<area shape="rect" id="node5" href="$structbufr__tablec__decoded__item.html" title="Store parameters for a descriptor in table C, i. e. for Table code and flags Remember this is NOT the..." alt="" coords="208,5,387,32"/>
+<area shape="rect" id="node6" href="$structbufr__tabled.html" title="Store a table D readed from a file formated and named as ECMWF bufrdc package." alt="" coords="416,95,504,121"/>
+<area shape="rect" id="node7" href="$structbufr__tabled__decoded__item.html" title="Store parameters for a line in table D (sequence of descritors)" alt="" coords="411,5,589,32"/>
 </map>

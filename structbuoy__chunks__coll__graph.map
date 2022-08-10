@@ -1,10 +1,11 @@
 <map id="buoy_chunks" name="buoy_chunks">
-<area shape="rect" id="node2" href="$structbuoy__sec0.html" title="contains all possible substrings from section 0 when a report is parsed with success ..." alt="" coords="5,95,89,121"/>
-<area shape="rect" id="node3" href="$structbuoy__sec1.html" title="contains all possible substrings from section 1 when a report is parsed with success ..." alt="" coords="113,95,197,121"/>
-<area shape="rect" id="node4" href="$structbuoy__sec2.html" title="contains all possible substrings from section 2 when a report is parsed with success ..." alt="" coords="221,95,305,121"/>
-<area shape="rect" id="node5" href="$structreport__date__ext.html" title="contains extensions, not in wmo. Date/time UTC information " alt="" coords="330,95,439,121"/>
-<area shape="rect" id="node6" href="$structbuoy__sec3.html" title="contains all possible substrings from section 3 when a report is parsed with success ..." alt="" coords="464,95,548,121"/>
-<area shape="rect" id="node7" href="$structb__sec3__layer1.html" title="A layer with Temperature and salinity for a buoy report. " alt="" coords="387,5,494,32"/>
-<area shape="rect" id="node8" href="$structb__sec3__layer2.html" title="A layer with direction and speed for a sea current. " alt="" coords="518,5,625,32"/>
-<area shape="rect" id="node9" href="$structbuoy__sec4.html" title="contains all possible substrings from section 4 when a report is parsed with success ..." alt="" coords="572,95,656,121"/>
+<area shape="rect" id="node1" title="contains all possible substrings from a synop report is parsed with success" alt="" coords="297,184,395,211"/>
+<area shape="rect" id="node2" href="$structreport__date__ext.html" title="contains extensions, not in wmo. Date/time UTC information" alt="" coords="5,95,119,121"/>
+<area shape="rect" id="node3" href="$structbuoy__sec0.html" title="contains all possible substrings from section 0 when a report is parsed with success" alt="" coords="143,95,227,121"/>
+<area shape="rect" id="node4" href="$structbuoy__sec1.html" title="contains all possible substrings from section 1 when a report is parsed with success" alt="" coords="251,95,335,121"/>
+<area shape="rect" id="node5" href="$structbuoy__sec2.html" title="contains all possible substrings from section 2 when a report is parsed with success" alt="" coords="359,95,443,121"/>
+<area shape="rect" id="node6" href="$structbuoy__sec3.html" title="contains all possible substrings from section 3 when a report is parsed with success" alt="" coords="467,95,551,121"/>
+<area shape="rect" id="node7" href="$structb__sec3__layer1.html" title="A layer with Temperature and salinity for a buoy report." alt="" coords="393,5,497,32"/>
+<area shape="rect" id="node8" href="$structb__sec3__layer2.html" title="A layer with direction and speed for a sea current." alt="" coords="521,5,625,32"/>
+<area shape="rect" id="node9" href="$structbuoy__sec4.html" title="contains all possible substrings from section 4 when a report is parsed with success" alt="" coords="575,95,659,121"/>
 </map>

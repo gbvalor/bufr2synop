@@ -1,4 +1,5 @@
 <map id="bufr_read_tabled_csv" name="bufr_read_tabled_csv">
-<area shape="rect" id="node2" href="$bufrdeco_8h.html#a9685dcec12aa968d7146aa55965dda5e" title="Parse a csv line. " alt="" coords="218,5,325,32"/>
-<area shape="rect" id="node3" href="$bufrdeco_8h.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary " alt="" coords="197,56,345,83"/>
+<area shape="rect" id="node1" title="Reads a file with table D content according with WMO csv format." alt="" coords="5,31,152,57"/>
+<area shape="rect" id="node2" href="$bufrdeco__csv_8c.html#a9685dcec12aa968d7146aa55965dda5e" title="Parse a csv line." alt="" coords="223,5,329,32"/>
+<area shape="rect" id="node3" href="$bufrdeco__utils_8c.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary" alt="" coords="200,56,352,83"/>
 </map>

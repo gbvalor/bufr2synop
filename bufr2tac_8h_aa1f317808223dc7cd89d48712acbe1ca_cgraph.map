@@ -1,4 +1,5 @@
 <map id="climat_parse_x13" name="climat_parse_x13">
-<area shape="rect" id="node2" href="$bufr2tac__x13_8c.html#a589f2bf457a156ab75e163e083b386b5" title="converts a precipitation in Kg/m2 into a RRRR string (code table 3596) " alt="" coords="188,5,295,32"/>
-<area shape="rect" id="node3" href="$bufr2tac__x13_8c.html#a55d59cfd2d439c1669802a54e6f1dfe9" title="converts a precipitation in Kg/m2 into a RxRxRxRx string " alt="" coords="176,56,307,83"/>
+<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 13." alt="" coords="5,31,129,57"/>
+<area shape="rect" id="node2" href="$bufr2tac__x13_8c.html#a589f2bf457a156ab75e163e083b386b5" title="converts a precipitation in Kg/m2 into a RRRR string (code table 3596)" alt="" coords="191,5,294,32"/>
+<area shape="rect" id="node3" href="$bufr2tac__x13_8c.html#a55d59cfd2d439c1669802a54e6f1dfe9" title="converts a precipitation in Kg/m2 into a RxRxRxRx string" alt="" coords="177,56,308,83"/>
 </map>
