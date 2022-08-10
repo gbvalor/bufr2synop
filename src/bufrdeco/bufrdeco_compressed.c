@@ -810,7 +810,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
 
   // numeric data
   if ( r->has_data == 0 || 
-    r->inc_bits > 31 ) // ¿no more than 31 bits for numeric data?
+    r->inc_bits > 31 ) // ¿no more than 31 inc_bits for numeric data?
     {
       a->val = MISSING_REAL;
       a->mask |= DESCRIPTOR_VALUE_MISSING;
