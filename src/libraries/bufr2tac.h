@@ -181,6 +181,16 @@
 */
 #define SUBSET_MASK_HAVE_GUST10 ( 2 * 131072)
 
+/*! \def BUFR2TAC_ERROR_STACK_DIM
+ *  \brief set de dimension of a struct \ref bufr2tac_error_stack 
+ */
+#define BUFR2TAC_ERROR_STACK_DIM 16
+
+/*! \def BUFR2TAC_ERROR_DESCRIPTION_LENGTH
+ *  \brief set de dimension of member \ref description of a struct \ref bufr2tac_error_stack 
+ */
+#define BUFR2TAC_ERROR_DESCRIPTION_LENGTH 512
+
 
 #define REPORT_LENGTH (16384)
 
@@ -201,6 +211,17 @@ struct bufr_subset_sequence_data
 # define bufr_subset_sequence_data bufrdeco_subset_sequence_data
 #endif
 
+struct bufr2tac_error {
+  int severity; /*!< Level of severity. if = 1 then is a warning. if = 2 is an error */
+  char description[BUFR2TAC_ERROR_DESCRIPTION_LENGTH]; /*!< string with error description */
+};
+
+struct bufr2tac_error_stack {
+  size_t ne; /*!< Current warning/error active. If = 0 then no errors */
+  int full; /*!< if 1 then one or more warnings cannot be pushed because of full stack. If = 2 an error cannot be pushed */
+  struct bufr2tac_error err[BUFR2TAC_ERROR_STACK_DIM] ; /*!< Dimension of stack array */  
+};
+
 /*!
   \struct bufr2tac_subset_state
   \brief stores information needed to parse a sequential list of expanded descriptors for a subset
@@ -208,6 +229,7 @@ struct bufr_subset_sequence_data
 struct bufr2tac_subset_state
 {
   char type_report[16]; /*!< The type of report to decode (MMMM) */
+  struct bufr2tac_error_stack e; /*!< Pointer to a struct \ref bufr2tac_error_stack */
   struct bufr_atom_data *a; /*!< the current struct \ref bufr_atom_data being parsed */
   struct bufr_atom_data *a1; /*!< the prior struct \ref bufr_atom_data being parsed */
   size_t i; /*!< current index in array element */
@@ -288,6 +310,13 @@ struct metreport
 
 /* Functions definitions */
 char *bufr2tac_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch);
+
+/* Error/debug functions */
+int bufr2tac_push_error ( struct bufr2tac_error_stack *e, int severity, char *description );
+int bufr2tac_clean_error_stack ( struct bufr2tac_error_stack *e );
+int bufr2tac_set_error ( struct bufr2tac_subset_state *s, int severity, char *origin, char *explanation);
+int bufr2tac_print_error ( struct bufr2tac_error_stack *e );
+int bufr2tac_set_debug_level(int level);
 
 void clean_buoy_chunks ( struct buoy_chunks *b );
 void clean_synop_chunks ( struct synop_chunks *s );
@@ -496,6 +525,7 @@ int busel2_ ( int *, int *, int *,  char **, int *, char **, char **, char **, i
 int buukey_ ( int *, int *, int *, int *, int * );
 int buprt_ ( int *, int *, int *, int *, char **, char **, char **, int *, double *, int *, int *, int * );
 
-
+// Global static vars
+extern int BUFR2TAC_DEBUG_LEVEL;
 
 #endif  // from ifndef BUFR2TAC_H

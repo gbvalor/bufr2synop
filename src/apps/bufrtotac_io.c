@@ -28,15 +28,15 @@
 
 #include "bufrtotac.h"
 
-void print_usage ( void )
+void bufrtotac_print_usage ( void )
 {
-  print_version ();
+  bufrtotac_print_version ();
   printf ( "\nUsage: \n" );
-  printf ( "%s -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-X][-c][-h]\n" , SELF );
+  printf ( "%s -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-X][-c][-h]\n", SELF );
   printf ( "       -c. The output is in csv format\n" );
-  printf ( "       -D. Print some debug info\n" );
+  printf ( "       -D debug level. 0 = No debug, 1 = Debug, 2 = Verbose debug (default = 0)\n" );
 #ifdef USE_BUFRDC
-  printf ( "       -E. Use ECMWF package tables. Default is WMO csv tables\n" );
+  printf ( "       -E. Use ECMWF package tables. Default is WMO csv tables. DEPRECATED!!\n" );
 #endif
   printf ( "       -h Print this help\n" );
   printf ( "       -i Input file. Complete input path file for bufr file\n" );
@@ -50,68 +50,68 @@ void print_usage ( void )
   printf ( "       -V. Verbose output\n" );
   printf ( "       -v. Print version\n" );
   printf ( "       -x. The output is in xml format\n" );
-  printf ( "       -X. Try to extract an embebed bufr in a file seraching for a first '7777' after first 'BUFR'\n");
+  printf ( "       -X. Try to extract an embebed bufr in a file seraching for a first '7777' after first 'BUFR'\n" );
 }
 
 /*!
   \fn char *bufrtotac_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch)
   \brief Get strings with version information and build date and time
   \param version  pointer to string with version as result if not NULL
-  \param build pointer to string with compiler and compilation date and time if not NULL 
-  \param builder pointer to string with builder utility. 'cmake' or 'autotools' if not NULL 
+  \param build pointer to string with compiler and compilation date and time if not NULL
+  \param builder pointer to string with builder utility. 'cmake' or 'autotools' if not NULL
   \param version_major pointer to string with version_major component if not NULL
   \param version_minor pointer to string with version_minor component if not NULL
   \param version_patch pointer to string with version_patch component if not NULL
-  
-  Retuns string pointer \ref version.  
+
+  Retuns string pointer \ref version.
  */
-char *bufrtotac_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch)
+char *bufrtotac_get_version ( char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch )
 {
   int major = 0, minor = 0, patch = 0;
   char *c;
-  
-  if (version == NULL)
-    return NULL;
-  sprintf(version, "%s", VERSION);
-  // default values
-  sscanf(version, "%d.%d.%d", &major, &minor, &patch);
 
-  if (build)
+  if ( version == NULL )
+    return NULL;
+  sprintf ( version, "%s", VERSION );
+  // default values
+  sscanf ( version, "%d.%d.%d", &major, &minor, &patch );
+
+  if ( build )
     {
-       c = build;
+      c = build;
 #if defined(__INTEL_COMPILER)
-       c += sprintf(build, "using INTEL C compiler icc %d.%d ", __INTEL_COMPILER, __INTEL_COMPILER_UPDATE);
-#elif defined(__GNUC__) 
-       c += sprintf(build, "using GNU C compiler gcc %d.%d.%d ", __GNUC__ , __GNUC_MINOR__ , __GNUC_PATCHLEVEL__);
+      c += sprintf ( build, "using INTEL C compiler icc %d.%d ", __INTEL_COMPILER, __INTEL_COMPILER_UPDATE );
+#elif defined(__GNUC__)
+      c += sprintf ( build, "using GNU C compiler gcc %d.%d.%d ", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__ );
 #endif
-       sprintf(c,"at %s %s",__DATE__,__TIME__);
+      sprintf ( c,"at %s %s",__DATE__,__TIME__ );
     }
 
-  if (builder)
+  if ( builder )
 #ifdef BUILD_USING_CMAKE
-    strcpy(builder, "cmake");
+    strcpy ( builder, "cmake" );
 #else
-    strcpy(builder, "autotools");
-#endif    
-  if (version_major)
+    strcpy ( builder, "autotools" );
+#endif
+  if ( version_major )
     *version_major = major;
-  if (version_minor)
+  if ( version_minor )
     *version_minor = minor;
-  if (version_patch)
+  if ( version_patch )
     *version_patch = patch;
-  return version;  
+  return version;
 }
 
-void print_version()
+void bufrtotac_print_version()
 {
-   char version[16], build[128], builder[32];
+  char version[16], build[128], builder[32];
 
-   bufrtotac_get_version(version, build, builder, NULL, NULL, NULL);
-   printf ("%s: Version '%s' built %s and %s.\n" , SELF, VERSION, build, builder);
-   bufr2tac_get_version(version, build, builder, NULL, NULL, NULL);
-   printf ("Linked to bufr2tac library version '%s' built %s and %s.\n", version, build, builder);
-   bufrdeco_get_version(version, build, builder, NULL, NULL, NULL);
-   printf ("Linked to bufrdeco library version '%s' built %s and %s.\n", version, build, builder);
+  bufrtotac_get_version ( version, build, builder, NULL, NULL, NULL );
+  printf ( "%s: Version '%s' built %s and %s.\n", SELF, VERSION, build, builder );
+  bufr2tac_get_version ( version, build, builder, NULL, NULL, NULL );
+  printf ( "Linked to bufr2tac library version '%s' built %s and %s.\n", version, build, builder );
+  bufrdeco_get_version ( version, build, builder, NULL, NULL, NULL );
+  printf ( "Linked to bufrdeco library version '%s' built %s and %s.\n", version, build, builder );
 }
 
 
@@ -123,7 +123,7 @@ void print_version()
 
   Returns 1 if succcess, -1 othewise
 */
-int read_args ( int _argc, char * _argv[] )
+int bufrtotac_read_args ( int _argc, char * _argv[] )
 {
   int iopt;
   char *c;
@@ -151,56 +151,73 @@ int read_args ( int _argc, char * _argv[] )
   /*
      Read input options
   */
-  while ( ( iopt = getopt ( _argc, _argv, "cDEhi:jHI:no:S:st:vVxX" ) ) !=-1 )
+  while ( ( iopt = getopt ( _argc, _argv, "cD:Ehi:jHI:no:S:st:vVxX" ) ) !=-1 )
     switch ( iopt )
       {
       case 'i':
         if ( strlen ( optarg ) < 256 )
           strcpy ( INPUTFILE, optarg );
         break;
+        
       case 'j':
         JSON = 1;
         break;
+        
       case 'I':
         if ( strlen ( optarg ) < 256 )
           strcpy ( LISTOFFILES, optarg );
         break;
+        
       case 'n':
         NOTAC = 1;
         break;
+        
       case 'o':
         if ( strlen ( optarg ) < 256 )
           strcpy ( OUTPUTFILE, optarg );
         break;
+        
       case 't':
         if ( strlen ( optarg ) < 256 )
           {
             strcpy ( BUFRTABLES_DIR, optarg );
           }
         break;
+        
       case 'D':
-        DEBUG = 1;
+        if ( strlen ( optarg ) < 2 )
+          {
+            DEBUG = atoi ( optarg );
+            if (DEBUG < 3)
+             bufr2tac_set_debug_level ( DEBUG ); // set debug level to bufr2tac library
+          }
         break;
+        
       case 'E':
-#ifdef USE_BUFRDC          
+#ifdef USE_BUFRDC
         ECMWF = 1;
 #endif
         break;
+        
       case 'H':
         HTML = 1;
         break;
+        
       case 'V':
         VERBOSE = 1;
         break;
+        
       case 'v':
-        print_version();
+        bufrtotac_print_version();
         exit ( EXIT_SUCCESS );
         break;
+        
       case 's':
         SHOW_SEQUENCE = 1;
         break;
+        
       case 'S':
-        // Process subset sequence to show  
+        // Process subset sequence to show
         if ( strlen ( optarg ) < 128 &&
              strspn ( optarg, "0123456789." ) == strlen ( optarg ) )
           {
@@ -225,33 +242,37 @@ int read_args ( int _argc, char * _argv[] )
               }
           }
         break;
+        
       case 'x':
         XML = 1;
         break;
+        
       case 'c':
         CSV = 1;
         break;
+        
       case 'X':
         EXTRACT = 1;
         break;
+        
       case 'h':
       default:
-        print_usage();
+        bufrtotac_print_usage();
         exit ( EXIT_SUCCESS );
       }
 
   if ( INPUTFILE[0] == 0 && LISTOFFILES[0] == 0 )
     {
       printf ( "read_args(): It is needed an input file. Use -i or -I option\n" );
-      print_usage();
+      bufrtotac_print_usage();
       return -1;
     }
   return 1;
 }
 
 /* this is an interface to use bufr2tac */
-int bufrdeco_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subset_state *st,
-                                     struct bufrdeco *b, char *err )
+int bufrtotac_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subset_state *st,
+                                      struct bufrdeco *b, char *err )
 {
   size_t i;
   int ksec1[40], res;

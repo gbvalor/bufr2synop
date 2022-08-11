@@ -89,6 +89,7 @@
 struct bufrdeco BUFR;
 struct metreport REPORT; /*!< stuct to set the parsed report */
 struct bufr2tac_subset_state STATE; /*!< Includes the info when parsing a subset sequence */
+struct bufr2tac_error_stack ERRS; /*!< struct to store warnings and errors */
 
 const char SELF[]= "bufrtotac"; /*! < the name of this binary */
 char ERR[256]; /*!< string with an error */
@@ -119,7 +120,7 @@ int main ( int argc, char *argv[] )
   struct bufrdeco_subset_sequence_data *seq;
   
 
-  if ( read_args ( argc, argv ) < 0 )
+  if ( bufrtotac_read_args ( argc, argv ) < 0 )
     exit ( EXIT_FAILURE );
 
   // init bufr struct
@@ -139,7 +140,7 @@ int main ( int argc, char *argv[] )
   /**** Set bufr tables dir ****/
   strcpy(BUFR.bufrtables_dir , BUFRTABLES_DIR);
   
-  /**** Big loop. a cycle per file ****/
+  /**** Big loop. a cycle per file. Get input filenames from LISTOFFILES[] ****/
   while ( get_bufrfile_path ( INPUTFILE, ERR ) )
     {
       //printf ( "%s\n", INPUTFILE );
@@ -223,7 +224,7 @@ int main ( int argc, char *argv[] )
           if ( ! NOTAC )
             {
               // Here we perform the decode to TAC  
-              if ( BUFR.sec3.ndesc &&  bufrdeco_parse_subset_sequence ( &REPORT, &STATE, &BUFR, ERR ) )
+              if ( BUFR.sec3.ndesc &&  bufrtotac_parse_subset_sequence ( &REPORT, &STATE, &BUFR, ERR ) )
                 {
                   if ( DEBUG )
                     fprintf ( stderr, "# %s\n", ERR );

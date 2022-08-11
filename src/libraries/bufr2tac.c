@@ -19,7 +19,7 @@
  ***************************************************************************/
 /*!
  \file bufr2tac.c
- \brief This file has the code for functions gettong information about library bufr2tac
+ \brief This file has the code for functions to get information about library bufr2tac, and global vars 
 */
 #ifndef CONFIG_H
 # include "config.h"
@@ -27,6 +27,8 @@
 #endif
 
 #include "bufr2tac.h"
+
+int BUFR2TAC_DEBUG_LEVEL = 0; /*!< Set debug level. 0 -> no debug. 1 -> debug. 2 -> verbose debug */
 
 /*!
   \fn char *bufr2tac_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch)
@@ -75,4 +77,14 @@ char *bufr2tac_get_version(char *version, char *build, char *builder, int *versi
   if (version_patch)
     *version_patch = patch;
   return version;  
+}
+
+int bufr2tac_set_debug_level(int level)
+{
+  if (level < 0 || level > 2)
+    return 1; // Bad debug level
+  
+  // Here we set 
+  BUFR2TAC_DEBUG_LEVEL = level;
+  return 0;  
 }

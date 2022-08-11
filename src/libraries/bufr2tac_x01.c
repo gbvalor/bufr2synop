@@ -43,9 +43,11 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 1: // 0 01 001 . WMO block number
       sprintf ( syn->s0.II, "%02d", s->ival );
       break;
+
     case 2: // 0 01 002 . WMO station number
       sprintf ( syn->s0.iii, "%03d", s->ival );
       break;
+
     case 3: // 0 01 003 . WMO Region
       sprintf ( syn->s0.A1, "%d", s->ival );
       if ( strcmp ( syn->s0.A1, "1" ) == 0 )
@@ -61,10 +63,12 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       else if ( strcmp ( syn->s0.A1, "6" ) == 0 )
         strcpy ( syn->s0.Reg, "VI" );
       break;
+
     case 4: // 0 01 004 . WMO Subarea
     case 20: // 0 01 020 . WMO region subarea
       sprintf ( syn->s0.bw, "%d", s->ival );
       break;
+
     case 11: // 0 01 011. Ship or mobile land station index
       if ( strlen ( s->a->cval ) < 16 )
         {
@@ -74,8 +78,15 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             break;
           if ( strlen ( aux ) < 10 )
             strcpy ( syn->s0.D_D, aux );
+          else
+            bufr2tac_set_error ( s, 1, "syn_parse_x01()", "Ship or mobile land station index length >= 10. Cannot set s0.D_D" );
+        }
+      else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+        {
+          bufr2tac_set_error ( s, 1, "syn_parse_x01()", "Ship or mobile land station index length >= 16" );
         }
       break;
+
     case 15: // 0 01 015 . Station or site name
     case 18: // 0 01 018 . Short station or site name
     case 19: // 0 01 019 . Long station or site name
@@ -86,7 +97,12 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           strcpy ( s->name, aux );
           s->mask |= SUBSET_MASK_HAVE_NAME;
         }
+      else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+        {
+          bufr2tac_set_error ( s, 1, "syn_parse_x01()", "Station or site name length > 80. Cannot set s->name" );
+        }
       break;
+
     case 101: // 0 01 101 . State identifier
       if ( strlen ( s->a->ctable ) <= 256 )
         {
@@ -95,8 +111,15 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           strcpy ( s->country, aux );
           s->mask |= SUBSET_MASK_HAVE_COUNTRY;
         }
+      else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+        {
+          bufr2tac_set_error ( s, 1, "syn_parse_x01()", "State identifier length > 256. Cannot set s->country" );
+        }
       break;
+
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 )
+        bufr2tac_set_error ( s, 1, "syn_parse_x01()", "Descriptor not parsed" );
       break;
     }
 
@@ -127,7 +150,7 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
     {
     case 3: // 0 01 003
       if ( s->ival > 0 )
-        sprintf ( b->s0.A1, "%d", s->ival % 10);
+        sprintf ( b->s0.A1, "%d", s->ival % 10 );
       else if ( s->ival == 0 )
         sprintf ( b->s0.A1, "7" );
       break;
@@ -136,13 +159,15 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
     case 20: // 0 01 004
       sprintf ( b->s0.bw, "%d", s->ival );
       break;
+      
     case 5: // 0 01 005
       if ( s->ival < 1000 )
-        sprintf ( b->s0.nbnbnb, "%03d", s->ival % 1000);
+        sprintf ( b->s0.nbnbnb, "%03d", s->ival % 1000 );
       else
         sprintf ( b->s0.nbnbnb, "%05d", s->ival % 100000 ); // note this is a nnnnn extension
       break;
-    case 15: // 0 01 015
+      
+    case 15: // 0 01 015. Station or site name
       if ( strlen ( s->a->cval ) <= 80 )
         {
           strcpy ( aux, s->a->cval );
@@ -150,10 +175,15 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
           strcpy ( s->name, aux );
           s->mask |= SUBSET_MASK_HAVE_NAME;
         }
+      else if (BUFR2TAC_DEBUG_LEVEL > 0)
+        {
+          bufr2tac_set_error ( s, 1, "buoy_parse_x01()", "Station or site name length > 80. Cannot set s->name" );
+        }
       break;
+      
     case 87: // 0 01 087. WMO marine observing platform extended identifier
-             // See https://community.wmo.int/rules-allocating-wmo-numbers
-             // A1bwnnn is equivalent to A1Bwnnnnn when nnnnn < 1000 
+      // See https://community.wmo.int/rules-allocating-wmo-numbers
+      // A1bwnnn is equivalent to A1Bwnnnnn when nnnnn < 1000
       if ( s->a->val < 100000000 )
         {
           sprintf ( aux, "%07.0lf", s->a->val );
@@ -162,21 +192,34 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
           b->s0.bw[0] = aux[1];
           b->s0.bw[1] = 0;
           if ( ( ( int ) ( s->a->val ) % 100000 ) < 1000 )
-            strcpy ( b->s0.nbnbnb , & aux[4] );
+            strcpy ( b->s0.nbnbnb, & aux[4] );
           else
-            strcpy ( b->s0.nbnbnb , & aux[2] );
+            strcpy ( b->s0.nbnbnb, & aux[2] );
+        }
+      else if (BUFR2TAC_DEBUG_LEVEL > 0)
+        {
+          bufr2tac_set_error ( s, 1, "buoy_parse_x01()", 
+                               "WMO marine observing platform extended identifier >= 100000000. Cannot set s0.A1, s0.bw, s0.nbnbnb" );
         }
       break;
-    case 101: // 0 01 101
-      if ( strlen ( s->a->ctable ) <= 80 )
+      
+    case 101: // 0 01 101 . State identifier
+      if ( strlen ( s->a->ctable ) <= 256 )
         {
           strcpy ( aux, s->a->ctable );
           adjust_string ( aux );
-          strcpy ( s->name, aux );
+          strcpy ( s->country, aux );
           s->mask |= SUBSET_MASK_HAVE_COUNTRY;
         }
+      else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+        {
+          bufr2tac_set_error ( s, 1, "buoy_parse_x01()", "State identifier length > 256. Cannot set s->country" );
+        }
       break;
+
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 )
+        bufr2tac_set_error ( s, 1, "buoy_parse_x01()", "Descriptor not parsed" );
       break;
     }
   return 0;

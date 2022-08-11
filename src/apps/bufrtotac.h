@@ -29,6 +29,7 @@ extern struct bufrdeco_subset_sequence_data SEQ;
 extern struct bufrdeco_compressed_data_references REF;
 extern struct metreport REPORT;
 extern struct bufr2tac_subset_state STATE;
+extern struct bufr2tac_error_stack ERRS;
 
 extern const char SELF[];
 extern char ERR[256];
@@ -52,9 +53,9 @@ extern int FIRST_SUBSET, LAST_SUBSET;
 extern FILE *FL;
 
 // functions
-void print_version( void );
-void print_usage ( void );
-int read_args ( int _argc, char * _argv[] );
+void bufrtotac_print_version( void );
+void bufrtotac_print_usage ( void );
+int bufrtotac_read_args ( int _argc, char * _argv[] );
 char * get_bufrfile_path ( char *filename, char *err );
-int bufrdeco_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subset_state *st, struct bufrdeco *b,
+int bufrtotac_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subset_state *st, struct bufrdeco *b,
                                      char *err );

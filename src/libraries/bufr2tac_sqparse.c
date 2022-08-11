@@ -166,8 +166,11 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
       // Parse FM-12, FM-13 and FM-14
       if ( parse_subset_as_synop ( m, st, sq, err ) == 0 )
         {
+          if (BUFR2TAC_DEBUG_LEVEL)
+            bufr2tac_print_error(&st->e);
           return print_synop ( m->alphanum, REPORT_LENGTH, &m->synop );
         }
+        
     }
   else if ( strcmp ( st->type_report,"ZZYY" ) == 0 )
     {
@@ -195,5 +198,7 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
     }
 
   // when reached this point we have han error
+  if (BUFR2TAC_DEBUG_LEVEL)
+    bufr2tac_print_error(&st->e);
   return 1;
 }
