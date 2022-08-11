@@ -38,7 +38,7 @@ char * kelvin_to_snTTT ( char *target, double T )
     {
       Tx *= 10.0;
     }
-  else if ( T < 173.205 || T > 340.0 )
+  if ( Tx < 173.205 || Tx > 340.0 )
     {
       return NULL;
     }
