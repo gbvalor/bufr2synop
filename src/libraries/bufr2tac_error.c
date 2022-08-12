@@ -62,7 +62,11 @@ int bufr2tac_set_error ( struct bufr2tac_subset_state *s, int severity, char *or
 
   c = description;
   c += sprintf ( c, "%s. :", origin );
-  c += sprintf ( c, "Descriptor: %u %02u %03u. ",s->a->desc.f, s->a->desc.x, s->a->desc.y );
+  c += sprintf ( c, "Descriptor: %u %02u %03u. \"%s\" .",s->a->desc.f, s->a->desc.x, s->a->desc.y, s->a->name );
+  if (s->a->cval[0])
+    c += sprintf ( c, " = '%s'. ", s->a->cval );
+  else 
+    c += sprintf ( c, " = %lf . ", s->a->val );    
   c += sprintf ( c, "%s", explanation );
 
   return bufr2tac_push_error ( &s->e, severity, description );
