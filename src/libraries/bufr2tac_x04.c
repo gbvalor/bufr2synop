@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -119,6 +119,7 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       sprintf ( syn->e.YYYY, "%04d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_YEAR;
       break;
+
     case 2: // 0 04 002 . Month
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -127,6 +128,7 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       sprintf ( syn->e.MM, "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_MONTH;
       break;
+
     case 3: // 0 04 003 . Day of month
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -134,8 +136,8 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       sprintf ( syn->e.DD, "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_DAY;
-      //sprintf(syn->s0.YY, "%02d", (int) sq->sequence[is].val);
       break;
+
     case 4: // 0 04 004 . Hour
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -143,8 +145,8 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       sprintf ( syn->e.HH, "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_HOUR;
-      //sprintf(syn->s0.GG, "%02d", (int) sq->sequence[is].val);
       break;
+
     case 5: // 0 04 005 . Minute
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -153,6 +155,7 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       sprintf ( syn->e.mm, "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
+
     // store latest displacement in seconds
     case 23: // 0 04 023 . Time period of displacement (days)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
@@ -171,6 +174,7 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       s->itmask = s->a->mask;
       s->itval = s->ival * 86400;
       break;
+
     case 24: // 0 04 024 .  Time period of displacement (hours)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -188,6 +192,7 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       s->itmask = s->a->mask;
       s->itval = s->ival * 3600;
       break;
+
     case 25: // 0 04 025  Time period of displacement (minutes)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -205,6 +210,7 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       s->itmask = s->a->mask;
       s->itval = s->ival * 60;
       break;
+
     case 26: // 0 04 026 .  Time period of displacement (seconds)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -222,7 +228,10 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       s->itmask = s->a->mask;
       s->itval = s->ival;
       break;
+
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "syn_parse_x04()", "Descriptor not parsed" );
       break;
     }
   return 0;
@@ -252,6 +261,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         }
       s->mask |= SUBSET_MASK_HAVE_YEAR;
       break;
+
     case 2: // 0 04 002 . Month
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -263,6 +273,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         }
       s->mask |= SUBSET_MASK_HAVE_MONTH;
       break;
+
     case 3: // 0 04 003 . Day of month
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -275,6 +286,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       s->mask |= SUBSET_MASK_HAVE_DAY;
       //sprintf(b->s0.YY, "%02d", (int) sq->sequence[is].val);
       break;
+
     case 4: // 0 04 004 . Hour
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -287,6 +299,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       s->mask |= SUBSET_MASK_HAVE_HOUR;
       //sprintf(b->s0.GG, "%02d", (int) sq->sequence[is].val);
       break;
+
     case 5: // 0 04 005 . Minute
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -298,6 +311,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         }
       s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
+
     // store latest displacement in seconds
     case 23: // 0 04 023 . Time period of displacement (days)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
@@ -313,6 +327,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       s->k_itval = s->i;
       s->itval = s->ival * 86400;
       break;
+
     case 24: // 0 04 024 . Time period of displacement (hours)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -327,6 +342,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       s->k_itval = s->i;
       s->itval = s->ival * 3600;
       break;
+
     case 25: // 0 04 025 . Time period of displacement (minutes)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -341,6 +357,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       s->k_itval = s->i;
       s->itval = s->ival * 60;
       break;
+
     case 26: // 0 04 026 .  Time period of displacement (seconds)
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -355,7 +372,10 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       s->k_itval = s->i;
       s->itval = s->ival;
       break;
+
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "buoy_parse_x04()", "Descriptor not parsed" );
       break;
     }
   return 0;
@@ -516,8 +536,9 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
       s->dift = s->ival;
       break;
 
-
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "climat_parse_x04()", "Descriptor not parsed" );
       break;
     }
   return 0;
@@ -549,6 +570,7 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
         }
       s->mask |= SUBSET_MASK_HAVE_YEAR;
       break;
+
     case 2: // 0 04 002 . Month
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -563,6 +585,7 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
         }
       s->mask |= SUBSET_MASK_HAVE_MONTH;
       break;
+
     case 3: // 0 04 003 . Day of month
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -578,6 +601,7 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
       s->mask |= SUBSET_MASK_HAVE_DAY;
       //sprintf(t->s0.YY, "%02d", (int) sq->sequence[is].val);
       break;
+
     case 4: // 0 04 004 . Hour
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -597,6 +621,7 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
       s->mask |= SUBSET_MASK_HAVE_HOUR;
       //sprintf(t->s0.GG, "%02d", (int) sq->sequence[is].val);
       break;
+
     case 5: // 0 04 005 . Minute
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -615,6 +640,7 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
         }
       s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
+
     case 6: // 0 04 006 . Second
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -662,7 +688,10 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
           s->w->raw[s->w->n - 1].dt = s->ival;
         }
       break;
+
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "temp_parse_x04()", "Descriptor not parsed" );
       break;
     }
   return 0;

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -44,10 +44,12 @@ int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       sprintf ( b->s0.Qt, "%d", s->ival );
       b->mask |= BUOY_SEC1;
       break;
+
     case 21: // 0 33 021. Quality control of following value
       sprintf ( b->s4.Qp, "%d", s->ival );
       b->mask |= BUOY_SEC1;
       break;
+
     case 22: // 0 33 022. Quality of buoy satellite transmission
       if ( s->ival == 0 )
         {
@@ -68,15 +70,20 @@ int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
             sprintf ( b->s2.Qd, "3" );
         }
       break;
+
     case 23: // 0 33 023 . Quality of buoy location
       sprintf ( b->s0.Ql, "%d", s->ival );
       sprintf ( b->s4.QL, "%d", s->ival );
       break;
+
     case 27: // 0 33 027. Location quality class (range of ratiuos of 66% confidence)
       sprintf ( b->s0.QA, "%d", s->ival );
       sprintf ( b->s4.QA, "%d", s->ival );
       break;
+
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "syn_parse_x33()", "Descriptor not parsed" );
       break;
     }
   return 0;
@@ -119,7 +126,10 @@ int temp_parse_x33 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
           strcpy ( t->c.s1.im, "/" );
           strcpy ( t->d.s1.im, "/" );
         }
+      break;  
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "temp_parse_x33()", "Descriptor not parsed" );
       break;
     }
   return 0;

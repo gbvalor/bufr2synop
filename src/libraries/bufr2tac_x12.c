@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2019 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -240,6 +240,8 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               strcpy ( syn->s1.TTT, aux + 1 );
               syn->mask |= SYNOP_SEC1;
             }
+          else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+            bufr2tac_set_error ( s, 1, "syn_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );
         }
       break;
 
@@ -255,6 +257,8 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               strcpy ( syn->s1.TdTdTd, aux + 1 );
               syn->mask |= SYNOP_SEC1;
             }
+          else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+            bufr2tac_set_error ( s, 1, "syn_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );
         }
       break;
 
@@ -270,6 +274,8 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               strcpy ( syn->s3.TxTxTx, aux + 1 );
               syn->mask |= SYNOP_SEC3;
             }
+          else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+            bufr2tac_set_error ( s, 1, "syn_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );
         }
       break;
 
@@ -285,6 +291,8 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               strcpy ( syn->s3.TxTxTx, aux + 1 );
               syn->mask |= SYNOP_SEC3;
             }
+          else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+            bufr2tac_set_error ( s, 1, "syn_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );
         }
       break;
 
@@ -301,6 +309,8 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               strcpy ( syn->s3.TnTnTn, aux + 1 );
               syn->mask |= SYNOP_SEC3;
             }
+          else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+            bufr2tac_set_error ( s, 1, "syn_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );
         }
       break;
 
@@ -316,6 +326,8 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               strcpy ( syn->s3.TnTnTn, aux + 1 );
               syn->mask |= SYNOP_SEC3;
             }
+          else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+            bufr2tac_set_error ( s, 1, "syn_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );
         }
       break;
 
@@ -331,6 +343,8 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               strcpy ( syn->s2.TbTbTb, aux + 1 );
               syn->mask |= SYNOP_SEC2;
             }
+          else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+            bufr2tac_set_error ( s, 1, "syn_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );
         }
       break;
 
@@ -345,6 +359,8 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               strcpy ( syn->s3.jjj, aux );
               syn->mask |= SYNOP_SEC3;
             }
+          else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+            bufr2tac_set_error ( s, 1, "syn_parse_x12()->kelvin_to_snTT()", "Unspected parse problem" );
         }
       else if ( strcmp ( "1", syn->s0.A1 ) == 0 )
         {
@@ -362,6 +378,8 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
                 }
               syn->mask |= SYNOP_SEC3;
             }
+          else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+            bufr2tac_set_error ( s, 1, "syn_parse_x12()->kelvin_to_snTT()", "Unspected parse problem" );
         }
       break;
 
@@ -375,25 +393,29 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               syn->s3.XoXoXoXo[3] = aux[2];
               syn->mask |= SYNOP_SEC3;
             }
+          else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+            bufr2tac_set_error ( s, 1, "syn_parse_x12()->kelvin_to_snTT()", "Unspected parse problem" );
         }
       break;
 
-    case 120: // 0 12 120 . Ground temperature  
+    case 120: // 0 12 120 . Ground temperature
       if ( strcmp ( "2", syn->s0.A1 ) == 0 ) // Only for Region II
         {
           if ( kelvin_to_snTT ( aux, s->val ) )
             {
-                if ( syn->s3.E1[0] )
-                   syn->s3.XoXoXoXo[0] = '/';
-                else if ( syn->s3.E[0] )
-                   syn->s3.XoXoXoXo[0] = syn->s3.E[0];
-                syn->s3.XoXoXoXo[1] = aux[0];
-                syn->s3.XoXoXoXo[2] = aux[1];
-                syn->s3.XoXoXoXo[3] = aux[2];
-            }    
-        }    
+              if ( syn->s3.E1[0] )
+                syn->s3.XoXoXoXo[0] = '/';
+              else if ( syn->s3.E[0] )
+                syn->s3.XoXoXoXo[0] = syn->s3.E[0];
+              syn->s3.XoXoXoXo[1] = aux[0];
+              syn->s3.XoXoXoXo[2] = aux[1];
+              syn->s3.XoXoXoXo[3] = aux[2];
+            }
+          else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+            bufr2tac_set_error ( s, 1, "syn_parse_x12()->kelvin_to_snTT()", "Unspected parse problem" );
+        }
       break;
-      
+
     case 122: // 0 12 122 . Ground minimum temperature during preceding night
       if ( strcmp ( "1", syn->s0.A1 ) == 0 ) // Only for Region I
         {
@@ -411,6 +433,8 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
                 }
               syn->mask |= SYNOP_SEC3;
             }
+          else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+            bufr2tac_set_error ( s, 1, "syn_parse_x12()->kelvin_to_TT()", "Unspected parse problem" );
         }
       else if ( strcmp ( "2", syn->s0.A1 ) == 0 ||
                 strcmp ( "3", syn->s0.A1 ) == 0 ) // Region II and III
@@ -424,6 +448,8 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       break;
 
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "syn_parse_x12()", "Descriptor not parsed" );
       break;
     }
   return 0;
@@ -460,6 +486,8 @@ int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
               strcpy ( b->s1.TTT, aux + 1 );
               b->mask |= BUOY_SEC1;
             }
+          else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+            bufr2tac_set_error ( s, 1, "buoy_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );
         }
       break;
     case 3: // 0 12 003 . Dewpoint temperature
@@ -474,10 +502,14 @@ int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
               strcpy ( b->s1.TdTdTd, aux + 1 );
               b->mask |= BUOY_SEC1;
             }
+          else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+            bufr2tac_set_error ( s, 1, "buoy_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );
         }
       break;
 
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "buoy_parse_x12()", "Descriptor not parsed" );
       break;
     }
   return 0;
@@ -518,6 +550,8 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
                   strcpy ( c->s1.TTT, aux + 1 );
                   c->mask |= CLIMAT_SEC1;
                 }
+              else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+                bufr2tac_set_error ( s, 1, "climat_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );
             }
           else if ( s->isq_val == 2 ) // maximum value
             {
@@ -531,10 +565,12 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
                     }
                   else
                     {
-                      sprintf ( c->s4.yax, "%02d", (s->day + 50) % 100 );
+                      sprintf ( c->s4.yax, "%02d", ( s->day + 50 ) % 100 );
                     }
                   c->mask |= CLIMAT_SEC4;
                 }
+              else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+                bufr2tac_set_error ( s, 1, "climat_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );
 
             }
           else if ( s->isq_val == 3 ) // minimum value
@@ -549,10 +585,12 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
                     }
                   else
                     {
-                      sprintf ( c->s4.yan, "%02d", (s->day + 50) % 100 );
+                      sprintf ( c->s4.yan, "%02d", ( s->day + 50 ) % 100 );
                     }
                   c->mask |= CLIMAT_SEC4;
                 }
+              else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+                bufr2tac_set_error ( s, 1, "climat_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );
             }
         }
       else
@@ -565,6 +603,8 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
                   strcpy ( c->s2.TTT, aux + 1 );
                   c->mask |= CLIMAT_SEC2;
                 }
+              else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+                bufr2tac_set_error ( s, 1, "climat_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );
             }
 
         }
@@ -581,6 +621,8 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
                   strcpy ( c->s1.TxTxTx, aux + 1 );
                   c->mask |= CLIMAT_SEC1;
                 }
+              else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+                bufr2tac_set_error ( s, 1, "climat_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );
             }
         }
       else
@@ -593,6 +635,8 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
                   strcpy ( c->s2.TxTxTx, aux + 1 );
                   c->mask |= CLIMAT_SEC2;
                 }
+              else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+                bufr2tac_set_error ( s, 1, "climat_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );
             }
         }
       break;
@@ -608,6 +652,8 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
                   strcpy ( c->s1.TnTnTn, aux + 1 );
                   c->mask |= CLIMAT_SEC1;
                 }
+              else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+                bufr2tac_set_error ( s, 1, "climat_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );
             }
         }
       else
@@ -620,6 +666,8 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
                   strcpy ( c->s2.TnTnTn, aux + 1 );
                   c->mask |= CLIMAT_SEC2;
                 }
+              else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+                bufr2tac_set_error ( s, 1, "climat_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );
             }
         }
       break;
@@ -646,13 +694,16 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
               c->s4.sx[0] = aux[0];
               strcpy ( c->s4.Txd, aux + 1 );
             }
+          else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+            bufr2tac_set_error ( s, 1, "climat_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );
+
           if ( s->isq_val == 0 )
             {
               sprintf ( c->s4.yx, "%02d", s->day );
             }
           else
             {
-              sprintf ( c->s4.yx, "%02d", (s->day + 50) % 100 );
+              sprintf ( c->s4.yx, "%02d", ( s->day + 50 ) % 100 );
             }
           c->mask |= CLIMAT_SEC4;
         }
@@ -666,19 +717,24 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
               c->s4.sn[0] = aux[0];
               strcpy ( c->s4.Tnd, aux + 1 );
             }
+          else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+            bufr2tac_set_error ( s, 1, "climat_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );
+
           if ( s->isq_val == 0 )
             {
               sprintf ( c->s4.yn, "%02d", s->day );
             }
           else
             {
-              sprintf ( c->s4.yn, "%02d", (s->day + 50) % 100 );
+              sprintf ( c->s4.yn, "%02d", ( s->day + 50 ) % 100 );
             }
           c->mask |= CLIMAT_SEC4;
         }
       break;
 
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "climat_parse_x12()", "Descriptor not parsed" );
       break;
     }
   return 0;
@@ -730,6 +786,8 @@ int temp_parse_x12 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
       break;
 
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "temp_parse_x12()", "Descriptor not parsed" );
       break;
     }
 

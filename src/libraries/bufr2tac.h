@@ -189,7 +189,7 @@
 /*! \def BUFR2TAC_ERROR_DESCRIPTION_LENGTH
  *  \brief set de dimension of member \ref description of a struct \ref bufr2tac_error_stack 
  */
-#define BUFR2TAC_ERROR_DESCRIPTION_LENGTH 512
+#define BUFR2TAC_ERROR_DESCRIPTION_LENGTH 1024
 
 
 #define REPORT_LENGTH (16384)

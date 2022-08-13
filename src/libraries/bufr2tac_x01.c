@@ -69,6 +69,24 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       sprintf ( syn->s0.bw, "%d", s->ival );
       break;
 
+    case 10: // 0 01 010. Stationary buoy platform identifier
+      if ( strlen ( s->a->cval ) < 16 )
+        {
+          strcpy ( aux, s->a->cval );
+          adjust_string ( aux );
+          if ( aux[0] == '\xff' )
+            break;
+          if ( strlen ( aux ) < 10 )
+            strcpy ( syn->s0.D_D, aux );
+          else
+            bufr2tac_set_error ( s, 1, "syn_parse_x01()", "Ship or mobile land station index length >= 10. Cannot set s0.D_D" );
+        }
+      else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+        {
+          bufr2tac_set_error ( s, 1, "syn_parse_x01()", "Ship or mobile land station index length >= 16" );
+        }
+      break;
+
     case 11: // 0 01 011. Ship or mobile land station index
       if ( strlen ( s->a->cval ) < 16 )
         {
@@ -118,7 +136,7 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 )
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
         bufr2tac_set_error ( s, 0, "syn_parse_x01()", "Descriptor not parsed" );
       break;
     }
@@ -218,8 +236,8 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 0 )
-        bufr2tac_set_error ( s, 1, "buoy_parse_x01()", "Descriptor not parsed" );
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "buoy_parse_x01()", "Descriptor not parsed" );
       break;
     }
   return 0;
@@ -276,10 +294,16 @@ int climat_parse_x01 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
           strcpy ( s->name, aux );
           s->mask |= SUBSET_MASK_HAVE_NAME;
         }
+      else if (BUFR2TAC_DEBUG_LEVEL > 0)
+        {
+          bufr2tac_set_error ( s, 1, "climat_parse_x01()", "Station or site name length > 80. Cannot set s->name" );
+        }
       break;
 
 
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "climat_parse_x01()", "Descriptor not parsed" );
       break;
     }
   return 0;
@@ -396,6 +420,10 @@ int temp_parse_x01 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
           strcpy ( s->name, aux );
           s->mask |= SUBSET_MASK_HAVE_NAME;
         }
+      else if (BUFR2TAC_DEBUG_LEVEL > 0)
+        {
+          bufr2tac_set_error ( s, 1, "temp_parse_x01()", "Station or site name length > 80. Cannot set s->name" );
+        }
       break;
     case 101: // 0 01 101 . State identifier
       if ( strlen ( s->a->ctable ) <= 256 )
@@ -405,8 +433,14 @@ int temp_parse_x01 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
           strcpy ( s->country, aux );
           s->mask |= SUBSET_MASK_HAVE_COUNTRY;
         }
+      else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+        {
+          bufr2tac_set_error ( s, 1, "temp_parse_x01()", "State identifier length > 256. Cannot set s->country" );
+        }
       break;
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "climat_parse_x01()", "Descriptor not parsed" );
       break;
     }
   return 0;

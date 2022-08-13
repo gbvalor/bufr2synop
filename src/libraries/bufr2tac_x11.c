@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -128,6 +128,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       sprintf ( syn->s1.dd, "%02d", abs((s->ival + 5 ) / 10) % 100 );
       syn->mask |= SYNOP_SEC1;
       break;
+
     case 2: // 0 11 002 . Wind speed
     case 12: // 0 11 012 . Wind speed at 10 meters
       if ( syn->s0.iw[0] == '4' )
@@ -145,6 +146,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       syn->mask |= SYNOP_SEC1;
       break;
+
     case 41: // 0 11 041 . Max wind gust speed
       if ( syn->s3.d9.n == SYNOP_NMISC )
         {
@@ -263,7 +265,10 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       break;
 
     case 43: // 0 11 043 . Max wind gust direction
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "syn_parse_x11()", "Descriptor not parsed" );
       break;
+
     case 84: // 0 11 084 . Wind speed in knots
       if ( syn->s0.iw[0] == '1' )
         {
@@ -280,6 +285,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       syn->mask |= SYNOP_SEC1;
       break;
+
     case 86: // 0 11 086 . Max wind speed in knots
       if ( syn->s3.d9.n == SYNOP_NMISC )
         {
@@ -359,7 +365,10 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
         }
       break;
+
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "syn_parse_x11()", "Descriptor not parsed" );
       break;
     }
   return 0;
@@ -388,6 +397,7 @@ int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       sprintf ( b->s1.dd, "%02d", abs((s->ival + 5 ) / 10) % 100 );
       b->mask |= BUOY_SEC1;
       break;
+    
     case 2: // 0 11 002 . Wind speed
     case 12: // 0 11 012 . Wind speed at 10 meters
       if ( b->s0.iw[0] == '4' )
@@ -405,6 +415,7 @@ int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         }
       b->mask |= BUOY_SEC1;
       break;
+
     case 84: // 0 11 084  (wind in knots)
       if ( b->s0.iw[0] == '1' )
         {
@@ -423,6 +434,8 @@ int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       break;
 
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "buoy_parse_x11()", "Descriptor not parsed" );
       break;
     }
   return 0;
@@ -465,7 +478,10 @@ int climat_parse_x11 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         }
       c->mask |= CLIMAT_SEC4;
       break;
+
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "climat_parse_x11()", "Descriptor not parsed" );
       break;
     }
   return 0;
@@ -546,6 +562,8 @@ int temp_parse_x11 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
       break;
 
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "temp_parse_x11()", "Descriptor not parsed" );
       break;
     }
   return 0;

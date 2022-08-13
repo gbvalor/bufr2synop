@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -103,6 +103,8 @@ int syn_parse_x08 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       break;
 
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "syn_parse_x08()", "Descriptor not parsed" );
       break;
     }
   return 0;
@@ -142,7 +144,10 @@ int buoy_parse_x08 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
           s->isq = 1;
         }
       break;
+
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "buoy_parse_x08()", "Descriptor not parsed" );
       break;
     }
   return 0;
@@ -369,6 +374,7 @@ int climat_parse_x08 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
           break;
         }
       break;
+    
     case 23: // 0 08 023 . First-order statistics.
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
@@ -396,6 +402,8 @@ int climat_parse_x08 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
       break;
 
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "climat_parse_x08()", "Descriptor not parsed" );
       break;
     }
 
@@ -435,6 +443,7 @@ int temp_parse_x08 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
           s->isq = 0;
         }
       break;
+
     case 21: // 0 08 021. Time significance
       if ( s->ival != 18 )
         {
@@ -453,7 +462,10 @@ int temp_parse_x08 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
           s->w->raw[s->w->n - 1].flags = s->ival;
         }
       break;
+
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "temp_parse_x08()", "Descriptor not parsed" );
       break;
     }
   return 0;

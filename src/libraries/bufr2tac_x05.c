@@ -88,9 +88,10 @@ int syn_parse_x05 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 21: // 0 05 021 . Bearing or azimut
       grad_to_D ( syn->s3.Da, s->val );
       syn->mask |= SYNOP_SEC3;
-      break
-      ;
+      break;
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "syn_parse_x05()", "Descriptor not parsed" );
       break;
     }
 
@@ -118,6 +119,7 @@ int syn_parse_x05 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     {
       latlon_to_MMM ( syn->s0.MMM, s->lat, s->lon ); // compute it
     }
+    
   return 0;
 }
 
@@ -147,7 +149,10 @@ int buoy_parse_x05 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       sprintf ( b->s0.LaLaLaLaLa, "%05d",ia );
       s->lat = s->val;
       break;
+
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "buoy_parse_x05()", "Descriptor not parsed" );
       break;
     }
 
@@ -181,6 +186,8 @@ int climat_parse_x05 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
       s->lat = s->val;
       break;
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "climat_parse_x05()", "Descriptor not parsed" );
       break;
     }
   return 0;
@@ -267,9 +274,10 @@ int temp_parse_x05 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
       break;
 
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "temp_parse_x05()", "Descriptor not parsed" );
       break;
     }
-
 
   return 0;
 }

@@ -77,7 +77,9 @@ char * pascal_to_PPPP ( char *target, double P )
 /*!
   \fn int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
   \brief Parse a expanded descriptor with X = 10
-  \param syn pointer to a struct \ref synop_chunks where to set the results
+  \param syn pointer to a s      if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+        bufr2tac_set_error ( s, 0, "syn_parse_x08()", "Descriptor not parsed" );
+truct \ref synop_chunks where to set the results
   \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
@@ -139,7 +141,10 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       sprintf ( syn->s1.a, "%1d",s->ival );
       syn->mask |= SYNOP_SEC1;
       break;
+
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "syn_parse_x10()", "Descriptor not parsed" );
       break;
     }
   return 0;
@@ -170,15 +175,18 @@ int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       strcpy ( b->s1.PoPoPoPo, aux );
       b->mask |= BUOY_SEC1;
       break;
+
     case 51: // 0 10 051 . Pressure reduced to mean sea level
       pascal_to_PPPP ( aux, s->val );
       strcpy ( b->s1.PPPP, aux );
       b->mask |= BUOY_SEC1;
       break;
+
     case 63: // 0 10 063 . Characteristic of pressure tendency
       sprintf ( b->s1.a, "%1d",s->ival );
       b->mask |= BUOY_SEC1;
       break;
+
     case 61: // 0 10 061 . 3-hour pressure change
       pascal_to_ppp ( aux, s->val );
       memcpy( b->s1.ppp, aux, 3 );
@@ -187,6 +195,8 @@ int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       break;
 
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "buoy_parse_x10()", "Descriptor not parsed" );
       break;
     }
   return 0;
@@ -233,6 +243,7 @@ int climat_parse_x10 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
             }
         }
       break;
+
     case 9: // 0 10 009 . Heigh of geopotential
       if ( s->isq_val == 4 )
         {
@@ -248,6 +259,7 @@ int climat_parse_x10 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
             }
         }
       break;
+
     case 51: // 0 10 051 . Pressure reduced to mean sea level
       if ( s->isq_val == 4 )
         {
@@ -266,6 +278,8 @@ int climat_parse_x10 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
       break;
 
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "climat_parse_x10()", "Descriptor not parsed" );
       break;
 
     }
@@ -300,7 +314,10 @@ int temp_parse_x10 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
           s->r->raw[s->r->n - 1].h = s->val;
         }
       break;
+
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "temp_parse_x10()", "Descriptor not parsed" );
       break;
     }
   return 0;

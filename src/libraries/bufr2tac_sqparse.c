@@ -110,7 +110,8 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
     case 1:
       if ( find_descriptor_interval ( kdtlst, nlst, 308004, 308005 ) ||
            find_descriptor ( kdtlst, nlst,301093 ) ||
-           find_descriptor ( kdtlst, nlst,308009 ) || find_descriptor ( kdtlst, nlst,1011 ) )
+           find_descriptor ( kdtlst, nlst,308009 ) || 
+           find_descriptor ( kdtlst, nlst,1011 ) )
         {
           strcpy ( st->type_report,"BBXX" );  // FM-13 ship
         }
@@ -150,7 +151,8 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
       sprintf ( err, "The data category %d is not parsed at the moment", ksec1[5] );
       return 1;
     }
-
+  
+  
   if ( st->type_report[0] == '\0' )
     {
       sprintf ( err, "Cannot find the report type\n" );

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -53,6 +53,7 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       syn->mask |= SYNOP_SEC2; // have sec2 data
       break;
+
     case 11: // 0 22 011 wind period in seconds
       if ( syn->s2.PwPw[0] == 0 )
         {
@@ -60,6 +61,7 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           syn->mask |= SYNOP_SEC2; // have sec2 data
         }
       break;
+
     case 12: // 0 22 012 wind wave period in seconds
       if ( syn->s2.PwaPwa[0] == 0 )
         {
@@ -67,6 +69,7 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           syn->mask |= SYNOP_SEC2; // have sec2 data
         }
       break;
+
     case 13: // 0 22 013 swell wave period in seconds
       if ( syn->s2.Pw1Pw1[0] == 0 )
         {
@@ -78,6 +81,7 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       syn->mask |= SYNOP_SEC2; // have sec2 data
       break;
+
     case 21: // 0 22 021  wind wave heigh in m
       if ( syn->s2.HwHw[0] == 0 )
         {
@@ -85,6 +89,7 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           syn->mask |= SYNOP_SEC2; // have sec2 data
         }
       break;
+
     case 22: // 0 22 022 wind wave heigh in meters
       if ( syn->s2.HwaHwa[0] == 0 )
         {
@@ -97,6 +102,7 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           syn->mask |= SYNOP_SEC2; // have sec2 data
         }
       break;
+
     case 23: // 0 22 023 swell wave heigh in meters
       if ( syn->s2.Hw1Hw1[0] == 0 )
         {
@@ -108,6 +114,7 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       syn->mask |= SYNOP_SEC2; // have sec2 data
       break;
+
     case 42:
     case 43:
     case 45:
@@ -123,6 +130,8 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       break;
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "syn_parse_x22()", "Descriptor not parsed" );
       break;
     }
   return 0;
@@ -160,6 +169,7 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
             }
         }
       break;  
+
     case 12: // 0 22 012 wind wave period in seconds
     case 74: // 0 22 074 significant wave period in seconds    
       if ( b->s2.PwaPwa[0] == 0 )
@@ -171,6 +181,7 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 
         }
       break;
+
     case 22: // 0 22 022 wind wave heigh in meters
     case 70: // 0 22 070 significant wave height in meters    
       if ( b->s2.HwaHwa[0] == 0 )
@@ -184,6 +195,7 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
           b->mask |= BUOY_SEC2; // have sec2 data
         }
       break;
+
     case 31: // 0 22 033 current speed
       if ( s->layer < 32 ) // only 32 max layers
         {
@@ -199,6 +211,7 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
             }
         }
       break;
+
     case 42:
     case 43:
       if ( s->deep == 0 )
@@ -227,6 +240,7 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
             }
         }
       break;
+
     case 45:
     case 49: // 0 22 049 Sea surface temperature
       if ( b->s2.TwTwTw[0] == 0 )
@@ -239,6 +253,7 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
             }
         }
       break;
+
     case 62: // 0 22 062 Salinity
       if ( s->layer < 32 ) // only 32 max layers
         {
@@ -254,9 +269,12 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
             }
         }
       break;
+
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "buoy_parse_x22()", "Descriptor not parsed" );
       break;
-    }
+   }
   return 0;
 }
 
@@ -293,6 +311,8 @@ int temp_parse_x22 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
       break;
 
     default:
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+        bufr2tac_set_error ( s, 0, "temp_parse_x22()", "Descriptor not parsed" );
       break;
     }
 
