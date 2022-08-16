@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -386,7 +386,7 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
           return 1;
         }
       // patch for delayed descriptor: it allways have data
-      if ( is_a_delayed_descriptor ( d ) )
+      if ( is_a_delayed_descriptor ( d ) || is_a_short_delayed_descriptor( d ) )
         r->has_data = 1;
     }
   else // case of data
@@ -397,7 +397,7 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
           return 1;
         }
       // patch for delayed descriptor: it allways have data
-      if ( is_a_delayed_descriptor ( d ) )
+      if ( is_a_delayed_descriptor ( d ) || is_a_short_delayed_descriptor ( d ) )
         r->has_data = 1;
     }
 
@@ -410,11 +410,12 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
   r->inc_bits = ival;
 
   // if is a delayed descriptor then inc_bits MUST be 0.
-  if ( is_a_delayed_descriptor ( d ) && r->inc_bits )
+  if ( (is_a_delayed_descriptor ( d ) || is_a_short_delayed_descriptor( d ) ) && r->inc_bits )
     {
       sprintf ( b->error, "bufrdeco_tableb_compressed(): Found a delayed descriptor with inc_bits != 0\n" );
       return 1;
     }
+    
   // Set the bit_offset after all bits needed by this element in all subsets
   b->state.bit_offset += r->inc_bits * b->sec3.subsets;
 

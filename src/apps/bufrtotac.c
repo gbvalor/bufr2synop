@@ -168,7 +168,7 @@ int main ( int argc, char *argv[] )
       /* Try to guess a GTS header from filename*/
       GTS_HEADER = guess_gts_header ( &BUFR.header , INPUTFILE );  // GTS_HEADER = 1 if succeeded
       if ( GTS_HEADER && DEBUG )
-        printf ( "#%s %s %s %s %s\n", BUFR.header.timestamp, BUFR.header.bname, BUFR.header.center,
+        printf ( "# Guessed GTS Header: %s %s %s %s %s\n", BUFR.header.timestamp, BUFR.header.bname, BUFR.header.center,
                  BUFR.header.dtrel, BUFR.header.order );
 
       /* Prints sections if verbose */

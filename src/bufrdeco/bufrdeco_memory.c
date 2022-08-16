@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -192,19 +192,20 @@ int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_r
 {
   if ( rf->refs != NULL && rf->dim != 0 )
     {
-      rf->nd = 0;
+      rf->nd = 0; // Here we set the used elements to 0 of dim 
     }
   else if ( rf->refs == NULL )
     {
+      // Here memory is still not allocated. Proceed to allocate with BUFR_NMAXSEQ
       if ( ( rf->refs = ( struct bufrdeco_compressed_ref * ) calloc ( 1, BUFR_NMAXSEQ * sizeof ( struct bufrdeco_compressed_ref ) ) ) == NULL )
         {
           fprintf ( stderr,"bufr_init_compressed_data_references():Cannot allocate memory for bufrdeco_compressed_ref array\n" );
           return 1;
         }
-      rf->nd = 0;
-      rf->dim = BUFR_NMAXSEQ;
+      rf->nd = 0; // Set de used elements (bufrdeco_compressed_ref)
+      rf->dim = BUFR_NMAXSEQ; // Set de allocated bufr_compressed_rer elements
     }
-  return 0;
+  return 0; 
 }
 
 /*!

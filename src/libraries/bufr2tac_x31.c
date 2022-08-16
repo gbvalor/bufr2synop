@@ -34,9 +34,14 @@
 */
 int syn_parse_x31 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 {
+  
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
     {
-      return 0;
+      // 0 31 000 does not have DESCRIPTOR_VALUE_MISSING
+      if (s->a->desc.y != 0)
+        return 0;
+      s->rep = 1;
+      s->k_rep = s->i;
     }
 
   if ( syn == NULL )
@@ -47,7 +52,8 @@ int syn_parse_x31 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
   switch ( s->a->desc.y )
     {
     case 0: // 0 31 000 .  Short delayed descriptor replication factor
-      // It is no meaning here
+      s->rep = s->ival;
+      s->k_rep = s->i;
       break;
 
     case 1:

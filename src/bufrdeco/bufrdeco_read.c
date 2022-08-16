@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -177,7 +177,7 @@ int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename )
 
       // check if first '7777' has been found after first 'BUFR'
       if ( n > 4 &&
-           beg < ( (size_t) st.st_size - 4 ) &&
+           beg < ( ( size_t ) st.st_size - 4 ) &&
            bufrx[n - 4] == '7' &&
            bufrx[n - 3] == '7' &&
            bufrx[n - 2] == '7' &&

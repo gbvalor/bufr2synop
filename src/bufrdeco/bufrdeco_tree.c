@@ -35,7 +35,7 @@ int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct 
 {
   size_t i;
 
-  // First we copy the array descritors in sec3 as level0
+  // First we copy the array descriptors in sec3 as level0
   for ( i = 0; i < b->sec3.ndesc ; i++ )
     {
       memcpy ( & ( s->lseq[i] ), & ( b->sec3.unexpanded[i] ), sizeof ( struct bufr_descriptor ) );
@@ -61,16 +61,16 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
 
   if ( key == NULL )
     {
-      memset ( b->tree, 0, sizeof ( struct bufrdeco_expanded_tree ) );
       // case first layer
-      b->tree->nseq = 1;
-      l = & ( b->tree->seq[0] );
-      strcpy ( l->key, "000000" );
-      l->level = 0;
+      memset ( b->tree, 0, sizeof ( struct bufrdeco_expanded_tree ) ); //reset memory
+      b->tree->nseq = 1; // Set current number of sequences in tree, i.e. 1
+      l = & ( b->tree->seq[0] ); // This is to write easily
+      strcpy ( l->key, "000000" ); // Key '000000' is the first descriptor of first sequence of level 0
+      l->level = 0; // Level 0 
       l->father = NULL; // This layer is God, it has not father
-      l->iseq = 0;
-      strcpy(l->name, "Main sequence from SEC3");
-      // here we get ndesc and lsec array
+      l->iseq = 0; // first
+      strcpy(l->name, "Main sequence from SEC3"); 
+      // here we get l->ndesc and l->lsec[] array
       if ( get_unexpanded_descriptor_array_from_sec3 ( l, b ) )
         {
           return 1;
@@ -78,23 +78,25 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
     }
   else
     {
+      // First increase nseq counter 
       if ( b->tree->nseq < NMAXSEQ_DESCRIPTORS )
         {
           ( b->tree->nseq ) ++;
         }
       else
         {
+          // No more bufr_sequence permitted
           sprintf ( b->error,"bufr_parse_tree_deep(): Reached max number of bufr_sequence. "
                     "Use bigger NMAXSEQ_LAYER \n" );
           return 1;
         }
-      nl = b->tree->nseq;
-      l = & ( b->tree->seq[nl - 1] );
-      strcpy ( l->key, key );
-      l->level = father->level + 1;
-      l->father = father;
-      l->iseq = nl - 1;
-      //printf ("level=%lu ", l->level);
+      nl = b->tree->nseq; // To write code easily
+      l = & ( b->tree->seq[nl - 1] ); // To write code easily
+      strcpy ( l->key, key ); // Set the key of sequence in table d (f == 3)
+      l->level = father->level + 1; // level for sequence
+      l->father = father; // set the father
+      l->iseq = nl - 1; // index of sequence in tree
+
       // here we get ndesc and lsec array from table d
       if ( bufrdeco_tabled_get_descriptors_array ( l, b, key ) )
         {
