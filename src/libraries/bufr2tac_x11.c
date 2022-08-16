@@ -150,19 +150,20 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 41: // 0 11 041 . Max wind gust speed
       if ( syn->s3.d9.n == SYNOP_NMISC )
         {
-          return 0;
+          return 0; // No more groups space
         }
+        
       if ( s->itval == -600 )
         {
           if ( syn->mask & SUBSET_MASK_HAVE_GUST10 )
             {
-              break;
+              break; // Already have gust for 10 minutes
             }
           sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "910" );
           s->SnSn = 910;
           if ( syn->s0.iw[0] == '4' )
             {
-              s->val *= 1.94384449;
+              s->val *= 1.94384449; // original value was in m/s. So it change to knots
             }
           if ( s->val < 100.0 )
             {
@@ -170,6 +171,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             }
           else
             {
+              // Case more than 99 knots
               sprintf ( syn->s3.d9.misc[syn->s3.d9.n].spsp,"99" );
               syn->s3.d9.n++;
               sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "00" );
@@ -296,7 +298,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "910" );
           if ( syn->s0.iw[0] == '1' )
             {
-              s->val /= 1.94384449;
+              s->val /= 1.94384449; // original values in knots. passed to m/s
             }
           if ( s->val < 100.0 )
             {
