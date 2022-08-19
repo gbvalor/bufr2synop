@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -56,8 +56,9 @@ int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct 
  */
 int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *father,  const char *key )
 {
-  size_t i, nl;
+  size_t i, j, nl;
   struct bufr_sequence *l;
+  struct bufr_descriptor *d;
 
   if ( key == NULL )
     {
@@ -66,10 +67,10 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
       b->tree->nseq = 1; // Set current number of sequences in tree, i.e. 1
       l = & ( b->tree->seq[0] ); // This is to write easily
       strcpy ( l->key, "000000" ); // Key '000000' is the first descriptor of first sequence of level 0
-      l->level = 0; // Level 0 
+      l->level = 0; // Level 0
       l->father = NULL; // This layer is God, it has not father
       l->iseq = 0; // first
-      strcpy(l->name, "Main sequence from SEC3"); 
+      strcpy ( l->name, "Main sequence from SEC3" );
       // here we get l->ndesc and l->lsec[] array
       if ( get_unexpanded_descriptor_array_from_sec3 ( l, b ) )
         {
@@ -78,7 +79,7 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
     }
   else
     {
-      // First increase nseq counter 
+      // First increase nseq counter
       if ( b->tree->nseq < NMAXSEQ_DESCRIPTORS )
         {
           ( b->tree->nseq ) ++;
@@ -86,7 +87,7 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
       else
         {
           // No more bufr_sequence permitted
-          sprintf ( b->error,"bufr_parse_tree_deep(): Reached max number of bufr_sequence. "
+          sprintf ( b->error,"bufr_parse_tree_recursive(): Reached max number of bufr_sequence. "
                     "Use bigger NMAXSEQ_LAYER \n" );
           return 1;
         }
@@ -104,6 +105,113 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
         }
     }
 
+  // Set init replication level values from father, copying the one in replicated[0]
+  for ( i = 1 ; i < l->ndesc ; i++)
+  {
+    l->replicated[i] = l->replicated[0];
+  }
+    
+  // Checks for replication levels, no data present, event or conditioning event
+  for ( i = 0; i < l->ndesc ; i++ )
+    {
+      d = & ( l->lseq[i] ); // To write/read code easily
+
+      // Case of replication
+      if ( d->f == 1 )
+        {
+          for ( j = 0; j < d->x; j++ )
+            {
+              if ( d->y == 0 )
+                l->replicated[j + i + 2]++; // a delayed replicator follow
+              else
+                l->replicated[j + i + 1]++; // No delayed descriptor
+            }
+        }
+
+
+      if ( d->f == 2 )
+        {
+          // check for no data present descriptors
+          if ( d->x == 21 &&
+               d->y > 0 )
+            {
+              if ( ( d->y + i ) < l->ndesc )
+                {
+                  l->no_data_present.active = 1;
+                  l->no_data_present.first = i + 1;
+                  l->no_data_present.last = i + d->y;
+
+                }
+              else
+                {
+                  // range of no data present out of sequence
+                  sprintf ( b->error,"bufr_parse_tree_recursive(): Range of 'no data present' out of sequence limits\n" );
+                  return 1;
+                }
+            }
+
+          // Check for event descriptors
+          if ( d->x == 41 )
+            {
+              if ( d->y == 0 && ( i + 1 ) < l->ndesc )
+                {
+                  l->event.active = 1;
+                  l->event.first = i + 1;
+                  l->event.last = l->ndesc - 1; // at the moment mark upto final sequence
+                }
+              else if ( ( d->y == 255 ) &&  l->event.active )
+                {
+                  l->event.last = i;
+                }
+              else
+                {
+                  sprintf ( b->error,"bufr_parse_tree_recursive(): unexpected or wrong event descriptor\n" );
+                  return 1;
+                }
+            }
+
+          // Check for conditioning event descriptors
+          if ( d->x == 42 )
+            {
+              if ( d->y == 0 && ( i + 1 ) < l->ndesc )
+                {
+                  l->cond_event.active = 1;
+                  l->cond_event.first = i + 1;
+                  l->cond_event.last = l->ndesc - 1; // at the moment mark upto final sequence
+                }
+              else if ( ( d->y == 255 ) &&  l->cond_event.active )
+                {
+                  l->cond_event.last = i;
+                }
+              else
+                {
+                  sprintf ( b->error,"bufr_parse_tree_recursive(): unexpected or wrong conditioning event event descriptor\n" );
+                  return 1;
+                }
+            }
+
+          // Check for categorical forecasts descriptors
+          if ( d->x == 43 )
+            {
+              if ( d->y == 0 && ( i + 1 ) < l->ndesc )
+                {
+                  l->cat_forecast.active = 1;
+                  l->cat_forecast.first = i + 1;
+                  l->cat_forecast.last = l->ndesc - 1; // at the moment mark upto final sequence
+                }
+              else if ( ( d->y == 255 ) &&  l->cat_forecast.active )
+                {
+                  l->cat_forecast.last = i;
+                }
+              else
+                {
+                  sprintf ( b->error,"bufr_parse_tree_recursive(): unexpected or wrong categorical forecasts descriptor\n" );
+                  return 1;
+                }
+            }
+        }
+    }
+
   // now we detect sons and go to parse them
   for ( i = 0; i < l->ndesc ; i++ )
     {
@@ -114,6 +222,8 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
           continue;
         }
       l->sons[i] = & ( b->tree->seq[b->tree->nseq] );
+      l->sons[i]->replicated[0] = l->replicated[i]; // This is a trick to pass replication level to sons
+      
       // we then recursively parse the son
       if ( bufrdeco_parse_tree_recursive ( b, l, l->lseq[i].c ) )
         {

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,6 +21,11 @@
  \file bufrdeco_f2.c
  \brief file with the code to process some of the operations in B for F = 2
  */
+#ifndef CONFIG_H
+# include "config.h"
+# define CONFIG_H
+#endif
+
 #include "bufrdeco.h"
 
 /*!
@@ -172,6 +177,17 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
       b->state.fixed_ccitt = d->y;
       break;
 
+    case 21:
+      // Data not present
+      //
+      // Data values present in Section 4 (Data section)
+      // corresponding to the following YYY descriptors shall
+      // be limited to data from Classes 01–09, and Class 31.
+
+      // It is nor processed here, it is already processed when parsing tree of expanded descriptors
+      // adjusting the proper struct \ref bufr_sequence_index_range no_data_present
+      break;
+
     case 22:
       // Quality information follows
       // The values of Class 33 elements which follow relate to
@@ -244,7 +260,7 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
           b->state.dstat_active = 0;
         }
       break;
-      
+
     case 35:
       // Cancel backward data reference
       //
@@ -297,9 +313,67 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
         }
       break;
 
+    case 41:
+      // This operator denotes the beginning of the definition of an event.
+      //
+      // An event, as defined for use with operators 2 41 000 and 2 42 000,
+      // is a set of one or more circumstances described using appropriate
+      // Table B descriptors along with their corresponding data values. The
+      // grouping of such descriptors together as a single “event” allows
+      // them to be collectively assigned as the target of a separate descriptor
+      // such as 0 33 045 or 0 33 046. When defining a circumstance within an
+      // event, descriptor 0 33 042 may be employed preceding the appropriate
+      // Table B descriptor in order to indicate that the corresponding value
+      // is actually a bound for a range of values.
+      //
+      // If y = 255 then it  denotes the conclusion of the
+      // event definition that was begun via the previous 2 41 000
+      // operator.
+      //
+      // It is nor processed here, it is already processed when parsing tree of expanded descriptors
+      // adjusting the proper struct \ref bufr_sequence_index_range event
+      break;
+
+    case 42:
+      // This operator denotes the beginning of the definition of a conditioning event.
+      //
+      // An event, as defined for use with operators 2 41 000 and 2 42 000,
+      // is a set of one or more circumstances described using appropriate
+      // Table B descriptors along with their corresponding data values. The
+      // grouping of such descriptors together as a single “event” allows
+      // them to be collectively assigned as the target of a separate descriptor
+      // such as 0 33 045 or 0 33 046. When defining a circumstance within an
+      // event, descriptor 0 33 042 may be employed preceding the appropriate
+      // Table B descriptor in order to indicate that the corresponding value
+      // is actually a bound for a range of values.
+      //
+      // If y = 255 then it denotes the conclusion of the conditioning
+      // event definition that was begun via the previous 2 42 000
+      // operator.
+      //
+      // It is nor processed here, it is already processed when parsing tree of expanded descriptors
+      // adjusting the proper struct \ref bufr_sequence_index_range cond_event
+      break;
+
+    case 43:
+      // The values which follow are categorical forecast values
+      //
+      // A categorical forecast value represents a “best guess” from among a set of related,
+      // and often mutually exclusive, data values or categories. Operator 2 43 000 may be
+      // used to designate one or more values as categorical forecast values, and descriptor
+      // 0 33 042 may be employed preceding any such value in order to indicate that that value
+      // is actually a bound for a range of value
+      //
+      // If y == 255 then it denotes the conclusion of the definition of categorical forecast
+      // values that was begun via theprevious 2 43 000 operator.
+      //
+      // It is nor processed here, it is already processed when parsing tree of expanded descriptors
+      // adjusting the proper struct \ref bufr_sequence_index_range cat_forecast
+      break;
+
     default:
       sprintf ( b->error, "bufrdeco_parse_f2_descriptor(): Still no proccessed descriptor '%s' in "
-                "current library version\n", d->c );
+                "current library version %s\n", d->c, VERSION );
       return 1;
     }
   return 0;
@@ -458,6 +532,17 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
       b->state.fixed_ccitt = d->y;
       break;
 
+    case 21:
+      // Data not present
+      //
+      // Data values present in Section 4 (Data section)
+      // corresponding to the following YYY descriptors shall
+      // be limited to data from Classes 01–09, and Class 31.
+      //
+      // It is nor processed here, it is already processed when parsing tree of expanded descriptors
+      // adjusting the proper struct \ref bufr_sequence_index_range no_data_present
+      break;
+
     case 22:
       // Quality information follows
       // The values of Class 33 elements which follow relate to
@@ -530,8 +615,8 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
           b->state.dstat_active = 0;
         }
       break;
-      
-      
+
+
     case 35:
       // Cancel backward data reference
       //
@@ -584,10 +669,198 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
         }
       break;
 
+    case 41:
+      // This operator denotes the beginning of the definition of an event.
+      //
+      // An event, as defined for use with operators 2 41 000 and 2 42 000,
+      // is a set of one or more circumstances described using appropriate
+      // Table B descriptors along with their corresponding data values. The
+      // grouping of such descriptors together as a single “event” allows
+      // them to be collectively assigned as the target of a separate descriptor
+      // such as 0 33 045 or 0 33 046. When defining a circumstance within an
+      // event, descriptor 0 33 042 may be employed preceding the appropriate
+      // Table B descriptor in order to indicate that the corresponding value
+      // is actually a bound for a range of values.
+      //
+      // If y = 255 then it  denotes the conclusion of the
+      // event definition that was begun via the previous 2 41 000
+      // operator.
+      //
+      // It is nor processed here, it is already processed when parsing tree of expanded descriptors
+      // adjusting the proper struct \ref bufr_sequence_index_range event
+      break;
+
+    case 42:
+      // This operator denotes the beginning of the definition of a conditioning event.
+      //
+      // An event, as defined for use with operators 2 41 000 and 2 42 000,
+      // is a set of one or more circumstances described using appropriate
+      // Table B descriptors along with their corresponding data values. The
+      // grouping of such descriptors together as a single “event” allows
+      // them to be collectively assigned as the target of a separate descriptor
+      // such as 0 33 045 or 0 33 046. When defining a circumstance within an
+      // event, descriptor 0 33 042 may be employed preceding the appropriate
+      // Table B descriptor in order to indicate that the corresponding value
+      // is actually a bound for a range of values.
+      //
+      // If y = 255 then it denotes the conclusion of the conditioning
+      // event definition that was begun via the previous 2 42 000
+      // operator.
+      //
+      // It is nor processed here, it is already processed when parsing tree of expanded descriptors
+      // adjusting the proper struct \ref bufr_sequence_index_range cond_event
+      break;
+
+    case 43:
+      // The values which follow are categorical forecast values
+      //
+      // A categorical forecast value represents a “best guess” from among a set of related,
+      // and often mutually exclusive, data values or categories. Operator 2 43 000 may be
+      // used to designate one or more values as categorical forecast values, and descriptor
+      // 0 33 042 may be employed preceding any such value in order to indicate that that value
+      // is actually a bound for a range of value
+      //
+      // If y == 255 then it denotes the conclusion of the definition of categorical forecast
+      // values that was begun via theprevious 2 43 000 operator.
+      //
+      // It is nor processed here, it is already processed when parsing tree of expanded descriptors
+      // adjusting the proper struct \ref bufr_sequence_index_range cat_forecast
+      break;
+
     default:
+      // Still not processed: 21
       sprintf ( b->error, "bufrdeco_parse_f2_compressed(): Still no proccessed descriptor '%s' in "
-                "current library version\n", d->c );
+                "current library version %s \n", d->c, VERSION );
       return 1;
     }
   return 0;
+}
+
+/*!
+ *  \fn char *bufrdeco_get_f2_descriptor_explanation ( char *e, struct bufr_descriptor *d)
+ *  \brief Return a stribg with brief explanation of descriptor when f = 2.
+ *  \param e string with explanation as result
+ *  \param d pointer to the struct \ref bufr_descriptor to explain
+ *
+ *  As result, returns the explanation string or null if problems.
+ */
+char *bufrdeco_get_f2_descriptor_explanation ( char *e, struct bufr_descriptor *d )
+{
+  // check the input
+  if ( e == NULL || d == NULL || d->f != 2 )
+    return NULL;
+
+
+  switch ( d->x )
+    {
+    case 1:
+      sprintf ( e, "Change data width %d bits.", d->y - 128 );
+      break;
+
+    case 2:
+      sprintf ( e, "Change scale %d units.\n", d->y - 128 );
+      break;
+
+    case 3:
+      if ( d->y != 255 )
+        sprintf ( e, "Change reference values. Each new reference value has %d bits width.", d->y );
+      else
+        sprintf ( e, "Change reference values concluded." );
+      break;
+
+    case 4:
+      sprintf ( e, "Add associated field. Precede each data element with %d bits of information.", d->y );
+      break;
+
+    case 5:
+      sprintf ( e, "Signify character. %d characters CCITT IA5 are inserted as a data field of %d x 8 bits in length.", d->y, d->y );
+      break;
+
+    case 6:
+      sprintf ( e, "Signify data width. %d bits of data are described by immediately following descsriptor", d->y );
+      break;
+
+    case 7:
+      sprintf ( e, "Increase scale, reference value and data width." );
+      break;
+
+    case 8:
+      sprintf ( e, "Change width of CCITT IA5 field to %d characters instead of the indicated in table B", d->y );
+      break;
+
+    case 21:
+      sprintf ( e, "**** Next %d descriptor(s) on this sequence level do not have data present ****", d->y );
+      break;
+
+    case 22:
+      sprintf ( e, "Quality information follows. The values of Class 33 elements which follow relate to the data defined by the data present bit-map." );
+      break;
+
+    case 23:
+      if ( d->y == 0 )
+        sprintf ( e, "Substituted values operator. The substituted values which follow relate to the data defined by the data present bit-map." );
+      else if ( d->y == 255 )
+        sprintf ( e, "Substituted values marker operator. This operator shall signify a data item containing a substituted value." );
+      break;
+
+    case 24:
+      if ( d->y == 0 )
+        sprintf ( e, "First-order statistical values follow." );
+      else if ( d->y == 255 )
+        sprintf ( e, "First-order statistical values marker operator" );
+      break;
+
+    case 25:
+      if ( d->y == 0 )
+        sprintf ( e, "Replaced/retained values follow." );
+      else if ( d->y == 255 )
+        sprintf ( e, "Replaced/retained value marker operator" );
+      break;
+
+    case 32:
+      if ( d->y == 0 )
+        sprintf ( e, "Difference statistical values follow." );
+      else if ( d->y == 255 )
+        sprintf ( e, "Difference statistical values marker operator" );
+      break;
+
+    case 35:
+      sprintf ( e, "Cancel backward data reference" );
+      break;
+
+    case 36:
+      sprintf ( e, "Define data present bit-map" );
+      break;
+
+    case 37:
+      sprintf ( e, " Use defined data present bit-map" );
+      break;
+
+    case 41:
+      if ( d->y == 0 )
+        sprintf ( e, "@@@@ Event definition begins in next descriptor of this sequence level @@@@" );
+      else
+        sprintf ( e, "@@@@ Event definition ends here @@@@" );
+      break;
+
+    case 42:
+      if ( d->y == 0 )
+        sprintf ( e, "!!!! Conditioning event definition begins in next descriptor of this sequence level !!!!" );
+      else
+        sprintf ( e, "!!!! Conditioning event definition ends here !!!!" );
+      break;
+
+    case 43:
+      if ( d->y == 0 )
+        sprintf ( e, "&&&& Categorical forecast follow in next descriptor of this sequence level &&&&" );
+      else
+        sprintf ( e, "&&&& Categorical forecast ends here &&&&" );
+      break;
+
+    default:
+      e[0] = 0; // void string
+      break;
+    }
+
+  return e;
 }

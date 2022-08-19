@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -102,9 +102,9 @@ int sprint_sec1_info ( char *target, size_t lmax, struct bufrdeco *b )
   c += sprintf ( c, "Hour:                  %5u\n", b->sec1.hour );
   c += sprintf ( c, "Minute:                %5u\n", b->sec1.minute );
   c += sprintf ( c, "Second:                %5u\n", b->sec1.second );
-  if (b->sec0.edition == 3)
+  if ( b->sec0.edition == 3 )
     c += sprintf ( c, "Aditional space:       %5u\n", b->sec1.length - 17 );
-  else    
+  else
     c += sprintf ( c, "Aditional space:       %5u\n", b->sec1.length - 22 );
   if ( b->tables->b.path[0] )
     {
@@ -191,7 +191,7 @@ int sprint_sec4_info ( char *target, size_t lmax, struct bufrdeco *b )
 
   c = caux;
   c += sprintf ( c, "\n#### SEC 4 INFO ###\n" );
-  c += sprintf ( c, "Sec4 length:           %5u\n", b->sec4.length );
+  c += sprintf ( c, "Sec4 length:           %5u\n\n", b->sec4.length );
   strcat_protected ( target, caux, lmax );
   return 0;
 }
@@ -222,6 +222,7 @@ int bufrdeco_fprint_tree_recursive ( FILE *f, struct bufrdeco *b, struct bufr_se
 {
   size_t i, j, k;
   struct bufr_sequence *l;
+  char explanation[256];
 
   if ( seq == NULL )
     {
@@ -247,12 +248,26 @@ int bufrdeco_fprint_tree_recursive ( FILE *f, struct bufrdeco *b, struct bufr_se
           if ( l->lseq[i].f == 0 )
             {
               if ( bufr_find_tableb_index ( &k, & ( b->tables->b ), l->lseq[i].c ) )
-                fprintf ( f , "\n" );
-              else if ( is_a_delayed_descriptor ( & l->lseq[i] ) ||
-                        is_a_short_delayed_descriptor ( & l->lseq[i] ) )
-                fprintf ( f , ":* %s\n", b->tables->b.item[k].name );
+                fprintf ( f, "\n" );
               else
-                fprintf ( f , ": %s\n", b->tables->b.item[k].name );
+                {
+                  fprintf ( f, ":" );
+                  if ( l->replicated[i] )
+                    {
+                      //fprintf ( f, " " );
+                      for ( j = 0; j < l->replicated[i] ; j++ )
+                        fprintf ( f, "*" );
+                    }
+                  if ( is_a_delayed_descriptor ( & l->lseq[i] ) ||
+                       is_a_short_delayed_descriptor ( & l->lseq[i] ) )
+                    fprintf ( f, "* %s\n", b->tables->b.item[k].name );
+                  else
+                    fprintf ( f, " %s\n", b->tables->b.item[k].name );
+                }
+            }
+          else if ( l->lseq[i].f == 2 )
+            {
+              fprintf (f, ": %s\n", bufrdeco_get_f2_descriptor_explanation( explanation, &(l->lseq[i]) ) );
             }
           else if ( l->lseq[i].f == 1 )
             {
@@ -266,7 +281,7 @@ int bufrdeco_fprint_tree_recursive ( FILE *f, struct bufrdeco *b, struct bufr_se
               else
                 {
                   if ( l->lseq[i].x == 1 )
-                    fprintf ( f, ":* Replicator for next %d descriptor %d times\n", l->lseq[i].x, l->lseq[i].y );
+                    fprintf ( f, ":* Replicator for next %d descriptors %d times\n", l->lseq[i].x, l->lseq[i].y );
                   else
                     fprintf ( f, ":* Replicator for next %d descriptors %d times\n", l->lseq[i].x, l->lseq[i].y );
                 }
@@ -277,7 +292,14 @@ int bufrdeco_fprint_tree_recursive ( FILE *f, struct bufrdeco *b, struct bufr_se
         }
 
       // we then recursively parse the son
-      fprintf ( f, ":-> %s\n", l->sons[i]->name );
+      if ( l->replicated[i] )
+        {
+          fprintf ( f, ":" );
+          for ( j = 0; j < l->replicated[i] ; j++ )
+            fprintf ( f, "*" );
+        }
+
+      fprintf ( f, "-> %s\n", l->sons[i]->name );
       if ( bufrdeco_fprint_tree_recursive ( f, b, l->sons[i] ) )
         {
           return 1;
@@ -301,6 +323,9 @@ void bufrdeco_fprint_tree ( FILE *f, struct bufrdeco *b )
   bufrdeco_fprint_tree_recursive ( f, b, NULL );
   if ( b->mask & BUFRDECO_OUTPUT_HTML )
     fprintf ( f, "</pre>\n" );
+  else
+    fprintf ( f, "\n" );
+    
 };
 
 
@@ -316,6 +341,9 @@ void bufrdeco_print_tree ( struct bufrdeco *b )
   bufrdeco_fprint_tree_recursive ( stdout, b, NULL );
   if ( b->mask & BUFRDECO_OUTPUT_HTML )
     printf ( "</pre>\n" );
+  else 
+    printf ( "\n" );
+    
 };
 
 
@@ -421,14 +449,14 @@ char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a )
       climit += 64;
     }
 
-  if (a->is_bitmaped_by != 0)
-      c += sprintf(c, " *IS BITMAPED BY #%u*", a->is_bitmaped_by);
+  if ( a->is_bitmaped_by != 0 )
+    c += sprintf ( c, " *IS BITMAPED BY #%u*", a->is_bitmaped_by );
 
-  if (a->bitmap_to != 0)
-      c += sprintf(c, " *BITMAP TO #%u*", a->bitmap_to);
+  if ( a->bitmap_to != 0 )
+    c += sprintf ( c, " *BITMAP TO #%u*", a->bitmap_to );
 
-  if (a->related_to != 0)
-      c += sprintf(c, " *RELATED TO #%u*", a->related_to);
+  if ( a->related_to != 0 )
+    c += sprintf ( c, " *RELATED TO #%u*", a->related_to );
 
   return target;
 }

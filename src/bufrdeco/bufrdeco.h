@@ -409,6 +409,16 @@ struct bufrdeco_decoding_data_state
 };
 
 /*!
+ *  \struct bufr_no_data_present_range
+ *  \brief range of indexes in a struct \ref bufr_sequence where a condition must me chequed or marked, as example no data present or event 
+ */
+struct bufr_sequence_index_range {
+  int active; /*!< if != 0 then the range of descriptors is active */
+  size_t first; /*!< First index for a descriptor in a \struct bufr_sequence to be chequed */ 
+  size_t last; /*!< Last index for a descriptor in a \struct bufr_sequence to be chequed */
+};
+
+/*!
   \struct bufr_sequence
   \brief Stores an unexpanded sequence of descriptors
 
@@ -429,6 +439,11 @@ struct bufr_sequence
   size_t level; /*!< The recursion level. descriptors in sec3 are level 0 */
   struct bufr_sequence *father; /*!< Pointer to the father struct. It should be NULL if level = 0 */
   size_t ndesc; /*!< Number of unexpanded descriptor of a layer */
+  struct bufr_sequence_index_range no_data_present; /*!< struct \ref bufr_sequence_index_range with no data descriptor range */
+  struct bufr_sequence_index_range event; /*!< struct \ref bufr_sequence_index_range with an event range */
+  struct bufr_sequence_index_range cond_event; /*!< struct \ref bufr_sequence_index_range with a conditioning event range */
+  struct bufr_sequence_index_range cat_forecast; /*!< struct \ref bufr_sequence_index_range with a categorical forecasts range */
+  uint8_t replicated[NMAXSEQ_DESCRIPTORS]; /*! Array of recursion level of replication 0 = no replicated. N = level of rep */
   struct bufr_descriptor lseq[NMAXSEQ_DESCRIPTORS]; /*!< Array of unexpanded descriptors */
   struct bufr_sequence *sons[NMAXSEQ_DESCRIPTORS]; /*!< Array of pointers to sons. It must be NULL
    except for sequence descriptors.  */
@@ -885,6 +900,7 @@ int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *
 int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_t source );
 int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key );
 int bufr_find_tablec_csv_index ( size_t *index, struct bufr_tablec *tc, const char *key, uint32_t code );
+char *bufrdeco_get_f2_descriptor_explanation ( char *e, struct bufr_descriptor *d );
 
 // utilities for bitmaps
 int bufrdeco_allocate_bitmap ( struct bufrdeco *b );

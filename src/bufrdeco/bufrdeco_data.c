@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -196,6 +196,22 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
       switch ( seq->lseq[i].f )
         {
         case 0:
+
+          // Checks if no_data_present is active for this descriptor in this sequence
+          if ( seq->no_data_present.active &&
+               i >= seq->no_data_present.first &&
+               i <= seq->no_data_present.last )
+            {
+              // If here then no_data_present has been active in this sequence
+              if ( seq->lseq[i].x > 9 &&
+                   seq->lseq[i].x != 31 )
+                {
+                  sprintf ( b->error, "bufrdeco_decode_subset_data_recursive(): Getting data from table b with class other than 1-9,31 and no data present activated\n" );
+                  return 1;
+                }
+
+            }
+
           // Get data from table B
           if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, & ( seq->lseq[i] ) ) )
             {
@@ -213,7 +229,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
                 ( b->bitmap.bmap[b->bitmap.nba - 1]->ns1 )++;
               else
                 {
-                  sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): No more space for first order statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n" );
+                  sprintf ( b->error, "bufrdeco_decode_subset_data_recursive(): No more space for first order statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n" );
                   return 1;
                 }
             }
@@ -234,8 +250,8 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
                 }
             }
 
-            
-            
+
+
           // Add info about common sequence to which bufr_atom_data belongs
           s->sequence[s->nd].seq = seq;
           s->sequence[s->nd].ns = i;
@@ -345,7 +361,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
 
         default:
           // this case is not possible
-          sprintf ( b->error, "bufr_decode_data_subset_recursive(): Found bad 'f' in descriptor\n" );
+          sprintf ( b->error, "bufr_decode_data_subset_recursive(): Found bad 'f' in descriptor '%s' \n", seq->lseq[i].c );
           return 1;
           break;
         }
@@ -379,6 +395,20 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
           switch ( l->lseq[i].f )
             {
             case 0:
+              // Checks if no_data_present is active for this descriptor in this sequence
+              if ( l->no_data_present.active &&
+                   i >= l->no_data_present.first &&
+                   i <= l->no_data_present.last )
+                {
+                  // If here then no_data_present has been active in this sequence
+                  if ( l->lseq[i].x > 9 &&
+                       l->lseq[i].x != 31 )
+                    {
+                      sprintf ( b->error, "bufrdeco_decode_subset_data_recursive(): Getting data from table b with class other than 1-9,31 and no data present activated\n" );
+                      return 1;
+                    }
+                }
+
               // Get data from table B
               if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[i] ) ) )
                 {
@@ -393,7 +423,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                       s->sequence[s->nd - b->state.bitmaping].is_bitmaped_by =  s->nd;
                       s->sequence[s->nd].bitmap_to =  s->nd - b->state.bitmaping;
                       // Add reference to bitmap
-                      bufrdeco_add_to_bitmap( b->bitmap.bmap[b->bitmap.nba - 1], s->nd - b->state.bitmaping, s->nd);
+                      bufrdeco_add_to_bitmap ( b->bitmap.bmap[b->bitmap.nba - 1], s->nd - b->state.bitmaping, s->nd );
                     }
                 }
 
@@ -413,7 +443,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                           return 1;
                         }
                     }
-                  s->sequence[s->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];  
+                  s->sequence[s->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
                 }
 
               //case of first order statistics
@@ -520,7 +550,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                 {
                   return 1;
                 }
-                
+
               // Case of subsituted values
               if ( b->state.subs_active && l->lseq[i].x == 23 && l->lseq[i].y == 255 )
                 {
@@ -530,11 +560,11 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                     {
                       b->bitmap.bmap[b->bitmap.nba - 1]->subs = s->nd;
                     }
-                  if (bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[k] ) ) )
+                  if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[k] ) ) )
                     {
                       return 1;
                     }
-                  s->sequence[s->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];  
+                  s->sequence[s->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
 
                   if ( s->nd < ( s->dim - 1 ) )
                     {
@@ -561,7 +591,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                       return 1;
                     }
 
-                 s->sequence[s->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                  s->sequence[s->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
                   if ( s->nd < ( s->dim - 1 ) )
                     {
                       s->nd += 1;
@@ -598,7 +628,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                     {
                       return 1;
                     }
-                    
+
                   s->sequence[s->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
                   if ( s->nd < ( s->dim - 1 ) )
                     {
@@ -655,7 +685,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                       return 1;
                     }
                 }
-                
+
               break;
 
             case 3:
