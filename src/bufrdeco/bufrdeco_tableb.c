@@ -314,19 +314,20 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
     {
       // The descriptor operator 2 03 YYY is on action
       // get the bits
-      if ( get_bits_as_uint32_t ( &ival, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), r->bits ) == 0 )
+      if ( get_bits_as_uint32_t ( &ival, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), b->state.changing_reference ) == 0 )
         {
           sprintf ( b->error, "bufrdeco_tableb_compressed(): Cannot get bits from '%s'\n", d->c );
           return 1;
         }
 
-      // Change the reference value in tableB with value previously readed
+      // Change the new reference value in tableB with value previously readed because of rules for negative numbers
       // (we still have the original value in reference_ori)
       if ( get_table_b_reference_from_uint32_t ( & ( tb->item[i].reference ), b->state.changing_reference, ival ) )
         {
           sprintf ( b->error, "bufrdeco_tableb_val(): Cannot change reference in 2 03 YYY operator for '%s'\n", d->c );
           return 1;
         }
+        
       strcpy ( r->unit, "NEW REFERENCE" );
       r->ref = tb->item[i].reference;
 
@@ -480,12 +481,14 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
   if ( b->state.changing_reference != 255 )
     {
       // The descriptor operator 2 03 YYY is on action
-      if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
+      // Get preliminar value
+      if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), b->state.changing_reference ) == 0 )
         {
           sprintf ( b->error, "bufrdeco_tableb_val(): Cannot get bits from '%s'\n", d->c );
           return 1;
         }
-      // Change the reference value
+        
+      // Then change the preliminar reference value because of rules for negative numbers
       if ( get_table_b_reference_from_uint32_t ( & ( tb->item[i].reference ), b->state.changing_reference, ival ) )
         {
           sprintf ( b->error, "bufrdeco_tableb_val(): Cannot change reference in 2 03 YYY operator for '%s'\n", d->c );

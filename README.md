@@ -42,7 +42,7 @@ build_bufrdeco_tables is used to the conversion of both ECMWF and WMO source fil
 
 The repository includes a library to decode **BUFR** reports written from scratch. It is 
 **bufrdeco** and is a fast and ligth library capable to decode any bufr report since version 
-2.20 and above. The use of **bufrdeco** is the default option when building the package.
+0.20.0 and above. The use of **bufrdeco** is the default option when building the package.
 
 ## OPTIONAL USE OF ECMWF BUFRDC PACKAGE (DEPRECATED)##
 
