@@ -38,7 +38,13 @@ Anyway, a conversion is made to convert them as optimized CSV files. The include
 build_bufrdeco_tables is used to the conversion of both ECMWF and WMO source files.
 
 
-## OPTINAL USE OF ECMWF BUFRDC PACKAGE ##
+## BUFRDECO LIBRARY ##
+
+The repository includes a library to decode **BUFR** reports written from scratch. It is 
+**bufrdeco** and is a fast and ligth library capable to decode any bufr report since version 
+2.20 and above. The use of **bufrdeco** is the default option when building the package.
+
+## OPTIONAL USE OF ECMWF BUFRDC PACKAGE (DEPRECATED)##
 
 Backward compatibilty from older versions and the use of **ECMWF tables** is also preserved.
 Before version 0.7 this package should to be installed. Since version 0.7, a library for 
@@ -50,7 +56,9 @@ Follow the instructions to build and install **bufrdc** library. Note that **buf
 version released. ECMWF recommends use eccodes package to deal with BUFR. Anyway this is not relevant
 here. If you decide to build **bufrdc** it is recommended to build with *-DUNDERSCORE* option to avoid
 problems when linked with C libraries. Then, you can use this package. Since version v0.10 you should
-use *--enable-bufrdc=yes* in configure stage (see below) use it.
+use *--enable-bufrdc=yes* in configure stage for GNU autotools or *-DBUFRDC* option for cmake (see below) use it.
+
+The use of **ECMWF bufrdc** library is deprecated and will be supressed in future versions.
 
 
 ## BUILD ##
@@ -123,8 +131,9 @@ Assume you built the package. you will have up to five binaries:
     
 And also the libraries :
 
-- ***libbufrdeco***  A light and very fast bufr decode library. It still in beta phase but it can
-                     decode all BUFR types needed to get the target TAC reports.
+- ***libbufrdeco***  A light and very fast bufr decode library. Since version 0.20.0 it can
+                     decode any BUFR report, but just a subset of them are suited to get the target TAC 
+                     reports.
 - ***libbufr2tac***  Used by binaries bufr2synop and ***bufrtotac*** to transform a decoded bufr into a
                      **TAC** (Traditional Alphanumeric Form). Before version 0.7 this library was named
                      ***bufr2synop***. It seems the new name is the right name.
