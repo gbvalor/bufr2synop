@@ -294,6 +294,16 @@
    strncpy(_target_, _src_, _dim_ - 1); \
    _target_[_dim_ - 1] = '\0';}
 
+/*!
+ *  \def bufrdeco_assert
+ *  \brief Check a expression and exit if it fails
+ */
+#define bufrdeco_assert(__my_expr__) \
+   if ( !(__my_expr__)) {\
+     fprintf(stderr, "%s: %s():%d -> ***The expression (%s) is false***\n", \
+     basename(__FILE__), __func__, __LINE__, #__my_expr__) ; \
+     exit (EXIT_FAILURE);\
+   } 
    
 /*!
   \struct bufr_descriptor

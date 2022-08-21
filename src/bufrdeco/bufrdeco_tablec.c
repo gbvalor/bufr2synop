@@ -146,6 +146,8 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec
   uint32_t nv, v,  nl;
   size_t  i, j;
 
+  bufrdeco_assert ( tc != NULL && d != NULL && expl != NULL);
+  
   if ( tc->wmo_table )
     {
       // WMO case
@@ -233,6 +235,8 @@ char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec 
   uint64_t test, test0;
   uint64_t nb, nx, v,  nl;
   size_t i, j;
+
+  bufrdeco_assert ( tc != NULL && d != NULL && expl != NULL);
 
   if ( tc->wmo_table )
     {

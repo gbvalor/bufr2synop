@@ -35,6 +35,8 @@ int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct 
 {
   size_t i;
 
+  bufrdeco_assert (b != NULL && s != NULL);
+  
   // First we copy the array descriptors in sec3 as level0
   for ( i = 0; i < b->sec3.ndesc ; i++ )
     {
@@ -60,6 +62,8 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
   struct bufr_sequence *l;
   struct bufr_descriptor *d;
 
+  bufrdeco_assert (b != NULL);
+  
   if ( key == NULL )
     {
       // case first layer
@@ -261,7 +265,10 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
 */
 int bufrdeco_parse_tree ( struct bufrdeco *b )
 {
+  bufrdeco_assert (b != NULL);
+  
   // here we start the parse
+  
   return  bufrdeco_parse_tree_recursive ( b, NULL, NULL );
 }
 

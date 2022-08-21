@@ -34,8 +34,7 @@ int sprint_sec0_info_html ( char *target, size_t lmax, struct bufrdeco *b )
 {
   size_t used = 0;
 
-  if (lmax == 0 || target == NULL || b == NULL )
-    return 1;
+  bufrdeco_assert ( b != NULL && lmax != 0 && target != NULL );
   
   used += snprintf ( target + used, lmax - used, "<table class='bufr_sec0'>\n<caption>SEC 0 INFO</caption>\n" );
   used += snprintf ( target + used, lmax - used, "<tr><td>Bufr length</td><td>%5u</td></tr>\n", b->sec0.bufr_length );
@@ -55,8 +54,7 @@ int sprint_sec1_info_html ( char *target, size_t lmax, struct bufrdeco *b )
 {
   size_t used = 0;
 
-  if (target == NULL || lmax == 0 || b == NULL)
-    return 1;
+  bufrdeco_assert ( b != NULL && lmax != 0 && target != NULL );
  
   used += snprintf ( target + used , lmax - used,"<div class='bufr_sec1'>\n" );
   used += snprintf ( target + used , lmax - used,"<table>\n<caption>SEC 1 INFO</caption>\n" );
@@ -105,9 +103,8 @@ int sprint_sec3_info_html ( char *target, size_t lmax, struct bufrdeco *b )
   size_t i;
   size_t used = 0; 
 
-  if (target == NULL || lmax == 0 || b == NULL)
-    return 1;
-
+  bufrdeco_assert ( b != NULL && lmax != 0 && target != NULL );
+ 
   used += snprintf ( target + used , lmax - used,"<div class='bufr_sec3'>\n" );
   used += snprintf ( target + used , lmax - used,"<table>\n<caption>SEC 3 INFO</caption>\n" );
   used += snprintf ( target + used , lmax - used,"<tr><td>Sec3 length</td><td>%5u\n", b->sec3.length );
@@ -136,8 +133,7 @@ int sprint_sec4_info_html ( char *target, size_t lmax, struct bufrdeco *b )
 {
   size_t used = 0;
 
-  if (target == NULL || lmax == 0 || b == NULL)
-    return 1;
+  bufrdeco_assert ( b != NULL && lmax != 0 && target != NULL );
   
   used += snprintf ( target + used , lmax - used,"<div class='bufr_sec4'>\n" );
   used += snprintf ( target + used , lmax - used,"<table>\n<caption>SEC 4 INFO</caption>\n" );
@@ -148,9 +144,10 @@ int sprint_sec4_info_html ( char *target, size_t lmax, struct bufrdeco *b )
 }
 
 /*!
-  \fn char * bufrdeco_print_atom_data_html ( char *target, struct bufr_atom_data *a )
+  \fn char * bufrdeco_print_atom_data_html ( char *target, size_t lmax, struct bufr_atom_data *a, uint32_t ss )
   \brief print the data in a struct \ref bufr_atom_data to a string as cells of table rows
   \param target string where to print the result
+  \param lmax dimension of target
   \param a pointer to struct ref \ref bufr_atom_data with data to print
   \param ss index of subset in bufr
 
@@ -161,7 +158,8 @@ char * bufrdeco_print_atom_data_html ( char *target, size_t lmax, struct bufr_at
   char aux[256];
   size_t used = 0;
 
-  
+  bufrdeco_assert ( a != NULL && lmax != 0 && target != NULL );
+   
   used += snprintf ( target + used , lmax - used,"<td class='desc'>%u %02u %03u</td>", a->desc.f, a->desc.x, a->desc.y );
   used += snprintf ( target + used , lmax - used,"<td class='name'>%s</td>", a->name );
   used += snprintf ( target + used , lmax - used,"<td class='unit'>%s</td>", a->unit );
@@ -239,9 +237,9 @@ int bufrdeco_fprint_subset_sequence_data_html ( FILE *f, struct bufrdeco_subset_
 {
   size_t i;
   char aux[1024];
-  if (f == NULL || s == NULL)
-    return 1;
-  
+
+  bufrdeco_assert ( f != NULL && s != NULL );  
+
   fprintf ( f, "<div class='bufr_subset'>\n" );
   fprintf ( f, "<table>\n" );
   for ( i = 0; i < s->nd ; i++ )
@@ -260,6 +258,8 @@ int bufrdeco_fprint_subset_sequence_data_html ( FILE *f, struct bufrdeco_subset_
 */
 int bufrdeco_print_subset_sequence_data_html ( struct bufrdeco_subset_sequence_data *s )
 {
+  bufrdeco_assert ( s != NULL );
+  
   return bufrdeco_fprint_subset_sequence_data_html ( stdout, s );
 }
 
@@ -274,8 +274,7 @@ int bufrdeco_fprint_subset_sequence_data_tagged_html ( FILE *f, struct bufrdeco_
   size_t i;
   char aux[1024];
   
-  if (f == NULL || s == NULL || id == NULL)
-    return 1;
+  bufrdeco_assert ( f != NULL && s != NULL && id != NULL );  
 
   fprintf ( f, "\n<div class='bufr_subset' id='%s'>\n", id );
   fprintf ( f, "<table>\n" );
@@ -298,5 +297,7 @@ int bufrdeco_fprint_subset_sequence_data_tagged_html ( FILE *f, struct bufrdeco_
 */
 int bufrdeco_print_subset_sequence_data_tagged_html ( struct bufrdeco_subset_sequence_data *s, char *id )
 {
+  bufrdeco_assert ( s != NULL );
+  
   return bufrdeco_fprint_subset_sequence_data_tagged_html ( stdout, s, id );
 }

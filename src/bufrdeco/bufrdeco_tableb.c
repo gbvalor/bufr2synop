@@ -48,9 +48,13 @@ int bufr_read_tableb ( struct bufrdeco *b )
   uint32_t ix;
   char l[180];
   char caux[256];
-  struct bufr_tableb *tb = &(b->tables->b);
+  struct bufr_tableb *tb;
   struct bufr_descriptor desc;
 
+  bufrdeco_assert ( b != NULL );
+
+  tb = &(b->tables->b);
+  
   if ( tb->path[0] == 0 )
     {
       return 1;
@@ -146,6 +150,8 @@ int bufr_restore_original_tableb_item ( struct bufr_tableb *tb, struct bufrdeco 
 {
   size_t i;
 
+  bufrdeco_assert ( b != NULL && tb != NULL );
+  
   if ( bufr_find_tableb_index ( &i, tb, key ) )
     {
       snprintf (b->error, sizeof (b->error), "%s(): descriptor '%s' not found in table B\n", __func__, key );
@@ -190,6 +196,8 @@ int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *
   char *c;
   struct bufr_descriptor desc;
 
+  bufrdeco_assert ( tb != NULL);
+  
   ix = strtoul ( key, &c, 10 );
   uint32_t_to_descriptor ( &desc, ix );
 
@@ -233,13 +241,10 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
   uint32_t ival;
   uint8_t has_data;
   struct bufr_tableb *tb;
+  
+  bufrdeco_assert ( b != NULL && r != NULL && d != NULL );
+  
   tb = & ( b->tables->b );
-
-  // Reject wrong arguments
-  if ( r == NULL || b == NULL || d == NULL )
-    {
-      return 1;
-    }
 
   // if mode 1 then we search for associated_bits
   if ( mode && b->state.assoc_bits == 0 )
@@ -440,13 +445,9 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
   int32_t /*escale = 0,*/ reference = 0;
   struct bufr_tableb *tb;
 
+  bufrdeco_assert ( a != NULL && b != NULL && d != NULL );
+  
   tb = & ( b->tables->b );
-
-  // Reject wrong arguments
-  if ( a == NULL || b == NULL || d == NULL )
-    {
-      return 1;
-    }
 
   if ( is_a_local_descriptor ( d ) )
     {

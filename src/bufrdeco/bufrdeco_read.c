@@ -47,6 +47,8 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
   FILE *fp;
   struct stat st;
 
+  bufrdeco_assert ( b != NULL );
+  
   /* Stat input file */
   if ( stat ( filename, &st ) < 0 )
     {
@@ -120,6 +122,8 @@ int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename )
   size_t n = 0, beg, end, size = 0;
   FILE *fp;
   struct stat st;
+
+  bufrdeco_assert ( b != NULL );
 
   /* Stat input file */
   if ( stat ( filename, &st ) < 0 )
@@ -220,6 +224,8 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, size_t size )
 {
   uint8_t *c;
   size_t ix, ud;
+
+  bufrdeco_assert ( b != NULL );
 
   // Some fast checks
   if ( ( size + 4 ) >= BUFR_LEN )

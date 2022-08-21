@@ -39,9 +39,6 @@
 */
 int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
 {
-  // Check arguments
-  if (b == NULL)
-    return 1;
   
   // Check about parsed tree
   if ( b->tree == NULL || b->tree->nseq == 0 )

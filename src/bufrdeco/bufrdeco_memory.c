@@ -32,6 +32,8 @@
 */
 int bufrdeco_init_tables ( struct bufr_tables **t )
 {
+  bufrdeco_assert ( t != NULL );
+  
   if ( *t != NULL )
     free ( ( void * ) *t );
 
@@ -50,6 +52,8 @@ int bufrdeco_init_tables ( struct bufr_tables **t )
 */
 int bufrdeco_free_tables ( struct bufr_tables **t )
 {
+  bufrdeco_assert ( t != NULL );
+
   if ( *t != NULL )
     {
       free ( ( void * ) *t );
@@ -67,6 +71,8 @@ int bufrdeco_free_tables ( struct bufr_tables **t )
 */
 int bufrdeco_init_expanded_tree ( struct bufrdeco_expanded_tree **t )
 {
+  bufrdeco_assert ( t != NULL );
+
   if ( *t != NULL )
     free ( ( void * ) *t );
 
@@ -84,6 +90,8 @@ int bufrdeco_init_expanded_tree ( struct bufrdeco_expanded_tree **t )
 */
 int bufrdeco_free_expanded_tree ( struct bufrdeco_expanded_tree **t )
 {
+  bufrdeco_assert ( t != NULL );
+
   if ( *t != NULL )
     {
       free ( ( void * ) *t );
@@ -110,8 +118,7 @@ int bufrdeco_free_expanded_tree ( struct bufrdeco_expanded_tree **t )
 */
 int bufrdeco_substitute_tables ( struct bufr_tables **replaced, struct bufr_tables *source, struct bufrdeco *b )
 {
-  if (b == NULL)
-    return 1;
+  bufrdeco_assert ( b != NULL );
   
   *replaced = b->tables;
   if ( source == NULL )
@@ -136,8 +143,7 @@ int bufrdeco_substitute_tables ( struct bufr_tables **replaced, struct bufr_tabl
 */
 int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
 {
-  if (ba == NULL)
-    return 1;
+  bufrdeco_assert ( ba != NULL );
   
   memset ( ba, 0, sizeof ( struct bufrdeco_subset_sequence_data ) );
   if ( ( ba->sequence = ( struct bufr_atom_data * ) calloc ( 1, BUFR_NMAXSEQ * sizeof ( struct bufr_atom_data ) ) ) == NULL )
@@ -160,8 +166,7 @@ int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *b
 */
 int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
 {
-  if (ba == NULL)
-    return 1;
+  bufrdeco_assert ( ba != NULL );
   
   if ( ba->sequence != NULL )
     {
@@ -181,8 +186,7 @@ int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *
 */
 int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
 {
-  if (ba == NULL)
-    return 1;
+  bufrdeco_assert ( ba != NULL );
   
   if ( ba->sequence != NULL )
     {
@@ -204,8 +208,7 @@ int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *b
 */
 int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
 {
-  if (rf == NULL)
-    return 1;
+  bufrdeco_assert ( rf != NULL );
   
   if ( rf->refs != NULL && rf->dim != 0 )
     {
@@ -233,8 +236,7 @@ int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_r
 */
 int bufrdeco_clean_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
 {
-  if (rf == NULL)
-    return 1;
+  bufrdeco_assert ( rf != NULL );
   
   if ( rf->refs != NULL && rf->nd != 0 )
     rf->nd = 0;
@@ -251,8 +253,7 @@ int bufrdeco_clean_compressed_data_references ( struct bufrdeco_compressed_data_
 */
 int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
 {
-  if (rf == NULL)
-    return 1;
+  bufrdeco_assert ( rf != NULL );
   
   if ( rf->refs != NULL )
     {
@@ -274,9 +275,8 @@ int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_r
 */
 int bufrdeco_init ( struct bufrdeco *b )
 {
-  if ( b == NULL )
-    return 1;
-
+  bufrdeco_assert ( b != NULL );
+  
   // First clear all
   memset ( b, 0, sizeof ( struct bufrdeco ) );
 
@@ -313,8 +313,7 @@ int bufrdeco_init ( struct bufrdeco *b )
 */
 int bufrdeco_reset ( struct bufrdeco *b )
 {
-  if (b == NULL)
-    return 1;
+  bufrdeco_assert ( b != NULL );
   
   memset ( & ( b->header ), 0, sizeof ( struct gts_header ) );
   memset ( & ( b->sec0 ), 0, sizeof ( struct bufr_sec0 ) );
@@ -340,8 +339,7 @@ int bufrdeco_reset ( struct bufrdeco *b )
 */
 int bufrdeco_close ( struct bufrdeco *b )
 {
-  if (b == NULL)
-    return 1;
+  bufrdeco_assert ( b != NULL );
 
   // first deallocate all memory
   bufrdeco_free_subset_sequence_data ( & ( b->seq ) );
@@ -362,8 +360,7 @@ int bufrdeco_allocate_bitmap ( struct bufrdeco *b )
 {
   size_t nba;
   
-  if (b == NULL)
-    return 1;
+  bufrdeco_assert ( b != NULL );
     
   nba = b->bitmap.nba;
 
@@ -402,8 +399,7 @@ int bufrdeco_clean_bitmaps ( struct bufrdeco *b )
 {
   size_t i;
 
-  if (b == NULL)
-    return 1;
+  bufrdeco_assert ( b != NULL );
   
   for ( i = 0; i < b->bitmap.nba ; i++ )
     {
@@ -426,8 +422,7 @@ int bufrdeco_free_bitmap_array ( struct bufrdeco_bitmap_array *a )
 {
   size_t i;
 
-  if (a == NULL)
-    return 1;
+  bufrdeco_assert ( a != NULL );
   
   for ( i = 0; i < a->nba ; i++ )
     {

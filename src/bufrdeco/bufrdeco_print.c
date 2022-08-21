@@ -34,8 +34,7 @@ int sprint_sec0_info ( char *target, size_t lmax, struct bufrdeco *b )
 {
   size_t used = 0;
 
-  if ( b == NULL )
-    return 1;
+  bufrdeco_assert ( b != NULL );
 
   if ( lmax == 0 || target == NULL )
     {
@@ -61,8 +60,7 @@ int print_sec0_info ( struct bufrdeco *b )
 {
   char caux[512];
 
-  if ( b == NULL )
-    return 1;
+  bufrdeco_assert ( b != NULL );
 
   caux[0] = 0;
   sprint_sec0_info ( caux, 512, b );
@@ -82,8 +80,7 @@ int sprint_sec1_info ( char *target, size_t lmax, struct bufrdeco *b )
 {
   size_t used = 0;
   
-  if (b == 0)
-    return 1;
+  bufrdeco_assert ( b != NULL );
 
   if ( lmax == 0 || target == NULL )
     {
@@ -134,8 +131,7 @@ int print_sec1_info ( struct bufrdeco *b )
 {
   char caux[2048];
 
-  if ( b == NULL )
-    return 1;
+  bufrdeco_assert ( b != NULL );
 
   caux[0] = 0;
   sprint_sec1_info ( caux, 2048, b );
@@ -155,8 +151,7 @@ int sprint_sec3_info ( char *target, size_t lmax, struct bufrdeco *b )
   size_t i;
   size_t used = 0;
 
-  if (b == NULL)
-    return 1;
+  bufrdeco_assert ( b != NULL );
   
   if ( lmax == 0 || target == NULL)
     {
@@ -191,8 +186,7 @@ int print_sec3_info ( struct bufrdeco *b )
 {
   char caux[8192];
 
-  if ( b == NULL )
-    return 1;
+  bufrdeco_assert ( b != NULL );
 
   caux[0] = 0;
   sprint_sec3_info ( caux, 8192, b );
@@ -212,8 +206,7 @@ int sprint_sec4_info ( char *target, size_t lmax, struct bufrdeco *b )
 {
   size_t used = 0;
 
-  if (b == NULL)
-    return 1;
+  bufrdeco_assert ( b != NULL );
   
   if ( lmax == 0 || target == NULL )
     {
@@ -238,8 +231,7 @@ int print_sec4_info ( struct bufrdeco *b )
 {
   char caux[8192];
 
-  if ( b == NULL )
-    return 1;
+  bufrdeco_assert ( b != NULL );
 
   caux[0] = 0;
   sprint_sec4_info ( caux, 8192, b );
@@ -262,8 +254,7 @@ int bufrdeco_fprint_tree_recursive ( FILE *f, struct bufrdeco *b, struct bufr_se
   struct bufr_sequence *l;
   char explanation[256];
 
-  if ( f == NULL || b == NULL )
-    return 1;
+  bufrdeco_assert ( f != NULL && b != NULL );
 
   if ( seq == NULL )
     {
@@ -359,8 +350,7 @@ int bufrdeco_fprint_tree_recursive ( FILE *f, struct bufrdeco *b, struct bufr_se
 */
 int bufrdeco_fprint_tree ( FILE *f, struct bufrdeco *b )
 {
-  if ( f == NULL || b == NULL )
-    return 1;
+  bufrdeco_assert ( f != NULL && b != NULL );
 
   if ( b->mask & BUFRDECO_OUTPUT_HTML )
     fprintf ( f, "<pre>\n" );
@@ -380,8 +370,7 @@ int bufrdeco_fprint_tree ( FILE *f, struct bufrdeco *b )
 */
 int bufrdeco_print_tree ( struct bufrdeco *b )
 {
-  if ( b == NULL )
-    return 1;
+  bufrdeco_assert ( b != NULL );
 
   if ( b->mask & BUFRDECO_OUTPUT_HTML )
     printf ( "<pre>\n" );
@@ -403,8 +392,7 @@ int bufrdeco_print_tree ( struct bufrdeco *b )
 int bufrdeco_print_atom_data_file ( FILE *f, struct bufr_atom_data *a )
 {
   char aux[1024];
-  if ( f == NULL || a == NULL )
-    return 1;
+  bufrdeco_assert ( f != NULL && a != NULL );
 
   bufrdeco_print_atom_data ( aux, sizeof ( aux ), a );
   fprintf ( f,  "%s\n",aux );
@@ -435,8 +423,7 @@ char * bufrdeco_print_atom_data ( char *target, size_t lmax, struct bufr_atom_da
   size_t used = 0;
   size_t nlimit, climit;
   
-  if (a == NULL || target == NULL)
-    return NULL;
+  bufrdeco_assert ( a != NULL && target != NULL );
 
   used += snprintf ( target + used, lmax - used, "%u %02u %03u ", a->desc.f, a->desc.x, a->desc.y );
   strcpy_safe ( aux, a->name );
@@ -521,8 +508,7 @@ int bufrdeco_fprint_subset_sequence_data ( FILE *f, struct bufrdeco_subset_seque
   size_t i;
   char aux[1024];
 
-  if ( f == NULL || s == NULL )
-    return 1;
+  bufrdeco_assert ( f != NULL && s != NULL);
 
   for ( i = 0; i < s->nd ; i++ )
     {
@@ -544,6 +530,7 @@ int bufrdeco_fprint_subset_sequence_data ( FILE *f, struct bufrdeco_subset_seque
 */
 int bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *s )
 {
+  bufrdeco_assert ( s != NULL );
   return bufrdeco_fprint_subset_sequence_data ( stdout, s );
 }
 
@@ -554,8 +541,7 @@ int bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *
 */
 int fprint_bufrdeco_compressed_ref ( FILE *f, struct bufrdeco_compressed_ref *r )
 {
-  if ( f == NULL || r == NULL )
-    return 1;
+  bufrdeco_assert ( f != NULL && r != NULL );
 
   fprintf ( f, "%s -> A=%u, D=%u, ",r->desc.c,r->is_associated,r->has_data );
   if ( r->cref0[0] == '\0' )
@@ -578,6 +564,8 @@ int fprint_bufrdeco_compressed_ref ( FILE *f, struct bufrdeco_compressed_ref *r 
 */
 int print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r )
 {
+  bufrdeco_assert ( r != NULL );
+  
   return fprint_bufrdeco_compressed_ref ( stdout, r );
 }
 
@@ -591,8 +579,7 @@ int print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r )
 int print_bufrdeco_compressed_data_references ( struct bufrdeco_compressed_data_references *r )
 {
   size_t  i;
-  if ( r == NULL )
-    return 1;
+  bufrdeco_assert ( r != NULL );
 
   for ( i = 0; i < r->nd; i++ )
     print_bufrdeco_compressed_ref ( & r->refs[i] );
@@ -611,8 +598,7 @@ int fprint_bufrdeco_compressed_data_references ( FILE *f, struct bufrdeco_compre
 {
   size_t  i;
   
-  if ( f == NULL || r == NULL )
-    return 1;
+  bufrdeco_assert ( f != NULL && r != NULL);
 
   for ( i = 0; i < r->nd; i++ )
     fprint_bufrdeco_compressed_ref ( f, & r->refs[i] );

@@ -37,8 +37,11 @@ int bufr_read_tabled ( struct bufrdeco *b )
   size_t ix = 0;
   size_t i = 0;
   char caux[256];
-  struct bufr_tabled *td = &(b->tables->d);
+  struct bufr_tabled *td;
 
+  bufrdeco_assert ( b != NULL );
+  
+  td = &(b->tables->d);
   if ( td->path[0] == '\0' )
     {
       return 1;
@@ -101,7 +104,9 @@ int bufr_find_tabled_index ( size_t *index, struct bufr_tabled *td, const char *
   size_t i, i0;
   size_t ix = 0;
   char *c, aux[8];
-
+ 
+  bufrdeco_assert ( td != NULL && key != NULL && index != NULL);
+  
   aux[0] = key[1];
   aux[1] = key[2];
   aux[2] = '\0';
@@ -144,6 +149,8 @@ int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufr
   char *c;
   struct bufr_tabled *td;
 
+  bufrdeco_assert ( b != NULL && s != NULL && key != NULL );
+  
   td = & ( b->tables->d );
 
   // Reject wrong arguments

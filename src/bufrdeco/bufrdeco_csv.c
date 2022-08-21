@@ -89,8 +89,7 @@ int parse_csv_line ( int *nt, char *tk[], char *lin )
   int flag;
   char c, caux[CSV_MAXL];
 
-  if (lin == NULL || tk == NULL || nt == NULL)
-    return -1;
+  bufrdeco_assert (lin != NULL && tk != NULL && nt != NULL);
   
   l = strlen ( lin );
   if ( l >= CSV_MAXL || l == 0 )

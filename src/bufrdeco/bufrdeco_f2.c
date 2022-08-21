@@ -44,8 +44,7 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
   uint8_t has_data;
 
   // Check args
-  if ( b == NULL )
-    return 1;
+  bufrdeco_assert ( b != NULL );
 
   if ( d == NULL || s == NULL )
     {
@@ -406,8 +405,7 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
   uint8_t has_data;
 
   // Check args
-  if ( b == NULL )
-    return 1;
+  bufrdeco_assert ( b != NULL );
 
   if ( d == NULL || r == NULL )
     {
@@ -765,9 +763,7 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
 char *bufrdeco_get_f2_descriptor_explanation ( char *e, size_t dim, struct bufr_descriptor *d )
 {
   // check the input
-  if ( e == NULL || d == NULL || d->f != 2 )
-    return NULL;
-
+  bufrdeco_assert ( e != NULL && d != NULL && d->f == 2 )
 
   switch ( d->x )
     {

@@ -49,8 +49,7 @@ int get_ecmwf_tablenames ( struct bufrdeco *b )
   char aux[128];
 
   // Check argument
-  if (b == NULL)
-    return 1;
+  bufrdeco_assert ( b != NULL );
   
   if ( b->bufrtables_dir[0] == '\0' )
     {
@@ -170,8 +169,7 @@ int bufr_read_tables_ecmwf ( struct bufrdeco *b )
 {
 
   // Check argument
-  if (b == NULL)
-    return 1;
+  bufrdeco_assert ( b != NULL );
   
   // get tablenames
   if ( get_ecmwf_tablenames ( b ) )

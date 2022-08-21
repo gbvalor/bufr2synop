@@ -48,6 +48,8 @@ int get_wmo_tablenames ( struct bufrdeco *b )
   struct stat st;
   char aux[128];
 
+  bufrdeco_assert (b != NULL);
+  
   if ( b->bufrtables_dir[0] == '\0' )
     {
       // try to guess directory
@@ -157,6 +159,7 @@ int get_wmo_tablenames ( struct bufrdeco *b )
 */
 int bufr_read_tables_wmo ( struct bufrdeco *b )
 {
+  bufrdeco_assert (b != NULL);
 
   // get tablenames
   if ( get_wmo_tablenames ( b ) )

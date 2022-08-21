@@ -37,6 +37,8 @@
 */
 struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data ( struct bufrdeco *b )
 {
+  bufrdeco_assert ( b != NULL );
+  
   if ( bufrdeco_decode_data_subset ( & ( b->seq ), & ( b->refs ), b ) )
     {
       return NULL;
@@ -62,8 +64,7 @@ int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struc
                                   struct bufrdeco *b )
 {
   // check arguments
-  if ( b == NULL)
-    return 1;
+  bufrdeco_assert ( b != NULL );
   
   if ( s == NULL || r == NULL )
     {
@@ -133,8 +134,7 @@ int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struc
 */
 int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s )
 {
-  if ( s == NULL )
-    return 1;
+  bufrdeco_assert ( s != NULL );
 
   if ( s->dim < ( BUFR_NMAXSEQ * 8 ) ) // check if reached the limit
     {
@@ -170,8 +170,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
   struct bufr_sequence *seq;
   struct bufr_replicator replicator;
 
-  if (b == NULL)
-    return 1;
+  bufrdeco_assert ( b != NULL );
   
   if ( s == NULL )
     {
@@ -408,8 +407,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
   struct bufr_sequence *l = r->s; // sequence
   struct bufr_replicator replicator;
 
-  if (b == NULL)
-    return 1;
+  bufrdeco_assert ( b != NULL );
   
   if (s == NULL || r == NULL )
   {

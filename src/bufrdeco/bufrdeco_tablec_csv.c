@@ -39,10 +39,14 @@ int bufr_read_tablec_csv ( struct bufrdeco *b )
   uint32_t ix;
   size_t i = 0;
   struct bufr_descriptor desc;
-  struct bufr_tablec *tc = & ( b->tables->c );
+  struct bufr_tablec *tc;
   char *tk[16];
   char caux[256], l[CSV_MAXL];
 
+  bufrdeco_assert ( b != NULL );
+  
+  tc = & ( b->tables->c );
+  
   if ( tc->path[0] == 0 )
     {
       return 1;
@@ -136,6 +140,8 @@ int bufr_find_tablec_csv_index ( size_t *index, struct bufr_tablec *tc, const ch
   char *c;
   struct bufr_descriptor desc;
 
+  bufrdeco_assert ( tc != NULL && index != NULL );
+  
   ix = strtoul ( key, &c, 10 );
   uint32_t_to_descriptor ( &desc, ix );
   i0 = tc->x_start[desc.x];
@@ -170,6 +176,8 @@ char * bufrdeco_explained_table_csv_val ( char *expl, size_t dim, struct bufr_ta
 {
   size_t  i;
 
+  bufrdeco_assert ( tc != NULL && expl != NULL && index != NULL && d != NULL);
+  
   if ( bufr_find_tablec_csv_index ( &i, tc, d->c, ival ) )
     {
       return NULL; // descritor not found
@@ -203,6 +211,8 @@ char * bufrdeco_explained_flag_csv_val ( char *expl, size_t dim, struct bufr_tab
   uint64_t test, test0;
   uint64_t v;
   size_t i, j;
+
+  bufrdeco_assert ( tc != NULL && expl != NULL && d != NULL);
 
   if ( tc->num[d->x] == 0 )
     {

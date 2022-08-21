@@ -44,8 +44,11 @@ int bufr_read_tabled_csv ( struct bufrdeco *b )
   char caux[256];
   char laux[CSV_MAXL];
   struct bufr_descriptor desc;
-  struct bufr_tabled *td = &(b->tables->d);
+  struct bufr_tabled *td;
 
+  bufrdeco_assert (b != NULL);
+  
+  td = &(b->tables->d);
   if ( td->path[0] == 0 )
     {
       return 1;
