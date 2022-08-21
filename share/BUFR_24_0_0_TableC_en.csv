@@ -1963,7 +1963,7 @@
 "008085","2","Aft beam",,,
 "008085","3-6","Reserved",,,
 "008085","7","Missing value",,,
-"008086","1","Model ""ground"" surface",,,
+"008086","1","Model --ground-- surface",,,
 "008086","2","Standard level",,,
 "008086","3","Tropopause level",,,
 "008086","4","Maximum wind level",,,

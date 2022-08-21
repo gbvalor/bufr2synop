@@ -1021,7 +1021,7 @@
 "020092","Height of base of cloud",,"ft","-2","0","10"
 "020093","Height of inversion",,"m","-1","0","8"
 "020095","Ice probability",,"Numeric","3","0","10"
-"020096","Ice age (""A"" parameter)",,"d,","2","-,-40","1,"
+"020096","Ice age (--A-- parameter)",,"dB","2","-4096","13"
 "020101","Locust (acridian) name",,"Code table","0","0","4"
 "020102","Locust (maturity) colour",,"Code table","0","0","4"
 "020103","Stage of development of locusts",,"Code table","0","0","4"

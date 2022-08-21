@@ -124,11 +124,9 @@ int main ( int argc, char *argv[] )
 
   if ( INPUT_FILE[0] == 0 )
     {
-      fprintf ( stderr, "%s: Error. Need to provide input file with arg -i\n", SELF );
-      exit ( EXIT_FAILURE );
+      f = stdin;
     }
-
-  if ( ( f = fopen ( INPUT_FILE, "r" ) ) == NULL )
+  else if ( ( f = fopen ( INPUT_FILE, "r" ) ) == NULL )
     {
       fprintf ( stderr, "%s: Error. Cannot open file '%s'\n", SELF, INPUT_FILE );
       exit ( EXIT_FAILURE );
@@ -335,6 +333,8 @@ int main ( int argc, char *argv[] )
           printf ( "\"%s\",\"%u\",\"%s\",,,\n", caux2, ix, caux );
         }
     }
-  fclose ( f );
+  if (INPUT_FILE[0])  
+    fclose ( f );
+
   exit ( EXIT_SUCCESS );
 }
