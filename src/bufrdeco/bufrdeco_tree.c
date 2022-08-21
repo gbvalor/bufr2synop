@@ -66,11 +66,11 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
       memset ( b->tree, 0, sizeof ( struct bufrdeco_expanded_tree ) ); //reset memory
       b->tree->nseq = 1; // Set current number of sequences in tree, i.e. 1
       l = & ( b->tree->seq[0] ); // This is to write easily
-      strcpy ( l->key, "000000" ); // Key '000000' is the first descriptor of first sequence of level 0
+      strcpy_safe ( l->key, "000000" ); // Key '000000' is the first descriptor of first sequence of level 0
       l->level = 0; // Level 0
       l->father = NULL; // This layer is God, it has not father
       l->iseq = 0; // first
-      strcpy ( l->name, "Main sequence from SEC3" );
+      strcpy_safe ( l->name, "Main sequence from SEC3" );
       // here we get l->ndesc and l->lsec[] array
       if ( get_unexpanded_descriptor_array_from_sec3 ( l, b ) )
         {
@@ -87,13 +87,13 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
       else
         {
           // No more bufr_sequence permitted
-          sprintf ( b->error,"bufr_parse_tree_recursive(): Reached max number of bufr_sequence. "
-                    "Use bigger NMAXSEQ_LAYER \n" );
+          snprintf ( b->error, sizeof (b->error),"%s(): Reached max number of bufr_sequence. "
+                    "Use bigger NMAXSEQ_LAYER \n" , __func__);
           return 1;
         }
       nl = b->tree->nseq; // To write code easily
       l = & ( b->tree->seq[nl - 1] ); // To write code easily
-      strcpy ( l->key, key ); // Set the key of sequence in table d (f == 3)
+      strcpy_safe ( l->key, key ); // Set the key of sequence in table d (f == 3)
       l->level = father->level + 1; // level for sequence
       l->father = father; // set the father
       l->iseq = nl - 1; // index of sequence in tree
@@ -145,7 +145,7 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
               else
                 {
                   // range of no data present out of sequence
-                  sprintf ( b->error,"bufr_parse_tree_recursive(): Range of 'no data present' out of sequence limits\n" );
+                  snprintf ( b->error, sizeof (b->error),"%s(): Range of 'no data present' out of sequence limits\n" , __func__);
                   return 1;
                 }
             }
@@ -165,7 +165,7 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
                 }
               else
                 {
-                  sprintf ( b->error,"bufr_parse_tree_recursive(): unexpected or wrong event descriptor\n" );
+                  snprintf ( b->error, sizeof (b->error),"%s(): unexpected or wrong event descriptor\n" , __func__);
                   return 1;
                 }
             }
@@ -185,7 +185,7 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
                 }
               else
                 {
-                  sprintf ( b->error,"bufr_parse_tree_recursive(): unexpected or wrong conditioning event event descriptor\n" );
+                  snprintf ( b->error, sizeof (b->error),"%s(): unexpected or wrong conditioning event event descriptor\n" , __func__);
                   return 1;
                 }
             }
@@ -205,7 +205,7 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
                 }
               else
                 {
-                  sprintf ( b->error,"bufr_parse_tree_recursive(): unexpected or wrong categorical forecasts descriptor\n" );
+                  snprintf ( b->error, sizeof (b->error),"%s(): unexpected or wrong categorical forecasts descriptor\n" , __func__);
                   return 1;
                 }
             }

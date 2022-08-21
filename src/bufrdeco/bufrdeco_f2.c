@@ -43,6 +43,15 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
   struct bufr_atom_data *a;
   uint8_t has_data;
 
+  // Check args
+  if ( b == NULL )
+    return 1;
+
+  if ( d == NULL || s == NULL )
+    {
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
+    }
+
   if ( d->f != 2 )
     {
       return 0;  // nothing to do here
@@ -105,7 +114,7 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
       memcpy ( &a->desc, d, sizeof ( struct bufr_descriptor ) );
       if ( get_bits_as_char_array ( a->cval, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
         {
-          sprintf ( b->error, "bufrdeco_parse_f2_descriptor(): Cannot get %u uchars from '%s'\n", d->y, d->c );
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get %u uchars from '%s'\n", __func__, d->y, d->c );
           return 1;
         }
       if ( has_data == 0 )
@@ -116,8 +125,8 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
         {
           a->mask |= DESCRIPTOR_HAVE_STRING_VALUE;
         }
-      strcpy ( a->name, "SIGNIFY CHARACTER" );
-      strcpy ( a->unit, "CCITTIA5" ); // unit
+      strcpy_safe ( a->name, "SIGNIFY CHARACTER" );
+      strcpy_safe ( a->unit, "CCITTIA5" ); // unit
       if ( s->nd < ( s->dim - 1 ) )
         {
           ( s->nd ) ++;
@@ -128,7 +137,7 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
         }
       else
         {
-          sprintf ( b->error, "bufrdeco_parse_f2_descriptor(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n" );
+          snprintf ( b->error, sizeof ( b->error ), "%s(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n", __func__ );
           return 1;
         }
       break;
@@ -155,8 +164,8 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
             b->state.factor_reference = pow10pos_int[d->y];
           else
             {
-              sprintf ( b->error, "bufrdeco_parse_f2_descriptor(): Too much %u increase bits for operator '%s'", d->y,
-                        d->c );
+              snprintf ( b->error, sizeof ( b->error ), "%s(): Too much %u increase bits for operator '%s'", __func__, d->y,
+                         d->c );
               return 1;
             }
           b->state.added_bit_length = ( int8_t ) ( ( 10.0 * d->y + 2.0 ) / 3.0 );
@@ -372,8 +381,8 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
       break;
 
     default:
-      sprintf ( b->error, "bufrdeco_parse_f2_descriptor(): Still no proccessed descriptor '%s' in "
-                "current library version %s\n", d->c, VERSION );
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Still no proccessed descriptor '%s' in "
+                 "current library version %s\n", __func__, d->c, VERSION );
       return 1;
     }
   return 0;
@@ -395,6 +404,15 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
   uint32_t ival;
   struct bufrdeco_compressed_ref *rf;
   uint8_t has_data;
+
+  // Check args
+  if ( b == NULL )
+    return 1;
+
+  if ( d == NULL || r == NULL )
+    {
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
+    }
 
   if ( d->f != 2 )
     {
@@ -457,22 +475,22 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
       rf = & ( r->refs[r->nd] );
       if ( get_bits_as_char_array ( rf->cref0, &rf->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
         {
-          sprintf ( b->error, "bufrdeco_parse_f2_compressed(): Cannot get %u uchars from '%s'\n", d->y, d->c );
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get %u uchars from '%s'\n", __func__, d->y, d->c );
           return 1;
         }
-      strcpy ( rf->name, "SIGNIFY CHARACTER" );
-      strcpy ( rf->unit, "CCITTIA5" ); // unit
+      strcpy_safe ( rf->name, "SIGNIFY CHARACTER" );
+      strcpy_safe ( rf->unit, "CCITTIA5" ); // unit
 
       // Is suppossed all data will have same length in all subsets
       // extracting inc_bits from next 6 bits
       if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), 6 ) == 0 )
         {
-          sprintf ( b->error, "bufrdeco_parse_f2_compressed(): Cannot get 6 bits for inc_bits from '%s'\n", d->c );
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get 6 bits for inc_bits from '%s'\n", __func__, d->c );
           return 1;
         }
       if ( ival != d->y )
         {
-          sprintf ( b->error, "bufrdeco_parse_f2_compressed(): Bad length in inc_bits for a 2 05 YYY descriptor from '%s'\n", d->c );
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Bad length in inc_bits for a 2 05 YYY descriptor from '%s'\n", __func__, d->c );
           return 1;
         }
       rf->inc_bits = ival;
@@ -483,7 +501,7 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
         }
       else
         {
-          sprintf ( b->error, "bufrdeco_parse_f2_compressed(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
           return 1;
         }
       break;
@@ -510,8 +528,8 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
             b->state.factor_reference = pow10pos_int[d->y];
           else
             {
-              sprintf ( b->error, "bufrdeco_parse_f2_compressed(): Too much %u increase bits for operator '%s'", d->y,
-                        d->c );
+              snprintf ( b->error, sizeof ( b->error ), "%s(): Too much %u increase bits for operator '%s'", __func__, d->y,
+                         d->c );
               return 1;
             }
           b->state.added_bit_length = ( int8_t ) ( ( 10.0 * d->y + 2.0 ) / 3.0 );
@@ -729,8 +747,8 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
 
     default:
       // Still not processed: 21
-      sprintf ( b->error, "bufrdeco_parse_f2_compressed(): Still no proccessed descriptor '%s' in "
-                "current library version %s \n", d->c, VERSION );
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Still no proccessed descriptor '%s' in "
+                 "current library version %s \n", __func__, d->c, VERSION );
       return 1;
     }
   return 0;
@@ -744,7 +762,7 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
  *
  *  As result, returns the explanation string or null if problems.
  */
-char *bufrdeco_get_f2_descriptor_explanation ( char *e, struct bufr_descriptor *d )
+char *bufrdeco_get_f2_descriptor_explanation ( char *e, size_t dim, struct bufr_descriptor *d )
 {
   // check the input
   if ( e == NULL || d == NULL || d->f != 2 )
@@ -754,107 +772,107 @@ char *bufrdeco_get_f2_descriptor_explanation ( char *e, struct bufr_descriptor *
   switch ( d->x )
     {
     case 1:
-      sprintf ( e, "Change data width %d bits.", d->y - 128 );
+      snprintf ( e, dim, "Change data width %d bits.", d->y - 128 );
       break;
 
     case 2:
-      sprintf ( e, "Change scale %d units.\n", d->y - 128 );
+      snprintf ( e, dim, "Change scale %d units.\n", d->y - 128 );
       break;
 
     case 3:
       if ( d->y != 255 )
-        sprintf ( e, "Change reference values. Each new reference value has %d bits width.", d->y );
+        snprintf ( e, dim, "Change reference values. Each new reference value has %d bits width.", d->y );
       else
-        sprintf ( e, "Change reference values concluded." );
+        snprintf ( e, dim, "Change reference values concluded." );
       break;
 
     case 4:
-      sprintf ( e, "Add associated field. Precede each data element with %d bits of information.", d->y );
+      snprintf ( e, dim,"Add associated field. Precede each data element with %d bits of information.", d->y );
       break;
 
     case 5:
-      sprintf ( e, "Signify character. %d characters CCITT IA5 are inserted as a data field of %d x 8 bits in length.", d->y, d->y );
+      snprintf ( e, dim, "Signify character. %d characters CCITT IA5 are inserted as a data field of %d x 8 bits in length.", d->y, d->y );
       break;
 
     case 6:
-      sprintf ( e, "Signify data width. %d bits of data are described by immediately following descsriptor", d->y );
+      snprintf ( e, dim, "Signify data width. %d bits of data are described by immediately following descsriptor", d->y );
       break;
 
     case 7:
-      sprintf ( e, "Increase scale, reference value and data width." );
+      snprintf ( e, dim, "Increase scale, reference value and data width." );
       break;
 
     case 8:
-      sprintf ( e, "Change width of CCITT IA5 field to %d characters instead of the indicated in table B", d->y );
+      snprintf ( e, dim, "Change width of CCITT IA5 field to %d characters instead of the indicated in table B", d->y );
       break;
 
     case 21:
-      sprintf ( e, "**** Next %d descriptor(s) on this sequence level do not have data present ****", d->y );
+      snprintf ( e, dim, "**** Next %d descriptor(s) on this sequence level do not have data present ****", d->y );
       break;
 
     case 22:
-      sprintf ( e, "Quality information follows. The values of Class 33 elements which follow relate to the data defined by the data present bit-map." );
+      snprintf ( e, dim, "Quality information follows. The values of Class 33 elements which follow relate to the data defined by the data present bit-map." );
       break;
 
     case 23:
       if ( d->y == 0 )
-        sprintf ( e, "Substituted values operator. The substituted values which follow relate to the data defined by the data present bit-map." );
+        snprintf ( e, dim, "Substituted values operator. The substituted values which follow relate to the data defined by the data present bit-map." );
       else if ( d->y == 255 )
-        sprintf ( e, "Substituted values marker operator. This operator shall signify a data item containing a substituted value." );
+        snprintf ( e, dim, "Substituted values marker operator. This operator shall signify a data item containing a substituted value." );
       break;
 
     case 24:
       if ( d->y == 0 )
-        sprintf ( e, "First-order statistical values follow." );
+        snprintf ( e, dim, "First-order statistical values follow." );
       else if ( d->y == 255 )
-        sprintf ( e, "First-order statistical values marker operator" );
+        snprintf ( e, dim, "First-order statistical values marker operator" );
       break;
 
     case 25:
       if ( d->y == 0 )
-        sprintf ( e, "Replaced/retained values follow." );
+        snprintf ( e, dim,"Replaced/retained values follow." );
       else if ( d->y == 255 )
-        sprintf ( e, "Replaced/retained value marker operator" );
+        snprintf ( e, dim, "Replaced/retained value marker operator" );
       break;
 
     case 32:
       if ( d->y == 0 )
-        sprintf ( e, "Difference statistical values follow." );
+        snprintf ( e, dim, "Difference statistical values follow." );
       else if ( d->y == 255 )
-        sprintf ( e, "Difference statistical values marker operator" );
+        snprintf ( e, dim, "Difference statistical values marker operator" );
       break;
 
     case 35:
-      sprintf ( e, "Cancel backward data reference" );
+      snprintf ( e, dim, "Cancel backward data reference" );
       break;
 
     case 36:
-      sprintf ( e, "Define data present bit-map" );
+      snprintf ( e, dim, "Define data present bit-map" );
       break;
 
     case 37:
-      sprintf ( e, " Use defined data present bit-map" );
+      snprintf ( e, dim, " Use defined data present bit-map" );
       break;
 
     case 41:
       if ( d->y == 0 )
-        sprintf ( e, "@@@@ Event definition begins in next descriptor of this sequence level @@@@" );
+        snprintf ( e, dim, "@@@@ Event definition begins in next descriptor of this sequence level @@@@" );
       else
-        sprintf ( e, "@@@@ Event definition ends here @@@@" );
+        snprintf ( e, dim, "@@@@ Event definition ends here @@@@" );
       break;
 
     case 42:
       if ( d->y == 0 )
-        sprintf ( e, "!!!! Conditioning event definition begins in next descriptor of this sequence level !!!!" );
+        snprintf ( e, dim, "!!!! Conditioning event definition begins in next descriptor of this sequence level !!!!" );
       else
-        sprintf ( e, "!!!! Conditioning event definition ends here !!!!" );
+        snprintf ( e, dim, "!!!! Conditioning event definition ends here !!!!" );
       break;
 
     case 43:
       if ( d->y == 0 )
-        sprintf ( e, "&&&& Categorical forecast follow in next descriptor of this sequence level &&&&" );
+        snprintf ( e, dim, "&&&& Categorical forecast follow in next descriptor of this sequence level &&&&" );
       else
-        sprintf ( e, "&&&& Categorical forecast ends here &&&&" );
+        snprintf ( e, dim, "&&&& Categorical forecast ends here &&&&" );
       break;
 
     default:

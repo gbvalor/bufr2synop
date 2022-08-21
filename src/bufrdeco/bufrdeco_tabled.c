@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,20 +24,20 @@
 #include "bufrdeco.h"
 
 /*!
-  \fn int bufr_read_tabled ( struct bufr_tabled *td, char *error )
+  \fn int bufr_read_tabled ( struct bufrdeco *b )
   \brief Reads a file with table D content according with ECMWF format
-  \param td pointer to a target struct \ref bufr_tabled
-  \param error string where to set error if any
+  \param b pointer to a target struct \ref bufrdeco
 
   If succeded return 0, otherwise 1
 */
-int bufr_read_tabled ( struct bufr_tabled *td, char *error )
+int bufr_read_tabled ( struct bufrdeco *b )
 {
   char aux[8], *c;
   FILE *t;
   size_t ix = 0;
   size_t i = 0;
   char caux[256];
+  struct bufr_tabled *td = &(b->tables->d);
 
   if ( td->path[0] == '\0' )
     {
@@ -50,12 +50,12 @@ int bufr_read_tabled ( struct bufr_tabled *td, char *error )
       return 0; // all done
     }
 
-  strcpy ( caux, td->path );
+  strcpy_safe ( caux, td->path );
   memset ( td, 0, sizeof ( struct bufr_tabled ) );
-  strcpy ( td->path,caux );
+  strcpy_safe ( td->path,caux );
   if ( ( t = fopen ( td->path, "r" ) ) == NULL )
     {
-      sprintf ( error,"Unable to open table D file '%s'\n", td->path );
+      snprintf ( b->error, sizeof (b->error), "%s(): Unable to open table D file '%s'\n", __func__, td->path );
       return 1;
     }
 
@@ -83,7 +83,7 @@ int bufr_read_tabled ( struct bufr_tabled *td, char *error )
   fclose ( t );
   td->nlines = i;
   td->wmo_table = 0;
-  strcpy ( td->old_path, td->path ); // store latest path
+  strcpy_safe ( td->old_path, td->path ); // store latest path
   return 0;
 }
 
@@ -149,7 +149,7 @@ int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufr
   // Reject wrong arguments
   if ( s == NULL || b == NULL || key == NULL )
     {
-      sprintf ( b->error,"bufrdeco_tabled_get_descritors_array(): Wrong entry arguments\n" );
+      snprintf ( b->error, sizeof (b->error),"%s(): Wrong entry arguments\n", __func__ );
       return 1;
     }
 
@@ -157,13 +157,13 @@ int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufr
 
   if ( bufr_find_tabled_index ( &i, td, key ) )
     {
-      sprintf ( b->error, "bufrdeco_tabled_val(): descriptor '%s' not found in table D\n", key );
+      snprintf ( b->error, sizeof (b->error), "%s(): descriptor '%s' not found in table D\n", __func__, key );
       return 1; // descritor not found
     }
 
   // Get the name of common sequence
   if (td->item[i].description[0])
-     strcpy(s->name, td->item[i].description);
+     strcpy_safe(s->name, td->item[i].description)
   else
      s->name[0] = 0;
   

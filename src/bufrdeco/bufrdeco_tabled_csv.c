@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,14 +24,14 @@
 #include "bufrdeco.h"
 
 /*!
-  \fn int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
+  \fn int bufr_read_tabled_csv ( struct bufrdeco *b )
   \brief Reads a file with table D content according with WMO csv format
-  \param td pointer to a target struct \ref bufr_tabled
+  \param b pointer to a target struct \ref bufrdeco
   \param error string where to set error if any
 
   If succeded return 0, otherwise 1
 */
-int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
+int bufr_read_tabled_csv ( struct bufrdeco *b )
 {
   char aux[32], *c;
   char *tk[16];
@@ -44,6 +44,7 @@ int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
   char caux[256];
   char laux[CSV_MAXL];
   struct bufr_descriptor desc;
+  struct bufr_tabled *td = &(b->tables->d);
 
   if ( td->path[0] == 0 )
     {
@@ -56,12 +57,12 @@ int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
       return 0; // all done
     }
 
-  strcpy ( caux, td->path );
+  strcpy_safe ( caux, td->path );
   memset ( td, 0, sizeof ( struct bufr_tabled ) );
-  strcpy ( td->path,caux );
+  strcpy_safe ( td->path,caux );
   if ( ( t = fopen ( td->path, "r" ) ) == NULL )
     {
-      sprintf ( error,"Unable to open table D file '%s'\n", td->path );
+      snprintf ( b->error, sizeof (b->error),"Unable to open table D file '%s'\n", td->path );
       return 1;
     }
 
@@ -77,21 +78,21 @@ int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
       //printf("%s\n",laux);
       if ( parse_csv_line ( &nt, tk, laux ) < 0 || ( nt != 2 && nt != 4) )
         {
-          sprintf ( error,"Error parsing csv line from table D file '%s' found %d tokens in line %lu\n", td->path, nt, i );
+          snprintf ( b->error, sizeof (b->error),"Error parsing csv line from table D file '%s' found %d tokens in line %lu\n", td->path, nt, i );
           return 1;
         }
 
       // item fields
       strcpy(td->item[i].key, tk[0]);
-      strcpy(td->item[i].key2, tk[1]);
+      strcpy_safe(td->item[i].key2, tk[1]);
 
       if (nt == 4 && tk[2][0])
-        strcpy(td->item[i].description, tk[2]);
+        strcpy_safe (td->item[i].description, tk[2])
       else
         td->item[i].description[0] = 0;
 
       if (nt == 4 && tk[3][0])
-        strcpy(td->item[i].description2, tk[3]);
+        strcpy_safe(td->item[i].description2, tk[3])
       else
         td->item[i].description2[0] = 0;
 
@@ -100,7 +101,7 @@ int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
           if ( oldkey[0] )
             {
               // write number of descriptors in emulated ECMWF line
-              sprintf ( aux, "%s%3d", oldkey, nj );
+              snprintf ( aux, sizeof (aux), "%s%3d", oldkey, nj );
               td->l[j0][1] = aux[0];
               td->l[j0][2] = aux[1];
               td->l[j0][3] = aux[2];
@@ -118,7 +119,7 @@ int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
         {
           nj++;
         }
-      strcpy ( oldkey, tk[0] );
+      strcpy_safe ( oldkey, tk[0] );
 
       ix = strtoul ( tk[0], &c, 10 );
       uint32_t_to_descriptor ( &desc, ix );
@@ -130,13 +131,13 @@ int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
       ( td->num[desc.x] ) ++;
 
       // Now emule ECMWF format
-      sprintf ( td->l[i], "           %s", tk[1] );
+      snprintf ( td->l[i], sizeof (td->l[i]), "           %s", tk[1] );
       i++;
     }
   fclose ( t );
 
   // Last sequence
-  sprintf ( aux, "%s%3d", oldkey, nj );
+  snprintf ( aux, sizeof (aux), "%s%3d", oldkey, nj );
   td->l[j0][1] = aux[0];
   td->l[j0][2] = aux[1];
   td->l[j0][3] = aux[2];
@@ -147,10 +148,8 @@ int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error )
   td->l[j0][8] = aux[7];
   td->l[j0][9] = aux[8];
 
-  /*for ( kk = 0; kk < i; kk++ )
-    printf ( "%s\n", td->l[kk] );*/
   td->nlines = i;
   td->wmo_table = 1;
-  strcpy ( td->old_path, td->path ); // store latest path
+  strcpy_safe ( td->old_path, td->path ); // store latest path
   return 0;
 }

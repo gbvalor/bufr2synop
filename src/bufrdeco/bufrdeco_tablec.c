@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,20 +24,20 @@
 #include "bufrdeco.h"
 
 /*!
-  \fn int bufr_read_tablec ( struct bufr_tablec *tc, char *error )
+  \fn int bufr_read_tablec ( struct bufrdeco *b )
   \brief Reads a file with table C content according with ECMWF format
-  \param tc pointer to a target struct \ref bufr_tablec
-  \param error string where to set error if any
+  \param b pointer to a target struct \ref bufrdeco
 
   If succeded return 0, otherwise 1
 */
-int bufr_read_tablec ( struct bufr_tablec *tc, char *error )
+int bufr_read_tablec ( struct bufrdeco *b )
 {
   char aux[8], *c;
   size_t startx = 0;
   FILE *t;
   size_t i = 0;
   char caux[256];
+  struct bufr_tablec *tc = &(b->tables->c);
 
   if ( tc->path[0] == '\0' )
     {
@@ -50,12 +50,12 @@ int bufr_read_tablec ( struct bufr_tablec *tc, char *error )
       return 0; // all done
     }
 
-  strcpy ( caux, tc->path );
+  strcpy_safe ( caux, tc->path );
   memset ( tc, 0, sizeof ( struct bufr_tablec ) );
-  strcpy ( tc->path,caux );
+  strcpy_safe ( tc->path, caux );
   if ( ( t = fopen ( tc->path, "r" ) ) == NULL )
     {
-      sprintf ( error,"Unable to open table C file '%s'\n", tc->path );
+      snprintf ( b->error, sizeof (b->error), "%s(): Unable to open table C file '%s'\n", __func__, tc->path );
       return 1;
     }
 
@@ -83,7 +83,7 @@ int bufr_read_tablec ( struct bufr_tablec *tc, char *error )
   fclose ( t );
   tc->nlines = i;
   tc->wmo_table = 0;
-  strcpy ( tc->old_path, tc->path ); // store latest path
+  strcpy_safe ( tc->old_path, tc->path ); // store latest path
   return 0;
 }
 
@@ -157,7 +157,7 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec
       // here the calling b item learn where to find table C line
       if ( bufr_find_tablec_index ( index, tc, d->c ) )
         {
-          //sprintf ( b->error, "bufrdeco_explained_table_val(): descriptor '%s' not found in table D\n", d->c );
+          //snprintf ( b->error, sizeof (b->error), "%s(): descriptor '%s' not found in table D\n", __func__, d->c );
           return NULL; // descritor not found
         }
     }
@@ -198,7 +198,7 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec
 
 
   // if match then we have finished the search
-  strcpy ( expl, &tc->l[i][24] );
+  strcpy_safe ( expl, &tc->l[i][24] );
   if ( nl > 1 )
     {
       for ( nv = 1 ; nv < nl; nv++ )
@@ -228,7 +228,8 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec
 char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d,
                                      uint64_t ival, uint8_t nbits )
 {
-  char *c, *s;
+  char *c;
+  size_t used = 0;
   uint64_t test, test0;
   uint64_t nb, nx, v,  nl;
   size_t i, j;
@@ -275,10 +276,7 @@ char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec 
     }
 
   // read a value
-  s = expl;
-  s[0] = '\0';
-
-  for ( j = 0, test0 = 1; j < nb && i < tc->nlines ; i++ )
+    for ( j = 0, test0 = 1; j < nb && i < tc->nlines ; i++ )
     {
       if ( tc->l[i][12] != ' ' )
         {
@@ -292,17 +290,17 @@ char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec 
               if ( ival == 0 )
                 {
                   nl = strtoul ( &tc->l[i][21], &c, 10 );
-                  if ( strlen ( expl ) && ( strlen ( expl ) + 1 ) < dim )
+                  if ( expl[0] ) 
                     {
-                      s += sprintf ( s, "|" );
+                      used += snprintf ( expl + used, dim - used, "|" );
                     }
-                  s += sprintf ( s,"%s", &tc->l[i][24] );
+                  used += snprintf ( expl + used, dim - used, "%s", &tc->l[i][24] );
                   if ( nl > 1 )
                     {
                       for ( nx = 1 ; nx < nl; nx++ )
-                        if ( ( strlen ( expl ) + strlen ( &tc->l[i + nx][22] ) )  < dim )
+                        if ( expl[0] )
                           {
-                            s += sprintf ( s, "%s", &tc->l[i + nx][22] );
+                            used += snprintf ( expl + used, dim - used, "%s", &tc->l[i + nx][22] );
                           }
                     }
                   return expl;
@@ -316,17 +314,17 @@ char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec 
               // bit match
               // read how many lines for the descriptors
               nl = strtol ( &tc->l[i][21], &c, 10 );
-              if ( strlen ( expl ) && ( strlen ( expl ) + 1 ) < dim )
+              if ( expl[0] )
                 {
-                  s += sprintf ( s, "|" );
+                  used  += snprintf ( expl + used, dim - used, "|" );
                 }
-              s += sprintf ( s,"%s", &tc->l[i][24] );
+              used += snprintf ( expl + used, dim - used, "%s", &tc->l[i][24] );
               if ( nl > 1 )
                 {
                   for ( nx = 1 ; nx < nl; nx++ )
-                    if ( ( strlen ( expl ) + strlen ( &tc->l[i + nx][22] ) )  < dim )
+                    if ( expl[0] )
                       {
-                        s += sprintf ( s, "%s", &tc->l[i + nx][22] );
+                        used += snprintf ( expl + used, dim - used, "%s", &tc->l[i + nx][22] );
                       }
                 }
 

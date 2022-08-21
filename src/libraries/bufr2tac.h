@@ -309,7 +309,8 @@ struct metreport
 };
 
 /* Functions definitions */
-char *bufr2tac_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch);
+char *bufr2tac_get_version(char *version, size_t dversion, char *build, size_t dbuild, char *builder, size_t dbuilder, 
+                           int *version_major, int *version_minor, int *version_patch);
 
 /* Error/debug functions */
 int bufr2tac_push_error ( struct bufr2tac_error_stack *e, int severity, char *description );

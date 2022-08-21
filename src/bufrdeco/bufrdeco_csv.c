@@ -49,6 +49,9 @@ char * csv_quoted_string ( char *out, char *in )
 {
   size_t i = 0, j = 0;
 
+  if ( in == NULL || out == NULL)
+      return NULL;
+
   if ( in[0] == 0 )
     return in;
 
@@ -86,11 +89,14 @@ int parse_csv_line ( int *nt, char *tk[], char *lin )
   int flag;
   char c, caux[CSV_MAXL];
 
+  if (lin == NULL || tk == NULL || nt == NULL)
+    return -1;
+  
   l = strlen ( lin );
-  if ( l > CSV_MAXL || l == 0 )
+  if ( l >= CSV_MAXL || l == 0 )
     return -1;
 
-  // copy original string
+  // copy original string. In this case the copy is safe
   strcpy ( caux, lin );
 
   flag = CSV_WAIT_ITEM;

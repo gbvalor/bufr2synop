@@ -33,7 +33,7 @@ dnl
 { 
 case "${CC}" in
         gcc*)
-                CFLAGS="$CFLAGS -O2 -Wall -Wextra -W -g"
+                CFLAGS="$CFLAGS -O2 -Wall -Wextra -W -g -Wno-stringop-truncation"
                 ;;
         icc)
                 CFLAGS="$CFLAGS -O2 -xHost -fstack-protector -Wall -g"

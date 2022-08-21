@@ -61,7 +61,7 @@ int get_wmo_tablenames ( struct bufrdeco *b )
             {
               if ( S_ISDIR ( st.st_mode ) )
                 {
-                  strcpy ( aux, DEFAULT_BUFRTABLES_WMO_CSV_DIR2 );
+                  strcpy_safe ( aux, DEFAULT_BUFRTABLES_WMO_CSV_DIR2 );
                 }
             }
         }
@@ -69,13 +69,13 @@ int get_wmo_tablenames ( struct bufrdeco *b )
         {
           if ( S_ISDIR ( st.st_mode ) )
             {
-              strcpy ( aux,DEFAULT_BUFRTABLES_WMO_CSV_DIR1 );
+              strcpy_safe ( aux, DEFAULT_BUFRTABLES_WMO_CSV_DIR1 );
             }
         }
     }
   else
     {
-      strcpy ( aux, b->bufrtables_dir );
+      strcpy_safe ( aux, b->bufrtables_dir );
     }
 
   switch ( b->sec1.master_version )
@@ -90,24 +90,24 @@ int get_wmo_tablenames ( struct bufrdeco *b )
     case 11:
     case 12:
     case 13:
-      sprintf ( b->tables->b.path,"%sBUFR_13_0_0_TableB_en.csv", aux );
-      sprintf ( b->tables->c.path,"%sBUFR_13_0_0_TableC_en.csv", aux );
-      sprintf ( b->tables->d.path,"%sBUFR_13_0_0_TableD_en.csv", aux );
+      snprintf ( b->tables->b.path, sizeof (b->tables->b.path),"%sBUFR_13_0_0_TableB_en.csv", aux );
+      snprintf ( b->tables->c.path, sizeof (b->tables->c.path),"%sBUFR_13_0_0_TableC_en.csv", aux );
+      snprintf ( b->tables->d.path, sizeof (b->tables->d.path),"%sBUFR_13_0_0_TableD_en.csv", aux );
       break;
     case 18:
-      sprintf ( b->tables->b.path,"%sBUFR_18_1_0_TableB_en.csv", aux );
-      sprintf ( b->tables->c.path,"%sBUFR_18_1_0_TableC_en.csv", aux );
-      sprintf ( b->tables->d.path,"%sBUFR_18_1_0_TableD_en.csv", aux );
+      snprintf ( b->tables->b.path, sizeof (b->tables->b.path),"%sBUFR_18_1_0_TableB_en.csv", aux );
+      snprintf ( b->tables->c.path, sizeof (b->tables->c.path),"%sBUFR_18_1_0_TableC_en.csv", aux );
+      snprintf ( b->tables->d.path, sizeof (b->tables->d.path),"%sBUFR_18_1_0_TableD_en.csv", aux );
       break;
     case 19:
-      sprintf ( b->tables->b.path,"%sBUFR_19_1_1_TableB_en.csv", aux );
-      sprintf ( b->tables->c.path,"%sBUFR_19_1_1_TableC_en.csv", aux );
-      sprintf ( b->tables->d.path,"%sBUFR_19_1_1_TableD_en.csv", aux );
+      snprintf ( b->tables->b.path, sizeof (b->tables->b.path),"%sBUFR_19_1_1_TableB_en.csv", aux );
+      snprintf ( b->tables->c.path, sizeof (b->tables->c.path),"%sBUFR_19_1_1_TableC_en.csv", aux );
+      snprintf ( b->tables->d.path, sizeof (b->tables->d.path),"%sBUFR_19_1_1_TableD_en.csv", aux );
       break;
     case 22:
-      sprintf ( b->tables->b.path,"%sBUFR_22_0_1_TableB_en.csv", aux );
-      sprintf ( b->tables->c.path,"%sBUFR_22_0_1_TableC_en.csv", aux );
-      sprintf ( b->tables->d.path,"%sBUFR_22_0_1_TableD_en.csv", aux );
+      snprintf ( b->tables->b.path, sizeof (b->tables->b.path),"%sBUFR_22_0_1_TableB_en.csv", aux );
+      snprintf ( b->tables->c.path, sizeof (b->tables->c.path),"%sBUFR_22_0_1_TableC_en.csv", aux );
+      snprintf ( b->tables->d.path, sizeof (b->tables->d.path),"%sBUFR_22_0_1_TableD_en.csv", aux );
       break;
     case 14:
     case 15:
@@ -130,19 +130,19 @@ int get_wmo_tablenames ( struct bufrdeco *b )
     case 35:
     case 36:
     case 37:    
-      sprintf ( b->tables->b.path,"%sBUFR_%d_0_0_TableB_en.csv", aux, b->sec1.master_version );
-      sprintf ( b->tables->c.path,"%sBUFR_%d_0_0_TableC_en.csv", aux, b->sec1.master_version );
-      sprintf ( b->tables->d.path,"%sBUFR_%d_0_0_TableD_en.csv", aux, b->sec1.master_version );
+      snprintf ( b->tables->b.path, sizeof (b->tables->b.path),"%sBUFR_%d_0_0_TableB_en.csv", aux, b->sec1.master_version );
+      snprintf ( b->tables->c.path, sizeof (b->tables->c.path),"%sBUFR_%d_0_0_TableC_en.csv", aux, b->sec1.master_version );
+      snprintf ( b->tables->d.path, sizeof (b->tables->d.path),"%sBUFR_%d_0_0_TableD_en.csv", aux, b->sec1.master_version );
       break;
     case 38:    
-      sprintf ( b->tables->b.path,"%sBUFR_%d_1_0_TableB_en.csv", aux, b->sec1.master_version );
-      sprintf ( b->tables->c.path,"%sBUFR_%d_1_0_TableC_en.csv", aux, b->sec1.master_version );
-      sprintf ( b->tables->d.path,"%sBUFR_%d_1_0_TableD_en.csv", aux, b->sec1.master_version );
+      snprintf ( b->tables->b.path, sizeof (b->tables->b.path),"%sBUFR_%d_1_0_TableB_en.csv", aux, b->sec1.master_version );
+      snprintf ( b->tables->c.path, sizeof (b->tables->c.path),"%sBUFR_%d_1_0_TableC_en.csv", aux, b->sec1.master_version );
+      snprintf ( b->tables->d.path, sizeof (b->tables->d.path),"%sBUFR_%d_1_0_TableD_en.csv", aux, b->sec1.master_version );
       break;
     default:
-      sprintf ( b->tables->b.path,"%sBUFR_38_1_0_TableB_en.csv", aux );
-      sprintf ( b->tables->c.path,"%sBUFR_38_1_0_TableC_en.csv", aux );
-      sprintf ( b->tables->d.path,"%sBUFR_38_1_0_TableD_en.csv", aux );
+      snprintf ( b->tables->b.path, sizeof (b->tables->b.path),"%sBUFR_38_1_0_TableB_en.csv", aux );
+      snprintf ( b->tables->c.path, sizeof (b->tables->c.path),"%sBUFR_38_1_0_TableC_en.csv", aux );
+      snprintf ( b->tables->d.path, sizeof (b->tables->d.path),"%sBUFR_38_1_0_TableD_en.csv", aux );
       break;
     }
   return 0;
@@ -161,29 +161,29 @@ int bufr_read_tables_wmo ( struct bufrdeco *b )
   // get tablenames
   if ( get_wmo_tablenames ( b ) )
     {
-      sprintf ( b->error, "bufrdeco_read_tables_ecmwf(): Cannot find bufr tables\n" );
+      snprintf ( b->error, sizeof (b->error) ,"%s(): Cannot find bufr tables\n" , __func__);
       return 1;
     }
 
   // If tables still not initialized then do it
   if ( b->tables == NULL && bufrdeco_init_tables ( & ( b->tables ) ) )
-    {
-      sprintf ( b->error, "bufrdeco_read_tables_ecmwf(): Cannot allocate memory for tables\n" );
+    { 
+      snprintf ( b->error, sizeof (b->error), "%s(): Cannot allocate memory for tables\n" , __func__ );
       return 1;
     }
 
   // And now read tables
-  if ( bufr_read_tableb_csv ( & ( b->tables->b ), b->error ) )
+  if ( bufr_read_tableb_csv ( b ) )
     {
       return 1;
     }
 
-  if ( bufr_read_tablec_csv ( & ( b->tables->c ), b->error ) )
+  if ( bufr_read_tablec_csv ( b ) )
     {
       return 1;
     }
 
-  if ( bufr_read_tabled_csv ( & ( b->tables->d ), b->error ) )
+  if ( bufr_read_tabled_csv ( b ) )
     {
       return 1;
     }

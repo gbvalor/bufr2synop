@@ -61,10 +61,20 @@ struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data ( struc
 int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struct bufrdeco_compressed_data_references *r,
                                   struct bufrdeco *b )
 {
+  // check arguments
+  if ( b == NULL)
+    return 1;
+  
+  if ( s == NULL || r == NULL )
+    {
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
+      return 1;
+    }
+
   // Check about parsed tree
   if ( b->tree == NULL || b->tree->nseq == 0 )
     {
-      sprintf ( b->error, "bufrdeco_subset_sequence_datad(): Try to parse compressed data without parsed tree\n" );
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Try to parse compressed data without parsed tree\n", __func__ );
       return 1;
     }
 
@@ -123,6 +133,9 @@ int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struc
 */
 int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s )
 {
+  if ( s == NULL )
+    return 1;
+
   if ( s->dim < ( BUFR_NMAXSEQ * 8 ) ) // check if reached the limit
     {
       if ( ( s->sequence = ( struct bufr_atom_data * ) realloc ( ( void * ) s->sequence,
@@ -156,6 +169,15 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
   size_t i, k;
   struct bufr_sequence *seq;
   struct bufr_replicator replicator;
+
+  if (b == NULL)
+    return 1;
+  
+  if ( s == NULL )
+    {
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
+      return 1;
+    }
 
   // clean subset data
   if ( l == NULL )
@@ -206,7 +228,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
               if ( seq->lseq[i].x > 9 &&
                    seq->lseq[i].x != 31 )
                 {
-                  sprintf ( b->error, "bufrdeco_decode_subset_data_recursive(): Getting data from table b with class other than 1-9,31 and no data present activated\n" );
+                  snprintf ( b->error, sizeof ( b->error ), "%s(): Getting data from table b with class other than 1-9,31 and no data present activated\n", __func__ );
                   return 1;
                 }
 
@@ -229,7 +251,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
                 ( b->bitmap.bmap[b->bitmap.nba - 1]->ns1 )++;
               else
                 {
-                  sprintf ( b->error, "bufrdeco_decode_subset_data_recursive(): No more space for first order statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n" );
+                  snprintf ( b->error, sizeof ( b->error ), "%s(): No more space for first order statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n", __func__ );
                   return 1;
                 }
             }
@@ -245,7 +267,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
                 ( b->bitmap.bmap[b->bitmap.nba - 1]->nds )++;
               else
                 {
-                  sprintf ( b->error, "bufrdeco_decode_replicated_subsequence_compressed(): No more space for difference statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n" );
+                  snprintf ( b->error, sizeof ( b->error ), "%s(): No more space for difference statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n", __func__ );
                   return 1;
                 }
             }
@@ -267,7 +289,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
             }
           else
             {
-              sprintf ( b->error, "bufr_decode_data_subset_recursive(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n" );
+              snprintf ( b->error, sizeof ( b->error ), "%s(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n", __func__ );
               return 1;
             }
           break;
@@ -330,7 +352,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
               else
                 {
 
-                  sprintf ( b->error, "bufr_decode_data_subset_recursive(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n" );
+                  snprintf ( b->error, sizeof ( b->error ), "%s(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n", __func__ );
                   return 1;
                 }
               bufrdeco_decode_replicated_subsequence ( s, &replicator, b );
@@ -361,7 +383,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
 
         default:
           // this case is not possible
-          sprintf ( b->error, "bufr_decode_data_subset_recursive(): Found bad 'f' in descriptor '%s' \n", seq->lseq[i].c );
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Found bad 'f' in descriptor '%s' \n", seq->lseq[i].c, __func__ );
           return 1;
           break;
         }
@@ -386,6 +408,16 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
   struct bufr_sequence *l = r->s; // sequence
   struct bufr_replicator replicator;
 
+  if (b == NULL)
+    return 1;
+  
+  if (s == NULL || r == NULL )
+  {
+    {
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
+      return 1;
+    }
+  }
   //printf("nloops=%lu, ndesc=%lu\n", r->nloops, r->ndesc);
   for ( ixloop = 0; ixloop < r->nloops; ixloop++ )
     {
@@ -404,7 +436,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                   if ( l->lseq[i].x > 9 &&
                        l->lseq[i].x != 31 )
                     {
-                      sprintf ( b->error, "bufrdeco_decode_subset_data_recursive(): Getting data from table b with class other than 1-9,31 and no data present activated\n" );
+                      snprintf ( b->error, sizeof ( b->error ), "%s(): Getting data from table b with class other than 1-9,31 and no data present activated\n", __func__ );
                       return 1;
                     }
                 }
@@ -439,7 +471,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                         ( b->bitmap.bmap[b->bitmap.nba - 1]->nq )++;
                       else
                         {
-                          sprintf ( b->error, "bufrdeco_decode_replicated_subsequence(): No more space for quality vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n" );
+                          snprintf ( b->error, sizeof ( b->error ), "%s(): No more space for quality vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n", __func__ );
                           return 1;
                         }
                     }
@@ -459,7 +491,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                         ( b->bitmap.bmap[b->bitmap.nba - 1]->ns1 )++;
                       else
                         {
-                          sprintf ( b->error, "bufrdeco_decode_replicated_subsequence(): No more space for first order statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n" );
+                          snprintf ( b->error, sizeof ( b->error ), "%s(): No more space for first order statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n", __func__ );
                           return 1;
                         }
                     }
@@ -479,7 +511,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                         ( b->bitmap.bmap[b->bitmap.nba - 1]->nds )++;
                       else
                         {
-                          sprintf ( b->error, "bufrdeco_decode_replicated_subsequence(): No more space for difference statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n" );
+                          snprintf ( b->error, sizeof ( b->error ), "%s(): No more space for difference statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n", __func__ );
                           return 1;
                         }
                     }
@@ -496,7 +528,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                 }
               else
                 {
-                  sprintf ( b->error, "bufrdeco_decode_replicated_subsequence(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n" );
+                  snprintf ( b->error, sizeof ( b->error ), "%s(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n", __func__ );
                   return 1;
                 }
               break;
@@ -535,7 +567,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                     }
                   else
                     {
-                      sprintf ( b->error, "bufrdeco_decode_replicated_subsequence(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n" );
+                      snprintf ( b->error, sizeof ( b->error ), "%s(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n", __func__ );
                       return 1;
                     }
                   bufrdeco_decode_replicated_subsequence ( s, &replicator, b );
@@ -572,7 +604,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                     }
                   else
                     {
-                      sprintf ( b->error, "bufrdeco_decode_replicated_subsequence(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
+                      snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
                       return 1;
                     }
                 }
@@ -598,7 +630,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                     }
                   else
                     {
-                      sprintf ( b->error, "bufrdeco_decode_replicated_subsequence(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
+                      snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
                       return 1;
                     }
                 }
@@ -636,7 +668,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                     }
                   else
                     {
-                      sprintf ( b->error, "bufrdeco_decode_replicated_subsequence(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
+                      snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
                       return 1;
                     }
                 }
@@ -681,7 +713,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                     }
                   else
                     {
-                      sprintf ( b->error, "bufrdeco_decode_replicated_subsequence(): Reached limit. Consider increas BUFR_NMAXSEQ\n" );
+                      snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
                       return 1;
                     }
                 }
@@ -698,7 +730,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
 
             default:
               // this case is not possible
-              sprintf ( b->error, "bufr_decode_subset_data_recursive(): Found bad 'f' in descriptor\n" );
+              snprintf ( b->error, sizeof ( b->error ), "%s(): Found bad 'f' in descriptor\n", __func__ );
               return 1;
               break;
             }

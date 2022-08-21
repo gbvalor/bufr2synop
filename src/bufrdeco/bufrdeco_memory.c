@@ -105,9 +105,14 @@ int bufrdeco_free_expanded_tree ( struct bufrdeco_expanded_tree **t )
 
   This is useful if we do not want to read and parse tables again if the caller has a pool of
   already readed tables.
+
+  Returns 0 if succeeded, 1 otherwise
 */
 int bufrdeco_substitute_tables ( struct bufr_tables **replaced, struct bufr_tables *source, struct bufrdeco *b )
 {
+  if (b == NULL)
+    return 1;
+  
   *replaced = b->tables;
   if ( source == NULL )
     {
@@ -131,10 +136,13 @@ int bufrdeco_substitute_tables ( struct bufr_tables **replaced, struct bufr_tabl
 */
 int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
 {
+  if (ba == NULL)
+    return 1;
+  
   memset ( ba, 0, sizeof ( struct bufrdeco_subset_sequence_data ) );
   if ( ( ba->sequence = ( struct bufr_atom_data * ) calloc ( 1, BUFR_NMAXSEQ * sizeof ( struct bufr_atom_data ) ) ) == NULL )
     {
-      fprintf ( stderr,"bufr_init_subset_sequence_data():Cannot allocate memory for atom data array\n" );
+      fprintf ( stderr,"%s():Cannot allocate memory for atom data array\n", __func__ );
       return 1;
     }
   ba->dim = BUFR_NMAXSEQ;
@@ -152,6 +160,9 @@ int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *b
 */
 int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
 {
+  if (ba == NULL)
+    return 1;
+  
   if ( ba->sequence != NULL )
     {
       ba->nd = 0;
@@ -170,6 +181,9 @@ int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *
 */
 int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
 {
+  if (ba == NULL)
+    return 1;
+  
   if ( ba->sequence != NULL )
     {
       free ( ( void * ) ba->sequence );
@@ -190,31 +204,38 @@ int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *b
 */
 int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
 {
+  if (rf == NULL)
+    return 1;
+  
   if ( rf->refs != NULL && rf->dim != 0 )
     {
-      rf->nd = 0; // Here we set the used elements to 0 of dim 
+      rf->nd = 0; // Here we set the used elements to 0 of dim
     }
   else if ( rf->refs == NULL )
     {
       // Here memory is still not allocated. Proceed to allocate with BUFR_NMAXSEQ
       if ( ( rf->refs = ( struct bufrdeco_compressed_ref * ) calloc ( 1, BUFR_NMAXSEQ * sizeof ( struct bufrdeco_compressed_ref ) ) ) == NULL )
         {
-          fprintf ( stderr,"bufr_init_compressed_data_references():Cannot allocate memory for bufrdeco_compressed_ref array\n" );
+          fprintf ( stderr,"%s(): Cannot allocate memory for bufrdeco_compressed_ref array\n", __func__ );
           return 1;
         }
       rf->nd = 0; // Set de used elements (bufrdeco_compressed_ref)
       rf->dim = BUFR_NMAXSEQ; // Set de allocated bufr_compressed_rer elements
     }
-  return 0; 
+  return 0;
 }
 
 /*!
   \fn int bufrdeco_clean_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
   \brief Clean a struct \ref bufrdeco_compressed_data_references
 
+  If succeeded return 0, otherwise 1
 */
 int bufrdeco_clean_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
 {
+  if (rf == NULL)
+    return 1;
+  
   if ( rf->refs != NULL && rf->nd != 0 )
     rf->nd = 0;
   else
@@ -226,10 +247,13 @@ int bufrdeco_clean_compressed_data_references ( struct bufrdeco_compressed_data_
   \fn int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
   \brief Free the memory allocated for array of references in a struct \ref bufrdeco_compressed_data_references
 
-  Returns 0
+  If succeeded return 0, otherwise 1
 */
 int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
 {
+  if (rf == NULL)
+    return 1;
+  
   if ( rf->refs != NULL )
     {
       free ( ( void * ) rf->refs );
@@ -245,6 +269,8 @@ int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_r
 
    This function only must be called once. When finished the function \ref bufrdeco_close must be called to
    free all needed memory
+   
+   If succeeded return 0, otherwise 1
 */
 int bufrdeco_init ( struct bufrdeco *b )
 {
@@ -260,14 +286,14 @@ int bufrdeco_init ( struct bufrdeco *b )
   // allocate memory for Tables
   if ( bufrdeco_init_tables ( &b->tables ) )
     {
-      sprintf ( b->error,"bufrdeco_init(): Cannot allocate space for tables\n" );
+      snprintf ( b->error, sizeof ( b->error ),"%s(): Cannot allocate space for tables\n", __func__ );
       return 1;
     }
 
   // allocate memory for expanded tree of descriptors
   if ( bufrdeco_init_expanded_tree ( &b->tree ) )
     {
-      sprintf ( b->error,"bufrdeco_init(): Cannot allocate space for expanded tree of descriptors\n" );
+      snprintf ( b->error, sizeof ( b->error ),"%s(): Cannot allocate space for expanded tree of descriptors\n", __func__ );
       return 1;
     }
 
@@ -282,9 +308,14 @@ int bufrdeco_init ( struct bufrdeco *b )
 
    This function must be called when parsing another bufrfile without callimg
    \ref bufrdeco_close and \ref bufrdeco_init.
+   
+   If succeeded return 0, otherwise 1
 */
 int bufrdeco_reset ( struct bufrdeco *b )
 {
+  if (b == NULL)
+    return 1;
+  
   memset ( & ( b->header ), 0, sizeof ( struct gts_header ) );
   memset ( & ( b->sec0 ), 0, sizeof ( struct bufr_sec0 ) );
   memset ( & ( b->sec1 ), 0, sizeof ( struct bufr_sec1 ) );
@@ -304,9 +335,14 @@ int bufrdeco_reset ( struct bufrdeco *b )
   \param b pointer to the target struct
 
   This function must be called at the end when no more calls to bufrdeco library is needed
+
+  If succeeded return 0, otherwise 1
 */
 int bufrdeco_close ( struct bufrdeco *b )
 {
+  if (b == NULL)
+    return 1;
+
   // first deallocate all memory
   bufrdeco_free_subset_sequence_data ( & ( b->seq ) );
   bufrdeco_free_compressed_data_references ( & ( b->refs ) );
@@ -316,9 +352,20 @@ int bufrdeco_close ( struct bufrdeco *b )
   return 0;
 }
 
+/*!
+ * \fn int bufrdeco_allocate_bitmap ( struct bufrdeco *b )
+ * \briefs allocate bitmap
+ * 
+ *   If succeeded return 0, otherwise 1
+ */
 int bufrdeco_allocate_bitmap ( struct bufrdeco *b )
 {
-  size_t nba = b->bitmap.nba;
+  size_t nba;
+  
+  if (b == NULL)
+    return 1;
+    
+  nba = b->bitmap.nba;
 
   if ( nba < BUFR_MAX_BITMAPS )
     {
@@ -330,7 +377,7 @@ int bufrdeco_allocate_bitmap ( struct bufrdeco *b )
       // let's try to allocate it!
       if ( ( b->bitmap.bmap[nba] = ( struct bufrdeco_bitmap * ) calloc ( 1, sizeof ( struct bufrdeco_bitmap ) ) ) == NULL )
         {
-          sprintf ( b->error,"bufrdeco_allocate_bitmap(): Cannot allocate space for struct bufrdeco_bitmap\n" );
+          snprintf ( b->error, sizeof ( b->error ),"%s(): Cannot allocate space for struct bufrdeco_bitmap\n",  __func__ );
           return 1;
         }
       // Update de counter
@@ -339,33 +386,49 @@ int bufrdeco_allocate_bitmap ( struct bufrdeco *b )
     }
   else
     {
-      sprintf ( b->error,"bufrdeco_allocate_bitmap(): Too much bitmaps to allocate. The limit is %d\n" , BUFR_MAX_BITMAPS );
+      snprintf ( b->error, sizeof ( b->error ),"%s(): Too much bitmaps to allocate. The limit is %d\n", __func__, BUFR_MAX_BITMAPS );
       return 1;
     }
 }
 
 
-
-// Clean all allocated bitmaps, but still is in memory
+/*!
+ *  \fn int bufrdeco_clean_bitmaps ( struct bufrdeco *b )
+ *  \brief Clean all allocated bitmaps, but still is in memory
+ * 
+ *   If succeeded return 0, otherwise 1
+ */
 int bufrdeco_clean_bitmaps ( struct bufrdeco *b )
 {
   size_t i;
 
+  if (b == NULL)
+    return 1;
+  
   for ( i = 0; i < b->bitmap.nba ; i++ )
     {
       if ( b->bitmap.bmap[i] == NULL )
         continue;
-      memset ( b->bitmap.bmap[i] , 0 , sizeof ( struct bufrdeco_bitmap ) );
+      memset ( b->bitmap.bmap[i], 0, sizeof ( struct bufrdeco_bitmap ) );
     }
-  b->bitmap.nba = 0;  
+  b->bitmap.nba = 0;
   return 0;
 }
 
 
+/*!
+ * \fn int bufrdeco_free_bitmap_array ( struct bufrdeco_bitmap_array *a )
+ * \brief Free an allocated bitmap array
+ * 
+ *   If succeeded return 0, otherwise 1
+ */
 int bufrdeco_free_bitmap_array ( struct bufrdeco_bitmap_array *a )
 {
   size_t i;
 
+  if (a == NULL)
+    return 1;
+  
   for ( i = 0; i < a->nba ; i++ )
     {
       if ( a->bmap[i] == NULL )

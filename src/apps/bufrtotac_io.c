@@ -57,60 +57,71 @@ void bufrtotac_print_usage ( void )
   \fn char *bufrtotac_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch)
   \brief Get strings with version information and build date and time
   \param version  pointer to string with version as result if not NULL
-  \param build pointer to string with compiler and compilation date and time if not NULL
-  \param builder pointer to string with builder utility. 'cmake' or 'autotools' if not NULL
+  \param dversion dimension of string \ref version
+  \param build pointer to string with compiler and compilation date and time if not NULL 
+  \param dbuild dimension of string \ref build 
+  \param builder pointer to string with builder utility. 'cmake' or 'autotools' if not NULL 
+  \param dbuilder dimension of string \ref builder
   \param version_major pointer to string with version_major component if not NULL
   \param version_minor pointer to string with version_minor component if not NULL
   \param version_patch pointer to string with version_patch component if not NULL
-
-  Retuns string pointer \ref version.
+  
+  Retuns string pointer \ref version.  
  */
-char *bufrtotac_get_version ( char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch )
+char *bufrtotac_get_version(char *version, size_t dversion, char *build, size_t dbuild, char *builder, size_t dbuilder, 
+                           int *version_major, int *version_minor, int *version_patch)
 {
   int major = 0, minor = 0, patch = 0;
-  char *c;
+  size_t used;
 
-  if ( version == NULL )
+  if (version == NULL)
     return NULL;
-  sprintf ( version, "%s", VERSION );
-  // default values
-  sscanf ( version, "%d.%d.%d", &major, &minor, &patch );
+  snprintf(version, dversion, "%s", VERSION);
+  // default  
+  sscanf(version, "%d.%d.%d", &major, &minor, &patch);
 
-  if ( build )
+  if (build)
     {
-      c = build;
+       used = 0;
 #if defined(__INTEL_COMPILER)
-      c += sprintf ( build, "using INTEL C compiler icc %d.%d ", __INTEL_COMPILER, __INTEL_COMPILER_UPDATE );
-#elif defined(__GNUC__)
-      c += sprintf ( build, "using GNU C compiler gcc %d.%d.%d ", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__ );
-#endif
-      sprintf ( c,"at %s %s",__DATE__,__TIME__ );
-    }
-
-  if ( builder )
-#ifdef BUILD_USING_CMAKE
-    strcpy ( builder, "cmake" );
+       used += snprintf(build + used, dbuild - used, "using INTEL C compiler icc %d.%d ", __INTEL_COMPILER, __INTEL_COMPILER_UPDATE);
+#elif defined(__clang_version__) 
+       used += snprintf(build + used, dbuild - used, "using clang C compiler ", __clang_version__);
+#elif defined(__GNUC__) 
+       used += snprintf(build + used, dbuild - used, "using GNU C compiler gcc %d.%d.%d ", __GNUC__ , __GNUC_MINOR__ , __GNUC_PATCHLEVEL__);
+#elif defined(_MSC_VER) 
+       used += snprintf(build + used, dbuild - used, "using MICROSOFT C compiler %d ", _MSC_VER);
 #else
-    strcpy ( builder, "autotools" );
+       used += snprintf(build + used, dbuild - used, "using an unknown C compiler ");
 #endif
-  if ( version_major )
+       snprintf(build + used, dbuild - used,"at %s %s",__DATE__,__TIME__);
+    }
+    
+  if (builder)
+#ifdef BUILD_USING_CMAKE
+    strncpy(builder, "cmake", dbuilder);
+#else
+    strncpy(builder, "autotools", dbuilder);
+#endif    
+  if (version_major)
     *version_major = major;
-  if ( version_minor )
+  if (version_minor)
     *version_minor = minor;
-  if ( version_patch )
+  if (version_patch)
     *version_patch = patch;
-  return version;
+  return version;  
 }
+
 
 void bufrtotac_print_version()
 {
   char version[16], build[128], builder[32];
 
-  bufrtotac_get_version ( version, build, builder, NULL, NULL, NULL );
+  bufrtotac_get_version ( version, sizeof (version), build, sizeof (build), builder, sizeof (builder), NULL, NULL, NULL );
   printf ( "%s: Version '%s' built %s and %s.\n", SELF, VERSION, build, builder );
-  bufr2tac_get_version ( version, build, builder, NULL, NULL, NULL );
+  bufr2tac_get_version ( version, sizeof (version), build, sizeof (build), builder, sizeof (builder), NULL, NULL, NULL );
   printf ( "Linked to bufr2tac library version '%s' built %s and %s.\n", version, build, builder );
-  bufrdeco_get_version ( version, build, builder, NULL, NULL, NULL );
+  bufrdeco_get_version ( version, sizeof (version), build, sizeof (build), builder, sizeof (builder), NULL, NULL, NULL );
   printf ( "Linked to bufrdeco library version '%s' built %s and %s.\n", version, build, builder );
 }
 

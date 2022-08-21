@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,21 +24,22 @@
 #include "bufrdeco.h"
 
 /*!
-  \fn int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error )
+  \fn int bufr_read_tablec_csv ( struct bufrdeco *b )
   \brief Reads a file with table C content (Code table and bit flags) according with csv WMO format
-  \param tc pointer to a target struct \ref bufr_tablec
-  \param error string where to set error if any
+  \param b pointer to a target struct \ref bufrdeco
 
   If succeded return 0, otherwise 1
 */
-int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error )
+int bufr_read_tablec_csv ( struct bufrdeco *b )
 {
   char *c;
+  size_t  used = 0;
   FILE *t;
   int nt;
   uint32_t ix;
   size_t i = 0;
   struct bufr_descriptor desc;
+  struct bufr_tablec *tc = & ( b->tables->c );
   char *tk[16];
   char caux[256], l[CSV_MAXL];
 
@@ -53,12 +54,12 @@ int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error )
       return 0; // all done
     }
 
-  strcpy ( caux, tc->path );
+  strcpy_safe ( caux, tc->path );
   memset ( tc, 0, sizeof ( struct bufr_tablec ) );
-  strcpy ( tc->path,caux );
+  strcpy_safe ( tc->path, caux );
   if ( ( t = fopen ( tc->path, "r" ) ) == NULL )
     {
-      sprintf ( error,"Unable to open table C file '%s'\n", tc->path );
+      snprintf ( b->error, sizeof ( b->error ),"Unable to open table C file '%s'\n", tc->path );
       return 1;
     }
 
@@ -71,7 +72,7 @@ int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error )
       // Parse line
       if ( parse_csv_line ( &nt, tk, l ) < 0 || nt != 6 )
         {
-          sprintf ( error,"Error parsing csv line from table C file '%s'. Found %d fields in line %lu \n", tc->path, nt, i );
+          snprintf ( b->error, sizeof ( b->error ),"Error parsing csv line from table C file '%s'. Found %d fields in line %lu \n", tc->path, nt, i );
           return 1;
         }
 
@@ -84,7 +85,7 @@ int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error )
       // First we build the descriptor
       ix = strtoul ( tk[0], &c, 10 );
       uint32_t_to_descriptor ( &desc, ix );
-      strcpy ( tc->item[i].key, tk[0] );
+      strcpy_safe ( tc->item[i].key, tk[0] );
       tc->item[i].x = desc.x;
       tc->item[i].y = desc.y;
 
@@ -93,28 +94,11 @@ int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error )
 
       // Description
       c = & tc->item[i].description[0];
-      if ( strlen ( tk[2] ) < BUFR_EXPLAINED_LENGTH )
-        {
-          c += sprintf ( c,"%s", tk[2] );
-          if ( tk[3][0] && ( strlen ( tk[3] ) + strlen ( tc->item[i].description ) ) < BUFR_EXPLAINED_LENGTH )
-            {
-              c += sprintf ( c," %s", tk[3] );
-              if ( tk[4][0] && ( strlen ( tk[4] ) + strlen ( tc->item[i].description ) ) < BUFR_EXPLAINED_LENGTH )
-                {
-                  c += sprintf ( c, " %s", tk[4] );
-                }
-            }
-        }
-      else
-        {
-          tk[2][BUFR_EXPLAINED_LENGTH - 1] = '\0';
-          c += sprintf ( c,"%s", tk[2] );
-        }
+      used += snprintf ( c + used, BUFR_EXPLAINED_LENGTH - used, "%s", tk[2] );
+      used += snprintf ( c + used, BUFR_EXPLAINED_LENGTH - used, " %s", tk[3] );
+      used += snprintf ( c + used, BUFR_EXPLAINED_LENGTH - used, " %s", tk[4] );
 
-      if ( tk[5][0] && ( strlen ( tk[5] ) + strlen ( tc->item[i].description ) ) < BUFR_EXPLAINED_LENGTH )
-        {
-          c += sprintf ( c,"%s", tk[5] );
-        }
+      used += snprintf ( c + used, BUFR_EXPLAINED_LENGTH - used, "%s", tk[5] );
 
       if ( tc->num[desc.x] == 0 )
         {
@@ -125,13 +109,12 @@ int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error )
           tc->y_ref[desc.x][desc.y] = i - tc->x_start[desc.x]; // marc the position from start of first x
         }
       ( tc->num[desc.x] ) ++;
-      //printf("%ld %s %d %d, %ld %ld\n", i, tc->item[i].key, tc->item[i].x, tc->item[i].y, tc->x_start[desc.x], tc->y_ref[desc.x][desc.y]);
       i++;
     }
   fclose ( t );
   tc->nlines = i;
   tc->wmo_table = 1;
-  strcpy ( tc->old_path, tc->path ); // store latest path
+  strcpy_safe ( tc->old_path, tc->path ); // store latest path
   return 0;
 }
 
@@ -195,15 +178,8 @@ char * bufrdeco_explained_table_csv_val ( char *expl, size_t dim, struct bufr_ta
   // here the calling b item learn where to find first table C struct for a given x and y.
   *index = tc->x_start[d->x] + tc->y_ref[d->x][d->y];
 
-  if ( strlen ( tc->item[i].description ) < dim )
-    {
-      strcpy ( expl, tc->item[i].description );
-      return expl;
-    }
-  else
-    {
-      return NULL;
-    }
+  strncpy_safe ( expl, tc->item[i].description, dim );
+  return expl;
 }
 
 /*!
@@ -223,7 +199,7 @@ char * bufrdeco_explained_table_csv_val ( char *expl, size_t dim, struct bufr_ta
 char * bufrdeco_explained_flag_csv_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d,
     uint64_t ival, uint8_t nbits )
 {
-  char *s;
+  size_t used = 0;
   uint64_t test, test0;
   uint64_t v;
   size_t i, j;
@@ -238,9 +214,8 @@ char * bufrdeco_explained_flag_csv_val ( char *expl, size_t dim, struct bufr_tab
   i = tc->x_start[d->x] + tc->y_ref[d->x][d->y];
 
   // init description
-  s = expl;
-  s[0] = '\0';
-  //printf ( "%ld %s %d %d %d %d\n", i, tc->item[i].key, tc->item[i].x, tc->item[i].y, d->x , d->y );
+  expl[0] = '\0';
+
   for ( j = 0, test0 = 1 ; j < nbits && ( tc->item[i].x == d->x ) && ( tc->item[i].y == d->y ) ; i++ )
     {
       v = tc->item[i].ival; // v is the bit number
@@ -252,14 +227,8 @@ char * bufrdeco_explained_flag_csv_val ( char *expl, size_t dim, struct bufr_tab
           test0 = 1;
           if ( ival == 0 )
             {
-              if ( strlen ( expl ) && ( strlen ( expl ) + 1 ) < dim )
-                {
-                  s += sprintf ( s, "|" );
-                }
-              if ( strlen ( expl ) + strlen ( tc->item[i].description ) < dim )
-                {
-                  s += sprintf ( s,"%s", tc->item[i].description );
-                }
+              used += snprintf ( expl + used, dim - used, "|" );
+              used += snprintf ( expl + used, dim - used, "%s", tc->item[i].description );
               return expl;
             }
         }
@@ -268,14 +237,8 @@ char * bufrdeco_explained_flag_csv_val ( char *expl, size_t dim, struct bufr_tab
 
       if ( v && ( test & ival ) != 0 )
         {
-          if ( strlen ( expl ) && ( strlen ( expl ) + 1 ) < dim )
-            {
-              s += sprintf ( s, "|" );
-            }
-          if ( strlen ( expl ) + strlen ( tc->item[i].description ) < dim )
-            {
-              s += sprintf ( s,"%s", tc->item[i].description );
-            }
+          used += snprintf ( expl + used, dim - used, "|" );
+          used += snprintf ( expl + used, dim - used, "%s", tc->item[i].description );
         }
       else
         {

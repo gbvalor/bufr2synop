@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -48,6 +48,10 @@ int get_ecmwf_tablenames ( struct bufrdeco *b )
   struct stat st;
   char aux[128];
 
+  // Check argument
+  if (b == NULL)
+    return 1;
+  
   if ( b->bufrtables_dir[0] == '\0' )
     {
       // try to guess directory
@@ -55,13 +59,14 @@ int get_ecmwf_tablenames ( struct bufrdeco *b )
         {
           if ( stat ( DEFAULT_BUFRTABLES_ECMWF_DIR2, &st ) )
             {
+              snprintf(b->error, sizeof (b->error), "%s(): Cannot stat dir '%s'\n", __func__, DEFAULT_BUFRTABLES_ECMWF_DIR2);
               return 1;
             }
           else
             {
               if ( S_ISDIR ( st.st_mode ) )
                 {
-                  strcpy ( aux,DEFAULT_BUFRTABLES_ECMWF_DIR2 );
+                  strcpy_safe ( aux, DEFAULT_BUFRTABLES_ECMWF_DIR2 );
                 }
             }
         }
@@ -69,20 +74,20 @@ int get_ecmwf_tablenames ( struct bufrdeco *b )
         {
           if ( S_ISDIR ( st.st_mode ) )
             {
-              strcpy ( aux,DEFAULT_BUFRTABLES_ECMWF_DIR1 );
+              strcpy_safe ( aux, DEFAULT_BUFRTABLES_ECMWF_DIR1 );
             }
         }
     }
   else
     {
-      strcpy ( aux, b->bufrtables_dir );
+      strcpy_safe ( aux, b->bufrtables_dir );
     }
 
-  sprintf ( b->tables->b.path,"%sB%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
+  snprintf ( b->tables->b.path, sizeof (b->tables->b.path), "%sB%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
             b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
-  sprintf ( b->tables->c.path,"%sC%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
+  snprintf ( b->tables->c.path, sizeof (b->tables->c.path),"%sC%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
             b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
-  sprintf ( b->tables->d.path,"%sD%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
+  snprintf ( b->tables->d.path, sizeof (b->tables->d.path), "%sD%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
             b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
 
   /* check for table b, if problems then we try alternative */
@@ -91,20 +96,20 @@ int get_ecmwf_tablenames ( struct bufrdeco *b )
       // here we set originating centre xxxxx to 00000 for WMO tables
       if ( b->sec1.master != 0 ) // case of not WMO tables
         {
-          sprintf ( b->tables->b.path,"%sB%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
+          snprintf ( b->tables->b.path, sizeof (b->tables->b.path), "%sB%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
                     b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
-          sprintf ( b->tables->c.path,"%sC%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
+          snprintf ( b->tables->c.path, sizeof (b->tables->c.path), "%sC%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
                     b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
-          sprintf ( b->tables->d.path,"%sD%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
+          snprintf ( b->tables->d.path, sizeof (b->tables->d.path), "%sD%03d%05d%05d%03d%03d.TXT", aux, b->sec1.master,
                     b->sec1.subcentre, b->sec1.centre, b->sec1.master_version, b->sec1.master_local );
         }
       else
         {
-          sprintf ( b->tables->b.path,"%sB000%05d00000%03d%03d.TXT", aux, b->sec1.subcentre,
+          snprintf ( b->tables->b.path, sizeof (b->tables->b.path), "%sB000%05d00000%03d%03d.TXT", aux, b->sec1.subcentre,
                     b->sec1.master_version, b->sec1.master_local );
-          sprintf ( b->tables->c.path,"%sC000%05d00000%03d%03d.TXT", aux, b->sec1.subcentre,
+          snprintf ( b->tables->c.path, sizeof (b->tables->c.path),"%sC000%05d00000%03d%03d.TXT", aux, b->sec1.subcentre,
                     b->sec1.master_version, b->sec1.master_local );
-          sprintf ( b->tables->d.path,"%sD000%05d00000%03d%03d.TXT", aux, b->sec1.subcentre,
+          snprintf ( b->tables->d.path, sizeof (b->tables->d.path), "%sD000%05d00000%03d%03d.TXT", aux, b->sec1.subcentre,
                     b->sec1.master_version, b->sec1.master_local );
         }
 
@@ -113,20 +118,20 @@ int get_ecmwf_tablenames ( struct bufrdeco *b )
           // Another chance. Set local zzz to 000
           if ( b->sec1.master != 0 ) // case of not WMO tables
             {
-              sprintf ( b->tables->b.path,"%sB%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
+              snprintf ( b->tables->b.path, sizeof (b->tables->b.path), "%sB%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
                         b->sec1.subcentre, b->sec1.centre, b->sec1.master_version );
-              sprintf ( b->tables->c.path,"%sC%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
+              snprintf ( b->tables->c.path, sizeof (b->tables->c.path),"%sC%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
                         b->sec1.subcentre, b->sec1.centre, b->sec1.master_version );
-              sprintf ( b->tables->d.path,"%sD%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
+              snprintf ( b->tables->d.path, sizeof (b->tables->d.path),"%sD%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
                         b->sec1.subcentre, b->sec1.centre, b->sec1.master_version );
             }
           else
             {
-              sprintf ( b->tables->b.path,"%sB000%05d00000%03d000.TXT", aux, b->sec1.subcentre,
+              snprintf ( b->tables->b.path, sizeof (b->tables->b.path),"%sB000%05d00000%03d000.TXT", aux, b->sec1.subcentre,
                         b->sec1.master_version );
-              sprintf ( b->tables->c.path,"%sC000%05d00000%03d000.TXT", aux, b->sec1.subcentre,
+              snprintf ( b->tables->c.path, sizeof (b->tables->c.path),"%sC000%05d00000%03d000.TXT", aux, b->sec1.subcentre,
                         b->sec1.master_version );
-              sprintf ( b->tables->d.path,"%sD000%05d00000%03d000.TXT", aux, b->sec1.subcentre,
+              snprintf ( b->tables->d.path, sizeof (b->tables->d.path),"%sD000%05d00000%03d000.TXT", aux, b->sec1.subcentre,
                         b->sec1.master_version );
             }
 
@@ -135,18 +140,18 @@ int get_ecmwf_tablenames ( struct bufrdeco *b )
               // Another chance. Set subcentre wwwww to 00000
               if ( b->sec1.master != 0 ) // case of not WMO tables
                 {
-                  sprintf ( b->tables->b.path,"%sB%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
+                  snprintf ( b->tables->b.path, sizeof (b->tables->b.path),"%sB%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
                             b->sec1.subcentre, b->sec1.centre, b->sec1.master_version );
-                  sprintf ( b->tables->c.path,"%sC%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
+                  snprintf ( b->tables->c.path, sizeof (b->tables->c.path),"%sC%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
                             b->sec1.subcentre, b->sec1.centre, b->sec1.master_version );
-                  sprintf ( b->tables->d.path,"%sD%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
+                  snprintf ( b->tables->d.path, sizeof (b->tables->d.path),"%sD%03d%05d%05d%03d000.TXT", aux, b->sec1.master,
                             b->sec1.subcentre, b->sec1.centre, b->sec1.master_version );
                 }
               else
                 {
-                  sprintf ( b->tables->b.path,"%sB0000000000000%03d000.TXT", aux, b->sec1.master_version );
-                  sprintf ( b->tables->c.path,"%sC0000000000000%03d000.TXT", aux, b->sec1.master_version );
-                  sprintf ( b->tables->d.path,"%sD0000000000000%03d000.TXT", aux, b->sec1.master_version );
+                  snprintf ( b->tables->b.path, sizeof (b->tables->b.path),"%sB0000000000000%03d000.TXT", aux, b->sec1.master_version );
+                  snprintf ( b->tables->c.path, sizeof (b->tables->c.path),"%sC0000000000000%03d000.TXT", aux, b->sec1.master_version );
+                  snprintf ( b->tables->d.path, sizeof (b->tables->d.path),"%sD0000000000000%03d000.TXT", aux, b->sec1.master_version );
                 }
             }
         }
@@ -164,30 +169,34 @@ int get_ecmwf_tablenames ( struct bufrdeco *b )
 int bufr_read_tables_ecmwf ( struct bufrdeco *b )
 {
 
+  // Check argument
+  if (b == NULL)
+    return 1;
+  
   // get tablenames
   if ( get_ecmwf_tablenames ( b ) )
     {
-      sprintf ( b->error, "bufrdeco_read_tables_ecmwf(): Cannot find bufr tables\n" );
+      snprintf ( b->error, sizeof (b->error), "%s(): Cannot find bufr tables\n" , __func__ );
       return 1;
     }
 
   // If tables still not initialized then do it
   if ( b->tables == NULL && bufrdeco_init_tables ( & ( b->tables ) ) )
     {
-      sprintf ( b->error, "bufrdeco_read_tables_ecmwf(): Cannot allocate memory for tables\n" );
+      snprintf ( b->error, sizeof (b->error), "%s(): Cannot allocate memory for tables\n" , __func__ );
       return 1;
     }
 
   // And now read tables
-  if ( bufr_read_tableb ( & ( b->tables->b ), b->error ) )
+  if ( bufr_read_tableb ( b ) )
     {
       return 1;
     }
-  if ( bufr_read_tablec ( & ( b->tables->c ), b->error ) )
+  if ( bufr_read_tablec ( b ) )
     {
       return 1;
     }
-  if ( bufr_read_tabled ( & ( b->tables->d ), b->error ) )
+  if ( bufr_read_tabled ( b ) )
     {
       return 1;
     }

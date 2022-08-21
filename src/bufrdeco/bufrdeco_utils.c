@@ -264,7 +264,7 @@ int uint32_t_to_descriptor ( struct bufr_descriptor *d, uint32_t id )
   d->f = id / 100000;
   d->x = ( id % 100000 ) / 1000;
   d->y = id % 1000;
-  sprintf ( d->c, "%06u", id );
+  snprintf ( d->c, sizeof (d->c), "%06u", id );
   return 0;
 }
 
@@ -281,7 +281,7 @@ int two_bytes_to_descriptor ( struct bufr_descriptor *d, const uint8_t *source )
   d->y = source[1];
   d->x = source[0] & 0x3f;
   d->f = ( source[0] >> 6 ) & 0x03;
-  sprintf ( d->c, "%u%02u%03u", d->f, d->x, d->y );
+  snprintf ( d->c, sizeof (d->c), "%u%02u%03u", d->f, d->x, d->y );
   return 0;
 }
 
@@ -368,19 +368,19 @@ int is_a_local_descriptor ( struct bufr_descriptor *d )
 }
 
 /*!
-   \fn char *get_formatted_value_from_escale ( char *fmt, int32_t escale, double val )
+   \fn char *get_formatted_value_from_escale ( char *fmt, size_t dim, int32_t escale, double val )
 
 */
-char *get_formatted_value_from_escale ( char *fmt, int32_t escale, double val )
+char *get_formatted_value_from_escale ( char *fmt, size_t dim, int32_t escale, double val )
 {
   char aux[32];
   if ( escale >= 0 )
     {
-      sprintf ( aux,"%%17.%dlf " , escale );
-      sprintf ( fmt, aux, val );
+      snprintf ( aux, sizeof (aux), "%%17.%dlf " , escale );
+      snprintf ( fmt, dim, aux, val );
     }
   else
-    sprintf ( fmt, "%17.0lf " , val );
+    snprintf ( fmt, dim, "%17.0lf " , val );
   return fmt;
 }
 

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,15 +24,14 @@
 #include "bufrdeco.h"
 
 /*!
-  \fn int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error )
+  \fn int bufr_read_tableb_csv ( struct bufrdeco b )
   \brief Read a Table B file from a WMO csv formatted file and set the result in a struct \ref bufr_tableb
-  \param tb pointer to the struct \ref bufr_tableb where to set the results
-  \param error string with the error explanation if any
+  \param b pointer to the struct \ref bufrdeco where to set the results
 
   Note that this function assumes that file is csv formatted as WMO table B
   Return 0 if success, 1 otherwise
 */
-int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error )
+int bufr_read_tableb_csv ( struct bufrdeco *b )
 {
   char *c;
   FILE *t;
@@ -42,6 +41,7 @@ int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error )
   char l[CSV_MAXL];
   char caux[512];
   char *tk[16];
+  struct bufr_tableb *tb = &(b->tables->b);
   struct bufr_descriptor desc;
 
   if ( tb->path[0] == 0 )
@@ -63,12 +63,12 @@ int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error )
       return 0; // all done
     }
 
-  strcpy ( caux, tb->path );
+  strcpy_safe ( caux, tb->path );
   memset ( tb, 0, sizeof ( struct bufr_tableb ) );
-  strcpy ( tb->path, caux );
+  strcpy_safe ( tb->path, caux );
   if ( ( t = fopen ( tb->path, "r" ) ) == NULL )
     {
-      sprintf ( error,"Unable to open table B file '%s'\n", tb->path );
+      snprintf ( b->error, sizeof (b->error),"Unable to open table B file '%s'\n", tb->path );
       return 1;
     }
 
@@ -80,7 +80,7 @@ int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error )
       // Parse line
       if ( parse_csv_line ( &nt, tk, l ) < 0 || nt != 7 )
         {
-          sprintf ( error,"Error parsing csv line from table B file '%s'\n", tb->path );
+          snprintf ( b->error, sizeof (b->error),"Error parsing csv line from table B file '%s'\n", tb->path );
           return 1;
         }
 
@@ -90,7 +90,7 @@ int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error )
       tb->item[i].changed = 0; // Original from table B
       tb->item[i].x = desc.x; // x
       tb->item[i].y = desc.y; // y
-      strcpy ( tb->item[i].key, desc.c ); // key
+      strcpy_safe ( tb->item[i].key, desc.c ); // key
       if ( tb->num[desc.x] == 0 )
         {
           tb->x_start[desc.x] = i;  // marc the start
@@ -101,24 +101,19 @@ int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error )
       // detailed name
       if ( tk[2][0] )
         {
-          sprintf ( caux, "%s %s", tk[1], tk[2] );
+          snprintf ( caux, sizeof (caux), "%s %s", tk[1], tk[2] );
         }
       else
         {
-          strcpy ( caux, tk[1] );
+          strcpy_safe ( caux, tk[1] );
         }
 
-      // Check about length
-      if ( strlen ( caux ) >= BUFR_TABLEB_NAME_LENGTH )
-        caux[BUFR_TABLEB_NAME_LENGTH - 1] = 0;
       // and finally copy
-      strcpy ( tb->item[i].name, caux );
+      strncpy_safe ( tb->item[i].name, caux, BUFR_TABLEB_NAME_LENGTH );
 
       // unit
-      strcpy ( caux, tk[3] );
-      if ( strlen ( caux ) >= BUFR_TABLEB_UNIT_LENGTH )
-        caux[BUFR_TABLEB_UNIT_LENGTH - 1] = 0;
-      strcpy ( tb->item[i].unit, caux );
+      strcpy_safe ( caux, tk[3] );
+      strncpy_safe ( tb->item[i].unit, caux, BUFR_TABLEB_UNIT_LENGTH );
 
       // escale
       tb->item[i].scale_ori = strtol ( tk[4], &c, 10 );
@@ -138,7 +133,7 @@ int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error )
   fclose ( t );
   tb->nlines = i;
   tb->wmo_table = 1;
-  strcpy ( tb->old_path, tb->path ); // store latest path
+  strcpy_safe ( tb->old_path, tb->path ); // store latest path
   return 0;
 }
 

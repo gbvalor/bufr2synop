@@ -22,7 +22,7 @@
  \brief Include header file for bufrdeco library
 */
 #ifndef BUFRDECO_H
-#define BUFRDECO_H
+#define BUFRDECO_H 
 
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
@@ -38,6 +38,12 @@
 #include <sys/stat.h>
 
 //#define DEBUG
+
+/*!
+ *  \def BUFRDECO 
+ * \brief Name of this library
+ */
+#define BUFRDECO "bufrdeco"
 
 /*!
   \def BUFR_LEN
@@ -266,8 +272,29 @@
 */
 #define BUFR_TABLEB_UNIT_LENGTH (32)
 
+/*!
+ * \def BUFR_CVAL_LENGTH
+ * \brief Max length (in chars) of a cval in a bur_atom_data
+ */
+#define BUFR_CVAL_LENGTH (256)
 
+/*!
+ * \def strcpy_safe
+ * \brief Macro to make safely a strcpy when we know in calling function the size of string _target_ with sizeof()
+ */
+#define strcpy_safe(_target_,_src_) {\
+   strncpy(_target_,_src_,(sizeof(_target_) - 1)); \
+   _target_[sizeof(_target_) - 1] = '\0';}
 
+/*!
+ * \def strncpy_safe
+ * \brief Macro to make safely a strcpy when we know in calling function the size of string _target_ directly
+ */
+#define strncpy_safe(_target_,_src_,_dim_) {\
+   strncpy(_target_, _src_, _dim_ - 1); \
+   _target_[_dim_ - 1] = '\0';}
+
+   
 /*!
   \struct bufr_descriptor
   \brief BUFR descriptor
@@ -306,7 +333,7 @@ struct bufr_atom_data
   double val; /*!< Final value for the bufr descriptor data */
   int32_t escale; /*!< Scale applied to get the data */ 
   uint32_t associated; /*!< value for associated field, if any */
-  char cval[128]; /*!< String value for the bufr descriptor */
+  char cval[BUFR_CVAL_LENGTH]; /*!< String value for the bufr descriptor */
   char ctable[BUFR_EXPLAINED_LENGTH]; /*!< Explained meaning for a code table */
   struct bufr_sequence *seq; /*!< Pointer to the struct bufr_sequence to which this descriptor belongs to */
   size_t ns; /*!< Element in bufr_sequence to which this descriptor belongs to */
@@ -804,29 +831,29 @@ int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename );
 int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, size_t size );
 int get_ecmwf_tablenames ( struct bufrdeco *b );
 int bufr_read_tables_ecmwf ( struct bufrdeco *b );
-int bufr_read_tableb ( struct bufr_tableb *tb, char *error );
-int bufr_read_tablec ( struct bufr_tablec *tc, char *error );
-int bufr_read_tabled ( struct bufr_tabled *td, char *error );
+int bufr_read_tableb ( struct bufrdeco *b );
+int bufr_read_tablec ( struct bufrdeco *b );
+int bufr_read_tabled ( struct bufrdeco *b );
 
 // Read bufr WMO csv
 int get_wmo_tablenames ( struct bufrdeco *b );
-int bufr_read_tableb_csv ( struct bufr_tableb *tb, char *error );
-int bufr_read_tablec_csv ( struct bufr_tablec *tc, char *error );
-int bufr_read_tabled_csv ( struct bufr_tabled *td, char *error );
+int bufr_read_tableb_csv ( struct bufrdeco *b );
+int bufr_read_tablec_csv ( struct bufrdeco *b );
+int bufr_read_tabled_csv ( struct bufrdeco *b );
 int bufr_read_tables_wmo ( struct bufrdeco *b );
 char * csv_quoted_string ( char *out, char *in );
 int parse_csv_line ( int *nt, char *tk[], char *lin );
 
 
 // Print and output functions
-void print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r );
-void fprint_bufrdeco_compressed_ref ( FILE *f, struct bufrdeco_compressed_ref *r );
-void print_bufrdeco_compressed_data_references ( struct bufrdeco_compressed_data_references *r );
-void fprint_bufrdeco_compressed_data_references ( FILE *f, struct bufrdeco_compressed_data_references *r );
-void print_sec0_info ( struct bufrdeco *b );
-void print_sec1_info ( struct bufrdeco *b );
-void print_sec3_info ( struct bufrdeco *b );
-void print_sec4_info ( struct bufrdeco *b );
+int print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r );
+int fprint_bufrdeco_compressed_ref ( FILE *f, struct bufrdeco_compressed_ref *r );
+int print_bufrdeco_compressed_data_references ( struct bufrdeco_compressed_data_references *r );
+int fprint_bufrdeco_compressed_data_references ( FILE *f, struct bufrdeco_compressed_data_references *r );
+int print_sec0_info ( struct bufrdeco *b );
+int print_sec1_info ( struct bufrdeco *b );
+int print_sec3_info ( struct bufrdeco *b );
+int print_sec4_info ( struct bufrdeco *b );
 int sprint_sec0_info ( char *target, size_t lmax, struct bufrdeco *b);
 int sprint_sec1_info ( char *target, size_t lmax, struct bufrdeco *b);
 int sprint_sec3_info ( char *target, size_t lmax, struct bufrdeco *b);
@@ -835,23 +862,24 @@ int sprint_sec0_info_html ( char *target, size_t lmax, struct bufrdeco *b);
 int sprint_sec1_info_html ( char *target, size_t lmax, struct bufrdeco *b);
 int sprint_sec3_info_html ( char *target, size_t lmax, struct bufrdeco *b);
 int sprint_sec4_info_html ( char *target, size_t lmax, struct bufrdeco *b);
-void bufrdeco_print_tree ( struct bufrdeco *b );
-void bufrdeco_fprint_tree ( FILE *f, struct bufrdeco *b );
-void bufrdeco_print_atom_data_stdout ( struct bufr_atom_data *a );
-void bufrdeco_print_atom_data_file ( FILE *f, struct bufr_atom_data *a );
-void bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *s );
-void bufrdeco_print_subset_sequence_data_html ( struct bufrdeco_subset_sequence_data *s );
-void bufrdeco_print_subset_sequence_data_tagged_html ( struct bufrdeco_subset_sequence_data *s, char *id );
-void bufrdeco_fprint_subset_sequence_data_html ( FILE *f, struct bufrdeco_subset_sequence_data *s );
-void bufrdeco_fprint_subset_sequence_data_tagged_html ( FILE *f, struct bufrdeco_subset_sequence_data *s, char *id);
-void bufrdeco_fprint_subset_sequence_data ( FILE *f, struct bufrdeco_subset_sequence_data *s );
-char * bufrdeco_print_atom_data ( char *target, struct bufr_atom_data *a );
-char * bufrdeco_print_atom_data_html ( char *target, struct bufr_atom_data *a, uint32_t ss );
-char * get_formatted_value_from_escale ( char *fmt, int32_t escale, double val );
+int bufrdeco_print_tree ( struct bufrdeco *b );
+int bufrdeco_fprint_tree ( FILE *f, struct bufrdeco *b );
+int bufrdeco_print_atom_data_stdout ( struct bufr_atom_data *a );
+int bufrdeco_print_atom_data_file ( FILE *f, struct bufr_atom_data *a );
+int bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *s );
+int bufrdeco_print_subset_sequence_data_html ( struct bufrdeco_subset_sequence_data *s );
+int bufrdeco_print_subset_sequence_data_tagged_html ( struct bufrdeco_subset_sequence_data *s, char *id );
+int bufrdeco_fprint_subset_sequence_data_html ( FILE *f, struct bufrdeco_subset_sequence_data *s );
+int bufrdeco_fprint_subset_sequence_data_tagged_html ( FILE *f, struct bufrdeco_subset_sequence_data *s, char *id);
+int bufrdeco_fprint_subset_sequence_data ( FILE *f, struct bufrdeco_subset_sequence_data *s );
+char * bufrdeco_print_atom_data ( char *target, size_t lmax, struct bufr_atom_data *a );
+char * bufrdeco_print_atom_data_html ( char *target, size_t lmax, struct bufr_atom_data *a, uint32_t ss );
+char * get_formatted_value_from_escale ( char *fmt, size_t dim, int32_t escale, double val );
 
 
 // Abut build and version
-char *bufrdeco_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch);
+char *bufrdeco_get_version(char *version, size_t dversion, char *build, size_t dbuild, char *builder, size_t dbuilder, 
+                           int *version_major, int *version_minor, int *version_patch);
 
 // To parse. General
 int bufrdeco_parse_tree ( struct bufrdeco *b );
@@ -900,7 +928,7 @@ int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *
 int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_t source );
 int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key );
 int bufr_find_tablec_csv_index ( size_t *index, struct bufr_tablec *tc, const char *key, uint32_t code );
-char *bufrdeco_get_f2_descriptor_explanation ( char *e, struct bufr_descriptor *d );
+char *bufrdeco_get_f2_descriptor_explanation ( char *e, size_t dim, struct bufr_descriptor *d );
 
 // utilities for bitmaps
 int bufrdeco_allocate_bitmap ( struct bufrdeco *b );

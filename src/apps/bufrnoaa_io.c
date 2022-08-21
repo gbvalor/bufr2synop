@@ -84,8 +84,14 @@ char *bufrnoaa_get_version(char *version, char *build, char *builder, int *versi
        c = build;
 #if defined(__INTEL_COMPILER)
        c += sprintf(build, "using INTEL C compiler icc %d.%d ", __INTEL_COMPILER, __INTEL_COMPILER_UPDATE);
+#elif defined(__clang_version__) 
+       c += sprintf(build, "using clang C compiler ", __clang_version__);
 #elif defined(__GNUC__) 
        c += sprintf(build, "using GNU C compiler gcc %d.%d.%d ", __GNUC__ , __GNUC_MINOR__ , __GNUC_PATCHLEVEL__);
+#elif defined(_MSC_VER) 
+       c += sprintf(build, "using MICROSOFT C compiler %d ", _MSC_VER);
+#else
+       c += sprintf(build, "using an unknown C compiler ");
 #endif
        sprintf(c,"at %s %s",__DATE__,__TIME__);
     }
