@@ -16,7 +16,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8.12)
 cmake_policy(SET CMP0048 NEW)
 
 # Establecemos la version 
-project (bufr2synop LANGUAGES C VERSION 0.20.0)
+project (bufr2synop LANGUAGES C VERSION 0.21.0)
 
 #Definitions needed to generate config.h
 SET(PACKAGE_NAME "${PROJECT_NAME}")
