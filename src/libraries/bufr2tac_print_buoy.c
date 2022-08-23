@@ -384,15 +384,16 @@ char * print_buoy_sec3 ( char **sec3, size_t lmax, struct buoy_chunks *b )
 }
 
 /*!
- \fn int print_buoy(char *report, size_t lmax, struct buoy_chunks *b)
+ \fn int print_buoy(char *report, size_t lmax, struct buoy_chunks *b, int mode  )
  \brief prints a buoy into a string
  \param report target string
  \param lmax max size of string
  \param b pointer to a struct \ref buoy_chunks with the result of parse tasks
+ \param mode If == 0 legacy mode. If == 1 the print WIGOS identifier
 
  returns 0 if all went right
 */
-int print_buoy ( char *report, size_t lmax, struct buoy_chunks *b )
+int print_buoy ( char *report, size_t lmax, struct buoy_chunks *b, int mode   )
 {
   char *c;
 

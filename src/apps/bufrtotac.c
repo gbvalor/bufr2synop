@@ -111,6 +111,7 @@ int HTML; /*!< If == 1 then output is in HTML format */
 int NOTAC; /*!< if == 1 then do not decode to TAC */
 int FIRST_SUBSET; /*!< First subset index in output. First available is 0 */
 int LAST_SUBSET; /*!< Last subset index in output. First available is 0 */
+int PRINT_WIGOS_ID; /*!< if != 0 then print wigos id in output */
 FILE *FL; /*!< Buffer to read the list of files */
 
 int main ( int argc, char *argv[] )

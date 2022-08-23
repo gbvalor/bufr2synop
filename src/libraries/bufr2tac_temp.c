@@ -89,7 +89,7 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s,
   t = &m->temp;
 
   // clean data
-  clean_temp_chunks ( t );
+  bufr2tac_clean_temp_chunks ( t );
 
   // allocate memory for array of points in raw form
   if ( ( r = calloc ( 1, sizeof ( struct temp_raw_data ) ) ) == NULL )

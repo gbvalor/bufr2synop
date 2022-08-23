@@ -44,7 +44,7 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr2tac_subset_state *
   c = &m->climat;
 
   // clean data
-  clean_climat_chunks ( c );
+  bufr2tac_clean_climat_chunks ( c );
 
   // reject if still not coded type
   if ( strcmp ( s->type_report,"CLIMAT" ) )

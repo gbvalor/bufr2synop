@@ -126,7 +126,7 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
   syn = &m->synop;
 
   // clean data
-  clean_synop_chunks ( syn );
+  bufr2tac_clean_synop_chunks ( syn );
 
   // reject if still not coded type
   if ( strcmp ( s->type_report,"AAXX" ) && strcmp ( s->type_report,"BBXX" ) && strcmp ( s->type_report,"OOXX" ) )
@@ -242,14 +242,24 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
        ( ( s->mask & SUBSET_MASK_HAVE_MINUTE ) == 0 )
      )
     {
-      sprintf ( err,"bufr2tac: %s(): lack of mandatory descriptor in sequence" , __func__);
+      sprintf ( err,"bufr2tac: %s(): lack of mandatory descriptor in sequence", __func__ );
       return 1;
     }
 
   if ( strcmp ( s->type_report, "AAXX" ) == 0 && ( syn->s0.II[0] == 0 || syn->s0.iii[0] == 0 ) )
     {
-      sprintf ( err,"bufr2tac: %s(): lack of mandatory index station for AAXX report", __func__ );
-      return 1;
+      if ( s->mask & SUBSET_MASK_HAVE_WIGOS_ID &&
+           ( syn->wid.issuer != 0 || syn->wid.issue != 0 ) &&
+           syn->wid.local_id[0] )
+        {
+          strcpy ( syn->s0.II, "00" );
+          strcpy ( syn->s0.iii, "000" );
+        }
+      else
+        {
+          sprintf ( err,"bufr2tac: %s(): lack of mandatory index station for AAXX report", __func__ );
+          return 1;
+        }
     }
 
 

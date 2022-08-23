@@ -764,15 +764,16 @@ char * print_climat_sec4 ( char **sec4, size_t lmax, struct climat_chunks *cl )
 }
 
 /*!
- \fn int print_climat(char *report, size_t lmax, struct climat_chunks *cl)
+ \fn int print_climat(char *report, size_t lmax, struct climat_chunks *cl, int mode)
  \brief prints a climat into a string
  \param report target string
  \param lmax max size of string
  \param cl pointer to a struct \ref climat_chunks with the result of parse tasks
+ \param mode If == 0 legacy mode. If == 1 the print WIGOS identifier
 
  returns 0 if all went right
 */
-int print_climat ( char *report, size_t lmax, struct climat_chunks *cl )
+int print_climat ( char *report, size_t lmax, struct climat_chunks *cl, int mode )
 {
   char *c;
 

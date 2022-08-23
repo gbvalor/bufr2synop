@@ -1,6 +1,6 @@
 /* $Id$ */
 /***************************************************************************
- *   Copyright (C) 2004-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2004-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This file is part of Ogimet                                           *
@@ -213,6 +213,7 @@ struct climat_chunks
 {
   int mask; /*!< Mask with sections parsed succesfully */
   struct report_date_ext e; /*!< struct with the optional extension parsed */
+  struct wigos_id wid; /*!< struct with the WIGOS indentifier if any */
   struct climat_sec0 s0; /*!< struct with parsed header and section 0 */
   struct climat_sec1 s1; /*!< struct with parsed section 1 */
   struct climat_sec2 s2; /*!< struct with parsed section 2 if present */

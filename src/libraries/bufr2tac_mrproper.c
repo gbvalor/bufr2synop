@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -87,15 +87,25 @@ void clean_report_date_ext ( struct report_date_ext *s )
   memset ( s, 0, sizeof ( struct report_date_ext ) );
 }
 
+/*! \fn void clean_wigos_id(struct wigos_id *w)
+    \brief clean a synop_ext struct
+    \param w pointer to the wigos_id struct
+*/
+void clean_wigos_id ( struct wigos_id *w )
+{
+  memset ( w, 0, sizeof ( struct wigos_id ) );
+}
+
 /*!
   \fn void clean_synop_chunks( struct synop_chunks *syn)
   \brief cleans a \ref synop_chunks struct
   \param syn pointer to the struct to clean
 */
-void clean_synop_chunks ( struct synop_chunks *syn )
+void bufr2tac_clean_synop_chunks ( struct synop_chunks *syn )
 {
   syn->mask = 0;
   clean_report_date_ext ( & ( syn->e ) );
+  clean_wigos_id ( & ( syn->wid ) );
   clean_syn_sec0 ( & ( syn->s0 ) );
   clean_syn_sec1 ( & ( syn->s1 ) );
   clean_syn_sec2 ( & ( syn->s2 ) );
@@ -165,10 +175,11 @@ void clean_buoy_sec4 ( struct buoy_sec4 *s )
   \brief cleans a \ref buoy_chunks struct
   \param b pointer to the struct to clean
 */
-void clean_buoy_chunks ( struct buoy_chunks *b )
+void bufr2tac_clean_buoy_chunks ( struct buoy_chunks *b )
 {
   b->mask = 0;
   clean_report_date_ext ( & ( b->e ) );
+  clean_wigos_id ( & ( b->wid ) );
   clean_buoy_sec0 ( & ( b->s0 ) );
   clean_buoy_sec1 ( & ( b->s1 ) );
   clean_buoy_sec2 ( & ( b->s2 ) );
@@ -183,7 +194,7 @@ void clean_buoy_chunks ( struct buoy_chunks *b )
   \brief cleans a \ref buoy_chunks struct
   \param t pointer to the struct to clean
 */
-void clean_temp_chunks ( struct temp_chunks *t )
+void bufr2tac_clean_temp_chunks ( struct temp_chunks *t )
 {
   memset ( t, 0, sizeof ( struct temp_chunks ) );
 }
@@ -248,10 +259,11 @@ void clean_climat_old ( struct climat_old *s )
   \brief cleans a \ref climat_chunks struct
   \param c pointer to the struct to clean
 */
-void clean_climat_chunks ( struct climat_chunks *c )
+void bufr2tac_clean_climat_chunks ( struct climat_chunks *c )
 {
   c->mask = 0;
   clean_report_date_ext ( & ( c->e ) );
+  clean_wigos_id ( & ( c->wid ) );
   clean_climat_sec0 ( & ( c->s0 ) );
   clean_climat_sec1 ( & ( c->s1 ) );
   clean_climat_sec2 ( & ( c->s2 ) );
@@ -259,4 +271,10 @@ void clean_climat_chunks ( struct climat_chunks *c )
   clean_climat_sec4 ( & ( c->s4 ) );
   clean_climat_old ( & ( c->o ) );
   c->error[0] = '\0';
+}
+
+void bufr2tac_clean_metreport (struct metreport *m)
+{
+  if (m != NULL)
+    memset(m, 0, sizeof (struct metreport));
 }

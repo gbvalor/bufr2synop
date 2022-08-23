@@ -22,6 +22,26 @@
  \brief decodes the descriptors with X = 01 (station index, name and country)
 */
 #include "bufr2tac.h"
+#include <ctype.h>
+
+int check_wigos_local_id (char *local_id)
+{
+  char *c = local_id;
+  
+  // first char cannot be blank
+  if (!(isalpha(*c)) && !(isdigit(*c)))
+    return 1;
+  c++;
+  
+  while (*c)
+  {
+    if (!(isalpha(*c)) && !(isdigit(*c)) && !(isblank(*c))) 
+      return 1;
+    c++;
+  }  
+  
+  return 0;
+}
 
 /*!
   \fn int syn_parse_x01 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
@@ -135,6 +155,31 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       break;
 
+    case 125: // 0 01 125 . WIGOS identifier series
+        syn->wid.series = (uint8_t) s->ival;
+      break;
+      
+    case 126: // 0 01 126 . WIGOS issuer of identifier
+        syn->wid.issuer = (uint16_t) s->ival;
+      break;
+      
+    case 127: // 0 01 127 , WIGOS issue number
+        syn->wid.issue = (uint16_t) s->ival;
+      break;
+      
+    case 128: // 0 01 128 . WIGOS local identifier (character)  
+      if ( strlen ( s->a->cval ) <= 16 )
+        {
+          adjust_string(s->a->cval);
+          if (check_wigos_local_id(s->a->cval))
+          {
+             bufr2tac_set_error ( s, 1, "synop_parse_x01()" ,"Bad WIGOS Local identifier");
+          }
+          strcpy (syn->wid.local_id , s->a->cval);
+          s->mask |= SUBSET_MASK_HAVE_WIGOS_ID ;
+        }
+       break; 
+      
     default:
       if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
         bufr2tac_set_error ( s, 0, "syn_parse_x01()", "Descriptor not parsed" );
@@ -235,6 +280,31 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         }
       break;
 
+    case 125: // 0 01 125 . WIGOS identifier series
+        b->wid.series = (uint8_t) s->ival;
+      break;
+      
+    case 126: // 0 01 126 . WIGOS issuer of identifier
+        b->wid.issuer = (uint16_t) s->ival;
+      break; 
+      
+    case 127: // 0 01 127 , WIGOS issue number
+        b->wid.issue = (uint16_t) s->ival;
+      break;
+      
+    case 128: // 0 01 128 . WIGOS local identifier (character)  
+      if ( strlen ( s->a->cval ) <= 16 )
+        {
+          adjust_string(s->a->cval);
+          if (check_wigos_local_id(s->a->cval))
+          {
+             bufr2tac_set_error ( s, 1, "buoy_parse_x01()" ,"Bad WIGOS Local identifier");
+          }
+          strcpy (b->wid.local_id , s->a->cval);
+          s->mask |= SUBSET_MASK_HAVE_WIGOS_ID ;
+        }
+       break; 
+      
     default:
       if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
         bufr2tac_set_error ( s, 0, "buoy_parse_x01()", "Descriptor not parsed" );
@@ -300,6 +370,31 @@ int climat_parse_x01 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         }
       break;
 
+    case 125: // 0 01 125 . WIGOS identifier series
+        c->wid.series = (uint8_t) s->ival;
+      break;
+      
+    case 126: // 0 01 126 . WIGOS issuer of identifier
+        c->wid.issuer = (uint16_t) s->ival;
+      break;
+      
+    case 127: // 0 01 127 , WIGOS issue number
+        c->wid.issue = (uint16_t) s->ival;
+      break;
+      
+    case 128: // 0 01 128 . WIGOS local identifier (character)  
+      if ( strlen ( s->a->cval ) <= 16 )
+        {
+          strcpy (c->wid.local_id , s->a->cval);
+          if (check_wigos_local_id(s->a->cval))
+          {
+             bufr2tac_set_error ( s, 1, "climat_parse_x01()" ,"Bad WIGOS Local identifier");
+          }
+          s->mask |= SUBSET_MASK_HAVE_WIGOS_ID ;
+        }
+       break; 
+      
+
 
     default:
       if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
@@ -332,12 +427,14 @@ int temp_parse_x01 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
       sprintf ( t->c.s1.II, "%02d", s->ival );
       sprintf ( t->d.s1.II, "%02d", s->ival );
       break;
+
     case 2: // 0 01 002 . WMO station number
       sprintf ( t->a.s1.iii, "%03d", s->ival );
       sprintf ( t->b.s1.iii, "%03d", s->ival );
       sprintf ( t->c.s1.iii, "%03d", s->ival );
       sprintf ( t->d.s1.iii, "%03d", s->ival );
       break;
+
     case 3: // 0 01 003 . WMO Region
       sprintf ( t->a.s1.A1, "%d", s->ival );
       sprintf ( t->b.s1.A1, "%d", s->ival );
@@ -386,6 +483,7 @@ int temp_parse_x01 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
           strcpy ( t->d.s1.Reg, "VI" );
         }
       break;
+
     case 4: // 0 01 004 . WMO Subarea
     case 20: // 0 01 020 . WMO region subarea
       sprintf ( t->a.s1.bw, "%d", s->ival );
@@ -393,6 +491,7 @@ int temp_parse_x01 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
       sprintf ( t->c.s1.bw, "%d", s->ival );
       sprintf ( t->d.s1.bw, "%d", s->ival );
       break;
+
     case 11: // 0 01 011. Ship or mobile land station index
       if ( strlen ( s->a->cval ) < 16 )
         {
@@ -410,6 +509,7 @@ int temp_parse_x01 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
             }
         }
       break;
+
     case 15: // 0 01 015 . Station or site name
     case 18: // 0 01 018 . Short station or site name
     case 19: // 0 01 019 . Long station or site name
@@ -425,6 +525,7 @@ int temp_parse_x01 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
           bufr2tac_set_error ( s, 1, "temp_parse_x01()", "Station or site name length > 80. Cannot set s->name" );
         }
       break;
+      
     case 101: // 0 01 101 . State identifier
       if ( strlen ( s->a->ctable ) <= 256 )
         {
@@ -438,9 +539,34 @@ int temp_parse_x01 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
           bufr2tac_set_error ( s, 1, "temp_parse_x01()", "State identifier length > 256. Cannot set s->country" );
         }
       break;
+      
+    case 125: // 0 01 125 . WIGOS identifier series
+        t->wid.series = (uint8_t) s->ival;
+      break;
+      
+    case 126: // 0 01 126 . WIGOS issuer of identifier
+        t->wid.issuer = (uint16_t) s->ival;
+      break;
+      
+    case 127: // 0 01 127 , WIGOS issue number
+        t->wid.issue = (uint16_t) s->ival;
+      break;
+      
+    case 128: // 0 01 128 . WIGOS local identifier (character)  
+      if ( strlen ( s->a->cval ) <= 16 )
+        {
+          strcpy (t->wid.local_id , s->a->cval);
+          if (check_wigos_local_id(s->a->cval))
+          {
+             bufr2tac_set_error ( s, 1, "temp_parse_x01()" ,"Bad WIGOS Local identifier");
+          }
+          s->mask |= SUBSET_MASK_HAVE_WIGOS_ID ;
+        }
+       break; 
+      
     default:
       if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
-        bufr2tac_set_error ( s, 0, "climat_parse_x01()", "Descriptor not parsed" );
+        bufr2tac_set_error ( s, 0, "temp_parse_x01()", "Descriptor not parsed" );
       break;
     }
   return 0;

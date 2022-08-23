@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2004-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This file is part of bufr2synop                                       *
@@ -36,6 +36,18 @@ struct report_date_ext
   char HH[4]; /*!< Hour (UTC) 00..23 */
   char mm[4]; /*!< Minute 00..59 */
   char ss[4]; /*!< Second 00..59 */
+};
+
+/*!
+ * \struct wigos_id
+ * \brief WIGOS station identifier
+ */
+struct wigos_id
+{
+  uint8_t series; /*!< WIGOS identifier series. IN 2022 still only 0 in use */
+  uint16_t issuer; /*!< Issuer of identifier */
+  uint16_t issue; /*!< Issue numbre */
+  char local_id[24]; /*!< Local identifier */ 
 };
 
 #ifndef MET_DATETIME

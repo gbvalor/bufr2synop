@@ -49,6 +49,7 @@ void bufrtotac_print_usage ( void )
   printf ( "       -t bufrtable_dir. Pathname of bufr tables directory. Ended with '/'\n" );
   printf ( "       -V. Verbose output\n" );
   printf ( "       -v. Print version\n" );
+  printf ( "       -W. Print WIGOS ID\n" );
   printf ( "       -x. The output is in xml format\n" );
   printf ( "       -X. Try to extract an embebed bufr in a file seraching for a first '7777' after first 'BUFR'\n" );
 }
@@ -157,12 +158,13 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
   HTML = 0;
   NOTAC = 0;
   FIRST_SUBSET = 0;
+  PRINT_WIGOS_ID = 0;
   LAST_SUBSET = BUFR_LEN;
 
   /*
      Read input options
   */
-  while ( ( iopt = getopt ( _argc, _argv, "cD:Ehi:jHI:no:S:st:vVxX" ) ) !=-1 )
+  while ( ( iopt = getopt ( _argc, _argv, "cD:Ehi:jHI:no:S:st:vWVxX" ) ) !=-1 )
     switch ( iopt )
       {
       case 'i':
@@ -266,6 +268,10 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
         EXTRACT = 1;
         break;
         
+      case 'W':
+        PRINT_WIGOS_ID = 1;
+        break;
+        
       case 'h':
       default:
         bufrtotac_print_usage();
@@ -308,7 +314,10 @@ int bufrtotac_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subse
   ksec1[6] = b->sec1.subcategory_local;
 
   // Finaly we call to bufr2tac library
-  memset ( m, 0, sizeof ( struct metreport ) );
+  bufr2tac_clean_metreport( m );
+  if (PRINT_WIGOS_ID)
+    m->print_mask = 1;
+  
   m->h = &b->header;
   res = parse_subset_sequence ( m, &b->seq, st, kdtlst, nlst, ksec1, err );
   free ( ( void * ) kdtlst );

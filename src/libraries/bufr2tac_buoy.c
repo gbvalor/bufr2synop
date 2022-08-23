@@ -81,7 +81,7 @@ int parse_subset_as_buoy ( struct metreport *m, struct bufr2tac_subset_state *s,
   b = &m->buoy;
 
   // clean data
-  clean_buoy_chunks ( b );
+  bufr2tac_clean_buoy_chunks ( b );
 
   // reject if still not coded type
   if ( strcmp ( s->type_report,"ZZYY" ) )

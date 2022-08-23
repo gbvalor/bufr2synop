@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -375,13 +375,13 @@ char * print_temp_a_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
-  \fn char * print_temp_a (char *report, size_t lmax, struct temp_chunks *t)
+  \fn char * print_temp_a (char *report, size_t lmax, struct temp_chunks *t, int mode )
   \brief Prints the part A of a TEMP report into a string
   \param report string where to write the results
   \param lmax max length permited
   \param t pointer to s atruct \ref temp_chunks where the parse results are set
 */
-int print_temp_a ( char *report, size_t lmax, struct temp_chunks *t )
+int print_temp_a ( char *report, size_t lmax, struct temp_chunks *t , int mode )
 {
   char *c;
 
@@ -638,13 +638,13 @@ char * print_temp_b_sec8 ( char **sec8, size_t lmax, struct temp_chunks *t )
 
 
 /*!
-  \fn int print_temp_b (char *report, size_t lmax, struct temp_chunks *t)
+  \fn int print_temp_b (char *report, size_t lmax, struct temp_chunks *t, int mode )
   \brief Prints the part B of a TEMP report into a string
   \param report string where to write the results
   \param lmax max length permited
   \param t pointer to s atruct \ref temp_chunks where the parse results are set
 */
-int print_temp_b ( char *report, size_t lmax, struct temp_chunks *t )
+int print_temp_b ( char *report, size_t lmax, struct temp_chunks *t, int mode  )
 {
   char *c;
 
@@ -893,13 +893,13 @@ char * print_temp_c_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
-  \fn int print_temp_c (char *report, size_t lmax, struct temp_chunks *t)
+  \fn int print_temp_c (char *report, size_t lmax, struct temp_chunks *t, int mode )
   \brief Prints the part C of a TEMP report into a string
   \param report string where to write the results
   \param lmax max length permited
   \param t pointer to s atruct \ref temp_chunks where the parse results are set
 */
-int print_temp_c ( char *report, size_t lmax, struct temp_chunks *t )
+int print_temp_c ( char *report, size_t lmax, struct temp_chunks *t, int mode  )
 {
   char *c;
 
@@ -1091,7 +1091,7 @@ char * print_temp_d_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
   \param lmax max length permited
   \param t pointer to s atruct \ref temp_chunks where the parse results are set
 */
-int print_temp_d ( char *report, size_t lmax, struct temp_chunks *t )
+int print_temp_d ( char *report, size_t lmax, struct temp_chunks *t, int mode  )
 {
   char *c;
 
@@ -1112,34 +1112,35 @@ int print_temp_d ( char *report, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
-   \fn int print_temp ( struct metreport *m )
+   \fn int print_temp ( struct metreport *m , int mode )
    \brief print the four parts of a decoded TEMP report from a BUFR file into strings
    \param m pointer to a struct \ref metreport in which alphanumeric string members stores the reults
+   \param mode If == 0 legacy mode. Igf == 1 the print WIGOS identifier
  */
-int print_temp ( struct metreport *m )
+int print_temp ( struct metreport *m , int mode)
 {
   // It is required that al lesat a standard level where decoded in SEC A
   if ( m->temp.a.mask & TEMP_SEC_2 )
     {
-      print_temp_a ( m->alphanum, REPORT_LENGTH, &m->temp );
+      print_temp_a ( m->alphanum, REPORT_LENGTH, &m->temp, mode );
     }
 
   // It is required a significant TH or wind poind for sec B
   if ( m->temp.b.mask & ( TEMP_SEC_5 | TEMP_SEC_6 ) )
     {
-      print_temp_b ( m->alphanum2, REPORT_LENGTH, &m->temp );
+      print_temp_b ( m->alphanum2, REPORT_LENGTH, &m->temp, mode );
     }
 
   // It is required a standard level for SEC C
   if ( m->temp.c.mask & TEMP_SEC_2 )
     {
-      print_temp_c ( m->alphanum3, REPORT_LENGTH, &m->temp );
+      print_temp_c ( m->alphanum3, REPORT_LENGTH, &m->temp, mode );
     }
 
   // It is required a significant TH or wind poind for sec B
   if ( m->temp.d.mask & ( TEMP_SEC_5 | TEMP_SEC_6 ) )
     {
-      print_temp_d ( m->alphanum4, REPORT_LENGTH, &m->temp );
+      print_temp_d ( m->alphanum4, REPORT_LENGTH, &m->temp, mode );
     }
 
   return 0;

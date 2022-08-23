@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2004-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This file is part of bufr2synop                                       *
@@ -511,6 +511,7 @@ struct temp_chunks
 {
   int mask; /*!< bit mask with parsed parts info */
   struct met_datetime t; /*!< Nominal GTS report release date and time (it is not the starting of soubding) */
+  struct wigos_id wid; /*!< struct with the WIGOS indentifier if any */
   struct temp_a a; /*!< Part A */
   struct temp_b b; /*!< Part B */
   struct temp_c c; /*!< Part C */
