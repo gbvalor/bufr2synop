@@ -181,6 +181,7 @@ int main ( int argc, char *argv[] )
           print_sec4_info ( &BUFR );
         }
 
+      // To get any data from any subset  we need to parse the tree
       if ( bufrdeco_parse_tree ( &BUFR ) )
         {
           if ( DEBUG )

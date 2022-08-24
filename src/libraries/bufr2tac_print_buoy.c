@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,192 +24,167 @@
 #include "bufr2tac.h"
 
 /*!
-  \def check_len(ori,inc)
-  \brief cheks if there still memory enough to add \a inc chars
-*/
-#define check_len(ori,inc) (c - *ori + inc < (int)lmax)
-
-/*!
-  \fn char * print_buoy_sec0 (char **sec0, size_t lmax, struct buoy_chunks *b)
+  \fn size_t print_buoy_sec0 (char **sec0, size_t lmax, struct buoy_chunks *b)
   \brief Prints the buoy section 1
   \param sec0 the pointer where to print section
   \param lmax max length permited
   \param b pointer to s atruct \ref buoy_chunks where the parse results are set
 */
-char * print_buoy_sec0 ( char **sec0, size_t lmax, struct buoy_chunks *b )
+size_t print_buoy_sec0 ( char **sec0, size_t lmax, struct buoy_chunks *b )
 {
+  size_t used = 0;
   char *c = *sec0;
 
-  if ( check_len ( sec0,12 ) )
-    {
-      c += sprintf ( c, "%s%s%s%s%s", b->e.YYYY, b->e.MM, b->e.DD, b->e.HH, b->e.mm );
-    }
+      used += snprintf ( c + used, lmax - used, "%s%s%s%s%s", b->e.YYYY, b->e.MM, b->e.DD, b->e.HH, b->e.mm );
 
   // Print type
-  if ( check_len ( sec0,5 ) )
-    {
-      c += sprintf ( c, " %s%s", b->s0.MiMi, b->s0.MjMj );
-    }
+      used += snprintf ( c + used, lmax - used, " %s%s", b->s0.MiMi, b->s0.MjMj );
 
-  if ( check_len ( sec0,8 ) && b->s0.A1[0] && b->s0.bw[0] && b->s0.nbnbnb[0] )
+  if ( b->s0.A1[0] && b->s0.bw[0] && b->s0.nbnbnb[0] )
     {
-      c += sprintf ( c, " %s%s%s", b->s0.A1, b->s0.bw, b->s0.nbnbnb );
+      used += snprintf ( c + used, lmax - used, " %s%s%s", b->s0.A1, b->s0.bw, b->s0.nbnbnb );
     }
-  else if ( check_len ( sec0, 10 ) && b->s0.D_D[0] )
+  else if ( b->s0.D_D[0] )
     {
-      c += sprintf ( c, " %s", b->s0.D_D );
+      used += snprintf ( c + used, lmax - used, " %s", b->s0.D_D );
     }
 
 
-  if ( check_len ( sec0,6 ) )
-    {
-      c += sprintf ( c, " %s%s%s", b->s0.YY, b->s0.MM, b->s0.J );
-    }
+      used += snprintf ( c + used, lmax - used, " %s%s%s", b->s0.YY, b->s0.MM, b->s0.J );
 
-  if ( check_len ( sec0,6 ) )
-    {
       if ( b->s0.iw[0] )
         {
-          c += sprintf ( c, " %s%s%s", b->s0.GG, b->s0.gg, b->s0.iw );
+          used += snprintf ( c + used, lmax - used, " %s%s%s", b->s0.GG, b->s0.gg, b->s0.iw );
         }
       else
         {
-          c += sprintf ( c, " %s%s/", b->s0.GG, b->s0.gg );
+          used += snprintf ( c + used, lmax - used, " %s%s/", b->s0.GG, b->s0.gg );
         }
-    }
 
-  if ( check_len ( sec0,7 ) )
-    {
-      c += sprintf ( c, " %s%s", b->s0.Qc, b->s0.LaLaLaLaLa );
-    }
+      used += snprintf ( c + used, lmax - used, " %s%s", b->s0.Qc, b->s0.LaLaLaLaLa );
 
 
-  if ( check_len ( sec0,7 ) )
-    {
-      c += sprintf ( c, " %s", b->s0.LoLoLoLoLoLo );
-    }
+      used += snprintf ( c + used, lmax - used, " %s", b->s0.LoLoLoLoLoLo );
 
   if ( b->s0.QA[0] || b->s0.Ql[0] || b->s0.Qt[0] )
     {
       if ( b->s0.Ql[0] )
         {
-          c +=sprintf ( c, " 6%s", b->s0.Ql );
+          used += snprintf ( c + used, lmax - used,  " 6%s", b->s0.Ql );
         }
       else
         {
-          c +=sprintf ( c, " 6/" );
+          used += snprintf ( c + used, lmax - used, " 6/" );
         }
 
       if ( b->s0.Qt[0] )
         {
-          c +=sprintf ( c, "%s", b->s0.Qt );
-        }
+          used +=snprintf ( c + used, lmax - used, "%s", b->s0.Qt );
+        } 
       else
         {
-          c +=sprintf ( c, "/" );
+          used += snprintf ( c + used, lmax - used,  "/" );
         }
 
       if ( b->s0.QA[0] )
         {
-          c +=sprintf ( c, "%s/", b->s0.QA );
+          used += snprintf ( c + used, lmax - used,  "%s/", b->s0.QA );
         }
       else
         {
-          c +=sprintf ( c, "//" );
+          used += snprintf ( c + used, lmax - used, "//" );
         }
     }
 
-  *sec0 = c;
-  return *sec0;
+  *sec0 = c + used;
+  return used;
 }
 
 
 /*!
-  \fn char * print_buoy_sec1 (char **sec1, size_t lmax, struct buoy_chunks *b)
+  \fn size_t print_buoy_sec1 (char **sec1, size_t lmax, struct buoy_chunks *b)
   \brief Prints the buoy section 1
   \param sec1 the pointer where to print section
   \param lmax max length permited
   \param b pointer to s atruct \ref buoy_chunks where the parse results are set
 */
-char * print_buoy_sec1 ( char **sec1, size_t lmax, struct buoy_chunks *b )
+size_t print_buoy_sec1 ( char **sec1, size_t lmax, struct buoy_chunks *b )
 {
+  size_t used = 0;
   char *c = *sec1;
 
   if ( b->mask & BUOY_SEC1 )
     {
       // 111QdQx
-      c += sprintf ( c," 111" );
+      used += snprintf ( c + used, lmax - used," 111" );
 
       if ( b->s1.Qd[0] )
         {
-          c += sprintf ( c,"%s", b->s1.Qd );
+          used += snprintf ( c + used, lmax - used,"%s", b->s1.Qd );
         }
       else
         {
-          c += sprintf ( c,"/" );
+          used += snprintf ( c + used, lmax - used,"/" );
         }
 
       if ( b->s1.Qx[0] )
         {
-          c += sprintf ( c,"%s", b->s1.Qx );
+          used += snprintf ( c + used, lmax - used,"%s", b->s1.Qx );
         }
       else
         {
-          c += sprintf ( c,"/" );
+          used += snprintf ( c + used, lmax - used,"/" );
         }
 
       // 0ddff
-      if ( check_len ( sec1,6 ) )
-        {
           if ( b->s1.dd[0] || b->s1.ff[0] )
             {
-              c += sprintf ( c, " 0" );
+              used += snprintf ( c + used, lmax - used, " 0" );
               if ( b->s1.dd[0] )
                 {
-                  c += sprintf ( c, "%s", b->s1.dd );
+                  used += snprintf ( c + used, lmax - used, "%s", b->s1.dd );
                 }
               else
                 {
-                  c += sprintf ( c, "//" );
+                  used += snprintf ( c + used, lmax - used, "//" );
                 }
 
               if ( b->s1.ff[0] )
                 {
-                  c += sprintf ( c, "%s", b->s1.ff );
+                  used += snprintf ( c + used, lmax - used, "%s", b->s1.ff );
                 }
               else
                 {
-                  c += sprintf ( c, "//" );
+                  used += snprintf ( c + used, lmax - used, "//" );
                 }
             }
-        }
 
       // 1snTTT
-      if ( check_len ( sec1,6 ) && b->s1.TTT[0] )
+      if ( b->s1.TTT[0] )
         {
-          c += sprintf ( c, " 1%s%s", b->s1.sn1, b->s1.TTT );
+          used += snprintf ( c + used, lmax - used, " 1%s%s", b->s1.sn1, b->s1.TTT );
         }
 
       // 2snTdTdTd
-      if ( check_len ( sec1,6 ) && b->s1.TdTdTd[0] )
+      if ( b->s1.TdTdTd[0] )
         {
-          c += sprintf ( c, " 2%s%s", b->s1.sn2, b->s1.TdTdTd );
+          used += snprintf ( c + used, lmax - used, " 2%s%s", b->s1.sn2, b->s1.TdTdTd );
         }
 
       // 3PoPoPoPo
-      if ( check_len ( sec1,6 ) && b->s1.PoPoPoPo[0] )
+      if ( b->s1.PoPoPoPo[0] )
         {
-          c += sprintf ( c, " 3%s", b->s1.PoPoPoPo );
+          used += snprintf ( c + used, lmax - used, " 3%s", b->s1.PoPoPoPo );
         }
 
       // printf 4PPPP
-      if ( check_len ( sec1,6 ) && b->s1.PPPP[0] )
+      if ( b->s1.PPPP[0] )
         {
-          c += sprintf ( c, " 4%s", b->s1.PPPP );
+          used += snprintf ( c + used, lmax - used, " 4%s", b->s1.PPPP );
         }
 
       // printf 5appp
-      if ( check_len ( sec1,6 ) && ( b->s1.a[0] || b->s1.ppp[0] ) )
+      if (  b->s1.a[0] || b->s1.ppp[0] )
         {
           if ( b->s1.a[0] == 0 )
             {
@@ -219,111 +194,113 @@ char * print_buoy_sec1 ( char **sec1, size_t lmax, struct buoy_chunks *b )
             {
               strcpy ( b->s1.ppp, "///" );
             }
-          c += sprintf ( c, " 5%s%s", b->s1.a, b->s1.ppp );
+          used += snprintf ( c + used, lmax - used, " 5%s%s", b->s1.a, b->s1.ppp );
         }
     }
 
-  *sec1 = c;
-  return *sec1;
+  *sec1 = c + used;
+  return used;
 }
 
 /*!
-  \fn char * print_buoy_sec2 (char **sec2, size_t lmax, struct buoy_chunks *b)
+  \fn size_t print_buoy_sec2 (char **sec2, size_t lmax, struct buoy_chunks *b)
   \brief Prints the buoy section 1
   \param sec2 the pointer where to print section
   \param lmax max length permited
   \param b pointer to s atruct \ref buoy_chunks where the parse results are set
 */
-char * print_buoy_sec2 ( char **sec2, size_t lmax, struct buoy_chunks *b )
+size_t print_buoy_sec2 ( char **sec2, size_t lmax, struct buoy_chunks *b )
 {
+  size_t used = 0;
   char *c = *sec2;
 
   if ( b->mask & BUOY_SEC2 )
     {
       // 222QdQx
-      c += sprintf ( c," 222" );
+      used += snprintf ( c + used, lmax - used," 222" );
 
       if ( b->s2.Qd[0] )
         {
-          c += sprintf ( c,"%s", b->s2.Qd );
+          used += snprintf ( c + used, lmax - used,"%s", b->s2.Qd );
         }
       else
         {
-          c += sprintf ( c,"/" );
+          used += snprintf ( c + used, lmax - used,"/" );
         }
 
       if ( b->s2.Qx[0] )
         {
-          c += sprintf ( c,"%s", b->s2.Qx );
+          used += snprintf ( c + used, lmax - used,"%s", b->s2.Qx );
         }
       else
         {
-          c += sprintf ( c,"/" );
+          used += snprintf ( c + used, lmax - used,"/" );
         }
 
       // 0snTwTwTw
-      if ( check_len ( sec2,6 ) && b->s2.TwTwTw[0] )
+      if ( b->s2.TwTwTw[0] )
         {
-          c += sprintf ( c, " 0%s%s", b->s2.sn, b->s2.TwTwTw );
+          used += snprintf ( c + used, lmax - used, " 0%s%s", b->s2.sn, b->s2.TwTwTw );
         }
 
       // 1PwaPwaHwaHwa
-      if ( check_len ( sec2,6 ) && ( b->s2.PwaPwa[0] || b->s2.HwaHwa[0] ) )
+      if ( b->s2.PwaPwa[0] || b->s2.HwaHwa[0] )
         {
-          c += sprintf ( c, " 1" );
+          used += snprintf ( c + used, lmax - used, " 1" );
           if ( b->s2.PwaPwa[0] )
             {
-              c += sprintf ( c,"%s", b->s2.PwaPwa );
+              used += snprintf ( c + used, lmax - used,"%s", b->s2.PwaPwa );
             }
           else
             {
-              c += sprintf ( c,"//" );
+              used += snprintf ( c + used, lmax - used,"//" );
             }
 
           if ( b->s2.HwaHwa[0] )
             {
-              c += sprintf ( c,"%s", b->s2.HwaHwa );
+              used += snprintf ( c + used, lmax - used,"%s", b->s2.HwaHwa );
             }
           else
             {
-              c += sprintf ( c,"//" );
+              used += snprintf ( c + used, lmax - used,"//" );
             }
         }
 
       // 20PwaPwaPwa
-      if ( check_len ( sec2,6 ) && b->s2.PwaPwaPwa[0] )
+      if ( b->s2.PwaPwaPwa[0] )
         {
-          c += sprintf ( c, " 20%s", b->s2.PwaPwaPwa );
+          used += snprintf ( c + used, lmax - used, " 20%s", b->s2.PwaPwaPwa );
         }
 
       // 21HwaHwaHwa
-      if ( check_len ( sec2,6 ) && b->s2.HwaHwaHwa[0] )
+      if ( b->s2.HwaHwaHwa[0] )
         {
-          c += sprintf ( c, " 21%s", b->s2.HwaHwaHwa );
+          used += snprintf ( c + used, lmax - used, " 21%s", b->s2.HwaHwaHwa );
         }
 
 
     }
 
-  *sec2 = c;
-  return *sec2;
+  *sec2 = c + used;
+  return used;
 }
 
 /*!
-  \fn char * print_buoy_sec3 (char **sec3, size_t lmax, struct buoy_chunks *b)
+  \fn size_t print_buoy_sec3 (char **sec3, size_t lmax, struct buoy_chunks *b)
   \brief Prints the buoy section 3
   \param sec3 the pointer where to print section
   \param lmax max length permited
   \param b pointer to s atruct \ref buoy_chunks where the parse results are set
 */
-char * print_buoy_sec3 ( char **sec3, size_t lmax, struct buoy_chunks *b )
+size_t print_buoy_sec3 ( char **sec3, size_t lmax, struct buoy_chunks *b )
 {
+  size_t used = 0;
   char *c = *sec3;
   size_t l;
 
-  if ( check_len ( sec3,6 ) && ( b->mask & BUOY_SEC3 ) )
+  if ( b->mask & BUOY_SEC3 )
     {
-      c += sprintf ( c, " 333%s%s", b->s3.Qd1, b->s3.Qd2 );
+      used += snprintf ( c + used, lmax - used, " 333%s%s", b->s3.Qd1, b->s3.Qd2 );
 
       // check if has 8887k2
       l = 0;
@@ -331,18 +308,18 @@ char * print_buoy_sec3 ( char **sec3, size_t lmax, struct buoy_chunks *b )
         {
           if ( l == 0 )
             {
-              c += sprintf ( c, " 8887%s", b->s3.k2 );
+              used += snprintf ( c + used, lmax - used, " 8887%s", b->s3.k2 );
             }
-          c += sprintf ( c,  " 2%s", b->s3.l1[l].zzzz );
+          used += snprintf ( c + used, lmax - used,  " 2%s", b->s3.l1[l].zzzz );
 
           if ( b->s3.l1[l].TTTT[0] )
             {
-              c += sprintf ( c,  " 3%s", b->s3.l1[l].TTTT );
+              used += snprintf ( c + used, lmax - used,  " 3%s", b->s3.l1[l].TTTT );
             }
 
           if ( b->s3.l1[l].SSSS[0] )
             {
-              c += sprintf ( c,  " 4%s", b->s3.l1[l].SSSS );
+              used += snprintf ( c + used, lmax - used,  " 4%s", b->s3.l1[l].SSSS );
             }
           l++;
         }
@@ -352,36 +329,56 @@ char * print_buoy_sec3 ( char **sec3, size_t lmax, struct buoy_chunks *b )
         {
           if ( l == 0 )
             {
-              c += sprintf ( c, " 66%s9%s", b->s3.k6, b->s3.k3 );
+              used += snprintf ( c + used, lmax - used, " 66%s9%s", b->s3.k6, b->s3.k3 );
             }
-          c += sprintf ( c,  " 2%s", b->s3.l2[l].zzzz );
+          used += snprintf ( c + used, lmax - used,  " 2%s", b->s3.l2[l].zzzz );
 
           if ( b->s3.l2[l].dd[0] || b->s3.l2[l].ccc[0] )
             {
               if ( b->s3.l2[l].dd[0] )
                 {
-                  c += sprintf ( c,  " %s", b->s3.l2[l].dd );
+                  used += snprintf ( c + used, lmax - used,  " %s", b->s3.l2[l].dd );
                 }
               else
                 {
-                  c += sprintf ( c,  " //" );
+                  used += snprintf ( c + used, lmax - used,  " //" );
                 }
               if ( b->s3.l2[l].ccc[0] )
                 {
-                  c += sprintf ( c,  "%s", b->s3.l2[l].ccc );
+                  used += snprintf ( c + used, lmax - used,  "%s", b->s3.l2[l].ccc );
                 }
               else
                 {
-                  c += sprintf ( c,  "///" );
+                  used += snprintf ( c + used, lmax - used,  "///" );
                 }
             }
           l++;
         }
     }
 
-  *sec3 = c;
-  return *sec3;
+  *sec3 = c + used;
+  return used;
 }
+
+/*!
+ *  \fn size_t print_synop_wigos_id ( char **wid,  size_t lmax, struct buoy_chunks *b )
+ *  \brief Prints a WIGOS identifier in a buoy report 
+ */
+size_t print_buoy_wigos_id ( char **wid,  size_t lmax, struct buoy_chunks *b )
+{
+  char *c = *wid;
+  size_t used = 0;
+  
+  used += snprintf ( c + used, lmax, "%d-%d-%d-%s", b->wid.series, b->wid.issuer, b->wid.issue, b->wid.local_id );
+  while ( used < 32 )
+    c[used++] = ' ';
+  c[used++] = '|';
+  c[used] = 0;
+  *wid = c + used;
+
+  return used;
+}
+
 
 /*!
  \fn int print_buoy(char *report, size_t lmax, struct buoy_chunks *b, int mode  )
@@ -393,14 +390,19 @@ char * print_buoy_sec3 ( char **sec3, size_t lmax, struct buoy_chunks *b )
 
  returns 0 if all went right
 */
-int print_buoy ( char *report, size_t lmax, struct buoy_chunks *b, int mode   )
+int print_buoy ( char *report, size_t lmax, struct buoy_chunks *b, int mode )
 {
   char *c;
+  size_t used = 0;
 
   c = report;
 
+  if ( mode )
+    used += print_buoy_wigos_id ( &c, lmax, b );
+  
+  
   // Needs time extension
-  if ( b->e.YYYY[0] == 0 )
+  if ( b->e.YYYY[0] == 0  || b->e.YYYY[0] == '0')
     {
       return 1;
     }
@@ -409,17 +411,17 @@ int print_buoy ( char *report, size_t lmax, struct buoy_chunks *b, int mode   )
 
   if ( b->mask & ( BUOY_SEC1 | BUOY_SEC2 | BUOY_SEC3 ) )
     {
-      print_buoy_sec1 ( &c, lmax - strlen ( report ), b );
+      used += print_buoy_sec1 ( &c, lmax - used, b );
 
-      print_buoy_sec2 ( &c, lmax - strlen ( report ), b );
+      used += print_buoy_sec2 ( &c, lmax - used, b );
 
-      print_buoy_sec3 ( &c, lmax - strlen ( report ), b );
+      used += print_buoy_sec3 ( &c, lmax - used, b );
     }
   else
     {
-      c+= sprintf ( c, " NIL" );
+      c += snprintf ( c, lmax - used, " NIL" );
     }
-  c += sprintf ( c, "=" );
+  snprintf ( c, lmax - used - 1, "=" );
 
   return 0;
 }

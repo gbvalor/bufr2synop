@@ -24,12 +24,6 @@
 #include "bufr2tac.h"
 
 /*!
-  \def check_len(ori,inc)
-  \brief cheks if there still memory enough to add \a inc chars
-*/
-#define check_len(ori,inc) (c - *ori + inc < (int)lmax)
-
-/*!
   \fn int print_temp_raw_data ( struct temp_raw_data *r )
   \brief Prints for debug a struct \ref temp_raw_data
   \param r the pointer of struct to print
@@ -140,7 +134,7 @@ int print_temp_raw_wind_shear_data ( struct temp_raw_wind_shear_data *w )
 }
 
 /*!
-  \fn char * print_temp_a_sec1 (char **sec1, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_a_sec1 (char **sec1, size_t lmax, struct temp_chunks *t)
   \brief Prints the section 1 of part A of a TEMP report
   \param sec1 the pointer where to print section
   \param lmax max length permited
@@ -148,67 +142,65 @@ int print_temp_raw_wind_shear_data ( struct temp_raw_wind_shear_data *w )
 
   returns the string sec1
 */
-char * print_temp_a_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
+size_t print_temp_a_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 {
-  char *c = *sec1, *c0 = *sec1;
+  size_t used = 0;
+  char *c = *sec1;
 
-  c += sprintf ( c, "%s", t->t.datime );
+  used += snprintf ( c + used, lmax - used, "%s", t->t.datime );
 
-  c += sprintf ( c, " %s%s", t->a.s1.MiMi, t->a.s1.MjMj );
+  used += snprintf ( c + used, lmax - used, " %s%s", t->a.s1.MiMi, t->a.s1.MjMj );
 
   if ( t->a.s1.D_D[0] && t->a.s1.II[0] == 0 )
     {
-      c += sprintf ( c, " %s", t->a.s1.D_D );
+      used += snprintf ( c + used, lmax - used, " %s", t->a.s1.D_D );
     }
 
-  c += sprintf ( c, " %s%s", t->a.s1.YYGG, t->a.s1.id );
+  used += snprintf ( c + used, lmax - used, " %s%s", t->a.s1.YYGG, t->a.s1.id );
 
   // print IIiii
-  if ( check_len ( sec1,6 ) && t->a.s1.II[0] )
+  if ( t->a.s1.II[0] )
     {
-      c += sprintf ( c, " %s%s", t->a.s1.II, t->a.s1.iii );
+      used += snprintf ( c + used, lmax - used, " %s%s", t->a.s1.II, t->a.s1.iii );
     }
   else
     {
       if ( t->a.s1.LaLaLa[0] )
         {
-          c += sprintf ( c, " 99%s", t->a.s1.LaLaLa );
+          used += snprintf ( c + used, lmax - used, " 99%s", t->a.s1.LaLaLa );
         }
       else
         {
-          c += sprintf ( c, " 99///" );
+          used += snprintf ( c + used, lmax - used, " 99///" );
         }
 
       if ( t->a.s1.Qc[0] && t->a.s1.LoLoLoLo[0] )
         {
-          c += sprintf ( c, " %s%s", t->a.s1.Qc, t->a.s1.LoLoLoLo );
+          used += snprintf ( c + used, lmax - used, " %s%s", t->a.s1.Qc, t->a.s1.LoLoLoLo );
         }
       else
         {
-          c += sprintf ( c, " /////" );
+          used += snprintf ( c + used, lmax - used, " /////" );
         }
 
       if ( t->a.s1.MMM[0] && t->a.s1.Ula[0] && t->a.s1.Ulo[0] )
         {
-          c += sprintf ( c, " %s%s%s", t->a.s1.MMM, t->a.s1.Ula, t->a.s1.Ulo );
+          used += snprintf ( c + used, lmax - used, " %s%s%s", t->a.s1.MMM, t->a.s1.Ula, t->a.s1.Ulo );
         }
 
       if ( t->a.s1.h0h0h0h0[0] )
         {
-          c += sprintf ( c, " %s%s", t->a.s1.h0h0h0h0, t->a.s1.im );
+          used += snprintf ( c + used, lmax - used, " %s%s", t->a.s1.h0h0h0h0, t->a.s1.im );
         }
     }
 
-  if ( c != c0 )
-    {
-      *sec1 = c;
-    }
-  return *sec1;
+  *sec1 = c + used;
+  return used;
 }
 
 
 /*!
-  \fn char * print_temp_a_sec2 (char **sec2, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_a_sec2 (char **sec2, size_t lmax, struct temp_chunks *t)
   \brief Prints the section 2 of part A of a TEMP report
   \param sec2 the pointer where to print section
   \param lmax max length permited
@@ -216,38 +208,30 @@ char * print_temp_a_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 
   returns the string sec2
 */
-char * print_temp_a_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t )
+size_t print_temp_a_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t )
 {
   size_t i;
-  char *c = *sec2, *c0 = *sec2;
+  size_t used = 0;
+  char *c = *sec2;
 
   //Surface level
-  if ( check_len ( sec2, 18 ) )
-    {
-      c += sprintf ( c, " 99%s", t->a.s2.lev0.PnPnPn );
-      c += sprintf ( c, " %s%s", t->a.s2.lev0.TnTnTan, t->a.s2.lev0.DnDn );
-      c += sprintf ( c, " %s", t->a.s2.lev0.dndnfnfnfn );
-    }
+  used += snprintf ( c + used, lmax - used, " 99%s", t->a.s2.lev0.PnPnPn );
+  used += snprintf ( c + used, lmax - used, " %s%s", t->a.s2.lev0.TnTnTan, t->a.s2.lev0.DnDn );
+  used += snprintf ( c + used, lmax - used, " %s", t->a.s2.lev0.dndnfnfnfn );
+
   for ( i = 0; i < t->a.s2.n ; i++ )
     {
-      if ( check_len ( sec2, 18 ) )
-        {
-          c += sprintf ( c, " %s%s", t->a.s2.std[i].PnPn, t->a.s2.std[i].hnhnhn );
-          c += sprintf ( c, " %s%s", t->a.s2.std[i].TnTnTan, t->a.s2.std[i].DnDn );
-          c += sprintf ( c, " %s", t->a.s2.std[i].dndnfnfnfn );
-        }
+      used += snprintf ( c + used, lmax - used, " %s%s", t->a.s2.std[i].PnPn, t->a.s2.std[i].hnhnhn );
+      used += snprintf ( c + used, lmax - used, " %s%s", t->a.s2.std[i].TnTnTan, t->a.s2.std[i].DnDn );
+      used += snprintf ( c + used, lmax - used, " %s", t->a.s2.std[i].dndnfnfnfn );
     }
 
-  if ( c != c0 )
-    {
-      *sec2 = c;
-    }
-  return *sec2;
-
+  *sec2 = c + used;
+  return used;
 }
 
 /*!
-  \fn char * print_temp_a_sec3 (char **sec3, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_a_sec3 (char **sec3, size_t lmax, struct temp_chunks *t)
   \brief Prints the section 3 of part A of a TEMP report
   \param sec3 the pointer where to print section
   \param lmax max length permited
@@ -255,41 +239,33 @@ char * print_temp_a_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t )
 
   returns the string sec3
 */
-char * print_temp_a_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
+size_t print_temp_a_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
 {
   size_t i;
-  char *c = *sec3, *c0 = *sec3;
+  size_t used = 0;
+  char *c = *sec3;
 
   if ( t->a.s3.n == 0 )
     {
-      if ( check_len ( sec3, 6 ) )
-        {
-          c += sprintf ( c, " 88999" );
-        }
+      used += snprintf ( c + used, lmax - used, " 88999" );
     }
   else
     {
       for ( i = 0; i < t->a.s3.n ; i++ )
         {
-          if ( check_len ( sec3, 18 ) )
-            {
-              c += sprintf ( c, " 88%s", t->a.s3.trop[i].PnPnPn );
-              c += sprintf ( c, " %s%s", t->a.s3.trop[i].TnTnTan, t->a.s3.trop[i].DnDn );
-              c += sprintf ( c, " %s", t->a.s3.trop[i].dndnfnfnfn );
-            }
+          used += snprintf ( c + used, lmax - used, " 88%s", t->a.s3.trop[i].PnPnPn );
+          used += snprintf ( c + used, lmax - used, " %s%s", t->a.s3.trop[i].TnTnTan, t->a.s3.trop[i].DnDn );
+          used += snprintf ( c + used, lmax - used, " %s", t->a.s3.trop[i].dndnfnfnfn );
         }
     }
 
-  if ( c != c0 )
-    {
-      *sec3 = c;
-    }
-  return *sec3;
+  *sec3 = c + used;
+  return used;
 
 }
 
 /*!
-  \fn char * print_temp_a_sec4 (char **sec4, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_a_sec4 (char **sec4, size_t lmax, struct temp_chunks *t)
   \brief Prints the section 4 of part A of a TEMP report
   \param sec4 the pointer where to print section
   \param lmax max length permited
@@ -297,54 +273,44 @@ char * print_temp_a_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
 
   returns the string sec1
 */
-char * print_temp_a_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
+size_t print_temp_a_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
 {
   size_t i;
-  char *c = *sec4, *c0 = *sec4;
+  size_t used = 0;
+  char *c = *sec4;
 
   if ( t->a.s4.n == 0 )
     {
-      if ( check_len ( sec4, 6 ) )
-
-        {
-          c += sprintf ( c, " 77999" );
-        }
+      used += snprintf ( c + used, lmax - used, " 77999" );
     }
   else
     {
       for ( i = 0; i < t->a.s4.n ; i++ )
         {
-          if ( check_len ( sec4, 18 ) )
+          if ( t->a.s4.windx[i].no_last_wind )
             {
-              if ( t->a.s4.windx[i].no_last_wind )
-                {
-                  c += sprintf ( c, " 77%s", t->a.s4.windx[i].PmPmPm );
-                }
-              else
-                {
-                  c += sprintf ( c, " 66%s", t->a.s4.windx[i].PmPmPm );
-                }
-              c += sprintf ( c, " %s", t->a.s4.windx[i].dmdmfmfmfm );
+              used += snprintf ( c + used, lmax - used, " 77%s", t->a.s4.windx[i].PmPmPm );
+            }
+          else
+            {
+              used += snprintf ( c + used, lmax - used, " 66%s", t->a.s4.windx[i].PmPmPm );
+            }
+          used += snprintf ( c + used, lmax - used, " %s", t->a.s4.windx[i].dmdmfmfmfm );
 
-              if ( t->a.s4.windx[i].vbvb[0] && t->a.s4.windx[i].vava[0] )
-                {
-                  c += sprintf ( c, " 4%s%s", t->a.s4.windx[i].vbvb, t->a.s4.windx[i].vava );
-                }
+          if ( t->a.s4.windx[i].vbvb[0] && t->a.s4.windx[i].vava[0] )
+            {
+              used += snprintf ( c + used, lmax - used, " 4%s%s", t->a.s4.windx[i].vbvb, t->a.s4.windx[i].vava );
             }
         }
     }
 
-
-  if ( c != c0 )
-    {
-      *sec4 = c;
-    }
-  return *sec4;
+  *sec4 = c + used;
+  return used;
 
 }
 
 /*!
-  \fn char * print_temp_a_sec7 (char **sec7, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_a_sec7 (char **sec7, size_t lmax, struct temp_chunks *t)
   \brief Prints the section 7 of part A of a TEMP report
   \param sec7 the pointer where to print section
   \param lmax max length permited
@@ -352,58 +318,58 @@ char * print_temp_a_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
 
   returns the string sec7
 */
-char * print_temp_a_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
+size_t print_temp_a_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
 {
-  char *c = *sec7, *c0 = *sec7;
+  size_t used = 0;
+  char *c = *sec7;
 
-  if ( check_len ( sec7, 18 ) )
+  used += snprintf ( c + used, lmax - used, " 31313" );
+  used += snprintf ( c + used, lmax - used, " %s%s%s", t->a.s7.sr, t->a.s7.rara, t->a.s7.sasa );
+  used += snprintf ( c + used, lmax - used, " 8%s%s", t->a.s7.GG, t->a.s7.gg );
+
+  if ( t->a.s7.TwTwTw[0] )
     {
-      c += sprintf ( c, " 31313" );
-      c += sprintf ( c, " %s%s%s", t->a.s7.sr, t->a.s7.rara, t->a.s7.sasa );
-      c += sprintf ( c, " 8%s%s", t->a.s7.GG, t->a.s7.gg );
-    }
-  if ( t->a.s7.TwTwTw[0] && check_len ( sec7, 6 ) )
-    {
-      c += sprintf ( c, " 9%s%s", t->a.s7.sn, t->a.s7.TwTwTw );
+      used += snprintf ( c + used, lmax - used, " 9%s%s", t->a.s7.sn, t->a.s7.TwTwTw );
     }
 
-  if ( c != c0 )
-    {
-      *sec7 = c;
-    }
-  return *sec7;
+  *sec7 = c + used;
+  return used;
 }
 
 /*!
-  \fn char * print_temp_a (char *report, size_t lmax, struct temp_chunks *t, int mode )
+  \fn size_t print_temp_a (char *report, size_t lmax, struct temp_chunks *t, int mode )
   \brief Prints the part A of a TEMP report into a string
   \param report string where to write the results
   \param lmax max length permited
   \param t pointer to s atruct \ref temp_chunks where the parse results are set
 */
-int print_temp_a ( char *report, size_t lmax, struct temp_chunks *t , int mode )
+int print_temp_a ( char *report, size_t lmax, struct temp_chunks *t, int mode )
 {
+  size_t used = 0;
   char *c;
 
   c = report;
 
   // Needs time extension
-  if ( t->a.e.YYYY[0] == 0 )
+  if ( t->a.e.YYYY[0] == 0  || t->a.e.YYYY[0] == '0')
     {
       return 1;
     }
 
-  print_temp_a_sec1 ( &c, lmax, t );
-  print_temp_a_sec2 ( &c, lmax - strlen ( report ), t );
-  print_temp_a_sec3 ( &c, lmax - strlen ( report ), t );
-  print_temp_a_sec4 ( &c, lmax - strlen ( report ), t );
-  print_temp_a_sec7 ( &c, lmax - strlen ( report ), t );
-  c += sprintf ( c, "=" );
+  if ( mode )
+    used += print_temp_wigos_id ( &c, lmax, t );
+
+  used += print_temp_a_sec1 ( &c, lmax - used, t );
+  used += print_temp_a_sec2 ( &c, lmax - used, t );
+  used += print_temp_a_sec3 ( &c, lmax - used, t );
+  used += print_temp_a_sec4 ( &c, lmax - used, t );
+  used += print_temp_a_sec7 ( &c, lmax - used, t );
+  used += snprintf ( c, lmax - used, "=" );
   return 0;
 }
 
 /*!
-  \fn char * print_temp_b_sec1 (char **sec1, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_b_sec1 (char **sec1, size_t lmax, struct temp_chunks *t)
   \brief Prints the section 1 of part B of a TEMP report
   \param sec1 the pointer where to print section
   \param lmax max length permited
@@ -411,66 +377,64 @@ int print_temp_a ( char *report, size_t lmax, struct temp_chunks *t , int mode )
 
   returns the string sec1
 */
-char * print_temp_b_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
+size_t print_temp_b_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 {
-  char *c = *sec1, *c0 = *sec1;
+  size_t used = 0;
+  char *c = *sec1;
 
-  c += sprintf ( c, "%s", t->t.datime );
+  used += snprintf ( c + used, lmax - used, "%s", t->t.datime );
 
-  c += sprintf ( c, " %s%s", t->b.s1.MiMi, t->b.s1.MjMj );
+  used += snprintf ( c + used, lmax - used, " %s%s", t->b.s1.MiMi, t->b.s1.MjMj );
 
   if ( t->b.s1.D_D[0] && t->a.s1.II[0] == 0 )
     {
-      c += sprintf ( c, " %s", t->b.s1.D_D );
+      used += snprintf ( c + used, lmax - used, " %s", t->b.s1.D_D );
     }
 
-  c += sprintf ( c, " %s%s", t->b.s1.YYGG, t->b.s1.a4 );
+  used += snprintf ( c + used, lmax - used, " %s%s", t->b.s1.YYGG, t->b.s1.a4 );
 
   // print IIiii
-  if ( check_len ( sec1,6 ) && t->b.s1.II[0] )
+  if ( t->b.s1.II[0] )
     {
-      c += sprintf ( c, " %s%s", t->b.s1.II, t->b.s1.iii );
+      used += snprintf ( c + used, lmax - used, " %s%s", t->b.s1.II, t->b.s1.iii );
     }
   else
     {
       if ( t->b.s1.LaLaLa[0] )
         {
-          c += sprintf ( c, " 99%s", t->b.s1.LaLaLa );
+          used += snprintf ( c + used, lmax - used, " 99%s", t->b.s1.LaLaLa );
         }
       else
         {
-          c += sprintf ( c, " 99///" );
+          used += snprintf ( c + used, lmax - used, " 99///" );
         }
 
       if ( t->b.s1.Qc[0] && t->b.s1.LoLoLoLo[0] )
         {
-          c += sprintf ( c, " %s%s", t->b.s1.Qc, t->b.s1.LoLoLoLo );
+          used += snprintf ( c + used, lmax - used, " %s%s", t->b.s1.Qc, t->b.s1.LoLoLoLo );
         }
       else
         {
-          c += sprintf ( c, " /////" );
+          used += snprintf ( c + used, lmax - used, " /////" );
         }
 
       if ( t->b.s1.MMM[0] && t->b.s1.Ula[0] && t->b.s1.Ulo[0] )
         {
-          c += sprintf ( c, " %s%s%s", t->b.s1.MMM, t->b.s1.Ula, t->b.s1.Ulo );
+          used += snprintf ( c + used, lmax - used, " %s%s%s", t->b.s1.MMM, t->b.s1.Ula, t->b.s1.Ulo );
         }
 
       if ( t->b.s1.h0h0h0h0[0] )
         {
-          c += sprintf ( c, " %s%s", t->b.s1.h0h0h0h0, t->b.s1.im );
+          used += snprintf ( c + used, lmax - used, " %s%s", t->b.s1.h0h0h0h0, t->b.s1.im );
         }
     }
 
-  if ( c != c0 )
-    {
-      *sec1 = c;
-    }
-  return *sec1;
+  *sec1= c + used;
+  return used;
 }
 
 /*!
-  \fn char * print_temp_b_sec5 (char **sec5, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_b_sec5 (char **sec5, size_t lmax, struct temp_chunks *t)
   \brief Prints the section 5 of part B of a TEMP report
   \param sec5 the pointer where to print section
   \param lmax max length permited
@@ -478,29 +442,24 @@ char * print_temp_b_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 
   returns the string sec5
 */
-char * print_temp_b_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t )
+size_t print_temp_b_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t )
 {
+  size_t used = 0;
   size_t i;
-  char *c = *sec5, *c0 = *sec5;
+  char *c = *sec5;
 
   for ( i = 0; i < t->b.s5.n && i < TEMP_NMAX_POINTS ; i++ )
     {
-      if ( check_len ( sec5, 12 ) )
-        {
-          c += sprintf ( c, " %s%s", t->b.s5.th[i].nini, t->b.s5.th[i].PnPnPn );
-          c += sprintf ( c, " %s%s", t->b.s5.th[i].TnTnTan, t->b.s5.th[i].DnDn );
-        }
+      used += snprintf ( c + used, lmax - used, " %s%s", t->b.s5.th[i].nini, t->b.s5.th[i].PnPnPn );
+      used += snprintf ( c + used, lmax - used, " %s%s", t->b.s5.th[i].TnTnTan, t->b.s5.th[i].DnDn );
     }
 
-  if ( c != c0 )
-    {
-      *sec5 = c;
-    }
-  return *sec5;
+  *sec5 = c + used;
+  return used;
 }
 
 /*!
-  \fn char * print_temp_b_sec6 (char **sec6, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_b_sec6 (char **sec6, size_t lmax, struct temp_chunks *t)
   \brief Prints the section 6 of part B of a TEMP report
   \param sec6 the pointer where to print section
   \param lmax max length permited
@@ -508,34 +467,26 @@ char * print_temp_b_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t )
 
   returns the string sec6
 */
-char * print_temp_b_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
+size_t print_temp_b_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
 {
   size_t i;
-  char *c = *sec6, *c0 = *sec6;
+  size_t used = 0;
+  char *c = *sec6;
 
-  if ( check_len ( sec6, 6 ) )
-    {
-      c += sprintf ( c, " 21212" );
-    }
+  used += snprintf ( c + used, lmax - used, " 21212" );
 
   for ( i = 0; i < t->b.s6.n && i < TEMP_NMAX_POINTS ; i++ )
     {
-      if ( check_len ( sec6, 12 ) )
-        {
-          c += sprintf ( c, " %s%s", t->b.s6.wd[i].nini, t->b.s6.wd[i].PnPnPn );
-          c += sprintf ( c, " %s", t->b.s6.wd[i].dndnfnfnfn );
-        }
+      used += snprintf ( c + used, lmax - used, " %s%s", t->b.s6.wd[i].nini, t->b.s6.wd[i].PnPnPn );
+      used += snprintf ( c + used, lmax - used, " %s", t->b.s6.wd[i].dndnfnfnfn );
     }
 
-  if ( c != c0 )
-    {
-      *sec6 = c;
-    }
-  return *sec6;
+  *sec6 = c + used;
+  return used;
 }
 
 /*!
-  \fn char * print_temp_b_sec7 (char **sec7, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_b_sec7 (char **sec7, size_t lmax, struct temp_chunks *t)
   \brief Prints the section 7 of part B of a TEMP report
   \param sec7 the pointer where to print section
   \param lmax max length permited
@@ -543,30 +494,26 @@ char * print_temp_b_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
 
   returns the string sec7
 */
-char * print_temp_b_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
+size_t print_temp_b_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
 {
-  char *c = *sec7, *c0 = *sec7;
+  size_t used = 0;
+  char *c = *sec7;
 
-  if ( check_len ( sec7, 18 ) )
+  used += snprintf ( c + used, lmax - used, " 31313" );
+  used += snprintf ( c + used, lmax - used, " %s%s%s", t->b.s7.sr, t->b.s7.rara, t->b.s7.sasa );
+  used += snprintf ( c + used, lmax - used, " 8%s%s", t->b.s7.GG, t->b.s7.gg );
+
+  if ( t->b.s7.TwTwTw[0] )
     {
-      c += sprintf ( c, " 31313" );
-      c += sprintf ( c, " %s%s%s", t->b.s7.sr, t->b.s7.rara, t->b.s7.sasa );
-      c += sprintf ( c, " 8%s%s", t->b.s7.GG, t->b.s7.gg );
-    }
-  if ( t->b.s7.TwTwTw[0] && check_len ( sec7, 6 ) )
-    {
-      c += sprintf ( c, " 9%s%s", t->b.s7.sn, t->b.s7.TwTwTw );
+      used += snprintf ( c + used, lmax - used, " 9%s%s", t->b.s7.sn, t->b.s7.TwTwTw );
     }
 
-  if ( c != c0 )
-    {
-      *sec7 = c;
-    }
-  return *sec7;
+  *sec7 = c + used;
+  return used;
 }
 
 /*!
-  \fn char * print_temp_b_sec8 (char **sec8, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_b_sec8 (char **sec8, size_t lmax, struct temp_chunks *t)
   \brief Prints the section 8 of part B of a TEMP report
   \param sec8 the pointer where to print section
   \param lmax max length permited
@@ -574,66 +521,64 @@ char * print_temp_b_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
 
   returns the string sec8
 */
-char * print_temp_b_sec8 ( char **sec8, size_t lmax, struct temp_chunks *t )
+size_t print_temp_b_sec8 ( char **sec8, size_t lmax, struct temp_chunks *t )
 {
-  char *c = *sec8, *c0 = *sec8;
+  size_t used = 0;
+  char *c = *sec8;
 
-  if ( check_len ( sec8, 12 ) && t->b.s8.h[0] )
+  if ( t->b.s8.h[0] )
     {
-      c += sprintf ( c, " 41414 " );
+      used += snprintf ( c + used, lmax - used, " 41414 " );
       if ( t->b.s8.Nh[0] )
         {
-          c += sprintf ( c, "%s", t->b.s8.Nh );
+          used += snprintf ( c + used, lmax - used, "%s", t->b.s8.Nh );
         }
       else
         {
-          c += sprintf ( c, "/" );
+          used += snprintf ( c + used, lmax - used, "/" );
         }
 
       if ( t->b.s8.Cl[0] )
         {
-          c += sprintf ( c, "%s", t->b.s8.Cl );
+          used += snprintf ( c + used, lmax - used, "%s", t->b.s8.Cl );
         }
       else
         {
-          c += sprintf ( c, "/" );
+          used += snprintf ( c + used, lmax - used, "/" );
         }
 
       if ( t->b.s8.h[0] )
         {
-          c += sprintf ( c, "%s", t->b.s8.h );
+          used += snprintf ( c + used, lmax - used, "%s", t->b.s8.h );
         }
       else
         {
-          c += sprintf ( c, "/" );
+          used += snprintf ( c + used, lmax - used, "/" );
         }
 
       if ( t->b.s8.Cm[0] )
         {
-          c += sprintf ( c, "%s", t->b.s8.Cm );
+          used += snprintf ( c + used, lmax - used, "%s", t->b.s8.Cm );
         }
       else
         {
-          c += sprintf ( c, "/" );
+          used += snprintf ( c + used, lmax - used, "/" );
         }
 
       if ( t->b.s8.Ch[0] )
         {
-          c += sprintf ( c, "%s", t->b.s8.Ch );
+          used += snprintf ( c + used, lmax - used, "%s", t->b.s8.Ch );
         }
       else
         {
-          c += sprintf ( c, "/" );
+          used += snprintf ( c + used, lmax - used, "/" );
         }
 
-      //c += sprintf ( c, " %s%s%s%s%s", t->b.s8.Nh, t->b.s8.Cl, t->b.s8.h, t->b.s8.Cm, t->b.s8.Ch );
+      //used += snprintf ( c + used, lmax - used, " %s%s%s%s%s", t->b.s8.Nh, t->b.s8.Cl, t->b.s8.h, t->b.s8.Cm, t->b.s8.Ch );
     }
 
-  if ( c != c0 )
-    {
-      *sec8 = c;
-    }
-  return *sec8;
+  *sec8 = c + used;
+  return used;
 }
 
 
@@ -644,30 +589,34 @@ char * print_temp_b_sec8 ( char **sec8, size_t lmax, struct temp_chunks *t )
   \param lmax max length permited
   \param t pointer to s atruct \ref temp_chunks where the parse results are set
 */
-int print_temp_b ( char *report, size_t lmax, struct temp_chunks *t, int mode  )
+int print_temp_b ( char *report, size_t lmax, struct temp_chunks *t, int mode )
 {
+  size_t used = 0;
   char *c;
 
   c = report;
 
   // Needs time extension
-  if ( t->b.e.YYYY[0] == 0 )
+  if ( t->b.e.YYYY[0] == 0  || t->b.e.YYYY[0] == '0')
     {
       return 1;
     }
 
-  print_temp_b_sec1 ( &c, lmax, t );
-  print_temp_b_sec5 ( &c, lmax - strlen ( report ), t );
-  print_temp_b_sec6 ( &c, lmax - strlen ( report ), t );
-  print_temp_b_sec7 ( &c, lmax - strlen ( report ), t );
-  print_temp_b_sec8 ( &c, lmax - strlen ( report ), t );
-  c += sprintf ( c, "=" );
+  if ( mode )
+    used += print_temp_wigos_id ( &c, lmax, t );
+
+  used += print_temp_b_sec1 ( &c, lmax - used, t );
+  used += print_temp_b_sec5 ( &c, lmax - used, t );
+  used += print_temp_b_sec6 ( &c, lmax - used, t );
+  used += print_temp_b_sec7 ( &c, lmax - used, t );
+  used += print_temp_b_sec8 ( &c, lmax - used, t );
+  used += snprintf ( c, lmax - used, "=" );
   return 0;
 }
 
 
 /*!
-  \fn char * print_temp_c_sec1 (char **sec1, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_c_sec1 (char **sec1, size_t lmax, struct temp_chunks *t)
   \brief Prints the section 1 of part C of a TEMP report
   \param sec1 the pointer where to print section
   \param lmax max length permited
@@ -675,66 +624,64 @@ int print_temp_b ( char *report, size_t lmax, struct temp_chunks *t, int mode  )
 
   returns the string sec1
 */
-char * print_temp_c_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
+size_t print_temp_c_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 {
-  char *c = *sec1, *c0 = *sec1;
+  size_t used = 0;
+  char *c = *sec1;
 
-  c += sprintf ( c, "%s", t->t.datime );
+  used += snprintf ( c + used, lmax - used, "%s", t->t.datime );
 
-  c += sprintf ( c, " %s%s", t->c.s1.MiMi, t->c.s1.MjMj );
+  used += snprintf ( c + used, lmax - used, " %s%s", t->c.s1.MiMi, t->c.s1.MjMj );
 
   if ( t->c.s1.D_D[0] && t->a.s1.II[0] == 0 )
     {
-      c += sprintf ( c, " %s", t->c.s1.D_D );
+      used += snprintf ( c + used, lmax - used, " %s", t->c.s1.D_D );
     }
 
-  c += sprintf ( c, " %s%s", t->c.s1.YYGG, t->c.s1.id );
+  used += snprintf ( c + used, lmax - used, " %s%s", t->c.s1.YYGG, t->c.s1.id );
 
   // print IIiii
-  if ( check_len ( sec1,6 ) && t->c.s1.II[0] )
+  if ( t->c.s1.II[0] )
     {
-      c += sprintf ( c, " %s%s", t->c.s1.II, t->c.s1.iii );
+      used += snprintf ( c + used, lmax - used, " %s%s", t->c.s1.II, t->c.s1.iii );
     }
   else
     {
       if ( t->c.s1.LaLaLa[0] )
         {
-          c += sprintf ( c, " 99%s", t->c.s1.LaLaLa );
+          used += snprintf ( c + used, lmax - used, " 99%s", t->c.s1.LaLaLa );
         }
       else
         {
-          c += sprintf ( c, " 99///" );
+          used += snprintf ( c + used, lmax - used, " 99///" );
         }
 
       if ( t->c.s1.Qc[0] && t->c.s1.LoLoLoLo[0] )
         {
-          c += sprintf ( c, " %s%s", t->c.s1.Qc, t->c.s1.LoLoLoLo );
+          used += snprintf ( c + used, lmax - used, " %s%s", t->c.s1.Qc, t->c.s1.LoLoLoLo );
         }
       else
         {
-          c += sprintf ( c, " /////" );
+          used += snprintf ( c + used, lmax - used, " /////" );
         }
 
       if ( t->c.s1.MMM[0] && t->c.s1.Ula[0] && t->c.s1.Ulo[0] )
         {
-          c += sprintf ( c, " %s%s%s", t->c.s1.MMM, t->c.s1.Ula, t->c.s1.Ulo );
+          used += snprintf ( c + used, lmax - used, " %s%s%s", t->c.s1.MMM, t->c.s1.Ula, t->c.s1.Ulo );
         }
 
       if ( t->c.s1.h0h0h0h0[0] )
         {
-          c += sprintf ( c, " %s%s", t->c.s1.h0h0h0h0, t->c.s1.im );
+          used += snprintf ( c + used, lmax - used, " %s%s", t->c.s1.h0h0h0h0, t->c.s1.im );
         }
     }
 
-  if ( c != c0 )
-    {
-      *sec1 = c;
-    }
-  return *sec1;
+  *sec1 = c + used;
+  return used;
 }
 
 /*!
-  \fn char * print_temp_c_sec2 (char **sec2, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_c_sec2 (char **sec2, size_t lmax, struct temp_chunks *t)
   \brief Prints the section 2 of part C of a TEMP report
   \param sec2 the pointer where to print section
   \param lmax max length permited
@@ -742,31 +689,26 @@ char * print_temp_c_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 
   returns the string sec2
 */
-char * print_temp_c_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t )
+size_t print_temp_c_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t )
 {
   size_t i;
-  char *c = *sec2, *c0 = *sec2;
+  size_t used = 0;
+  char *c = *sec2;
 
   for ( i = 0; i < t->c.s2.n ; i++ )
     {
-      if ( check_len ( sec2, 18 ) )
-        {
-          c += sprintf ( c, " %s%s", t->c.s2.std[i].PnPn, t->c.s2.std[i].hnhnhn );
-          c += sprintf ( c, " %s%s", t->c.s2.std[i].TnTnTan, t->c.s2.std[i].DnDn );
-          c += sprintf ( c, " %s", t->c.s2.std[i].dndnfnfnfn );
-        }
+      used += snprintf ( c + used, lmax - used, " %s%s", t->c.s2.std[i].PnPn, t->c.s2.std[i].hnhnhn );
+      used += snprintf ( c + used, lmax - used, " %s%s", t->c.s2.std[i].TnTnTan, t->c.s2.std[i].DnDn );
+      used += snprintf ( c + used, lmax - used, " %s", t->c.s2.std[i].dndnfnfnfn );
     }
 
-  if ( c != c0 )
-    {
-      *sec2 = c;
-    }
-  return *sec2;
+  *sec2 = c + used;
+  return used;
 
 }
 
 /*!
-  \fn char * print_temp_c_sec3 (char **sec3, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_c_sec3 (char **sec3, size_t lmax, struct temp_chunks *t)
   \brief Prints the section 3 of part C of a TEMP report
   \param sec3 the pointer where to print section
   \param lmax max length permited
@@ -774,41 +716,33 @@ char * print_temp_c_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t )
 
   returns the string sec3
 */
-char * print_temp_c_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
+size_t print_temp_c_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
 {
   size_t i;
-  char *c = *sec3, *c0 = *sec3;
+  size_t used = 0;
+  char *c = *sec3;
 
   if ( t->c.s3.n == 0 )
     {
-      if ( check_len ( sec3, 6 ) )
-        {
-          c += sprintf ( c, " 88999" );
-        }
+      used += snprintf ( c + used, lmax - used, " 88999" );
     }
   else
     {
       for ( i = 0; i < t->c.s3.n ; i++ )
         {
-          if ( check_len ( sec3, 18 ) )
-            {
-              c += sprintf ( c, " 88%s", t->c.s3.trop[i].PnPnPn );
-              c += sprintf ( c, " %s%s", t->c.s3.trop[i].TnTnTan, t->c.s3.trop[i].DnDn );
-              c += sprintf ( c, " %s", t->c.s3.trop[i].dndnfnfnfn );
-            }
+          used += snprintf ( c + used, lmax - used, " 88%s", t->c.s3.trop[i].PnPnPn );
+          used += snprintf ( c + used, lmax - used, " %s%s", t->c.s3.trop[i].TnTnTan, t->c.s3.trop[i].DnDn );
+          used += snprintf ( c + used, lmax - used, " %s", t->c.s3.trop[i].dndnfnfnfn );
         }
     }
 
-  if ( c != c0 )
-    {
-      *sec3 = c;
-    }
-  return *sec3;
+  *sec3 = c + used;
+  return used;
 
 }
 
 /*!
-  \fn char * print_temp_c_sec4 (char **sec4, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_c_sec4 (char **sec4, size_t lmax, struct temp_chunks *t)
   \brief Prints the section 4 of part C of a TEMP report
   \param sec4 the pointer where to print section
   \param lmax max length permited
@@ -816,53 +750,43 @@ char * print_temp_c_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
 
   returns the string sec4
 */
-char * print_temp_c_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
+size_t print_temp_c_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
 {
   size_t i;
-  char *c = *sec4, *c0 = *sec4;
+  size_t used = 0;
+  char *c = *sec4;
 
   if ( t->c.s4.n == 0 )
     {
-      if ( check_len ( sec4, 6 ) )
-
-        {
-          c += sprintf ( c, " 77999" );
-        }
+      used += snprintf ( c + used, lmax - used, " 77999" );
     }
   else
     {
       for ( i = 0; i < t->c.s4.n ; i++ )
         {
-          if ( check_len ( sec4, 18 ) )
+          if ( t->c.s4.windx[i].no_last_wind )
             {
-              if ( t->c.s4.windx[i].no_last_wind )
-                {
-                  c += sprintf ( c, " 77%s", t->c.s4.windx[i].PmPmPm );
-                }
-              else
-                {
-                  c += sprintf ( c, " 66%s", t->c.s4.windx[i].PmPmPm );
-                }
-              c += sprintf ( c, " %s", t->c.s4.windx[i].dmdmfmfmfm );
-              if ( t->c.s4.windx[i].vbvb[0] && t->c.s4.windx[i].vava[0] )
-                {
-                  c += sprintf ( c, " 4%s%s", t->c.s4.windx[i].vbvb, t->c.s4.windx[i].vava );
-                }
+              used += snprintf ( c + used, lmax - used, " 77%s", t->c.s4.windx[i].PmPmPm );
+            }
+          else
+            {
+              used += snprintf ( c + used, lmax - used, " 66%s", t->c.s4.windx[i].PmPmPm );
+            }
+          used += snprintf ( c + used, lmax - used, " %s", t->c.s4.windx[i].dmdmfmfmfm );
+          if ( t->c.s4.windx[i].vbvb[0] && t->c.s4.windx[i].vava[0] )
+            {
+              used += snprintf ( c + used, lmax - used, " 4%s%s", t->c.s4.windx[i].vbvb, t->c.s4.windx[i].vava );
             }
         }
     }
 
-
-  if ( c != c0 )
-    {
-      *sec4 = c;
-    }
-  return *sec4;
+  *sec4 = c + used;
+  return used;
 
 }
 
 /*!
-  \fn char * print_temp_c_sec7 (char **sec7, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_c_sec7 (char **sec7, size_t lmax, struct temp_chunks *t)
   \brief Prints the section 7 of part C of a TEMP report
   \param sec7 the pointer where to print section
   \param lmax max length permited
@@ -870,26 +794,22 @@ char * print_temp_c_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
 
   returns the string sec7
 */
-char * print_temp_c_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
+size_t print_temp_c_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
 {
-  char *c = *sec7, *c0 = *sec7;
+  size_t used = 0;
+  char *c = *sec7;
 
-  if ( check_len ( sec7, 18 ) )
+  used += snprintf ( c + used, lmax - used, " 31313" );
+  used += snprintf ( c + used, lmax - used, " %s%s%s", t->c.s7.sr, t->c.s7.rara, t->c.s7.sasa );
+  used += snprintf ( c + used, lmax - used, " 8%s%s", t->c.s7.GG, t->c.s7.gg );
+
+  if ( t->c.s7.TwTwTw[0] )
     {
-      c += sprintf ( c, " 31313" );
-      c += sprintf ( c, " %s%s%s", t->c.s7.sr, t->c.s7.rara, t->c.s7.sasa );
-      c += sprintf ( c, " 8%s%s", t->c.s7.GG, t->c.s7.gg );
-    }
-  if ( t->c.s7.TwTwTw[0] && check_len ( sec7, 6 ) )
-    {
-      c += sprintf ( c, " 9%s%s", t->c.s7.sn, t->c.s7.TwTwTw );
+      used += snprintf ( c + used, lmax - used, " 9%s%s", t->c.s7.sn, t->c.s7.TwTwTw );
     }
 
-  if ( c != c0 )
-    {
-      *sec7 = c;
-    }
-  return *sec7;
+  *sec7 = c + used;
+  return used;
 }
 
 /*!
@@ -899,29 +819,33 @@ char * print_temp_c_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
   \param lmax max length permited
   \param t pointer to s atruct \ref temp_chunks where the parse results are set
 */
-int print_temp_c ( char *report, size_t lmax, struct temp_chunks *t, int mode  )
+int print_temp_c ( char *report, size_t lmax, struct temp_chunks *t, int mode )
 {
   char *c;
+  size_t used = 0;
 
   c = report;
 
   // Needs time extension
-  if ( t->b.e.YYYY[0] == 0 )
+  if ( t->c.e.YYYY[0] == 0  || t->c.e.YYYY[0] == '0')
     {
       return 1;
     }
 
-  print_temp_c_sec1 ( &c, lmax, t );
-  print_temp_c_sec2 ( &c, lmax - strlen ( report ), t );
-  print_temp_c_sec3 ( &c, lmax - strlen ( report ), t );
-  print_temp_c_sec4 ( &c, lmax - strlen ( report ), t );
-  print_temp_c_sec7 ( &c, lmax - strlen ( report ), t );
-  c += sprintf ( c, "=" );
+  if ( mode )
+    used += print_temp_wigos_id ( &c, lmax, t );
+
+  used += print_temp_c_sec1 ( &c, lmax - used, t );
+  used += print_temp_c_sec2 ( &c, lmax - used, t );
+  used += print_temp_c_sec3 ( &c, lmax - used, t );
+  used += print_temp_c_sec4 ( &c, lmax - used, t );
+  used += print_temp_c_sec7 ( &c, lmax - used, t );
+  used += snprintf ( c, lmax - used, "=" );
   return 0;
 }
 
 /*!
-  \fn char * print_temp_d_sec1 (char **sec1, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_d_sec1 (char **sec1, size_t lmax, struct temp_chunks *t)
   \brief Prints the section 1 of part D of a TEMP report
   \param sec1 the pointer where to print section
   \param lmax max length permited
@@ -929,66 +853,64 @@ int print_temp_c ( char *report, size_t lmax, struct temp_chunks *t, int mode  )
 
   returns the string sec1
 */
-char * print_temp_d_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
+size_t print_temp_d_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 {
-  char *c = *sec1, *c0 = *sec1;
+  size_t used = 0;
+  char *c = *sec1;
 
-  c += sprintf ( c, "%s", t->t.datime );
+  used += snprintf ( c + used, lmax - used, "%s", t->t.datime );
 
-  c += sprintf ( c, " %s%s", t->d.s1.MiMi, t->d.s1.MjMj );
+  used += snprintf ( c + used, lmax - used, " %s%s", t->d.s1.MiMi, t->d.s1.MjMj );
 
   if ( t->d.s1.D_D[0] && t->a.s1.II[0] == 0 )
     {
-      c += sprintf ( c, " %s", t->d.s1.D_D );
+      used += snprintf ( c + used, lmax - used, " %s", t->d.s1.D_D );
     }
 
-  c += sprintf ( c, " %s/", t->d.s1.YYGG );
+  used += snprintf ( c + used, lmax - used, " %s/", t->d.s1.YYGG );
 
   // print IIiii
-  if ( check_len ( sec1,6 ) && t->d.s1.II[0] )
+  if ( t->d.s1.II[0] )
     {
-      c += sprintf ( c, " %s%s", t->d.s1.II, t->d.s1.iii );
+      used += snprintf ( c + used, lmax - used, " %s%s", t->d.s1.II, t->d.s1.iii );
     }
   else
     {
       if ( t->d.s1.LaLaLa[0] )
         {
-          c += sprintf ( c, " 99%s", t->d.s1.LaLaLa );
+          used += snprintf ( c + used, lmax - used, " 99%s", t->d.s1.LaLaLa );
         }
       else
         {
-          c += sprintf ( c, " 99///" );
+          used += snprintf ( c + used, lmax - used, " 99///" );
         }
 
       if ( t->d.s1.Qc[0] && t->d.s1.LoLoLoLo[0] )
         {
-          c += sprintf ( c, " %s%s", t->d.s1.Qc, t->d.s1.LoLoLoLo );
+          used += snprintf ( c + used, lmax - used, " %s%s", t->d.s1.Qc, t->d.s1.LoLoLoLo );
         }
       else
         {
-          c += sprintf ( c, " /////" );
+          used += snprintf ( c + used, lmax - used, " /////" );
         }
 
       if ( t->d.s1.MMM[0] && t->d.s1.Ula[0] && t->d.s1.Ulo[0] )
         {
-          c += sprintf ( c, " %s%s%s", t->d.s1.MMM, t->d.s1.Ula, t->d.s1.Ulo );
+          used += snprintf ( c + used, lmax - used, " %s%s%s", t->d.s1.MMM, t->d.s1.Ula, t->d.s1.Ulo );
         }
 
       if ( t->d.s1.h0h0h0h0[0] )
         {
-          c += sprintf ( c, " %s%s", t->d.s1.h0h0h0h0, t->d.s1.im );
+          used += snprintf ( c + used, lmax - used, " %s%s", t->d.s1.h0h0h0h0, t->d.s1.im );
         }
     }
 
-  if ( c != c0 )
-    {
-      *sec1 = c;
-    }
-  return *sec1;
+  *sec1 = c + used;
+  return used;
 }
 
 /*!
-  \fn char * print_temp_d_sec5 (char **sec5, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_d_sec5 (char **sec5, size_t lmax, struct temp_chunks *t)
   \brief Prints the section 5 of part D of a TEMP report
   \param sec5 the pointer where to print section
   \param lmax max length permited
@@ -996,29 +918,24 @@ char * print_temp_d_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 
   returns the string sec5
 */
-char * print_temp_d_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t )
+size_t print_temp_d_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t )
 {
   size_t i;
-  char *c = *sec5, *c0 = *sec5;
+  size_t used = 0;
+  char *c = *sec5;
 
   for ( i = 0; i < t->d.s5.n && i < TEMP_NMAX_POINTS ; i++ )
     {
-      if ( check_len ( sec5, 12 ) )
-        {
-          c += sprintf ( c, " %s%s", t->d.s5.th[i].nini, t->d.s5.th[i].PnPnPn );
-          c += sprintf ( c, " %s%s", t->d.s5.th[i].TnTnTan, t->d.s5.th[i].DnDn );
-        }
+      used += snprintf ( c + used, lmax - used, " %s%s", t->d.s5.th[i].nini, t->d.s5.th[i].PnPnPn );
+      used += snprintf ( c + used, lmax - used, " %s%s", t->d.s5.th[i].TnTnTan, t->d.s5.th[i].DnDn );
     }
 
-  if ( c != c0 )
-    {
-      *sec5 = c;
-    }
-  return *sec5;
+  *sec5 = c + used;
+  return used;
 }
 
 /*!
-  \fn char * print_temp_d_sec6 (char **sec6, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_d_sec6 (char **sec6, size_t lmax, struct temp_chunks *t)
   \brief Prints the section 6 of part D of a TEMP report
   \param sec6 the pointer where to print section
   \param lmax max length permited
@@ -1026,34 +943,26 @@ char * print_temp_d_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t )
 
   returns the string sec6
 */
-char * print_temp_d_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
+size_t print_temp_d_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
 {
   size_t i;
-  char *c = *sec6, *c0 = *sec6;
+  size_t used = 0;
+  char *c = *sec6;
 
-  if ( check_len ( sec6, 6 ) )
-    {
-      c += sprintf ( c, " 21212" );
-    }
+  used += snprintf ( c + used, lmax - used, " 21212" );
 
   for ( i = 0; i < t->d.s6.n && i < TEMP_NMAX_POINTS ; i++ )
     {
-      if ( check_len ( sec6, 12 ) )
-        {
-          c += sprintf ( c, " %s%s", t->d.s6.wd[i].nini, t->d.s6.wd[i].PnPnPn );
-          c += sprintf ( c, " %s", t->d.s6.wd[i].dndnfnfnfn );
-        }
+      used += snprintf ( c + used, lmax - used, " %s%s", t->d.s6.wd[i].nini, t->d.s6.wd[i].PnPnPn );
+      used += snprintf ( c + used, lmax - used, " %s", t->d.s6.wd[i].dndnfnfnfn );
     }
 
-  if ( c != c0 )
-    {
-      *sec6 = c;
-    }
-  return *sec6;
+  *sec6 = c + used;
+  return used;
 }
 
 /*!
-  \fn char * print_temp_d_sec7 (char **sec7, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_d_sec7 (char **sec7, size_t lmax, struct temp_chunks *t)
   \brief Prints the section 7 of part D of a TEMP report
   \param sec7 the pointer where to print section
   \param lmax max length permited
@@ -1061,26 +970,41 @@ char * print_temp_d_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
 
   returns the string sec7
 */
-char * print_temp_d_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
+size_t print_temp_d_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
 {
-  char *c = *sec7, *c0 = *sec7;
+  size_t used = 0;
+  char *c = *sec7;
 
-  if ( check_len ( sec7, 18 ) )
+  used += snprintf ( c + used, lmax - used, " 31313" );
+  used += snprintf ( c + used, lmax - used, " %s%s%s", t->d.s7.sr, t->d.s7.rara, t->d.s7.sasa );
+  used += snprintf ( c + used, lmax - used, " 8%s%s", t->d.s7.GG, t->d.s7.gg );
+
+  if ( t->d.s7.TwTwTw[0] )
     {
-      c += sprintf ( c, " 31313" );
-      c += sprintf ( c, " %s%s%s", t->d.s7.sr, t->d.s7.rara, t->d.s7.sasa );
-      c += sprintf ( c, " 8%s%s", t->d.s7.GG, t->d.s7.gg );
-    }
-  if ( t->d.s7.TwTwTw[0] && check_len ( sec7, 6 ) )
-    {
-      c += sprintf ( c, " 9%s%s", t->d.s7.sn, t->d.s7.TwTwTw );
+      used += snprintf ( c + used, lmax - used, " 9%s%s", t->d.s7.sn, t->d.s7.TwTwTw );
     }
 
-  if ( c != c0 )
-    {
-      *sec7 = c;
-    }
-  return *sec7;
+  *sec7 = c + used;
+  return used;
+}
+
+/*!
+ *  \fn size_t print_climat_wigos_id ( char **wid,  size_t lmax, struct buoy_chunks *b )
+ *  \brief Prints a WIGOS identifier in a temp report
+ */
+size_t print_temp_wigos_id ( char **wid,  size_t lmax, struct temp_chunks *t )
+{
+  char *c = *wid;
+  size_t used = 0;
+
+  used += snprintf ( c + used, lmax, "%d-%d-%d-%s", t->wid.series, t->wid.issuer, t->wid.issue, t->wid.local_id );
+  while ( used < 32 )
+    c[used++] = ' ';
+  c[used++] = '|';
+  c[used] = 0;
+  *wid = c + used;
+
+  return used;
 }
 
 
@@ -1091,23 +1015,26 @@ char * print_temp_d_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
   \param lmax max length permited
   \param t pointer to s atruct \ref temp_chunks where the parse results are set
 */
-int print_temp_d ( char *report, size_t lmax, struct temp_chunks *t, int mode  )
+int print_temp_d ( char *report, size_t lmax, struct temp_chunks *t, int mode )
 {
   char *c;
-
+  size_t used = 0;
   c = report;
 
   // Needs time extension
-  if ( t->b.e.YYYY[0] == 0 )
+  if ( t->d.e.YYYY[0] == 0  || t->d.e.YYYY[0] == '0')
     {
       return 1;
     }
 
-  print_temp_d_sec1 ( &c, lmax, t );
-  print_temp_d_sec5 ( &c, lmax - strlen ( report ), t );
-  print_temp_d_sec6 ( &c, lmax - strlen ( report ), t );
-  print_temp_d_sec7 ( &c, lmax - strlen ( report ), t );
-  c += sprintf ( c, "=" );
+  if ( mode )
+    used += print_temp_wigos_id ( &c, lmax, t );
+
+  used += print_temp_d_sec1 ( &c, lmax - used, t );
+  used += print_temp_d_sec5 ( &c, lmax - used, t );
+  used += print_temp_d_sec6 ( &c, lmax - used, t );
+  used += print_temp_d_sec7 ( &c, lmax - used, t );
+  used += snprintf ( c, lmax - used, "=" );
   return 0;
 }
 
@@ -1117,7 +1044,7 @@ int print_temp_d ( char *report, size_t lmax, struct temp_chunks *t, int mode  )
    \param m pointer to a struct \ref metreport in which alphanumeric string members stores the reults
    \param mode If == 0 legacy mode. Igf == 1 the print WIGOS identifier
  */
-int print_temp ( struct metreport *m , int mode)
+int print_temp ( struct metreport *m, int mode )
 {
   // It is required that al lesat a standard level where decoded in SEC A
   if ( m->temp.a.mask & TEMP_SEC_2 )

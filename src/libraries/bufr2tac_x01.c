@@ -24,22 +24,22 @@
 #include "bufr2tac.h"
 #include <ctype.h>
 
-int check_wigos_local_id (char *local_id)
+int check_wigos_local_id ( char *local_id )
 {
   char *c = local_id;
-  
+
   // first char cannot be blank
-  if (!(isalpha(*c)) && !(isdigit(*c)))
+  if ( ! ( isalpha ( *c ) ) && ! ( isdigit ( *c ) ) )
     return 1;
   c++;
-  
-  while (*c)
-  {
-    if (!(isalpha(*c)) && !(isdigit(*c)) && !(isblank(*c))) 
-      return 1;
-    c++;
-  }  
-  
+
+  while ( *c )
+    {
+      if ( ! ( isalpha ( *c ) ) && ! ( isdigit ( *c ) ) && ! ( isblank ( *c ) ) )
+        return 1;
+      c++;
+    }
+
   return 0;
 }
 
@@ -156,32 +156,32 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       break;
 
     case 125: // 0 01 125 . WIGOS identifier series
-        syn->wid.series = (uint8_t) s->ival;
+      syn->wid.series = ( uint8_t ) s->ival;
       break;
-      
+
     case 126: // 0 01 126 . WIGOS issuer of identifier
-        syn->wid.issuer = (uint16_t) s->ival;
+      syn->wid.issuer = ( uint16_t ) s->ival;
       break;
-      
+
     case 127: // 0 01 127 , WIGOS issue number
-        syn->wid.issue = (uint16_t) s->ival;
+      syn->wid.issue = ( uint16_t ) s->ival;
       break;
-      
-    case 128: // 0 01 128 . WIGOS local identifier (character)  
+
+    case 128: // 0 01 128 . WIGOS local identifier (character)
       if ( strlen ( s->a->cval ) <= 16 )
         {
-          adjust_string(s->a->cval);
-          if (check_wigos_local_id(s->a->cval))
-          {
-             bufr2tac_set_error ( s, 1, "synop_parse_x01()" ,"Bad WIGOS Local identifier");
-          }
-          strcpy (syn->wid.local_id , s->a->cval);
+          adjust_string ( s->a->cval );
+          if ( check_wigos_local_id ( s->a->cval ) )
+            {
+              bufr2tac_set_error ( s, 1, "synop_parse_x01()","Bad WIGOS Local identifier" );
+            }
+          strcpy ( syn->wid.local_id, s->a->cval );
           s->mask |= SUBSET_MASK_HAVE_WIGOS_ID ;
         }
-       break; 
-      
+      break;
+
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && ( s->a->mask & DESCRIPTOR_VALUE_MISSING ) == 0 )
         bufr2tac_set_error ( s, 0, "syn_parse_x01()", "Descriptor not parsed" );
       break;
     }
@@ -222,14 +222,14 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
     case 20: // 0 01 004
       sprintf ( b->s0.bw, "%d", s->ival );
       break;
-      
+
     case 5: // 0 01 005
       if ( s->ival < 1000 )
         sprintf ( b->s0.nbnbnb, "%03d", s->ival % 1000 );
       else
         sprintf ( b->s0.nbnbnb, "%05d", s->ival % 100000 ); // note this is a nnnnn extension
       break;
-      
+
     case 15: // 0 01 015. Station or site name
       if ( strlen ( s->a->cval ) <= 80 )
         {
@@ -238,12 +238,12 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
           strcpy ( s->name, aux );
           s->mask |= SUBSET_MASK_HAVE_NAME;
         }
-      else if (BUFR2TAC_DEBUG_LEVEL > 0)
+      else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
         {
           bufr2tac_set_error ( s, 1, "buoy_parse_x01()", "Station or site name length > 80. Cannot set s->name" );
         }
       break;
-      
+
     case 87: // 0 01 087. WMO marine observing platform extended identifier
       // See https://community.wmo.int/rules-allocating-wmo-numbers
       // A1bwnnn is equivalent to A1Bwnnnnn when nnnnn < 1000
@@ -259,13 +259,13 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
           else
             strcpy ( b->s0.nbnbnb, & aux[2] );
         }
-      else if (BUFR2TAC_DEBUG_LEVEL > 0)
+      else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
         {
-          bufr2tac_set_error ( s, 1, "buoy_parse_x01()", 
+          bufr2tac_set_error ( s, 1, "buoy_parse_x01()",
                                "WMO marine observing platform extended identifier >= 100000000. Cannot set s0.A1, s0.bw, s0.nbnbnb" );
         }
       break;
-      
+
     case 101: // 0 01 101 . State identifier
       if ( strlen ( s->a->ctable ) <= 256 )
         {
@@ -281,32 +281,32 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       break;
 
     case 125: // 0 01 125 . WIGOS identifier series
-        b->wid.series = (uint8_t) s->ival;
+      b->wid.series = ( uint8_t ) s->ival;
       break;
-      
+
     case 126: // 0 01 126 . WIGOS issuer of identifier
-        b->wid.issuer = (uint16_t) s->ival;
-      break; 
-      
-    case 127: // 0 01 127 , WIGOS issue number
-        b->wid.issue = (uint16_t) s->ival;
+      b->wid.issuer = ( uint16_t ) s->ival;
       break;
-      
-    case 128: // 0 01 128 . WIGOS local identifier (character)  
+
+    case 127: // 0 01 127 , WIGOS issue number
+      b->wid.issue = ( uint16_t ) s->ival;
+      break;
+
+    case 128: // 0 01 128 . WIGOS local identifier (character)
       if ( strlen ( s->a->cval ) <= 16 )
         {
-          adjust_string(s->a->cval);
-          if (check_wigos_local_id(s->a->cval))
-          {
-             bufr2tac_set_error ( s, 1, "buoy_parse_x01()" ,"Bad WIGOS Local identifier");
-          }
-          strcpy (b->wid.local_id , s->a->cval);
+          adjust_string ( s->a->cval );
+          if ( check_wigos_local_id ( s->a->cval ) )
+            {
+              bufr2tac_set_error ( s, 1, "buoy_parse_x01()","Bad WIGOS Local identifier" );
+            }
+          strcpy ( b->wid.local_id, s->a->cval );
           s->mask |= SUBSET_MASK_HAVE_WIGOS_ID ;
         }
-       break; 
-      
+      break;
+
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && ( s->a->mask & DESCRIPTOR_VALUE_MISSING ) == 0 )
         bufr2tac_set_error ( s, 0, "buoy_parse_x01()", "Descriptor not parsed" );
       break;
     }
@@ -364,40 +364,40 @@ int climat_parse_x01 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
           strcpy ( s->name, aux );
           s->mask |= SUBSET_MASK_HAVE_NAME;
         }
-      else if (BUFR2TAC_DEBUG_LEVEL > 0)
+      else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
         {
           bufr2tac_set_error ( s, 1, "climat_parse_x01()", "Station or site name length > 80. Cannot set s->name" );
         }
       break;
 
     case 125: // 0 01 125 . WIGOS identifier series
-        c->wid.series = (uint8_t) s->ival;
+      c->wid.series = ( uint8_t ) s->ival;
       break;
-      
+
     case 126: // 0 01 126 . WIGOS issuer of identifier
-        c->wid.issuer = (uint16_t) s->ival;
+      c->wid.issuer = ( uint16_t ) s->ival;
       break;
-      
+
     case 127: // 0 01 127 , WIGOS issue number
-        c->wid.issue = (uint16_t) s->ival;
+      c->wid.issue = ( uint16_t ) s->ival;
       break;
-      
-    case 128: // 0 01 128 . WIGOS local identifier (character)  
+
+    case 128: // 0 01 128 . WIGOS local identifier (character)
       if ( strlen ( s->a->cval ) <= 16 )
         {
-          strcpy (c->wid.local_id , s->a->cval);
-          if (check_wigos_local_id(s->a->cval))
-          {
-             bufr2tac_set_error ( s, 1, "climat_parse_x01()" ,"Bad WIGOS Local identifier");
-          }
+          strcpy ( c->wid.local_id, s->a->cval );
+          if ( check_wigos_local_id ( s->a->cval ) )
+            {
+              bufr2tac_set_error ( s, 1, "climat_parse_x01()","Bad WIGOS Local identifier" );
+            }
           s->mask |= SUBSET_MASK_HAVE_WIGOS_ID ;
         }
-       break; 
-      
+      break;
+
 
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && ( s->a->mask & DESCRIPTOR_VALUE_MISSING ) == 0 )
         bufr2tac_set_error ( s, 0, "climat_parse_x01()", "Descriptor not parsed" );
       break;
     }
@@ -520,12 +520,12 @@ int temp_parse_x01 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
           strcpy ( s->name, aux );
           s->mask |= SUBSET_MASK_HAVE_NAME;
         }
-      else if (BUFR2TAC_DEBUG_LEVEL > 0)
+      else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
         {
           bufr2tac_set_error ( s, 1, "temp_parse_x01()", "Station or site name length > 80. Cannot set s->name" );
         }
       break;
-      
+
     case 101: // 0 01 101 . State identifier
       if ( strlen ( s->a->ctable ) <= 256 )
         {
@@ -539,33 +539,33 @@ int temp_parse_x01 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
           bufr2tac_set_error ( s, 1, "temp_parse_x01()", "State identifier length > 256. Cannot set s->country" );
         }
       break;
-      
+
     case 125: // 0 01 125 . WIGOS identifier series
-        t->wid.series = (uint8_t) s->ival;
+      t->wid.series = ( uint8_t ) s->ival;
       break;
-      
+
     case 126: // 0 01 126 . WIGOS issuer of identifier
-        t->wid.issuer = (uint16_t) s->ival;
+      t->wid.issuer = ( uint16_t ) s->ival;
       break;
-      
+
     case 127: // 0 01 127 , WIGOS issue number
-        t->wid.issue = (uint16_t) s->ival;
+      t->wid.issue = ( uint16_t ) s->ival;
       break;
-      
-    case 128: // 0 01 128 . WIGOS local identifier (character)  
+
+    case 128: // 0 01 128 . WIGOS local identifier (character)
       if ( strlen ( s->a->cval ) <= 16 )
         {
-          strcpy (t->wid.local_id , s->a->cval);
-          if (check_wigos_local_id(s->a->cval))
-          {
-             bufr2tac_set_error ( s, 1, "temp_parse_x01()" ,"Bad WIGOS Local identifier");
-          }
+          strcpy ( t->wid.local_id, s->a->cval );
+          if ( check_wigos_local_id ( s->a->cval ) )
+            {
+              bufr2tac_set_error ( s, 1, "temp_parse_x01()","Bad WIGOS Local identifier" );
+            }
           s->mask |= SUBSET_MASK_HAVE_WIGOS_ID ;
         }
-       break; 
-      
+      break;
+
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && ( s->a->mask & DESCRIPTOR_VALUE_MISSING ) == 0 )
         bufr2tac_set_error ( s, 0, "temp_parse_x01()", "Descriptor not parsed" );
       break;
     }

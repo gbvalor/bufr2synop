@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -226,9 +226,15 @@
 
 /*!
   \def BUFR_MAX_BITMAPS
-  \brief Max number of structs \ref bufrdeco_bitmap that can be allocated  in a strcut \ref bufrdeco_bitmap_array
+  \brief Max number of structs \ref bufrdeco_bitmap that can be allocated  in a struct \ref bufrdeco_bitmap_array
 */
 #define BUFR_MAX_BITMAPS (8)
+
+/*!
+ * \def BUFR_MAX_SUBSETS
+ * \brief Max number of subsets in the array off bitoffset subset marks the bufrdeco library can manage 
+ */
+#define BUFR_MAX_SUBSETS (2048)
 
 /*!
   \def BUFR_LEN_SEC3
@@ -304,6 +310,18 @@
      basename(__FILE__), __func__, __LINE__, #__my_expr__) ; \
      exit (EXIT_FAILURE);\
    } 
+
+/*!
+ *  \def bufrdeco_assert_with_return_val
+ *  \brief Check a expression and returns a given value if it fails
+ */
+#define bufrdeco_assert_with_return_val(__my_expr__, __returnval__) \
+   if ( !(__my_expr__)) {\
+     fprintf(stderr, "%s: %s():%d -> ***The expression (%s) is false***\n", \
+     basename(__FILE__), __func__, __LINE__, #__my_expr__) ; \
+     return (__returnval__);\
+   } 
+   
    
 /*!
   \struct bufr_descriptor
@@ -345,7 +363,7 @@ struct bufr_atom_data
   uint32_t associated; /*!< value for associated field, if any */
   char cval[BUFR_CVAL_LENGTH]; /*!< String value for the bufr descriptor */
   char ctable[BUFR_EXPLAINED_LENGTH]; /*!< Explained meaning for a code table */
-  struct bufr_sequence *seq; /*!< Pointer to the struct bufr_sequence to which this descriptor belongs to */
+  struct bufr_sequence *seq; /*!< Pointer to the struct \ref bufr_sequence to which this descriptor belongs to */
   size_t ns; /*!< Element in bufr_sequence to which this descriptor belongs to */
   uint32_t is_bitmaped_by; /*!< Index of element in a struct \ref bufrdeco_subset_sequence_data which bitmap this one */ 
   uint32_t bitmap_to; /*!< Index of element in a struct \ref bufrdeco_subset_sequence_data which this one is mapping to */
@@ -362,7 +380,7 @@ struct bufrdeco_subset_sequence_data
   size_t dim; /*!< Amount of bufr_atom_data currently allocated */
   size_t nd; /*!< number of current amount of data used in sequence */
   uint32_t ss; /*!< Index of subset in the bufr report */
-  struct bufr_atom_data *sequence; /*!< the array of data associated to a expanded sequence */
+  struct bufr_atom_data *sequence; /*!< the array of data associated structs \ref bufr_atom_data of an expanded sequence */
 };
 
 /*!
@@ -393,7 +411,7 @@ struct bufrdeco_bitmap
 struct bufrdeco_bitmap_array
 {
     size_t nba; /*!< Amount of bitmaps used */
-    struct bufrdeco_bitmap *bmap[BUFR_MAX_BITMAPS]; /*!< array of pointers to struct bufrdeco */
+    struct bufrdeco_bitmap *bmap[BUFR_MAX_BITMAPS]; /*!< array of pointers to struct \ref bufrdeco_bitmap */
 };
 
 /*!
@@ -413,7 +431,7 @@ struct bufrdeco_bitmap_related_vars
     size_t ns1; /*!< amount of first order statistical parameters used to bitmap the data */
     uint32_t stat1[BUFR_MAX_QUALITY_DATA]; /*!< Array of indexes of First-order statistical value related to target */
     uint32_t stat1_desc[BUFR_MAX_QUALITY_DATA]; /*!< Array of indexes which describes the First-order statistical parameter */
-    size_t nds; /*!< amount of difference statistical parameters related to target */
+    size_t nds; /*!< Amount of difference statistical parameters related to target */
     uint32_t dstat[BUFR_MAX_QUALITY_DATA]; /*!< Attay of indexes of Difference statistical value related to target */
     uint32_t dstat_desc[BUFR_MAX_QUALITY_DATA]; /*!< Array of indexes which describes the diffenece statistical parameter related to target*/
 };
@@ -427,7 +445,7 @@ struct bufrdeco_bitmap_related_vars
 struct bufrdeco_decoding_data_state
 {
   size_t subset; /*!< Subset sequence index being parsed */
-  size_t bit_offset; /*!< first data bit offset of current since the begining of data in byte 4 in SEC 4 */
+  size_t bit_offset; /*!< First data bit offset of current since the begining of data in byte 4 in SEC 4 */
   int8_t added_bit_length; /*!< Current aditional bit_length that can be changed by descriptor 2 01 YYY */
   int8_t added_scale; /*!< Current aditional scale factor that can be changed by descriptor 2 02 YYY */
   int32_t added_reference; /*!< Current aditional reference that can be changed bu descriptor 2 03 YYY */
@@ -491,7 +509,7 @@ struct bufr_sequence
 
 /*!
  \struct bufrdeco_expanded_tree
- \brief Array of structs \ref bufr_sequence
+ \brief Array of structs \ref bufr_sequence from which bufr expanded tree is made.
 */
 struct bufrdeco_expanded_tree
 {
@@ -502,6 +520,9 @@ struct bufrdeco_expanded_tree
 /*!
  \struct bufrdeco_compressed_ref
  \brief Struct to hold the needed reference bit offsets in a compressed BUFR
+ 
+ In a compressed bufr it is supossed that all subsets are coded under the same expanded tree, included the delayed descriptors. 
+ So the length of data in every subset is the same. To access to a field data we would need these strutcs \ref bufrdeco_compressed_ref
 */
 struct bufrdeco_compressed_ref
 {
@@ -526,11 +547,28 @@ struct bufrdeco_compressed_ref
   \struct bufrdeco_compressed_data_references
   \brief Manage an array of structs \ref bufrdeco_compressed_ref
 */
-struct bufrdeco_compressed_data_references
+struct bufrdeco_compressed_data_references 
 {
   size_t dim; /*!< dimension of array of compressed refs */
   size_t nd; /*!< current amount of data used */
   struct bufrdeco_compressed_ref *refs; /*!< pointer to allocated array */
+};
+
+/*!
+ *  \struct bufrdeco_subset_bit_offset
+ *  \brief Array of offset in bits for every subset in a non-compressed bufr. Offset is counted in bits from the init of SEC4. 
+ * 
+ *   To set the offset for non compressed bufr it is neccesary to parse the expanded tree and extact the data of the prior subsets. 
+ *   If we already know the bit offset of the data then we can access directly to the subset data without parsing the prior subsets.
+ *
+ *   The utility of these offset array is that it can be write to and read from a binary file and access quickly to the
+ *   desired subset data. 
+ */
+struct bufrdeco_subset_bit_offset 
+{
+  size_t nr ; /*!< Current number of used subset bit offsets. */
+  size_t ofs[BUFR_MAX_SUBSETS]; /*! Array of subset bitoffset. offsets[n] is the bit offset from first data in sequence 'n'. 
+  Offset is counted from the begining of SEC4 in bits */  
 };
 
 /*!
@@ -664,7 +702,7 @@ struct bufr_sec3
   \struct bufr_sec4
   \brief Store a parsed sec4 from a bufr file
 
-  Note that member \a raw  must be initialized to allocate needed memory
+  Note that member \a raw  do not need to be allocated
 */
 struct bufr_sec4
 {
@@ -804,6 +842,7 @@ struct bufrdeco
   struct bufr_tables *tables; /*!< Pointer to a the struct containing all tables needed for a single bufr */
   struct bufrdeco_expanded_tree *tree; /*!< Pointer to a struct containing the parsed descriptor tree (without explansion) */
   struct bufrdeco_decoding_data_state state; /*!< Struct with data needed when parsing bufr */
+  struct bufrdeco_subset_bit_offset offsets; /*!< Struct \ref bufrdeco_subset_bit_offset with bit offset of start point of every subset in non compressed bufr */
   struct bufrdeco_compressed_data_references refs; /*!< struct with data references in case of compressed bufr */
   struct bufrdeco_subset_sequence_data seq; /*!< sequence with data subset after parse */
   struct bufrdeco_bitmap_array bitmap; /*!< Stores data for bit-maps */

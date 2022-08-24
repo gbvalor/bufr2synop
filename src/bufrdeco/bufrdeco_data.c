@@ -38,7 +38,7 @@
 struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data ( struct bufrdeco *b )
 {
   bufrdeco_assert ( b != NULL );
-  
+
   if ( bufrdeco_decode_data_subset ( & ( b->seq ), & ( b->refs ), b ) )
     {
       return NULL;
@@ -65,7 +65,7 @@ int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struc
 {
   // check arguments
   bufrdeco_assert ( b != NULL );
-  
+
   if ( s == NULL || r == NULL )
     {
       snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
@@ -171,7 +171,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
   struct bufr_replicator replicator;
 
   bufrdeco_assert ( b != NULL );
-  
+
   if ( s == NULL )
     {
       snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
@@ -189,6 +189,30 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
         {
           b->state.bit_offset = 0;
         }
+
+      // Manage bit offset of the subset
+      if ( b->state.subset < BUFR_MAX_SUBSETS )
+        {
+          // No bit offset still set for this subset
+          if ( b->offsets.ofs[b->state.subset] == 0 )
+            {
+              if ( b->offsets.nr < b->state.subset )
+                b->offsets.nr = b->state.subset;
+              b->offsets.ofs[b->state.subset] = b->state.bit_offset;
+            }
+          else
+            {
+              // offset is already set, so we can go directly to the data
+              b->state.bit_offset = b->offsets.ofs[b->state.subset];
+            }
+        }
+      else
+        {
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot manage subset bit offset for subset %lu. Consider increase BUFR_MAX_SUBSETS\n",
+                     __func__, b->state.subset );
+          return 1;
+        }
+
       // also reset reference and bits inc
       b->state.added_bit_length = 0;
       b->state.added_scale = 0;
@@ -227,7 +251,8 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
               if ( seq->lseq[i].x > 9 &&
                    seq->lseq[i].x != 31 )
                 {
-                  snprintf ( b->error, sizeof ( b->error ), "%s(): Getting data from table b with class other than 1-9,31 and no data present activated\n", __func__ );
+                  snprintf ( b->error, sizeof ( b->error ), "%s(): Getting data from table b with class other than 1-9,31 and no data present activated\n",
+                             __func__ );
                   return 1;
                 }
 
@@ -250,7 +275,8 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
                 ( b->bitmap.bmap[b->bitmap.nba - 1]->ns1 )++;
               else
                 {
-                  snprintf ( b->error, sizeof ( b->error ), "%s(): No more space for first order statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n", __func__ );
+                  snprintf ( b->error, sizeof ( b->error ), "%s(): No more space for first order statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n",
+                             __func__ );
                   return 1;
                 }
             }
@@ -266,7 +292,8 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
                 ( b->bitmap.bmap[b->bitmap.nba - 1]->nds )++;
               else
                 {
-                  snprintf ( b->error, sizeof ( b->error ), "%s(): No more space for difference statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n", __func__ );
+                  snprintf ( b->error, sizeof ( b->error ), "%s(): No more space for difference statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n",
+                             __func__ );
                   return 1;
                 }
             }
@@ -408,14 +435,14 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
   struct bufr_replicator replicator;
 
   bufrdeco_assert ( b != NULL );
-  
-  if (s == NULL || r == NULL )
-  {
+
+  if ( s == NULL || r == NULL )
     {
-      snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
-      return 1;
+      {
+        snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
+        return 1;
+      }
     }
-  }
   //printf("nloops=%lu, ndesc=%lu\n", r->nloops, r->ndesc);
   for ( ixloop = 0; ixloop < r->nloops; ixloop++ )
     {

@@ -24,12 +24,6 @@
 #include "bufr2tac.h"
 
 /*!
-  \def check_len(ori,inc)
-  \brief cheks if there still memory enough to add \a inc chars
-*/
-#define check_len(ori,inc) (c - *ori + inc < (int)lmax)
-
-/*!
   \fn size_t print_synop_sec0 (char **sec0, size_t lmax, struct synop_chunks *syn)
   \brief Prints the synop section 0 (header)
   \param sec0 the pointer where to print section
@@ -141,10 +135,7 @@ size_t print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn )
         }
       else if ( syn->s1.UUU[0] )
         {
-          if ( check_len ( sec1,6 ) )
-            {
-              used += snprintf ( c + used, lmax - used, " 29%s", syn->s1.UUU );
-            }
+          used += snprintf ( c + used, lmax - used, " 29%s", syn->s1.UUU );
         }
 
       // printf 3PoPoPoPo
@@ -156,10 +147,7 @@ size_t print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn )
       // printf 4PPPP or 4a3hhh
       if ( syn->s1.PPPP[0] )
         {
-          if ( check_len ( sec1,6 ) )
-            {
-              used += snprintf ( c + used, lmax - used, " 4%s", syn->s1.PPPP );
-            }
+          used += snprintf ( c + used, lmax - used, " 4%s", syn->s1.PPPP );
         }
       else if ( syn->s1.hhh[0] )
         {
@@ -167,10 +155,7 @@ size_t print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn )
             {
               syn->s1.a3[0] = '/';
             }
-          if ( check_len ( sec1,6 ) )
-            {
-              used += snprintf ( c + used, lmax - used, " 4%s%s", syn->s1.a3, syn->s1.hhh );
-            }
+          used += snprintf ( c + used, lmax - used, " 4%s%s", syn->s1.a3, syn->s1.hhh );
         }
 
       // printf 5appp
@@ -267,32 +252,32 @@ size_t print_synop_sec2 ( char **sec2, size_t lmax, struct synop_chunks *syn )
   if ( syn->mask & SYNOP_SEC2 )
     {
       // 222Dsvs
-          used += snprintf ( c + used, lmax - used, " 222" );
-          if ( syn->s2.Ds[0] )
-            {
-              used += snprintf ( c + used, lmax - used, "%s", syn->s2.Ds );
-            }
-          else
-            {
-              used += snprintf ( c + used, lmax - used, "/" );
-            }
+      used += snprintf ( c + used, lmax - used, " 222" );
+      if ( syn->s2.Ds[0] )
+        {
+          used += snprintf ( c + used, lmax - used, "%s", syn->s2.Ds );
+        }
+      else
+        {
+          used += snprintf ( c + used, lmax - used, "/" );
+        }
 
-          if ( syn->s2.vs[0] )
-            {
-              used += snprintf ( c + used, lmax - used, "%s", syn->s2.vs );
-            }
-          else
-            {
-              used += snprintf ( c + used, lmax - used, "/" );
-            }
- 
+      if ( syn->s2.vs[0] )
+        {
+          used += snprintf ( c + used, lmax - used, "%s", syn->s2.vs );
+        }
+      else
+        {
+          used += snprintf ( c + used, lmax - used, "/" );
+        }
+
       // printf 0ssTwTwTw
       if ( syn->s2.TwTwTw[0] )
         {
           used += snprintf ( c + used, lmax - used, " 0%s%s", syn->s2.ss, syn->s2.TwTwTw );
         }
 
-      if (  syn->s2.PwaPwa[0] || syn->s2.HwaHwa[0]  )
+      if ( syn->s2.PwaPwa[0] || syn->s2.HwaHwa[0] )
         {
           if ( syn->s2.PwaPwa[0] )
             {
@@ -323,7 +308,7 @@ size_t print_synop_sec2 ( char **sec2, size_t lmax, struct synop_chunks *syn )
             {
               used += snprintf ( c + used, lmax - used, " 2//" );
             }
- 
+
           if ( syn->s2.HwHw[0] )
             {
               used += snprintf ( c + used, lmax - used, "%s", syn->s2.HwHw );
@@ -334,7 +319,7 @@ size_t print_synop_sec2 ( char **sec2, size_t lmax, struct synop_chunks *syn )
             }
         }
 
-      if (  syn->s2.dw1dw1[0] || syn->s2.dw2dw2[0] ) 
+      if ( syn->s2.dw1dw1[0] || syn->s2.dw2dw2[0] )
         {
           if ( syn->s2.dw1dw1[0] )
             {
@@ -429,14 +414,14 @@ size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
 
   if ( syn->mask & SYNOP_SEC3 )
     {
-          used += snprintf ( c + used, lmax - used, " 333" );
+      used += snprintf ( c + used, lmax - used, " 333" );
 
       // init point to write info.
       // in case we finally write nothing in this section
       used0 = used;
-      
+
       // printf 0XoXoXoXo
-      if ( syn->s3.XoXoXoXo[0] && ( strstr ( syn->s3.XoXoXoXo,"///" ) == NULL ))
+      if ( syn->s3.XoXoXoXo[0] && ( strstr ( syn->s3.XoXoXoXo,"///" ) == NULL ) )
         {
           if ( syn->s3.XoXoXoXo[0] == 0 )
             {
@@ -590,7 +575,7 @@ size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
               syn->s3.Dh[0] = '/';
             }
 
-              used += snprintf ( c + used, lmax - used, " 56%s%s%s", syn->s3.Dl, syn->s3.Dm, syn->s3.Dh );
+          used += snprintf ( c + used, lmax - used, " 56%s%s%s", syn->s3.Dl, syn->s3.Dm, syn->s3.Dh );
         }
 
       // print 57CDeec
@@ -605,7 +590,7 @@ size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
               syn->s3.ec[0] = '/';
             }
 
-              used += snprintf ( c + used, lmax - used, " 57%s%s%s", syn->s3.C, syn->s3.Da, syn->s3.ec );
+          used += snprintf ( c + used, lmax - used, " 57%s%s%s", syn->s3.C, syn->s3.Da, syn->s3.ec );
         }
 
       // print 58ppp24 or 59ppo24
@@ -672,7 +657,7 @@ size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
       // additional info
       for ( i = 0; i < syn->s3.d9.n && i < SYNOP_NMISC ; i++ )
         {
-          if ( syn->s3.d9.misc[i].SpSp[0] && syn->s3.d9.misc[i].spsp[0] && check_len ( sec3,6 ) )
+          if ( syn->s3.d9.misc[i].SpSp[0] && syn->s3.d9.misc[i].spsp[0] )
             {
               used += snprintf ( c + used, lmax - used, " %s%s", syn->s3.d9.misc[i].SpSp, syn->s3.d9.misc[i].spsp );
             }
@@ -682,10 +667,10 @@ size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
       // aditional regional info
       if ( syn->mask & SYNOP_SEC3_8 )
         {
-              used += snprintf ( c + used, lmax - used, " 80000" );
+          used += snprintf ( c + used, lmax - used, " 80000" );
           for ( i = 0; i < SYNOP_NMISC; i++ )
             {
-              if (  syn->s3.R8[i][0] || syn->s3.R8[i][0] || syn->s3.R8[i][0] || syn->s3.R8[i][0] ) 
+              if ( syn->s3.R8[i][0] || syn->s3.R8[i][0] || syn->s3.R8[i][0] || syn->s3.R8[i][0] )
                 {
                   if ( syn->s3.R8[i][0] == 0 )
                     {
@@ -714,7 +699,7 @@ size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
         }
       else
         used = 0;
-        
+
     }
   return used;
 }
@@ -733,12 +718,12 @@ size_t print_synop_sec4 ( char **sec4, size_t lmax, struct synop_chunks *syn )
 
   if ( syn->mask & SYNOP_SEC5 )
     {
-          used += snprintf ( c + used, lmax - used, " 444" );
+      used += snprintf ( c + used, lmax - used, " 444" );
 
       // init point to write info.
       // in case we finally write nothing in this section
       used0 = used;
-      
+
       // printf N1C1H1H1Ct
       if ( syn->s4.N1[0] || syn->s4.C1[0] || syn->s4.H1H1[0] || syn->s4.Ct[0] )
         {
@@ -765,8 +750,8 @@ size_t print_synop_sec4 ( char **sec4, size_t lmax, struct synop_chunks *syn )
         {
           *sec4 = c + used;
         }
-       else
-         used = 0;
+      else
+        used = 0;
     }
   return used;
 }
@@ -787,12 +772,12 @@ size_t print_synop_sec5 ( char **sec5, size_t lmax, struct synop_chunks *syn )
 
   if ( syn->mask & SYNOP_SEC5 )
     {
-          used += snprintf ( c + used, lmax - used, " 555" );
+      used += snprintf ( c + used, lmax - used, " 555" );
 
       // init point to write info.
       // in case we finally write nothing in this section
       used0 = used;
-      
+
       // printf 6RRRtr
       if ( syn->s5.tr[0] || syn->s5.RRR[0] )
         {
@@ -817,7 +802,7 @@ size_t print_synop_sec5 ( char **sec5, size_t lmax, struct synop_chunks *syn )
         {
           *sec5 = c + used;
         }
-      else 
+      else
         used = 0;
     }
   return used;
@@ -827,7 +812,7 @@ size_t print_synop_wigos_id ( char **wid,  size_t lmax, struct synop_chunks *syn
 {
   char *c = *wid;
   size_t used = 0;
-  
+
   used += snprintf ( c + used, lmax, "%d-%d-%d-%s", syn->wid.series,syn->wid.issuer, syn->wid.issue, syn->wid.local_id );
   while ( used < 32 )
     c[used++] = ' ';
@@ -855,15 +840,24 @@ int print_synop ( char *report, size_t lmax, struct synop_chunks *syn, int mode 
 
 
   // Needs time extension
-  if ( syn->e.YYYY[0] == 0 )
+  if ( syn->e.YYYY[0] == 0 || syn->e.YYYY[0] == '0')
     {
       return 1;
     }
 
   if ( mode )
-    used += print_synop_wigos_id ( &c, lmax, syn );
+    {
+      used += print_synop_wigos_id ( &c, lmax, syn );
+    }
+  else
+    {
+      // Do not print a synop if no IIiii identifier when mode = 0
+      if ( ( strcmp(syn->s0.MiMi, "AA") == 0 && strcmp(syn->s0.MjMj, "XX") == 0) && 
+        ( syn->s0.II[0] == '\0' || syn->s0.iii[0] == '\0' || strcmp ( syn->s0.II, "00" ) == 0 ))
+        return 1;
+    }
 
-  used += print_synop_sec0 ( &c, lmax - used , syn );
+  used += print_synop_sec0 ( &c, lmax - used, syn );
 
   if ( syn->mask & ( SYNOP_SEC1 | SYNOP_SEC2 | SYNOP_SEC3 | SYNOP_SEC4 | SYNOP_SEC5 ) )
     {
