@@ -996,4 +996,8 @@ int is_a_short_delayed_descriptor ( struct bufr_descriptor *d );
 char * bufr_adjust_string ( char *s );
 char * bufr_charray_to_string ( char *s, char *buf, size_t size );
 
+// I/O of bit offset for subsets
+int bufrdeco_read_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offset *off);
+int bufrdeco_write_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offset *off);
+
 #endif  // from ifndef BUFRDECO_H

@@ -196,8 +196,8 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
           // No bit offset still set for this subset
           if ( b->offsets.ofs[b->state.subset] == 0 )
             {
-              if ( b->offsets.nr < b->state.subset )
-                b->offsets.nr = b->state.subset;
+              if ( b->offsets.nr <= b->state.subset )
+                b->offsets.nr = b->state.subset + 1;
               b->offsets.ofs[b->state.subset] = b->state.bit_offset;
             }
           else
