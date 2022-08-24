@@ -813,7 +813,11 @@ size_t print_synop_wigos_id ( char **wid,  size_t lmax, struct synop_chunks *syn
   char *c = *wid;
   size_t used = 0;
 
-  used += snprintf ( c + used, lmax, "%d-%d-%d-%s", syn->wid.series,syn->wid.issuer, syn->wid.issue, syn->wid.local_id );
+  if (syn->wid.series == 0 && syn->wid.issuer == 0 && syn->wid.issue == 0 && syn->wid.local_id[0] == '\0')
+    used += snprintf (c, lmax, "0-0-0-MISSING");
+  else
+    used += snprintf ( c + used, lmax, "%d-%d-%d-%s", syn->wid.series,syn->wid.issuer, syn->wid.issue, syn->wid.local_id );
+  
   while ( used < 32 )
     c[used++] = ' ';
   c[used++] = '|';

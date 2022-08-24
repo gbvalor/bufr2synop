@@ -997,7 +997,11 @@ size_t print_temp_wigos_id ( char **wid,  size_t lmax, struct temp_chunks *t )
   char *c = *wid;
   size_t used = 0;
 
-  used += snprintf ( c + used, lmax, "%d-%d-%d-%s", t->wid.series, t->wid.issuer, t->wid.issue, t->wid.local_id );
+  if (t->wid.series == 0 && t->wid.issuer == 0 && t->wid.issue == 0 && t->wid.local_id[0] == '\0')
+    used += snprintf (c, lmax, "0-0-0-MISSING");
+  else
+    used += snprintf ( c + used, lmax, "%d-%d-%d-%s", t->wid.series, t->wid.issuer, t->wid.issue, t->wid.local_id );
+  
   while ( used < 32 )
     c[used++] = ' ';
   c[used++] = '|';

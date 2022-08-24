@@ -716,7 +716,11 @@ size_t print_climat_wigos_id ( char **wid,  size_t lmax, struct climat_chunks *c
   char *c = *wid;
   size_t used = 0;
 
-  used += snprintf ( c + used, lmax, "%d-%d-%d-%s", cl->wid.series, cl->wid.issuer, cl->wid.issue, cl->wid.local_id );
+  if (cl->wid.series == 0 && cl->wid.issuer == 0 && cl->wid.issue == 0 && cl->wid.local_id[0] == '\0')
+    used += snprintf (c, lmax, "0-0-0-MISSING");
+  else
+    used += snprintf ( c + used, lmax, "%d-%d-%d-%s", cl->wid.series, cl->wid.issuer, cl->wid.issue, cl->wid.local_id );
+  
   while ( used < 32 )
     c[used++] = ' ';
   c[used++] = '|';

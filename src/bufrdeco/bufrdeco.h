@@ -530,7 +530,7 @@ struct bufrdeco_compressed_ref
   uint8_t has_data ; /*!< 1 if has any subset with valid data. 0 if missing in all subsets */
   uint8_t bits; /*!< bits for data or associated in table b */
   int32_t ref; /*!< reference for a expanded data in table b */
-  size_t bit0; /*!< first bit offset, i.e, most significant bit for ref0 */
+  uint32_t bit0; /*!< first bit offset, i.e, most significant bit for ref0 */
   uint32_t ref0; /*!< local reference for a expanded data in subsets */
   char cref0[256]; /*!< Local reference in case of string */
   uint8_t inc_bits; /*!< number of inc bits for every subset  */
@@ -566,8 +566,8 @@ struct bufrdeco_compressed_data_references
  */
 struct bufrdeco_subset_bit_offset 
 {
-  size_t nr ; /*!< Current number of used subset bit offsets. */
-  size_t ofs[BUFR_MAX_SUBSETS]; /*! Array of subset bitoffset. offsets[n] is the bit offset from first data in sequence 'n'. 
+  uint32_t nr ; /*!< Current number of used subset bit offsets. */
+  uint32_t ofs[BUFR_MAX_SUBSETS]; /*! Array of subset bitoffset. offsets[n] is the bit offset from first data in sequence 'n'. 
   Offset is counted from the begining of SEC4 in bits */  
 };
 

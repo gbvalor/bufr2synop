@@ -179,6 +179,8 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
       // parse BUOY
       if ( parse_subset_as_buoy ( m, st, sq, err ) == 0 )
         {
+          if (BUFR2TAC_DEBUG_LEVEL)
+            bufr2tac_print_error(&st->e);
           return print_buoy ( m->alphanum, REPORT_LENGTH, &m->buoy, m->print_mask  );
         }
     }
@@ -187,6 +189,8 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
       // psrse TEMP
       if ( parse_subset_as_temp ( m, st, sq, err ) == 0 )
         {
+          if (BUFR2TAC_DEBUG_LEVEL)
+            bufr2tac_print_error(&st->e);
           return print_temp ( m, m->print_mask  );
         }
     }
@@ -195,6 +199,8 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
       // psrse CLIMAT
       if ( parse_subset_as_climat ( m, st, sq, err ) == 0 )
         {
+          if (BUFR2TAC_DEBUG_LEVEL)
+            bufr2tac_print_error(&st->e);
           return print_climat ( m->alphanum, REPORT_LENGTH, &m->climat, m->print_mask  );
         }
     }
