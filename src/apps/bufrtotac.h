@@ -35,6 +35,7 @@ extern const char SELF[];
 extern char ERR[256];
 extern char INPUTFILE[256];
 extern char OUTPUTFILE[256];
+extern char OFFSETFILE[BUFRDECO_PATH_LENGTH + 8]; 
 extern char BUFRTABLES_DIR[256];
 extern char LISTOFFILES[256];
 extern int NFILES;
@@ -51,12 +52,15 @@ extern int HTML;
 extern int NOTAC;
 extern int PRINT_WIGOS_ID;
 extern int FIRST_SUBSET, LAST_SUBSET;
+extern int READ_OFFSETS;
+extern int WRITE_OFFSETS;
+extern int USE_CACHE;
 extern FILE *FL;
 
 // functions
 void bufrtotac_print_version( void );
 void bufrtotac_print_usage ( void );
 int bufrtotac_read_args ( int _argc, char * _argv[] );
-char * get_bufrfile_path ( char *filename, char *err );
+char * get_bufrfile_path ( char *filename, char *fileoffset, char *err );
 int bufrtotac_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subset_state *st, struct bufrdeco *b,
                                      char *err );

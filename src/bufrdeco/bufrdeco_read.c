@@ -89,8 +89,12 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
 
   while ( ( aux = fgetc ( fp ) ) != EOF && ( int ) n < st.st_size )
     bufrx[n++] = ( uint8_t ) aux;
-
+ 
+  //n = fread(&bufrx[0], 1, st.st_size, fp);
+  //bufrdeco_assert(n == (size_t)st.st_size);  
+  
   // close the file
+  
   fclose ( fp );
 
   res = bufrdeco_read_buffer ( b, bufrx, n );
@@ -381,10 +385,19 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, size_t size )
     }
   else
     {
+#ifdef DEBUG_TIME
+      bufrdeco_clock_start = clock();
+#endif
+      
       if ( bufr_read_tables_wmo ( b ) )
         {
           return 1;
         }
+#ifdef DEBUG_TIME
+      bufrdeco_clock_end = clock();
+      print_timing(bufrdeco_clock_start, bufrdeco_clock_end,bufr_read_tables_wmo());
+#endif
+        
     }
   return 0;
 }

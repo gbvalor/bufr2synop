@@ -28,16 +28,24 @@
 #define _GNU_SOURCE
 #endif
 
+// Uncomment following line to get timimgs in debug phase
+//#define DEBUG_TIME
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 #include <getopt.h>
 #include <time.h>
+#ifdef DEBUG_TIME
+#include <sys/times.h>
+#include <unistd.h>
+#endif
 #include <math.h>
 #include <sys/stat.h>
 
-//#define DEBUG
+// Uncomment following line to debug 
+//#define __DEBUG
 
 /*!
  *  \def BUFRDECO 
@@ -266,6 +274,8 @@
 */
 #define BUFRDECO_OUTPUT_XML (8)
 
+#define BUFRDECO_USE_TABLES_CACHE (16)
+
 /*!
   \def BUFR_TABLEB_NAME_LENGTH
   \brief Max length (in chars) reserved for a name of variable in table B
@@ -283,6 +293,14 @@
  * \brief Max length (in chars) of a cval in a bur_atom_data
  */
 #define BUFR_CVAL_LENGTH (256)
+
+/*!
+ *  \def BUFRDECO_PATH_LENGTH
+ *  \brief Length for files/directory path strings 
+ */
+#define BUFRDECO_PATH_LENGTH (256)
+
+#define BUFRDECO_TABLES_CACHE_SIZE (8)
 
 /*!
  * \def strcpy_safe
@@ -322,6 +340,17 @@
      return (__returnval__);\
    } 
    
+#ifdef DEBUG_TIME
+/*!
+ * \def print_timing
+ * \brief Macro to print the time interval between two clocks(). Useful in debug time.  
+ */
+# define print_timing(__clk_start, __clk_end,__explanation) \
+  printf ("# %.6lf s <- Elapsed time for %s\n", (double)(__clk_end - __clk_start)/(double)(CLOCKS_PER_SEC), #__explanation)
+  
+extern clock_t bufrdeco_clock_start, bufrdeco_clock_end;
+
+#endif
    
 /*!
   \struct bufr_descriptor
@@ -555,8 +584,8 @@ struct bufrdeco_compressed_data_references
 };
 
 /*!
- *  \struct bufrdeco_subset_bit_offset
- *  \brief Array of offset in bits for every subset in a non-compressed bufr. Offset is counted in bits from the init of SEC4. 
+ *  \struct bufrdeco_subset_bit_offsets
+ *  \brief Array of offset in bits for every subset in a non-compressed bufr. Offset is counted in bits from the init of SEC4 data, usually b1it 32. 
  * 
  *   To set the offset for non compressed bufr it is neccesary to parse the expanded tree and extact the data of the prior subsets. 
  *   If we already know the bit offset of the data then we can access directly to the subset data without parsing the prior subsets.
@@ -564,11 +593,11 @@ struct bufrdeco_compressed_data_references
  *   The utility of these offset array is that it can be write to and read from a binary file and access quickly to the
  *   desired subset data. 
  */
-struct bufrdeco_subset_bit_offset 
+struct bufrdeco_subset_bit_offsets 
 {
   uint32_t nr ; /*!< Current number of used subset bit offsets. */
   uint32_t ofs[BUFR_MAX_SUBSETS]; /*! Array of subset bitoffset. offsets[n] is the bit offset from first data in sequence 'n'. 
-  Offset is counted from the begining of SEC4 in bits */  
+  Offset is counted from the begining of SEC4 data in bits, usually bit 32 */  
 };
 
 /*!
@@ -592,7 +621,7 @@ struct gts_header
   char center[8]; /*!< Release center name, as 'EGRR' */
   char dtrel[16]; /*!< Date and time of release (format DDHHmm) */
   char order[8]; /*!< sequence, as 'BBB' , 'RRA' 'CCA' ... */
-  char filename[256]; /*!< filename of Bufr file */
+  char filename[BUFRDECO_PATH_LENGTH]; /*!< filename of Bufr file */
   char timestamp[16]; /*!< String with timestamp (UTC) of file in GTS. Format YYYYMMDDHHmmss */
 };
 
@@ -675,7 +704,7 @@ struct bufr_sec1
 
 /*!
   \struct bufr_sec2
-  \brief Store a parsed sec2 from a bufr file
+  \brief Store a parsed sec2 from a bufr file including rawdata
 */
 struct bufr_sec2
 {
@@ -685,7 +714,7 @@ struct bufr_sec2
 
 /*!
   \struct bufr_sec3
-  \brief Store a parsed sec3 from a bufr file
+  \brief Store a parsed sec3 from a bufr file including rawdata 
 */
 struct bufr_sec3
 {
@@ -700,7 +729,7 @@ struct bufr_sec3
 
 /*!
   \struct bufr_sec4
-  \brief Store a parsed sec4 from a bufr file
+  \brief Store a parsed sec4 from a bufr file including rawdata
 
   Note that member \a raw  do not need to be allocated
 */
@@ -740,8 +769,8 @@ struct bufr_tableb_decoded_item
 struct bufr_tableb
 {
   int wmo_table; /*!< 1 when table is from WMO csv file, 0 otherwise */
-  char path[256]; /*!< Complete path of current file readed */
-  char old_path[256]; /*!< Cmplete path of prior file readed, used to avoid read two consecutive times the same file */
+  char path[BUFRDECO_PATH_LENGTH]; /*!< Complete path of current file readed */
+  char old_path[BUFRDECO_PATH_LENGTH]; /*!< Cmplete path of prior file readed, used to avoid read two consecutive times the same file */
   size_t nlines; /*!< Current lines readed from file, i. e. used in array item[] */
   size_t x_start[64]; /*!< Index in array \a item[] for first x. x_start[j] is index for first descriptor which x == j */
   size_t num[64]; /*!< Amount of items for x. num[i] is the amount of items in array where x = i */
@@ -772,8 +801,8 @@ struct bufr_tablec_decoded_item
 struct bufr_tablec
 {
   int wmo_table; /*!< 1 when table is from WMO csv file, 0 otherwise */
-  char path[256]; /*!< Complete path of current file readed */
-  char old_path[256]; /*!< Cmplete path of prior file readed, used to avoid read two consecutive times the same file */
+  char path[BUFRDECO_PATH_LENGTH]; /*!< Complete path of current file readed */
+  char old_path[BUFRDECO_PATH_LENGTH]; /*!< Cmplete path of prior file readed, used to avoid read two consecutive times the same file */
   size_t nlines; /*!< Current lines readed from file, i. e. used in array \a l[] */
   size_t x_start[64]; /*!< Index in array \a l[] for first x. x_start[j] is index for first descriptor which x == j */
   size_t num[64]; /*!< Amonut of lines for x. num[i] is the amount of items in array where x = i */
@@ -802,8 +831,8 @@ struct bufr_tabled_decoded_item
 struct bufr_tabled
 {
   int wmo_table; /*!< 1 when table is from WMO csv file, 0 otherwise */
-  char path[256]; /*!< Complete path of current file readed */
-  char old_path[256]; /*!< Cmplete path of prior file readed, used to avoid read two consecutive times the same file */
+  char path[BUFRDECO_PATH_LENGTH]; /*!< Complete path of current file readed */
+  char old_path[BUFRDECO_PATH_LENGTH]; /*!< Cmplete path of prior file readed, used to avoid read two consecutive times the same file */
   size_t nlines; /*!< Current lines readed from file, i. e. used in array \a l[] */
   size_t x_start[64]; /*!< Index in array \a l[] for first x. x_start[j] is index for first descriptor which x == j */
   size_t num[64]; /*!< Amonut of lines for x. num[i] is the amount of items in array where x = i */
@@ -825,6 +854,21 @@ struct bufr_tables
 };
 
 /*!
+ * \struct  
+ * \brief Struct to store the cache of structs \ref bufr_tables 
+ * 
+ * When used, the member \a tables in main struct \ref bufrdeco is pointing to one of the elements in member array \a tab  
+ */
+struct bufr_tables_cache 
+{
+   int nt; /*!< Tables actually allocated in cache */
+   int next; /*< index of next element in array to add */
+   int8_t ver[BUFRDECO_TABLES_CACHE_SIZE]; /*!< Table version for array elements */
+   struct bufr_tables *tab[BUFRDECO_TABLES_CACHE_SIZE]; /*! Array of structs \ref bufr_tables allocated */
+};
+
+
+/*!
   \struct bufrdeco
   \brief This struct contains all needed data to parse and decode a BUFR file
 
@@ -840,14 +884,15 @@ struct bufrdeco
   struct bufr_sec3 sec3; /*!< Parsed sec3 */
   struct bufr_sec4 sec4; /*!< Parsed sec4 */
   struct bufr_tables *tables; /*!< Pointer to a the struct containing all tables needed for a single bufr */
-  struct bufrdeco_expanded_tree *tree; /*!< Pointer to a struct containing the parsed descriptor tree (without explansion) */
+  struct bufr_tables_cache cache; /*!< Struct \ref bufr_tables_cache  */
+  struct bufrdeco_expanded_tree *tree; /*!< Pointer to a struct containing the parsed descriptor tree (with explansion) */
   struct bufrdeco_decoding_data_state state; /*!< Struct with data needed when parsing bufr */
-  struct bufrdeco_subset_bit_offset offsets; /*!< Struct \ref bufrdeco_subset_bit_offset with bit offset of start point of every subset in non compressed bufr */
+  struct bufrdeco_subset_bit_offsets offsets; /*!< Struct \ref bufrdeco_subset_bit_offset with bit offset of start point of every subset in non compressed bufr */
   struct bufrdeco_compressed_data_references refs; /*!< struct with data references in case of compressed bufr */
   struct bufrdeco_subset_sequence_data seq; /*!< sequence with data subset after parse */
   struct bufrdeco_bitmap_array bitmap; /*!< Stores data for bit-maps */
   struct bufrdeco_bitmap_related_vars brv; /*!< Stores data related with the aid of a bit-maps */
-  char bufrtables_dir[256]; /*!< string with the path of bufr table directories */
+  char bufrtables_dir[BUFRDECO_PATH_LENGTH]; /*!< string with the path of bufr table directories */
   char error[1024]; /*!< String with detected errors, if any */
 };
 
@@ -860,10 +905,24 @@ extern const double pow10neg[8];
 extern const int32_t pow10pos_int[10];
 
 
-// Memory funcions
+// Main API functions
+char *bufrdeco_get_version(char *version, size_t dversion, char *build, size_t dbuild, char *builder, size_t dbuilder, 
+                           int *version_major, int *version_minor, int *version_patch);
+int bufrdeco_parse_tree ( struct bufrdeco *b );
+int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *father,  const char *key );
 int bufrdeco_init ( struct bufrdeco *b );
 int bufrdeco_close ( struct bufrdeco *b );
 int bufrdeco_reset ( struct bufrdeco *b );
+int bufrdeco_set_tables_dir( struct bufrdeco *b, char *tables_dir);
+int bufrdeco_get_bufr ( struct bufrdeco *b, char *filename);
+struct bufrdeco_subset_sequence_data *bufrdeco_get_target_subset_sequence_data (size_t nset, struct bufrdeco *b);
+int bufrdeco_read_subset_offset_bits (struct bufrdeco *b, char *filename);
+int bufrdeco_write_subset_offset_bits (struct bufrdeco *b, char *filename);
+
+
+// Memory funcions
+int bufrdeco_init_expanded_tree ( struct bufrdeco_expanded_tree **t );
+int bufrdeco_free_expanded_tree ( struct bufrdeco_expanded_tree **t );
 int bufrdeco_init_tables ( struct bufr_tables **t );
 int bufrdeco_free_tables ( struct bufr_tables **t );
 int bufrdeco_substitute_tables ( struct bufr_tables **replaced, struct bufr_tables *source, struct bufrdeco *b );
@@ -873,6 +932,9 @@ int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *b
 int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_references *rf );
 int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_references *rf );
 int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s );
+int bufrdeco_store_tables ( struct bufr_tables **t, struct bufr_tables_cache *c, uint8_t ver);
+int bufrdeco_cache_tables_search(struct bufr_tables_cache *c, uint8_t ver);
+int bufrdeco_free_cache_tables (struct bufr_tables_cache *c);
 
 // Read bufr functions
 int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename );
@@ -926,13 +988,8 @@ char * bufrdeco_print_atom_data_html ( char *target, size_t lmax, struct bufr_at
 char * get_formatted_value_from_escale ( char *fmt, size_t dim, int32_t escale, double val );
 
 
-// Abut build and version
-char *bufrdeco_get_version(char *version, size_t dversion, char *build, size_t dbuild, char *builder, size_t dbuilder, 
-                           int *version_major, int *version_minor, int *version_patch);
-
 // To parse. General
-int bufrdeco_parse_tree ( struct bufrdeco *b );
-int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struct bufrdeco_compressed_data_references *r, struct bufrdeco *b );
+int bufrdeco_decode_data_subset ( struct bufrdeco *b );
 int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *s, struct bufr_sequence *l, struct bufrdeco *b );
 int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *s,
     struct bufr_replicator *r, struct bufrdeco *b );
@@ -997,7 +1054,7 @@ char * bufr_adjust_string ( char *s );
 char * bufr_charray_to_string ( char *s, char *buf, size_t size );
 
 // I/O of bit offset for subsets
-int bufrdeco_read_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offset *off);
-int bufrdeco_write_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offset *off);
+int bufr_read_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offsets *off);
+int bufr_write_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offsets *off);
 
 #endif  // from ifndef BUFRDECO_H

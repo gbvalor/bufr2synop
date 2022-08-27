@@ -55,7 +55,9 @@ int bufr_read_tableb_csv ( struct bufrdeco *b )
   // If we've already readed this table. We just regenerate the table with original values
   if ( strcmp ( tb->path, tb->old_path ) == 0 )
     {
-      //printf ("Reutilizo tablas\n");
+#ifdef __DEBUG      
+      printf ("# Reused table %s\n", tb->path);
+#endif      
       for ( i = 0; i < tb->nlines ; i++ )
         {
           tb->item[i].scale = tb->item[i].scale_ori;

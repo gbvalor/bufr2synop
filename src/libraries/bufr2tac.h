@@ -345,7 +345,6 @@ char * get_explained_table_val ( char *expl, size_t dim, char tablec[MAXLINES_TA
 char * get_explained_flag_val ( char *expl, size_t dim, char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec,
                                 struct bufr_descriptor *d, unsigned long ival );
 char * get_ecmwf_tablename ( char *target, char type, char *bufrtables_dir, int ksec1[40] );
-char * get_bufrfile_path ( char *filename, char *err );
 int parse_subset_as_buoy ( struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq,
                            char *err );
 int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq,

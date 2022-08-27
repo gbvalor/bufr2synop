@@ -62,7 +62,7 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
   struct bufr_sequence *l;
   struct bufr_descriptor *d;
 
-  bufrdeco_assert (b != NULL);
+  //bufrdeco_assert (b != NULL);
   
   if ( key == NULL )
     {
@@ -239,36 +239,4 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
   return 0;
 }
 
-/*!
-  \fn int bufrdeco_parse_tree ( struct bufrdeco *b )
-  \brief Parse the tree of descriptors without expand the replicators
-  \param b Pointer to the source struct \ref bufrdeco
-
-  This is the user function to parse the descriptor structure of a BUFR report. This is the first task
-  we need to perform after read the bufr report with the aid of \ref bufrdeco_read_bufr function.
-
-  At the end we will get an array of structs \ref bufr_sequence defining the tree
-
-  A sequence layer is needed when parsing expanded descriptor sec3 and sec4
-
-  First bufr_sequence is the sequence of descriptors in sec3 after
-  byte 8. This is a bufr_sequence in level 0.
-
-  When a sequence descriptor is found in a layer, the sequence entries found in table D
-  form this descriptor is a son bufr_sequence. This son has then a father
-  and also can have one or more sons. The index level is incremented by one every step it
-  go into decendents.
-
-  And so we go in a recursive way up to the end.
-
-  If success return 0, if something went wrong return 1
-*/
-int bufrdeco_parse_tree ( struct bufrdeco *b )
-{
-  bufrdeco_assert (b != NULL);
-  
-  // here we start the parse
-  
-  return  bufrdeco_parse_tree_recursive ( b, NULL, NULL );
-}
 

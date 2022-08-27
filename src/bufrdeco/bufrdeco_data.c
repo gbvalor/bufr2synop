@@ -23,6 +23,7 @@
 */
 #include "bufrdeco.h"
 
+
 /*!
   \fn struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data(struct bufrdeco *b)
   \brief Parse and get a struct \ref bufrdeco_subset_sequence_data
@@ -37,9 +38,9 @@
 */
 struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data ( struct bufrdeco *b )
 {
-  bufrdeco_assert ( b != NULL );
+  //////bufrdeco_assert ( b != NULL );
 
-  if ( bufrdeco_decode_data_subset ( & ( b->seq ), & ( b->refs ), b ) )
+  if ( bufrdeco_decode_data_subset ( b ) )
     {
       return NULL;
     }
@@ -48,7 +49,7 @@ struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data ( struc
 
 
 /*!
-  \fn  int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
+  \fn  int bufrdeco_decode_data_subset ( struct bufrdeco *b )
   \brief  User interface to decode a BUFR subset
   \param s pointer to the target struct \ref bufrdeco_subset_sequence_data
   \param r pointer to the struct \ref bufrdeco_compressed_data_references
@@ -60,12 +61,17 @@ struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data ( struc
 
   Return 0 in case of success, 1 otherwise
 */
-int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struct bufrdeco_compressed_data_references *r,
-                                  struct bufrdeco *b )
+int bufrdeco_decode_data_subset ( struct bufrdeco *b)
 {
+  struct bufrdeco_subset_sequence_data *s;
+  struct bufrdeco_compressed_data_references *r;  
+  
   // check arguments
-  bufrdeco_assert ( b != NULL );
-
+  //////bufrdeco_assert ( b != NULL );
+ 
+  s = &(b->seq);
+  r = &(b->refs);
+  
   if ( s == NULL || r == NULL )
     {
       snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
@@ -94,7 +100,7 @@ int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struc
   // Then we get the data from an already parsed descriptor tree
   if ( b->sec3.compressed )
     {
-      if ( r->nd == 0 /*r->refs == NULL || r->dim == 0 */ )
+      if ( r->nd == 0 )
         {
           // case of compressed data and still not parsed
           if ( bufrdeco_parse_compressed ( r, b ) )
@@ -134,7 +140,7 @@ int bufrdeco_decode_data_subset ( struct bufrdeco_subset_sequence_data *s, struc
 */
 int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s )
 {
-  bufrdeco_assert ( s != NULL );
+  //////bufrdeco_assert ( s != NULL );
 
   if ( s->dim < ( BUFR_NMAXSEQ * 8 ) ) // check if reached the limit
     {
@@ -170,7 +176,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
   struct bufr_sequence *seq;
   struct bufr_replicator replicator;
 
-  bufrdeco_assert ( b != NULL );
+  //bufrdeco_assert ( b != NULL );
 
   if ( s == NULL )
     {
@@ -434,7 +440,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
   struct bufr_sequence *l = r->s; // sequence
   struct bufr_replicator replicator;
 
-  bufrdeco_assert ( b != NULL );
+  ////bufrdeco_assert ( b != NULL );
 
   if ( s == NULL || r == NULL )
     {

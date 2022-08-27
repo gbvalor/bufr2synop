@@ -47,9 +47,10 @@ void bufrtotac_print_usage ( void )
   printf ( "       -s prints a long output with explained sequence of descriptors\n" );
   printf ( "       -S first..last . Print only results for subsets in range first..last (First subset available is 0). Default is all subsets\n" );
   printf ( "       -t bufrtable_dir. Pathname of bufr tables directory. Ended with '/'\n" );
+  printf ( "       -T. Use cache of tables to optimize execution time\n");
   printf ( "       -V. Verbose output\n" );
   printf ( "       -v. Print version\n" );
-  printf ( "       -W. Print WIGOS ID\n" );
+  printf ( "       -g. Print WIGOS ID\n" );
   printf ( "       -x. The output is in xml format\n" );
   printf ( "       -X. Try to extract an embebed bufr in a file seraching for a first '7777' after first 'BUFR'\n" );
 }
@@ -158,18 +159,24 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
   HTML = 0;
   NOTAC = 0;
   FIRST_SUBSET = 0;
+  LAST_SUBSET = -1;
   PRINT_WIGOS_ID = 0;
-  LAST_SUBSET = BUFR_LEN;
+  READ_OFFSETS = 0;
+  WRITE_OFFSETS = 0;
+  USE_CACHE = 0;
 
   /*
      Read input options
   */
-  while ( ( iopt = getopt ( _argc, _argv, "cD:Ehi:jHI:no:S:st:vWVxX" ) ) !=-1 )
+  while ( ( iopt = getopt ( _argc, _argv, "cD:Ehi:jHI:no:S:st:TvgVWRxX" ) ) !=-1 )
     switch ( iopt )
       {
       case 'i':
         if ( strlen ( optarg ) < 256 )
+        {
           strcpy ( INPUTFILE, optarg );
+          snprintf( OFFSETFILE, sizeof (OFFSETFILE), "%s.offs", INPUTFILE);
+        }
         break;
         
       case 'j':
@@ -197,6 +204,10 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
           }
         break;
         
+      case 'T':
+        USE_CACHE = 1;
+        break;
+
       case 'D':
         if ( strlen ( optarg ) < 2 )
           {
@@ -268,10 +279,18 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
         EXTRACT = 1;
         break;
         
-      case 'W':
+      case 'g':
         PRINT_WIGOS_ID = 1;
         break;
         
+      case 'W':
+        WRITE_OFFSETS = 1;
+        break;
+        
+      case 'R':
+         READ_OFFSETS = 1;
+         break;
+         
       case 'h':
       default:
         bufrtotac_print_usage();
@@ -325,7 +344,7 @@ int bufrtotac_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subse
 }
 
 /*!
-  \fn char * get_bufrfile_path( char *filename, char *err)
+  \fn char * get_bufrfile_path( char *filename, char *fileoffset, *err)
   \brief Get bufr file names to parse
   \param filename string where the file is on output
   \param err string where to set the error if any
@@ -343,7 +362,7 @@ int bufrtotac_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subse
   ls -1 *.bufr > list_file && bufrtotac -I list_file
   \endcode
 */
-char * get_bufrfile_path ( char *filename, char *err )
+char * get_bufrfile_path ( char *filename, char *fileoffset, char *err )
 {
   char aux[256], *c;
   if ( LISTOFFILES[0] == 0 )
@@ -371,6 +390,7 @@ char * get_bufrfile_path ( char *filename, char *err )
       if ( c )
         *c = 0;
       strcpy ( filename, aux );
+      snprintf (fileoffset, BUFRDECO_PATH_LENGTH , "%s.offs", filename);
       return filename;
     }
   else

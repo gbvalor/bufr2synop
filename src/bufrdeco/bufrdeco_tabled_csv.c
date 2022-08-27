@@ -57,6 +57,9 @@ int bufr_read_tabled_csv ( struct bufrdeco *b )
   // Check if we've already readed this table.
   if ( strcmp ( td->path, td->old_path ) == 0 )
     {
+#ifdef __DEBUG      
+      printf ("# Reused table %s\n", td->path);
+#endif      
       return 0; // all done
     }
 

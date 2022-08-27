@@ -500,42 +500,42 @@ int get_bitmaped_info ( struct bufrdeco_bitmap_related_vars *brv, uint32_t targe
 
 
 /*!
- * \fn int bufrdeco_write_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offset *off)
+ * \fn int bufr_write_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offsets *off)
  * \brief Write offset bit array for subsets in a non-compressed bufr 
  * \param f file pointer opened by caller
  * \param off pointer to the struct \ref bufrdeco_subset_bit_offset with the data to write into file
  */
-int bufrdeco_write_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offset *off)
+int bufr_write_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offsets *off)
 {
   size_t wrote;
   
   bufrdeco_assert (off != NULL && f != NULL );
-  
-  wrote = fwrite( &(off->nr), 1, sizeof (uint32_t ), f);
+
+  wrote = fwrite( &(off->nr), sizeof (uint32_t ), 1, f);
   bufrdeco_assert_with_return_val (wrote == 1, 1);
     
-  wrote = fwrite( &(off->ofs[0]), off->nr, sizeof (uint32_t ), f);
+  wrote = fwrite( &(off->ofs[0]), sizeof (uint32_t ), off->nr, f);
   bufrdeco_assert_with_return_val (wrote == off->nr, 1);
   
   return 0;
 }
 
 /*!
- * \fn int bufrdeco_read_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offset *off)
+ * \fn int bufr_read_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offsets *off)
  * \brief Write offset bit array for subsets in a non-compressed bufr 
  * \param f file pointer opened by caller
- * \param off pointer to the struct \ref bufrdeco_subset_bit_offset with the data to write into file
+ * \param off pointer to the struct \ref bufrdeco_subset_bit_offsets with the data to write into file
  */
-int bufrdeco_read_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offset *off)
+int bufr_read_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offsets *off)
 {
   size_t readed;
   
   bufrdeco_assert (off != NULL && f != NULL );
   
-  readed = fread( &(off->nr), 1, sizeof (uint32_t ), f);
+  readed = fread( &(off->nr), sizeof (uint32_t ), 1, f);
   bufrdeco_assert_with_return_val (readed == 1, 1);
     
-  readed = fwrite( &(off->ofs[0]), off->nr, sizeof (uint32_t ), f);
+  readed = fread( &(off->ofs[0]), sizeof (uint32_t ), off->nr, f);
   bufrdeco_assert_with_return_val (readed == off->nr, 1);
   
   return 0;

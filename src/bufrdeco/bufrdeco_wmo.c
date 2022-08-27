@@ -46,10 +46,10 @@ const char DEFAULT_BUFRTABLES_WMO_CSV_DIR2[] = "/usr/share/bufr2synop/";
 int get_wmo_tablenames ( struct bufrdeco *b )
 {
   struct stat st;
-  char aux[128];
+  char aux[BUFRDECO_PATH_LENGTH - 32];
 
-  bufrdeco_assert (b != NULL);
-  
+  bufrdeco_assert ( b != NULL );
+
   if ( b->bufrtables_dir[0] == '\0' )
     {
       // try to guess directory
@@ -92,30 +92,30 @@ int get_wmo_tablenames ( struct bufrdeco *b )
     case 11:
     case 12:
     case 13:
-      snprintf ( b->tables->b.path, sizeof (b->tables->b.path),"%sBUFR_13_0_0_TableB_en.csv", aux );
-      snprintf ( b->tables->c.path, sizeof (b->tables->c.path),"%sBUFR_13_0_0_TableC_en.csv", aux );
-      snprintf ( b->tables->d.path, sizeof (b->tables->d.path),"%sBUFR_13_0_0_TableD_en.csv", aux );
+      snprintf ( b->tables->b.path, sizeof ( b->tables->b.path ),"%sBUFR_13_0_0_TableB_en.csv", aux );
+      snprintf ( b->tables->c.path, sizeof ( b->tables->c.path ),"%sBUFR_13_0_0_TableC_en.csv", aux );
+      snprintf ( b->tables->d.path, sizeof ( b->tables->d.path ),"%sBUFR_13_0_0_TableD_en.csv", aux );
       break;
     case 18:
-      snprintf ( b->tables->b.path, sizeof (b->tables->b.path),"%sBUFR_18_1_0_TableB_en.csv", aux );
-      snprintf ( b->tables->c.path, sizeof (b->tables->c.path),"%sBUFR_18_1_0_TableC_en.csv", aux );
-      snprintf ( b->tables->d.path, sizeof (b->tables->d.path),"%sBUFR_18_1_0_TableD_en.csv", aux );
+      snprintf ( b->tables->b.path, sizeof ( b->tables->b.path ),"%sBUFR_18_1_0_TableB_en.csv", aux );
+      snprintf ( b->tables->c.path, sizeof ( b->tables->c.path ),"%sBUFR_18_1_0_TableC_en.csv", aux );
+      snprintf ( b->tables->d.path, sizeof ( b->tables->d.path ),"%sBUFR_18_1_0_TableD_en.csv", aux );
       break;
     case 19:
-      snprintf ( b->tables->b.path, sizeof (b->tables->b.path),"%sBUFR_19_1_1_TableB_en.csv", aux );
-      snprintf ( b->tables->c.path, sizeof (b->tables->c.path),"%sBUFR_19_1_1_TableC_en.csv", aux );
-      snprintf ( b->tables->d.path, sizeof (b->tables->d.path),"%sBUFR_19_1_1_TableD_en.csv", aux );
+      snprintf ( b->tables->b.path, sizeof ( b->tables->b.path ),"%sBUFR_19_1_1_TableB_en.csv", aux );
+      snprintf ( b->tables->c.path, sizeof ( b->tables->c.path ),"%sBUFR_19_1_1_TableC_en.csv", aux );
+      snprintf ( b->tables->d.path, sizeof ( b->tables->d.path ),"%sBUFR_19_1_1_TableD_en.csv", aux );
       break;
     case 22:
-      snprintf ( b->tables->b.path, sizeof (b->tables->b.path),"%sBUFR_22_0_1_TableB_en.csv", aux );
-      snprintf ( b->tables->c.path, sizeof (b->tables->c.path),"%sBUFR_22_0_1_TableC_en.csv", aux );
-      snprintf ( b->tables->d.path, sizeof (b->tables->d.path),"%sBUFR_22_0_1_TableD_en.csv", aux );
+      snprintf ( b->tables->b.path, sizeof ( b->tables->b.path ),"%sBUFR_22_0_1_TableB_en.csv", aux );
+      snprintf ( b->tables->c.path, sizeof ( b->tables->c.path ),"%sBUFR_22_0_1_TableC_en.csv", aux );
+      snprintf ( b->tables->d.path, sizeof ( b->tables->d.path ),"%sBUFR_22_0_1_TableD_en.csv", aux );
       break;
     case 14:
     case 15:
     case 16:
     case 17:
-    case 20:    
+    case 20:
     case 21:
     case 23:
     case 24:
@@ -131,20 +131,20 @@ int get_wmo_tablenames ( struct bufrdeco *b )
     case 34:
     case 35:
     case 36:
-    case 37:    
-      snprintf ( b->tables->b.path, sizeof (b->tables->b.path),"%sBUFR_%d_0_0_TableB_en.csv", aux, b->sec1.master_version );
-      snprintf ( b->tables->c.path, sizeof (b->tables->c.path),"%sBUFR_%d_0_0_TableC_en.csv", aux, b->sec1.master_version );
-      snprintf ( b->tables->d.path, sizeof (b->tables->d.path),"%sBUFR_%d_0_0_TableD_en.csv", aux, b->sec1.master_version );
+    case 37:
+      snprintf ( b->tables->b.path, sizeof ( b->tables->b.path ),"%sBUFR_%d_0_0_TableB_en.csv", aux, b->sec1.master_version );
+      snprintf ( b->tables->c.path, sizeof ( b->tables->c.path ),"%sBUFR_%d_0_0_TableC_en.csv", aux, b->sec1.master_version );
+      snprintf ( b->tables->d.path, sizeof ( b->tables->d.path ),"%sBUFR_%d_0_0_TableD_en.csv", aux, b->sec1.master_version );
       break;
-    case 38:    
-      snprintf ( b->tables->b.path, sizeof (b->tables->b.path),"%sBUFR_%d_1_0_TableB_en.csv", aux, b->sec1.master_version );
-      snprintf ( b->tables->c.path, sizeof (b->tables->c.path),"%sBUFR_%d_1_0_TableC_en.csv", aux, b->sec1.master_version );
-      snprintf ( b->tables->d.path, sizeof (b->tables->d.path),"%sBUFR_%d_1_0_TableD_en.csv", aux, b->sec1.master_version );
+    case 38:
+      snprintf ( b->tables->b.path, sizeof ( b->tables->b.path ),"%sBUFR_%d_1_0_TableB_en.csv", aux, b->sec1.master_version );
+      snprintf ( b->tables->c.path, sizeof ( b->tables->c.path ),"%sBUFR_%d_1_0_TableC_en.csv", aux, b->sec1.master_version );
+      snprintf ( b->tables->d.path, sizeof ( b->tables->d.path ),"%sBUFR_%d_1_0_TableD_en.csv", aux, b->sec1.master_version );
       break;
     default:
-      snprintf ( b->tables->b.path, sizeof (b->tables->b.path),"%sBUFR_38_1_0_TableB_en.csv", aux );
-      snprintf ( b->tables->c.path, sizeof (b->tables->c.path),"%sBUFR_38_1_0_TableC_en.csv", aux );
-      snprintf ( b->tables->d.path, sizeof (b->tables->d.path),"%sBUFR_38_1_0_TableD_en.csv", aux );
+      snprintf ( b->tables->b.path, sizeof ( b->tables->b.path ),"%sBUFR_38_1_0_TableB_en.csv", aux );
+      snprintf ( b->tables->c.path, sizeof ( b->tables->c.path ),"%sBUFR_38_1_0_TableC_en.csv", aux );
+      snprintf ( b->tables->d.path, sizeof ( b->tables->d.path ),"%sBUFR_38_1_0_TableD_en.csv", aux );
       break;
     }
   return 0;
@@ -159,36 +159,163 @@ int get_wmo_tablenames ( struct bufrdeco *b )
 */
 int bufr_read_tables_wmo ( struct bufrdeco *b )
 {
-  bufrdeco_assert (b != NULL);
+  int index;
+  size_t i;
+  bufrdeco_assert ( b != NULL );
+  struct bufr_tableb *tb;
 
-  // get tablenames
-  if ( get_wmo_tablenames ( b ) )
+  if ( b->mask & BUFRDECO_USE_TABLES_CACHE )
     {
-      snprintf ( b->error, sizeof (b->error) ,"%s(): Cannot find bufr tables\n" , __func__);
-      return 1;
-    }
+      // When using cache, member b->tables is actually a pointer in array b->cache.tab[]
 
-  // If tables still not initialized then do it
-  if ( b->tables == NULL && bufrdeco_init_tables ( & ( b->tables ) ) )
-    { 
-      snprintf ( b->error, sizeof (b->error), "%s(): Cannot allocate memory for tables\n" , __func__ );
-      return 1;
-    }
+      if ( ( index = bufrdeco_cache_tables_search ( & ( b->cache ), b->sec1.master_version ) ) >= 0 )
+        {
+#ifdef __DEBUG
+          printf ( "# Found tables in cache for version %u index %d\n", b->sec1.master_version, index );
+#endif
+          // hit cache, then the only task is to change member b->tables, and restore original values from item im tableB
+          b->tables = b->cache.tab[index];
+          tb = & ( b->tables->b );
 
-  // And now read tables
-  if ( bufr_read_tableb_csv ( b ) )
+          for ( i = 0; i < tb->nlines ; i++ )
+            {
+              tb->item[i].scale = tb->item[i].scale_ori;
+              tb->item[i].reference = tb->item[i].reference_ori;
+              tb->item[i].nbits = tb->item[i].nbits_ori;
+              tb->item[i].changed = 0;
+            }
+
+          // all done
+          return 0;
+        }
+      else
+        {
+#ifdef __DEBUG
+          printf ( "# Tables for version %u not found in cache. Stored in index %d\n", b->sec1.master_version, b->cache.next );
+#endif
+          // If not in cache, the new master version tables has to be stored. This implies that
+          bufrdeco_store_tables ( & ( b->tables ), & ( b->cache ), b->sec1.master_version );
+
+          // get tablenames
+          if ( get_wmo_tablenames ( b ) )
+            {
+              snprintf ( b->error, sizeof ( b->error ),"%s(): Cannot find bufr tables\n", __func__ );
+              return 1;
+            }
+
+          // Missed cache
+          if ( bufr_read_tableb_csv ( b ) )
+            {
+              return 1;
+            }
+
+          if ( bufr_read_tablec_csv ( b ) )
+            {
+              return 1;
+            }
+
+          if ( bufr_read_tabled_csv ( b ) )
+            {
+              return 1;
+            }
+
+        }
+    }
+  else
     {
-      return 1;
+      // If tables still not initialized then do it
+      if ( b->tables == NULL && bufrdeco_init_tables ( & ( b->tables ) ) )
+        {
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot allocate memory for tables\n", __func__ );
+          return 1;
+        }
+      // get tablenames
+      if ( get_wmo_tablenames ( b ) )
+        {
+          snprintf ( b->error, sizeof ( b->error ),"%s(): Cannot find bufr tables\n", __func__ );
+          return 1;
+        }
+
+      // And now read tables
+      if ( bufr_read_tableb_csv ( b ) )
+        {
+          return 1;
+        }
+
+      if ( bufr_read_tablec_csv ( b ) )
+        {
+          return 1;
+        }
+
+      if ( bufr_read_tabled_csv ( b ) )
+        {
+          return 1;
+        }
+    }
+  return 0;
+}
+
+/*!
+ *  \fn int bufrdeco_store_tables ( struct bufr_tables **t, struct bufr_tables_cache *c,  uint8_t ver )
+ *  \brief Init an element of array c->tab[] if still not allocated. If allocated clean it and set *t pointing to this element
+ *
+ */
+int bufrdeco_store_tables ( struct bufr_tables **t, struct bufr_tables_cache *c,  uint8_t ver )
+{
+  if ( c->tab[c->next] == NULL )
+    {
+      // Init the array element
+      bufrdeco_init_tables ( & ( c->tab[c->next] ) );
+
+      // increase the counter of allocated elements
+      ( c->nt )++;
+    }
+  else
+    {
+      // Clean the element in array with zeroes
+      memset ( c->tab[c->next], 0, sizeof ( struct bufr_tables ) );
+
+      // sets the proper version as a key of element
+      c->ver[c->next] = ver;
     }
 
-  if ( bufr_read_tablec_csv ( b ) )
-    {
-      return 1;
-    }
+  // t will point to array element
+  *t = c->tab[c->next];
 
-  if ( bufr_read_tabled_csv ( b ) )
+  // Set the member 'next'. It marks the next element in array it will be modified when failing a search in future
+  c->next = ( c->next + 1 ) % BUFRDECO_TABLES_CACHE_SIZE;
+  return 0;
+}
+
+int bufrdeco_cache_tables_search ( struct bufr_tables_cache *c, uint8_t ver )
+{
+  int i = 0;
+
+  for ( i = 0; i < BUFRDECO_TABLES_CACHE_SIZE ; i++ )
     {
-      return 1;
+      if ( c->ver[i] == ver )
+        return i; // found
     }
+  return -1; // Not found
+}
+
+/*!
+ * \fn int bufrdeco_free_cache_tables (struct bufr_tables_cache *c)
+ * \brief deallocate and clean a \ref bufr_tables_cache
+ * \param pointer to the struct to clean
+ */
+int bufrdeco_free_cache_tables ( struct bufr_tables_cache *c )
+{
+  int  i;
+
+  for ( i = 0; i < BUFRDECO_TABLES_CACHE_SIZE; i++ )
+    {
+      if ( c->tab[i] )
+        {
+          free ( ( void * ) c->tab[i] );
+        }
+    }
+  // then clean
+  memset ( c, 0, sizeof ( struct bufr_tables_cache ) );
   return 0;
 }

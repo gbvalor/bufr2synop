@@ -96,6 +96,7 @@ char ERR[256]; /*!< string with an error */
 char BUFRTABLES_DIR[256]; /*!< Directory for BUFR tables set by user */
 char LISTOFFILES[256]; /*!< The pathname of a file which includes a list of bufr files to parse */
 char INPUTFILE[256]; /*!< The pathname of input file */
+char OFFSETFILE[BUFRDECO_PATH_LENGTH + 8]; /*< The path name of optional file with bit offsets for non-compressed BUFR. */
 char OUTPUTFILE[256]; /*!< The pathname of output file */
 int VERBOSE; /*!< If != 0 the verbose output */
 int SHOW_SEQUENCE; /*!< Output explained sequence */
@@ -105,46 +106,65 @@ int GTS_HEADER; /*!< If == 1 GTS header have been guessed from filename */
 int XML; /*!< If == 1 then output is in xml format */
 int JSON; /*!< If == 1 then output is in json format */
 int CSV; /*!< If == 1 then output is in csv format */
-int EXTRACT; /*!< if != 0 then the decoder tries to extract an embebed bufr in a file seraching for a first '7777' after first 'BUFR' */ 
+int EXTRACT; /*!< if != 0 then the decoder tries to extract an embebed bufr in a file seraching for a first '7777' after first 'BUFR' */
 int ECMWF; /*!< If == 1 then use tables from ECMWF package */
 int HTML; /*!< If == 1 then output is in HTML format */
 int NOTAC; /*!< if == 1 then do not decode to TAC */
 int FIRST_SUBSET; /*!< First subset index in output. First available is 0 */
 int LAST_SUBSET; /*!< Last subset index in output. First available is 0 */
 int PRINT_WIGOS_ID; /*!< if != 0 then print wigos id in output */
+int READ_OFFSETS; /*!< if != then read bit offsets */
+int WRITE_OFFSETS; /*!< if != 0 then write bit offsets */
+int USE_CACHE; /*!< if != the use cache of tables */
 FILE *FL; /*!< Buffer to read the list of files */
+
+#ifdef DEBUG_TIME
+  clock_t clk_start, clk_end;
+#endif
 
 int main ( int argc, char *argv[] )
 {
-  size_t subset;
+  int subset, first_subset, last_subset;
   char subset_id[32];
   struct bufrdeco_subset_sequence_data *seq;
-  
+
 
   if ( bufrtotac_read_args ( argc, argv ) < 0 )
     exit ( EXIT_FAILURE );
 
   // init bufr struct
+#ifdef DEBUG_TIME      
+      clk_start = clock ();
+#endif
   if ( bufrdeco_init ( &BUFR ) )
     {
       printf ( "%s(): Cannot init bufr struct\n", SELF );
       return 1;
     }
+#ifdef DEBUG_TIME        
+      clk_end = clock();  
+      print_timing (clk_start,clk_end,bufrdeco_init());
+#endif      
 
   // If needed mark to use ECMWF tables
   if ( ECMWF )
     BUFR.mask |= BUFRDECO_USE_ECMWF_TABLES;
-  
+
   if ( HTML )
     BUFR.mask |= BUFRDECO_OUTPUT_HTML;
+  
+  if (USE_CACHE)
+    BUFR.mask |= BUFRDECO_USE_TABLES_CACHE;
 
   /**** Set bufr tables dir ****/
-  strcpy(BUFR.bufrtables_dir , BUFRTABLES_DIR);
-  
+  strcpy ( BUFR.bufrtables_dir, BUFRTABLES_DIR );
+
   /**** Big loop. a cycle per file. Get input filenames from LISTOFFILES[] ****/
-  while ( get_bufrfile_path ( INPUTFILE, ERR ) )
+  while ( get_bufrfile_path ( INPUTFILE, OFFSETFILE, ERR ) )
     {
-      //printf ( "%s\n", INPUTFILE );
+#ifdef __DEBUG      
+      printf ( "####### %s ######\n", INPUTFILE );
+#endif      
       if ( DEBUG )
         printf ( "# %s\n", INPUTFILE );
 
@@ -153,9 +173,13 @@ int main ( int argc, char *argv[] )
       // - Init the structs and allocate the needed memory if not done previously
       // - Splits and parse the BUFR sections (without expanding descriptors nor parsing data)
       // - Reads the needed Table files and store them in memory.
-      // 
+      //
       // If EXTRACT != 0 then the function bufrdeco_extract_bufr() is used instead of bufrdeco_read_bufr()
-      // This act in the same way, but search and extract the first BUFR embebed in a file. 
+      // This act in the same way, but search and extract the first BUFR embebed in a file.
+#ifdef DEBUG_TIME      
+      clk_start = clock ();
+#endif
+      
       if ( ( EXTRACT && bufrdeco_extract_bufr ( &BUFR, INPUTFILE ) ) ||
            ( EXTRACT == 0 && bufrdeco_read_bufr ( &BUFR, INPUTFILE ) ) )
         {
@@ -165,9 +189,28 @@ int main ( int argc, char *argv[] )
           bufrdeco_reset ( &BUFR );
           continue;
         }
+#ifdef DEBUG_TIME        
+      clk_end = clock();  
+      print_timing (clk_start,clk_end,bufrdeco_extract_bufr());
+#endif      
+
+      // Check if have to read bit offsets file
+      if ( READ_OFFSETS &&
+           BUFR.sec3.compressed == 0 &&
+           BUFR.sec3.subsets > 1 )
+        {
+          #ifdef DEBUG_TIME      
+             clk_start = clock ();
+          #endif
+          bufrdeco_read_subset_offset_bits ( &BUFR, OFFSETFILE );
+#ifdef DEBUG_TIME        
+          clk_end = clock();  
+          print_timing (clk_start,clk_end,bufrdeco_read_subset_offset_bits());
+#endif      
+        }
 
       /* Try to guess a GTS header from filename*/
-      GTS_HEADER = guess_gts_header ( &BUFR.header , INPUTFILE );  // GTS_HEADER = 1 if succeeded
+      GTS_HEADER = guess_gts_header ( &BUFR.header, INPUTFILE );   // GTS_HEADER = 1 if succeeded
       if ( GTS_HEADER && DEBUG )
         printf ( "# Guessed GTS Header: %s %s %s %s %s\n", BUFR.header.timestamp, BUFR.header.bname, BUFR.header.center,
                  BUFR.header.dtrel, BUFR.header.order );
@@ -182,6 +225,9 @@ int main ( int argc, char *argv[] )
         }
 
       // To get any data from any subset  we need to parse the tree
+#ifdef DEBUG_TIME      
+      clk_start = clock ();
+#endif
       if ( bufrdeco_parse_tree ( &BUFR ) )
         {
           if ( DEBUG )
@@ -190,48 +236,71 @@ int main ( int argc, char *argv[] )
           bufrdeco_reset ( &BUFR );
           continue;
         }
+#ifdef DEBUG_TIME        
+      clk_end = clock();  
+      print_timing (clk_start,clk_end,bufrdeco_parse_tree());
+#endif      
+      
       if ( VERBOSE )
         bufrdeco_print_tree ( &BUFR );
 
-      for ( subset = 0; subset < BUFR.sec3.subsets ; subset++ )
-        {
-          // Here we get all subsets since 0. FIRST_SUBSET here is not significant
-          if ( subset > (size_t) LAST_SUBSET)
-              break;
+      first_subset = FIRST_SUBSET;
+      last_subset = LAST_SUBSET;
+      
+      // Fix first and last subset
+      if ( first_subset >= ( int ) BUFR.sec3.subsets )
+        goto fin;
 
-          if ( ( seq = bufrdeco_get_subset_sequence_data ( &BUFR ) ) == NULL )
+      if ( last_subset < first_subset)
+        last_subset = BUFR.sec3.subsets - 1;
+
+      for ( subset = first_subset; subset <= last_subset ; subset++ )
+        {
+#ifdef DEBUG_TIME      
+          clk_start = clock ();
+#endif          
+          if ( ( seq = bufrdeco_get_target_subset_sequence_data ( subset, &BUFR ) ) == NULL )
+//          if ( ( seq = bufrdeco_get_subset_sequence_data ( &BUFR ) ) == NULL )
             {
               if ( DEBUG )
                 printf ( "# %s", BUFR.error );
               goto fin;
             }
+          //printf ("#First = %d. Last = %d. Parsing to TAC subset %lu\n", FIRST_SUBSET, LAST_SUBSET, BUFR.state.subset - 1);
+#ifdef DEBUG_TIME        
+          clk_end = clock();  
+          print_timing (clk_start, clk_end,bufrdeco_get_target_subset_sequence_data());
+#endif      
 
-          // But here we filter the subset array to show since FIRST_SUBSET
-          if (subset < (size_t) FIRST_SUBSET)
-              continue;
-          
           if ( VERBOSE )
             {
-              if ( ( subset == 0 ) && BUFR.sec3.compressed )
+              if ( ( subset == first_subset ) && BUFR.sec3.compressed )
                 print_bufrdeco_compressed_data_references ( & ( BUFR.refs ) );
               if ( BUFR.mask & BUFRDECO_OUTPUT_HTML )
-              {
-                sprintf(subset_id, "subset_%lu", subset);  
-                bufrdeco_print_subset_sequence_data_tagged_html ( seq, subset_id );
-              }
+                {
+                  sprintf ( subset_id, "subset_%d", subset );
+                  bufrdeco_print_subset_sequence_data_tagged_html ( seq, subset_id );
+                }
               else
                 bufrdeco_print_subset_sequence_data ( seq );
             }
 
           if ( ! NOTAC )
             {
-              // Here we perform the decode to TAC  
+              // Here we perform the decode to TAC
+#ifdef DEBUG_TIME      
+              clk_start = clock ();
+#endif          
               if ( BUFR.sec3.ndesc &&  bufrtotac_parse_subset_sequence ( &REPORT, &STATE, &BUFR, ERR ) )
                 {
                   if ( DEBUG )
                     fprintf ( stderr, "# %s\n", ERR );
                 }
-              
+#ifdef DEBUG_TIME        
+              clk_end = clock();  
+              print_timing (clk_start, clk_end, bufrtotac_parse_subset_sequence());
+#endif      
+
               // And here print the results
               if ( XML )
                 {
@@ -261,7 +330,23 @@ int main ( int argc, char *argv[] )
         }
     fin:
       ;
+
+      // check if has to write bit offsets file
+      if ( BUFR.sec3.compressed == 0 &&
+           BUFR.sec3.subsets > 1 &&
+           WRITE_OFFSETS )
+        {
+          bufrdeco_write_subset_offset_bits ( &BUFR, OFFSETFILE );
+        }
+
+#ifdef DEBUG_TIME      
+      clk_start = clock ();
+#endif          
       bufrdeco_reset ( &BUFR );
+#ifdef DEBUG_TIME        
+      clk_end = clock();  
+      print_timing (clk_start, clk_end, bufrdeco_reset());
+#endif      
       NFILES ++;
     } // End of big loop parsing files
 
