@@ -63,7 +63,7 @@ int get_wmo_tablenames ( struct bufrdeco *b )
             {
               if ( S_ISDIR ( st.st_mode ) )
                 {
-                  strcpy_safe ( aux, DEFAULT_BUFRTABLES_WMO_CSV_DIR2 );
+                  strcpy ( aux, DEFAULT_BUFRTABLES_WMO_CSV_DIR2 );
                 }
             }
         }
@@ -71,13 +71,13 @@ int get_wmo_tablenames ( struct bufrdeco *b )
         {
           if ( S_ISDIR ( st.st_mode ) )
             {
-              strcpy_safe ( aux, DEFAULT_BUFRTABLES_WMO_CSV_DIR1 );
+              strcpy ( aux, DEFAULT_BUFRTABLES_WMO_CSV_DIR1 );
             }
         }
     }
   else
     {
-      strcpy_safe ( aux, b->bufrtables_dir );
+      strcpy ( aux, b->bufrtables_dir );
     }
 
   switch ( b->sec1.master_version )

@@ -33,7 +33,7 @@
 int bufr_read_tablec_csv ( struct bufrdeco *b )
 {
   char *c;
-  size_t  used = 0;
+  //size_t  used = 0;
   FILE *t;
   int nt;
   uint32_t ix;
@@ -43,7 +43,7 @@ int bufr_read_tablec_csv ( struct bufrdeco *b )
   char *tk[16];
   char caux[256], l[CSV_MAXL];
 
-  bufrdeco_assert ( b != NULL );
+  //bufrdeco_assert ( b != NULL );
   
   tc = & ( b->tables->c );
   
@@ -61,9 +61,9 @@ int bufr_read_tablec_csv ( struct bufrdeco *b )
       return 0; // all done
     }
 
-  strcpy_safe ( caux, tc->path );
+  strcpy ( caux, tc->path );
   memset ( tc, 0, sizeof ( struct bufr_tablec ) );
-  strcpy_safe ( tc->path, caux );
+  strcpy ( tc->path, caux );
   if ( ( t = fopen ( tc->path, "r" ) ) == NULL )
     {
       snprintf ( b->error, sizeof ( b->error ),"Unable to open table C file '%s'\n", tc->path );
@@ -92,7 +92,7 @@ int bufr_read_tablec_csv ( struct bufrdeco *b )
       // First we build the descriptor
       ix = strtoul ( tk[0], &c, 10 );
       uint32_t_to_descriptor ( &desc, ix );
-      strcpy_safe ( tc->item[i].key, tk[0] );
+      strcpy ( tc->item[i].key, tk[0] );
       tc->item[i].x = desc.x;
       tc->item[i].y = desc.y;
 
@@ -101,11 +101,7 @@ int bufr_read_tablec_csv ( struct bufrdeco *b )
 
       // Description
       c = & tc->item[i].description[0];
-      used += snprintf ( c + used, BUFR_EXPLAINED_LENGTH - used, "%s", tk[2] );
-      used += snprintf ( c + used, BUFR_EXPLAINED_LENGTH - used, " %s", tk[3] );
-      used += snprintf ( c + used, BUFR_EXPLAINED_LENGTH - used, " %s", tk[4] );
-
-      used += snprintf ( c + used, BUFR_EXPLAINED_LENGTH - used, "%s", tk[5] );
+      snprintf ( c, BUFR_EXPLAINED_LENGTH, "%s %s %s %s", tk[2], tk[3], tk[4], tk[5] );
 
       if ( tc->num[desc.x] == 0 )
         {
@@ -121,7 +117,7 @@ int bufr_read_tablec_csv ( struct bufrdeco *b )
   fclose ( t );
   tc->nlines = i;
   tc->wmo_table = 1;
-  strcpy_safe ( tc->old_path, tc->path ); // store latest path
+  strcpy ( tc->old_path, tc->path ); // store latest path
   return 0;
 }
 
@@ -143,17 +139,13 @@ int bufr_find_tablec_csv_index ( size_t *index, struct bufr_tablec *tc, const ch
   char *c;
   struct bufr_descriptor desc;
 
-  bufrdeco_assert ( tc != NULL && index != NULL );
+  //bufrdeco_assert ( tc != NULL && index != NULL );
   
   ix = strtoul ( key, &c, 10 );
   uint32_t_to_descriptor ( &desc, ix );
   i0 = tc->x_start[desc.x];
   for ( i = i0 ; i < i0 + tc->num[desc.x] ; i++ )
     {
-      if ( tc->item[i].x != desc.x )
-        {
-          return 1; // descriptor not found
-        }
       if ( tc->item[i].y == desc.y && tc->item[i].ival == code )
         {
           *index = i;

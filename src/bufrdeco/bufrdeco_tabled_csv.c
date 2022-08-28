@@ -46,7 +46,7 @@ int bufr_read_tabled_csv ( struct bufrdeco *b )
   struct bufr_descriptor desc;
   struct bufr_tabled *td;
 
-  bufrdeco_assert (b != NULL);
+  //bufrdeco_assert (b != NULL);
   
   td = &(b->tables->d);
   if ( td->path[0] == 0 )
@@ -63,9 +63,9 @@ int bufr_read_tabled_csv ( struct bufrdeco *b )
       return 0; // all done
     }
 
-  strcpy_safe ( caux, td->path );
+  strcpy ( caux, td->path );
   memset ( td, 0, sizeof ( struct bufr_tabled ) );
-  strcpy_safe ( td->path,caux );
+  strcpy ( td->path,caux );
   if ( ( t = fopen ( td->path, "r" ) ) == NULL )
     {
       snprintf ( b->error, sizeof (b->error),"Unable to open table D file '%s'\n", td->path );
@@ -90,15 +90,15 @@ int bufr_read_tabled_csv ( struct bufrdeco *b )
 
       // item fields
       strcpy(td->item[i].key, tk[0]);
-      strcpy_safe(td->item[i].key2, tk[1]);
+      strcpy(td->item[i].key2, tk[1]);
 
       if (nt == 4 && tk[2][0])
-        strcpy_safe (td->item[i].description, tk[2])
+        strcpy (td->item[i].description, tk[2]);
       else
         td->item[i].description[0] = 0;
 
       if (nt == 4 && tk[3][0])
-        strcpy_safe(td->item[i].description2, tk[3])
+        strcpy(td->item[i].description2, tk[3]);
       else
         td->item[i].description2[0] = 0;
 
@@ -107,7 +107,7 @@ int bufr_read_tabled_csv ( struct bufrdeco *b )
           if ( oldkey[0] )
             {
               // write number of descriptors in emulated ECMWF line
-              snprintf ( aux, sizeof (aux), "%s%3d", oldkey, nj );
+              sprintf ( aux, "%s%3d", oldkey, nj );
               td->l[j0][1] = aux[0];
               td->l[j0][2] = aux[1];
               td->l[j0][3] = aux[2];
@@ -125,7 +125,7 @@ int bufr_read_tabled_csv ( struct bufrdeco *b )
         {
           nj++;
         }
-      strcpy_safe ( oldkey, tk[0] );
+      strcpy ( oldkey, tk[0] );
 
       ix = strtoul ( tk[0], &c, 10 );
       uint32_t_to_descriptor ( &desc, ix );
@@ -137,13 +137,13 @@ int bufr_read_tabled_csv ( struct bufrdeco *b )
       ( td->num[desc.x] ) ++;
 
       // Now emule ECMWF format
-      snprintf ( td->l[i], sizeof (td->l[i]), "           %s", tk[1] );
+      sprintf ( td->l[i], "           %s", tk[1] );
       i++;
     }
   fclose ( t );
 
   // Last sequence
-  snprintf ( aux, sizeof (aux), "%s%3d", oldkey, nj );
+  sprintf ( aux, "%s%3d", oldkey, nj );
   td->l[j0][1] = aux[0];
   td->l[j0][2] = aux[1];
   td->l[j0][3] = aux[2];
@@ -156,6 +156,6 @@ int bufr_read_tabled_csv ( struct bufrdeco *b )
 
   td->nlines = i;
   td->wmo_table = 1;
-  strcpy_safe ( td->old_path, td->path ); // store latest path
+  strcpy ( td->old_path, td->path ); // store latest path
   return 0;
 }

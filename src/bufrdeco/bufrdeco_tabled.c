@@ -53,9 +53,9 @@ int bufr_read_tabled ( struct bufrdeco *b )
       return 0; // all done
     }
 
-  strcpy_safe ( caux, td->path );
+  strcpy ( caux, td->path );
   memset ( td, 0, sizeof ( struct bufr_tabled ) );
-  strcpy_safe ( td->path,caux );
+  strcpy ( td->path,caux );
   if ( ( t = fopen ( td->path, "r" ) ) == NULL )
     {
       snprintf ( b->error, sizeof (b->error), "%s(): Unable to open table D file '%s'\n", __func__, td->path );
@@ -86,7 +86,7 @@ int bufr_read_tabled ( struct bufrdeco *b )
   fclose ( t );
   td->nlines = i;
   td->wmo_table = 0;
-  strcpy_safe ( td->old_path, td->path ); // store latest path
+  strcpy ( td->old_path, td->path ); // store latest path
   return 0;
 }
 
@@ -105,7 +105,7 @@ int bufr_find_tabled_index ( size_t *index, struct bufr_tabled *td, const char *
   size_t ix = 0;
   char *c, aux[8];
  
-  bufrdeco_assert ( td != NULL && key != NULL && index != NULL);
+  //bufrdeco_assert ( td != NULL && key != NULL && index != NULL);
   
   aux[0] = key[1];
   aux[1] = key[2];
@@ -170,7 +170,7 @@ int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufr
 
   // Get the name of common sequence
   if (td->item[i].description[0])
-     strcpy_safe(s->name, td->item[i].description)
+     strcpy(s->name, td->item[i].description);
   else
      s->name[0] = 0;
   

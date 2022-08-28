@@ -274,6 +274,10 @@
 */
 #define BUFRDECO_OUTPUT_XML (8)
 
+/*!
+ * \def BUFRDECO_USE_TABLES_CACHE
+ * \brief bit mask to the member mask of struct \ref bufrdeco to mark the use of \ref bufr_tables cache
+ */
 #define BUFRDECO_USE_TABLES_CACHE (16)
 
 /*!
@@ -290,9 +294,9 @@
 
 /*!
  * \def BUFR_CVAL_LENGTH
- * \brief Max length (in chars) of a cval in a bur_atom_data
+ * \brief Max length (in chars) of a cval in a \ref bufr_atom_data
  */
-#define BUFR_CVAL_LENGTH (256)
+#define BUFR_CVAL_LENGTH (128)
 
 /*!
  *  \def BUFRDECO_PATH_LENGTH
@@ -300,6 +304,10 @@
  */
 #define BUFRDECO_PATH_LENGTH (256)
 
+/*!
+ * \def BUFRDECO_TABLES_CACHE_SIZE
+ * \brief Max number of structs \ref bufr_tables in a \ref bufr_tables_cache
+ */
 #define BUFRDECO_TABLES_CACHE_SIZE (8)
 
 /*!

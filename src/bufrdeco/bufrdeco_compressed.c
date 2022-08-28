@@ -747,8 +747,8 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
     {
       a->mask = DESCRIPTOR_IS_LOCAL;
       memcpy ( & ( a->desc ), & ( r->desc ), sizeof ( struct bufr_descriptor ) );
-      strcpy_safe ( a->name, "LOCAL DESCRIPTOR" );
-      strcpy_safe ( a->unit, "UNKNOWN" );
+      strcpy ( a->name, "LOCAL DESCRIPTOR" );
+      strcpy ( a->unit, "UNKNOWN" );
       if ( r->inc_bits )
         {
           bit_offset = r->bit0 + r->bits + 6 + r->inc_bits * subset;
@@ -774,9 +774,11 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
   // descriptor
   memcpy ( & ( a->desc ), & ( r->desc ), sizeof ( struct bufr_descriptor ) );
   // name
-  strcpy_safe ( a->name, r->name );
+  //strcpy_safe ( a->name, r->name );
+  strcpy ( a->name, r->name );
   //unit
-  strcpy_safe ( a->unit, r->unit );
+  //strcpy_safe ( a->unit, r->unit );
+  strcpy ( a->unit, r->unit );
   //scale
   a->escale = r->escale;
 
@@ -810,7 +812,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
       if ( r->inc_bits == 0 )
         {
           // case of all data same, so copy the local ref
-          strcpy_safe ( a->cval, r->cref0 );
+          strcpy ( a->cval, r->cref0 );
           a->mask |= DESCRIPTOR_HAVE_STRING_VALUE;
         }
       else
@@ -838,8 +840,8 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
   // now we check for associated data
   if ( r->is_associated )
     {
-      strcpy_safe ( a->name, "Associated value" );
-      strcpy_safe ( a->unit, "Associated unit" );
+      strcpy ( a->name, "Associated value" );
+      strcpy ( a->unit, "Associated unit" );
       if ( r->has_data == 0 )
         {
           a->associated = MISSING_INTEGER;
@@ -915,7 +917,6 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
   // Get a numeric number
   a->val = ( double ) ( ivals ) * exp10 ( ( double ) ( - r->escale ) );
 
-  //printf("ival = %lf\n", a->val);
   if ( strstr ( a->unit, "CODE TABLE" ) == a->unit  || strstr ( a->unit, "Code table" ) == a->unit )
     {
       ival = ( uint32_t ) ( a->val + 0.5 );

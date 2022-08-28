@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -74,7 +74,7 @@ char * csv_quoted_string ( char *out, char *in )
 
 
 /*!
-  \fn int parse_csv_line(int *nt, char *tk[], char *lin)
+  \fn int parse_csv_line2(int *nt, char *tk[], char *lin)
   \brief Parse a csv line
   \param nt pointer to a integer. On success is the number of items found
   \param tk array of pointers. Every pointer is a item on success
@@ -83,7 +83,7 @@ char * csv_quoted_string ( char *out, char *in )
   NOTE that input line is modified
   On success return 0, otherwise -1
 */
-int parse_csv_line ( int *nt, char *tk[], char *lin )
+int parse_csv_line2 ( int *nt, char *tk[], char *lin )
 {
   size_t i, j, k = 0, l, latest_char = 0;
   int flag;
@@ -238,4 +238,107 @@ int parse_csv_line ( int *nt, char *tk[], char *lin )
         }
     }
   return -1;
+}
+
+/*!
+  \fn int parse_csv_line(int *nt, char *tk[], char *lin)
+  \brief Parse a csv line
+  \param nt pointer to a integer. On success is the number of items found
+  \param tk array of pointers. Every pointer is a item on success
+  \param lin input line which is modified in this routine to be splitted into items
+
+  This is an optimization of routine parse_csv_line2(). Here we suppose:
+    -All no void items are closed between "" and separed by comas ','
+    -No " in items.
+    -No blank spaces at the end nor begin of items
+  
+  NOTE that input line is modified
+  On success return 0, otherwise -1
+*/
+int parse_csv_line ( int *nt, char *tk[], char *lin )
+{
+  char *cq[CSV_MAXL / 4], *cc[CSV_MAXL / 4], *c0;
+  int nc, nq, i, j;
+
+  //bufrdeco_assert (lin != NULL && tk != NULL && nt != NULL);
+  
+  *nt = 0;
+
+  // clean final new line)
+  if ((c0 = strchr(lin, CSV_FINAL)) != NULL)
+    *c0 = '\0';
+
+  c0 = lin;
+  nq = 0;
+  while (c0 != NULL && *c0  && nq < (CSV_MAXL / 4))
+  {
+      if ((c0 = strchr(c0, CSV_CITE)) != NULL)
+     {
+       cq[nq++] = c0++;
+     }
+  }
+
+  if (nq % 2)
+    return -1; // Problem, number of quotes are non paired
+
+  c0 = lin;  
+  nc = 0;
+  while (c0 != NULL && *c0 && nc < (CSV_MAXL / 4))
+  {
+     if ((c0 = strchr(c0, CSV_SEPARATOR)) != NULL)
+     {
+        j = 0;
+        if (nq)
+        {
+          for (; j < nq ; j+=2)
+            if ((cq[j] < c0) && (c0 < cq[j + 1]))
+            {
+              j = nq;// is a comma between two cites. Ignored
+              c0++;
+            }
+        }
+        if (j == nq)
+        {
+           // is a comma between two items.
+           cc[nc++] = c0++;
+        }
+     }
+  }
+
+  // Now go to tokens, in this pass, still CSV_CITE are in items
+  c0 = lin;
+  if (nc == 0)
+    tk[(*nt)++] = c0;
+  else
+  {
+    for (i = 0; i < nc; i++)
+    {
+      if (cc[i] == c0)
+      {
+        tk[(*nt)++] = c0;
+        *(c0) = '\0';
+        c0++;
+      }
+      else
+      {
+        tk[(*nt)++] = c0;
+        *(cc[i]) = '\0';
+        c0 = cc[i] + 1;
+      }
+    }
+  } 
+  tk[(*nt)++] = c0;
+  
+  // fix the tokens supresing the first CSV_CITE if any
+  for (i = 0; i < (*nt); i++)
+  {
+    if( *(tk[i]) == CSV_CITE)
+      (tk[i])++;
+  }
+  
+  // And then supress all CSV_CITE (also in the end of every item)
+  for (i = 0; i < nq ; i++)
+    *(cq[i]) = '\0';
+  
+  return 0;
 }

@@ -50,9 +50,9 @@ int bufr_read_tablec ( struct bufrdeco *b )
       return 0; // all done
     }
 
-  strcpy_safe ( caux, tc->path );
+  strcpy ( caux, tc->path );
   memset ( tc, 0, sizeof ( struct bufr_tablec ) );
-  strcpy_safe ( tc->path, caux );
+  strcpy ( tc->path, caux );
   if ( ( t = fopen ( tc->path, "r" ) ) == NULL )
     {
       snprintf ( b->error, sizeof (b->error), "%s(): Unable to open table C file '%s'\n", __func__, tc->path );
@@ -83,7 +83,7 @@ int bufr_read_tablec ( struct bufrdeco *b )
   fclose ( t );
   tc->nlines = i;
   tc->wmo_table = 0;
-  strcpy_safe ( tc->old_path, tc->path ); // store latest path
+  strcpy ( tc->old_path, tc->path ); // store latest path
   return 0;
 }
 
@@ -200,7 +200,7 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec
 
 
   // if match then we have finished the search
-  strcpy_safe ( expl, &tc->l[i][24] );
+  strcpy ( expl, &tc->l[i][24] );
   if ( nl > 1 )
     {
       for ( nv = 1 ; nv < nl; nv++ )

@@ -74,9 +74,9 @@ int bufr_read_tableb ( struct bufrdeco *b )
       return 0; // all done
     }
 
-  strcpy_safe ( caux, tb->path );
+  strcpy ( caux, tb->path );
   memset ( tb, 0, sizeof ( struct bufr_tableb ) );
-  strcpy_safe ( tb->path, caux );
+  strcpy ( tb->path, caux );
   if ( ( t = fopen ( tb->path, "r" ) ) == NULL )
     {
       snprintf( b->error, sizeof (b->error),"%s(): Unable to open table B file '%s'\n", __func__, tb->path );
@@ -97,7 +97,7 @@ int bufr_read_tableb ( struct bufrdeco *b )
       tb->item[i].changed = 0; // Original from table B
       tb->item[i].x = desc.x; // x
       tb->item[i].y = desc.y; // y
-      strcpy_safe ( tb->item[i].key, desc.c ); // key
+      strcpy ( tb->item[i].key, desc.c ); // key
       if ( tb->x_start[desc.x] == 0 )
         {
           tb->x_start[desc.x] = i;  // marc the start
@@ -132,7 +132,7 @@ int bufr_read_tableb ( struct bufrdeco *b )
   fclose ( t );
   tb->nlines = i;
   tb->wmo_table = 0;
-  strcpy_safe ( tb->old_path, tb->path ); // store latest path
+  strcpy ( tb->old_path, tb->path ); // store latest path
   return 0;
 }
 
@@ -196,7 +196,7 @@ int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *
   char *c;
   struct bufr_descriptor desc;
 
-  bufrdeco_assert ( tb != NULL);
+  //bufrdeco_assert ( tb != NULL);
   
   ix = strtoul ( key, &c, 10 );
   uint32_t_to_descriptor ( &desc, ix );
