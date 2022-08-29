@@ -67,7 +67,7 @@ void print_usage ( void )
   \param version_minor pointer to string with version_minor component if not NULL
   \param version_patch pointer to string with version_patch component if not NULL
   
-  Retuns string pointer \ref version.  
+  Retuns string pointer \a version.  
  */
 char *bufrnoaa_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch)
 {

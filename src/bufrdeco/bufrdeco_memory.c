@@ -266,7 +266,7 @@ int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_r
 
 /*!
  * \fn int bufrdeco_allocate_bitmap ( struct bufrdeco *b )
- * \briefs allocate bitmap
+ * \brief allocate bitmap
  * 
  *   If succeeded return 0, otherwise 1
  */

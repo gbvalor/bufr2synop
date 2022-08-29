@@ -51,8 +51,6 @@ struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data ( struc
 /*!
   \fn  int bufrdeco_decode_data_subset ( struct bufrdeco *b )
   \brief  User interface to decode a BUFR subset
-  \param s pointer to the target struct \ref bufrdeco_subset_sequence_data
-  \param r pointer to the struct \ref bufrdeco_compressed_data_references
   \param b pointer to the base struct \ref bufrdeco
 
   Note that if succeeded the counter to current subset index is increased. Remember that in case of non

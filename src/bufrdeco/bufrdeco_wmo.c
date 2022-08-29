@@ -287,6 +287,14 @@ int bufrdeco_store_tables ( struct bufr_tables **t, struct bufr_tables_cache *c,
   return 0;
 }
 
+/*!
+ * \fn int bufrdeco_cache_tables_search ( struct bufr_tables_cache *c, uint8_t ver )
+ * \brief Search a struct \ref bufr_tables in \ref bufr_tables_cache 
+ * \param c pointer to the struct \ref bufr_tables_cache where to search
+ * \param ver small int with the master version acting as a key in the seardch
+ * 
+ * Returns the index of found struct. If no struct found returns -1
+ */
 int bufrdeco_cache_tables_search ( struct bufr_tables_cache *c, uint8_t ver )
 {
   buf_t i = 0;
@@ -302,7 +310,7 @@ int bufrdeco_cache_tables_search ( struct bufr_tables_cache *c, uint8_t ver )
 /*!
  * \fn int bufrdeco_free_cache_tables (struct bufr_tables_cache *c)
  * \brief deallocate and clean a \ref bufr_tables_cache
- * \param pointer to the struct to clean
+ * \param c pointer to the struct to clean
  */
 int bufrdeco_free_cache_tables ( struct bufr_tables_cache *c )
 {

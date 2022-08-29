@@ -222,7 +222,7 @@
 
 /*!
   \def BUFR_MAX_QUALITY_DATA
-  \brief Max amount of quality data which is maped by a struct \ref bufrdeco_bitmap_element
+  \brief Max amount of quality data which is maped by a struct \ref bufrdeco_bitmap element
 */
 #define BUFR_MAX_QUALITY_DATA (8)
 
@@ -374,7 +374,7 @@ struct bufr_descriptor
   uint8_t f; /*!< F part of descriptor, 2 bits */
   uint8_t x; /*!< X part of descriptor, 6 bits */
   uint8_t y; /*!< Y part of descriptor, 8 bits */
-  uint8_t kk; /*!< Not used , to align the struct and size it to 16 bytes */
+  uint8_t foo; /*!< Not used , to align the struct and size it to 16 bytes */
   char c[12]; /*!< string with whole descriptor (6 decimal digits plus the 0x00 as the end of string */
 };
 
@@ -428,7 +428,7 @@ struct bufrdeco_subset_sequence_data
 
 /*!
   \struct bufrdeco_bitmap
-  \brief Stores all structs \ref bufrdeco_bitmap_element for a bufr bitmap
+  \brief Stores all structs \ref bufrdeco_bitmap for a bufr bitmap
 */
 struct bufrdeco_bitmap
 {
@@ -507,13 +507,13 @@ struct bufrdeco_decoding_data_state
 };
 
 /*!
- *  \struct bufr_no_data_present_range
+ *  \struct bufr_sequence_index_range
  *  \brief range of indexes in a struct \ref bufr_sequence where a condition must me chequed or marked, as example no data present or event 
  */
 struct bufr_sequence_index_range {
   int active; /*!< if != 0 then the range of descriptors is active */
-  buf_t first; /*!< First index for a descriptor in a \struct bufr_sequence to be chequed */ 
-  buf_t last; /*!< Last index for a descriptor in a \struct bufr_sequence to be chequed */
+  buf_t first; /*!< First index for a descriptor in a struct \ref bufr_sequence to be chequed */ 
+  buf_t last; /*!< Last index for a descriptor in a struct \ref bufr_sequence to be chequed */
 };
 
 /*!
@@ -581,9 +581,9 @@ struct bufrdeco_compressed_ref
   char name[BUFR_TABLEB_NAME_LENGTH]; /*!< String with the name of descriptor */
   char unit[BUFR_TABLEB_UNIT_LENGTH]; /*!< String with the name of units */
   struct bufr_descriptor desc; /*!< associated descriptor */
-  buf_t is_bitmaped_by; /*!< Index element in a struct \ref bufr_compressed_data_references which bitmap this one */ 
-  buf_t bitmap_to; /*!< Index element in a struct \ref bufr_compressed_data_references which this one is mapping to */
-  buf_t related_to; /*!< Index of element ina struct \ref bufr_compressed_data_references which this one is related to */
+  buf_t is_bitmaped_by; /*!< Index element in a struct \ref bufrdeco_compressed_data_references which bitmap this one */ 
+  buf_t bitmap_to; /*!< Index element in a struct \ref bufrdeco_compressed_data_references which this one is mapping to */
+  buf_t related_to; /*!< Index of element ina struct \ref bufrdeco_compressed_data_references which this one is related to */
 };
 
 /*!
@@ -902,7 +902,7 @@ struct bufrdeco
   struct bufr_tables_cache cache; /*!< Struct \ref bufr_tables_cache  */
   struct bufrdeco_expanded_tree *tree; /*!< Pointer to a struct containing the parsed descriptor tree (with explansion) */
   struct bufrdeco_decoding_data_state state; /*!< Struct with data needed when parsing bufr */
-  struct bufrdeco_subset_bit_offsets offsets; /*!< Struct \ref bufrdeco_subset_bit_offset with bit offset of start point of every subset in non compressed bufr */
+  struct bufrdeco_subset_bit_offsets offsets; /*!< Struct \ref bufrdeco_subset_bit_offsets with bit offset of start point of every subset in non compressed bufr */
   struct bufrdeco_compressed_data_references refs; /*!< struct with data references in case of compressed bufr */
   struct bufrdeco_subset_sequence_data seq; /*!< sequence with data subset after parse */
   struct bufrdeco_bitmap_array bitmap; /*!< Stores data for bit-maps */

@@ -503,7 +503,7 @@ int get_bitmaped_info ( struct bufrdeco_bitmap_related_vars *brv, uint32_t targe
  * \fn int bufr_write_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offsets *off)
  * \brief Write offset bit array for subsets in a non-compressed bufr 
  * \param f file pointer opened by caller
- * \param off pointer to the struct \ref bufrdeco_subset_bit_offset with the data to write into file
+ * \param off pointer to the struct \ref bufrdeco_subset_bit_offsets with the data to write into file
  */
 int bufr_write_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offsets *off)
 {

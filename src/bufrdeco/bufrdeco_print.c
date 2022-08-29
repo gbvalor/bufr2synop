@@ -413,6 +413,7 @@ int bufrdeco_print_atom_data_stdout ( struct bufr_atom_data *a )
   \fn char * bufrdeco_print_atom_data ( char *target, size_t lmax, struct bufr_atom_data *a )
   \brief print the data in a struct \ref bufr_atom_data to a string
   \param target string where to print the result
+  \param lmax size of allocated string \a target 
   \param a pointer to struct ref \ref bufr_atom_data with data to print
 
   Returns a pointer to result string
@@ -537,6 +538,7 @@ int bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *
 /*!
   \fn int fprint_bufrdeco_compressed_ref ( FILE *f, struct bufrdeco_compressed_ref *r )
   \brief prints a struct bufrdeco_compressed_ref
+  \param f pointer to a file opened by caller
   \param r pointer to the struct to print
 */
 int fprint_bufrdeco_compressed_ref ( FILE *f, struct bufrdeco_compressed_ref *r )

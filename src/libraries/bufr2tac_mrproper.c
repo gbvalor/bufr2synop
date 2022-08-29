@@ -171,7 +171,7 @@ void clean_buoy_sec4 ( struct buoy_sec4 *s )
 }
 
 /*!
-  \fn void clean_buoy_chunks( struct buoy_chunks *b)
+  \fn void bufr2tac_clean_buoy_chunks( struct buoy_chunks *b)
   \brief cleans a \ref buoy_chunks struct
   \param b pointer to the struct to clean
 */
@@ -190,7 +190,7 @@ void bufr2tac_clean_buoy_chunks ( struct buoy_chunks *b )
 }
 
 /*!
-  \fn void clean_temp_chunks( struct temp_chunks *t)
+  \fn void bufr2tac_clean_temp_chunks( struct temp_chunks *t)
   \brief cleans a \ref buoy_chunks struct
   \param t pointer to the struct to clean
 */
@@ -255,7 +255,7 @@ void clean_climat_old ( struct climat_old *s )
 
 
 /*!
-  \fn void clean_climat_chunks( struct climat_chunks *c)
+  \fn void bufr2tac_clean_climat_chunks( struct climat_chunks *c)
   \brief cleans a \ref climat_chunks struct
   \param c pointer to the struct to clean
 */

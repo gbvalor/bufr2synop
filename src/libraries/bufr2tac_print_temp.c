@@ -342,6 +342,7 @@ size_t print_temp_a_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
   \param report string where to write the results
   \param lmax max length permited
   \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param mode Flags the mode it prints. If = 1 then prints WIGOS identifier 
 */
 int print_temp_a ( char *report, size_t lmax, struct temp_chunks *t, int mode )
 {
@@ -588,6 +589,7 @@ size_t print_temp_b_sec8 ( char **sec8, size_t lmax, struct temp_chunks *t )
   \param report string where to write the results
   \param lmax max length permited
   \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param mode Flags the mode it prints. If = 1 then prints WIGOS identifier 
 */
 int print_temp_b ( char *report, size_t lmax, struct temp_chunks *t, int mode )
 {
@@ -818,6 +820,7 @@ size_t print_temp_c_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
   \param report string where to write the results
   \param lmax max length permited
   \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param mode Flags the mode it prints. If = 1 then prints WIGOS identifier 
 */
 int print_temp_c ( char *report, size_t lmax, struct temp_chunks *t, int mode )
 {
@@ -1018,6 +1021,7 @@ size_t print_temp_wigos_id ( char **wid,  size_t lmax, struct temp_chunks *t )
   \param report string where to write the results
   \param lmax max length permited
   \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param mode Flags the mode it prints. If = 1 then prints WIGOS identifier 
 */
 int print_temp_d ( char *report, size_t lmax, struct temp_chunks *t, int mode )
 {

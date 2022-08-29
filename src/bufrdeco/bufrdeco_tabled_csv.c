@@ -27,7 +27,6 @@
   \fn int bufr_read_tabled_csv ( struct bufrdeco *b )
   \brief Reads a file with table D content according with WMO csv format
   \param b pointer to a target struct \ref bufrdeco
-  \param error string where to set error if any
 
   If succeded return 0, otherwise 1
 */

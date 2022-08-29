@@ -194,7 +194,7 @@
 #define BUFR2TAC_ERROR_STACK_DIM 16
 
 /*! \def BUFR2TAC_ERROR_DESCRIPTION_LENGTH
- *  \brief set de dimension of member \ref description of a struct \ref bufr2tac_error_stack 
+ *  \brief set de dimension of member \a description of a struct \ref bufr2tac_error 
  */
 #define BUFR2TAC_ERROR_DESCRIPTION_LENGTH 1024
 
@@ -218,11 +218,19 @@ struct bufr_subset_sequence_data
 # define bufr_subset_sequence_data bufrdeco_subset_sequence_data
 #endif
 
+/*!
+ * \struct bufr2tac_error
+ * \brief Store an error/warning/info and its severity
+ */
 struct bufr2tac_error {
   int severity; /*!< Level of severity. if = 1 then is a warning. if = 2 is an error */
   char description[BUFR2TAC_ERROR_DESCRIPTION_LENGTH]; /*!< string with error description */
 };
 
+/*!
+ * \struct bufr2tac_error_stack
+ * \brief A stack of structs \ref bufr2tac_error
+ */ 
 struct bufr2tac_error_stack {
   size_t ne; /*!< Current warning/error active. If = 0 then no errors */
   int full; /*!< if 1 then one or more warnings cannot be pushed because of full stack. If = 2 an error cannot be pushed */
