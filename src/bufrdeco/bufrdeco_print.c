@@ -250,7 +250,7 @@ int print_sec4_info ( struct bufrdeco *b )
 */
 int bufrdeco_fprint_tree_recursive ( FILE *f, struct bufrdeco *b, struct bufr_sequence *seq )
 {
-  size_t i, j, k;
+  buf_t i, j, k;
   struct bufr_sequence *l;
   char explanation[256];
 

@@ -34,8 +34,8 @@ int bufr_read_tabled ( struct bufrdeco *b )
 {
   char aux[8], *c;
   FILE *t;
-  size_t ix = 0;
-  size_t i = 0;
+  buf_t ix = 0;
+  buf_t i = 0;
   char caux[256];
   struct bufr_tabled *td;
 
@@ -99,10 +99,10 @@ int bufr_read_tabled ( struct bufrdeco *b )
 
  If the descriptor has been found with success then returns 0, othewise returns 1
 */
-int bufr_find_tabled_index ( size_t *index, struct bufr_tabled *td, const char *key )
+int bufr_find_tabled_index ( buf_t *index, struct bufr_tabled *td, const char *key )
 {
-  size_t i, i0;
-  size_t ix = 0;
+  buf_t i, i0;
+  buf_t ix = 0;
   char *c, aux[8];
  
   //bufrdeco_assert ( td != NULL && key != NULL && index != NULL);
@@ -144,7 +144,7 @@ int bufr_find_tabled_index ( size_t *index, struct bufr_tabled *td, const char *
 */
 int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key )
 {
-  size_t i, j;
+  buf_t i, j;
   uint32_t nv, v;
   char *c;
   struct bufr_tabled *td;

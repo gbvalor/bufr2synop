@@ -43,7 +43,7 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
 {
   int aux, res;
   uint8_t *bufrx = NULL; /*!< pointer to a memory buffer where we write raw bufr file */
-  size_t n = 0;
+  buf_t n = 0;
   FILE *fp;
   struct stat st;
 
@@ -123,7 +123,7 @@ int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename )
 {
   int aux, res;
   uint8_t *bufrx = NULL, *pbeg = NULL; /*!< pointer to a memory buffer where we write raw bufr file */
-  size_t n = 0, beg, end, size = 0;
+  buf_t n = 0, beg, end, size = 0;
   FILE *fp;
   struct stat st;
 
@@ -224,10 +224,10 @@ int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename )
 
   Returns 0 if all is OK, 1 otherwise
  */
-int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, size_t size )
+int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, buf_t size )
 {
   uint8_t *c;
-  size_t ix, ud;
+  buf_t ix, ud;
 
   bufrdeco_assert ( b != NULL );
 

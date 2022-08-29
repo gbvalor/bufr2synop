@@ -77,7 +77,7 @@ int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, s
 int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_references *r, struct bufr_sequence *l, struct bufrdeco *b )
 {
   int res;
-  size_t i, k;
+  buf_t i, k;
   struct bufr_sequence *seq; // auxiliar pointer
   struct bufrdeco_compressed_ref *rf;
   struct bufr_replicator replicator;
@@ -332,9 +332,9 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
 int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_replicator *rep, struct bufrdeco *b )
 {
   int res;
-  size_t i, k;
-  size_t ixloop; // Index for loop
-  size_t ixd; // Index for descriptor
+  buf_t i, k;
+  buf_t ixloop; // Index for loop
+  buf_t ixd; // Index for descriptor
   struct bufrdeco_compressed_ref *rf;
   struct bufr_replicator replicator;
   struct bufr_sequence *l = rep->s; // sequence
@@ -716,7 +716,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
 
 /*!
 
-  \fn int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, struct bufrdeco_compressed_ref *r, size_t subset, struct bufrdeco *b )
+  \fn int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, struct bufrdeco_compressed_ref *r, buf_t subset, struct bufrdeco *b )
   \brief Get atom data from a descriptor for a given subset
   \param a pointer to the target struct \ref bufr_atom_data where to set the results
   \param r pointer to the struct \ref bufrdeco_compressed_ref with the info to know how and where get the data
@@ -726,9 +726,9 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
   Returns 0 if succeeded, 1 otherwise
 */
 int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, struct bufrdeco_compressed_ref *r,
-    size_t subset, struct bufrdeco *b )
+    buf_t subset, struct bufrdeco *b )
 {
-  size_t i, bit_offset;
+  buf_t i, bit_offset;
   uint8_t has_data;
   uint32_t ival, ival0;
   int32_t ivals;

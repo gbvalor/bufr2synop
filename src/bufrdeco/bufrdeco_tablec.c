@@ -33,9 +33,9 @@
 int bufr_read_tablec ( struct bufrdeco *b )
 {
   char aux[8], *c;
-  size_t startx = 0;
+  buf_t startx = 0;
   FILE *t;
-  size_t i = 0;
+  buf_t i = 0;
   char caux[256];
   struct bufr_tablec *tc = &(b->tables->c);
 
@@ -96,10 +96,10 @@ int bufr_read_tablec ( struct bufrdeco *b )
 
  If the descriptor has been found with success then returns 0, othewise returns 1
 */
-int bufr_find_tablec_index ( size_t *index, struct bufr_tablec *tc, const char *key )
+int bufr_find_tablec_index ( uint32_t *index, struct bufr_tablec *tc, const char *key )
 {
-  size_t i, i0;
-  size_t x = 0;
+  buf_t i, i0;
+  buf_t x = 0;
   char *c, aux[8];
 
   aux[0] = key[1];
@@ -140,7 +140,7 @@ int bufr_find_tablec_index ( size_t *index, struct bufr_tablec *tc, const char *
 
   If something went wrong, it returns NULL . Otherwise it returns \a expl
 */
-char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec *tc, size_t *index, struct bufr_descriptor *d, uint32_t ival )
+char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec *tc, uint32_t *index, struct bufr_descriptor *d, uint32_t ival )
 {
   char *c;
   uint32_t nv, v,  nl;

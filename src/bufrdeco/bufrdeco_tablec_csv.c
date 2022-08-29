@@ -37,7 +37,7 @@ int bufr_read_tablec_csv ( struct bufrdeco *b )
   FILE *t;
   int nt;
   uint32_t ix;
-  size_t i = 0;
+  buf_t i = 0;
   struct bufr_descriptor desc;
   struct bufr_tablec *tc;
   char *tk[16];
@@ -79,7 +79,7 @@ int bufr_read_tablec_csv ( struct bufrdeco *b )
       // Parse line
       if ( parse_csv_line ( &nt, tk, l ) < 0 || nt != 6 )
         {
-          snprintf ( b->error, sizeof ( b->error ),"Error parsing csv line from table C file '%s'. Found %d fields in line %lu \n", tc->path, nt, i );
+          snprintf ( b->error, sizeof ( b->error ),"Error parsing csv line from table C file '%s'. Found %d fields in line %u \n", tc->path, nt, i );
           return 1;
         }
 
@@ -123,7 +123,7 @@ int bufr_read_tablec_csv ( struct bufrdeco *b )
 
 
 /*!
-  \fn int bufr_find_tablec_csv_index ( size_t *index, struct bufr_tableb *tb, const char *key, uint32_t code )
+  \fn int bufr_find_tablec_csv_index ( buf_t *index, struct bufr_tableb *tb, const char *key, uint32_t code )
   \brief found a descriptor index in a struct \ref bufr_tablec
   \param index pointer  to a size_t where to set the result if success
   \param tb pointer to struct \ref bufr_tableb where are stored all table B data
@@ -132,10 +132,10 @@ int bufr_read_tablec_csv ( struct bufrdeco *b )
 
   Return 0 if success, 1 otherwise
 */
-int bufr_find_tablec_csv_index ( size_t *index, struct bufr_tablec *tc, const char *key, uint32_t code )
+int bufr_find_tablec_csv_index ( buf_t *index, struct bufr_tablec *tc, const char *key, uint32_t code )
 {
   uint32_t ix;
-  size_t i, i0;
+  buf_t i, i0;
   char *c;
   struct bufr_descriptor desc;
 
@@ -167,9 +167,9 @@ int bufr_find_tablec_csv_index ( size_t *index, struct bufr_tablec *tc, const ch
 
   If something went wrong, it returns NULL . Otherwise it returns \a expl
 */
-char * bufrdeco_explained_table_csv_val ( char *expl, size_t dim, struct bufr_tablec *tc, size_t *index, struct bufr_descriptor *d, uint32_t ival )
+char * bufrdeco_explained_table_csv_val ( char *expl, size_t dim, struct bufr_tablec *tc, uint32_t *index, struct bufr_descriptor *d, uint32_t ival )
 {
-  size_t  i;
+  buf_t i;
 
   bufrdeco_assert ( tc != NULL && expl != NULL && index != NULL && d != NULL);
   

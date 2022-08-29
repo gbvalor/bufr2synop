@@ -351,9 +351,9 @@ int bufrdeco_read_subset_offset_bits ( struct bufrdeco *b, char *filename )
  * If succeeded returns a pointer to the struct \ref bufrdeco_subset_sequence_data with the results for the
  * desired subset,  otherwise returns NULL
  */
-struct bufrdeco_subset_sequence_data *bufrdeco_get_target_subset_sequence_data ( size_t nset, struct bufrdeco *b )
+struct bufrdeco_subset_sequence_data *bufrdeco_get_target_subset_sequence_data ( buf_t nset, struct bufrdeco *b )
 {
-  size_t n = 0;
+  buf_t n = 0;
   bufrdeco_assert ( b != NULL );
 
   if ( b->sec3.subsets <= nset )

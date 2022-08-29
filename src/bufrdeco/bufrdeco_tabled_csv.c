@@ -37,8 +37,8 @@ int bufr_read_tabled_csv ( struct bufrdeco *b )
   char *tk[16];
   int nt;
   FILE *t;
-  size_t ix = 0;
-  size_t i = 0;
+  buf_t ix = 0;
+  buf_t i = 0;
   int j0, nj = 0;
   char oldkey[8];
   char caux[256];
@@ -84,7 +84,7 @@ int bufr_read_tabled_csv ( struct bufrdeco *b )
       //printf("%s\n",laux);
       if ( parse_csv_line ( &nt, tk, laux ) < 0 || ( nt != 2 && nt != 4) )
         {
-          snprintf ( b->error, sizeof (b->error),"Error parsing csv line from table D file '%s' found %d tokens in line %lu\n", td->path, nt, i );
+          snprintf ( b->error, sizeof (b->error),"Error parsing csv line from table D file '%s' found %d tokens in line %u\n", td->path, nt, i );
           return 1;
         }
 

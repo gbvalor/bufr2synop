@@ -214,7 +214,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
         }
       else
         {
-          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot manage subset bit offset for subset %lu. Consider increase BUFR_MAX_SUBSETS\n",
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot manage subset bit offset for subset %u. Consider increase BUFR_MAX_SUBSETS\n",
                      __func__, b->state.subset );
           return 1;
         }
@@ -434,9 +434,9 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
 */
 int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *s, struct bufr_replicator *r, struct bufrdeco *b )
 {
-  size_t i, k;
-  size_t ixloop; // Index for loop
-  size_t ixd; // Index for descriptor
+  buf_t i, k;
+  buf_t ixloop; // Index for loop
+  buf_t ixd; // Index for descriptor
   struct bufr_sequence *l = r->s; // sequence
   struct bufr_replicator replicator;
 

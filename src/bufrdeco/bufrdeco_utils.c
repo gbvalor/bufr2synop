@@ -38,10 +38,10 @@ uint8_t bitk[8] = {0x80,0xc0,0xe0,0xf0,0xf8,0xfc,0xfe,0xff}; /*!< Mask first bit
 
   If returns the amount of bits readed. 0 if problems. It also update bits_offset with the new bits.
 */
-size_t get_bits_as_char_array2 ( char *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
+buf_t get_bits_as_char_array2 ( char *target, uint8_t *has_data, uint8_t *source, buf_t *bit0_offset, buf_t bit_length )
 {
-  size_t i, j;
-  size_t r, d, nc;
+  buf_t i, j;
+  buf_t r, d, nc;
   uint8_t *c;
 
   //bufrdeco_assert (has_data != NULL && source != NULL && target != NULL && bit0_offset != NULL);
@@ -85,10 +85,10 @@ size_t get_bits_as_char_array2 ( char *target, uint8_t *has_data, uint8_t *sourc
 
   If returns the amount of bits readed. 0 if problems. It also update bit0_offset with the new bits.
 */
-size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
+buf_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, buf_t *bit0_offset, buf_t bit_length )
 {
-  size_t i, j, k;
-  size_t nc;
+  buf_t i, j, k;
+  buf_t nc;
   uint8_t *c;
 
   //bufrdeco_assert (has_data != NULL && source != NULL && target != NULL && bit0_offset != NULL);
@@ -121,7 +121,7 @@ size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source
 }
 
 /*!
-  \fn size_t get_bits_as_uint32_t2 ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
+  \fn size_t get_bits_as_uint32_t2 ( uint32_t *target, uint8_t *has_data, uint8_t *source, buf_t *bit0_offset, buf_t bit_length )
   \brief Read bits from an array of uint8_t and set them as an uint32_t
   \param target uint32_t pointer where to set the result
   \param has_data Output flags to check whether is missing data. If 0 then data is missing, othewise has data
@@ -134,10 +134,10 @@ size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source
 
   If returns the amount of bits readed. 0 if problems. It also update bits_offset with the new bits.
 */
-size_t get_bits_as_uint32_t2 ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
+uint32_t get_bits_as_uint32_t2 ( uint32_t *target, uint8_t *has_data, uint8_t *source, buf_t *bit0_offset, buf_t bit_length )
 {
-  int i;
-  size_t r, d;
+  buf_t i;
+  buf_t r, d;
   uint8_t *c;
 
   //bufrdeco_assert (has_data != NULL && source != NULL && target != NULL && bit0_offset != NULL);
@@ -181,7 +181,7 @@ size_t get_bits_as_uint32_t2 ( uint32_t *target, uint8_t *has_data, uint8_t *sou
 
   If returns the amount of bits readed. 0 if problems. It also update bits_offset with the new bits.
 */
-size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
+uint32_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *source, buf_t *bit0_offset, buf_t bit_length )
 {
   int i;
   uint8_t *c;
@@ -511,10 +511,10 @@ int bufr_write_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offsets 
   
   //bufrdeco_assert (off != NULL && f != NULL );
 
-  wrote = fwrite( &(off->nr), sizeof (uint32_t ), 1, f);
+  wrote = fwrite( &(off->nr), sizeof (buf_t ), 1, f);
   bufrdeco_assert_with_return_val (wrote == 1, 1);
     
-  wrote = fwrite( &(off->ofs[0]), sizeof (uint32_t ), off->nr, f);
+  wrote = fwrite( &(off->ofs[0]), sizeof (buf_t ), off->nr, f);
   bufrdeco_assert_with_return_val (wrote == off->nr, 1);
   
   return 0;
@@ -532,10 +532,10 @@ int bufr_read_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offsets *
   
   //bufrdeco_assert (off != NULL && f != NULL );
   
-  readed = fread( &(off->nr), sizeof (uint32_t ), 1, f);
+  readed = fread( &(off->nr), sizeof (buf_t ), 1, f);
   bufrdeco_assert_with_return_val (readed == 1, 1);
     
-  readed = fread( &(off->ofs[0]), sizeof (uint32_t ), off->nr, f);
+  readed = fread( &(off->ofs[0]), sizeof (buf_t ), off->nr, f);
   bufrdeco_assert_with_return_val (readed == off->nr, 1);
   
   return 0;

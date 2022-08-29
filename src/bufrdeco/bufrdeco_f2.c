@@ -39,7 +39,7 @@
  */
 int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, struct bufr_descriptor *d, struct bufrdeco *b )
 {
-  size_t nbits;
+  buf_t nbits;
   struct bufr_atom_data *a;
   uint8_t has_data;
 
@@ -401,7 +401,7 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
  */
 int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_descriptor *d, struct bufrdeco *b )
 {
-  size_t nbits;
+  buf_t nbits;
   uint32_t ival;
   struct bufrdeco_compressed_ref *rf;
   uint8_t has_data;

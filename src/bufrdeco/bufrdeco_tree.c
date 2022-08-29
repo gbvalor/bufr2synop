@@ -33,7 +33,7 @@
 */
 int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct bufrdeco *b )
 {
-  size_t i;
+  buf_t i;
 
   bufrdeco_assert (b != NULL && s != NULL);
   
@@ -58,7 +58,7 @@ int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct 
  */
 int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *father,  const char *key )
 {
-  size_t i, j, nl;
+  buf_t i, j, nl;
   struct bufr_sequence *l;
   struct bufr_descriptor *d;
 

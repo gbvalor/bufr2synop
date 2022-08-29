@@ -44,7 +44,7 @@ int bufr_read_tableb ( struct bufrdeco *b )
 {
   char *c;
   FILE *t;
-  size_t i = 0;
+  buf_t i = 0;
   uint32_t ix;
   char l[180];
   char caux[256];
@@ -148,7 +148,7 @@ int bufr_read_tableb ( struct bufrdeco *b )
 */
 int bufr_restore_original_tableb_item ( struct bufr_tableb *tb, struct bufrdeco *b, uint8_t mode, char *key )
 {
-  size_t i;
+  buf_t i;
 
   bufrdeco_assert ( b != NULL && tb != NULL );
   
@@ -181,7 +181,7 @@ int bufr_restore_original_tableb_item ( struct bufr_tableb *tb, struct bufrdeco 
 }
 
 /*!
-  \fn int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *key )
+  \fn int bufr_find_tableb_index ( buf_t *index, struct bufr_tableb *tb, const char *key )
   \brief found a descriptor index in a struct \ref bufr_tableb
   \param index pointer  to a size_t where to set the result if success
   \param tb pointer to struct \ref bufr_tableb where are stored all table B data
@@ -189,10 +189,10 @@ int bufr_restore_original_tableb_item ( struct bufr_tableb *tb, struct bufrdeco 
 
   Return 0 if success, 1 otherwise
 */
-int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *key )
+int bufr_find_tableb_index ( buf_t *index, struct bufr_tableb *tb, const char *key )
 {
   uint32_t ix;
-  size_t i, i0;
+  buf_t i, i0;
   char *c;
   struct bufr_descriptor desc;
 
@@ -237,7 +237,7 @@ int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *
 */
 int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrdeco *b, struct bufr_descriptor *d, int mode )
 {
-  size_t i;
+  buf_t i;
   uint32_t ival;
   uint8_t has_data;
   struct bufr_tableb *tb;
@@ -439,7 +439,7 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
 */
 int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct bufr_descriptor *d )
 {
-  size_t i, nbits = 0;
+  buf_t i, nbits = 0;
   uint32_t ival;
   uint8_t has_data;
   int32_t /*escale = 0,*/ reference = 0;

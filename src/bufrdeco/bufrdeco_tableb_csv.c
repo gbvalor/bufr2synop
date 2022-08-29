@@ -35,7 +35,7 @@ int bufr_read_tableb_csv ( struct bufrdeco *b )
 {
   char *c;
   FILE *t;
-  size_t i = 0;
+  buf_t i = 0;
   int nt;
   uint32_t ix;
   char l[CSV_MAXL];

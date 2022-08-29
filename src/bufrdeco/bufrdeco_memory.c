@@ -272,7 +272,7 @@ int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_r
  */
 int bufrdeco_allocate_bitmap ( struct bufrdeco *b )
 {
-  size_t nba;
+  buf_t nba;
   
   bufrdeco_assert ( b != NULL );
     
@@ -311,7 +311,7 @@ int bufrdeco_allocate_bitmap ( struct bufrdeco *b )
  */
 int bufrdeco_clean_bitmaps ( struct bufrdeco *b )
 {
-  size_t i;
+  buf_t i;
 
   bufrdeco_assert ( b != NULL );
   
@@ -334,7 +334,7 @@ int bufrdeco_clean_bitmaps ( struct bufrdeco *b )
  */
 int bufrdeco_free_bitmap_array ( struct bufrdeco_bitmap_array *a )
 {
-  size_t i;
+  buf_t i;
 
   bufrdeco_assert ( a != NULL );
   

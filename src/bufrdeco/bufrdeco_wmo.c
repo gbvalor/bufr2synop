@@ -160,7 +160,7 @@ int get_wmo_tablenames ( struct bufrdeco *b )
 int bufr_read_tables_wmo ( struct bufrdeco *b )
 {
   int index;
-  size_t i;
+  buf_t i;
   bufrdeco_assert ( b != NULL );
   struct bufr_tableb *tb;
 
@@ -289,7 +289,7 @@ int bufrdeco_store_tables ( struct bufr_tables **t, struct bufr_tables_cache *c,
 
 int bufrdeco_cache_tables_search ( struct bufr_tables_cache *c, uint8_t ver )
 {
-  int i = 0;
+  buf_t i = 0;
 
   for ( i = 0; i < BUFRDECO_TABLES_CACHE_SIZE ; i++ )
     {
@@ -306,7 +306,7 @@ int bufrdeco_cache_tables_search ( struct bufr_tables_cache *c, uint8_t ver )
  */
 int bufrdeco_free_cache_tables ( struct bufr_tables_cache *c )
 {
-  int  i;
+  buf_t  i;
 
   for ( i = 0; i < BUFRDECO_TABLES_CACHE_SIZE; i++ )
     {

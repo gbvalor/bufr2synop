@@ -258,7 +258,7 @@ int parse_csv_line2 ( int *nt, char *tk[], char *lin )
 int parse_csv_line ( int *nt, char *tk[], char *lin )
 {
   char *cq[CSV_MAXL / 4], *cc[CSV_MAXL / 4], *c0;
-  int nc, nq, i, j;
+  buf_t nc, nq, i, j;
 
   //bufrdeco_assert (lin != NULL && tk != NULL && nt != NULL);
   
@@ -330,7 +330,7 @@ int parse_csv_line ( int *nt, char *tk[], char *lin )
   tk[(*nt)++] = c0;
   
   // fix the tokens supresing the first CSV_CITE if any
-  for (i = 0; i < (*nt); i++)
+  for (i = 0; i < (buf_t)(*nt); i++)
   {
     if( *(tk[i]) == CSV_CITE)
       (tk[i])++;

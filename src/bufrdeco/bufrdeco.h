@@ -310,6 +310,11 @@
  */
 #define BUFRDECO_TABLES_CACHE_SIZE (8)
 
+/*! \typedef buf_t
+    \brief Type to set offsets and dimension of arrays used in bufrdeco
+*/
+typedef uint32_t buf_t;
+
 /*!
  * \def strcpy_safe
  * \brief Macro to make safely a strcpy when we know in calling function the size of string _target_ with sizeof()
@@ -369,7 +374,8 @@ struct bufr_descriptor
   uint8_t f; /*!< F part of descriptor, 2 bits */
   uint8_t x; /*!< X part of descriptor, 6 bits */
   uint8_t y; /*!< Y part of descriptor, 8 bits */
-  char c[8]; /*!< string with whole descriptor (6 decimal digits plus the 0x00 as the end of string */
+  uint8_t kk; /*!< Not used , to align the struct and size it to 16 bytes */
+  char c[12]; /*!< string with whole descriptor (6 decimal digits plus the 0x00 as the end of string */
 };
 
 /*!
@@ -379,10 +385,10 @@ struct bufr_descriptor
 struct bufr_replicator
 {
   struct bufr_sequence *s; /*!< struct to which this replicator struct belongs */
-  size_t ixrep; /*!< index in a sequence of replicator descriptor */
-  size_t ixdel; /*!< index in a sequence of a delayed replicator, if not then is the same that ixrep */
-  size_t ndesc; /*!< amount of descritptors in sequence affected by replicator */
-  size_t nloops; /*!< amount of loops to do */
+  buf_t ixrep; /*!< index in a sequence of replicator descriptor */
+  buf_t ixdel; /*!< index in a sequence of a delayed replicator, if not then is the same that ixrep */
+  buf_t ndesc; /*!< amount of descritptors in sequence affected by replicator */
+  buf_t nloops; /*!< amount of loops to do */
 };
 
 /*!
@@ -401,10 +407,10 @@ struct bufr_atom_data
   char cval[BUFR_CVAL_LENGTH]; /*!< String value for the bufr descriptor */
   char ctable[BUFR_EXPLAINED_LENGTH]; /*!< Explained meaning for a code table */
   struct bufr_sequence *seq; /*!< Pointer to the struct \ref bufr_sequence to which this descriptor belongs to */
-  size_t ns; /*!< Element in bufr_sequence to which this descriptor belongs to */
-  uint32_t is_bitmaped_by; /*!< Index of element in a struct \ref bufrdeco_subset_sequence_data which bitmap this one */ 
-  uint32_t bitmap_to; /*!< Index of element in a struct \ref bufrdeco_subset_sequence_data which this one is mapping to */
-  uint32_t related_to; /*!< Index of element ina struct \ref bufrdeco_subset_sequence_data which this one is related to */
+  buf_t ns; /*!< Element in bufr_sequence to which this descriptor belongs to */
+  buf_t is_bitmaped_by; /*!< Index of element in a struct \ref bufrdeco_subset_sequence_data which bitmap this one */ 
+  buf_t bitmap_to; /*!< Index of element in a struct \ref bufrdeco_subset_sequence_data which this one is mapping to */
+  buf_t related_to; /*!< Index of element ina struct \ref bufrdeco_subset_sequence_data which this one is related to */
 };
 
 /*!
@@ -414,9 +420,9 @@ struct bufr_atom_data
 */
 struct bufrdeco_subset_sequence_data
 {
-  size_t dim; /*!< Amount of bufr_atom_data currently allocated */
-  size_t nd; /*!< number of current amount of data used in sequence */
-  uint32_t ss; /*!< Index of subset in the bufr report */
+  buf_t dim; /*!< Amount of bufr_atom_data currently allocated */
+  buf_t nd; /*!< number of current amount of data used in sequence */
+  buf_t ss; /*!< Index of subset in the bufr report */
   struct bufr_atom_data *sequence; /*!< the array of data associated structs \ref bufr_atom_data of an expanded sequence */
 };
 
@@ -426,19 +432,19 @@ struct bufrdeco_subset_sequence_data
 */
 struct bufrdeco_bitmap
 {
-    size_t nb; /*!< Amount of elements used (data present) in the bitmap */
-    uint32_t bitmap_to[BUFR_MAX_BITMAP_PRESENT_DATA]; /*!< Array of indexes in a sequence which bitmaps to */
-    uint32_t bitmaped_by[BUFR_MAX_BITMAP_PRESENT_DATA]; /*!< Array of indexes in a bitmaps */
-    size_t nq; /*!< Amount of quality parameters used per bitmaped data */
-    uint32_t quality[BUFR_MAX_QUALITY_DATA]; /*!< array of indexes of first quality value related to bitmap_to[0] */
-    uint32_t subs; /*!< index of subsituted value related to bitmap_to[0] */
-    uint32_t retain; /*!< Index of retained value related tp bitmap_to[0] */
-    size_t ns1; /*!< amount of first order statistical parameters used per bitmaped data */
-    uint32_t stat1[BUFR_MAX_QUALITY_DATA]; /*!< Array of indexes of First-order statistical value related to bitmap_to[0] */
-    uint32_t stat1_desc[BUFR_MAX_QUALITY_DATA]; /*!< Array of indexes which describes the First-order statistical parameter */
-    size_t nds; /*!< amount of difference statistical parameters used per bitmaped data */
-    uint32_t dstat[BUFR_MAX_QUALITY_DATA]; /*!< Attay of indexes of Difference statistical value related tp bitmap_to[0] */
-    uint32_t dstat_desc[BUFR_MAX_QUALITY_DATA]; /*!< Array of indexes which describes the diffenece statistical parameter */
+    buf_t nb; /*!< Amount of elements used (data present) in the bitmap */
+    buf_t bitmap_to[BUFR_MAX_BITMAP_PRESENT_DATA]; /*!< Array of indexes in a sequence which bitmaps to */
+    buf_t bitmaped_by[BUFR_MAX_BITMAP_PRESENT_DATA]; /*!< Array of indexes in a bitmaps */
+    buf_t nq; /*!< Amount of quality parameters used per bitmaped data */
+    buf_t quality[BUFR_MAX_QUALITY_DATA]; /*!< array of indexes of first quality value related to bitmap_to[0] */
+    buf_t subs; /*!< index of subsituted value related to bitmap_to[0] */
+    buf_t retain; /*!< Index of retained value related tp bitmap_to[0] */
+    buf_t ns1; /*!< amount of first order statistical parameters used per bitmaped data */
+    buf_t stat1[BUFR_MAX_QUALITY_DATA]; /*!< Array of indexes of First-order statistical value related to bitmap_to[0] */
+    buf_t stat1_desc[BUFR_MAX_QUALITY_DATA]; /*!< Array of indexes which describes the First-order statistical parameter */
+    buf_t nds; /*!< amount of difference statistical parameters used per bitmaped data */
+    buf_t dstat[BUFR_MAX_QUALITY_DATA]; /*!< Attay of indexes of Difference statistical value related tp bitmap_to[0] */
+    buf_t dstat_desc[BUFR_MAX_QUALITY_DATA]; /*!< Array of indexes which describes the diffenece statistical parameter */
 };
 
 /*!
@@ -447,7 +453,7 @@ struct bufrdeco_bitmap
 */
 struct bufrdeco_bitmap_array
 {
-    size_t nba; /*!< Amount of bitmaps used */
+    buf_t nba; /*!< Amount of bitmaps used */
     struct bufrdeco_bitmap *bmap[BUFR_MAX_BITMAPS]; /*!< array of pointers to struct \ref bufrdeco_bitmap */
 };
 
@@ -457,20 +463,20 @@ struct bufrdeco_bitmap_array
 */
 struct bufrdeco_bitmap_related_vars
 {
-    uint32_t target; /*! Index in a subset sequence which related bitmaped vars are set in this struct */
-    size_t nba;  /*!< Index of struct \ref bufrdeco_bitmap in a \ref bufrdeco_bitmap_array which is used to get info for target */
-    size_t nb; /*!< Index in a \ref bufrdeco_bitmap which is related with target */
-    uint32_t bitmaped_by; /*!< Index in a subset sequence which bitmaps the target */
-    size_t nq; /*!< Amount of quality parameters used to bitmap the target */
-    uint32_t qualified_by[BUFR_MAX_QUALITY_DATA]; /*!< array of indexes quality values related to target */
-    uint32_t substituted; /*!< index of subsituted value related to target */
-    uint32_t retained; /*!< Index of retained value related to target */
-    size_t ns1; /*!< amount of first order statistical parameters used to bitmap the data */
-    uint32_t stat1[BUFR_MAX_QUALITY_DATA]; /*!< Array of indexes of First-order statistical value related to target */
-    uint32_t stat1_desc[BUFR_MAX_QUALITY_DATA]; /*!< Array of indexes which describes the First-order statistical parameter */
-    size_t nds; /*!< Amount of difference statistical parameters related to target */
-    uint32_t dstat[BUFR_MAX_QUALITY_DATA]; /*!< Attay of indexes of Difference statistical value related to target */
-    uint32_t dstat_desc[BUFR_MAX_QUALITY_DATA]; /*!< Array of indexes which describes the diffenece statistical parameter related to target*/
+    buf_t target; /*! Index in a subset sequence which related bitmaped vars are set in this struct */
+    buf_t nba;  /*!< Index of struct \ref bufrdeco_bitmap in a \ref bufrdeco_bitmap_array which is used to get info for target */
+    buf_t nb; /*!< Index in a \ref bufrdeco_bitmap which is related with target */
+    buf_t bitmaped_by; /*!< Index in a subset sequence which bitmaps the target */
+    buf_t nq; /*!< Amount of quality parameters used to bitmap the target */
+    buf_t qualified_by[BUFR_MAX_QUALITY_DATA]; /*!< array of indexes quality values related to target */
+    buf_t substituted; /*!< index of subsituted value related to target */
+    buf_t retained; /*!< Index of retained value related to target */
+    buf_t ns1; /*!< amount of first order statistical parameters used to bitmap the data */
+    buf_t stat1[BUFR_MAX_QUALITY_DATA]; /*!< Array of indexes of First-order statistical value related to target */
+    buf_t stat1_desc[BUFR_MAX_QUALITY_DATA]; /*!< Array of indexes which describes the First-order statistical parameter */
+    buf_t nds; /*!< Amount of difference statistical parameters related to target */
+    buf_t dstat[BUFR_MAX_QUALITY_DATA]; /*!< Attay of indexes of Difference statistical value related to target */
+    buf_t dstat_desc[BUFR_MAX_QUALITY_DATA]; /*!< Array of indexes which describes the diffenece statistical parameter related to target*/
 };
 
 
@@ -481,8 +487,8 @@ struct bufrdeco_bitmap_related_vars
 */
 struct bufrdeco_decoding_data_state
 {
-  size_t subset; /*!< Subset sequence index being parsed */
-  size_t bit_offset; /*!< First data bit offset of current since the begining of data in byte 4 in SEC 4 */
+  buf_t subset; /*!< Subset sequence index being parsed */
+  buf_t bit_offset; /*!< First data bit offset of current since the begining of data in byte 4 in SEC 4 */
   int8_t added_bit_length; /*!< Current aditional bit_length that can be changed by descriptor 2 01 YYY */
   int8_t added_scale; /*!< Current aditional scale factor that can be changed by descriptor 2 02 YYY */
   int32_t added_reference; /*!< Current aditional reference that can be changed bu descriptor 2 03 YYY */
@@ -506,8 +512,8 @@ struct bufrdeco_decoding_data_state
  */
 struct bufr_sequence_index_range {
   int active; /*!< if != 0 then the range of descriptors is active */
-  size_t first; /*!< First index for a descriptor in a \struct bufr_sequence to be chequed */ 
-  size_t last; /*!< Last index for a descriptor in a \struct bufr_sequence to be chequed */
+  buf_t first; /*!< First index for a descriptor in a \struct bufr_sequence to be chequed */ 
+  buf_t last; /*!< Last index for a descriptor in a \struct bufr_sequence to be chequed */
 };
 
 /*!
@@ -528,9 +534,9 @@ struct bufr_sequence_index_range {
 struct bufr_sequence
 {
   char key[8]; /*!< the key */
-  size_t level; /*!< The recursion level. descriptors in sec3 are level 0 */
+  buf_t level; /*!< The recursion level. descriptors in sec3 are level 0 */
+  buf_t ndesc; /*!< Number of unexpanded descriptor of a layer */
   struct bufr_sequence *father; /*!< Pointer to the father struct. It should be NULL if level = 0 */
-  size_t ndesc; /*!< Number of unexpanded descriptor of a layer */
   struct bufr_sequence_index_range no_data_present; /*!< struct \ref bufr_sequence_index_range with no data descriptor range */
   struct bufr_sequence_index_range event; /*!< struct \ref bufr_sequence_index_range with an event range */
   struct bufr_sequence_index_range cond_event; /*!< struct \ref bufr_sequence_index_range with a conditioning event range */
@@ -539,7 +545,7 @@ struct bufr_sequence
   struct bufr_descriptor lseq[NMAXSEQ_DESCRIPTORS]; /*!< Array of unexpanded descriptors */
   struct bufr_sequence *sons[NMAXSEQ_DESCRIPTORS]; /*!< Array of pointers to sons. It must be NULL
    except for sequence descriptors.  */
-  int iseq; /*!< number of sequence when parsing a tree. for recursion level 0 in sec3 is asigned 0. 
+  buf_t iseq; /*!< number of sequence when parsing a tree. for recursion level 0 in sec3 is asigned 0. 
                 Is the index in member seq in struct bufereco_expanded_tree */
   char name[BUFR_EXPLAINED_LENGTH]; /*!< Name of sequence if any */
 };
@@ -550,7 +556,7 @@ struct bufr_sequence
 */
 struct bufrdeco_expanded_tree
 {
-  size_t nseq; /*!< current number of structs */
+  buf_t nseq; /*!< current number of structs */
   struct bufr_sequence seq[BUFR_MAX_EXPANDED_SEQUENCES]; /*!< array of structs */
 };
 
@@ -566,18 +572,18 @@ struct bufrdeco_compressed_ref
   uint8_t is_associated ; /*!< 0 if is not associated data */
   uint8_t has_data ; /*!< 1 if has any subset with valid data. 0 if missing in all subsets */
   uint8_t bits; /*!< bits for data or associated in table b */
-  int32_t ref; /*!< reference for a expanded data in table b */
-  uint32_t bit0; /*!< first bit offset, i.e, most significant bit for ref0 */
-  uint32_t ref0; /*!< local reference for a expanded data in subsets */
-  char cref0[256]; /*!< Local reference in case of string */
   uint8_t inc_bits; /*!< number of inc bits for every subset  */
+  int32_t ref; /*!< reference for a expanded data in table b */
+  buf_t bit0; /*!< first bit offset, i.e, most significant bit for ref0 */
+  buf_t ref0; /*!< local reference for a expanded data in subsets */
+  char cref0[256]; /*!< Local reference in case of string */
   int32_t escale; /*!< escale for a expanded data in subset */
   char name[BUFR_TABLEB_NAME_LENGTH]; /*!< String with the name of descriptor */
   char unit[BUFR_TABLEB_UNIT_LENGTH]; /*!< String with the name of units */
   struct bufr_descriptor desc; /*!< associated descriptor */
-  uint32_t is_bitmaped_by; /*!< Index element in a struct \ref bufr_compressed_data_references which bitmap this one */ 
-  uint32_t bitmap_to; /*!< Index element in a struct \ref bufr_compressed_data_references which this one is mapping to */
-  uint32_t related_to; /*!< Index of element ina struct \ref bufr_compressed_data_references which this one is related to */
+  buf_t is_bitmaped_by; /*!< Index element in a struct \ref bufr_compressed_data_references which bitmap this one */ 
+  buf_t bitmap_to; /*!< Index element in a struct \ref bufr_compressed_data_references which this one is mapping to */
+  buf_t related_to; /*!< Index of element ina struct \ref bufr_compressed_data_references which this one is related to */
 };
 
 /*!
@@ -586,8 +592,8 @@ struct bufrdeco_compressed_ref
 */
 struct bufrdeco_compressed_data_references 
 {
-  size_t dim; /*!< dimension of array of compressed refs */
-  size_t nd; /*!< current amount of data used */
+  buf_t dim; /*!< dimension of array of compressed refs */
+  buf_t nd; /*!< current amount of data used */
   struct bufrdeco_compressed_ref *refs; /*!< pointer to allocated array */
 };
 
@@ -603,8 +609,8 @@ struct bufrdeco_compressed_data_references
  */
 struct bufrdeco_subset_bit_offsets 
 {
-  uint32_t nr ; /*!< Current number of used subset bit offsets. */
-  uint32_t ofs[BUFR_MAX_SUBSETS]; /*! Array of subset bitoffset. offsets[n] is the bit offset from first data in sequence 'n'. 
+  buf_t nr ; /*!< Current number of used subset bit offsets. */
+  buf_t ofs[BUFR_MAX_SUBSETS]; /*! Array of subset bitoffset. offsets[n] is the bit offset from first data in sequence 'n'. 
   Offset is counted from the begining of SEC4 data in bits, usually bit 32 */  
 };
 
@@ -757,6 +763,7 @@ struct bufr_tableb_decoded_item
   uint8_t changed; /*!< flag. If 0 = not changed from table B. If 1 Changed */
   uint8_t x; /*!< x value of descriptor */
   uint8_t y; /*!< y value of descriptor */
+  uint8_t kk; /*!< not used. A trick to align */
   char key[8]; /*!< c value of descriptor */
   char name[BUFR_TABLEB_NAME_LENGTH]; /*!< name */
   char unit[BUFR_TABLEB_UNIT_LENGTH]; /*!< unit */
@@ -764,10 +771,10 @@ struct bufr_tableb_decoded_item
   int32_t scale_ori; /*!< escale as readed from table b */
   int32_t reference; /*!< reference */
   int32_t reference_ori; /*!< reference as readed from table b */
-  size_t nbits; /*!< bits */
-  size_t nbits_ori; /*!< bits as readed from table b */
-  size_t tablec_ref; /*!< item to point table c, if any */
-  size_t tabled_ref; /*!< item to point table d, if any */
+  buf_t nbits; /*!< bits */
+  buf_t nbits_ori; /*!< bits as readed from table b */
+  buf_t tablec_ref; /*!< item to point table c, if any */
+  buf_t tabled_ref; /*!< item to point table d, if any */
 };
 
 /*!
@@ -779,9 +786,9 @@ struct bufr_tableb
   int wmo_table; /*!< 1 when table is from WMO csv file, 0 otherwise */
   char path[BUFRDECO_PATH_LENGTH]; /*!< Complete path of current file readed */
   char old_path[BUFRDECO_PATH_LENGTH]; /*!< Cmplete path of prior file readed, used to avoid read two consecutive times the same file */
-  size_t nlines; /*!< Current lines readed from file, i. e. used in array item[] */
-  size_t x_start[64]; /*!< Index in array \a item[] for first x. x_start[j] is index for first descriptor which x == j */
-  size_t num[64]; /*!< Amount of items for x. num[i] is the amount of items in array where x = i */
+  buf_t nlines; /*!< Current lines readed from file, i. e. used in array item[] */
+  buf_t x_start[64]; /*!< Index in array \a item[] for first x. x_start[j] is index for first descriptor which x == j */
+  buf_t num[64]; /*!< Amount of items for x. num[i] is the amount of items in array where x = i */
   uint8_t y_ref[64][256]; /*!< index for y since first x. x_ref[i][j] is index since x_start[i] where y == j */
   struct bufr_tableb_decoded_item item[BUFR_MAXLINES_TABLEB]; /*!< Array with structs containing parsed lines readed from file */
 };
@@ -811,10 +818,10 @@ struct bufr_tablec
   int wmo_table; /*!< 1 when table is from WMO csv file, 0 otherwise */
   char path[BUFRDECO_PATH_LENGTH]; /*!< Complete path of current file readed */
   char old_path[BUFRDECO_PATH_LENGTH]; /*!< Cmplete path of prior file readed, used to avoid read two consecutive times the same file */
-  size_t nlines; /*!< Current lines readed from file, i. e. used in array \a l[] */
-  size_t x_start[64]; /*!< Index in array \a l[] for first x. x_start[j] is index for first descriptor which x == j */
-  size_t num[64]; /*!< Amonut of lines for x. num[i] is the amount of items in array where x = i */
-  size_t y_ref[64][256]; /*!< index for first y since first x. x_ref[i][j] is index since x_start[i] where y == j */
+  buf_t nlines; /*!< Current lines readed from file, i. e. used in array \a l[] */
+  buf_t x_start[64]; /*!< Index in array \a l[] for first x. x_start[j] is index for first descriptor which x == j */
+  buf_t num[64]; /*!< Amonut of lines for x. num[i] is the amount of items in array where x = i */
+  buf_t y_ref[64][256]; /*!< index for first y since first x. x_ref[i][j] is index since x_start[i] where y == j */
   char l[BUFR_MAXLINES_TABLEC][96]; /*!< Array with lines readed from file */
   struct bufr_tablec_decoded_item item[BUFR_MAXLINES_TABLEC]; /*!< Array of decoded lines */
 };
@@ -841,9 +848,9 @@ struct bufr_tabled
   int wmo_table; /*!< 1 when table is from WMO csv file, 0 otherwise */
   char path[BUFRDECO_PATH_LENGTH]; /*!< Complete path of current file readed */
   char old_path[BUFRDECO_PATH_LENGTH]; /*!< Cmplete path of prior file readed, used to avoid read two consecutive times the same file */
-  size_t nlines; /*!< Current lines readed from file, i. e. used in array \a l[] */
-  size_t x_start[64]; /*!< Index in array \a l[] for first x. x_start[j] is index for first descriptor which x == j */
-  size_t num[64]; /*!< Amonut of lines for x. num[i] is the amount of items in array where x = i */
+  buf_t nlines; /*!< Current lines readed from file, i. e. used in array \a l[] */
+  buf_t x_start[64]; /*!< Index in array \a l[] for first x. x_start[j] is index for first descriptor which x == j */
+  buf_t num[64]; /*!< Amonut of lines for x. num[i] is the amount of items in array where x = i */
   char l[BUFR_MAXLINES_TABLED][128]; /*!< Array with lines readed from file */
   struct bufr_tabled_decoded_item item[BUFR_MAXLINES_TABLED];
 };
@@ -869,8 +876,8 @@ struct bufr_tables
  */
 struct bufr_tables_cache 
 {
-   int nt; /*!< Tables actually allocated in cache */
-   int next; /*< index of next element in array to add */
+   buf_t nt; /*!< Tables actually allocated in cache */
+   buf_t next; /*< index of next element in array to add */
    int8_t ver[BUFRDECO_TABLES_CACHE_SIZE]; /*!< Table version for array elements */
    struct bufr_tables *tab[BUFRDECO_TABLES_CACHE_SIZE]; /*! Array of structs \ref bufr_tables allocated */
 };
@@ -923,7 +930,7 @@ int bufrdeco_close ( struct bufrdeco *b );
 int bufrdeco_reset ( struct bufrdeco *b );
 int bufrdeco_set_tables_dir( struct bufrdeco *b, char *tables_dir);
 int bufrdeco_get_bufr ( struct bufrdeco *b, char *filename);
-struct bufrdeco_subset_sequence_data *bufrdeco_get_target_subset_sequence_data (size_t nset, struct bufrdeco *b);
+struct bufrdeco_subset_sequence_data *bufrdeco_get_target_subset_sequence_data (buf_t nset, struct bufrdeco *b);
 int bufrdeco_read_subset_offset_bits (struct bufrdeco *b, char *filename);
 int bufrdeco_write_subset_offset_bits (struct bufrdeco *b, char *filename);
 
@@ -947,7 +954,7 @@ int bufrdeco_free_cache_tables (struct bufr_tables_cache *c);
 // Read bufr functions
 int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename );
 int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename );
-int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, size_t size );
+int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, buf_t size );
 int get_ecmwf_tablenames ( struct bufrdeco *b );
 int bufr_read_tables_ecmwf ( struct bufrdeco *b );
 int bufr_read_tableb ( struct bufrdeco *b );
@@ -1013,7 +1020,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
 int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_descriptor *d, struct bufrdeco *b );
 int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrdeco *b, struct bufr_descriptor *d, int mode );
 int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, struct bufrdeco_compressed_ref *r,
-    size_t subset, struct bufrdeco *b );
+    buf_t subset, struct bufrdeco *b );
 
 // To get parsed data
 struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data ( struct bufrdeco *b );
@@ -1021,27 +1028,27 @@ struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data ( struc
 // To get bits functions
 uint32_t two_bytes_to_uint32 ( const uint8_t *source );
 uint32_t three_bytes_to_uint32 ( const uint8_t *source );
-size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset,
-                              size_t bit_length );
-size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset,
-                                size_t bit_length );
+uint32_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *source, buf_t *bit0_offset,
+                              buf_t bit_length );
+uint32_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, buf_t *bit0_offset,
+                                buf_t bit_length );
 
 // Utilities for tables
-char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec *tc, size_t *index,
+char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec *tc, uint32_t *index,
                                       struct bufr_descriptor *d, uint32_t ival );
 char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d,
                                      uint64_t ival, uint8_t nbits );
-char * bufrdeco_explained_table_csv_val ( char *expl, size_t dim, struct bufr_tablec *tc, size_t *index,
+char * bufrdeco_explained_table_csv_val ( char *expl, size_t dim, struct bufr_tablec *tc, uint32_t *index,
     struct bufr_descriptor *d, uint32_t ival );
 char * bufrdeco_explained_flag_csv_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d,
     uint64_t ival, uint8_t nbits );
 int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b,
     const char *key );
 int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct bufr_descriptor *d );
-int bufr_find_tableb_index ( size_t *index, struct bufr_tableb *tb, const char *key );
+int bufr_find_tableb_index ( buf_t *index, struct bufr_tableb *tb, const char *key );
 int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_t source );
 int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key );
-int bufr_find_tablec_csv_index ( size_t *index, struct bufr_tablec *tc, const char *key, uint32_t code );
+int bufr_find_tablec_csv_index ( buf_t *index, struct bufr_tablec *tc, const char *key, uint32_t code );
 char *bufrdeco_get_f2_descriptor_explanation ( char *e, size_t dim, struct bufr_descriptor *d );
 
 // utilities for bitmaps
