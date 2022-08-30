@@ -25,13 +25,13 @@
 
 
 /*!
-  \fn int bufr_read_tablec_csv ( struct bufrdeco *b )
+  \fn int bufr_read_tableC ( struct bufrdeco *b )
   \brief Reads a file with table C content (Code table and bit flags) according with csv WMO format
   \param b pointer to a target struct \ref bufrdeco
 
   If succeded return 0, otherwise 1
 */
-int bufr_read_tablec_csv ( struct bufrdeco *b )
+int bufr_read_tableC ( struct bufrdeco *b )
 {
   char *c;
   //size_t  used = 0;

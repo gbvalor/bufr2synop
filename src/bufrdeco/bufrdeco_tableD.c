@@ -24,13 +24,13 @@
 #include "bufrdeco.h"
 
 /*!
-  \fn int bufr_read_tabled_csv ( struct bufrdeco *b )
+  \fn int bufr_read_tableD ( struct bufrdeco *b )
   \brief Reads a file with table D content according with WMO csv format
   \param b pointer to a target struct \ref bufrdeco
 
   If succeded return 0, otherwise 1
 */
-int bufr_read_tabled_csv ( struct bufrdeco *b )
+int bufr_read_tableD ( struct bufrdeco *b )
 {
   char aux[32], *c;
   char *tk[16];

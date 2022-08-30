@@ -380,7 +380,7 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, buf_t size )
   bufrdeco_clock_start = clock();
 #endif
 
-  if ( bufr_read_tables_wmo ( b ) )
+  if ( bufr_read_tables ( b ) )
     {
       return 1;
     }

@@ -14,10 +14,9 @@ INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} ${all_includes})
 
 LINK_DIRECTORIES( ${dir_libs} )
 
-add_library(bufrdeco SHARED bufrdeco.h bufrdeco.c bufrdeco_read.c bufrdeco_tableb.c bufrdeco_tablec.c
-        bufrdeco_tabled.c bufrdeco_utils.c bufrdeco_tree.c bufrdeco_data.c bufrdeco_compressed.c bufrdeco_f2.c 
-        bufrdeco_print.c bufrdeco_memory.c bufrdeco_csv.c  
-        bufrdeco_tabled_csv.c bufrdeco_wmo.c bufrdeco_print_html.c)
+add_library(bufrdeco SHARED bufrdeco.h bufrdeco.c bufrdeco_read.c bufrdeco_tableB.c bufrdeco_tableC.c
+        bufrdeco_tableD.c bufrdeco_utils.c bufrdeco_tree.c bufrdeco_data.c bufrdeco_compressed.c bufrdeco_f2.c 
+        bufrdeco_print.c bufrdeco_memory.c bufrdeco_csv.c bufrdeco_wmo.c bufrdeco_print_html.c)
 target_link_libraries(bufrdeco m)
 SET_TARGET_PROPERTIES (bufrdeco PROPERTIES 
                        VERSION ${PROJECT_VERSION} 

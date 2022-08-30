@@ -16,18 +16,6 @@ INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} ${bufr2synop_SOURCE_DIR}/src/bufrdeco
 LINK_DIRECTORIES( ${bufr2synop_SOURCE_DIR}/src/bufrdeco ${bufr2synop_SOURCE_DIR}/src/libraries 
                   ${dir_libs})
 
-IF (BUFRDC)
-
-  add_executable(bufr2synop bufr2synop.h bufr2synop.c bufr2synop_io.c)
-  target_link_libraries(bufr2synop bufr2tac bufr m gfortran)
-
-  add_executable(bufr_decode bufr_decode.c)
-  target_link_libraries(bufr_decode bufr m gfortran)
-  
-  install (TARGETS bufr2synop bufr_decode DESTINATION ${CMAKE_INSTALL_BINDIR} )
-
-ENDIF (BUFRDC)
-
 add_executable(bufrnoaa bufrnoaa.h bufrnoaa.c bufrnoaa_io.c bufrnoaa_utils.c)
 
 add_executable(bufrdeco_test bufrdeco_test.c)

@@ -954,18 +954,13 @@ int bufrdeco_free_cache_tables (struct bufr_tables_cache *c);
 int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename );
 int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename );
 int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, buf_t size );
-int get_ecmwf_tablenames ( struct bufrdeco *b );
-int bufr_read_tables_ecmwf ( struct bufrdeco *b );
-int bufr_read_tableb ( struct bufrdeco *b );
-int bufr_read_tablec ( struct bufrdeco *b );
-int bufr_read_tabled ( struct bufrdeco *b );
 
 // Read bufr WMO csv
 int get_wmo_tablenames ( struct bufrdeco *b );
-int bufr_read_tableb_csv ( struct bufrdeco *b );
-int bufr_read_tablec_csv ( struct bufrdeco *b );
-int bufr_read_tabled_csv ( struct bufrdeco *b );
-int bufr_read_tables_wmo ( struct bufrdeco *b );
+int bufr_read_tableB ( struct bufrdeco *b );
+int bufr_read_tableC ( struct bufrdeco *b );
+int bufr_read_tableD ( struct bufrdeco *b );
+int bufr_read_tables ( struct bufrdeco *b );
 char * csv_quoted_string ( char *out, char *in );
 int parse_csv_line ( int *nt, char *tk[], char *lin );
 

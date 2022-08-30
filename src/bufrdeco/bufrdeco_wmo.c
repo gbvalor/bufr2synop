@@ -151,13 +151,13 @@ int get_wmo_tablenames ( struct bufrdeco *b )
 }
 
 /*!
-  \fn int bufr_read_tables_wmo (struct bufrdeco *b)
+  \fn int bufr_read_tables (struct bufrdeco *b)
   \brief Read the tables according with bufr file data from a bufr table directory
   \param b basic struct with needed data
 
   The default directories where to search bufr tables are stored in \ref DEFAULT_BUFRTABLES_WMO_CSV_DIR1 and \ref DEFAULT_BUFRTABLES_WMO_CSV_DIR2
 */
-int bufr_read_tables_wmo ( struct bufrdeco *b )
+int bufr_read_tables ( struct bufrdeco *b )
 {
   int index;
   buf_t i;
@@ -204,17 +204,17 @@ int bufr_read_tables_wmo ( struct bufrdeco *b )
             }
 
           // Missed cache
-          if ( bufr_read_tableb_csv ( b ) )
+          if ( bufr_read_tableB ( b ) )
             {
               return 1;
             }
 
-          if ( bufr_read_tablec_csv ( b ) )
+          if ( bufr_read_tableC ( b ) )
             {
               return 1;
             }
 
-          if ( bufr_read_tabled_csv ( b ) )
+          if ( bufr_read_tableD ( b ) )
             {
               return 1;
             }
@@ -237,17 +237,17 @@ int bufr_read_tables_wmo ( struct bufrdeco *b )
         }
 
       // And now read tables
-      if ( bufr_read_tableb_csv ( b ) )
+      if ( bufr_read_tableB ( b ) )
         {
           return 1;
         }
 
-      if ( bufr_read_tablec_csv ( b ) )
+      if ( bufr_read_tableC ( b ) )
         {
           return 1;
         }
 
-      if ( bufr_read_tabled_csv ( b ) )
+      if ( bufr_read_tableD ( b ) )
         {
           return 1;
         }

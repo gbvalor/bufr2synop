@@ -32,14 +32,14 @@ const double pow10pos[8]= {1.0, 10.0, 100.0, 1000.0, 10000.0, 100000.0, 1000000.
 const double pow10neg[8]= {1.0,  0.1,  0.01,  0.001,  0.0001,  0.00001,  0.000001,  0.0000001};
 
 /*!
-  \fn int bufr_read_tableb_csv ( struct bufrdeco b )
+  \fn int bufr_read_tableB ( struct bufrdeco b )
   \brief Read a Table B file from a WMO csv formatted file and set the result in a struct \ref bufr_tableb
   \param b pointer to the struct \ref bufrdeco where to set the results
 
   Note that this function assumes that file is csv formatted as WMO table B
   Return 0 if success, 1 otherwise
 */
-int bufr_read_tableb_csv ( struct bufrdeco *b )
+int bufr_read_tableB ( struct bufrdeco *b )
 {
   char *c;
   FILE *t;
