@@ -27,39 +27,33 @@ several ways, and there is not a regional even national decision about them. As 
 A numeric value for heigh of base clouds can be coded in two ways. And there some few more
 examples.
 
-The **BUFR** file tables was provided by bufrdc library from [ECMWF](https://www.ecmwf.int/).
-Since version 0.8.1 (Released on 05-Jan-2017) these files are no needed anymore.
-*NOW BUFR2SYNOP PACKAGE PROVIDES ALL NEEDED BUFR TABLES*. Tables used here are from **ECMWF**
-files for version 17 and older. From version 18 up to now (version 38.1), the more detailed
-tables from WMO are used. Source files from WMO are the Machine readable text and xml files
-we can get [here](https://community.wmo.int/activity-areas/wis/latest-version)
+Since version 0.23.0 the old support for supress the legacy code to support bufrdc ECMAWF library
+has been supressed.
 
-Anyway, a conversion is made to convert them as optimized CSV files. The included app 
-build_bufrdeco_tables is used to the conversion of both ECMWF and WMO source files.
+In this package, the included library **bufrdeco** to decode **BUFR** files has been completed and
+optimized to deal with all **BUFR** reports.
+
 
 
 ## BUFRDECO LIBRARY ##
 
 The repository includes a library to decode **BUFR** reports written from scratch. It is 
-**bufrdeco** and is a fast and ligth library capable to decode any bufr report since version 
-0.20.0 and above. The use of **bufrdeco** is the default option when building the package.
+**bufrdeco** and is a very fast and ligth library capable to decode any bufr report since version 
+0.20.0 and above. 
 
-## OPTIONAL USE OF ECMWF BUFRDC PACKAGE (DEPRECATED)##
+Since version 0.23.0 two interesting optional features has been added to **bufrdeco** 
 
-Backward compatibilty from older versions and the use of **ECMWF tables** is also preserved.
-Before version 0.7 this package should to be installed. Since version 0.7, a library for 
-decode a wide subset of **BUFR** reports was wrote from scratch. This is a fast and light
-bufr decoder. If you want to use the bufr tables from **ECMWF** you need to install that package
-You can grab **ECMWF bufrdc** library from [this site](https://confluence.ecmwf.int/display/BUFR/Releases)
-
-Follow the instructions to build and install **bufrdc** library. Note that **bufrdc_000409** is the latest
-version released. ECMWF recommends use eccodes package to deal with BUFR. Anyway this is not relevant
-here. If you decide to build **bufrdc** it is recommended to build with *-DUNDERSCORE* option to avoid
-problems when linked with C libraries. Then, you can use this package. Since version v0.10 you should
-use *--enable-bufrdc=yes* in configure stage for GNU autotools or *-DBUFRDC* option for cmake (see below) use it.
-
-The use of **ECMWF bufrdc** library is deprecated and will be supressed in future versions.
-
+- Create and use a cache of bufr tables when the library is used to decode more than one **BUFR** file. If 
+  the master version of every file is not the same, then the cache stores the tables used up to moment. 
+  This is a very nice optimization because most of CPU time is wasted in reading and decoding the tables
+  before decoding a given bufr report. If the a master version is already used in the session then 
+  there is no need to read and decode their tables again.
+  
+- Create small indexes for non compressed **BUFR** reports. When data in a **BUFR** file is not compressed then
+  to get the data for a subset N it is needed to parse the sec 4 data for the subsets 0 to N-1. This is
+  because the extension of a subset data is not known before parse it for non compressed cases. The creation of this 
+  index file save a lot of work if we are only interested in the data of a single subset.
+  
 
 ## BUILD ##
 
@@ -80,10 +74,6 @@ package from a tarball you must do configure and make. From *bufr2synop/build0/*
 
         ../configure
 
-If you want to use some apps using **ECMWF bufrdc library** you should use
-
-        ../configure --enable-bufrdc=yes
-  
 To build the package
 
         make
@@ -101,12 +91,6 @@ Then configure using cmake
 
         cmake .. 
         
-if you want to use **ECMWF BUFRDC** package you shoud configue with
-
-        cmake .. -DBUFRDC=1
-        
-but this option **is deprecated**. 
-
 To build the package
 
         make
@@ -116,13 +100,8 @@ To build the package
 
 Assume you built the package. you will have up to five binaries:
 
-- ***bufr2synop*** . (if enabled bufrdc)
-    Main binary to extract alphanumeric reports using **ECMWF** decode library. *It is deprecated*.
 - ***bufrtotac*** .
     The same than bufr2ynop but using the own ***bufrdeco*** library and tables. It is several times faster
-- ***bufr_decode*** . (if enabled bufrdc)
-    A binary extracted and adapted from ECMWF bufrdc library. Is an example of use for 
-    **ECMWF bufrdc library**
 - ***bufrnoaa***
     An utility to extract and select bufr files from **NOAA** bin archives.
 - ***build_bufrdeco_tables***
@@ -189,34 +168,22 @@ ECMWF bufr tables if you are using them.
 
    To see the 'emulated' synop reports from this bufr file
 
-           bufr2synop -i 20141018211119_ISIN03_EGRR_182100.bufr
+           bufrtotac -i 20141018211119_ISIN03_EGRR_182100.bufr
 
    We will get a list of 58 synops to stdout.
 
    And to see **CLIMAT** reports, we can try with another bufr file
 
-           bufr2synop -i 20150705121512_ISCD01_LIIB_050000.bufr
+           bufrtotac -i 20150705121512_ISCD01_LIIB_050000.bufr
 
    We will get 19 **CLIMAT** reports, some of them NIL reports.
 
-3. We can try also to get a traditional **TEMP** report from examples. Let use the new bufrtotac
+   We can try also to get a traditional **TEMP** report from examples. Let use the new bufrtotac
 
            bufrtotac -i 20160402121749_IUSH01_DRRN_021100.bufr
 
    We will get the four parts of a **TEMP** report.
  
-   Since version 0.7 we also can do the same using bufrtotac which uses the own *bufrdeco* library.
-   It works with the same arguments than bufr2synop, which is deprecated, so
-
-           bufrtotac -i 20141018211119_ISIN03_EGRR_182100.bufr
-
-   and
-
-           bufrtotac -i 20150705121512_ISCD01_LIIB_050000.bufr
-
-   should produce the same output, but a lot faster. It is recommended the use of *bufrtotac* instead
-   of *bufr2synop*.
-
    In case you just want to get **BUFR** details just add '-V -n' arguments
 
            bufrtotac -i 20150705121512_ISCD01_LIIB_050000.bufr -V -n
@@ -224,16 +191,83 @@ ECMWF bufr tables if you are using them.
    you will get a long output with all details for all subsets of descriptors, including the expanded tree. Option *-n* supresses
    the conversion to **TAC**.
 
-   There are some more options for ***bufrnoaa***, *bufrtotac* and *bufr2synop*. You can see a list using
+   There are some more options for **bufrnoaa** and **bufrtotac**. You can see a list using option *-h* 
 
-           bufrnoaa -h
+   ~~~
+$> bufr2noaa -h
+bufrnoaa: Version '0.23.0' built using GNU C compiler gcc 12.1.1 at Aug 30 2022 18:17:41 and cmake.
+Usage: 
 
-           bufrtotac -h
+bufrnoaa -i input_file [-h][-v][-f][-l][-F prefix][-T T2_selection][-O selo][-S sels][-U selu]
+   -h Print this help
+   -v Print information about build and version
+   -i Input file. Complete input path file for NOAA *.bin bufr archive file
+   -2 Input file is formatted in alternative form: Headers has '#' instead of '*' marks and no sep after '7777'
+   -l list the names of reports in input file
+   -f Extract selected reports and write them in files, one per bufr message, as 
+      example '20110601213442_ISIE06_SBBR_012100_RRB.bufr'. First field in name is input file timestamp 
+      Other fields are from header
+   -F prefix. Builds an archive file with the same format as NOAA one but just with selected messages
+      witgh option  -T. Resulting name is 'prefix_input_filename'
+      If no -F option no archive bin file is created.
+      If no message is selected, the a void file is created.
+      File timestamp is the same than input file
+   -T T2_selection. A string with selection. A character per type (T2 code)
+      'S' = Surface . 'O'= Oceanographic. 'U'= upper air
+      If no -T argument then nothing is selected
+   -S sels. String with selection for A1 when T2='S'
+      By default all A1 are selected
+   -O selo. String with selection for A1 when T2='O'
+      By default all A1 are selected
+   -U sels. String with selection for A1 when T2='U'
+      By default all A1 are selected
 
-   or
+   ~~~
+   
+   
+   ~~~
+$> butrtotac -h
+bufrtotac: Version '0.23.0' built using GNU C compiler gcc 12.1.1 at Aug 30 2022 18:39:58 and cmake.
+Linked to bufr2tac library version '0.23.0' built using GNU C compiler gcc 12.1.1 at Aug 30 2022 18:17:37 and cmake.
+Linked to bufrdeco library version '0.23.0' built using GNU C compiler gcc 12.1.1 at Aug 30 2022 18:17:35 and cmake.
 
-           bufr2synop -h
+Usage: 
+bufrtotac -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-X][-c][-h]
+       -c. The output is in csv format
+       -D debug level. 0 = No debug, 1 = Debug, 2 = Verbose debug (default = 0)
+       -g. Print WIGOS ID
+       -h Print this help
+       -i Input file. Complete input path file for bufr file
+       -I list_of_files. Pathname of a file with the list of files to parse, one filename per line
+       -j. The output is in json format
+       -n. Do not try to decode to TAC, just parse BUFR report
+       -o output. Pathname of output file. Default is standar output
+       -R. Read bit_offsets file if exists. The path of these files is to add '.offs' to the name of input BUFR file
+       -s prints a long output with explained sequence of descriptors
+       -S first..last . Print only results for subsets in range first..last (First subset available is 0). Default is all subsets
+       -t bufrtable_dir. Pathname of bufr tables directory. Ended with '/'
+       -T. Use cache of tables to optimize execution time
+       -W. Write bit_offsets file. The path of these files is to add '.offs' to the name of input BUFR file
+       -V. Verbose output
+       -v. Print version
+       -x. The output is in xml format
+       -X. Try to extract an embebed bufr in a file seraching for a first '7777' after first 'BUFR'
 
-   And you also can read the doc pages at [github project site](http://gbvalor.github.io/bufr2synop)
+   ~~~
+
+Since version 0.23.0 there are three new interesting options in **buftotac** as you can see. 
+
+- The option *-T* uses the cache for bufr tables. This is very interesting in addition to option *-I* . With the *-I* option you enter 
+   a file with a list of bufr file paths than **bufrtotac** will parse in sequential order. If the master version of every bufrfile is 
+   not the same then the use of *-T* option will create a internal cache in memory that will optimize the CPU time.
+
+- The options *-R* and *-W* read or write respectively a small file of bitoffset index for non compressed **BUFR** files. The name of 
+  index file assocciated to every BUFR file is to concatenate **.offs** to the original bufr filename. This feature is useful if you need
+  to decode the same bufr file many times and only access to a given subset. First time you decode a file using **bufrdeco** with *-W* option. Next times 
+  you can use *-R* option to read the data for subsets in a optimized way
+  
+
+  
+  And finally, you also can read the doc pages at [github project site](http://gbvalor.github.io/bufr2synop)
    
    

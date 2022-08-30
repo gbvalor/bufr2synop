@@ -35,22 +35,21 @@ void bufrtotac_print_usage ( void )
   printf ( "%s -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-X][-c][-h]\n", SELF );
   printf ( "       -c. The output is in csv format\n" );
   printf ( "       -D debug level. 0 = No debug, 1 = Debug, 2 = Verbose debug (default = 0)\n" );
-#ifdef USE_BUFRDC
-  printf ( "       -E. Use ECMWF package tables. Default is WMO csv tables. DEPRECATED!!\n" );
-#endif
+  printf ( "       -g. Print WIGOS ID\n" );
   printf ( "       -h Print this help\n" );
   printf ( "       -i Input file. Complete input path file for bufr file\n" );
   printf ( "       -I list_of_files. Pathname of a file with the list of files to parse, one filename per line\n" );
   printf ( "       -j. The output is in json format\n" );
   printf ( "       -n. Do not try to decode to TAC, just parse BUFR report\n" );
   printf ( "       -o output. Pathname of output file. Default is standar output\n" );
+  printf ( "       -R. Read bit_offsets file if exists. The path of these files is to add '.offs' to the name of input BUFR file\n");
   printf ( "       -s prints a long output with explained sequence of descriptors\n" );
   printf ( "       -S first..last . Print only results for subsets in range first..last (First subset available is 0). Default is all subsets\n" );
   printf ( "       -t bufrtable_dir. Pathname of bufr tables directory. Ended with '/'\n" );
   printf ( "       -T. Use cache of tables to optimize execution time\n");
+  printf ( "       -W. Write bit_offsets file. The path of these files is to add '.offs' to the name of input BUFR file\n");
   printf ( "       -V. Verbose output\n" );
   printf ( "       -v. Print version\n" );
-  printf ( "       -g. Print WIGOS ID\n" );
   printf ( "       -x. The output is in xml format\n" );
   printf ( "       -X. Try to extract an embebed bufr in a file seraching for a first '7777' after first 'BUFR'\n" );
 }
@@ -155,7 +154,6 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
   JSON = 0;
   CSV= 0;
   EXTRACT = 0;
-  ECMWF = 0;
   HTML = 0;
   NOTAC = 0;
   FIRST_SUBSET = 0;
@@ -168,7 +166,7 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
   /*
      Read input options
   */
-  while ( ( iopt = getopt ( _argc, _argv, "cD:Ehi:jHI:no:S:st:TvgVWRxX" ) ) !=-1 )
+  while ( ( iopt = getopt ( _argc, _argv, "cD:hi:jHI:no:S:st:TvgVWRxX" ) ) !=-1 )
     switch ( iopt )
       {
       case 'i':
