@@ -23,23 +23,32 @@
  */
 #include "bufrdeco.h"
 
+
 /*!
-  \fn int bufr_read_tablec ( struct bufrdeco *b )
-  \brief Reads a file with table C content according with ECMWF format
+  \fn int bufr_read_tablec_csv ( struct bufrdeco *b )
+  \brief Reads a file with table C content (Code table and bit flags) according with csv WMO format
   \param b pointer to a target struct \ref bufrdeco
 
   If succeded return 0, otherwise 1
 */
-int bufr_read_tablec ( struct bufrdeco *b )
+int bufr_read_tablec_csv ( struct bufrdeco *b )
 {
-  char aux[8], *c;
-  buf_t startx = 0;
+  char *c;
+  //size_t  used = 0;
   FILE *t;
+  int nt;
+  uint32_t ix;
   buf_t i = 0;
-  char caux[256];
-  struct bufr_tablec *tc = &(b->tables->c);
+  struct bufr_descriptor desc;
+  struct bufr_tablec *tc;
+  char *tk[16];
+  char caux[256], l[CSV_MAXL];
 
-  if ( tc->path[0] == '\0' )
+  //bufrdeco_assert ( b != NULL );
+  
+  tc = & ( b->tables->c );
+  
+  if ( tc->path[0] == 0 )
     {
       return 1;
     }
@@ -47,6 +56,9 @@ int bufr_read_tablec ( struct bufrdeco *b )
   // If we've already readed this table.
   if ( strcmp ( tc->path, tc->old_path ) == 0 )
     {
+#ifdef __DEBUG      
+      printf ("# Reused table %s\n", tc->path);
+#endif      
       return 0; // all done
     }
 
@@ -55,81 +67,97 @@ int bufr_read_tablec ( struct bufrdeco *b )
   strcpy ( tc->path, caux );
   if ( ( t = fopen ( tc->path, "r" ) ) == NULL )
     {
-      snprintf ( b->error, sizeof (b->error), "%s(): Unable to open table C file '%s'\n", __func__, tc->path );
+      snprintf ( b->error, sizeof ( b->error ),"Unable to open table C file '%s'\n", tc->path );
       return 1;
     }
 
-  while ( fgets ( tc->l[i], 96, t ) != NULL && i < BUFR_MAXLINES_TABLEC )
+  // read first line, it is ignored
+  fgets ( l, CSV_MAXL, t );
+
+  while ( fgets ( l, CSV_MAXL, t ) != NULL && i < BUFR_MAXLINES_TABLEC )
     {
-      // supress the newline
-      if ( ( c = strrchr ( tc->l[i],'\n' ) ) != NULL )
+
+      // Parse line
+      if ( parse_csv_line ( &nt, tk, l ) < 0 || nt != 6 )
         {
-          *c = '\0';
+          snprintf ( b->error, sizeof ( b->error ),"Error parsing csv line from table C file '%s'. Found %d fields in line %u \n", tc->path, nt, i );
+          return 1;
         }
-      if ( tc->l[i][1] != ' ' && tc->l[i][2] != ' ' )
+
+      // Check if code contains other than non-numeric i.e. 'All' or '-'
+      // In this case, the line is ignored
+      if ( tk[1][0] == 0 || strchr ( tk[1], '-' ) != NULL || strstr ( tk[1], "All" ) != NULL )
+        continue;
+
+      // Key
+      // First we build the descriptor
+      ix = strtoul ( tk[0], &c, 10 );
+      uint32_t_to_descriptor ( &desc, ix );
+      strcpy ( tc->item[i].key, tk[0] );
+      tc->item[i].x = desc.x;
+      tc->item[i].y = desc.y;
+
+      // Integer value
+      tc->item[i].ival = strtoul ( tk[1], &c, 10 );
+
+      // Description
+      c = & tc->item[i].description[0];
+      snprintf ( c, BUFR_EXPLAINED_LENGTH, "%s %s %s %s", tk[2], tk[3], tk[4], tk[5] );
+
+      if ( tc->num[desc.x] == 0 )
         {
-          aux[0] = tc->l[i][1];
-          aux[1] = tc->l[i][2];
-          aux[2] = '\0';
-          startx = strtoul ( aux, &c, 10 );
-          if ( tc->x_start[startx] == 0 )
-            {
-              tc->x_start[startx] = i;  // marc the start
-            }
+          tc->x_start[desc.x] = i;  // marc the start
         }
-      ( tc->num[startx] ) ++;
+      if ( tc->y_ref[desc.x][desc.y] == 0 )
+        {
+          tc->y_ref[desc.x][desc.y] = i - tc->x_start[desc.x]; // marc the position from start of first x
+        }
+      ( tc->num[desc.x] ) ++;
       i++;
     }
   fclose ( t );
   tc->nlines = i;
-  tc->wmo_table = 0;
+  tc->wmo_table = 1;
   strcpy ( tc->old_path, tc->path ); // store latest path
   return 0;
 }
 
+
 /*!
- \fn  int bufr_find_tablec_index ( size_t *index, struct bufr_tablec *tc, const char *key )
- \brief Find the index of a line in table C for a given key of a descriptor
- \param index pointer where to set the result
- \param tc pointer to a struct \ref bufr_tablec where all table data is stored
- \param key string in the form FXXYYY which is the key of descriptor we want to find out
+  \fn int bufr_find_tablec_csv_index ( buf_t *index, struct bufr_tableb *tb, const char *key, uint32_t code )
+  \brief found a descriptor index in a struct \ref bufr_tablec
+  \param index pointer  to a size_t where to set the result if success
+  \param tb pointer to struct \ref bufr_tableb where are stored all table B data
+  \param key descriptor string in format FXXYYY
+  \param code value to search in this table/flag
 
- If the descriptor has been found with success then returns 0, othewise returns 1
+  Return 0 if success, 1 otherwise
 */
-int bufr_find_tablec_index ( uint32_t *index, struct bufr_tablec *tc, const char *key )
+int bufr_find_tablec_csv_index ( buf_t *index, struct bufr_tablec *tc, const char *key, uint32_t code )
 {
+  uint32_t ix;
   buf_t i, i0;
-  buf_t x = 0;
-  char *c, aux[8];
+  char *c;
+  struct bufr_descriptor desc;
 
-  aux[0] = key[1];
-  aux[1] = key[2];
-  aux[2] = '\0';
-  x = strtoul ( aux, &c, 10 );
-  i0 = tc->x_start[x];
-  for ( i = i0 ; i < i0 + tc->num[x] ; i++ )
+  //bufrdeco_assert ( tc != NULL && index != NULL );
+  
+  ix = strtoul ( key, &c, 10 );
+  uint32_t_to_descriptor ( &desc, ix );
+  i0 = tc->x_start[desc.x];
+  for ( i = i0 ; i < i0 + tc->num[desc.x] ; i++ )
     {
-      if ( tc->l[i][0] != key[0] ||
-           tc->l[i][1] != key[1] ||
-           tc->l[i][2] != key[2] ||
-           tc->l[i][3] != key[3] ||
-           tc->l[i][4] != key[4] ||
-           tc->l[i][5] != key[5] )
-        {
-          continue;
-        }
-      else
+      if ( tc->item[i].y == desc.y && tc->item[i].ival == code )
         {
           *index = i;
-          return 0;
+          return 0; // found
         }
     }
   return 1; // not found
 }
 
-
 /*!
-  \fn char * bufrdeco_explained_table_val (char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d, int ival)
+  \fn char * bufrdeco_explained_table_csv_val (char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d, int ival)
   \brief gets a string with the meaning of a value for a code table descriptor
   \param expl string with resulting meaning
   \param dim numero máximo de caracteres de la cadena resultante
@@ -142,74 +170,19 @@ int bufr_find_tablec_index ( uint32_t *index, struct bufr_tablec *tc, const char
 */
 char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec *tc, uint32_t *index, struct bufr_descriptor *d, uint32_t ival )
 {
-  char *c;
-  uint32_t nv, v,  nl;
-  size_t  i, j;
+  buf_t i;
 
-  bufrdeco_assert ( tc != NULL && d != NULL && expl != NULL);
+  bufrdeco_assert ( tc != NULL && expl != NULL && index != NULL && d != NULL);
   
-  if ( tc->wmo_table )
+  if ( bufr_find_tablec_csv_index ( &i, tc, d->c, ival ) )
     {
-      // WMO case
-      return bufrdeco_explained_table_csv_val ( expl, dim, tc, index, d, ival );
+      return NULL; // descritor not found
     }
 
-  if ( *index == 0 )
-    {
-      // here the calling b item learn where to find table C line
-      if ( bufr_find_tablec_index ( index, tc, d->c ) )
-        {
-          //snprintf ( b->error, sizeof (b->error), "%s(): descriptor '%s' not found in table D\n", __func__, d->c );
-          return NULL; // descritor not found
-        }
-    }
+  // here the calling b item learn where to find first table C struct for a given x and y.
+  *index = tc->x_start[d->x] + tc->y_ref[d->x][d->y];
 
-  i = *index;
-  // reads the amount of possible values
-  if ( tc->l[i][7] != ' ' )
-    {
-      nv = strtoul ( &tc->l[i][7], &c, 10 );
-    }
-  else
-    {
-      return NULL;
-    }
-
-  // read a value
-  for ( j = 0; j < nv && i < tc->nlines ; i++ )
-    {
-      if ( tc->l[i][12] != ' ' )
-        {
-          v = strtoul ( &tc->l[i][12], &c, 10 );
-          j++;
-          if ( v != ival )
-            {
-              continue;
-            }
-          break;
-        }
-    }
-
-  if ( j == nv || i == tc->nlines )
-    {
-      return NULL;  // Value not found
-    }
-
-  // read how many lines for the descriptors
-  nl = strtoul ( &tc->l[i][21], &c, 10 );
-
-
-  // if match then we have finished the search
-  strcpy ( expl, &tc->l[i][24] );
-  if ( nl > 1 )
-    {
-      for ( nv = 1 ; nv < nl; nv++ )
-        if ( ( strlen ( expl ) + strlen ( &tc->l[i + nv][22] ) ) < dim )
-          {
-            strcat ( expl, &tc->l[i + nv][22] );
-          }
-    }
-
+  strncpy_safe ( expl, tc->item[i].description, dim );
   return expl;
 }
 
@@ -228,118 +201,57 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec
   If something went wrong, it returns NULL . Otherwise it returns \a expl
 */
 char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d,
-                                     uint64_t ival, uint8_t nbits )
+    uint64_t ival, uint8_t nbits )
 {
-  char *c;
   size_t used = 0;
   uint64_t test, test0;
-  uint64_t nb, nx, v,  nl;
+  uint64_t v;
   size_t i, j;
 
-  bufrdeco_assert ( tc != NULL && d != NULL && expl != NULL);
+  bufrdeco_assert ( tc != NULL && expl != NULL && d != NULL);
 
-  if ( tc->wmo_table )
-    {
-      // WMO case
-      return bufrdeco_explained_flag_csv_val ( expl, dim, tc, d, ival, nbits );
-    }
-
-  // Find first line for descriptor
-  for ( i = 0; i <  tc->nlines; i++ )
-    {
-      if ( tc->l[i][0] != d->c[0] ||
-           tc->l[i][1] != d->c[1] ||
-           tc->l[i][2] != d->c[2] ||
-           tc->l[i][3] != d->c[3] ||
-           tc->l[i][4] != d->c[4] ||
-           tc->l[i][5] != d->c[5] )
-        {
-          continue;
-        }
-      else
-        {
-          break;
-        }
-    }
-
-  if ( i == tc->nlines )
+  if ( tc->num[d->x] == 0 )
     {
       //printf("Descriptor %s No encontrado\n", d->c);
       return NULL;
     }
-  //printf("Descriptor %s en linea %d\n", d->c, i);
 
-  // reads the amount of possible bits
-  if ( tc->l[i][7] != ' ' )
-    {
-      nb = strtoul ( &tc->l[i][7], &c, 10 );
-    }
-  else
-    {
-      return NULL;
-    }
+  // First line for descriptor
+  i = tc->x_start[d->x] + tc->y_ref[d->x][d->y];
 
-  // read a value
-    for ( j = 0, test0 = 1; j < nb && i < tc->nlines ; i++ )
+  // init description
+  expl[0] = '\0';
+
+  for ( j = 0, test0 = 1 ; j < nbits && ( tc->item[i].x == d->x ) && ( tc->item[i].y == d->y ) ; i++ )
     {
-      if ( tc->l[i][12] != ' ' )
+      v = tc->item[i].ival; // v is the bit number
+      j++;
+
+      // case 0 with meaning
+      if ( v == 0 )
         {
-          v = strtol ( &tc->l[i][12], &c, 10 ); // v is the bit number
-          j++;
-
-          // case 0 with meaning
-          if ( v == 0 )
+          test0 = 1;
+          if ( ival == 0 )
             {
-              test0 = 1;
-              if ( ival == 0 )
-                {
-                  nl = strtoul ( &tc->l[i][21], &c, 10 );
-                  if ( expl[0] ) 
-                    {
-                      used += snprintf ( expl + used, dim - used, "|" );
-                    }
-                  used += snprintf ( expl + used, dim - used, "%s", &tc->l[i][24] );
-                  if ( nl > 1 )
-                    {
-                      for ( nx = 1 ; nx < nl; nx++ )
-                        if ( expl[0] )
-                          {
-                            used += snprintf ( expl + used, dim - used, "%s", &tc->l[i + nx][22] );
-                          }
-                    }
-                  return expl;
-                }
-            }
-
-          test = test0 << ( nbits - v );
-
-          if ( v && ( test & ival ) != 0 )
-            {
-              // bit match
-              // read how many lines for the descriptors
-              nl = strtol ( &tc->l[i][21], &c, 10 );
-              if ( expl[0] )
-                {
-                  used  += snprintf ( expl + used, dim - used, "|" );
-                }
-              used += snprintf ( expl + used, dim - used, "%s", &tc->l[i][24] );
-              if ( nl > 1 )
-                {
-                  for ( nx = 1 ; nx < nl; nx++ )
-                    if ( expl[0] )
-                      {
-                        used += snprintf ( expl + used, dim - used, "%s", &tc->l[i + nx][22] );
-                      }
-                }
-
-            }
-          else
-            {
-              continue;
+              used += snprintf ( expl + used, dim - used, "|" );
+              used += snprintf ( expl + used, dim - used, "%s", tc->item[i].description );
+              return expl;
             }
         }
-    }
 
+      test = test0 << ( nbits - v );
+
+      if ( v && ( test & ival ) != 0 )
+        {
+          used += snprintf ( expl + used, dim - used, "|" );
+          used += snprintf ( expl + used, dim - used, "%s", tc->item[i].description );
+        }
+      else
+        {
+          continue;
+        }
+      //printf ( "%s\n", expl );
+    }
   // if match then we have finished the search
   return expl;
 }

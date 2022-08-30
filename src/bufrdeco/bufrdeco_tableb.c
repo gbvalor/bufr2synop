@@ -31,30 +31,30 @@ const int32_t pow10pos_int[10]= {1, 10, 100, 1000, 10000, 100000, 1000000, 10000
 const double pow10pos[8]= {1.0, 10.0, 100.0, 1000.0, 10000.0, 100000.0, 1000000.0, 10000000.0};
 const double pow10neg[8]= {1.0,  0.1,  0.01,  0.001,  0.0001,  0.00001,  0.000001,  0.0000001};
 
-
 /*!
-  \fn int bufr_read_tableb ( struct bufrdeco *b )
-  \brief Read a Table B file and set the result in a struct \ref bufr_tableb
+  \fn int bufr_read_tableb_csv ( struct bufrdeco b )
+  \brief Read a Table B file from a WMO csv formatted file and set the result in a struct \ref bufr_tableb
   \param b pointer to the struct \ref bufrdeco where to set the results
 
-  Note that this function assumes that file is formatted as EMWCF table B
+  Note that this function assumes that file is csv formatted as WMO table B
   Return 0 if success, 1 otherwise
 */
-int bufr_read_tableb ( struct bufrdeco *b )
+int bufr_read_tableb_csv ( struct bufrdeco *b )
 {
   char *c;
   FILE *t;
   buf_t i = 0;
+  int nt;
   uint32_t ix;
-  char l[180];
-  char caux[256];
+  char l[CSV_MAXL];
+  char caux[512];
+  char *tk[16];
   struct bufr_tableb *tb;
   struct bufr_descriptor desc;
 
-  bufrdeco_assert ( b != NULL );
-
-  tb = &(b->tables->b);
+  //bufrdeco_assert ( b != NULL );
   
+  tb = &(b->tables->b);
   if ( tb->path[0] == 0 )
     {
       return 1;
@@ -63,7 +63,9 @@ int bufr_read_tableb ( struct bufrdeco *b )
   // If we've already readed this table. We just regenerate the table with original values
   if ( strcmp ( tb->path, tb->old_path ) == 0 )
     {
-      //printf ("Reutilizo tablas\n");
+#ifdef __DEBUG      
+      printf ("# Reused table %s\n", tb->path);
+#endif      
       for ( i = 0; i < tb->nlines ; i++ )
         {
           tb->item[i].scale = tb->item[i].scale_ori;
@@ -79,62 +81,75 @@ int bufr_read_tableb ( struct bufrdeco *b )
   strcpy ( tb->path, caux );
   if ( ( t = fopen ( tb->path, "r" ) ) == NULL )
     {
-      snprintf( b->error, sizeof (b->error),"%s(): Unable to open table B file '%s'\n", __func__, tb->path );
+      snprintf ( b->error, sizeof (b->error),"Unable to open table B file '%s'\n", tb->path );
       return 1;
     }
 
-  while ( fgets ( l, 180, t ) != NULL && i < BUFR_MAXLINES_TABLEB )
+  // read first line, it is ignored
+  fgets ( l, CSV_MAXL, t );
+
+  while ( fgets ( l, CSV_MAXL, t ) != NULL && i < BUFR_MAXLINES_TABLEB )
     {
-      // supress the newline
-      if ( ( c = strrchr ( l,'\n' ) ) != NULL )
+      // Parse line
+      if ( parse_csv_line ( &nt, tk, l ) < 0 || nt != 7 )
         {
-          *c = '\0';
+          snprintf ( b->error, sizeof (b->error),"Error parsing csv line from table B file '%s'\n", tb->path );
+          return 1;
         }
 
       // First we build the descriptor
-      ix = strtoul ( & ( l[0] ), &c, 10 );
+      ix = strtoul ( tk[0], &c, 10 );
       uint32_t_to_descriptor ( &desc, ix );
       tb->item[i].changed = 0; // Original from table B
       tb->item[i].x = desc.x; // x
       tb->item[i].y = desc.y; // y
       strcpy ( tb->item[i].key, desc.c ); // key
-      if ( tb->x_start[desc.x] == 0 )
+      if ( tb->num[desc.x] == 0 )
         {
           tb->x_start[desc.x] = i;  // marc the start
         }
       tb->y_ref[desc.x][desc.y] = i - tb->x_start[desc.x]; // marc the position from start of first x
+      ( tb->num[desc.x] )++;
 
       // detailed name
-      bufr_charray_to_string ( tb->item[i].name, &l[8], 64 );
-      bufr_adjust_string ( tb->item[i].name ); // supress trailing blanks
+      if ( tk[2][0] )
+        {
+          sprintf ( caux,"%s %s", tk[1], tk[2] );
+        }
+      else
+        {
+          strcpy ( caux, tk[1] );
+        }
 
-      // tyoe
-      bufr_charray_to_string ( tb->item[i].unit ,&l[73], 24 );
-      bufr_adjust_string ( tb->item[i].unit );
+      // and finally copy
+      strcpy ( tb->item[i].name, caux );
+
+      // unit
+      strcpy ( caux, tk[3] );
+      strcpy ( tb->item[i].unit, caux );
 
       // escale
-      tb->item[i].scale_ori = strtol ( &l[97], &c, 10 );
+      tb->item[i].scale_ori = strtol ( tk[4], &c, 10 );
       tb->item[i].scale = tb->item[i].scale_ori;
 
       // reference
-      tb->item[i].reference_ori = strtol ( &l[102], &c, 10 );
+      tb->item[i].reference_ori = strtol ( tk[5], &c, 10 );
       tb->item[i].reference = tb->item[i].reference_ori;
 
       // bits
-      tb->item[i].nbits_ori = strtol ( &l[115], &c, 10 );
+      tb->item[i].nbits_ori = strtol ( tk[6], &c, 10 );
       tb->item[i].nbits = tb->item[i].nbits_ori;
 
-      /*printf("%s %s %s %d %u %lu\n", tb->item[i].key, tb->item[i].name, tb->item[i].unit,
-       tb->item[i].escale, tb->item[i].reference, tb->item[i].nbits);*/
       i++;
     }
   tb->x_start[0] = 0; // fix the start for x = 0
   fclose ( t );
   tb->nlines = i;
-  tb->wmo_table = 0;
+  tb->wmo_table = 1;
   strcpy ( tb->old_path, tb->path ); // store latest path
   return 0;
 }
+
 
 /*!
   \fn int bufr_restore_original_tableb_item ( struct bufr_tableb *tb, struct bufrdeco *b, uint8_t mode, char *key )

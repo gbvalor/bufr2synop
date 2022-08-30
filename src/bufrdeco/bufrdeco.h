@@ -822,7 +822,7 @@ struct bufr_tablec
   buf_t x_start[64]; /*!< Index in array \a l[] for first x. x_start[j] is index for first descriptor which x == j */
   buf_t num[64]; /*!< Amonut of lines for x. num[i] is the amount of items in array where x = i */
   buf_t y_ref[64][256]; /*!< index for first y since first x. x_ref[i][j] is index since x_start[i] where y == j */
-  char l[BUFR_MAXLINES_TABLEC][96]; /*!< Array with lines readed from file */
+  //char l[BUFR_MAXLINES_TABLEC][96]; /*!< Array with lines readed from file */
   struct bufr_tablec_decoded_item item[BUFR_MAXLINES_TABLEC]; /*!< Array of decoded lines */
 };
 
@@ -852,7 +852,7 @@ struct bufr_tabled
   buf_t x_start[64]; /*!< Index in array \a l[] for first x. x_start[j] is index for first descriptor which x == j */
   buf_t num[64]; /*!< Amonut of lines for x. num[i] is the amount of items in array where x = i */
   char l[BUFR_MAXLINES_TABLED][128]; /*!< Array with lines readed from file */
-  struct bufr_tabled_decoded_item item[BUFR_MAXLINES_TABLED];
+  struct bufr_tabled_decoded_item item[BUFR_MAXLINES_TABLED]; /*!< Array of decoded lines */
 };
 
 /*!
@@ -881,7 +881,6 @@ struct bufr_tables_cache
    int8_t ver[BUFRDECO_TABLES_CACHE_SIZE]; /*!< Table version for array elements */
    struct bufr_tables *tab[BUFRDECO_TABLES_CACHE_SIZE]; /*! Array of structs \ref bufr_tables allocated */
 };
-
 
 /*!
   \struct bufrdeco

@@ -55,13 +55,6 @@ else (ICC_PROGRAM)
   set(USING_GCC 1)
 ENDIF(ICC_PROGRAM)
 
-if (BUFRDC)
-    message(STATUS "** Using ECMWF bufrdc library **")
-    string (APPEND CMAKE_C_FLAGS " -DUSE_BUFRDC")
-    string (APPEND CMAKE_CXX_FLAGS " -DUSE_BUFRDC")
-endif() 
-
-
 # Summary of compiler options
 MESSAGE(STATUS "  CMAKE_C_COMPILER:   ${CMAKE_C_COMPILER}")
 MESSAGE(STATUS "  CMAKE_CXX_COMPILER: ${CMAKE_C_COMPILER}")
