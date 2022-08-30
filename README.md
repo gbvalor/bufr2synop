@@ -193,7 +193,7 @@ ECMWF bufr tables if you are using them.
 
    There are some more options for **bufrnoaa** and **bufrtotac**. You can see a list using option *-h* 
 
-   ~~~
+~~~
 $> bufr2noaa -h
 bufrnoaa: Version '0.23.0' built using GNU C compiler gcc 12.1.1 at Aug 30 2022 18:17:41 and cmake.
 Usage: 
@@ -221,7 +221,6 @@ bufrnoaa -i input_file [-h][-v][-f][-l][-F prefix][-T T2_selection][-O selo][-S 
       By default all A1 are selected
    -U sels. String with selection for A1 when T2='U'
       By default all A1 are selected
-
    ~~~
    
    
@@ -252,7 +251,6 @@ bufrtotac -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o out
        -v. Print version
        -x. The output is in xml format
        -X. Try to extract an embebed bufr in a file seraching for a first '7777' after first 'BUFR'
-
    ~~~
 
 Since version 0.23.0 there are three new interesting options in **buftotac** as you can see. 
