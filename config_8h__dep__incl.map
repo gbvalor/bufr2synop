@@ -1,9 +1,0 @@
-<map id="config.h" name="config.h">
-<area shape="rect" id="node2" href="$bufr2synop_8h.html" title="Include header file for binary bufr2synop. " alt="" coords="184,87,331,114"/>
-<area shape="rect" id="node5" href="$bufrtotac_8h.html" title="Include header file for binary bufrtotac. " alt="" coords="363,87,495,114"/>
-<area shape="rect" id="node8" href="$build__bufrdeco__tables_8c.html" title="This file includes the code for build_bufrdeco_tables binary. " alt="" coords="519,80,678,121"/>
-<area shape="rect" id="node3" href="$bufr2synop_8c.html" title="decodes a bufr file using ECMWF bufr library and tries to pass the decoded reports to synop&#45;format ..." alt="" coords="5,169,152,196"/>
-<area shape="rect" id="node4" href="$bufr2synop__io_8c.html" title="file with the i/o code for binary bufr2synop " alt="" coords="176,169,339,196"/>
-<area shape="rect" id="node6" href="$bufrtotac_8c.html" title="This file includes the code to test bufr to TAC libraries using bufrdeco library to decode bufr..." alt="" coords="363,169,495,196"/>
-<area shape="rect" id="node7" href="$bufrtotac__io_8c.html" title="file with the i/o code for binary bufrtotac " alt="" coords="520,169,669,196"/>
-</map>

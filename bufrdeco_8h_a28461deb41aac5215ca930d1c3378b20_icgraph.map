@@ -1,8 +1,0 @@
-<map id="bufr_find_tableb_index" name="bufr_find_tableb_index">
-<area shape="rect" id="node1" title="found a descriptor index in a struct bufr_tableb" alt="" coords="483,58,636,85"/>
-<area shape="rect" id="node2" href="$bufrdeco__tableb_8c.html#af7080c64e4b84c791d8531a67987edba" title="Restores the original table B parameters for a BUFR descriptor." alt="" coords="292,5,435,47"/>
-<area shape="rect" id="node3" href="$bufrdeco__print_8c.html#ae8a394b99aa70839d87876b867e69d29" title="Print a tree of descriptors to a file in a recursive way." alt="" coords="293,95,433,136"/>
-<area shape="rect" id="node4" href="$bufrdeco__print_8c.html#af6b395b5966a73be797766bef333953e" title="Print a tree of descriptors." alt="" coords="104,77,244,103"/>
-<area shape="rect" id="node5" href="$bufrdeco__print_8c.html#a4648714855a87e920c82a8056d08fac1" title="Print a tree of descriptors." alt="" coords="107,127,241,154"/>
-<area shape="rect" id="node6" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,127,56,154"/>
-</map>

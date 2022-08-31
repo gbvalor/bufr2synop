@@ -1,5 +1,0 @@
-<map id="bufrdeco_decode_data_subset" name="bufrdeco_decode_data_subset">
-<area shape="rect" id="node1" title="User interface to decode a BUFR subset." alt="" coords="296,5,455,47"/>
-<area shape="rect" id="node2" href="$bufrdeco__data_8c.html#a0e0289d12b117e4df8f37f14486d3d71" title="Parse and get a struct bufrdeco_subset_sequence_data." alt="" coords="104,5,248,47"/>
-<area shape="rect" id="node3" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,13,56,39"/>
-</map>

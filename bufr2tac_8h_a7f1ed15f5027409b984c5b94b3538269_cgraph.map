@@ -1,7 +1,0 @@
-<map id="syn_parse_x12" name="syn_parse_x12">
-<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 12." alt="" coords="5,81,113,108"/>
-<area shape="rect" id="node2" href="$bufr2tac__x12_8c.html#ae98152f1dba7076d6a5e40bcd01f0e3b" title="converts a kelvin temperature value into a snTT string" alt="" coords="180,5,289,32"/>
-<area shape="rect" id="node3" href="$bufr2tac__x12_8c.html#ad9180c6833f9d5c360f7981ebcc08933" title="converts a kelvin temperature value into a snTTT string" alt="" coords="176,56,293,83"/>
-<area shape="rect" id="node4" href="$bufr2tac__x12_8c.html#adb80f64380bb5c8f7ede9a8c361f3190" title="converts a kelvin temperature value into a TT string" alt="" coords="187,107,282,133"/>
-<area shape="rect" id="node5" href="$bufr2tac__x04_8c.html#a5ae35365caffb4fc87ce5534d9c517ee" title="Get time period duration in seconds." alt="" coords="161,157,308,184"/>
-</map>

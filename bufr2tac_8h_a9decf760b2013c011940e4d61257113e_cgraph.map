@@ -1,6 +1,0 @@
-<map id="syn_parse_x14" name="syn_parse_x14">
-<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 14." alt="" coords="5,56,113,83"/>
-<area shape="rect" id="node2" href="$bufr2tac__x14_8c.html#af4bd28fb4d14bb8f7bdd0a6447338f65" title="Check if a radiation value can be wrote in J/cm2 using up to 4 chars." alt="" coords="185,5,284,32"/>
-<area shape="rect" id="node3" href="$bufr2tac__x14_8c.html#a40398fc72923e9bb1b8e41a53436f47c" title="Check if a radiation value can be wrote in Kj/m2 using up to 4 chars." alt="" coords="185,56,284,83"/>
-<area shape="rect" id="node4" href="$bufr2tac__x04_8c.html#a5ae35365caffb4fc87ce5534d9c517ee" title="Get time period duration in seconds." alt="" coords="161,107,308,133"/>
-</map>

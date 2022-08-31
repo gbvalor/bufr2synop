@@ -1,7 +1,0 @@
-<map id="is_a_short_delayed_descriptor" name="is_a_short_delayed_descriptor">
-<area shape="rect" id="node1" title="check if a descriptor is a short delayed descriptor" alt="" coords="480,29,615,71"/>
-<area shape="rect" id="node2" href="$bufrdeco__print_8c.html#ae8a394b99aa70839d87876b867e69d29" title="Print a tree of descriptors to a file in a recursive way." alt="" coords="292,29,432,71"/>
-<area shape="rect" id="node3" href="$bufrdeco__print_8c.html#af6b395b5966a73be797766bef333953e" title="Print a tree of descriptors." alt="" coords="104,11,244,38"/>
-<area shape="rect" id="node4" href="$bufrdeco__print_8c.html#a4648714855a87e920c82a8056d08fac1" title="Print a tree of descriptors." alt="" coords="107,62,241,89"/>
-<area shape="rect" id="node5" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,62,56,89"/>
-</map>

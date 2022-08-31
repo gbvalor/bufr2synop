@@ -1,4 +1,0 @@
-<map id="climat_parse_x12" name="climat_parse_x12">
-<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 12." alt="" coords="5,5,129,32"/>
-<area shape="rect" id="node2" href="$bufr2tac__x12_8c.html#ad9180c6833f9d5c360f7981ebcc08933" title="converts a kelvin temperature value into a snTTT string" alt="" coords="177,5,295,32"/>
-</map>

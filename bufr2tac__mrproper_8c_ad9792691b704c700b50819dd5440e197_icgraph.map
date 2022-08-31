@@ -1,8 +1,0 @@
-<map id="clean_climat_sec4" name="clean_climat_sec4">
-<area shape="rect" id="node1" title="clean a climat_sec4 struct" alt="" coords="923,13,1052,39"/>
-<area shape="rect" id="node2" href="$bufr2tac__mrproper_8c.html#af4b92aec70d7e9374ae5b457d3ff1cf2" title="cleans a climat_chunks struct" alt="" coords="732,13,875,39"/>
-<area shape="rect" id="node3" href="$bufr2tac__climat_8c.html#a9a64417498c5d0c1c66d9006e2ff8a45" title=" " alt="" coords="521,13,684,39"/>
-<area shape="rect" id="node4" href="$bufr2tac__sqparse_8c.html#a7b839bfd63c95d7fdbad26be3c1d86be" title="Parse a sequence of expanded descriptors for a subset." alt="" coords="311,13,473,39"/>
-<area shape="rect" id="node5" href="$bufrtotac__io_8c.html#a3baaf7cbcd5761ee638cfdc060f6f2da" title=" " alt="" coords="104,5,263,47"/>
-<area shape="rect" id="node6" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,13,56,39"/>
-</map>

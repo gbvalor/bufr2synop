@@ -1,5 +1,0 @@
-<map id="bufrdeco_free_tables" name="bufrdeco_free_tables">
-<area shape="rect" id="node1" title="Frees the allocated space for a struct bufr_tables." alt="" coords="265,5,411,32"/>
-<area shape="rect" id="node2" href="$bufrdeco__memory_8c.html#a8fe6bc0c46327ed8db54b7a471f31504" title="Free all allocated memory." alt="" coords="104,5,217,32"/>
-<area shape="rect" id="node3" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,5,56,32"/>
-</map>

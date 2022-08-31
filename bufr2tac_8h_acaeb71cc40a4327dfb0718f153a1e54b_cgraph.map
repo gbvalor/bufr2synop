@@ -1,4 +1,0 @@
-<map id="buoy_parse_x12" name="buoy_parse_x12">
-<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 12." alt="" coords="5,5,121,32"/>
-<area shape="rect" id="node2" href="$bufr2tac__x12_8c.html#ad9180c6833f9d5c360f7981ebcc08933" title="converts a kelvin temperature value into a snTTT string" alt="" coords="169,5,287,32"/>
-</map>

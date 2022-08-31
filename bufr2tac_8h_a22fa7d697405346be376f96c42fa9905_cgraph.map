@@ -1,8 +1,0 @@
-<map id="print_climat" name="print_climat">
-<area shape="rect" id="node1" title="prints a climat into a string" alt="" coords="5,107,96,133"/>
-<area shape="rect" id="node2" href="$bufr2tac__print__climat_8c.html#a2abb9cab32fb06adafd34497bf9ba684" title="Prints the climat section 0 (header)" alt="" coords="144,5,268,32"/>
-<area shape="rect" id="node3" href="$bufr2tac__print__climat_8c.html#a91e7c0263ccff2c639fe7de4e2a8acb2" title="Prints the climat section 1." alt="" coords="144,56,268,83"/>
-<area shape="rect" id="node4" href="$bufr2tac__print__climat_8c.html#a6c453599a8db83419e75d2ae62a085a1" title="Prints the climat section 2." alt="" coords="144,107,268,133"/>
-<area shape="rect" id="node5" href="$bufr2tac__print__climat_8c.html#a32db3c21ed108d3e885471aef68f8ee2" title="Prints the climat section 3." alt="" coords="144,157,268,184"/>
-<area shape="rect" id="node6" href="$bufr2tac__print__climat_8c.html#af038deb43daae0639f2c1f6569bff118" title="Prints the climat section 4." alt="" coords="144,208,268,235"/>
-</map>

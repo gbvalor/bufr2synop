@@ -1,5 +1,0 @@
-<map id="bufrdeco_print_atom_data_file" name="bufrdeco_print_atom_data_file">
-<area shape="rect" id="node1" title="print the data in a struct bufr_atom_data to a file already open by caller" alt="" coords="5,5,149,47"/>
-<area shape="rect" id="node2" href="$bufrdeco__print_8c.html#a9fe325ee449b7f2e50f1b542576c986c" title="print the data in a struct bufr_atom_data to a string" alt="" coords="197,13,373,39"/>
-<area shape="rect" id="node3" href="$bufrdeco__utils_8c.html#ada85e1ac1e68290f5a70ffbb977860e0" title=" " alt="" coords="421,5,564,47"/>
-</map>

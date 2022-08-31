@@ -1,7 +1,0 @@
-<map id="print_buoy_sec2" name="print_buoy_sec2">
-<area shape="rect" id="node1" title="Prints the buoy section 1." alt="" coords="652,13,768,39"/>
-<area shape="rect" id="node2" href="$bufr2tac__print__buoy_8c.html#a9c2a9bf4e568ba74a641e6161ed58560" title="prints a buoy into a string" alt="" coords="521,13,604,39"/>
-<area shape="rect" id="node3" href="$bufr2tac__sqparse_8c.html#a7b839bfd63c95d7fdbad26be3c1d86be" title="Parse a sequence of expanded descriptors for a subset." alt="" coords="311,13,473,39"/>
-<area shape="rect" id="node4" href="$bufrtotac__io_8c.html#a3baaf7cbcd5761ee638cfdc060f6f2da" title=" " alt="" coords="104,5,263,47"/>
-<area shape="rect" id="node5" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,13,56,39"/>
-</map>

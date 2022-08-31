@@ -1,8 +1,0 @@
-<map id="bufrdeco_tableb_val" name="bufrdeco_tableb_val">
-<area shape="rect" id="node1" title="Get data from a table B descriptor." alt="" coords="959,66,1097,93"/>
-<area shape="rect" id="node2" href="$bufrdeco__data_8c.html#a9fab831b9b513d6dfb8235bd909b4acf" title="Decodes a replicated sequence." alt="" coords="721,29,911,71"/>
-<area shape="rect" id="node3" href="$bufrdeco__data_8c.html#a37d001fbe5872fa6c77e8316af1dcd0f" title="decode the data from a subset in a recursive way" alt="" coords="503,29,673,71"/>
-<area shape="rect" id="node4" href="$bufrdeco__data_8c.html#a90316581dc8355c7a63928ac3063fb32" title="User interface to decode a BUFR subset." alt="" coords="296,29,455,71"/>
-<area shape="rect" id="node5" href="$bufrdeco__data_8c.html#a0e0289d12b117e4df8f37f14486d3d71" title="Parse and get a struct bufrdeco_subset_sequence_data." alt="" coords="104,29,248,71"/>
-<area shape="rect" id="node6" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,37,56,63"/>
-</map>

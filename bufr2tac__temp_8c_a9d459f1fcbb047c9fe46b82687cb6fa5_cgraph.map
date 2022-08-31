@@ -1,4 +1,0 @@
-<map id="guess_WMO_region_temp" name="guess_WMO_region_temp">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,180,32"/>
-<area shape="rect" id="node2" href="$bufr2tac__utils_8c.html#a294969d52c0ebb804a4ceaf8ae37379a" title="get WMO region A1 and Reg items from II and iii (WMO index)" alt="" coords="228,5,367,32"/>
-</map>

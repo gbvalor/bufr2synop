@@ -1,5 +1,0 @@
-<map id="bufr_read_tableb_csv" name="bufr_read_tableb_csv">
-<area shape="rect" id="node1" title="Read a Table B file from a WMO csv formatted file and set the result in a struct bufr_tableb." alt="" coords="5,31,151,57"/>
-<area shape="rect" id="node2" href="$bufrdeco__csv_8c.html#a9685dcec12aa968d7146aa55965dda5e" title="Parse a csv line." alt="" coords="221,5,328,32"/>
-<area shape="rect" id="node3" href="$bufrdeco__utils_8c.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary" alt="" coords="199,56,351,83"/>
-</map>

@@ -1,7 +1,0 @@
-<map id="print_temp_d" name="print_temp_d">
-<area shape="rect" id="node1" title="Prints the part D of a TEMP report into a string." alt="" coords="5,81,104,108"/>
-<area shape="rect" id="node2" href="$bufr2tac__print__temp_8c.html#a13158e29fc1ef23c42cc0c8471621bf7" title="Prints the section 1 of part D of a TEMP report." alt="" coords="152,5,284,32"/>
-<area shape="rect" id="node3" href="$bufr2tac__print__temp_8c.html#a15fe4fd323575650a31011c4f66a28b6" title="Prints the section 5 of part D of a TEMP report." alt="" coords="152,56,284,83"/>
-<area shape="rect" id="node4" href="$bufr2tac__print__temp_8c.html#a88582c112af689551357d990000ed686" title="Prints the section 6 of part D of a TEMP report." alt="" coords="152,107,284,133"/>
-<area shape="rect" id="node5" href="$bufr2tac__print__temp_8c.html#a65c511b2644129f110121e78543aa7b7" title="Prints the section 7 of part D of a TEMP report." alt="" coords="152,157,284,184"/>
-</map>

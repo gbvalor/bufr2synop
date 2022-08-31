@@ -1,6 +1,0 @@
-<map id="bufr_read_tableb" name="bufr_read_tableb">
-<area shape="rect" id="node1" title="Read a Table B file and set the result in a struct bufr_tableb." alt="" coords="5,56,124,83"/>
-<area shape="rect" id="node2" href="$bufrdeco__utils_8c.html#ae2667eaa0605459867e88af6219e9592" title=" " alt="" coords="185,5,311,32"/>
-<area shape="rect" id="node3" href="$bufrdeco__utils_8c.html#a454f64137d0cf7e0c4b3e018a52ddd9a" title="get a null termitated c&#45;string from an array of unsigned chars" alt="" coords="172,56,324,83"/>
-<area shape="rect" id="node4" href="$bufrdeco__utils_8c.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary" alt="" coords="172,107,324,133"/>
-</map>

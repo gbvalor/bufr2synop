@@ -1,5 +1,0 @@
-<map id="syn_parse_x10" name="syn_parse_x10">
-<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 10." alt="" coords="5,31,113,57"/>
-<area shape="rect" id="node2" href="$bufr2tac__x10_8c.html#a142ffff8830caf67bb132ea2e6711484" title="Converts pascal values (variation) into a ppp string." alt="" coords="167,5,272,32"/>
-<area shape="rect" id="node3" href="$bufr2tac__x10_8c.html#a8417b4b45387d7d35fe61d82ff0029b8" title="Converts pascal values into a PPPP string." alt="" coords="161,56,277,83"/>
-</map>

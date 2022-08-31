@@ -1,7 +1,0 @@
-<map id="print_buoy" name="print_buoy">
-<area shape="rect" id="node1" title="prints a buoy into a string" alt="" coords="5,81,88,108"/>
-<area shape="rect" id="node2" href="$bufr2tac__print__buoy_8c.html#a8e774ddf5ea4c92a1f5985d326fcb066" title="Prints the buoy section 1." alt="" coords="136,5,252,32"/>
-<area shape="rect" id="node3" href="$bufr2tac__print__buoy_8c.html#aa66a7f9f46a54c7d21a3eb98417e94fa" title="Prints the buoy section 1." alt="" coords="136,56,252,83"/>
-<area shape="rect" id="node4" href="$bufr2tac__print__buoy_8c.html#a04b35e9c4317eb6890ea572b0027179d" title="Prints the buoy section 1." alt="" coords="136,107,252,133"/>
-<area shape="rect" id="node5" href="$bufr2tac__print__buoy_8c.html#a8094152a24d37158d6015a871ca7de95" title="Prints the buoy section 3." alt="" coords="136,157,252,184"/>
-</map>

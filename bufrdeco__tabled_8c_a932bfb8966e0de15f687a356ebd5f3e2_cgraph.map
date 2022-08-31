@@ -1,5 +1,0 @@
-<map id="bufrdeco_tabled_get_descriptors_array" name="bufrdeco_tabled_get_descriptors_array">
-<area shape="rect" id="node1" title="get the descriptors array for a descriptor sequence defined in table D with F = 3" alt="" coords="5,23,147,65"/>
-<area shape="rect" id="node2" href="$bufrdeco__tabled_8c.html#a16611c6f7658ec239c5ec63a8b32ad43" title="Find the index of a line in table D for a given key of a descriptor." alt="" coords="195,5,349,32"/>
-<area shape="rect" id="node3" href="$bufrdeco__utils_8c.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary" alt="" coords="196,56,348,83"/>
-</map>

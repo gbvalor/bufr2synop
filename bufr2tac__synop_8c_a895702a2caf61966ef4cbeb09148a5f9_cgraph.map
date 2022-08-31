@@ -1,4 +1,0 @@
-<map id="guess_WMO_region_synop" name="guess_WMO_region_synop">
-<area shape="rect" id="node1" title="Try to find WMO region if it is not already set and WMO Block and number index are known." alt="" coords="5,5,184,32"/>
-<area shape="rect" id="node2" href="$bufr2tac__utils_8c.html#a294969d52c0ebb804a4ceaf8ae37379a" title="get WMO region A1 and Reg items from II and iii (WMO index)" alt="" coords="232,5,371,32"/>
-</map>

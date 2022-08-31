@@ -1,7 +1,0 @@
-<map id="print_version" name="print_version">
-<area shape="rect" id="node1" title=" " alt="" coords="5,81,103,108"/>
-<area shape="rect" id="node2" href="$bufr2tac_8c.html#a1bac9aaa19df477e99de82c674fbbc37" title="Get strings with version information and build date and time." alt="" coords="153,5,297,32"/>
-<area shape="rect" id="node3" href="$bufrdeco_8c.html#ac2235c5b8a45a9a621fbbd86c732457e" title="Get strings with version information and build date and time." alt="" coords="151,56,299,83"/>
-<area shape="rect" id="node4" href="$bufrnoaa__io_8c.html#abf651cc368ea9b00f1f25ebe0a73f55a" title="Get strings with version information and build date and time." alt="" coords="151,107,299,133"/>
-<area shape="rect" id="node5" href="$bufrtotac__io_8c.html#a30e8ae889998e2695d2b9b12f78cf99f" title="Get strings with version information and build date and time." alt="" coords="151,157,300,184"/>
-</map>

@@ -1,7 +1,0 @@
-<map id="bufr_find_tabled_index" name="bufr_find_tabled_index">
-<area shape="rect" id="node1" title="Find the index of a line in table D for a given key of a descriptor." alt="" coords="675,37,829,63"/>
-<area shape="rect" id="node2" href="$bufrdeco__tabled_8c.html#a932bfb8966e0de15f687a356ebd5f3e2" title="get the descriptors array for a descriptor sequence defined in table D with F = 3" alt="" coords="485,29,627,71"/>
-<area shape="rect" id="node3" href="$bufrdeco__tree_8c.html#a00f4341aa38b56eca75c207c59e9cc33" title="Parse the descriptor tree in a recursive way." alt="" coords="295,29,437,71"/>
-<area shape="rect" id="node4" href="$bufrdeco__tree_8c.html#adc93880205e1dfb437cd0a438e2ad469" title="Parse the tree of descriptors without expand the replicators." alt="" coords="104,37,247,63"/>
-<area shape="rect" id="node5" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,37,56,63"/>
-</map>

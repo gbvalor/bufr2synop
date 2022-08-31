@@ -1,6 +1,0 @@
-<map id="bufrdeco_print_subset_sequence_data" name="bufrdeco_print_subset_sequence_data">
-<area shape="rect" id="node1" title="Prints a struct bufrdeco_subset_sequence_data." alt="" coords="5,5,157,47"/>
-<area shape="rect" id="node2" href="$bufrdeco__print_8c.html#a85b3784ec44a8d65572aa75c0eb6b2e2" title=" " alt="" coords="205,5,363,47"/>
-<area shape="rect" id="node3" href="$bufrdeco__print_8c.html#a9fe325ee449b7f2e50f1b542576c986c" title="print the data in a struct bufr_atom_data to a string" alt="" coords="411,13,587,39"/>
-<area shape="rect" id="node4" href="$bufrdeco__utils_8c.html#ada85e1ac1e68290f5a70ffbb977860e0" title=" " alt="" coords="635,5,777,47"/>
-</map>

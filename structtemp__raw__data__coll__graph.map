@@ -1,4 +1,0 @@
-<map id="temp_raw_data" name="temp_raw_data">
-<area shape="rect" id="node1" title="Stores the array of all data profile points as it in bufr sequence." alt="" coords="23,95,134,121"/>
-<area shape="rect" id="node2" href="$structtemp__raw__point__data.html" title="Stores data of a sounding profile in raw format, as given in bufr." alt="" coords="5,5,152,32"/>
-</map>

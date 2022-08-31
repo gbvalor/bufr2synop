@@ -1,8 +1,0 @@
-<map id="check_j_cm2" name="check_j_cm2">
-<area shape="rect" id="node1" title="Check if a radiation value can be wrote in J/cm2 using up to 4 chars." alt="" coords="887,13,985,39"/>
-<area shape="rect" id="node2" href="$bufr2tac__x14_8c.html#a9decf760b2013c011940e4d61257113e" title="Parse a expanded descriptor with X = 14." alt="" coords="731,13,839,39"/>
-<area shape="rect" id="node3" href="$bufr2tac__synop_8c.html#a3178eb404dc66ceccd7a08a3c719c2aa" title="parses a subset sequence as an Land fixed SYNOP FM&#45;12, SHIP FM&#45;13 or SYNOP&#45;mobil FM&#45;14 report" alt="" coords="521,13,683,39"/>
-<area shape="rect" id="node4" href="$bufr2tac__sqparse_8c.html#a7b839bfd63c95d7fdbad26be3c1d86be" title="Parse a sequence of expanded descriptors for a subset." alt="" coords="311,13,473,39"/>
-<area shape="rect" id="node5" href="$bufrtotac__io_8c.html#a3baaf7cbcd5761ee638cfdc060f6f2da" title=" " alt="" coords="104,5,263,47"/>
-<area shape="rect" id="node6" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,13,56,39"/>
-</map>

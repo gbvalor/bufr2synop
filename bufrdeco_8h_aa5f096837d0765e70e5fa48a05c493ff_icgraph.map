@@ -1,7 +1,0 @@
-<map id="bufr_read_tables_wmo" name="bufr_read_tables_wmo">
-<area shape="rect" id="node1" title="Read the tables according with bufr file data from a bufr table directory." alt="" coords="499,31,653,57"/>
-<area shape="rect" id="node2" href="$bufrdeco__read_8c.html#a24b31d8da871a691ca06579c7cf92ab5" title="Read a memory buffer and does preliminary and first decode pass." alt="" coords="303,31,451,57"/>
-<area shape="rect" id="node3" href="$bufrdeco__read_8c.html#ad44753d6491d1785ed3fe38af6557da6" title="Read file and try to find a bufr report inserted in. Once found do the same that bufrdeco_read_file()" alt="" coords="104,5,255,32"/>
-<area shape="rect" id="node5" href="$bufrdeco__read_8c.html#ae3cfc6802c196511223adc0a6324e4af" title="Read bufr file and does preliminary and first decode pass." alt="" coords="111,56,248,83"/>
-<area shape="rect" id="node4" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,31,56,57"/>
-</map>

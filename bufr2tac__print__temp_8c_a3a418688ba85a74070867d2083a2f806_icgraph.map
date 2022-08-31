@@ -1,8 +1,0 @@
-<map id="print_temp_c_sec4" name="print_temp_c_sec4">
-<area shape="rect" id="node1" title="Prints the section 4 of part C of a TEMP report." alt="" coords="799,13,929,39"/>
-<area shape="rect" id="node2" href="$bufr2tac__print__temp_8c.html#a1a0e23d0feaa88357da332895b55ad04" title="Prints the part C of a TEMP report into a string." alt="" coords="653,13,751,39"/>
-<area shape="rect" id="node3" href="$bufr2tac__print__temp_8c.html#ac03b2392795031b735fd7915d3b0bfe5" title="print the four parts of a decoded TEMP report from a BUFR file into strings" alt="" coords="521,13,605,39"/>
-<area shape="rect" id="node4" href="$bufr2tac__sqparse_8c.html#a7b839bfd63c95d7fdbad26be3c1d86be" title="Parse a sequence of expanded descriptors for a subset." alt="" coords="311,13,473,39"/>
-<area shape="rect" id="node5" href="$bufrtotac__io_8c.html#a3baaf7cbcd5761ee638cfdc060f6f2da" title=" " alt="" coords="104,5,263,47"/>
-<area shape="rect" id="node6" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,13,56,39"/>
-</map>
