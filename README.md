@@ -253,13 +253,25 @@ bufrtotac -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o out
        -X. Try to extract an embebed bufr in a file seraching for a first '7777' after first 'BUFR'
    ~~~
 
-Since version 0.23.0 there are three new interesting options in **buftotac** as you can see. 
+Since version 0.23.0 there are four new interesting options in **buftotac** as you can see. 
 
-- The option *-T* uses the cache for bufr tables. This is very interesting in addition to option *-I* . With the *-I* option you enter 
+- The option ***-g*** prints WIGOS Identifier if it is available in BUFR data. It prints the identifier at the begining of the report line output.
+  See the three lines what follows. The legacy report without *-g* would begin in column 34, just after **'|'** character.
+  
+  ~~~
+0-20000-0-06610                 |202208080300 AAXX 08034 06610 26/// /2500 10129 20121 39625 40200 57002 333 55300 20000 60005 90730 91104=
+0-0-0-MISSING                   |202208080300 AAXX 08031 26645 22/65 70000 10105 20098 39985 40242 52003 87030 333 60002=
+0-170-0-23190700                |202208080300 AAXX 08031 00000 02/// /3301 10205 29095 39084 333 20205 70000=
+  ~~~
+  
+  First line is from a BUFR with synop data. It have both WIGOS identifier **0-20000-0-06610** and WMO five digits *IIiii* identifier **06610**.
+  Second line is from a BUFR with synop data with five digits WMO identifier *IIiii* **26645** but without WIGOS idenetifier. **0-0-0-MISSING** is set as missing WIGOS identifier. The third is from a BUFR report with synop data but without five digits *IIiii* WMO identifier. **bufrtotac** prints the *IIiii* identifier as **00000** but the existing **0-170-0-23190700** identifier permit to get metadata of station report.
+
+- The option ***-T*** uses the cache for bufr tables. This is very interesting in addition to option *-I* . With the *-I* option you enter 
    a file with a list of bufr file paths than **bufrtotac** will parse in sequential order. If the master version of every bufrfile is 
    not the same then the use of *-T* option will create a internal cache in memory that will optimize the CPU time.
 
-- The options *-R* and *-W* read or write respectively a small file of bitoffset index for non compressed **BUFR** files. The name of 
+- The options ***-R*** and ***-W*** read or write respectively a small file of bitoffset index for non compressed **BUFR** files. The name of 
   index file assocciated to every BUFR file is to concatenate **.offs** to the original bufr filename. This feature is useful if you need
   to decode the same bufr file many times and only access to a given subset. First time you decode a file using **bufrdeco** with *-W* option. Next times 
   you can use *-R* option to read the data for subsets in a optimized way
