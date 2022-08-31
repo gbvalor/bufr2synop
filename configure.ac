@@ -11,7 +11,7 @@
 #
 
 AC_INIT([bufr2synop],[0.23.0])
-AC_CONFIG_SRCDIR([src/apps/bufr2synop.c])
+AC_CONFIG_SRCDIR([src/apps/bufrtotac.c])
 AM_INIT_AUTOMAKE
 
 AC_CONFIG_HEADERS(config.h)
