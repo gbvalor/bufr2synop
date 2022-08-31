@@ -1,0 +1,15 @@
+<map id="get_formatted_value_from_escale" name="get_formatted_value_from_escale">
+<area shape="rect" id="node1" title=" " alt="" coords="809,104,948,145"/>
+<area shape="rect" id="node2" href="$bufrdeco__print_8c.html#ac2251257e270ec779622d782fed394af" title="print the data in a struct bufr_atom_data to a string" alt="" coords="589,78,761,105"/>
+<area shape="rect" id="node8" href="$bufrdeco__print__html_8c.html#a99e93ae78944243f8b005576613eb772" title="print the data in a struct bufr_atom_data to a string as cells of table rows" alt="" coords="605,136,745,177"/>
+<area shape="rect" id="node3" href="$bufrdeco__print_8c.html#a06ce87ad1ebfc5e53abdd047b188ae63" title=" " alt="" coords="367,5,521,47"/>
+<area shape="rect" id="node6" href="$bufrdeco__print_8c.html#ae7ba8a6d28db0a0cea0ea6f546a91bb4" title="print the data in a struct bufr_atom_data to a file already open by caller" alt="" coords="374,71,514,112"/>
+<area shape="rect" id="node4" href="$bufrdeco__print_8c.html#a24a469d3d9f7fa57961b15449a9f675b" title="Prints a struct bufrdeco_subset_sequence_data." alt="" coords="126,5,277,47"/>
+<area shape="rect" id="node5" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,13,56,39"/>
+<area shape="rect" id="node7" href="$bufrdeco__print_8c.html#a747fe2f703e3418c6b5fcb89783e0b1c" title="print the data in a struct bufr_atom_data to stdout" alt="" coords="131,71,271,112"/>
+<area shape="rect" id="node9" href="$bufrdeco__print__html_8c.html#a8b6dc20330a50fb8f2f6f79ad34c2009" title=" " alt="" coords="367,136,521,177"/>
+<area shape="rect" id="node11" href="$bufrdeco__print__html_8c.html#aff9750cc3b8222348229d8f237f50f68" title=" " alt="" coords="347,201,541,243"/>
+<area shape="rect" id="node10" href="$bufrdeco__print__html_8c.html#aeea2717a74a8a62d1192816f878a707c" title=" " alt="" coords="126,136,277,177"/>
+<area shape="rect" id="node12" href="$bufrdeco__print__html_8c.html#acc4dd0a94b4fd9da670ad54ba6519934" title=" " alt="" coords="104,201,299,243"/>
+<area shape="rect" id="node13" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,209,56,235"/>
+</map>

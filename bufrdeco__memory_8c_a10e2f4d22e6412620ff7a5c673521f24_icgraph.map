@@ -1,0 +1,8 @@
+<map id="bufrdeco_clean_bitmaps" name="bufrdeco_clean_bitmaps">
+<area shape="rect" id="node1" title="Clean all allocated bitmaps, but still is in memory." alt="" coords="707,42,869,69"/>
+<area shape="rect" id="node2" href="$bufrdeco__data_8c.html#ae2d3eb10e84c09bd0d282f510bf720ee" title="User interface to decode a BUFR subset." alt="" coords="505,35,659,76"/>
+<area shape="rect" id="node3" href="$bufrdeco__data_8c.html#a0e0289d12b117e4df8f37f14486d3d71" title="Parse and get a struct bufrdeco_subset_sequence_data." alt="" coords="315,64,457,105"/>
+<area shape="rect" id="node4" href="$bufrdeco_8c.html#aead4ed5a0bc1b6ce477095653107e548" title="Prepare the struct." alt="" coords="104,5,267,47"/>
+<area shape="rect" id="node6" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="160,71,211,98"/>
+<area shape="rect" id="node5" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,13,56,39"/>
+</map>

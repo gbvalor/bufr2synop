@@ -1,0 +1,6 @@
+<map id="bufr_replicator" name="bufr_replicator">
+<area shape="rect" id="node1" title="store the information when parsing related to replicators" alt="" coords="101,245,205,272"/>
+<area shape="rect" id="node2" href="$structbufr__sequence.html" title="Stores an unexpanded sequence of descriptors." alt="" coords="99,155,206,181"/>
+<area shape="rect" id="node3" href="$structbufr__sequence__index__range.html" title="range of indexes in a struct bufr_sequence where a condition must me chequed or marked,..." alt="" coords="5,5,151,47"/>
+<area shape="rect" id="node4" href="$structbufr__descriptor.html" title="BUFR descriptor." alt="" coords="175,13,283,39"/>
+</map>

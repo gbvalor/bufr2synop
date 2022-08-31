@@ -1,0 +1,13 @@
+<map id="bufr_decode_subset_data_compressed" name="bufr_decode_subset_data_compressed">
+<area shape="rect" id="node1" title="Get data for a given subset in a compressed data bufr." alt="" coords="5,163,144,204"/>
+<area shape="rect" id="node2" href="$bufrdeco__compressed_8c.html#a5589ee116b873030ba3134506dc87041" title="Get atom data from a descriptor for a given subset." alt="" coords="192,129,379,171"/>
+<area shape="rect" id="node11" href="$bufrdeco__data_8c.html#aac640b0a169dcc99097be9053118bcea" title="doubles the allocated space for a struct bufrdeco_subset_sequence_data whenever is posible" alt="" coords="205,195,365,236"/>
+<area shape="rect" id="node3" href="$bufrdeco__tableC_8c.html#a4d3457bb516d1c1e673218f20bdb9824" title=" " alt="" coords="438,5,573,47"/>
+<area shape="rect" id="node4" href="$bufrdeco__tableC_8c.html#a2813b0332ec9389ddc3bc566bd358bf9" title=" " alt="" coords="438,71,573,112"/>
+<area shape="rect" id="node7" href="$bufrdeco__utils_8c.html#a01acf8b7be269860c9a3228fa96bc4f8" title=" " alt="" coords="427,137,584,163"/>
+<area shape="rect" id="node8" href="$bufrdeco__utils_8c.html#aab7f54057263b695a8c4bfffd0747a5a" title=" " alt="" coords="434,187,577,214"/>
+<area shape="rect" id="node10" href="$bufrdeco__utils_8c.html#a22d23c4377cba5193d77a3b38c0f8d79" title="check if a descriptor is a local descriptor" alt="" coords="433,238,577,265"/>
+<area shape="rect" id="node5" href="$bufrdeco__tableC_8c.html#ab438fb71e02d28c02c165af401f1a1f2" title=" " alt="" coords="634,71,779,112"/>
+<area shape="rect" id="node6" href="$bufrdeco__utils_8c.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary" alt="" coords="829,78,980,105"/>
+<area shape="rect" id="node9" href="$bufrdeco__utils_8c.html#ad26137576e21dbf0cd5b3cadfed38b5b" title="Read bits from an array of uint8_t and set them as an uint32_t." alt="" coords="632,187,781,214"/>
+</map>

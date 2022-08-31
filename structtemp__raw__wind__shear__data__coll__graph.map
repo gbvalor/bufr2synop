@@ -1,0 +1,4 @@
+<map id="temp_raw_wind_shear_data" name="temp_raw_wind_shear_data">
+<area shape="rect" id="node1" title="array of Wind shear data points at a pressure level" alt="" coords="5,109,189,136"/>
+<area shape="rect" id="node2" href="$structtemp__raw__wind__shear__point.html" title="Wind shear data point at a pressure level." alt="" coords="21,5,173,47"/>
+</map>

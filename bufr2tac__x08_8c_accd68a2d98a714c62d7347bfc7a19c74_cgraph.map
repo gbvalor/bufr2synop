@@ -1,0 +1,5 @@
+<map id="buoy_parse_x08" name="buoy_parse_x08">
+<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 08." alt="" coords="5,5,123,32"/>
+<area shape="rect" id="node2" href="$bufr2tac__error_8c.html#a223ffc74b013e1d1abe6f5cc5fe1148b" title=" " alt="" coords="171,5,297,32"/>
+<area shape="rect" id="node3" href="$bufr2tac__error_8c.html#a6b6066c2f1fd1085397ee9c294ac2948" title=" " alt="" coords="345,5,483,32"/>
+</map>

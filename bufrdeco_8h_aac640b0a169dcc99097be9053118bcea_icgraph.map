@@ -1,0 +1,12 @@
+<map id="bufrdeco_increase_data_array" name="bufrdeco_increase_data_array">
+<area shape="rect" id="node1" title="doubles the allocated space for a struct bufrdeco_subset_sequence_data whenever is posible" alt="" coords="1395,121,1555,163"/>
+<area shape="rect" id="node2" href="$bufrdeco__compressed_8c.html#ad2f986d73d85c08ffa6560d80c244b33" title="Get data for a given subset in a compressed data bufr." alt="" coords="944,5,1083,47"/>
+<area shape="rect" id="node8" href="$bufrdeco__data_8c.html#a9fab831b9b513d6dfb8235bd909b4acf" title="Decodes a replicated sequence." alt="" coords="921,147,1105,188"/>
+<area shape="rect" id="node9" href="$bufrdeco__data_8c.html#a37d001fbe5872fa6c77e8316af1dcd0f" title="decode the data from a subset in a recursive way" alt="" coords="707,147,873,188"/>
+<area shape="rect" id="node10" href="$bufrdeco__f2_8c.html#a3169d30f8c32460fa68a2117129e4e44" title="parse a descritor with f = 2" alt="" coords="1153,103,1347,130"/>
+<area shape="rect" id="node3" href="$bufrdeco__data_8c.html#ae2d3eb10e84c09bd0d282f510bf720ee" title="User interface to decode a BUFR subset." alt="" coords="505,105,659,147"/>
+<area shape="rect" id="node4" href="$bufrdeco__data_8c.html#a0e0289d12b117e4df8f37f14486d3d71" title="Parse and get a struct bufrdeco_subset_sequence_data." alt="" coords="315,135,457,176"/>
+<area shape="rect" id="node5" href="$bufrdeco_8c.html#aead4ed5a0bc1b6ce477095653107e548" title="Prepare the struct." alt="" coords="104,76,267,117"/>
+<area shape="rect" id="node7" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="160,142,211,169"/>
+<area shape="rect" id="node6" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,83,56,110"/>
+</map>

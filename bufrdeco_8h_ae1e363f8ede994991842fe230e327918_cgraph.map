@@ -1,0 +1,5 @@
+<map id="bufr_read_tableB" name="bufr_read_tableB">
+<area shape="rect" id="node1" title=" " alt="" coords="5,31,125,57"/>
+<area shape="rect" id="node2" href="$bufrdeco__csv_8c.html#a9685dcec12aa968d7146aa55965dda5e" title="Parse a csv line." alt="" coords="194,5,303,32"/>
+<area shape="rect" id="node3" href="$bufrdeco__utils_8c.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary" alt="" coords="173,56,324,83"/>
+</map>

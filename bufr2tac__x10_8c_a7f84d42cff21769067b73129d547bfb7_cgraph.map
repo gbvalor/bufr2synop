@@ -1,0 +1,7 @@
+<map id="buoy_parse_x10" name="buoy_parse_x10">
+<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 10." alt="" coords="5,56,123,83"/>
+<area shape="rect" id="node2" href="$bufr2tac__error_8c.html#a223ffc74b013e1d1abe6f5cc5fe1148b" title=" " alt="" coords="171,5,297,32"/>
+<area shape="rect" id="node4" href="$bufr2tac__x10_8c.html#a142ffff8830caf67bb132ea2e6711484" title="Converts pascal values (variation) into a ppp string." alt="" coords="181,56,287,83"/>
+<area shape="rect" id="node5" href="$bufr2tac__x10_8c.html#a8417b4b45387d7d35fe61d82ff0029b8" title="Converts pascal values into a PPPP string." alt="" coords="173,107,295,133"/>
+<area shape="rect" id="node3" href="$bufr2tac__error_8c.html#a6b6066c2f1fd1085397ee9c294ac2948" title=" " alt="" coords="345,5,483,32"/>
+</map>

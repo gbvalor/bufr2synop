@@ -1,0 +1,18 @@
+<map id="src/libraries/bufr2tac_io.c" name="src/libraries/bufr2tac_io.c">
+<area shape="rect" id="node1" title="file with the i/o code for binary bufr2tac" alt="" coords="420,5,588,32"/>
+<area shape="rect" id="node2" href="$bufr2tac_8h.html" title=" " alt="" coords="464,80,544,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,229,67,256"/>
+<area shape="rect" id="node4" title=" " alt="" coords="91,229,155,256"/>
+<area shape="rect" id="node5" title=" " alt="" coords="179,229,245,256"/>
+<area shape="rect" id="node6" title=" " alt="" coords="269,229,339,256"/>
+<area shape="rect" id="node7" title=" " alt="" coords="453,229,512,256"/>
+<area shape="rect" id="node8" title=" " alt="" coords="537,229,599,256"/>
+<area shape="rect" id="node9" title=" " alt="" coords="624,229,704,256"/>
+<area shape="rect" id="node10" href="$bufrdeco_8h.html" title="Include header file for bufrdeco library." alt="" coords="355,155,437,181"/>
+<area shape="rect" id="node12" href="$metsynop_8h.html" title="Main header file for synop related tasks." alt="" coords="617,155,708,181"/>
+<area shape="rect" id="node14" href="$metbuoy_8h.html" title="Main header file for buoy related tasks." alt="" coords="841,155,924,181"/>
+<area shape="rect" id="node15" href="$mettemp_8h.html" title="Main header file for temp report related tasks." alt="" coords="733,155,817,181"/>
+<area shape="rect" id="node16" href="$metclimat_8h.html" title=" " alt="" coords="948,155,1039,181"/>
+<area shape="rect" id="node11" title=" " alt="" coords="363,229,429,256"/>
+<area shape="rect" id="node13" href="$metcommon_8h.html" title="Main header file for common report structures." alt="" coords="727,229,833,256"/>
+</map>

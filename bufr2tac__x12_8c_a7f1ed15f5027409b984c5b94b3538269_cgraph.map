@@ -1,0 +1,9 @@
+<map id="syn_parse_x12" name="syn_parse_x12">
+<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 12." alt="" coords="5,107,116,133"/>
+<area shape="rect" id="node2" href="$bufr2tac__error_8c.html#a223ffc74b013e1d1abe6f5cc5fe1148b" title=" " alt="" coords="172,5,299,32"/>
+<area shape="rect" id="node4" href="$bufr2tac__x12_8c.html#ae98152f1dba7076d6a5e40bcd01f0e3b" title="converts a kelvin temperature value into a snTT string" alt="" coords="181,56,290,83"/>
+<area shape="rect" id="node5" href="$bufr2tac__x12_8c.html#ad9180c6833f9d5c360f7981ebcc08933" title="converts a kelvin temperature value into a snTTT string" alt="" coords="177,107,294,133"/>
+<area shape="rect" id="node6" href="$bufr2tac__x12_8c.html#adb80f64380bb5c8f7ede9a8c361f3190" title="converts a kelvin temperature value into a TT string" alt="" coords="187,157,283,184"/>
+<area shape="rect" id="node7" href="$bufr2tac__x04_8c.html#a5ae35365caffb4fc87ce5534d9c517ee" title="Get time period duration in seconds." alt="" coords="164,208,307,235"/>
+<area shape="rect" id="node3" href="$bufr2tac__error_8c.html#a6b6066c2f1fd1085397ee9c294ac2948" title=" " alt="" coords="355,5,492,32"/>
+</map>

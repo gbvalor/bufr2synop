@@ -1,0 +1,18 @@
+<map id="bufrdeco_get_bufr" name="bufrdeco_get_bufr">
+<area shape="rect" id="node1" title="Read file and try to find a bufr report inserted in. Once found do the same that bufrdeco_read_bufr()" alt="" coords="5,241,132,268"/>
+<area shape="rect" id="node2" href="$bufrdeco__read_8c.html#ad44753d6491d1785ed3fe38af6557da6" title="Read file and try to find a bufr report inserted in. Once found do the same that bufrdeco_read_file()" alt="" coords="180,241,328,268"/>
+<area shape="rect" id="node3" href="$bufrdeco__read_8c.html#a42b3789e2ddabf25f894e78f59897268" title=" " alt="" coords="376,241,520,268"/>
+<area shape="rect" id="node4" href="$bufrdeco__wmo_8c.html#a690c1bdb0a65ccaa1391f64ea8df2fc6" title="Read the tables according with bufr file data from a bufr table directory." alt="" coords="591,165,709,192"/>
+<area shape="rect" id="node14" href="$bufrdeco__utils_8c.html#a1a8996af46cd7bc0bacb76c46a453c01" title="returns the uint32_t value from an array of three bytes, most significant first" alt="" coords="575,216,725,243"/>
+<area shape="rect" id="node15" href="$bufrdeco__utils_8c.html#ae5a6eb08d7b5c59b5d53136af36be22c" title="set a struct bufr_descriptor from two consecutive bytes in bufr file" alt="" coords="568,267,732,293"/>
+<area shape="rect" id="node16" href="$bufrdeco__utils_8c.html#a0a8466d777dfa02324b7f13316ea71fb" title="returns the uint32_t value from an array of two bytes, most significant first" alt="" coords="579,317,721,344"/>
+<area shape="rect" id="node5" href="$bufrdeco__tableB_8c.html#ae1e363f8ede994991842fe230e327918" title=" " alt="" coords="798,5,918,32"/>
+<area shape="rect" id="node8" href="$bufrdeco__tableC_8c.html#a225eb080f58ab76ab10872400140dc03" title="Reads a file with table C content (Code table and bit flags) according with csv WMO format." alt="" coords="797,56,919,83"/>
+<area shape="rect" id="node9" href="$bufrdeco__tableD_8c.html#a48da10ad04b938f7d0385e83aabf75f8" title="Reads a file with table D content according with WMO csv format." alt="" coords="797,107,919,133"/>
+<area shape="rect" id="node10" href="$bufrdeco__wmo_8c.html#acbe10abf7cfd44a4d185e37915856e98" title="Search a struct bufr_tables in bufr_tables_cache." alt="" coords="780,158,936,199"/>
+<area shape="rect" id="node11" href="$bufrdeco__memory_8c.html#a0576a87972353fb9e7a569fa1f905e03" title="Init a struct bufr_tables allocating space." alt="" coords="990,249,1129,276"/>
+<area shape="rect" id="node12" href="$bufrdeco__wmo_8c.html#a9a6f68130c76bab155e074c2e98273ce" title="Init an element of array c&#45;&gt;tab[] if still not allocated. If allocated clean it and set *t pointing t..." alt="" coords="783,224,933,251"/>
+<area shape="rect" id="node13" href="$bufrdeco__wmo_8c.html#a8581ce4806d095d950244b72411ad66d" title="Get the complete pathnames for WMO csv table files needed by a bufr message." alt="" coords="783,325,933,352"/>
+<area shape="rect" id="node6" href="$bufrdeco__csv_8c.html#a9685dcec12aa968d7146aa55965dda5e" title="Parse a csv line." alt="" coords="1005,81,1114,108"/>
+<area shape="rect" id="node7" href="$bufrdeco__utils_8c.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary" alt="" coords="984,31,1135,57"/>
+</map>

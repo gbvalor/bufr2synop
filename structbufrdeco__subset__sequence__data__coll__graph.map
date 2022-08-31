@@ -1,0 +1,7 @@
+<map id="bufrdeco_subset_sequence_data" name="bufrdeco_subset_sequence_data">
+<area shape="rect" id="node1" title="Contains all the information for a subset in a expanded squence This is a verion to use with bufrdeco..." alt="" coords="5,335,219,361"/>
+<area shape="rect" id="node2" href="$structbufr__atom__data.html" title="Contains all the information for a single data related with a descriptor in a expanded squence." alt="" coords="56,245,168,272"/>
+<area shape="rect" id="node3" href="$structbufr__descriptor.html" title="BUFR descriptor." alt="" coords="37,13,145,39"/>
+<area shape="rect" id="node4" href="$structbufr__sequence.html" title="Stores an unexpanded sequence of descriptors." alt="" coords="148,155,255,181"/>
+<area shape="rect" id="node5" href="$structbufr__sequence__index__range.html" title="range of indexes in a struct bufr_sequence where a condition must me chequed or marked,..." alt="" coords="169,5,314,47"/>
+</map>

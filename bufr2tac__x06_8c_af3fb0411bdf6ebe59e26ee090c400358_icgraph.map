@@ -1,0 +1,12 @@
+<map id="latlon_to_MMM" name="latlon_to_MMM">
+<area shape="rect" id="node1" title="convert latitude and longitude to a MMM string" alt="" coords="899,81,1009,108"/>
+<area shape="rect" id="node2" href="$bufr2tac__x05_8c.html#ad4133f38bd367c5fdb5d875a2b17e5e4" title="Parse a expanded descriptor with X = 05." alt="" coords="736,5,847,32"/>
+<area shape="rect" id="node7" href="$bufr2tac__x06_8c.html#a45f7335decb72942fd1dc925d442d59e" title="Parse a expanded descriptor with X = 06." alt="" coords="736,56,847,83"/>
+<area shape="rect" id="node8" href="$bufr2tac__x05_8c.html#a1f998bc2fad48015c5ee9fa8c5904e9a" title=" " alt="" coords="732,107,851,133"/>
+<area shape="rect" id="node10" href="$bufr2tac__x06_8c.html#ad1116ff5e573b8ee1aa5aa3536aa3cb0" title=" " alt="" coords="732,157,851,184"/>
+<area shape="rect" id="node3" href="$bufr2tac__synop_8c.html#a3178eb404dc66ceccd7a08a3c719c2aa" title="parses a subset sequence as an Land fixed SYNOP FM&#45;12, SHIP FM&#45;13 or SYNOP&#45;mobil FM&#45;14 report" alt="" coords="521,56,684,83"/>
+<area shape="rect" id="node4" href="$bufr2tac__sqparse_8c.html#a7b839bfd63c95d7fdbad26be3c1d86be" title="Parse a sequence of expanded descriptors for a subset." alt="" coords="311,81,473,108"/>
+<area shape="rect" id="node5" href="$bufrtotac__io_8c.html#a156a5e3480972b5590b8ec744ba32252" title=" " alt="" coords="104,74,263,115"/>
+<area shape="rect" id="node6" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,81,56,108"/>
+<area shape="rect" id="node9" href="$bufr2tac__temp_8c.html#a592db452b503cfcb75c74616ffe39548" title=" " alt="" coords="524,107,681,133"/>
+</map>

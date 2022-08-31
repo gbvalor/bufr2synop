@@ -1,0 +1,4 @@
+<map id="bufrdeco_store_tables" name="bufrdeco_store_tables">
+<area shape="rect" id="node1" title="Init an element of array c&#45;&gt;tab[] if still not allocated. If allocated clean it and set *t pointing t..." alt="" coords="5,5,156,32"/>
+<area shape="rect" id="node2" href="$bufrdeco__memory_8c.html#a0576a87972353fb9e7a569fa1f905e03" title="Init a struct bufr_tables allocating space." alt="" coords="204,5,343,32"/>
+</map>

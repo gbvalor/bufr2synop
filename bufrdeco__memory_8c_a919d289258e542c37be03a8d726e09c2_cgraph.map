@@ -1,0 +1,4 @@
+<map id="bufrdeco_substitute_tables" name="bufrdeco_substitute_tables">
+<area shape="rect" id="node1" title="substitute an struct bufr_tables into a struct bufrdeco" alt="" coords="5,5,141,47"/>
+<area shape="rect" id="node2" href="$bufrdeco__memory_8c.html#a0576a87972353fb9e7a569fa1f905e03" title="Init a struct bufr_tables allocating space." alt="" coords="189,13,328,39"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="bufr_atom_data" name="bufr_atom_data">
+<area shape="rect" id="node1" title="Contains all the information for a single data related with a descriptor in a expanded squence." alt="" coords="25,245,137,272"/>
+<area shape="rect" id="node2" href="$structbufr__descriptor.html" title="BUFR descriptor." alt="" coords="5,13,113,39"/>
+<area shape="rect" id="node3" href="$structbufr__sequence.html" title="Stores an unexpanded sequence of descriptors." alt="" coords="117,155,223,181"/>
+<area shape="rect" id="node4" href="$structbufr__sequence__index__range.html" title="range of indexes in a struct bufr_sequence where a condition must me chequed or marked,..." alt="" coords="137,5,283,47"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="bufr_restore_original_tableB_item" name="bufr_restore_original_tableB_item">
+<area shape="rect" id="node1" title="Restores the original table B parameters for a BUFR descriptor." alt="" coords="5,5,144,47"/>
+<area shape="rect" id="node2" href="$bufrdeco__tableB_8c.html#a2876ca4764d32d82b9cf2ada66001095" title="found a descriptor index in a struct bufr_tableB" alt="" coords="192,13,347,39"/>
+<area shape="rect" id="node3" href="$bufrdeco__utils_8c.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary" alt="" coords="395,13,545,39"/>
+</map>

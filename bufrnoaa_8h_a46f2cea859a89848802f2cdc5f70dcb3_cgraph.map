@@ -1,0 +1,6 @@
+<map id="read_args" name="read_args">
+<area shape="rect" id="node1" title="read the arguments from stdio" alt="" coords="5,31,84,57"/>
+<area shape="rect" id="node2" href="$bufrdeco__test_8c.html#aa1187b70998f73cdb598833d6afaa30a" title=" " alt="" coords="135,5,224,32"/>
+<area shape="rect" id="node3" href="$bufrnoaa__io_8c.html#a6302aaae12249e8ea16bfdc7de892f21" title=" " alt="" coords="132,56,227,83"/>
+<area shape="rect" id="node4" href="$bufrnoaa__io_8c.html#abf651cc368ea9b00f1f25ebe0a73f55a" title="Get strings with version information and build date and time." alt="" coords="275,56,420,83"/>
+</map>

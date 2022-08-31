@@ -1,0 +1,4 @@
+<map id="bufr2tac_error_stack" name="bufr2tac_error_stack">
+<area shape="rect" id="node1" title="A stack of structs bufr2tac_error." alt="" coords="5,95,147,121"/>
+<area shape="rect" id="node2" href="$structbufr2tac__error.html" title="Store an error/warning/info and its severity." alt="" coords="25,5,127,32"/>
+</map>

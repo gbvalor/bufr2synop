@@ -1,0 +1,6 @@
+<map id="src/apps/bufrnoaa.h" name="src/apps/bufrnoaa.h">
+<area shape="rect" id="node1" title="inclusion file for binary bufrnoaa" alt="" coords="176,5,313,32"/>
+<area shape="rect" id="node2" href="$bufrnoaa_8c.html" title="This file includes the code to extract BUFR messages from NOAA bin files." alt="" coords="5,80,143,107"/>
+<area shape="rect" id="node3" href="$bufrnoaa__io_8c.html" title="File with I/O code for bufrnoaa binary." alt="" coords="167,80,322,107"/>
+<area shape="rect" id="node4" href="$bufrnoaa__utils_8c.html" title="File with some routines for bufrnoaa binary." alt="" coords="346,80,514,107"/>
+</map>

@@ -1,0 +1,8 @@
+<map id="bufrdeco_fprint_tree_recursive" name="bufrdeco_fprint_tree_recursive">
+<area shape="rect" id="node1" title="Print a tree of descriptors to a file in a recursive way." alt="" coords="5,86,143,127"/>
+<area shape="rect" id="node2" href="$bufrdeco__tableB_8c.html#a2876ca4764d32d82b9cf2ada66001095" title="found a descriptor index in a struct bufr_tableB" alt="" coords="203,5,357,32"/>
+<area shape="rect" id="node4" href="$bufrdeco__f2_8c.html#aeeb87adbf48f29af58a448c7354d5075" title=" " alt="" coords="191,57,369,98"/>
+<area shape="rect" id="node5" href="$bufrdeco__utils_8c.html#ac1a6900782df9782c8e1b5d1b373db13" title="check if a descriptor is a delayed descriptor" alt="" coords="199,123,361,149"/>
+<area shape="rect" id="node6" href="$bufrdeco__utils_8c.html#aecab28a7bcc79da2d78872c77ec3e5fc" title="check if a descriptor is a short delayed descriptor" alt="" coords="213,174,347,215"/>
+<area shape="rect" id="node3" href="$bufrdeco__utils_8c.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary" alt="" coords="417,5,568,32"/>
+</map>
