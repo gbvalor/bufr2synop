@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 /*!
- \file bufrdeco_tablec.c
+ \file bufrdeco_tableC.c
  \brief file with the code to read table C data (code and flag tables)
  */
 #include "bufrdeco.h"
@@ -40,7 +40,7 @@ int bufr_read_tableC ( struct bufrdeco *b )
   uint32_t ix;
   buf_t i = 0;
   struct bufr_descriptor desc;
-  struct bufr_tablec *tc;
+  struct bufr_tableC *tc;
   char *tk[16];
   char caux[256], l[CSV_MAXL];
 
@@ -63,7 +63,7 @@ int bufr_read_tableC ( struct bufrdeco *b )
     }
 
   strcpy ( caux, tc->path );
-  memset ( tc, 0, sizeof ( struct bufr_tablec ) );
+  memset ( tc, 0, sizeof ( struct bufr_tableC ) );
   strcpy ( tc->path, caux );
   if ( ( t = fopen ( tc->path, "r" ) ) == NULL )
     {
@@ -124,8 +124,8 @@ int bufr_read_tableC ( struct bufrdeco *b )
 
 
 /*!
-  \fn int bufr_find_tablec_csv_index ( buf_t *index, struct bufr_tableb *tb, const char *key, uint32_t code )
-  \brief found a descriptor index in a struct \ref bufr_tablec
+  \fn int bufr_find_tableC_csv_index ( buf_t *index, struct bufr_tableb *tb, const char *key, uint32_t code )
+  \brief found a descriptor index in a struct \ref bufr_tableC
   \param index pointer  to a size_t where to set the result if success
   \param tb pointer to struct \ref bufr_tableb where are stored all table B data
   \param key descriptor string in format FXXYYY
@@ -133,14 +133,14 @@ int bufr_read_tableC ( struct bufrdeco *b )
 
   Return 0 if success, 1 otherwise
 */
-int bufr_find_tablec_csv_index ( buf_t *index, struct bufr_tablec *tc, const char *key, uint32_t code )
+int bufr_find_tableC_csv_index ( buf_t *index, struct bufr_tableC *tc, const char *key, uint32_t code )
 {
   uint32_t ix;
   buf_t i, i0;
   char *c;
   struct bufr_descriptor desc;
 
-  //bufrdeco_assert ( tc != NULL && index != NULL );
+  bufrdeco_assert ( tc != NULL && index != NULL );
   
   ix = strtoul ( key, &c, 10 );
   uint32_t_to_descriptor ( &desc, ix );
@@ -157,24 +157,24 @@ int bufr_find_tablec_csv_index ( buf_t *index, struct bufr_tablec *tc, const cha
 }
 
 /*!
-  \fn char * bufrdeco_explained_table_csv_val (char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d, int ival)
+  \fn char * bufrdeco_explained_table_csv_val (char *expl, size_t dim, struct bufr_tableC *tc, struct bufr_descriptor *d, int ival)
   \brief gets a string with the meaning of a value for a code table descriptor
   \param expl string with resulting meaning
   \param dim numero máximo de caracteres de la cadena resultante
-  \param tc pointer to a \ref bufr_tablec struct
+  \param tc pointer to a \ref bufr_tableC struct
   \param index element to read if is not 0
   \param d pointer to the source descriptor
   \param ival integer value for the descriptor
 
   If something went wrong, it returns NULL . Otherwise it returns \a expl
 */
-char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec *tc, uint32_t *index, struct bufr_descriptor *d, uint32_t ival )
+char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tableC *tc, uint32_t *index, struct bufr_descriptor *d, uint32_t ival )
 {
   buf_t i;
 
   bufrdeco_assert ( tc != NULL && expl != NULL && index != NULL && d != NULL);
   
-  if ( bufr_find_tablec_csv_index ( &i, tc, d->c, ival ) )
+  if ( bufr_find_tableC_csv_index ( &i, tc, d->c, ival ) )
     {
       return NULL; // descritor not found
     }
@@ -200,7 +200,7 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec
 
   If something went wrong, it returns NULL . Otherwise it returns \a expl
 */
-char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d,
+char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tableC *tc, struct bufr_descriptor *d,
     uint64_t ival, uint8_t nbits )
 {
   size_t used = 0;

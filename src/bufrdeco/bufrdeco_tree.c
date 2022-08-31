@@ -103,7 +103,7 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
       l->iseq = nl - 1; // index of sequence in tree
 
       // here we get ndesc and lsec array from table d
-      if ( bufrdeco_tabled_get_descriptors_array ( l, b, key ) )
+      if ( bufrdeco_tableD_get_descriptors_array ( l, b, key ) )
         {
           return 1; // something went wrong
         }

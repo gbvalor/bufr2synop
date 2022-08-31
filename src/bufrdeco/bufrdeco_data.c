@@ -263,7 +263,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
             }
 
           // Get data from table B
-          if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, & ( seq->lseq[i] ) ) )
+          if ( bufrdeco_tableB_val ( & ( s->sequence[s->nd] ), b, & ( seq->lseq[i] ) ) )
             {
               return 1;
             }
@@ -355,7 +355,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
               replicator.ixdel = i + 1;
               replicator.ndesc = seq->lseq[i].x;
               // here we read ndesc from delayed replicator descriptor
-              if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, & ( seq->lseq[i + 1] ) ) )
+              if ( bufrdeco_tableB_val ( & ( s->sequence[s->nd] ), b, & ( seq->lseq[i + 1] ) ) )
                 {
                   return 1;
                 }
@@ -471,7 +471,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                 }
 
               // Get data from table B
-              if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[i] ) ) )
+              if ( bufrdeco_tableB_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[i] ) ) )
                 {
                   return 1;
                 }
@@ -581,7 +581,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                   replicator.ixdel = i + 1;
                   replicator.ndesc = l->lseq[i].x;
                   // here we read ndesc from delayed replicator descriptor
-                  if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[i + 1] ) ) )
+                  if ( bufrdeco_tableB_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[i + 1] ) ) )
                     {
                       return 1;
                     }
@@ -621,7 +621,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                     {
                       b->bitmap.bmap[b->bitmap.nba - 1]->subs = s->nd;
                     }
-                  if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[k] ) ) )
+                  if ( bufrdeco_tableB_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[k] ) ) )
                     {
                       return 1;
                     }
@@ -647,7 +647,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                     {
                       b->bitmap.bmap[b->bitmap.nba - 1]->retain = s->nd;
                     }
-                  if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[k] ) ) )
+                  if ( bufrdeco_tableB_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[k] ) ) )
                     {
                       return 1;
                     }
@@ -685,7 +685,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                       b->bitmap.bmap[b->bitmap.nba - 1]->stat1[b->bitmap.bmap[b->bitmap.nba - 1]->ns1 -1] = s->nd;
                     }
 
-                  if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[k] ) ) )
+                  if ( bufrdeco_tableB_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[k] ) ) )
                     {
                       return 1;
                     }
@@ -727,8 +727,8 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                       b->bitmap.bmap[b->bitmap.nba - 1]->stat1[b->bitmap.bmap[b->bitmap.nba - 1]->nds -1] = s->nd;
                     }
 
-                  // in bufrdeco_tableb_val() is taken into acount when is difference statistics active
-                  if ( bufrdeco_tableb_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[k] ) ) )
+                  // in bufrdeco_tableB_val() is taken into acount when is difference statistics active
+                  if ( bufrdeco_tableB_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[k] ) ) )
                     {
                       return 1;
                     }

@@ -148,7 +148,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
           rf = & ( r->refs[r->nd] ); // pointer to the target struct bufrdeco_compressed ref. To read/write code easily
 
           // First the the data itself
-          if ( bufrdeco_tableb_compressed ( rf, b, & ( seq->lseq[i] ), 0 ) )
+          if ( bufrdeco_tableB_compressed ( rf, b, & ( seq->lseq[i] ), 0 ) )
             {
               return 1;
             }
@@ -200,7 +200,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
           // Then we check for an associated field
           rf = & ( r->refs[r->nd] );
           // If is not an associated field returned value is -1 and no action is made
-          res = bufrdeco_tableb_compressed ( rf, b, & ( seq->lseq[i] ), 1 );
+          res = bufrdeco_tableB_compressed ( rf, b, & ( seq->lseq[i] ), 1 );
           if ( res > 0 )
             {
               return 1; // case of error
@@ -258,7 +258,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
               rf = & ( r->refs[r->nd] );
 
               // The the data itself to get the loops
-              if ( bufrdeco_tableb_compressed ( rf, b, & ( seq->lseq[ replicator.ixdel ] ), 0 ) )
+              if ( bufrdeco_tableB_compressed ( rf, b, & ( seq->lseq[ replicator.ixdel ] ), 0 ) )
                 {
                   return 1;
                 }
@@ -381,7 +381,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
               rf = & ( r->refs[r->nd] );
 
               // First then the data itself
-              if ( bufrdeco_tableb_compressed ( rf, b, & ( l->lseq[i] ), 0 ) )
+              if ( bufrdeco_tableB_compressed ( rf, b, & ( l->lseq[i] ), 0 ) )
                 {
                   return 1;
                 }
@@ -471,7 +471,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
 
               // Then associated field
               rf = & ( r->refs[r->nd] );
-              res = bufrdeco_tableb_compressed ( rf, b, & ( l->lseq[i] ), 1 );
+              res = bufrdeco_tableB_compressed ( rf, b, & ( l->lseq[i] ), 1 );
               if ( res > 0 )
                 {
                   return 1; // case of error
@@ -515,7 +515,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                   rf = & ( r->refs[r->nd] );
 
                   // The data itself to get the loops
-                  if ( bufrdeco_tableb_compressed ( rf, b, & ( l->lseq[replicator.ixdel] ), 0 ) )
+                  if ( bufrdeco_tableB_compressed ( rf, b, & ( l->lseq[replicator.ixdel] ), 0 ) )
                     {
                       return 1;
                     }
@@ -555,7 +555,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                     {
                       b->bitmap.bmap[b->bitmap.nba - 1]->subs = r->nd;
                     }
-                  if ( bufrdeco_tableb_compressed ( rf, b, & ( l->lseq[k] ), 0 ) )
+                  if ( bufrdeco_tableB_compressed ( rf, b, & ( l->lseq[k] ), 0 ) )
                     {
                       return 1;
                     }
@@ -582,7 +582,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                     {
                       b->bitmap.bmap[b->bitmap.nba - 1]->retain = r->nd;
                     }
-                  if ( bufrdeco_tableb_compressed ( rf, b, & ( l->lseq[k] ), 0 ) )
+                  if ( bufrdeco_tableB_compressed ( rf, b, & ( l->lseq[k] ), 0 ) )
                     {
                       return 1;
                     }
@@ -621,7 +621,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                       b->bitmap.bmap[b->bitmap.nba - 1]->stat1[b->bitmap.bmap[b->bitmap.nba - 1]->ns1 -1] = r->nd;
                     }
 
-                  if ( bufrdeco_tableb_compressed ( rf, b, & ( r->refs[k].desc ), 0 ) )
+                  if ( bufrdeco_tableB_compressed ( rf, b, & ( r->refs[k].desc ), 0 ) )
                     {
                       return 1;
                     }
@@ -663,7 +663,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                       b->bitmap.bmap[b->bitmap.nba - 1]->stat1[b->bitmap.bmap[b->bitmap.nba - 1]->nds -1] = r->nd;
                     }
 
-                  if ( bufrdeco_tableb_compressed ( rf, b, & ( r->refs[k].desc ), 0 ) )
+                  if ( bufrdeco_tableB_compressed ( rf, b, & ( r->refs[k].desc ), 0 ) )
                     {
                       return 1;
                     }
@@ -732,7 +732,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
   uint8_t has_data;
   uint32_t ival, ival0;
   int32_t ivals;
-  struct bufr_tableb *tb;
+  struct bufr_tableB *tb;
 
   if ( b == NULL )
     return 1;
@@ -921,7 +921,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
     {
       ival = ( uint32_t ) ( a->val + 0.5 );
       a->mask |= DESCRIPTOR_IS_CODE_TABLE;
-      if ( bufrdeco_explained_table_val ( a->ctable, 256, & ( b->tables->c ), & ( tb->item[i].tablec_ref ), & ( a->desc ), ival ) != NULL )
+      if ( bufrdeco_explained_table_val ( a->ctable, 256, & ( b->tables->c ), & ( tb->item[i].tableC_ref ), & ( a->desc ), ival ) != NULL )
         {
           a->mask |= DESCRIPTOR_HAVE_CODE_TABLE_STRING;
         }

@@ -279,7 +279,7 @@ int bufrdeco_fprint_tree_recursive ( FILE *f, struct bufrdeco *b, struct bufr_se
         {
           if ( l->lseq[i].f == 0 )
             {
-              if ( bufr_find_tableb_index ( &k, & ( b->tables->b ), l->lseq[i].c ) )
+              if ( bufr_find_tableB_index ( &k, & ( b->tables->b ), l->lseq[i].c ) )
                 fprintf ( f, "\n" );
               else
                 {

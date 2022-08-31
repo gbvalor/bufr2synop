@@ -755,10 +755,10 @@ struct bufr_sec4
 };
 
 /*!
-   \struct bufr_tableb_decoded_item
+   \struct bufr_tableB_decoded_item
    \brief Store parameters for a descriptor in table b, i. e. with f = 0
 */
-struct bufr_tableb_decoded_item
+struct bufr_tableB_decoded_item
 {
   uint8_t changed; /*!< flag. If 0 = not changed from table B. If 1 Changed */
   uint8_t x; /*!< x value of descriptor */
@@ -773,15 +773,15 @@ struct bufr_tableb_decoded_item
   int32_t reference_ori; /*!< reference as readed from table b */
   buf_t nbits; /*!< bits */
   buf_t nbits_ori; /*!< bits as readed from table b */
-  buf_t tablec_ref; /*!< item to point table c, if any */
-  buf_t tabled_ref; /*!< item to point table d, if any */
+  buf_t tableC_ref; /*!< item to point table c, if any */
+  buf_t tableD_ref; /*!< item to point table d, if any */
 };
 
 /*!
-  \struct bufr_tableb
+  \struct bufr_tableB
   \brief Store a table B readed from a file formated and named as ECMWF bufrdc package
 */
-struct bufr_tableb
+struct bufr_tableB
 {
   int wmo_table; /*!< 1 when table is from WMO csv file, 0 otherwise */
   char path[BUFRDECO_PATH_LENGTH]; /*!< Complete path of current file readed */
@@ -790,16 +790,16 @@ struct bufr_tableb
   buf_t x_start[64]; /*!< Index in array \a item[] for first x. x_start[j] is index for first descriptor which x == j */
   buf_t num[64]; /*!< Amount of items for x. num[i] is the amount of items in array where x = i */
   uint8_t y_ref[64][256]; /*!< index for y since first x. x_ref[i][j] is index since x_start[i] where y == j */
-  struct bufr_tableb_decoded_item item[BUFR_MAXLINES_TABLEB]; /*!< Array with structs containing parsed lines readed from file */
+  struct bufr_tableB_decoded_item item[BUFR_MAXLINES_TABLEB]; /*!< Array with structs containing parsed lines readed from file */
 };
 
 
 /*!
-   \struct bufr_tablec_decoded_item
+   \struct bufr_tableC_decoded_item
    \brief Store parameters for a descriptor in table C, i. e. for Table code and flags
    Remember this is NOT the C WMO tables
 */
-struct bufr_tablec_decoded_item
+struct bufr_tableC_decoded_item
 {
   char key[8]; /*!< c value of descriptor */
   uint8_t x; /*!< x value of descriptor */
@@ -810,10 +810,10 @@ struct bufr_tablec_decoded_item
 
 
 /*!
-  \struct bufr_tablec
+  \struct bufr_tableC
   \brief Store a table C readed from a file formated and named as ECMWF bufrdc package
 */
-struct bufr_tablec
+struct bufr_tableC
 {
   int wmo_table; /*!< 1 when table is from WMO csv file, 0 otherwise */
   char path[BUFRDECO_PATH_LENGTH]; /*!< Complete path of current file readed */
@@ -823,15 +823,15 @@ struct bufr_tablec
   buf_t num[64]; /*!< Amonut of lines for x. num[i] is the amount of items in array where x = i */
   buf_t y_ref[64][256]; /*!< index for first y since first x. x_ref[i][j] is index since x_start[i] where y == j */
   //char l[BUFR_MAXLINES_TABLEC][96]; /*!< Array with lines readed from file */
-  struct bufr_tablec_decoded_item item[BUFR_MAXLINES_TABLEC]; /*!< Array of decoded lines */
+  struct bufr_tableC_decoded_item item[BUFR_MAXLINES_TABLEC]; /*!< Array of decoded lines */
 };
 
 
 /*!
-  \struct bufr_tabled_decoded_item
+  \struct bufr_tableD_decoded_item
   \brief Store parameters for a line in table D (sequence of descritors)
 */
-struct bufr_tabled_decoded_item 
+struct bufr_tableD_decoded_item 
 {
   char key[8]; /*!< c key value of sequence descriptor */
   char key2[8]; /*!< c key 2 of sequence element */
@@ -840,10 +840,10 @@ struct bufr_tabled_decoded_item
 };
 
 /*!
-  \struct bufr_tabled
+  \struct bufr_tableD
   \brief Store a table D readed from a file formated and named as ECMWF bufrdc package
 */
-struct bufr_tabled
+struct bufr_tableD
 {
   int wmo_table; /*!< 1 when table is from WMO csv file, 0 otherwise */
   char path[BUFRDECO_PATH_LENGTH]; /*!< Complete path of current file readed */
@@ -851,8 +851,8 @@ struct bufr_tabled
   buf_t nlines; /*!< Current lines readed from file, i. e. used in array \a l[] */
   buf_t x_start[64]; /*!< Index in array \a l[] for first x. x_start[j] is index for first descriptor which x == j */
   buf_t num[64]; /*!< Amonut of lines for x. num[i] is the amount of items in array where x = i */
-  char l[BUFR_MAXLINES_TABLED][128]; /*!< Array with lines readed from file */
-  struct bufr_tabled_decoded_item item[BUFR_MAXLINES_TABLED]; /*!< Array of decoded lines */
+  char l[BUFR_MAXLINES_TABLED][24]; /*!< Array with info about descriptor sequences emulating ECMW tables D */
+  struct bufr_tableD_decoded_item item[BUFR_MAXLINES_TABLED]; /*!< Array of decoded lines */
 };
 
 /*!
@@ -863,9 +863,9 @@ struct bufr_tabled
 */
 struct bufr_tables
 {
-  struct bufr_tableb b; /*!< Table B */
-  struct bufr_tablec c; /*!< Table C */
-  struct bufr_tabled d; /*!< Table D */
+  struct bufr_tableB b; /*!< Table B */
+  struct bufr_tableC c; /*!< Table C */
+  struct bufr_tableD d; /*!< Table D */
 };
 
 /*!
@@ -1012,7 +1012,7 @@ int bufr_decode_subset_data_compressed ( struct bufrdeco_subset_sequence_data *s
 int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_replicator *rep,
     struct bufrdeco *b );
 int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_descriptor *d, struct bufrdeco *b );
-int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrdeco *b, struct bufr_descriptor *d, int mode );
+int bufrdeco_tableB_compressed ( struct bufrdeco_compressed_ref *r, struct bufrdeco *b, struct bufr_descriptor *d, int mode );
 int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, struct bufrdeco_compressed_ref *r,
     buf_t subset, struct bufrdeco *b );
 
@@ -1028,21 +1028,21 @@ uint32_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *sour
                                 buf_t bit_length );
 
 // Utilities for tables
-char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tablec *tc, uint32_t *index,
+char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tableC *tc, uint32_t *index,
                                       struct bufr_descriptor *d, uint32_t ival );
-char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d,
+char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tableC *tc, struct bufr_descriptor *d,
                                      uint64_t ival, uint8_t nbits );
-char * bufrdeco_explained_table_csv_val ( char *expl, size_t dim, struct bufr_tablec *tc, uint32_t *index,
+char * bufrdeco_explained_table_csv_val ( char *expl, size_t dim, struct bufr_tableC *tc, uint32_t *index,
     struct bufr_descriptor *d, uint32_t ival );
-char * bufrdeco_explained_flag_csv_val ( char *expl, size_t dim, struct bufr_tablec *tc, struct bufr_descriptor *d,
+char * bufrdeco_explained_flag_csv_val ( char *expl, size_t dim, struct bufr_tableC *tc, struct bufr_descriptor *d,
     uint64_t ival, uint8_t nbits );
-int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b,
+int bufrdeco_tableD_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b,
     const char *key );
-int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct bufr_descriptor *d );
-int bufr_find_tableb_index ( buf_t *index, struct bufr_tableb *tb, const char *key );
+int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct bufr_descriptor *d );
+int bufr_find_tableB_index ( buf_t *index, struct bufr_tableB *tb, const char *key );
 int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_t source );
-int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key );
-int bufr_find_tablec_csv_index ( buf_t *index, struct bufr_tablec *tc, const char *key, uint32_t code );
+int bufrdeco_tableD_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key );
+int bufr_find_tableC_csv_index ( buf_t *index, struct bufr_tableC *tc, const char *key, uint32_t code );
 char *bufrdeco_get_f2_descriptor_explanation ( char *e, size_t dim, struct bufr_descriptor *d );
 
 // utilities for bitmaps

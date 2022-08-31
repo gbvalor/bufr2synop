@@ -162,7 +162,7 @@ int bufr_read_tables ( struct bufrdeco *b )
   int index;
   buf_t i;
   bufrdeco_assert ( b != NULL );
-  struct bufr_tableb *tb;
+  struct bufr_tableB *tb;
 
   if ( b->mask & BUFRDECO_USE_TABLES_CACHE )
     {

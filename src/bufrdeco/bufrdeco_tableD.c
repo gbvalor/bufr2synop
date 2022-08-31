@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 /*!
- \file bufrdeco_tabled.c
+ \file bufrdeco_tableD.c
  \brief file with the code to read table D data (code and flag tables)
  */
 #include "bufrdeco.h"
@@ -43,7 +43,7 @@ int bufr_read_tableD ( struct bufrdeco *b )
   char caux[256];
   char laux[CSV_MAXL];
   struct bufr_descriptor desc;
-  struct bufr_tabled *td;
+  struct bufr_tableD *td;
 
   //bufrdeco_assert (b != NULL);
   
@@ -63,7 +63,7 @@ int bufr_read_tableD ( struct bufrdeco *b )
     }
 
   strcpy ( caux, td->path );
-  memset ( td, 0, sizeof ( struct bufr_tabled ) );
+  memset ( td, 0, sizeof ( struct bufr_tableD ) );
   strcpy ( td->path,caux );
   if ( ( t = fopen ( td->path, "r" ) ) == NULL )
     {
@@ -160,15 +160,15 @@ int bufr_read_tableD ( struct bufrdeco *b )
 }
 
 /*!
- \fn  int bufr_find_tabled_index ( size_t *index, struct bufr_tabled *td, const char *key )
+ \fn  int bufr_find_tableD_index ( size_t *index, struct bufr_tableD *td, const char *key )
  \brief Find the index of a line in table D for a given key of a descriptor
  \param index pointer where to set the result
- \param td pointer to a struct \ref bufr_tabled where all table data is stored
+ \param td pointer to a struct \ref bufr_tableD where all table data is stored
  \param key string in the form FXXYYY which is the key of descriptor we want to find out
 
  If the descriptor has been found with success then returns 0, othewise returns 1
 */
-int bufr_find_tabled_index ( buf_t *index, struct bufr_tabled *td, const char *key )
+int bufr_find_tableD_index ( buf_t *index, struct bufr_tableD *td, const char *key )
 {
   buf_t i, i0;
   buf_t ix = 0;
@@ -203,7 +203,7 @@ int bufr_find_tabled_index ( buf_t *index, struct bufr_tabled *td, const char *k
 
 
 /*!
- \fn int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key )
+ \fn int bufrdeco_tableD_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key )
  \brief get the descriptors array for a descriptor sequence defined in table D with F = 3
  \param s target struct \ref bufr_sequence
  \param b pointer to the basic container struct \ref bufrdeco
@@ -211,12 +211,12 @@ int bufr_find_tabled_index ( buf_t *index, struct bufr_tabled *td, const char *k
 
  If the sequence has been filled with success then returns 0, otherwise returns 1
 */
-int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key )
+int bufrdeco_tableD_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key )
 {
   buf_t i, j;
   uint32_t nv, v;
   char *c;
-  struct bufr_tabled *td;
+  struct bufr_tableD *td;
 
   bufrdeco_assert ( b != NULL && s != NULL && key != NULL );
   
@@ -231,7 +231,7 @@ int bufrdeco_tabled_get_descriptors_array ( struct bufr_sequence *s, struct bufr
 
   // here the calling b item learn where to find table C line
 
-  if ( bufr_find_tabled_index ( &i, td, key ) )
+  if ( bufr_find_tableD_index ( &i, td, key ) )
     {
       snprintf ( b->error, sizeof (b->error), "%s(): descriptor '%s' not found in table D\n", __func__, key );
       return 1; // descritor not found

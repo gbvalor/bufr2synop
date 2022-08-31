@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 /*!
- \file bufrdeco_tableb.c
+ \file bufrdeco_tableB.c
  \brief file with the code to read table B data (code and flag tables)
  */
 #include "bufrdeco.h"
@@ -33,7 +33,7 @@ const double pow10neg[8]= {1.0,  0.1,  0.01,  0.001,  0.0001,  0.00001,  0.00000
 
 /*!
   \fn int bufr_read_tableB ( struct bufrdeco b )
-  \brief Read a Table B file from a WMO csv formatted file and set the result in a struct \ref bufr_tableb
+  \brief Read a Table B file from a WMO csv formatted file and set the result in a struct \ref bufr_tableB
   \param b pointer to the struct \ref bufrdeco where to set the results
 
   Note that this function assumes that file is csv formatted as WMO table B
@@ -49,7 +49,7 @@ int bufr_read_tableB ( struct bufrdeco *b )
   char l[CSV_MAXL];
   char caux[512];
   char *tk[16];
-  struct bufr_tableb *tb;
+  struct bufr_tableB *tb;
   struct bufr_descriptor desc;
 
   //bufrdeco_assert ( b != NULL );
@@ -77,7 +77,7 @@ int bufr_read_tableB ( struct bufrdeco *b )
     }
 
   strcpy ( caux, tb->path );
-  memset ( tb, 0, sizeof ( struct bufr_tableb ) );
+  memset ( tb, 0, sizeof ( struct bufr_tableB ) );
   strcpy ( tb->path, caux );
   if ( ( t = fopen ( tb->path, "r" ) ) == NULL )
     {
@@ -152,22 +152,22 @@ int bufr_read_tableB ( struct bufrdeco *b )
 
 
 /*!
-  \fn int bufr_restore_original_tableb_item ( struct bufr_tableb *tb, struct bufrdeco *b, uint8_t mode, char *key )
+  \fn int bufr_restore_original_tableB_item ( struct bufr_tableB *tb, struct bufrdeco *b, uint8_t mode, char *key )
   \brief Restores the original table B parameters for a BUFR descriptor
-  \param tb pointer to struct \ref bufr_tableb where are stored all table B data
+  \param tb pointer to struct \ref bufr_tableB where are stored all table B data
   \param b pointer to the basic struct \ref bufrdeco
   \param mode integer with bit mask about changed parameteres by operator descriptors
   \param key descriptor string in format FXXYYY
 
   Return 0 if success, 1 otherwise
 */
-int bufr_restore_original_tableb_item ( struct bufr_tableb *tb, struct bufrdeco *b, uint8_t mode, char *key )
+int bufr_restore_original_tableB_item ( struct bufr_tableB *tb, struct bufrdeco *b, uint8_t mode, char *key )
 {
   buf_t i;
 
   bufrdeco_assert ( b != NULL && tb != NULL );
   
-  if ( bufr_find_tableb_index ( &i, tb, key ) )
+  if ( bufr_find_tableB_index ( &i, tb, key ) )
     {
       snprintf (b->error, sizeof (b->error), "%s(): descriptor '%s' not found in table B\n", __func__, key );
       return 1; // descritor not found
@@ -196,15 +196,15 @@ int bufr_restore_original_tableb_item ( struct bufr_tableb *tb, struct bufrdeco 
 }
 
 /*!
-  \fn int bufr_find_tableb_index ( buf_t *index, struct bufr_tableb *tb, const char *key )
-  \brief found a descriptor index in a struct \ref bufr_tableb
+  \fn int bufr_find_tableB_index ( buf_t *index, struct bufr_tableB *tb, const char *key )
+  \brief found a descriptor index in a struct \ref bufr_tableB
   \param index pointer  to a size_t where to set the result if success
-  \param tb pointer to struct \ref bufr_tableb where are stored all table B data
+  \param tb pointer to struct \ref bufr_tableB where are stored all table B data
   \param key descriptor string in format FXXYYY
 
   Return 0 if success, 1 otherwise
 */
-int bufr_find_tableb_index ( buf_t *index, struct bufr_tableb *tb, const char *key )
+int bufr_find_tableB_index ( buf_t *index, struct bufr_tableB *tb, const char *key )
 {
   uint32_t ix;
   buf_t i, i0;
@@ -241,7 +241,7 @@ int bufr_find_tableb_index ( buf_t *index, struct bufr_tableb *tb, const char *k
 }
 
 /*!
-  \fn int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrdeco *b, struct bufr_descriptor *d, int mode )
+  \fn int bufrdeco_tableB_compressed ( struct bufrdeco_compressed_ref *r, struct bufrdeco *b, struct bufr_descriptor *d, int mode )
   \brief get data from table B when parsing compressed data references
   \param r pointer to a struct \ref bufrdeco_compressed_ref where to set results
   \param b basic container struct \ref bufrdeco
@@ -250,12 +250,12 @@ int bufr_find_tableb_index ( buf_t *index, struct bufr_tableb *tb, const char *k
 
   If succeeded returns 0. If problem returns 1. If mode = 1 and no associated bits returns -1
 */
-int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrdeco *b, struct bufr_descriptor *d, int mode )
+int bufrdeco_tableB_compressed ( struct bufrdeco_compressed_ref *r, struct bufrdeco *b, struct bufr_descriptor *d, int mode )
 {
   buf_t i;
   uint32_t ival;
   uint8_t has_data;
-  struct bufr_tableb *tb;
+  struct bufr_tableB *tb;
   
   bufrdeco_assert ( b != NULL && r != NULL && d != NULL );
   
@@ -444,7 +444,7 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
 }
 
 /*!
-  \fn int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct bufr_descriptor *d )
+  \fn int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct bufr_descriptor *d )
   \brief Get data from a table B descriptor
   \param a pointer to a struct \ref bufr_atom_data where to set the results
   \param b pointer to the basic struct \ref bufrdeco
@@ -452,15 +452,15 @@ int bufrdeco_tableb_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
 
   Return 0 if success, 1 otherwise
 */
-int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct bufr_descriptor *d )
+int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct bufr_descriptor *d )
 {
   buf_t i, nbits = 0;
   uint32_t ival;
   uint8_t has_data;
   int32_t /*escale = 0,*/ reference = 0;
-  struct bufr_tableb *tb;
+  struct bufr_tableB *tb;
 
-  bufrdeco_assert ( a != NULL && b != NULL && d != NULL );
+  //bufrdeco_assert ( a != NULL && b != NULL && d != NULL );
   
   tb = & ( b->tables->b );
 
@@ -602,7 +602,7 @@ int bufrdeco_tableb_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
         {
           ival = ( uint32_t ) ( a->val + 0.5 );
           a->mask |= DESCRIPTOR_IS_CODE_TABLE;
-          if ( bufrdeco_explained_table_val ( a->ctable, 256, & ( b->tables->c ), & ( tb->item[i].tablec_ref ), & ( a->desc ), ival ) != NULL )
+          if ( bufrdeco_explained_table_val ( a->ctable, 256, & ( b->tables->c ), & ( tb->item[i].tableC_ref ), & ( a->desc ), ival ) != NULL )
             {
               a->mask |= DESCRIPTOR_HAVE_CODE_TABLE_STRING;
             }
