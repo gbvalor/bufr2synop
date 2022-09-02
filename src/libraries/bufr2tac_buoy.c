@@ -204,7 +204,9 @@ int parse_subset_as_buoy ( struct metreport *m, struct bufr2tac_subset_state *s,
       return 1;
     }
 
-
+  // copy WIGOS ID, if any 
+  memcpy(&m->g.wid, &m->buoy.wid, sizeof (struct wigos_id) );
+  
   /****** Second pass. Global results and consistence analysis ************/
 
   // adjust iw

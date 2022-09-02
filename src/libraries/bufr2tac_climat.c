@@ -154,6 +154,9 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr2tac_subset_state *
   sprintf ( aux,"%s%s%s%s%s", c->e.YYYY, c->e.MM, c->e.DD, c->e.HH, c->e.mm );
   YYYYMMDDHHmm_to_met_datetime ( &m->t, aux );
 
+   // copy WIGOS ID 
+  memcpy(&m->g.wid, &m->climat.wid, sizeof (struct wigos_id) );
+   
   if ( check_date_from_future ( m ) )
     {
       return 1;  // Bad date/time . Is a report from future!

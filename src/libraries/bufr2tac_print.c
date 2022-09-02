@@ -62,3 +62,39 @@ int print_html ( FILE *f, struct metreport *m )
   fprintf(f, "</pre>");
   return 0;
 }
+
+/*!
+ *  \fn size_t print_geo ( char **geo,  size_t lmax, struct metrepor *m )
+ *  \brief Prints a WIGOS identifier in a TAC output report
+ *  \param m pointer to struct \ref metreport where are both target and source
+ */
+size_t print_geo ( char **geo,  size_t lmax, struct metreport *m )
+{
+  size_t used;
+  char sep = '|';
+  
+  used = snprintf(*geo, lmax, "%8.4lf %9.4lf %6.1lf%c", m->g.lat, m->g.lon, m->g.alt, sep);
+  *geo += used;
+  return used;
+}
+
+/*!
+ *  \fn size_t print_wigos_id ( char **wid,  size_t lmax, struct metrepor *m )
+ *  \brief Prints a WIGOS identifier in a TAC output report
+ *  \param m pointer to struct \ref metreport where are both target and source
+ */
+  size_t print_wigos_id ( char **wid,  size_t lmax, struct metreport *m )
+{
+  char aux[40];
+  size_t used;
+  char sep = '|';
+  
+  if (m->g.wid.series == 0 && m->g.wid.issuer == 0 && m->g.wid.issue == 0 && m->g.wid.local_id[0] == '\0')
+    sprintf (aux,"0-0-0-MISSING");
+  else
+    sprintf (aux,"%d-%d-%d-%s", m->g.wid.series, m->g.wid.issuer, m->g.wid.issue, m->g.wid.local_id );
+ 
+  used = snprintf (*wid, lmax, "%-32s%c", aux, sep);
+  *wid += used;
+  return used;
+}

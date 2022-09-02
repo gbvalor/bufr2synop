@@ -35,6 +35,7 @@ void bufrtotac_print_usage ( void )
   printf ( "%s -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-X][-c][-h]\n", SELF );
   printf ( "       -c. The output is in csv format\n" );
   printf ( "       -D debug level. 0 = No debug, 1 = Debug, 2 = Verbose debug (default = 0)\n" );
+  printf ( "       -G. Print latitude, logitude and altitude \n" );
   printf ( "       -g. Print WIGOS ID\n" );
   printf ( "       -h Print this help\n" );
   printf ( "       -i Input file. Complete input path file for bufr file\n" );
@@ -166,7 +167,7 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
   /*
      Read input options
   */
-  while ( ( iopt = getopt ( _argc, _argv, "cD:hi:jHI:no:S:st:TvgVWRxX" ) ) !=-1 )
+  while ( ( iopt = getopt ( _argc, _argv, "cD:hi:jHI:no:S:st:TvgGVWRxX" ) ) !=-1 )
     switch ( iopt )
       {
       case 'i':
@@ -213,12 +214,6 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
             if (DEBUG < 3)
              bufr2tac_set_debug_level ( DEBUG ); // set debug level to bufr2tac library
           }
-        break;
-        
-      case 'E':
-#ifdef USE_BUFRDC
-        ECMWF = 1;
-#endif
         break;
         
       case 'H':
@@ -281,6 +276,10 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
         PRINT_WIGOS_ID = 1;
         break;
         
+      case 'G':
+        PRINT_GEO = 1;
+        break;
+        
       case 'W':
         WRITE_OFFSETS = 1;
         break;
@@ -332,8 +331,15 @@ int bufrtotac_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subse
 
   // Finaly we call to bufr2tac library
   bufr2tac_clean_metreport( m );
+  
+  // Set the subset being parsed
+  m->subset = SUBSET;
+  
   if (PRINT_WIGOS_ID)
-    m->print_mask = 1;
+    m->print_mask |= PRINT_BITMASK_WIGOS;
+  
+  if (PRINT_GEO)
+    m->print_mask |= PRINT_BITMASK_GEO;
   
   m->h = &b->header;
   res = parse_subset_sequence ( m, &b->seq, st, kdtlst, nlst, ksec1, err );

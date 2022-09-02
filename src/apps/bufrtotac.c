@@ -113,9 +113,11 @@ int NOTAC; /*!< if == 1 then do not decode to TAC */
 int FIRST_SUBSET; /*!< First subset index in output. First available is 0 */
 int LAST_SUBSET; /*!< Last subset index in output. First available is 0 */
 int PRINT_WIGOS_ID; /*!< if != 0 then print wigos id in output */
+int PRINT_GEO; /*!< if != 0 then print latitude, longitude and altitude */
 int READ_OFFSETS; /*!< if != then read bit offsets */
 int WRITE_OFFSETS; /*!< if != 0 then write bit offsets */
 int USE_CACHE; /*!< if != the use cache of tables */
+int SUBSET ; /*!< Index of subset in a BUFR being parsed */
 FILE *FL; /*!< Buffer to read the list of files */
 
 #ifdef DEBUG_TIME
@@ -124,7 +126,7 @@ FILE *FL; /*!< Buffer to read the list of files */
 
 int main ( int argc, char *argv[] )
 {
-  int subset, first_subset, last_subset;
+  int first_subset, last_subset;
   char subset_id[32];
   struct bufrdeco_subset_sequence_data *seq;
 
@@ -145,10 +147,6 @@ int main ( int argc, char *argv[] )
       clk_end = clock();  
       print_timing (clk_start,clk_end,bufrdeco_init());
 #endif      
-
-  // If needed mark to use ECMWF tables
-  if ( ECMWF )
-    BUFR.mask |= BUFRDECO_USE_ECMWF_TABLES;
 
   if ( HTML )
     BUFR.mask |= BUFRDECO_OUTPUT_HTML;
@@ -254,19 +252,17 @@ int main ( int argc, char *argv[] )
       if ( last_subset < first_subset)
         last_subset = BUFR.sec3.subsets - 1;
 
-      for ( subset = first_subset; subset <= last_subset ; subset++ )
+      for ( SUBSET = first_subset; SUBSET <= last_subset ; SUBSET++ )
         {
 #ifdef DEBUG_TIME      
           clk_start = clock ();
 #endif          
-          if ( ( seq = bufrdeco_get_target_subset_sequence_data ( subset, &BUFR ) ) == NULL )
-//          if ( ( seq = bufrdeco_get_subset_sequence_data ( &BUFR ) ) == NULL )
+          if ( ( seq = bufrdeco_get_target_subset_sequence_data ( SUBSET, &BUFR ) ) == NULL )
             {
               if ( DEBUG )
                 printf ( "# %s", BUFR.error );
               goto fin;
             }
-          //printf ("#First = %d. Last = %d. Parsing to TAC subset %lu\n", FIRST_SUBSET, LAST_SUBSET, BUFR.state.subset - 1);
 #ifdef DEBUG_TIME        
           clk_end = clock();  
           print_timing (clk_start, clk_end,bufrdeco_get_target_subset_sequence_data());
@@ -274,11 +270,11 @@ int main ( int argc, char *argv[] )
 
           if ( VERBOSE )
             {
-              if ( ( subset == first_subset ) && BUFR.sec3.compressed )
+              if ( ( SUBSET == first_subset ) && BUFR.sec3.compressed )
                 print_bufrdeco_compressed_data_references ( & ( BUFR.refs ) );
               if ( BUFR.mask & BUFRDECO_OUTPUT_HTML )
                 {
-                  sprintf ( subset_id, "subset_%d", subset );
+                  sprintf ( subset_id, "subset_%d", SUBSET );
                   bufrdeco_print_subset_sequence_data_tagged_html ( seq, subset_id );
                 }
               else
@@ -304,7 +300,7 @@ int main ( int argc, char *argv[] )
               // And here print the results
               if ( XML )
                 {
-                  if ( subset == 0 )
+                  if ( SUBSET == 0 )
                     fprintf ( stdout, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
                   print_xml ( stdout, &REPORT );
                 }
@@ -314,7 +310,7 @@ int main ( int argc, char *argv[] )
                 }
               else if ( CSV )
                 {
-                  if ( subset == 0 )
+                  if ( SUBSET == 0 )
                     fprintf ( stdout, "TYPE,FILE,DATETIME,INDEX,NAME,COUNTRY,LATITUDE,LONGITUDE,ALTITUDE,REPORT\n" );
                   print_csv ( stdout, &REPORT );
                 }

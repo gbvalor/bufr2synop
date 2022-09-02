@@ -337,19 +337,19 @@ size_t print_temp_a_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
-  \fn size_t print_temp_a (char *report, size_t lmax, struct temp_chunks *t, int mode )
+  \fn size_t print_temp_a (struct metreport *m )
   \brief Prints the part A of a TEMP report into a string
-  \param report string where to write the results
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
-  \param mode Flags the mode it prints. If = 1 then prints WIGOS identifier 
+  \param m pointer to struct \ref metreport where are both target and source
+  
+  If OK returns 0, otherwise 1
 */
-int print_temp_a ( char *report, size_t lmax, struct temp_chunks *t, int mode )
+int print_temp_a (  struct metreport *m )
 {
+  char *c = &(m->alphanum[0]);
   size_t used = 0;
-  char *c;
+  size_t lmax = sizeof(m->alphanum);
+  struct temp_chunks *t = &m->temp;
 
-  c = report;
 
   // Needs time extension
   if ( t->a.e.YYYY[0] == 0  || t->a.e.YYYY[0] == '0')
@@ -357,8 +357,15 @@ int print_temp_a ( char *report, size_t lmax, struct temp_chunks *t, int mode )
       return 1;
     }
 
-  if ( mode )
-    used += print_temp_wigos_id ( &c, lmax, t );
+  if ( m->print_mask & PRINT_BITMASK_WIGOS )
+    {
+      used += print_wigos_id ( &c, lmax, m );
+    }
+
+  if ( m->print_mask & PRINT_BITMASK_GEO )
+    {
+      used += print_geo ( &c, lmax, m );
+    }
 
   used += print_temp_a_sec1 ( &c, lmax - used, t );
   used += print_temp_a_sec2 ( &c, lmax - used, t );
@@ -584,19 +591,19 @@ size_t print_temp_b_sec8 ( char **sec8, size_t lmax, struct temp_chunks *t )
 
 
 /*!
-  \fn int print_temp_b (char *report, size_t lmax, struct temp_chunks *t, int mode )
+  \fn int print_temp_b (struct metreport *m )
   \brief Prints the part B of a TEMP report into a string
-  \param report string where to write the results
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
-  \param mode Flags the mode it prints. If = 1 then prints WIGOS identifier 
-*/
-int print_temp_b ( char *report, size_t lmax, struct temp_chunks *t, int mode )
-{
-  size_t used = 0;
-  char *c;
+  \param m pointer to struct \ref metreport where are both target and source
 
-  c = report;
+  If OK returns 0, otherwise 1
+ */
+int print_temp_b ( struct metreport *m )
+{
+  char *c = &(m->alphanum2[0]);
+  size_t used = 0;
+  size_t lmax = sizeof(m->alphanum);
+  struct temp_chunks *t = &m->temp;
+
 
   // Needs time extension
   if ( t->b.e.YYYY[0] == 0  || t->b.e.YYYY[0] == '0')
@@ -604,8 +611,15 @@ int print_temp_b ( char *report, size_t lmax, struct temp_chunks *t, int mode )
       return 1;
     }
 
-  if ( mode )
-    used += print_temp_wigos_id ( &c, lmax, t );
+  if ( m->print_mask & PRINT_BITMASK_WIGOS )
+    {
+      used += print_wigos_id ( &c, lmax, m );
+    }
+
+  if ( m->print_mask & PRINT_BITMASK_GEO )
+    {
+      used += print_geo ( &c, lmax, m );
+    }
 
   used += print_temp_b_sec1 ( &c, lmax - used, t );
   used += print_temp_b_sec5 ( &c, lmax - used, t );
@@ -815,19 +829,19 @@ size_t print_temp_c_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
-  \fn int print_temp_c (char *report, size_t lmax, struct temp_chunks *t, int mode )
+  \fn int print_temp_c (struct metreport *m )
   \brief Prints the part C of a TEMP report into a string
-  \param report string where to write the results
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
-  \param mode Flags the mode it prints. If = 1 then prints WIGOS identifier 
-*/
-int print_temp_c ( char *report, size_t lmax, struct temp_chunks *t, int mode )
-{
-  char *c;
-  size_t used = 0;
+  \param m pointer to struct \ref metreport where are both target and source
 
-  c = report;
+  If OK returns 0, otherwise 1
+*/
+int print_temp_c ( struct metreport *m )
+{
+  char *c = &(m->alphanum3[0]);
+  size_t used = 0;
+  size_t lmax = sizeof(m->alphanum);
+  struct temp_chunks *t = &m->temp;
+
 
   // Needs time extension
   if ( t->c.e.YYYY[0] == 0  || t->c.e.YYYY[0] == '0')
@@ -835,8 +849,15 @@ int print_temp_c ( char *report, size_t lmax, struct temp_chunks *t, int mode )
       return 1;
     }
 
-  if ( mode )
-    used += print_temp_wigos_id ( &c, lmax, t );
+  if ( m->print_mask & PRINT_BITMASK_WIGOS )
+    {
+      used += print_wigos_id ( &c, lmax, m );
+    }
+
+  if ( m->print_mask & PRINT_BITMASK_GEO )
+    {
+      used += print_geo ( &c, lmax, m );
+    }
 
   used += print_temp_c_sec1 ( &c, lmax - used, t );
   used += print_temp_c_sec2 ( &c, lmax - used, t );
@@ -992,42 +1013,18 @@ size_t print_temp_d_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
- *  \fn size_t print_climat_wigos_id ( char **wid,  size_t lmax, struct buoy_chunks *b )
- *  \brief Prints a WIGOS identifier in a temp report
- */
-size_t print_temp_wigos_id ( char **wid,  size_t lmax, struct temp_chunks *t )
-{
-  char *c = *wid;
-  size_t used = 0;
-
-  if (t->wid.series == 0 && t->wid.issuer == 0 && t->wid.issue == 0 && t->wid.local_id[0] == '\0')
-    used += snprintf (c, lmax, "0-0-0-MISSING");
-  else
-    used += snprintf ( c + used, lmax, "%d-%d-%d-%s", t->wid.series, t->wid.issuer, t->wid.issue, t->wid.local_id );
-  
-  while ( used < 32 )
-    c[used++] = ' ';
-  c[used++] = '|';
-  c[used] = 0;
-  *wid = c + used;
-
-  return used;
-}
-
-
-/*!
-  \fn int print_temp_d (char *report, size_t lmax, struct temp_chunks *t)
+  \fn int print_temp_d (struct metreport *m)
   \brief Prints the part D of a TEMP report into a string
-  \param report string where to write the results
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
-  \param mode Flags the mode it prints. If = 1 then prints WIGOS identifier 
+  \param m pointer to struct \ref metreport where are both target and source
+
+  If OK returns 0, otherwise 1
 */
-int print_temp_d ( char *report, size_t lmax, struct temp_chunks *t, int mode )
+int print_temp_d ( struct metreport *m )
 {
-  char *c;
+  char *c = &(m->alphanum4[0]);
   size_t used = 0;
-  c = report;
+  size_t lmax = sizeof(m->alphanum);
+  struct temp_chunks *t = &m->temp;
 
   // Needs time extension
   if ( t->d.e.YYYY[0] == 0  || t->d.e.YYYY[0] == '0')
@@ -1035,8 +1032,15 @@ int print_temp_d ( char *report, size_t lmax, struct temp_chunks *t, int mode )
       return 1;
     }
 
-  if ( mode )
-    used += print_temp_wigos_id ( &c, lmax, t );
+  if ( m->print_mask & PRINT_BITMASK_WIGOS )
+    {
+      used += print_wigos_id ( &c, lmax, m );
+    }
+
+  if ( m->print_mask & PRINT_BITMASK_GEO )
+    {
+      used += print_geo ( &c, lmax, m );
+    }
 
   used += print_temp_d_sec1 ( &c, lmax - used, t );
   used += print_temp_d_sec5 ( &c, lmax - used, t );
@@ -1047,35 +1051,34 @@ int print_temp_d ( char *report, size_t lmax, struct temp_chunks *t, int mode )
 }
 
 /*!
-   \fn int print_temp ( struct metreport *m , int mode )
+   \fn int print_temp_report ( struct metreport *m )
    \brief print the four parts of a decoded TEMP report from a BUFR file into strings
    \param m pointer to a struct \ref metreport in which alphanumeric string members stores the reults
-   \param mode If == 0 legacy mode. Igf == 1 the print WIGOS identifier
- */
-int print_temp ( struct metreport *m, int mode )
+*/
+int print_temp_report ( struct metreport *m )
 {
   // It is required that al lesat a standard level where decoded in SEC A
   if ( m->temp.a.mask & TEMP_SEC_2 )
     {
-      print_temp_a ( m->alphanum, REPORT_LENGTH, &m->temp, mode );
+      print_temp_a ( m );
     }
 
   // It is required a significant TH or wind poind for sec B
   if ( m->temp.b.mask & ( TEMP_SEC_5 | TEMP_SEC_6 ) )
     {
-      print_temp_b ( m->alphanum2, REPORT_LENGTH, &m->temp, mode );
+      print_temp_b ( m );
     }
 
   // It is required a standard level for SEC C
   if ( m->temp.c.mask & TEMP_SEC_2 )
     {
-      print_temp_c ( m->alphanum3, REPORT_LENGTH, &m->temp, mode );
+      print_temp_c ( m );
     }
 
   // It is required a significant TH or wind poind for sec B
   if ( m->temp.d.mask & ( TEMP_SEC_5 | TEMP_SEC_6 ) )
     {
-      print_temp_d ( m->alphanum4, REPORT_LENGTH, &m->temp, mode );
+      print_temp_d ( m );
     }
 
   return 0;

@@ -283,6 +283,9 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s,
       return 1;
     }
 
+  // copy WIGOS ID 
+  memcpy(&m->g.wid, &m->temp.wid, sizeof (struct wigos_id) );
+  
   /* Guess the type of TEMP report according with data parsed */
   if ( t->a.s1.II[0] )
     {

@@ -707,45 +707,20 @@ size_t print_climat_sec4 ( char **sec4, size_t lmax, struct climat_chunks *cl )
   return used;
 }
 
-/*!
- *  \fn size_t print_climat_wigos_id ( char **wid,  size_t lmax, struct buoy_chunks *b )
- *  \brief Prints a WIGOS identifier in a climat report
- */
-size_t print_climat_wigos_id ( char **wid,  size_t lmax, struct climat_chunks *cl )
-{
-  char *c = *wid;
-  size_t used = 0;
-
-  if (cl->wid.series == 0 && cl->wid.issuer == 0 && cl->wid.issue == 0 && cl->wid.local_id[0] == '\0')
-    used += snprintf (c, lmax, "0-0-0-MISSING");
-  else
-    used += snprintf ( c + used, lmax, "%d-%d-%d-%s", cl->wid.series, cl->wid.issuer, cl->wid.issue, cl->wid.local_id );
-  
-  while ( used < 32 )
-    c[used++] = ' ';
-  c[used++] = '|';
-  c[used] = 0;
-  *wid = c + used;
-
-  return used;
-}
-
 
 /*!
- \fn int print_climat(char *report, size_t lmax, struct climat_chunks *cl, int mode)
+ \fn int print_climat_report ( struct metreport *m )
  \brief prints a climat into a string
- \param report target string
- \param lmax max size of string
- \param cl pointer to a struct \ref climat_chunks with the result of parse tasks
- \param mode If == 0 legacy mode. If == 1 the print WIGOS identifier
+ \param m pointer to struct \ref metreport where are both target and source
 
- returns 0 if all went right
+  If OK returns 0, otherwise 1
 */
-int print_climat ( char *report, size_t lmax, struct climat_chunks *cl, int mode )
+int print_climat_report ( struct metreport *m )
 {
-  char *c;
+  char *c = &(m->alphanum[0]);
   size_t used = 0;
-  c = report;
+  size_t lmax = sizeof(m->alphanum);
+  struct climat_chunks *cl = &m->climat;
 
   // Needs time extension
   if ( cl->e.YYYY[0] == 0  || cl->e.YYYY[0] == '0' || cl->e.MM[0] == 0 )
@@ -753,9 +728,15 @@ int print_climat ( char *report, size_t lmax, struct climat_chunks *cl, int mode
       return 1;
     }
 
-  if ( mode )
-    used += print_climat_wigos_id ( &c, lmax, cl );
+  if ( m->print_mask & PRINT_BITMASK_WIGOS )
+    {
+      used += print_wigos_id ( &c, lmax, m );
+    }
 
+  if ( m->print_mask & PRINT_BITMASK_GEO )
+    {
+      used += print_geo ( &c, lmax, m );
+    }
 
   used += print_climat_sec0 ( &c, lmax - used, cl );
 

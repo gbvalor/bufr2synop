@@ -35,10 +35,10 @@ size_t print_buoy_sec0 ( char **sec0, size_t lmax, struct buoy_chunks *b )
   size_t used = 0;
   char *c = *sec0;
 
-      used += snprintf ( c + used, lmax - used, "%s%s%s%s%s", b->e.YYYY, b->e.MM, b->e.DD, b->e.HH, b->e.mm );
+  used += snprintf ( c + used, lmax - used, "%s%s%s%s%s", b->e.YYYY, b->e.MM, b->e.DD, b->e.HH, b->e.mm );
 
   // Print type
-      used += snprintf ( c + used, lmax - used, " %s%s", b->s0.MiMi, b->s0.MjMj );
+  used += snprintf ( c + used, lmax - used, " %s%s", b->s0.MiMi, b->s0.MjMj );
 
   if ( b->s0.A1[0] && b->s0.bw[0] && b->s0.nbnbnb[0] )
     {
@@ -50,21 +50,21 @@ size_t print_buoy_sec0 ( char **sec0, size_t lmax, struct buoy_chunks *b )
     }
 
 
-      used += snprintf ( c + used, lmax - used, " %s%s%s", b->s0.YY, b->s0.MM, b->s0.J );
+  used += snprintf ( c + used, lmax - used, " %s%s%s", b->s0.YY, b->s0.MM, b->s0.J );
 
-      if ( b->s0.iw[0] )
-        {
-          used += snprintf ( c + used, lmax - used, " %s%s%s", b->s0.GG, b->s0.gg, b->s0.iw );
-        }
-      else
-        {
-          used += snprintf ( c + used, lmax - used, " %s%s/", b->s0.GG, b->s0.gg );
-        }
+  if ( b->s0.iw[0] )
+    {
+      used += snprintf ( c + used, lmax - used, " %s%s%s", b->s0.GG, b->s0.gg, b->s0.iw );
+    }
+  else
+    {
+      used += snprintf ( c + used, lmax - used, " %s%s/", b->s0.GG, b->s0.gg );
+    }
 
-      used += snprintf ( c + used, lmax - used, " %s%s", b->s0.Qc, b->s0.LaLaLaLaLa );
+  used += snprintf ( c + used, lmax - used, " %s%s", b->s0.Qc, b->s0.LaLaLaLaLa );
 
 
-      used += snprintf ( c + used, lmax - used, " %s", b->s0.LoLoLoLoLoLo );
+  used += snprintf ( c + used, lmax - used, " %s", b->s0.LoLoLoLoLoLo );
 
   if ( b->s0.QA[0] || b->s0.Ql[0] || b->s0.Qt[0] )
     {
@@ -80,7 +80,7 @@ size_t print_buoy_sec0 ( char **sec0, size_t lmax, struct buoy_chunks *b )
       if ( b->s0.Qt[0] )
         {
           used +=snprintf ( c + used, lmax - used, "%s", b->s0.Qt );
-        } 
+        }
       else
         {
           used += snprintf ( c + used, lmax - used,  "/" );
@@ -137,27 +137,27 @@ size_t print_buoy_sec1 ( char **sec1, size_t lmax, struct buoy_chunks *b )
         }
 
       // 0ddff
-          if ( b->s1.dd[0] || b->s1.ff[0] )
+      if ( b->s1.dd[0] || b->s1.ff[0] )
+        {
+          used += snprintf ( c + used, lmax - used, " 0" );
+          if ( b->s1.dd[0] )
             {
-              used += snprintf ( c + used, lmax - used, " 0" );
-              if ( b->s1.dd[0] )
-                {
-                  used += snprintf ( c + used, lmax - used, "%s", b->s1.dd );
-                }
-              else
-                {
-                  used += snprintf ( c + used, lmax - used, "//" );
-                }
-
-              if ( b->s1.ff[0] )
-                {
-                  used += snprintf ( c + used, lmax - used, "%s", b->s1.ff );
-                }
-              else
-                {
-                  used += snprintf ( c + used, lmax - used, "//" );
-                }
+              used += snprintf ( c + used, lmax - used, "%s", b->s1.dd );
             }
+          else
+            {
+              used += snprintf ( c + used, lmax - used, "//" );
+            }
+
+          if ( b->s1.ff[0] )
+            {
+              used += snprintf ( c + used, lmax - used, "%s", b->s1.ff );
+            }
+          else
+            {
+              used += snprintf ( c + used, lmax - used, "//" );
+            }
+        }
 
       // 1snTTT
       if ( b->s1.TTT[0] )
@@ -184,7 +184,7 @@ size_t print_buoy_sec1 ( char **sec1, size_t lmax, struct buoy_chunks *b )
         }
 
       // printf 5appp
-      if (  b->s1.a[0] || b->s1.ppp[0] )
+      if ( b->s1.a[0] || b->s1.ppp[0] )
         {
           if ( b->s1.a[0] == 0 )
             {
@@ -362,53 +362,54 @@ size_t print_buoy_sec3 ( char **sec3, size_t lmax, struct buoy_chunks *b )
 
 /*!
  *  \fn size_t print_synop_wigos_id ( char **wid,  size_t lmax, struct buoy_chunks *b )
- *  \brief Prints a WIGOS identifier in a buoy report 
+ *  \brief Prints a WIGOS identifier in a buoy report
  */
 size_t print_buoy_wigos_id ( char **wid,  size_t lmax, struct buoy_chunks *b )
 {
-  char *c = *wid;
+  char aux[40];
   size_t used = 0;
-  
-  if (b->wid.series == 0 && b->wid.issuer == 0 && b->wid.issue == 0 && b->wid.local_id[0] == '\0')
-    used += snprintf (c, lmax, "0-0-0-MISSING");
-  else
-    used += snprintf ( c + used, lmax, "%d-%d-%d-%s", b->wid.series, b->wid.issuer, b->wid.issue, b->wid.local_id );
-  
-  while ( used < 32 )
-    c[used++] = ' ';
-  c[used++] = '|';
-  c[used] = 0;
-  *wid = c + used;
+  char sep = '|';
 
+  if ( b->wid.series == 0 && b->wid.issuer == 0 && b->wid.issue == 0 && b->wid.local_id[0] == '\0' )
+    sprintf ( aux,"0-0-0-MISSING" );
+  else
+    sprintf ( aux,"%d-%d-%d-%s", b->wid.series, b->wid.issuer, b->wid.issue, b->wid.local_id );
+
+  used = snprintf ( *wid, lmax, "%-32s%c", aux, sep );
+  *wid += used;
   return used;
 }
 
 
 /*!
- \fn int print_buoy(char *report, size_t lmax, struct buoy_chunks *b, int mode  )
+ \fn int print_buoy_report(struct metreport *m )
  \brief prints a buoy into a string
- \param report target string
- \param lmax max size of string
- \param b pointer to a struct \ref buoy_chunks with the result of parse tasks
- \param mode If == 0 legacy mode. If == 1 the print WIGOS identifier
+ \param m pointer to struct \ref metreport where are both target and source
 
- returns 0 if all went right
+
+  If OK returns 0, otherwise 1
 */
-int print_buoy ( char *report, size_t lmax, struct buoy_chunks *b, int mode )
+int print_buoy_report ( struct metreport *m )
 {
-  char *c;
+  char *c = & ( m->alphanum[0] );
   size_t used = 0;
+  size_t lmax = sizeof ( m->alphanum );
+  struct buoy_chunks *b = &m->buoy;
 
-  c = report;
-
-  if ( mode )
-    used += print_buoy_wigos_id ( &c, lmax, b );
-  
-  
   // Needs time extension
-  if ( b->e.YYYY[0] == 0  || b->e.YYYY[0] == '0')
+  if ( b->e.YYYY[0] == 0  || b->e.YYYY[0] == '0' )
     {
       return 1;
+    }
+
+  if ( m->print_mask & PRINT_BITMASK_WIGOS )
+    {
+      used += print_wigos_id ( &c, lmax, m );
+    }
+
+  if ( m->print_mask & PRINT_BITMASK_GEO )
+    {
+      used += print_geo ( &c, lmax, m );
     }
 
   print_buoy_sec0 ( &c, lmax, b );

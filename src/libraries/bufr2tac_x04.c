@@ -116,6 +116,12 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
+      else if ( s->ival < 2000 || s->ival > 2050 )
+        {
+          if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+            bufr2tac_set_error ( s, 2, "syn_parse_x04()", "Bad year" );
+          return 1;
+        }
       sprintf ( syn->e.YYYY, "%04d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_YEAR;
       break;
@@ -230,7 +236,7 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && ( s->a->mask & DESCRIPTOR_VALUE_MISSING ) == 0 )
         bufr2tac_set_error ( s, 0, "syn_parse_x04()", "Descriptor not parsed" );
       break;
     }
@@ -255,6 +261,13 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
+      else if ( s->ival < 2000 || s->ival > 2050 )
+        {
+          if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+            bufr2tac_set_error ( s, 2, "buoy_parse_x04()", "Bad year" );
+          return 1;
+        }
+
       if ( b->e.YYYY[0] == 0 )
         {
           sprintf ( b->e.YYYY, "%04d", s->ival );
@@ -374,7 +387,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && ( s->a->mask & DESCRIPTOR_VALUE_MISSING ) == 0 )
         bufr2tac_set_error ( s, 0, "buoy_parse_x04()", "Descriptor not parsed" );
       break;
     }
@@ -404,6 +417,13 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           return 0;
         }
+      else if ( s->ival < 2000 || s->ival > 2050 )
+        {
+          if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+            bufr2tac_set_error ( s, 2, "climat_parse_x04()", "Bad year" );
+          return 1;
+        }
+
       if ( s->i && ( s->a1->desc.x == 4 ) && ( s->a1->desc.y == 1 ) )
         {
           // this is the final year of a normal period
@@ -416,7 +436,7 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           sprintf ( c->e.YYYY, "%04d", s->ival );
           s->mask |= SUBSET_MASK_HAVE_YEAR;
-          sprintf ( c->s0.JJJ, "%03d", abs(s->ival) % 1000 );
+          sprintf ( c->s0.JJJ, "%03d", abs ( s->ival ) % 1000 );
           c->mask |= CLIMAT_SEC0;
         }
       break;
@@ -537,7 +557,7 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
       break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && ( s->a->mask & DESCRIPTOR_VALUE_MISSING ) == 0 )
         bufr2tac_set_error ( s, 0, "climat_parse_x04()", "Descriptor not parsed" );
       break;
     }
@@ -560,6 +580,12 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
           return 0;
+        }
+      else if ( s->ival < 2000 || s->ival > 2050 )
+        {
+          if ( BUFR2TAC_DEBUG_LEVEL > 0 )
+            bufr2tac_set_error ( s, 2, "temp_parse_x04()", "Bad year" );
+          return 1;
         }
       if ( t->a.e.YYYY[0] == 0 )
         {
@@ -690,7 +716,7 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
       break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+      if ( BUFR2TAC_DEBUG_LEVEL > 1 && ( s->a->mask & DESCRIPTOR_VALUE_MISSING ) == 0 )
         bufr2tac_set_error ( s, 0, "temp_parse_x04()", "Descriptor not parsed" );
       break;
     }

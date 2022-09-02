@@ -246,6 +246,9 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
       return 1;
     }
 
+  // copy WIGOS ID 
+  memcpy(&m->g.wid, &m->synop.wid, sizeof (struct wigos_id) );
+  
   if ( strcmp ( s->type_report, "AAXX" ) == 0 && ( syn->s0.II[0] == 0 || syn->s0.iii[0] == 0 ) )
     {
       if ( s->mask & SUBSET_MASK_HAVE_WIGOS_ID &&

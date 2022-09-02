@@ -808,50 +808,30 @@ size_t print_synop_sec5 ( char **sec5, size_t lmax, struct synop_chunks *syn )
   return used;
 }
 
-size_t print_synop_wigos_id ( char **wid,  size_t lmax, struct synop_chunks *syn )
-{
-  char *c = *wid;
-  size_t used = 0;
-
-  if (syn->wid.series == 0 && syn->wid.issuer == 0 && syn->wid.issue == 0 && syn->wid.local_id[0] == '\0')
-    used += snprintf (c, lmax, "0-0-0-MISSING");
-  else
-    used += snprintf ( c + used, lmax, "%d-%d-%d-%s", syn->wid.series,syn->wid.issuer, syn->wid.issue, syn->wid.local_id );
-  
-  while ( used < 32 )
-    c[used++] = ' ';
-  c[used++] = '|';
-  c[used] = 0;
-  *wid = c + used;
-
-  return used;
-}
 
 /*!
- \fn int print_synop(char *report, size_t lmax, struct synop_chunks *syn, int mode)
+ \fn int print_synop(struct metreport *m)
  \brief prints a synop into a string
- \param report target string
- \param lmax max size of string
- \param syn pointer to a struct \ref synop_chunks with the result of parse tasks
- \param mode If == 0 legacy mode. If == 1 the print WIGOS identifier
+ \param m pointer to struct \ref metreport where are both target and source
 
- returns 0 if all went right
+  If OK returns 0, otherwise 1
 */
-int print_synop ( char *report, size_t lmax, struct synop_chunks *syn, int mode )
+int print_synop_report (struct metreport *m)
 {
-  char *c = report;
+  char *c = &(m->alphanum[0]);
   size_t used = 0;
-
-
+  size_t lmax = sizeof(m->alphanum);
+  struct synop_chunks *syn = &m->synop;
+  
   // Needs time extension
-  if ( syn->e.YYYY[0] == 0 || syn->e.YYYY[0] == '0')
+  if ( syn->e.YYYY[0] == 0 || syn->e.YYYY[0] == '0' )
     {
       return 1;
     }
 
-  if ( mode )
+  if ( m->print_mask & PRINT_BITMASK_WIGOS )
     {
-      used += print_synop_wigos_id ( &c, lmax, syn );
+      used += print_wigos_id ( &c, lmax, m );
     }
   else
     {
@@ -861,6 +841,11 @@ int print_synop ( char *report, size_t lmax, struct synop_chunks *syn, int mode 
         return 1;
     }
 
+  if ( m->print_mask & PRINT_BITMASK_GEO )
+    {
+      used += print_geo ( &c, lmax, m );
+    }
+    
   used += print_synop_sec0 ( &c, lmax - used, syn );
 
   if ( syn->mask & ( SYNOP_SEC1 | SYNOP_SEC2 | SYNOP_SEC3 | SYNOP_SEC4 | SYNOP_SEC5 ) )
@@ -883,4 +868,4 @@ int print_synop ( char *report, size_t lmax, struct synop_chunks *syn, int mode 
 
   return 0;
 }
-
+ 

@@ -308,7 +308,7 @@
  * \def BUFRDECO_TABLES_CACHE_SIZE
  * \brief Max number of structs \ref bufr_tables in a \ref bufr_tables_cache
  */
-#define BUFRDECO_TABLES_CACHE_SIZE (8)
+#define BUFRDECO_TABLES_CACHE_SIZE (10)
 
 /*! \typedef buf_t
     \brief Type to set offsets and dimension of arrays used in bufrdeco

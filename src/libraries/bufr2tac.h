@@ -201,6 +201,10 @@
 
 #define REPORT_LENGTH (16384)
 
+#define PRINT_BITMASK_WIGOS (1)
+
+#define PRINT_BITMASK_GEO (2)
+
 //#define OLD_VERSION
 #ifdef OLD_VERSION
 /*!
@@ -291,6 +295,7 @@ struct bufr2tac_subset_state
 */
 struct met_geo
 {
+  struct wigos_id wid; /*!< The WIGOS Id if known or '0-0-0-MISSING' */
   char index[16]; /*!< The index indetifier of place, if any */
   char name[80]; /*!< The common name of place */
   char country[80]; /*!< The country name, if known */
@@ -306,9 +311,9 @@ struct met_geo
 struct metreport
 {
   char source[256];/*!< The bufr source filename */
-  int print_mask; /*!< Mode of print 0=legacy, 1= with WIGOS id */
+  int subset; /*!< Subset index in bufr report */
+  int print_mask; /*!< Mode of print 0=legacy, 1= with WIGOS id, 2=with lat/lon/alt */
   struct gts_header *h; /*!< A pointer to a GTS Header Bulletin */
-  struct wigos_id wigos; /*!< A WIGOS station identifier, if any */
   struct met_datetime t; /*!< The date/time information for report */
   struct met_geo g; /*!< The geographical info */
   struct synop_chunks synop; /*!< The possible parsed synop */
@@ -408,8 +413,10 @@ char * grad_to_ec ( char *target, double grad );
 int check_kj_m2 ( double val );
 int check_j_cm2 ( double val );
 
+size_t print_geo ( char **geo,  size_t lmax, struct metreport *m );
+size_t print_wigos_id ( char **wid,  size_t lmax, struct metreport *m );
 
-int print_synop ( char *report, size_t lmax, struct synop_chunks *syn , int mode);
+int print_synop_report ( struct metreport *m);
 size_t print_synop_sec0 ( char **sec0, size_t lmax, struct synop_chunks *syn );
 size_t print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn );
 size_t print_synop_sec2 ( char **sec2, size_t lmax, struct synop_chunks *syn );
@@ -418,14 +425,15 @@ size_t print_synop_wigos_id ( char **wid,  size_t lmax, struct synop_chunks *syn
 
 int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b );
 
-int print_buoy ( char *report, size_t lmax, struct buoy_chunks *syn, int mode );
+
+int print_buoy_report ( struct metreport *m);
 size_t print_buoy_sec0 ( char **sec0, size_t lmax, struct buoy_chunks *b );
 size_t print_buoy_sec1 ( char **sec1, size_t lmax, struct buoy_chunks *b );
 size_t print_buoy_sec2 ( char **sec2, size_t lmax, struct buoy_chunks *b );
 size_t print_buoy_sec3 ( char **sec3, size_t lmax, struct buoy_chunks *b );
 size_t print_buoy_wigos_id ( char **wid,  size_t lmax, struct buoy_chunks *b);
 
-int print_climat ( char *report, size_t lmax, struct climat_chunks *cl, int mode );
+int print_climat_report ( struct metreport *m);
 size_t print_climat_sec0 ( char **sec0, size_t lmax, struct climat_chunks *cl );
 size_t print_climat_sec1 ( char **sec1, size_t lmax, struct climat_chunks *cl );
 size_t print_climat_sec2 ( char **sec2, size_t lmax, struct climat_chunks *cl );
@@ -433,26 +441,26 @@ size_t print_climat_sec3 ( char **sec3, size_t lmax, struct climat_chunks *cl );
 size_t print_climat_sec4 ( char **sec4, size_t lmax, struct climat_chunks *cl );
 size_t print_climat_wigos_id ( char **wid,  size_t lmax, struct climat_chunks *cl);
 
-int print_temp ( struct metreport *m , int mode);
-int print_temp_a ( char *report, size_t lmax, struct temp_chunks *t, int mode );
+int print_temp_report ( struct metreport *m );
+int print_temp_a ( struct metreport *m );
 size_t print_temp_a_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t );
 size_t print_temp_a_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t );
 size_t print_temp_a_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t );
 size_t print_temp_a_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t );
 size_t print_temp_a_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t );
-int print_temp_b ( char *report, size_t lmax, struct temp_chunks *t, int mode );
+int print_temp_b ( struct metreport *m );
 size_t print_temp_b_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t );
 size_t print_temp_b_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t );
 size_t print_temp_b_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t );
 size_t print_temp_b_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t );
 size_t print_temp_b_sec8 ( char **sec8, size_t lmax, struct temp_chunks *t );
-int print_temp_c ( char *report, size_t lmax, struct temp_chunks *t , int mode);
+int print_temp_c ( struct metreport *m );
 size_t print_temp_c_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t );
 size_t print_temp_c_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t );
 size_t print_temp_c_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t );
 size_t print_temp_c_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t );
 size_t print_temp_c_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t );
-int print_temp_d ( char *report, size_t lmax, struct temp_chunks *t , int mode);
+int print_temp_d ( struct metreport *m );
 size_t print_temp_d_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t );
 size_t print_temp_d_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t );
 size_t print_temp_d_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t );
