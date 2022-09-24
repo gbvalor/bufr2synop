@@ -267,7 +267,7 @@ int bufrdeco_fprint_tree_recursive ( FILE *f, struct bufrdeco *b, struct bufr_se
 
   for ( i = 0; i < l->ndesc; i++ )
     {
-      // we search for descriptors woth f == 3
+      // we search for descriptors with f == 3
 
       for ( j = 0; j < l->level; j++ )
         {
@@ -313,7 +313,7 @@ int bufrdeco_fprint_tree_recursive ( FILE *f, struct bufrdeco *b, struct bufr_se
               else
                 {
                   if ( l->lseq[i].x == 1 )
-                    fprintf ( f, ":* Replicator for next %d descriptors %d times\n", l->lseq[i].x, l->lseq[i].y );
+                    fprintf ( f, ":* Replicator for next descriptor %d times\n", l->lseq[i].y );
                   else
                     fprintf ( f, ":* Replicator for next %d descriptors %d times\n", l->lseq[i].x, l->lseq[i].y );
                 }

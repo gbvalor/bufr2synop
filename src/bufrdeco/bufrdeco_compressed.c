@@ -112,6 +112,10 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
       b->state.local_bit_reserved = 0;
       b->state.factor_reference = 1;
       b->state.quality_active = 0;
+      b->state.subs_active = 0;
+      b->state.retained_active = 0;
+      b->state.stat1_active = 0;
+      b->state.dstat_active = 0;
       b->state.bitmaping = 0;
       b->state.bitmap = NULL;
     }

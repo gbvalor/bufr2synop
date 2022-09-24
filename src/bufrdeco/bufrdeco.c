@@ -122,7 +122,7 @@ int bufrdeco_parse_tree ( struct bufrdeco *b )
   bufrdeco_assert ( b != NULL );
 
   // here we start the parse
-  return  bufrdeco_parse_tree_recursive ( b, NULL, NULL );
+  return  bufrdeco_parse_tree_recursive ( b, NULL, 0, NULL );
 }
 
 /*!
@@ -168,7 +168,7 @@ int bufrdeco_init ( struct bufrdeco *b )
    \brief Reset an struct \ref bufrdeco. This is needed when changing to another bufr.
    \param b pointer to the target struct to be resed with another bufrfile
 
-   This function must be called when parsing another bufrfile without calling
+   This function must be called when parsing another BUFR report without calling
    \ref bufrdeco_close and \ref bufrdeco_init. It 
 
    If succeeded return 0, otherwise 1

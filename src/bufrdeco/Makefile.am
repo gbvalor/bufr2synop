@@ -21,7 +21,8 @@ lib_LTLIBRARIES = libbufrdeco.la
 
 libbufrdeco_la_SOURCES = bufrdeco.h bufrdeco.c bufrdeco_read.c bufrdeco_tableB.c bufrdeco_tableC.c \
 	bufrdeco_utils.c bufrdeco_tree.c bufrdeco_data.c bufrdeco_compressed.c bufrdeco_f2.c \
-	bufrdeco_print.c bufrdeco_memory.c bufrdeco_csv.c bufrdeco_tableD.c bufrdeco_wmo.c bufrdeco_print_html.c
+	bufrdeco_print.c bufrdeco_memory.c bufrdeco_csv.c bufrdeco_tableD.c bufrdeco_wmo.c bufrdeco_print_html.c \
+	bufrdeco_data_tree.c
  
 libbufrdeco_la_LIBADD = -lm
 

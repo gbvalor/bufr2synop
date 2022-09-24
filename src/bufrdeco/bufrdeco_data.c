@@ -59,17 +59,17 @@ struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data ( struc
 
   Return 0 in case of success, 1 otherwise
 */
-int bufrdeco_decode_data_subset ( struct bufrdeco *b)
+int bufrdeco_decode_data_subset ( struct bufrdeco *b )
 {
   struct bufrdeco_subset_sequence_data *s;
-  struct bufrdeco_compressed_data_references *r;  
-  
+  struct bufrdeco_compressed_data_references *r;
+
   // check arguments
   bufrdeco_assert ( b != NULL );
- 
-  s = &(b->seq);
-  r = &(b->refs);
-  
+
+  s = & ( b->seq );
+  r = & ( b->refs );
+
   if ( s == NULL || r == NULL )
     {
       snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
@@ -136,20 +136,20 @@ int bufrdeco_decode_data_subset ( struct bufrdeco *b)
 
   Return 0 when success, otherwise return 1 and the struct is unmodified
 */
-int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s )
+int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *d )
 {
-  bufrdeco_assert ( s != NULL );
+  bufrdeco_assert ( d != NULL );
 
-  if ( s->dim < ( BUFR_NMAXSEQ * 8 ) ) // check if reached the limit
+  if ( d->dim < ( BUFR_NMAXSEQ * 8 ) ) // check if reached the limit
     {
-      if ( ( s->sequence = ( struct bufr_atom_data * ) realloc ( ( void * ) s->sequence,
-                           s->dim * 2 * sizeof ( struct bufr_atom_data ) ) ) == NULL )
+      if ( ( d->sequence = ( struct bufr_atom_data * ) realloc ( ( void * ) d->sequence,
+                           d->dim * 2 * sizeof ( struct bufr_atom_data ) ) ) == NULL )
         {
           return 1;
         }
       else
         {
-          s->dim *= 2;
+          d->dim *= 2;
           return 0;
         }
     }
@@ -168,7 +168,7 @@ int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s )
 
   Return 0 in case of success, 1 otherwise
 */
-int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *s, struct bufr_sequence *l, struct bufrdeco *b )
+int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *d, struct bufr_sequence *l, struct bufrdeco *b )
 {
   size_t i, k;
   struct bufr_sequence *seq;
@@ -176,18 +176,18 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
 
   bufrdeco_assert ( b != NULL );
 
-  if ( s == NULL )
+  if ( d == NULL )
     {
       snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
       return 1;
     }
 
-  // clean subset data
+  // clean subset data, if l == NULL we are at the begining of a subset, level 0
   if ( l == NULL )
     {
       //memset ( s, 0, sizeof ( struct bufr_subset_sequence_data ) );
-      s->nd = 0;
-      s->ss = b->state.subset;
+      d->nd = 0;
+      d->ss = b->state.subset;
       seq = & ( b->tree->seq[0] );
       if ( b->state.subset == 0 )
         {
@@ -232,7 +232,13 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
       b->state.stat1_active = 0;
       b->state.dstat_active = 0;
       b->state.bitmaping = 0;
+      b->state.data_repetition_factor = 0;
       b->state.bitmap = NULL;
+      
+      // print prologue if needed
+      if (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA)
+        bufrdeco_print_subset_data_prologue (b);
+        
     }
   else
     {
@@ -240,8 +246,14 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
     }
 
   // loop for a sequence
+  if (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA)
+    bufrdeco_print_json_sequence_descriptor_header( seq );
+  
   for ( i = 0; i < seq->ndesc ; i++ )
     {
+      if (i && (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA))
+        printf(","); // print json array element separator
+        
       switch ( seq->lseq[i].f )
         {
         case 0:
@@ -262,18 +274,38 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
 
             }
 
-          // Get data from table B
-          if ( bufrdeco_tableB_val ( & ( s->sequence[s->nd] ), b, & ( seq->lseq[i] ) ) )
-            {
-              return 1;
-            }
 
+          // Repeat the extraction of data if b->state.data_repetition_factor != 0
+          // It get data al least a time
+          // It is supossed that prior parsed descriptor was 0 31 011 or 0 31 012 which set de value of repetition data
+          do
+            {
+              // decrement counter if not zero
+              if ( b->state.data_repetition_factor )
+                ( b->state.data_repetition_factor )--;
+
+              // Get data from table B
+              if ( bufrdeco_tableB_val ( & ( d->sequence[d->nd] ), b, & ( seq->lseq[i] ) ) )
+                {
+                  return 1;
+                }
+              if (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA)
+                 bufrdeco_print_json_object_atom_data ( &(d->sequence[d->nd]), 0);
+            }
+          while ( b->state.data_repetition_factor != 0 );
+
+          // case of delayed replicator description and data
+          if ( seq->lseq[i].x == 31 && ( seq->lseq[i].y == 11 || seq->lseq[i].y == 12 ) )
+            {
+              b->state.data_repetition_factor = ( buf_t ) d->sequence[d->nd].val;
+            }
+            
           //case of first order statistics
           if ( b->state.stat1_active &&
                seq->lseq[i].x == 8 && seq->lseq[i].y == 23 )
             {
               k = b->bitmap.bmap[b->bitmap.nba - 1]->ns1; // index un stqts
-              b->bitmap.bmap[b->bitmap.nba - 1]->stat1_desc[k] = s->nd; // Set the value of statistical parameter
+              b->bitmap.bmap[b->bitmap.nba - 1]->stat1_desc[k] = d->nd; // Set the value of statistical parameter
               // update the number of quality variables for the bitmap
               if ( k < BUFR_MAX_QUALITY_DATA )
                 ( b->bitmap.bmap[b->bitmap.nba - 1]->ns1 )++;
@@ -290,7 +322,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
                seq->lseq[i].x == 8 && seq->lseq[i].y == 24 )
             {
               k = b->bitmap.bmap[b->bitmap.nba - 1]->nds; // index in stats
-              b->bitmap.bmap[b->bitmap.nba - 1]->dstat_desc[k] = s->nd; // Set the value of statistical parameter
+              b->bitmap.bmap[b->bitmap.nba - 1]->dstat_desc[k] = d->nd; // Set the value of statistical parameter
               // update the number of quality variables for the bitmap
               if ( k < BUFR_MAX_QUALITY_DATA )
                 ( b->bitmap.bmap[b->bitmap.nba - 1]->nds )++;
@@ -305,17 +337,17 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
 
 
           // Add info about common sequence to which bufr_atom_data belongs
-          s->sequence[s->nd].seq = seq;
-          s->sequence[s->nd].ns = i;
+          d->sequence[d->nd].seq = seq;
+          d->sequence[d->nd].ns = i;
 
-          //bufr_print_atom_data_stdout(& ( s->sequence[s->nd] ));
-          if ( s->nd < ( s->dim - 1 ) )
+          //bufr_print_atom_data_stdout(& ( d->sequence[d->nd] ));
+          if ( d->nd < ( d->dim - 1 ) )
             {
-              ( s->nd ) ++;
+              ( d->nd ) ++;
             }
-          else if ( bufrdeco_increase_data_array ( s ) == 0 )
+          else if ( bufrdeco_increase_data_array ( d ) == 0 )
             {
-              ( s->nd ) ++;
+              ( d->nd ) ++;
             }
           else
             {
@@ -328,6 +360,9 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
           // Case of replicator descriptor
           replicator.s = seq;
           replicator.ixrep = i;
+          if (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA)
+            bufrdeco_print_json_object_replicator_descriptor( &(seq->lseq[i]) );
+          
           if ( seq->lseq[i].y != 0 )
             {
               // no delayed
@@ -342,7 +377,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
                 }
 
 
-              bufrdeco_decode_replicated_subsequence ( s, &replicator, b );
+              bufrdeco_decode_replicated_subsequence ( d, &replicator, b );
 
               // and then set again bitamping to 0, because it is finished
               b->state.bitmaping = 0;
@@ -355,15 +390,18 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
               replicator.ixdel = i + 1;
               replicator.ndesc = seq->lseq[i].x;
               // here we read ndesc from delayed replicator descriptor
-              if ( bufrdeco_tableB_val ( & ( s->sequence[s->nd] ), b, & ( seq->lseq[i + 1] ) ) )
+              if ( bufrdeco_tableB_val ( & ( d->sequence[d->nd] ), b, & ( seq->lseq[i + 1] ) ) )
                 {
                   return 1;
                 }
+              if (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA)
+                 bufrdeco_print_json_object_atom_data ( &(d->sequence[d->nd]), 0);
+              
               // Add info about common sequence to which bufr_atom_data belongs
-              s->sequence[s->nd].seq = seq;
-              s->sequence[s->nd].ns = i + 1;
+              d->sequence[d->nd].seq = seq;
+              d->sequence[d->nd].ns = i + 1;
 
-              replicator.nloops = ( size_t ) ( s->sequence[s->nd].val );
+              replicator.nloops = ( size_t ) ( d->sequence[d->nd].val );
 
               // Check if this replicator is for a bit-map defining
               if ( b->state.bitmaping )
@@ -371,13 +409,13 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
                   b->state.bitmaping = replicator.nloops; // set it properly
                 }
 
-              if ( s->nd < ( s->dim - 1 ) )
+              if ( d->nd < ( d->dim - 1 ) )
                 {
-                  ( s->nd ) ++;
+                  ( d->nd ) ++;
                 }
-              else if ( bufrdeco_increase_data_array ( s ) == 0 )
+              else if ( bufrdeco_increase_data_array ( d ) == 0 )
                 {
-                  ( s->nd ) ++;
+                  ( d->nd ) ++;
                 }
               else
                 {
@@ -385,7 +423,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
                   snprintf ( b->error, sizeof ( b->error ), "%s(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n", __func__ );
                   return 1;
                 }
-              bufrdeco_decode_replicated_subsequence ( s, &replicator, b );
+              bufrdeco_decode_replicated_subsequence ( d, &replicator, b );
 
               // and then set again bitamping to 0, because it is finished
               b->state.bitmaping = 0;
@@ -397,15 +435,17 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
 
         case 2:
           // Case of operator descriptor
-          if ( bufrdeco_parse_f2_descriptor ( s, & ( seq->lseq[i] ), b ) )
+          if ( bufrdeco_parse_f2_descriptor ( d, & ( seq->lseq[i] ), b ) )
             {
               return 1;
             }
+          if (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA)
+            bufrdeco_print_json_object_operator_descriptor( &(seq->lseq[i]) );
           break;
 
         case 3:
           // Case of sequence descriptor
-          if ( bufrdeco_decode_subset_data_recursive ( s, seq->sons[i], b ) )
+          if ( bufrdeco_decode_subset_data_recursive ( d, seq->sons[i], b ) )
             {
               return 1;
             }
@@ -418,6 +458,15 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
           break;
         }
     }
+  
+  // End of sequence
+  if (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA)
+    bufrdeco_print_json_sequence_descriptor_final ();
+  
+  // End of data subset
+  if ( l == NULL && (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA) )
+        bufrdeco_print_subset_data_epilogue ();
+    
   return 0;
 };
 
@@ -430,7 +479,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
 
   If succeeded return 0, 1 otherwise
 */
-int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *s, struct bufr_replicator *r, struct bufrdeco *b )
+int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *d, struct bufr_replicator *r, struct bufrdeco *b )
 {
   buf_t i, k;
   buf_t ixloop; // Index for loop
@@ -440,7 +489,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
 
   bufrdeco_assert ( b != NULL );
 
-  if ( s == NULL || r == NULL )
+  if ( d == NULL || r == NULL )
     {
       {
         snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
@@ -470,21 +519,36 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                     }
                 }
 
-              // Get data from table B
-              if ( bufrdeco_tableB_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[i] ) ) )
+              // Repeat the extraction of data if b->state.data_repetition_factor != 0
+              // It get data al least a time
+              do
                 {
-                  return 1;
+                  // decrement counter if not zero
+                  if ( b->state.data_repetition_factor )
+                    ( b->state.data_repetition_factor )++;
+
+                  // Get data from table B
+                  if ( bufrdeco_tableB_val ( & ( d->sequence[d->nd] ), b, & ( l->lseq[i] ) ) )
+                    {
+                      return 1;
+                    }
                 }
+              while ( b->state.data_repetition_factor != 0 );
+
+              // case of delayed replicator description and data
+              if ( l->lseq[i].x == 31 && ( l->lseq[i].y == 11 || l->lseq[i].y == 12 ) )
+                b->state.data_repetition_factor = ( buf_t ) d->sequence[d->nd].val;
+
 
               // Case of defining bitmap 0 31 031
               if ( l->lseq[i].x == 31 && l->lseq[i].y == 31 && b->state.bitmaping )
                 {
-                  if ( s->sequence[s->nd].val == 0.0 ) // Check if it is meaning present data
+                  if ( d->sequence[d->nd].val == 0.0 ) // Check if it is meaning present data
                     {
-                      s->sequence[s->nd - b->state.bitmaping].is_bitmaped_by =  s->nd;
-                      s->sequence[s->nd].bitmap_to =  s->nd - b->state.bitmaping;
+                      d->sequence[d->nd - b->state.bitmaping].is_bitmaped_by =  d->nd;
+                      d->sequence[d->nd].bitmap_to =  d->nd - b->state.bitmaping;
                       // Add reference to bitmap
-                      bufrdeco_add_to_bitmap ( b->bitmap.bmap[b->bitmap.nba - 1], s->nd - b->state.bitmaping, s->nd );
+                      bufrdeco_add_to_bitmap ( b->bitmap.bmap[b->bitmap.nba - 1], d->nd - b->state.bitmaping, d->nd );
                     }
                 }
 
@@ -495,7 +559,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                   if ( ixloop == 0 )
                     {
                       k = b->bitmap.bmap[b->bitmap.nba - 1]->nq;
-                      b->bitmap.bmap[b->bitmap.nba - 1]->quality[k] = s->nd;
+                      b->bitmap.bmap[b->bitmap.nba - 1]->quality[k] = d->nd;
                       if ( k < BUFR_MAX_QUALITY_DATA )
                         ( b->bitmap.bmap[b->bitmap.nba - 1]->nq )++;
                       else
@@ -504,7 +568,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                           return 1;
                         }
                     }
-                  s->sequence[s->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                  d->sequence[d->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
                 }
 
               //case of first order statistics
@@ -514,7 +578,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                   if ( ixloop == 0 )
                     {
                       k = b->bitmap.bmap[b->bitmap.nba - 1]->ns1; // index un stqts
-                      b->bitmap.bmap[b->bitmap.nba - 1]->stat1_desc[k] = s->nd; // Set the value of statistical parameter
+                      b->bitmap.bmap[b->bitmap.nba - 1]->stat1_desc[k] = d->nd; // Set the value of statistical parameter
                       // update the number of quality variables for the bitmap
                       if ( k < BUFR_MAX_QUALITY_DATA )
                         ( b->bitmap.bmap[b->bitmap.nba - 1]->ns1 )++;
@@ -524,7 +588,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                           return 1;
                         }
                     }
-                  s->sequence[s->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                  d->sequence[d->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
                 }
 
               //case of difference statistics
@@ -534,7 +598,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                   if ( ixloop == 0 )
                     {
                       k = b->bitmap.bmap[b->bitmap.nba - 1]->nds; // index in stats
-                      b->bitmap.bmap[b->bitmap.nba - 1]->dstat_desc[k] = s->nd; // Set the value of statistical parameter
+                      b->bitmap.bmap[b->bitmap.nba - 1]->dstat_desc[k] = d->nd; // Set the value of statistical parameter
                       // update the number of quality variables for the bitmap
                       if ( k < BUFR_MAX_QUALITY_DATA )
                         ( b->bitmap.bmap[b->bitmap.nba - 1]->nds )++;
@@ -544,16 +608,16 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                           return 1;
                         }
                     }
-                  s->sequence[s->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                  d->sequence[d->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
                 }
 
-              if ( s->nd < ( s->dim - 1 ) )
+              if ( d->nd < ( d->dim - 1 ) )
                 {
-                  ( s->nd ) ++;
+                  ( d->nd ) ++;
                 }
-              else if ( bufrdeco_increase_data_array ( s ) == 0 )
+              else if ( bufrdeco_increase_data_array ( d ) == 0 )
                 {
-                  ( s->nd ) ++;
+                  ( d->nd ) ++;
                 }
               else
                 {
@@ -572,7 +636,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                   replicator.ixdel = i;
                   replicator.ndesc = l->lseq[i].x;
                   replicator.nloops = l->lseq[i].y;
-                  bufrdeco_decode_replicated_subsequence ( s, &replicator, b );
+                  bufrdeco_decode_replicated_subsequence ( d, &replicator, b );
                   ixd += replicator.ndesc; // update ixd properly
                 }
               else
@@ -581,25 +645,25 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                   replicator.ixdel = i + 1;
                   replicator.ndesc = l->lseq[i].x;
                   // here we read ndesc from delayed replicator descriptor
-                  if ( bufrdeco_tableB_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[i + 1] ) ) )
+                  if ( bufrdeco_tableB_val ( & ( d->sequence[d->nd] ), b, & ( l->lseq[i + 1] ) ) )
                     {
                       return 1;
                     }
-                  replicator.nloops = ( size_t ) s->sequence[s->nd].val;
-                  if ( s->nd < ( s->dim - 1 ) )
+                  replicator.nloops = ( size_t ) d->sequence[d->nd].val;
+                  if ( d->nd < ( d->dim - 1 ) )
                     {
-                      ( s->nd ) ++;
+                      ( d->nd ) ++;
                     }
-                  else if ( bufrdeco_increase_data_array ( s ) == 0 )
+                  else if ( bufrdeco_increase_data_array ( d ) == 0 )
                     {
-                      ( s->nd ) ++;
+                      ( d->nd ) ++;
                     }
                   else
                     {
                       snprintf ( b->error, sizeof ( b->error ), "%s(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n", __func__ );
                       return 1;
                     }
-                  bufrdeco_decode_replicated_subsequence ( s, &replicator, b );
+                  bufrdeco_decode_replicated_subsequence ( d, &replicator, b );
                   ixd += replicator.ndesc + 1; // update ixd properly
                 }
               //i = r->ixdel + r->ndesc; // update i properly
@@ -607,7 +671,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
 
             case 2:
               // Case of operator descriptor
-              if ( bufrdeco_parse_f2_descriptor ( s, & ( l->lseq[i] ), b ) )
+              if ( bufrdeco_parse_f2_descriptor ( d, & ( l->lseq[i] ), b ) )
                 {
                   return 1;
                 }
@@ -619,17 +683,17 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                   // Get the bitmaped descriptor k
                   if ( ixloop == 0 )
                     {
-                      b->bitmap.bmap[b->bitmap.nba - 1]->subs = s->nd;
+                      b->bitmap.bmap[b->bitmap.nba - 1]->subs = d->nd;
                     }
-                  if ( bufrdeco_tableB_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[k] ) ) )
+                  if ( bufrdeco_tableB_val ( & ( d->sequence[d->nd] ), b, & ( l->lseq[k] ) ) )
                     {
                       return 1;
                     }
-                  s->sequence[s->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                  d->sequence[d->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
 
-                  if ( s->nd < ( s->dim - 1 ) )
+                  if ( d->nd < ( d->dim - 1 ) )
                     {
-                      s->nd += 1;
+                      d->nd += 1;
                     }
                   else
                     {
@@ -638,24 +702,24 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                     }
                 }
 
-              // Case of repaced/retained values
+              // Case of replaced/retained values
               if ( b->state.retained_active && l->lseq[i].x == 32 && l->lseq[i].y == 255 )
                 {
                   k = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
                   // Get the bitmaped descriptor k
                   if ( ixloop == 0 )
                     {
-                      b->bitmap.bmap[b->bitmap.nba - 1]->retain = s->nd;
+                      b->bitmap.bmap[b->bitmap.nba - 1]->retain = d->nd;
                     }
-                  if ( bufrdeco_tableB_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[k] ) ) )
+                  if ( bufrdeco_tableB_val ( & ( d->sequence[d->nd] ), b, & ( l->lseq[k] ) ) )
                     {
                       return 1;
                     }
 
-                  s->sequence[s->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
-                  if ( s->nd < ( s->dim - 1 ) )
+                  d->sequence[d->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                  if ( d->nd < ( d->dim - 1 ) )
                     {
-                      s->nd += 1;
+                      d->nd += 1;
                     }
                   else
                     {
@@ -682,18 +746,18 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                   // Get the bitmaped descriptor k
                   if ( ixloop == 0 )
                     {
-                      b->bitmap.bmap[b->bitmap.nba - 1]->stat1[b->bitmap.bmap[b->bitmap.nba - 1]->ns1 -1] = s->nd;
+                      b->bitmap.bmap[b->bitmap.nba - 1]->stat1[b->bitmap.bmap[b->bitmap.nba - 1]->ns1 -1] = d->nd;
                     }
 
-                  if ( bufrdeco_tableB_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[k] ) ) )
+                  if ( bufrdeco_tableB_val ( & ( d->sequence[d->nd] ), b, & ( l->lseq[k] ) ) )
                     {
                       return 1;
                     }
 
-                  s->sequence[s->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
-                  if ( s->nd < ( s->dim - 1 ) )
+                  d->sequence[d->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                  if ( d->nd < ( d->dim - 1 ) )
                     {
-                      s->nd += 1;
+                      d->nd += 1;
                     }
                   else
                     {
@@ -724,21 +788,21 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                   // Get the bitmaped descriptor k
                   if ( ixloop == 0 )
                     {
-                      b->bitmap.bmap[b->bitmap.nba - 1]->stat1[b->bitmap.bmap[b->bitmap.nba - 1]->nds -1] = s->nd;
+                      b->bitmap.bmap[b->bitmap.nba - 1]->stat1[b->bitmap.bmap[b->bitmap.nba - 1]->nds -1] = d->nd;
                     }
 
                   // in bufrdeco_tableB_val() is taken into acount when is difference statistics active
-                  if ( bufrdeco_tableB_val ( & ( s->sequence[s->nd] ), b, & ( l->lseq[k] ) ) )
+                  if ( bufrdeco_tableB_val ( & ( d->sequence[d->nd] ), b, & ( l->lseq[k] ) ) )
                     {
                       return 1;
                     }
 
-                  /*s->sequence[s->nd].ref = - ( ( int32_t ) 1 << s->sequence[s->nd].bits );
-                  s->sequence[s->nd].bits++;*/
-                  s->sequence[s->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
-                  if ( s->nd < ( s->dim - 1 ) )
+                  /*d->sequence[d->nd].ref = - ( ( int32_t ) 1 << d->sequence[d->nd].bits );
+                  d->sequence[d->nd].bits++;*/
+                  d->sequence[d->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                  if ( d->nd < ( d->dim - 1 ) )
                     {
-                      s->nd += 1;
+                      d->nd += 1;
                     }
                   else
                     {
@@ -751,7 +815,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
 
             case 3:
               // Case of sequence descriptor
-              if ( bufrdeco_decode_subset_data_recursive ( s, l->sons[i], b ) )
+              if ( bufrdeco_decode_subset_data_recursive ( d, l->sons[i], b ) )
                 {
                   return 1;
                 }

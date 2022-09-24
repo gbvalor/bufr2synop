@@ -48,7 +48,7 @@ int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct 
 
 
 /*!
-  \fn int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *father,  const char *key )
+  \fn int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *father, buf_t father_idesc, const char *key )
   \brief Parse the descriptor tree in a recursive way
   \param key string with descriptor in form 'FXXYYY'
   \param father pointer to the father struct \ref bufr_sequence
@@ -56,7 +56,7 @@ int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct 
 
   Returns 0 if success, 1 otherwise
  */
-int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *father,  const char *key )
+int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *father,  buf_t father_idesc, const char *key )
 {
   buf_t i, j, nl;
   struct bufr_sequence *l;
@@ -73,6 +73,7 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
       strcpy ( l->key, "000000" ); // Key '000000' is the first descriptor of first sequence of level 0
       l->level = 0; // Level 0
       l->father = NULL; // This layer is God, it has not father
+      l->father_idesc = father_idesc; // No meaning here
       l->iseq = 0; // first
       strcpy ( l->name, "Main sequence from SEC3" );
       // here we get l->ndesc and l->lsec[] array
@@ -100,6 +101,7 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
       strcpy ( l->key, key ); // Set the key of sequence in table d (f == 3)
       l->level = father->level + 1; // level for sequence
       l->father = father; // set the father
+      l->father_idesc = father_idesc; // Set the father idesc
       l->iseq = nl - 1; // index of sequence in tree
 
       // here we get ndesc and lsec array from table d
@@ -229,7 +231,7 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
       l->sons[i]->replicated[0] = l->replicated[i]; // This is a trick to pass replication level to sons
       
       // we then recursively parse the son
-      if ( bufrdeco_parse_tree_recursive ( b, l, l->lseq[i].c ) )
+      if ( bufrdeco_parse_tree_recursive ( b, l, i, l->lseq[i].c ) )
         {
           return 1;
         }
