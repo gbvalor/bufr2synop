@@ -152,6 +152,10 @@ int bufrdeco_init ( struct bufrdeco *b )
       return 1;
     }
 
+  // Output default streams
+  b->out = stdout;
+  b->err = stderr;
+    
   // allocate memory for expanded tree of descriptors
   if ( bufrdeco_init_expanded_tree ( &b->tree ) )
     {
@@ -177,7 +181,7 @@ int bufrdeco_reset ( struct bufrdeco *b )
 {
   struct bufr_tables *tb;
   struct bufr_tables_cache ch;
-  
+  FILE *out,*err;
   uint32_t mask;
   bufrdeco_assert ( b != NULL );
 
@@ -185,7 +189,8 @@ int bufrdeco_reset ( struct bufrdeco *b )
   memcpy(&ch, &b->cache, sizeof (struct bufr_tables_cache));
   tb = b->tables;
   mask = b->mask;
-  
+  out = b->out;
+  err = b->err;
   bufrdeco_free_subset_sequence_data ( & ( b->seq ) );
   bufrdeco_free_compressed_data_references ( & ( b->refs ) );
   bufrdeco_free_expanded_tree ( & ( b->tree ) );
@@ -194,8 +199,10 @@ int bufrdeco_reset ( struct bufrdeco *b )
   memset ( b, 0, sizeof ( struct bufrdeco ) );
   
   // Restore data
+  b->out = out;
+  b->err = err;
   b->mask = mask;
-  b->tables = tb;  
+  b->tables = tb;
   memcpy(&b->cache, &ch, sizeof (struct bufr_tables_cache));
 
   // allocate memory for expanded tree of descriptors
@@ -209,12 +216,42 @@ int bufrdeco_reset ( struct bufrdeco *b )
 }
 
 /*!
+ * \fn int bufrdeco_set_out_stream (FILE *out, struct bufrdeco *b)
+ * \brief Set the library normal output stream. 
+ * \param out stream opened by caller
+ * \param b pointer to current active struct \ref bufrdeco
+ * 
+ * Without calling to this funcion, the default is stdout
+ */
+int bufrdeco_set_out_stream (FILE *out, struct bufrdeco *b)
+{
+  b->out = out;
+  return 0;
+}
+
+/*!
+ * \fn int bufrdeco_set_err_stream (FILE *err, struct bufrdeco *b)
+ * \brief Set the error stream. 
+ * \param err stream opened by caller
+ * \param b pointer to current active struct \ref bufrdeco
+ * 
+ * Without calling to this funcion, the default is stderr
+ */
+int bufrdeco_set_err_stream (FILE *err, struct bufrdeco *b)
+{
+  b->out = err;
+  return 0;
+}
+
+/*!
   \fn int bufrdeco_close ( struct bufrdeco *b )
   \brief Free all allocated memory. Needed when no more task to do with bufrdeco library
   \param b pointer to the target struct
 
   This function must be called at the end when no more calls to bufrdeco library is needed
-
+  
+  b->out and b->err must be closed by caller if are not the default stdout or stderr
+  
   If succeeded return 0, otherwise 1
 */
 int bufrdeco_close ( struct bufrdeco *b )
@@ -235,6 +272,7 @@ int bufrdeco_close ( struct bufrdeco *b )
     bufrdeco_free_tables ( & ( b->tables ) );
   }
   bufrdeco_free_bitmap_array ( & ( b->bitmap ) );
+  
   return 0;
 }
 
@@ -355,7 +393,8 @@ struct bufrdeco_subset_sequence_data *bufrdeco_get_target_subset_sequence_data (
 {
   buf_t n = 0;
   bufrdeco_assert ( b != NULL );
-
+  uint32_t mask0 = b->mask;
+  
   if ( b->sec3.subsets <= nset )
     {
       snprintf ( b->error, sizeof ( b->error ), "%s(): The index of target subset is over the bufr subsets (%d)\n", __func__, b->sec3.subsets );
@@ -388,6 +427,9 @@ struct bufrdeco_subset_sequence_data *bufrdeco_get_target_subset_sequence_data (
       //       or if readed the struct from a file
       // In any case the subset bit offset array must be poluted for all n < (nset - 1)
 
+      // clear bit BUFRDECO_OUTPUT_JSON_SUBSET_DATA if actived
+      b->mask &= ~((uint32_t) BUFRDECO_OUTPUT_JSON_SUBSET_DATA);
+ 
       if ( b->offsets.nr == 0 || b->offsets.ofs[nset] == 0 )
         {
           for ( n = b->state.subset ; n < nset ; n++ )
@@ -402,7 +444,8 @@ struct bufrdeco_subset_sequence_data *bufrdeco_get_target_subset_sequence_data (
     }
   // Once the previous task is made, we just adjust the subset
   b->state.subset = nset;
-
+  b->mask = mask0;
+  
   // and now parse and get the desired subset data
 #ifdef __DEBUG  
   printf ("# Finally going to target parse for subset %lu\n", b->state.subset);

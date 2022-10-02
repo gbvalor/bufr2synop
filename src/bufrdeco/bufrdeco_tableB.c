@@ -277,7 +277,7 @@ int bufrdeco_tableB_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
     {
       // if is a local descriptor we just skip the needed bits signified by operator 2 06 YYY
       // we assign ref = 0 and ref0 as readed reserved bits. We also will assume escale = 0
-      memcpy ( & ( r->desc ), d, sizeof ( struct bufr_descriptor ) );
+      r->desc = d;
       r->bits = b->state.local_bit_reserved;
       r->bit0 = b->state.bit_offset; // OFFSET
       strcpy_safe ( r->name, "LOCAL DESCRIPTOR" );
@@ -312,7 +312,7 @@ int bufrdeco_tableB_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
   i = tb->x_start[d->x] + tb->y_ref[d->x][d->y];
 
   // copy the descriptor to reference member desc
-  memcpy ( & ( r->desc ), d, sizeof ( struct bufr_descriptor ) );
+  r->desc = d;
   r->ref = tb->item[i].reference_ori; // copy the reference value from tableB, first from original
   r->bits = tb->item[i].nbits + b->state.added_bit_length; // copy the bits from tableB
   r->escale = tb->item[i].scale; // copy the scale from Tableb

@@ -116,10 +116,17 @@ int PRINT_WIGOS_ID; /*!< if != 0 then print wigos id in output */
 int PRINT_GEO; /*!< if != 0 then print latitude, longitude and altitude */
 int READ_OFFSETS; /*!< if != then read bit offsets */
 int WRITE_OFFSETS; /*!< if != 0 then write bit offsets */
-int USE_CACHE; /*!< if != the use cache of tables */
+int USE_CACHE; /*!< if != 0 then use cache of tables */
 int SUBSET ; /*!< Index of subset in a BUFR being parsed */
-FILE *FL; /*!< Buffer to read the list of files */
+int PRINT_JSON_DATA; /*!< If != 0 then the data subset is in json format */
+int PRINT_JSON_SEC0;
+int PRINT_JSON_SEC1;
+int PRINT_JSON_SEC2;
+int PRINT_JSON_SEC3;
+int PRINT_JSON_EXPANDED_TREE;
 
+FILE *FL; /*!< Buffer to read the list of files */
+FILE *OUT; /*!< Buffer to write to OUTPUTFILE */
 #ifdef DEBUG_TIME
   clock_t clk_start, clk_end;
 #endif
@@ -143,6 +150,7 @@ int main ( int argc, char *argv[] )
       printf ( "%s(): Cannot init bufr struct\n", SELF );
       return 1;
     }
+    
 #ifdef DEBUG_TIME        
       clk_end = clock();  
       print_timing (clk_start,clk_end,bufrdeco_init());
@@ -154,6 +162,24 @@ int main ( int argc, char *argv[] )
   if (USE_CACHE)
     BUFR.mask |= BUFRDECO_USE_TABLES_CACHE;
 
+  if (PRINT_JSON_DATA)
+    BUFR.mask |= BUFRDECO_OUTPUT_JSON_SUBSET_DATA;
+
+  if (PRINT_JSON_SEC0)
+    BUFR.mask |= BUFRDECO_OUTPUT_JSON_SEC0;
+
+  if (PRINT_JSON_SEC1)
+    BUFR.mask |= BUFRDECO_OUTPUT_JSON_SEC1;
+  
+  if (PRINT_JSON_SEC2)
+    BUFR.mask |= BUFRDECO_OUTPUT_JSON_SEC2;
+
+  if (PRINT_JSON_SEC3)
+    BUFR.mask |= BUFRDECO_OUTPUT_JSON_SEC3;
+  
+  if (PRINT_JSON_EXPANDED_TREE)
+    BUFR.mask |= BUFRDECO_OUTPUT_JSON_EXPANDED_TREE;
+  
   /**** Set bufr tables dir ****/
   strcpy ( BUFR.bufrtables_dir, BUFRTABLES_DIR );
 
@@ -238,6 +264,8 @@ int main ( int argc, char *argv[] )
       clk_end = clock();  
       print_timing (clk_start,clk_end,bufrdeco_parse_tree());
 #endif      
+      if (PRINT_JSON_EXPANDED_TREE)
+        bufrdeco_print_json_tree( &BUFR);
       
       if ( VERBOSE )
         bufrdeco_print_tree ( &BUFR );
@@ -301,26 +329,26 @@ int main ( int argc, char *argv[] )
               if ( XML )
                 {
                   if ( SUBSET == 0 )
-                    fprintf ( stdout, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
+                    fprintf ( OUT, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
                   print_xml ( stdout, &REPORT );
                 }
               else if ( JSON )
                 {
-                  print_json ( stdout, &REPORT );
+                  print_json ( OUT, &REPORT );
                 }
               else if ( CSV )
                 {
                   if ( SUBSET == 0 )
-                    fprintf ( stdout, "TYPE,FILE,DATETIME,INDEX,NAME,COUNTRY,LATITUDE,LONGITUDE,ALTITUDE,REPORT\n" );
-                  print_csv ( stdout, &REPORT );
+                    fprintf ( OUT, "TYPE,FILE,DATETIME,INDEX,NAME,COUNTRY,LATITUDE,LONGITUDE,ALTITUDE,REPORT\n" );
+                  print_csv ( OUT, &REPORT );
                 }
               else if ( HTML )
                 {
-                  print_html ( stdout, &REPORT );
+                  print_html ( OUT, &REPORT );
                 }
               else
                 {
-                  print_plain ( stdout, &REPORT );
+                  print_plain ( OUT, &REPORT );
                 }
             }
         }
@@ -347,5 +375,10 @@ int main ( int argc, char *argv[] )
     } // End of big loop parsing files
 
   bufrdeco_close ( &BUFR );
+  
+  // Close the file if needed
+  if (OUTPUTFILE[0])
+    fclose (OUT);
+  
   exit ( EXIT_SUCCESS );
 }

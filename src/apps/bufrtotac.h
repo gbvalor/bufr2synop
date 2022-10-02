@@ -56,7 +56,14 @@ extern int FIRST_SUBSET, LAST_SUBSET;
 extern int READ_OFFSETS;
 extern int WRITE_OFFSETS;
 extern int USE_CACHE;
+extern int PRINT_JSON_DATA;
+extern int PRINT_JSON_SEC0;
+extern int PRINT_JSON_SEC1;
+extern int PRINT_JSON_SEC2;
+extern int PRINT_JSON_SEC3;
+extern int PRINT_JSON_EXPANDED_TREE;
 extern FILE *FL;
+extern FILE *OUT;
 
 // functions
 void bufrtotac_print_version( void );

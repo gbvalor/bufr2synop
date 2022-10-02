@@ -201,26 +201,23 @@
 
 #define REPORT_LENGTH (16384)
 
+/*!
+ *  \def PRINT_BITMASK_WIGOS
+ *  \brief Bit mask to member \ref print_mask in struct \ref metreport to print WIGOS Identifier
+ */
 #define PRINT_BITMASK_WIGOS (1)
 
+/*!
+ *  \def PRINT_BITMASK_GEO
+ *  \brief Bit mask to member \ref print_mask in struct \ref metreport to print geographic position
+ */
 #define PRINT_BITMASK_GEO (2)
 
-//#define OLD_VERSION
-#ifdef OLD_VERSION
 /*!
-  \struct bufr_subset_sequence_data
-  \brief Contains all the information for a subset in a expanded squence
-  This is a version to use with ECMWF library
-*/
-struct bufr_subset_sequence_data
-{
-  size_t dim; /*!< Amount of bufr_atom_data currently allocated */
-  size_t nd; /*!< number of current amount of data used in sequence */
-  struct bufr_atom_data sequence[BUFR_NMAXSEQ]; /*!< the array of data associated to a expanded sequence */
-};
-#else
+ * \def bufr_subset_sequence_data
+ * \brief To use bufrdeco library with legacy old code using ECMWF library which is not used currently
+ */
 # define bufr_subset_sequence_data bufrdeco_subset_sequence_data
-#endif
 
 /*!
  * \struct bufr2tac_error

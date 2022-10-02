@@ -39,7 +39,7 @@
 */
 int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
 {
-  
+
   // Check about parsed tree
   if ( b->tree == NULL || b->tree->nseq == 0 )
     {
@@ -83,9 +83,9 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
   struct bufr_replicator replicator;
 
   // Check arguments
-  if ( b == NULL)
+  if ( b == NULL )
     return 1;
-  
+
   if ( r == NULL )
     {
       snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument\n", __func__ );
@@ -118,6 +118,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
       b->state.dstat_active = 0;
       b->state.bitmaping = 0;
       b->state.bitmap = NULL;
+
     }
   else
     {
@@ -125,6 +126,15 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
       // We just set the auxiliar index
       seq = l;
     }
+
+  // Mark the init of a sequence. It waste a  reference to mark it
+  rf = & ( r->refs[r->nd] );
+  rf->mask = BUFRDECO_COMPRESSED_REF_SEQUENCE_INIT_BITMASK;
+  rf->seq = seq;
+  // Set the used elements of array in r
+  if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+    return 1;
+
 
   // loop for a sequence
   for ( i = 0; i < seq->ndesc ; i++ )
@@ -189,17 +199,10 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
                 }
             }
 
-          // Set the used elements of array in r
-          if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
-            {
-              r->nd += 1;
-            }
-          else
-            {
-              // no more space
-              snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
-              return 1;
-            }
+          rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
+          rf->seq = seq;
+          if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+            return 1;
 
           // Then we check for an associated field
           rf = & ( r->refs[r->nd] );
@@ -211,17 +214,11 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
             }
           else if ( res == 0 )
             {
+              rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
+              rf->seq = seq;
               // associated field read with success, set again the used elements of r
-              if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
-                {
-                  r->nd += 1;
-                }
-              else
-                {
-                  // No more space
-                  snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
-                  return 1;
-                }
+              if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+                return 1;
 
               // Update the pointer to the target struct bufrdeco_compressed ref
               i++; // Update main loop index, note that i is also incrmented at the end of loop.
@@ -231,7 +228,15 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
           break;
 
         case 1:
-          // Case of replicator descriptor
+          // Case of replicator descriptor. waste a reference
+          rf = & ( r->refs[r->nd] );
+          rf->mask = BUFRDECO_COMPRESSED_REF_REPLICATOR_DESCRIPTOR;
+          rf->seq = seq;
+          rf->desc = & ( seq->lseq[i] );
+          // Set the used elements of array in r
+          if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+            return 1;
+
           memset ( &replicator, 0, sizeof ( struct bufr_replicator ) ); // mr proper
           replicator.s = seq;
           replicator.ixrep = i; // the index of recplicator descriptor in the sequence
@@ -266,21 +271,15 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
                 {
                   return 1;
                 }
+              rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
+              rf->seq = seq;
 
               // Set the used elements of bufrdeco_compressed_ref
-              if ( r->nd < ( BUFR_NMAXSEQ -1 ) )
-                {
-                  r->nd += 1;
-                }
-              else
-                {
-                  // No more space
-                  snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
-                  return 1;
-                }
+              if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+                return 1;
 
               // Note that is supossed all subsets has the same nlopps,
-              // so the inc_bits must be 0 and nlopps = ref0
+              // so the inc_bits must be 0 and nloops = ref0
               replicator.nloops = ( size_t ) rf->ref0;
 
               // Check if this replicator is for a bit-map defining
@@ -300,10 +299,19 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
 
         case 2:
           // Case of operator descriptor
+          rf = & ( r->refs[r->nd] );
+          rf->mask = BUFRDECO_COMPRESSED_REF_OPERATOR_DESCRIPTOR;
+          rf->seq = seq;
+          rf->desc = & ( seq->lseq[i] );
+          // Set the used elements of array in r
+          if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+            return 1;
+
           if ( bufrdeco_parse_f2_compressed ( r, & ( seq->lseq[i] ), b ) )
             {
               return 1;
             }
+
           break;
 
         case 3:
@@ -321,6 +329,15 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
           break;
         }
     }
+
+  // Mark end of sequence. waste a reference
+  rf = & ( r->refs[r->nd] );
+  rf->mask = BUFRDECO_COMPRESSED_REF_SEQUENCE_FINAL_BITMASK;
+  rf->seq = seq;
+  if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+     return 1;
+
+
   return 0;
 }
 
@@ -344,9 +361,9 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
   struct bufr_sequence *l = rep->s; // sequence
 
   // check arguments
-  if ( b == NULL)
+  if ( b == NULL )
     return 1;
-  
+
   if ( r == NULL || rep == NULL )
     {
       snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
@@ -383,7 +400,11 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                 }
               // Get data from table B
               rf = & ( r->refs[r->nd] );
-
+              rf->replicated_desc = ixd + 1;
+              rf->replicated_loop = ixloop + 1;
+              rf->replicated_ndesc = rep->ndesc;
+              rf->replicated_nloop = rep->nloops;
+              
               // First then the data itself
               if ( bufrdeco_tableB_compressed ( rf, b, & ( l->lseq[i] ), 0 ) )
                 {
@@ -462,16 +483,12 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                   rf->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
                 }
 
-              //print_bufrdeco_compressed_ref ( rf );
-              if ( r->nd < ( BUFR_NMAXSEQ -1 ) )
-                {
-                  r->nd += 1;
-                }
-              else
-                {
-                  snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
-                  return 1;
-                }
+              rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
+              rf->seq = l;
+
+              // Set the used elements of array in r
+              if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+                return 1;
 
               // Then associated field
               rf = & ( r->refs[r->nd] );
@@ -484,15 +501,11 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                 {
                   //print_bufrdeco_compressed_ref ( rf );
                   // associated field read with success
-                  if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
-                    {
-                      r->nd += 1;
-                    }
-                  else
-                    {
-                      snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
-                      return 1;
-                    }
+                  rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
+                  rf->seq = l;
+                  // Set the used elements of array in r
+                  if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+                    return 1;
                   b->state.assoc_bits = 0; // Set again the assoc_bits to 0
                 }
 
@@ -500,6 +513,19 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
 
             case 1:
               // Case of replicator descriptor
+              rf = & ( r->refs[r->nd] );
+              rf->mask = BUFRDECO_COMPRESSED_REF_REPLICATOR_DESCRIPTOR;
+              rf->seq = l;
+              rf->desc = & ( l->lseq[i] );
+              rf->replicated_desc = ixd + 1;
+              rf->replicated_loop = ixloop + 1;
+              rf->replicated_ndesc = rep->ndesc;
+              rf->replicated_nloop = rep->nloops;
+
+              // Set the used elements of array in r
+              if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+                return 1;
+
               replicator.s = l;
               replicator.ixrep = i;
               if ( l->lseq[i].y != 0 )
@@ -523,17 +549,12 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                     {
                       return 1;
                     }
+                  rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
+                  rf->seq = l;
 
-                  //print_bufrdeco_compressed_ref ( rf );
-                  if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
-                    {
-                      r->nd += 1;
-                    }
-                  else
-                    {
-                      snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
-                      return 1;
-                    }
+                  // Set the used elements of bufrdeco_compressed_ref
+                  if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+                    return 1;
                   replicator.nloops = ( size_t ) rf->ref0;
 
                   bufrdeco_decode_replicated_subsequence_compressed ( r, &replicator, b );
@@ -543,6 +564,19 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
               break;
 
             case 2:
+              rf = & ( r->refs[r->nd] );
+              rf->mask = BUFRDECO_COMPRESSED_REF_OPERATOR_DESCRIPTOR;
+              rf->seq = l;
+              rf->desc = & ( l->lseq[i] );
+              rf->replicated_desc = ixd + 1;
+              rf->replicated_loop = ixloop + 1;
+              rf->replicated_ndesc = rep->ndesc;
+              rf->replicated_nloop = rep->nloops;
+
+              // Set the used elements of array in r
+              if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+                return 1;
+
               // Case of operator descriptor
               if ( bufrdeco_parse_f2_compressed ( r, & ( l->lseq[i] ), b ) )
                 {
@@ -564,16 +598,11 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                       return 1;
                     }
                   rf->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
-
-                  if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
-                    {
-                      r->nd += 1;
-                    }
-                  else
-                    {
-                      snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
-                      return 1;
-                    }
+                  rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
+                  rf->seq = l;
+                  rf->desc = & ( l->lseq[k] );
+                  if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+                    return 1;
                 }
 
               // Case of repaced/retained values
@@ -592,15 +621,11 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                     }
 
                   rf->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
-                  if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
-                    {
-                      r->nd += 1;
-                    }
-                  else
-                    {
-                      snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
-                      return 1;
-                    }
+                  rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
+                  rf->seq = l;
+                  rf->desc = & ( l->lseq[k] );
+                  if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+                    return 1;
                 }
 
               // Case of first order statistics
@@ -625,20 +650,16 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                       b->bitmap.bmap[b->bitmap.nba - 1]->stat1[b->bitmap.bmap[b->bitmap.nba - 1]->ns1 -1] = r->nd;
                     }
 
-                  if ( bufrdeco_tableB_compressed ( rf, b, & ( r->refs[k].desc ), 0 ) )
+                  if ( bufrdeco_tableB_compressed ( rf, b, r->refs[k].desc, 0 ) )
                     {
                       return 1;
                     }
                   rf->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
-                  if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
-                    {
-                      r->nd += 1;
-                    }
-                  else
-                    {
-                      snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
-                      return 1;
-                    }
+                  rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
+                  rf->seq = l;
+                  rf->desc = & ( l->lseq[k] );
+                  if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+                    return 1;
                 }
 
               // Case of difference statistics
@@ -667,7 +688,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                       b->bitmap.bmap[b->bitmap.nba - 1]->stat1[b->bitmap.bmap[b->bitmap.nba - 1]->nds -1] = r->nd;
                     }
 
-                  if ( bufrdeco_tableB_compressed ( rf, b, & ( r->refs[k].desc ), 0 ) )
+                  if ( bufrdeco_tableB_compressed ( rf, b, r->refs[k].desc, 0 ) )
                     {
                       return 1;
                     }
@@ -676,28 +697,18 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                   rf->ref = - ( ( int32_t ) 1 << rf->bits );
                   rf->bits++;
                   rf->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
-                  if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
-                    {
-                      r->nd += 1;
-                    }
-                  else
-                    {
-                      snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
-                      return 1;
-                    }
+                  rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
+                  rf->seq = l;
+                  if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+                    return 1;
                 }
 
               if ( l->lseq[i].x == 5 ) // cases wich produces a new ref
                 {
-                  if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
-                    {
-                      r->nd += 1;
-                    }
-                  else
-                    {
-                      snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
-                      return 1;
-                    }
+                  rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
+                  rf->seq = l;
+                  if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+                    return 1;
                 }
               break;
 
@@ -740,17 +751,17 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
 
   if ( b == NULL )
     return 1;
-  
+
   if ( a == NULL || r == NULL )
     {
       snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
       return 1;
     }
 
-  if ( is_a_local_descriptor ( & ( r->desc ) ) )
+  if ( is_a_local_descriptor ( r->desc ) )
     {
       a->mask = DESCRIPTOR_IS_LOCAL;
-      memcpy ( & ( a->desc ), & ( r->desc ), sizeof ( struct bufr_descriptor ) );
+      memcpy ( & ( a->desc ), r->desc, sizeof ( struct bufr_descriptor ) );
       strcpy ( a->name, "LOCAL DESCRIPTOR" );
       strcpy ( a->unit, "UNKNOWN" );
       if ( r->inc_bits )
@@ -759,7 +770,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
           // extract inc_bits data
           if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & bit_offset, r->inc_bits ) == 0 )
             {
-              snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get associated bits from '%s'\n", __func__, r->desc.c );
+              snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get associated bits from '%s'\n", __func__, r->desc->c );
               return 1;
             }
           a->val = ival + r->ref0;
@@ -771,12 +782,12 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
 
   // some utils pointers
   tb = & ( b->tables->b );
-  i = tb->x_start[r->desc.x] + tb->y_ref[r->desc.x][r->desc.y];
+  i = tb->x_start[r->desc->x] + tb->y_ref[r->desc->x][r->desc->y];
 
   a->mask = 0;
 
   // descriptor
-  memcpy ( & ( a->desc ), & ( r->desc ), sizeof ( struct bufr_descriptor ) );
+  memcpy ( & ( a->desc ), r->desc, sizeof ( struct bufr_descriptor ) );
   // name
   //strcpy_safe ( a->name, r->name );
   strcpy ( a->name, r->name );
@@ -826,7 +837,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
           bit_offset = r->bit0 + r->bits + 6 + r->inc_bits * 8 * subset;
           if ( get_bits_as_char_array ( a->cval, &has_data, &b->sec4.raw[4], & bit_offset, r->inc_bits * 8 ) == 0 )
             {
-              snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get uchars from '%s'\n", __func__, r->desc.c );
+              snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get uchars from '%s'\n", __func__, r->desc->c );
               return 1;
             }
           if ( has_data == 0 )
@@ -864,7 +875,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
               // extract inc_bits data
               if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & bit_offset, r->inc_bits ) == 0 )
                 {
-                  snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get associated bits from '%s'\n", __func__, r->desc.c );
+                  snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get associated bits from '%s'\n", __func__, r->desc->c );
                   return 1;
                 }
               // finally get the associated data
@@ -902,7 +913,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
       // extract inc_bits data
       if ( get_bits_as_uint32_t ( &ival0, &has_data, &b->sec4.raw[4], & bit_offset, r->inc_bits ) == 0 )
         {
-          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get %d inc_bits from '%s'\n", __func__, r->inc_bits, r->desc.c );
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get %d inc_bits from '%s'\n", __func__, r->inc_bits, r->desc->c );
           return 1;
         }
 
@@ -955,11 +966,12 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
 */
 int bufr_decode_subset_data_compressed ( struct bufrdeco_subset_sequence_data *s, struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
 {
-  size_t i; // references index
-
-  if (b == NULL)
-    return 1;
+  size_t i, j = 0; // references index
+  char aux[80];
   
+  if ( b == NULL )
+    return 1;
+
   // Previous check
   if ( r->refs == NULL || r->nd == 0 )
     {
@@ -976,36 +988,116 @@ int bufr_decode_subset_data_compressed ( struct bufrdeco_subset_sequence_data *s
   // The subset index
   s->ss = b->state.subset;
 
+  if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+    bufrdeco_print_json_subset_data_prologue (b->out, b );
+
   // then get sequence
   for ( i = 0; i < r->nd; i++ )
     {
-      if ( bufrdeco_get_atom_data_from_compressed_data_ref ( & ( s->sequence[s->nd] ), & ( r->refs[i] ), b->state.subset, b ) )
-        return 1;
-
-      if ( r->refs[i].is_associated == 0 )
-        {
-          if ( s->nd < ( s->dim - 1 ) )
-            ( s->nd ) ++;
-          else if ( bufrdeco_increase_data_array ( s ) == 0 )
-            ( s->nd ) ++;
-          else
-            {
-              snprintf ( b->error, sizeof ( b->error ), "%s(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n", __func__ );
-              return 1;
-            }
-        }
+      if ( (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA) &&
+           (r->refs[i].replicated_desc || r->refs[i].replicated_loop) )
+        snprintf(aux, sizeof (aux), "\"Replicated\":\"Descriptor %u/%u of loop %u/%u\"", r->refs[i].replicated_desc, r->refs[i].replicated_ndesc,
+                r->refs[i].replicated_loop, r->refs[i].replicated_nloop);
       else
+        aux[0] = '\0';
+      
+      if ( r->refs[i].mask & BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK )
         {
-          if ( s->nd < ( s->dim - 1 ) )
-            ( s->nd ) ++;
-          else if ( bufrdeco_increase_data_array ( s ) == 0 )
-            ( s->nd ) ++;
+          if ( bufrdeco_get_atom_data_from_compressed_data_ref ( & ( s->sequence[s->nd] ), & ( r->refs[i] ), b->state.subset, b ) )
+            return 1;
+
+          if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+            {
+              if ( j )
+                bufrdeco_print_json_separator(b->out );
+              bufrdeco_print_json_object_atom_data (b->out, & ( s->sequence[s->nd] ), aux );
+            }
+          if ( r->refs[i].is_associated == 0 )
+            {
+              if ( s->nd < ( s->dim - 1 ) )
+                ( s->nd ) ++;
+              else if ( bufrdeco_increase_data_array ( s ) == 0 )
+                ( s->nd ) ++;
+              else
+                {
+                  snprintf ( b->error, sizeof ( b->error ), "%s(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n", __func__ );
+                  return 1;
+                }
+            }
           else
             {
-              snprintf ( b->error, sizeof ( b->error ), "%s(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n", __func__ );
-              return 1;
+              if ( s->nd < ( s->dim - 1 ) )
+                ( s->nd ) ++;
+              else if ( bufrdeco_increase_data_array ( s ) == 0 )
+                ( s->nd ) ++;
+              else
+                {
+                  snprintf ( b->error, sizeof ( b->error ), "%s(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n", __func__ );
+                  return 1;
+                }
+            }
+          j++;
+        }
+      else if ( r->refs[i].mask & BUFRDECO_COMPRESSED_REF_SEQUENCE_INIT_BITMASK )
+        {
+          if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+            {
+              if ( j )
+                bufrdeco_print_json_separator(b->out );
+              bufrdeco_print_json_sequence_descriptor_header (b->out, r->refs[i].seq );
+              j = 0;
             }
         }
+      else if ( r->refs[i].mask & BUFRDECO_COMPRESSED_REF_SEQUENCE_FINAL_BITMASK )
+        {
+          if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+            bufrdeco_print_json_sequence_descriptor_final (b->out);
+        }
+      else if ( r->refs[i].mask & BUFRDECO_COMPRESSED_REF_REPLICATOR_DESCRIPTOR )
+        {
+          if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+            {
+              if ( j )
+                bufrdeco_print_json_separator(b->out );
+              bufrdeco_print_json_object_replicator_descriptor (b->out, r->refs[i].desc, aux );
+              j++;
+            }
+        }
+      else if ( r->refs[i].mask & BUFRDECO_COMPRESSED_REF_OPERATOR_DESCRIPTOR )
+        {
+          if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+          {
+            if ( j )
+               bufrdeco_print_json_separator(b->out );
+            bufrdeco_print_json_object_operator_descriptor (b->out, r->refs[i].desc, aux );
+          }
+          j++;
+        }
+    }
+  if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+    bufrdeco_print_json_subset_data_epilogue (b->out );
+
+  return 0;
+}
+
+/*!
+ * \fn int bufrdeco_increase_compressed_data_references_count ( struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
+ * \brief Increment the count of a struct \ref bufrdeco_compressed_data_references
+ * \param r pointer to the target struct
+ * \param b pointer to the current active struct \ref bufrdeco
+ *
+ * \return 0 if succeeded, 1 otherwise
+ */
+int bufrdeco_increase_compressed_data_references_count ( struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
+{
+  if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
+    {
+      r->nd += 1;
+    }
+  else
+    {
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
+      return 1;
     }
   return 0;
 }

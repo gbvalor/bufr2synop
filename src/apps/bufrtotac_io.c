@@ -41,6 +41,7 @@ void bufrtotac_print_usage ( void )
   printf ( "       -i Input file. Complete input path file for bufr file\n" );
   printf ( "       -I list_of_files. Pathname of a file with the list of files to parse, one filename per line\n" );
   printf ( "       -j. The output is in json format\n" );
+  printf ( "       -J. Output expanded subset SEC 4 data in json format\n");
   printf ( "       -n. Do not try to decode to TAC, just parse BUFR report\n" );
   printf ( "       -o output. Pathname of output file. Default is standar output\n" );
   printf ( "       -R. Read bit_offsets file if exists. The path of these files is to add '.offs' to the name of input BUFR file\n");
@@ -53,6 +54,10 @@ void bufrtotac_print_usage ( void )
   printf ( "       -v. Print version\n" );
   printf ( "       -x. The output is in xml format\n" );
   printf ( "       -X. Try to extract an embebed bufr in a file seraching for a first '7777' after first 'BUFR'\n" );
+  printf ( "       -0. Prints BUFR Sec 0 information in json format\n");
+  printf ( "       -1. Prints BUFR Sec 1 information in json format\n");
+  printf ( "       -2. Prints BUFR Sec 2 information in json format\n");
+  printf ( "       -3. Prints BUFR Sec 3 information in json format\n");
 }
 
 /*!
@@ -163,11 +168,16 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
   READ_OFFSETS = 0;
   WRITE_OFFSETS = 0;
   USE_CACHE = 0;
-
+  PRINT_JSON_DATA = 0;
+  PRINT_JSON_SEC1 = 0;
+  PRINT_JSON_SEC2 = 0;
+  PRINT_JSON_SEC3 = 0;
+  PRINT_JSON_EXPANDED_TREE = 0;
+  
   /*
      Read input options
   */
-  while ( ( iopt = getopt ( _argc, _argv, "cD:hi:jHI:no:S:st:TvgGVWRxX" ) ) !=-1 )
+  while ( ( iopt = getopt ( _argc, _argv, "cD:Ehi:jJHI:no:S:st:TvgGVWRxX0123" ) ) !=-1 )
     switch ( iopt )
       {
       case 'i':
@@ -178,8 +188,16 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
         }
         break;
         
+      case 'E':
+        PRINT_JSON_EXPANDED_TREE = 1;
+        break;
+
       case 'j':
         JSON = 1;
+        break;
+        
+      case 'J':
+        PRINT_JSON_DATA = 1;
         break;
         
       case 'I':
@@ -288,6 +306,22 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
          READ_OFFSETS = 1;
          break;
          
+      case '0':
+         PRINT_JSON_SEC0 = 1;
+         break;
+
+      case '1':
+         PRINT_JSON_SEC1 = 1;
+         break;
+         
+      case '2':
+         PRINT_JSON_SEC2 = 1;
+         break;
+         
+      case '3':
+         PRINT_JSON_SEC3 = 1;
+         break;
+         
       case 'h':
       default:
         bufrtotac_print_usage();
@@ -300,6 +334,20 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
       bufrtotac_print_usage();
       return -1;
     }
+    
+  // Open oututfile if needed or stdout
+  if (OUTPUTFILE[0])
+  {
+    if ((OUT = fopen (OUTPUTFILE,"w")) == NULL)
+    {
+      printf ( "%s(): Cannot open file %s to write to\n", __func__ , OUTPUTFILE);
+      bufrtotac_print_usage();
+      return -1;
+    }
+  }
+  else
+    OUT = stdout;
+  
   return 1;
 }
 
@@ -340,6 +388,7 @@ int bufrtotac_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subse
   
   if (PRINT_GEO)
     m->print_mask |= PRINT_BITMASK_GEO;
+  
   
   m->h = &b->header;
   res = parse_subset_sequence ( m, &b->seq, st, kdtlst, nlst, ksec1, err );

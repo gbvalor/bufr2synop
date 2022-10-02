@@ -322,7 +322,7 @@ char * bufr_charray_to_string ( char *s, char *buf, size_t size )
 }
 
 /*!
-  \fn uint8_t * adjust_string(char *s)
+  \fn char * bufr_adjust_string(char *s)
   \brief Supress trailing blanks of a string
   \param s string to process
 */
@@ -398,7 +398,13 @@ int is_a_local_descriptor ( struct bufr_descriptor *d )
 
 /*!
    \fn char *get_formatted_value_from_escale ( char *fmt, size_t dim, int32_t escale, double val )
-
+   \brief gets a string with formatted value depending of scale
+   \param fmt The output target string
+   \param dim Size of available space (bytes) to write the result
+   \param escale value scale in descriptor
+   \param val double to printf
+   
+   This version use 17 width for number plus a final space
 */
 char *get_formatted_value_from_escale ( char *fmt, size_t dim, int32_t escale, double val )
 {
@@ -416,9 +422,38 @@ char *get_formatted_value_from_escale ( char *fmt, size_t dim, int32_t escale, d
 }
 
 /*!
-   \fn int bufrdeco_add_to_bitmap( struct bufrdeco_bitmap *bm, struct bufr_atom_data *a)
-   \brief Push a struct \ref bufrdeco_bitmap_element in a \ref bufrdeco_bitmap
+   \fn char *get_formatted_value_from_escale2 ( char *fmt, size_t dim, int32_t escale, double val )
+   \brief gets a string with formatted value depending of scale
+   \param fmt The output target string
+   \param dim Size of available space (bytes) to write the result
+   \param escale value scale in descriptor
+   \param val double to printf
+   
+   Differs from get_formatted_value_from_escale that no blanks are written
+ */
+char *get_formatted_value_from_escale2 ( char *fmt, size_t dim, int32_t escale, double val )
+{
+  char aux[32];
+  //bufrdeco_assert (fmt != NULL);
 
+  if ( escale >= 0 )
+    {
+      sprintf ( aux, "%%.%dlf" , escale );
+      snprintf ( fmt, dim, aux, val );
+    }
+  else
+    snprintf ( fmt, dim, "%.0lf" , val );
+  return fmt;
+}
+
+
+/*!
+   \fn int bufrdeco_add_to_bitmap( struct bufrdeco_bitmap *bm, uint32_t index_to, uint32_t index_by )
+   \brief Push a struct \ref bufrdeco_bitmap_element in a \ref bufrdeco_bitmap
+   \param bm target struct \ref bufrdeco_bitmap where to push
+   \param index_to index of the \ref bufrdeco_bitmap_element which this is bitmapping to
+   \param index_by index of the \ref bufrdeco_bitmap_element which this is bitmapped by
+   
    If no space to push returns 1, otherwise 0
 */
 int bufrdeco_add_to_bitmap ( struct bufrdeco_bitmap *bm, uint32_t index_to, uint32_t index_by )
@@ -435,6 +470,15 @@ int bufrdeco_add_to_bitmap ( struct bufrdeco_bitmap *bm, uint32_t index_to, uint
   return 1;
 }
 
+/*!
+ * \fn int get_bitmaped_info ( struct bufrdeco_bitmap_related_vars *brv, uint32_t target, struct bufrdeco *b )
+ * \brief Get bitmap info searching into bitmaps
+ * \param brv pointer to struct \ref bufrdeco_bitmap_related_vars where to set the results
+ * \param target The key to find in array of bitmaps
+ * \param b pointer to the current struct \ref bufrdeco
+ * 
+ * If found the target return 0, othewise return 1 
+ */
 int get_bitmaped_info ( struct bufrdeco_bitmap_related_vars *brv, uint32_t target, struct bufrdeco *b )
 {
   size_t i, j, k;

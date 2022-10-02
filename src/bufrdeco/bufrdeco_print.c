@@ -544,8 +544,11 @@ int bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *
 int fprint_bufrdeco_compressed_ref ( FILE *f, struct bufrdeco_compressed_ref *r )
 {
   bufrdeco_assert ( f != NULL && r != NULL );
-
-  fprintf ( f, "%s -> A=%u, D=%u, ",r->desc.c,r->is_associated,r->has_data );
+  
+  if ((r->mask & BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK) == 0)
+    return 0;
+  
+  fprintf ( f, "%s -> A=%u, D=%u, ",r->desc->c,r->is_associated,r->has_data );
   if ( r->cref0[0] == '\0' )
     {
       fprintf ( f, "bits=%2u, ref=%10d, escale=%3d,",  r->bits, r->ref, r->escale );

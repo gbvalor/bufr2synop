@@ -128,6 +128,12 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
       //strcpy_safe ( a->unit, "CCITTIA5" ); // unit
       strcpy ( a->name, "SIGNIFY CHARACTER" );
       strcpy ( a->unit, "CCITTIA5" ); // unit
+      if (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA)
+      {
+        bufrdeco_print_json_separator( b->out );
+        bufrdeco_print_json_object_atom_data (b->out, a, NULL);
+      }
+      
       if ( s->nd < ( s->dim - 1 ) )
         {
           ( s->nd ) ++;
@@ -473,6 +479,8 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
       // inserted as a data field of YYY x 8 bits in length.
       nbits = 8 * d->y;
       rf = & ( r->refs[r->nd] );
+      rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
+      rf->desc = d;
       if ( get_bits_as_char_array ( rf->cref0, &rf->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
         {
           snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get %u uchars from '%s'\n", __func__, d->y, d->c );
@@ -772,11 +780,17 @@ char *bufrdeco_get_f2_descriptor_explanation ( char *e, size_t dim, struct bufr_
   switch ( d->x )
     {
     case 1:
-      snprintf ( e, dim, "Change data width %d bits.", d->y - 128 );
+      if (d->y)
+        snprintf ( e, dim, "Change data width %d bits.", d->y - 128 );
+      else
+        snprintf ( e, dim, "Change data width 0 bits.");
       break;
 
     case 2:
-      snprintf ( e, dim, "Change scale %d units.\n", d->y - 128 );
+      if (d->y)
+        snprintf ( e, dim, "Change scale %d units.", d->y - 128 );
+      else
+        snprintf ( e, dim, "Change scale 0 units.");
       break;
 
     case 3:

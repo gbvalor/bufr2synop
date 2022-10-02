@@ -170,7 +170,7 @@ int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *d )
 */
 int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *d, struct bufr_sequence *l, struct bufrdeco *b )
 {
-  size_t i, k;
+  size_t i, j, k;
   struct bufr_sequence *seq;
   struct bufr_replicator replicator;
 
@@ -182,9 +182,11 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
       return 1;
     }
 
+
   // clean subset data, if l == NULL we are at the begining of a subset, level 0
   if ( l == NULL )
     {
+
       //memset ( s, 0, sizeof ( struct bufr_subset_sequence_data ) );
       d->nd = 0;
       d->ss = b->state.subset;
@@ -234,11 +236,11 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
       b->state.bitmaping = 0;
       b->state.data_repetition_factor = 0;
       b->state.bitmap = NULL;
-      
+
       // print prologue if needed
-      if (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA)
-        bufrdeco_print_subset_data_prologue (b);
-        
+      if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+        bufrdeco_print_json_subset_data_prologue ( b->out,  b );
+
     }
   else
     {
@@ -246,14 +248,15 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
     }
 
   // loop for a sequence
-  if (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA)
-    bufrdeco_print_json_sequence_descriptor_header( seq );
-  
-  for ( i = 0; i < seq->ndesc ; i++ )
+  if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
     {
-      if (i && (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA))
-        printf(","); // print json array element separator
-        
+      //if (seq->iseq)
+      //  bufrdeco_print_json_separator ( b->out ); // print json array element separator
+      bufrdeco_print_json_sequence_descriptor_header ( b->out, seq );
+    }
+
+  for ( i = 0, j = 0 ; i < seq->ndesc ; i++ )
+    {
       switch ( seq->lseq[i].f )
         {
         case 0:
@@ -289,8 +292,13 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
                 {
                   return 1;
                 }
-              if (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA)
-                 bufrdeco_print_json_object_atom_data ( &(d->sequence[d->nd]), 0);
+              if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+              {
+                if (j)
+                  bufrdeco_print_json_separator ( b->out );
+                bufrdeco_print_json_object_atom_data ( b->out, & ( d->sequence[d->nd] ), NULL );
+                j++;
+              }
             }
           while ( b->state.data_repetition_factor != 0 );
 
@@ -299,7 +307,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
             {
               b->state.data_repetition_factor = ( buf_t ) d->sequence[d->nd].val;
             }
-            
+
           //case of first order statistics
           if ( b->state.stat1_active &&
                seq->lseq[i].x == 8 && seq->lseq[i].y == 23 )
@@ -360,8 +368,13 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
           // Case of replicator descriptor
           replicator.s = seq;
           replicator.ixrep = i;
-          if (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA)
-            bufrdeco_print_json_object_replicator_descriptor( &(seq->lseq[i]) );
+          if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+            {
+              if (j)
+                bufrdeco_print_json_separator ( b->out );
+              bufrdeco_print_json_object_replicator_descriptor ( b->out, & ( seq->lseq[i] ), NULL );
+              j++;
+            }
           
           if ( seq->lseq[i].y != 0 )
             {
@@ -375,7 +388,6 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
                 {
                   b->state.bitmaping = replicator.nloops; // set it properly
                 }
-
 
               bufrdeco_decode_replicated_subsequence ( d, &replicator, b );
 
@@ -394,9 +406,13 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
                 {
                   return 1;
                 }
-              if (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA)
-                 bufrdeco_print_json_object_atom_data ( &(d->sequence[d->nd]), 0);
-              
+              if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+                {
+                  if (j)
+                    bufrdeco_print_json_separator ( b->out );
+                  bufrdeco_print_json_object_atom_data ( b->out, & ( d->sequence[d->nd] ), NULL );
+                  j++;
+                }
               // Add info about common sequence to which bufr_atom_data belongs
               d->sequence[d->nd].seq = seq;
               d->sequence[d->nd].ns = i + 1;
@@ -439,11 +455,22 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
             {
               return 1;
             }
-          if (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA)
-            bufrdeco_print_json_object_operator_descriptor( &(seq->lseq[i]) );
+          if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+          {
+            if (j)
+              bufrdeco_print_json_separator ( b->out );
+            bufrdeco_print_json_object_operator_descriptor ( b->out, & ( seq->lseq[i] ), NULL );
+            j++;
+          }
           break;
 
         case 3:
+          if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+          {
+            if (j)
+              bufrdeco_print_json_separator ( b->out ); // print json array element separator
+            j++;
+          }
           // Case of sequence descriptor
           if ( bufrdeco_decode_subset_data_recursive ( d, seq->sons[i], b ) )
             {
@@ -458,16 +485,17 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
           break;
         }
     }
-  
+
   // End of sequence
-  if (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA)
-    bufrdeco_print_json_sequence_descriptor_final ();
-  
+  if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+    bufrdeco_print_json_sequence_descriptor_final ( b->out );
+
   // End of data subset
-  if ( l == NULL && (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA) )
-        bufrdeco_print_subset_data_epilogue ();
-    
+  if ( l == NULL && ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA ) )
+    bufrdeco_print_json_subset_data_epilogue ( b->out );
+
   return 0;
+
 };
 
 /*!
@@ -486,6 +514,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
   buf_t ixd; // Index for descriptor
   struct bufr_sequence *l = r->s; // sequence
   struct bufr_replicator replicator;
+  char aux[80];
 
   bufrdeco_assert ( b != NULL );
 
@@ -496,11 +525,14 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
         return 1;
       }
     }
-  //printf("nloops=%lu, ndesc=%lu\n", r->nloops, r->ndesc);
+
   for ( ixloop = 0; ixloop < r->nloops; ixloop++ )
     {
       for ( ixd = 0; ixd < r->ndesc ; ixd ++ )
         {
+          if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+            snprintf(aux, sizeof (aux), "\"Replicated\":\"Descriptor %u/%u of loop %u/%u\"", ixd + 1, ixloop + 1, r->ndesc, r->nloops);
+  
           i = ixd + r->ixdel + 1;
           switch ( l->lseq[i].f )
             {
@@ -532,6 +564,11 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                     {
                       return 1;
                     }
+                  if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+                  {
+                    bufrdeco_print_json_separator ( b->out );
+                    bufrdeco_print_json_object_atom_data ( b->out, & ( d->sequence[d->nd] ), aux );
+                  }
                 }
               while ( b->state.data_repetition_factor != 0 );
 
@@ -630,6 +667,12 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
               // Case of replicator descriptor
               replicator.s = l;
               replicator.ixrep = i;
+              if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+                {
+                  bufrdeco_print_json_separator ( b->out );
+                  bufrdeco_print_json_object_replicator_descriptor ( b->out, & ( l->lseq[i] ), aux );
+                }
+
               if ( l->lseq[i].y != 0 )
                 {
                   // no delayed
@@ -648,6 +691,11 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                   if ( bufrdeco_tableB_val ( & ( d->sequence[d->nd] ), b, & ( l->lseq[i + 1] ) ) )
                     {
                       return 1;
+                    }
+                  if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+                    {
+                      bufrdeco_print_json_separator ( b->out );
+                      bufrdeco_print_json_object_atom_data ( b->out, & ( d->sequence[d->nd] ), aux );
                     }
                   replicator.nloops = ( size_t ) d->sequence[d->nd].val;
                   if ( d->nd < ( d->dim - 1 ) )
@@ -676,6 +724,11 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                   return 1;
                 }
 
+              if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+              {
+                bufrdeco_print_json_separator ( b->out );
+                bufrdeco_print_json_object_operator_descriptor ( b->out, & ( l->lseq[i] ), aux );
+              }
               // Case of subsituted values
               if ( b->state.subs_active && l->lseq[i].x == 23 && l->lseq[i].y == 255 )
                 {
@@ -814,7 +867,8 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
               break;
 
             case 3:
-              // Case of sequence descriptor
+              if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+                bufrdeco_print_json_separator ( b->out );
               if ( bufrdeco_decode_subset_data_recursive ( d, l->sons[i], b ) )
                 {
                   return 1;

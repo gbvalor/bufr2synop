@@ -336,7 +336,9 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, buf_t size )
     }
   memcpy ( b->sec1.raw, c, b->sec1.length ); // raw data
   c += b->sec1.length;
-  //print_sec1_info(b);
+  
+  if (b->mask & BUFRDECO_OUTPUT_JSON_SEC1)
+    bufrdeco_print_json_sec1(b->out, b);
 
   /******************* section 2 (Optional) ******************/
   if ( b->sec1.options & 0x80 )
@@ -345,6 +347,8 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, buf_t size )
       memcpy ( b->sec2.raw, c, b->sec2.length );
       c += b->sec2.length;
     }
+  if (b->mask & BUFRDECO_OUTPUT_JSON_SEC2)
+    bufrdeco_print_json_sec2(b->out, b);
 
   /******************* section 3 *****************************/
   b->sec3.length = three_bytes_to_uint32 ( c );
@@ -368,6 +372,9 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, buf_t size )
   b->sec3.ndesc = ud;
   memcpy ( b->sec3.raw, c, b->sec3.length );
   c += b->sec3.length;
+
+  if (b->mask & BUFRDECO_OUTPUT_JSON_SEC3)
+    bufrdeco_print_json_sec3(b->out, b);
 
   /******************* section 4 *****************************/
   b->sec4.length = three_bytes_to_uint32 ( c );
