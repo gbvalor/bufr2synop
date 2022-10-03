@@ -282,6 +282,9 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, buf_t size )
   // raw
   memcpy ( &b->sec0.raw[0], &bufrx[0], 8 );
 
+  if (b->mask & BUFRDECO_OUTPUT_JSON_SEC0)
+    bufrdeco_print_json_sec0(b->out, b);
+
   /******************* section 1 *****************************/
   c = &bufrx[8]; // pointer to begin of sec1
   switch ( b->sec0.edition )

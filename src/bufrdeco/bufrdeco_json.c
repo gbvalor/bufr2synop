@@ -282,8 +282,8 @@ buf_t bufrdeco_print_json_sec0 ( FILE *out, struct bufrdeco *b )
 
   bufrdeco_assert ( b != NULL );
   used += fprintf ( out, "{\"Sec 0\":{" );
-  used += fprintf ( out, "Bufr length:%u,", b->sec0.bufr_length );
-  used += fprintf ( out, "Bufr edition:%u}}", b->sec0.edition );
+  used += fprintf ( out, "\"Bufr length\":%u,", b->sec0.bufr_length );
+  used += fprintf ( out, "\"Bufr edition\":%u}}", b->sec0.edition );
   return used;
 }
 

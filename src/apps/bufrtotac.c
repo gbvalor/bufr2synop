@@ -156,29 +156,8 @@ int main ( int argc, char *argv[] )
       print_timing (clk_start,clk_end,bufrdeco_init());
 #endif      
 
-  if ( HTML )
-    BUFR.mask |= BUFRDECO_OUTPUT_HTML;
-  
-  if (USE_CACHE)
-    BUFR.mask |= BUFRDECO_USE_TABLES_CACHE;
-
-  if (PRINT_JSON_DATA)
-    BUFR.mask |= BUFRDECO_OUTPUT_JSON_SUBSET_DATA;
-
-  if (PRINT_JSON_SEC0)
-    BUFR.mask |= BUFRDECO_OUTPUT_JSON_SEC0;
-
-  if (PRINT_JSON_SEC1)
-    BUFR.mask |= BUFRDECO_OUTPUT_JSON_SEC1;
-  
-  if (PRINT_JSON_SEC2)
-    BUFR.mask |= BUFRDECO_OUTPUT_JSON_SEC2;
-
-  if (PRINT_JSON_SEC3)
-    BUFR.mask |= BUFRDECO_OUTPUT_JSON_SEC3;
-  
-  if (PRINT_JSON_EXPANDED_TREE)
-    BUFR.mask |= BUFRDECO_OUTPUT_JSON_EXPANDED_TREE;
+  /**** set bitmask according with args readed from shell ****/    
+  bufrtotac_set_bufrdeco_bitmask (&BUFR);
   
   /**** Set bufr tables dir ****/
   strcpy ( BUFR.bufrtables_dir, BUFRTABLES_DIR );

@@ -68,6 +68,7 @@ extern FILE *OUT;
 // functions
 void bufrtotac_print_version( void );
 void bufrtotac_print_usage ( void );
+int bufrtotac_set_bufrdeco_bitmask (struct bufrdeco *b);
 int bufrtotac_read_args ( int _argc, char * _argv[] );
 char * get_bufrfile_path ( char *filename, char *fileoffset, char *err );
 int bufrtotac_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subset_state *st, struct bufrdeco *b,

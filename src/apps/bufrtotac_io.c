@@ -32,9 +32,10 @@ void bufrtotac_print_usage ( void )
 {
   bufrtotac_print_version ();
   printf ( "\nUsage: \n" );
-  printf ( "%s -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-X][-c][-h]\n", SELF );
+  printf ( "%s -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-X][-c][-h][more optional args....]\n", SELF );
   printf ( "       -c. The output is in csv format\n" );
   printf ( "       -D debug level. 0 = No debug, 1 = Debug, 2 = Verbose debug (default = 0)\n" );
+  printf ( "       -E. Print expanded tree in json format\n" );
   printf ( "       -G. Print latitude, logitude and altitude \n" );
   printf ( "       -g. Print WIGOS ID\n" );
   printf ( "       -h Print this help\n" );
@@ -451,4 +452,41 @@ char * get_bufrfile_path ( char *filename, char *fileoffset, char *err )
       fclose ( FL );
       return NULL;
     }
+}
+
+/*!
+ * \fn int bufrtotac_set_bufrdeco_bitmask (struct bufrdeco *b)
+ * \brief Set the bufrdeco struct bitmask according with readed args from shell
+ * \param b Pointer to struct \ref bufrdeco already inited
+ * \return 0 if succeded 
+ */
+int bufrtotac_set_bufrdeco_bitmask (struct bufrdeco *b)
+{
+  bufrdeco_assert ( b != NULL);
+  
+  if ( HTML )
+    b->mask |= BUFRDECO_OUTPUT_HTML;
+  
+  if (USE_CACHE)
+    b->mask |= BUFRDECO_USE_TABLES_CACHE;
+
+  if (PRINT_JSON_DATA)
+    b->mask |= BUFRDECO_OUTPUT_JSON_SUBSET_DATA;
+
+  if (PRINT_JSON_SEC0)
+    b->mask |= BUFRDECO_OUTPUT_JSON_SEC0;
+
+  if (PRINT_JSON_SEC1)
+    b->mask |= BUFRDECO_OUTPUT_JSON_SEC1;
+  
+  if (PRINT_JSON_SEC2)
+    b->mask |= BUFRDECO_OUTPUT_JSON_SEC2;
+
+  if (PRINT_JSON_SEC3)
+    b->mask |= BUFRDECO_OUTPUT_JSON_SEC3;
+  
+  if (PRINT_JSON_EXPANDED_TREE)
+    b->mask |= BUFRDECO_OUTPUT_JSON_EXPANDED_TREE;
+  
+  return 0;
 }
