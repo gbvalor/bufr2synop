@@ -28,8 +28,7 @@
   \fn int bufr_read_tableC ( struct bufrdeco *b )
   \brief Reads a file with table C content (Code table and bit flags) according with csv WMO format
   \param b pointer to a target struct \ref bufrdeco
-
-  If succeded return 0, otherwise 1
+  \return  0 if success, 1 otherwise
 */
 int bufr_read_tableC ( struct bufrdeco *b )
 {
@@ -130,8 +129,7 @@ int bufr_read_tableC ( struct bufrdeco *b )
   \param tb pointer to struct \ref bufr_tableb where are stored all table B data
   \param key descriptor string in format FXXYYY
   \param code value to search in this table/flag
-
-  Return 0 if success, 1 otherwise
+  \return  0 if success, 1 otherwise
 */
 int bufr_find_tableC_csv_index ( buf_t *index, struct bufr_tableC *tc, const char *key, uint32_t code )
 {
@@ -165,8 +163,7 @@ int bufr_find_tableC_csv_index ( buf_t *index, struct bufr_tableC *tc, const cha
   \param index element to read if is not 0
   \param d pointer to the source descriptor
   \param ival integer value for the descriptor
-
-  If something went wrong, it returns NULL . Otherwise it returns \a expl
+  \return If something went wrong, it returns NULL . Otherwise it returns \a expl
 */
 char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tableC *tc, uint32_t *index, struct bufr_descriptor *d, uint32_t ival )
 {
@@ -194,11 +191,11 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tableC
   \param d pointer to the source descriptor
   \param ival integer value for the descriptos
   \param nbits uint8_t with the bit extensión of descriptor
+  \return If something went wrong, it returns NULL . Otherwise it returns \a expl
 
   Remember that in FLAG tables for bufr, bit 1 is most significant and N the less one. Bit N only is set to
   1 when all others are also set to one, i.e. in case of missing value.
 
-  If something went wrong, it returns NULL . Otherwise it returns \a expl
 */
 char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tableC *tc, struct bufr_descriptor *d,
     uint64_t ival, uint8_t nbits )

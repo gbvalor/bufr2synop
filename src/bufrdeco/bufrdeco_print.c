@@ -29,6 +29,8 @@
   \param target string target
   \param lmax available size in target
   \param b pointer to the source struct \ref bufrdeco
+  \return If succeeded return 0, otherwise 1
+
 */
 int sprint_sec0_info ( char *target, size_t lmax, struct bufrdeco *b )
 {
@@ -55,6 +57,7 @@ int sprint_sec0_info ( char *target, size_t lmax, struct bufrdeco *b )
   \fn int print_sec0_info(struct bufrdeco *b)
   \brief Prints info from sec0
   \param b pointer to the source struct \ref bufrdeco
+  \return If succeeded return 0
 */
 int print_sec0_info ( struct bufrdeco *b )
 {
@@ -75,6 +78,7 @@ int print_sec0_info ( struct bufrdeco *b )
   \param target string target
   \param lmax available size in target
   \param b pointer to the source struct \ref bufrdeco
+  \return If succeeded return 0, 1 otherwise
 */
 int sprint_sec1_info ( char *target, size_t lmax, struct bufrdeco *b )
 {
@@ -126,6 +130,7 @@ int sprint_sec1_info ( char *target, size_t lmax, struct bufrdeco *b )
   \fn int print_sec1_info(struct bufrdeco *b)
   \brief Prints info from sec1
   \param b pointer to the source struct \ref bufrdeco
+  \return If succeeded return 0, 1 otherwise
 */
 int print_sec1_info ( struct bufrdeco *b )
 {
@@ -145,6 +150,7 @@ int print_sec1_info ( struct bufrdeco *b )
   \param target string target
   \param lmax available size in target
   \param b pointer to the source struct \ref bufrdeco
+  \return If succeeded return 0, 1 otherwise
 */
 int sprint_sec3_info ( char *target, size_t lmax, struct bufrdeco *b )
 {
@@ -181,6 +187,7 @@ int sprint_sec3_info ( char *target, size_t lmax, struct bufrdeco *b )
   \fn int print_sec3_info(struct bufrdeco *b)
   \brief Prints info from sec3
   \param b pointer to the source struct \ref bufrdeco
+  \return If succeeded return 0
 */
 int print_sec3_info ( struct bufrdeco *b )
 {
@@ -201,6 +208,7 @@ int print_sec3_info ( struct bufrdeco *b )
   \param target string target
   \param lmax available size in target
   \param b pointer to the source struct \ref bufrdeco
+  \return If succeeded return 0, 1 otherwise
 */
 int sprint_sec4_info ( char *target, size_t lmax, struct bufrdeco *b )
 {
@@ -226,6 +234,7 @@ int sprint_sec4_info ( char *target, size_t lmax, struct bufrdeco *b )
   \fn int print_sec4_info(struct bufrdeco *b)
   \brief Prints info from sec3
   \param b pointer to the source struct \ref bufrdeco
+  \return If succeeded return 0
 */
 int print_sec4_info ( struct bufrdeco *b )
 {
@@ -245,8 +254,7 @@ int print_sec4_info ( struct bufrdeco *b )
   \param f Pointer to file opened by caller
   \param b pointer to the basic container struct \ref bufrdeco
   \param seq pointer to the struct \ref bufr_sequence  to print
-
-  If succeded return 0, else return 1
+  \return If succeded return 0, else return 1
 */
 int bufrdeco_fprint_tree_recursive ( FILE *f, struct bufrdeco *b, struct bufr_sequence *seq )
 {
@@ -347,6 +355,7 @@ int bufrdeco_fprint_tree_recursive ( FILE *f, struct bufrdeco *b, struct bufr_se
   \brief Print a tree of descriptors
   \param f Pointer to file opened by caller
   \param b pointer to a basic container struct \ref bufrdeco
+  \return If succeeded return 0
 */
 int bufrdeco_fprint_tree ( FILE *f, struct bufrdeco *b )
 {
@@ -367,6 +376,7 @@ int bufrdeco_fprint_tree ( FILE *f, struct bufrdeco *b )
   \fn int bufrdeco_print_tree ( struct bufrdeco *b )
   \brief Print a tree of descriptors
   \param b pointer to a basic container struct \ref bufrdeco
+  \return If succeeded return 0
 */
 int bufrdeco_print_tree ( struct bufrdeco *b )
 {
@@ -388,6 +398,7 @@ int bufrdeco_print_tree ( struct bufrdeco *b )
   \brief print the data in a struct \ref bufr_atom_data to a file already open by caller
   \param f Pointer to file opened by caller
   \param a pointer to struct ref \ref bufr_atom_data with data to print
+  \return If succeeded return 0
 */
 int bufrdeco_print_atom_data_file ( FILE *f, struct bufr_atom_data *a )
 {
@@ -403,6 +414,7 @@ int bufrdeco_print_atom_data_file ( FILE *f, struct bufr_atom_data *a )
   \fn int bufrdeco_print_atom_data_stdout ( struct bufr_atom_data *a )
   \brief print the data in a struct \ref bufr_atom_data to stdout
   \param a pointer to struct ref \ref bufr_atom_data with data to print
+  \return If succeeded return 0
 */
 int bufrdeco_print_atom_data_stdout ( struct bufr_atom_data *a )
 {
@@ -416,7 +428,7 @@ int bufrdeco_print_atom_data_stdout ( struct bufr_atom_data *a )
   \param lmax size of allocated string \a target 
   \param a pointer to struct ref \ref bufr_atom_data with data to print
 
-  Returns a pointer to result string
+  \return a pointer to result string
 */
 char * bufrdeco_print_atom_data ( char *target, size_t lmax, struct bufr_atom_data *a )
 {
@@ -503,6 +515,7 @@ char * bufrdeco_print_atom_data ( char *target, size_t lmax, struct bufr_atom_da
   \fn int bufrdeco_fprint_subset_sequence_data ( struct bufrdeco_subset_sequence_data *s )
   \brief Prints a struct \ref bufrdeco_subset_sequence_data
   \param s pointer to the struct to print
+  \return If succeeded return 0
 */
 int bufrdeco_fprint_subset_sequence_data ( FILE *f, struct bufrdeco_subset_sequence_data *s )
 {
@@ -523,11 +536,11 @@ int bufrdeco_fprint_subset_sequence_data ( FILE *f, struct bufrdeco_subset_seque
 }
 
 
-
 /*!
   \fn int bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *s )
   \brief Prints a struct \ref bufrdeco_subset_sequence_data
   \param s pointer to the struct to print
+  \return If succeeded return 0
 */
 int bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *s )
 {
@@ -540,6 +553,7 @@ int bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *
   \brief prints a struct bufrdeco_compressed_ref
   \param f pointer to a file opened by caller
   \param r pointer to the struct to print
+  \return If succeeded return 0
 */
 int fprint_bufrdeco_compressed_ref ( FILE *f, struct bufrdeco_compressed_ref *r )
 {
@@ -566,6 +580,7 @@ int fprint_bufrdeco_compressed_ref ( FILE *f, struct bufrdeco_compressed_ref *r 
   \fn int print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r )
   \brief prints a struct bufrdeco_compressed_ref
   \param r pointer to the struct to print
+  \return If succeeded return 0
 */
 int print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r )
 {
@@ -578,6 +593,7 @@ int print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r )
   \fn int print_bufrdeco_compressed_data_references ( struct bufrdeco_compressed_data_references *r )
   \brief prints a struct bufrdeco_compressed_references
   \param r pointer to the struct to print
+  \return If succeeded return 0, 1 otherwise
 
   It is used mainly in debug stage
 */
@@ -596,6 +612,7 @@ int print_bufrdeco_compressed_data_references ( struct bufrdeco_compressed_data_
   \fn int fprint_bufrdeco_compressed_data_references ( struct bufrdeco_compressed_data_references *r )
   \brief prints a struct bufrdeco_compressed_references
   \param r pointer to the struct to print
+  \return If succeeded return 0, 1 otherwise
 
   It is used mainly in debug stage
 */

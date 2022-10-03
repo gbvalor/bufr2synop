@@ -115,7 +115,7 @@ char *bufrdeco_get_version ( char *version, size_t dversion, char *build, size_t
 
   And so we go in a recursive way up to the end.
 
-  If success return 0, if something went wrong return 1
+  \return If success return 0, if something went wrong return 1
 */
 int bufrdeco_parse_tree ( struct bufrdeco *b )
 {
@@ -133,7 +133,7 @@ int bufrdeco_parse_tree ( struct bufrdeco *b )
    This function only must be called once. When finished the function \ref bufrdeco_close must be called to
    free all needed memory
 
-   If succeeded return 0, otherwise 1
+   \return If succeeded return 0, otherwise 1
 */
 int bufrdeco_init ( struct bufrdeco *b )
 {
@@ -175,7 +175,7 @@ int bufrdeco_init ( struct bufrdeco *b )
    This function must be called when parsing another BUFR report without calling
    \ref bufrdeco_close and \ref bufrdeco_init. It 
 
-   If succeeded return 0, otherwise 1
+   \return If succeeded return 0, otherwise 1
 */
 int bufrdeco_reset ( struct bufrdeco *b )
 {
@@ -220,9 +220,10 @@ int bufrdeco_reset ( struct bufrdeco *b )
  * \brief Set the library normal output stream. 
  * \param out stream opened by caller
  * \param b pointer to current active struct \ref bufrdeco
+ * \return If succeeded return 0, otherwise 1
  * 
  * Without calling to this funcion, the default is stdout
- */
+*/
 int bufrdeco_set_out_stream (FILE *out, struct bufrdeco *b)
 {
   b->out = out;
@@ -234,6 +235,7 @@ int bufrdeco_set_out_stream (FILE *out, struct bufrdeco *b)
  * \brief Set the error stream. 
  * \param err stream opened by caller
  * \param b pointer to current active struct \ref bufrdeco
+ * \return If succeeded return 0, otherwise 1
  * 
  * Without calling to this funcion, the default is stderr
  */
@@ -247,12 +249,12 @@ int bufrdeco_set_err_stream (FILE *err, struct bufrdeco *b)
   \fn int bufrdeco_close ( struct bufrdeco *b )
   \brief Free all allocated memory. Needed when no more task to do with bufrdeco library
   \param b pointer to the target struct
+  \return If succeeded return 0, otherwise 1
 
   This function must be called at the end when no more calls to bufrdeco library is needed
   
   b->out and b->err must be closed by caller if are not the default stdout or stderr
   
-  If succeeded return 0, otherwise 1
 */
 int bufrdeco_close ( struct bufrdeco *b )
 {
@@ -281,10 +283,10 @@ int bufrdeco_close ( struct bufrdeco *b )
  * \brief Sets the directory path for BUFR tables. Needed if it is not any default directories.
  * \param b pointer to the target struct
  * \param tables_dir Source path of tables directory
+ * \return 1 if problem, 0 otherwise
  *
  * The default directories are '/usr/share/bufr2synop' and '/usr/local/share/bufr2synop'
  *
- * Retuns 1 if problems, 0 otherwise
  */
 int bufrdeco_set_tables_dir ( struct bufrdeco *b, char *tables_dir )
 {
@@ -299,6 +301,7 @@ int bufrdeco_set_tables_dir ( struct bufrdeco *b, char *tables_dir )
   \brief Read file and try to find a bufr report inserted in. Once found do the same that \ref bufrdeco_read_bufr()
   \param b pointer to struct \ref bufrdeco
   \param filename complete path of BUFR file
+  \return Returns 0 if all is OK, 1 otherwise
 
 
   This function does the folowing tasks:
@@ -308,7 +311,6 @@ int bufrdeco_set_tables_dir ( struct bufrdeco *b, char *tables_dir )
   - Splits and parse the BUFR sections (without expanding descriptors nor parsing data)
   - Reads the needed Table files and store them in memory.
 
-  Returns 0 if all is OK, 1 otherwise
  */
 int bufrdeco_get_bufr ( struct bufrdeco *b, char *filename )
 {
@@ -323,6 +325,7 @@ int bufrdeco_get_bufr ( struct bufrdeco *b, char *filename )
  * \brief Write offset bit array for subsets in a non-compressed bufr
  * \param filename complete path of output file to open
  * \param b pointer to the struct \ref bufrdeco
+ * \return 1 if problem, 0 otherwise
  */
 int bufrdeco_write_subset_offset_bits ( struct bufrdeco *b, char *filename )
 {
@@ -350,6 +353,7 @@ int bufrdeco_write_subset_offset_bits ( struct bufrdeco *b, char *filename )
  * \brief Write offset bit array for subsets in a non-compressed bufr
  * \param filename complete path of input file to open
  * \param b pointer to the struct \ref bufrdeco
+ * \return 1 if problem, 0 otherwise
  */
 int bufrdeco_read_subset_offset_bits ( struct bufrdeco *b, char *filename )
 {
@@ -386,7 +390,7 @@ int bufrdeco_read_subset_offset_bits ( struct bufrdeco *b, char *filename )
  *  \param nset index of subset we want to parse and get data. First subset in a BUFR file has index 0.
  *  \param b pointer to the struct \ref bufrdeco
  *
- * If succeeded returns a pointer to the struct \ref bufrdeco_subset_sequence_data with the results for the
+ *  \return If succeeded returns a pointer to the struct \ref bufrdeco_subset_sequence_data with the results for the
  * desired subset,  otherwise returns NULL
  */
 struct bufrdeco_subset_sequence_data *bufrdeco_get_target_subset_sequence_data ( buf_t nset, struct bufrdeco *b )

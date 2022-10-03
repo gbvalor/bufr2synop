@@ -27,8 +27,7 @@
   \fn int bufr_read_tableD ( struct bufrdeco *b )
   \brief Reads a file with table D content according with WMO csv format
   \param b pointer to a target struct \ref bufrdeco
-
-  If succeded return 0, otherwise 1
+  \return If succeded return 0, otherwise 1
 */
 int bufr_read_tableD ( struct bufrdeco *b )
 {
@@ -165,8 +164,7 @@ int bufr_read_tableD ( struct bufrdeco *b )
  \param index pointer where to set the result
  \param td pointer to a struct \ref bufr_tableD where all table data is stored
  \param key string in the form FXXYYY which is the key of descriptor we want to find out
-
- If the descriptor has been found with success then returns 0, othewise returns 1
+ \return If the descriptor has been found with success then returns 0, othewise returns 1
 */
 int bufr_find_tableD_index ( buf_t *index, struct bufr_tableD *td, const char *key )
 {
@@ -208,8 +206,7 @@ int bufr_find_tableD_index ( buf_t *index, struct bufr_tableD *td, const char *k
  \param s target struct \ref bufr_sequence
  \param b pointer to the basic container struct \ref bufrdeco
  \param key string in the form FXXYYY which is the key of descriptor we want to find out, F = 3
-
- If the sequence has been filled with success then returns 0, otherwise returns 1
+ \return If the sequence has been filled with success then returns 0, otherwise returns 1
 */
 int bufrdeco_tableD_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key )
 {

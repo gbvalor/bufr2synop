@@ -23,6 +23,13 @@
 */
 #include "bufrdeco.h"
 
+/*!
+ * \fn buf_t bufrdeco_print_json_scape_string_cvals ( FILE *out, char *source )
+ * \brief prints a descriptor string value scaping the '"' for a json format
+ * \param out output stream
+ * \param source source string
+ * \return The amount of bytes sent to out
+ */
 buf_t bufrdeco_print_json_scape_string_cvals ( FILE *out, char *source )
 {
   buf_t i = 0, used = 0;
@@ -46,7 +53,6 @@ buf_t bufrdeco_print_json_scape_string_cvals ( FILE *out, char *source )
  * \brief Prints the prologue of object with a subset data in json format
  * \param out output stream opened by caller
  * \param b pointer to active struct \ref bufrdeco
- *
  * \return The amount of bytes sent to out
  */
 buf_t bufrdeco_print_json_subset_data_prologue ( FILE *out,  struct bufrdeco *b )
@@ -393,8 +399,7 @@ buf_t bufrdeco_print_json_sec3 ( FILE *out, struct bufrdeco *b )
   \param f Pointer to file opened by caller
   \param b pointer to the basic container struct \ref bufrdeco
   \param seq pointer to the struct \ref bufr_sequence  to print
-
-  If succeded return 0, else return 1
+  \return The amount of bytes sent to out
 */
 buf_t bufrdeco_print_json_tree_recursive ( FILE *out, struct bufrdeco *b, struct bufr_sequence *seq )
 {
@@ -425,10 +430,10 @@ buf_t bufrdeco_print_json_tree_recursive ( FILE *out, struct bufrdeco *b, struct
           if ( l->lseq[i].f == 0 )
             {
               if ( bufr_find_tableB_index ( &k, & ( b->tables->b ), l->lseq[i].c ) )
-                fprintf ( out, "\"Not found in tables\"}" );
+                used += fprintf ( out, "\"Not found in tables\"}" );
               else
                 {
-                  fprintf ( out, ":\"" );
+                  used += fprintf ( out, ":\"" );
                   if ( l->replicated[i] )
                     {
                       if ( l->replicated[i] )
@@ -441,34 +446,34 @@ buf_t bufrdeco_print_json_tree_recursive ( FILE *out, struct bufrdeco *b, struct
                     }
                   if ( is_a_delayed_descriptor ( & l->lseq[i] ) ||
                        is_a_short_delayed_descriptor ( & l->lseq[i] ) )
-                    fprintf ( out, "* %s\"}", b->tables->b.item[k].name );
+                    used += fprintf ( out, "* %s\"}", b->tables->b.item[k].name );
                   else
-                    fprintf ( out, "%s\"}", b->tables->b.item[k].name );
+                    used += fprintf ( out, "%s\"}", b->tables->b.item[k].name );
                 }
             }
           else if ( l->lseq[i].f == 2 )
             {
-              fprintf ( out, ":\"%s\"}", bufrdeco_get_f2_descriptor_explanation ( explanation, sizeof ( explanation ), & ( l->lseq[i] ) ) );
+              used += fprintf ( out, ":\"%s\"}", bufrdeco_get_f2_descriptor_explanation ( explanation, sizeof ( explanation ), & ( l->lseq[i] ) ) );
             }
           else if ( l->lseq[i].f == 1 )
             {
               if ( l->lseq[i].y == 0 )
                 {
                   if ( l->lseq[i].x == 1 )
-                    fprintf ( out, ":\"* Replicator for %d descriptor after next delayed descriptor which set the number of replications.\"}", l->lseq[i].x );
+                    used += fprintf ( out, ":\"* Replicator for %d descriptor after next delayed descriptor which set the number of replications.\"}", l->lseq[i].x );
                   else
-                    fprintf ( out, ":\"* Replicator for %d descriptors after next delayed descriptor which set the number of replications.\"}", l->lseq[i].x );
+                    used += fprintf ( out, ":\"* Replicator for %d descriptors after next delayed descriptor which set the number of replications.\"}", l->lseq[i].x );
                 }
               else
                 {
                   if ( l->lseq[i].x == 1 )
-                    fprintf ( out, ":\"* Replicator for next descriptor %d times\"}", l->lseq[i].y );
+                    used += fprintf ( out, ":\"* Replicator for next descriptor %d times\"}", l->lseq[i].y );
                   else
-                    fprintf ( out, ":\"* Replicator for next %d descriptors %d times\"}", l->lseq[i].x, l->lseq[i].y );
+                    used += fprintf ( out, ":\"* Replicator for next %d descriptors %d times\"}", l->lseq[i].x, l->lseq[i].y );
                 }
             }
           else
-            fprintf ( out, "\n" );
+            used += fprintf ( out, "\n" );
           continue;
         }
       else
@@ -497,6 +502,7 @@ buf_t bufrdeco_print_json_tree_recursive ( FILE *out, struct bufrdeco *b, struct
   \fn int bufrdeco_print_tree ( struct bufrdeco *b )
   \brief Print a tree of descriptors
   \param b pointer to a basic container struct \ref bufrdeco
+  \return The amount of bytes sent to out
 */
 buf_t bufrdeco_print_json_tree ( struct bufrdeco *b )
 {

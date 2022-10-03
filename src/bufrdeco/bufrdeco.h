@@ -105,7 +105,7 @@
 
 /*!
   \def MAXLINES_TABLEC
-  \brief The maximum expected lines in a Table C file
+  \brief The maximum expected lines in a Table C file, legacy def used from ECMWF
 */
 #define MAXLINES_TABLEC BUFR_MAXLINES_TABLEC
 
@@ -114,11 +114,10 @@
   \brief Maximum expected descriptors in a expanded sequence for a single subset
 */
 #define BUFR_NMAXSEQ (2 * 16384)
-// #define NMAXSEQ (16384)
 
 /*!
   \def BUFR_EXPLAINED_LENGTH
-  \brief Maximum length for a explained descriptor
+  \brief Maximum length for a explained descriptor string
 */
 #define BUFR_EXPLAINED_LENGTH (512)
 
@@ -216,7 +215,7 @@
 
 /*!
   \def BUFR_MAX_EXPANDED_SEQUENCES
-  \brief Max amount of unexpanded layers in a struct \ref bufrdeco_expanded_tree
+  \brief Max amount of unexpanded sequences in a struct \ref bufrdeco_expanded_tree
 */
 #define BUFR_MAX_EXPANDED_SEQUENCES (128)
 
@@ -309,7 +308,7 @@
   \def BUFRDECO_OUTPUT_JSON
   \brief Bit mask to the member mask for struct \ref bufrdeco to format output as json for SECs 0 to 3
 */
-#define BUFRDECO_OUTPUT_JSON (BUFRDECO_OUTPUT_JSON_SEC0 | BUFRDECO_OUTPUT_JSON_SEC1 | BUFRDECO_OUTPUT_JSON_SEC2 | BUFRDECO_OUTPUT_JSON_SEC3)
+#define BUFRDECO_OUTPUT_JSON (BUFRDECO_OUTPUT_JSON_SEC0 | BUFRDECO_OUTPUT_JSON_SEC1 | BUFRDECO_OUTPUT_JSON_SEC2 | BUFRDECO_OUTPUT_JSON_SEC3 )
 
 /*!
   \def BUFR_TABLEB_NAME_LENGTH
@@ -451,12 +450,6 @@ struct bufr_atom_data
 };
 
 /*!
- * \def BUFRDECO_MAX_SUBSET_DESCRIPTORS
- * \brief Maximum number of descriptors that a struct bufr_subset_bitacora can mange
- */
-#define BUFRDECO_MAX_SUBSET_DESCRIPTORS (8192 * 2)
-
-/*!
   \struct bufrdeco_subset_sequence_data
   \brief Contains all the information for a subset in a expanded squence
   This is a version to use with bufrdeco parse library
@@ -526,7 +519,6 @@ struct bufrdeco_bitmap_related_vars
 /*!
   \struct bufrdeco_decoding_data_state
   \brief stores the state when expanding a sequence.
-
 */
 struct bufrdeco_decoding_data_state
 {
@@ -638,7 +630,7 @@ struct bufrdeco_expanded_tree
 
 /*!
  \struct bufrdeco_compressed_ref
- \brief Struct to hold the needed reference bit offsets in a compressed BUFR
+ \brief Struct to hold the needed reference bit offsets, descriptor tree and replications in a compressed BUFR
 
  In a compressed bufr it is supossed that all subsets are coded under the same expanded tree, included the delayed descriptors.
  So the length of data in every subset is the same. To access to a field data we would need these strutcs \ref bufrdeco_compressed_ref
@@ -681,7 +673,7 @@ struct bufrdeco_compressed_data_references
 
 /*!
  *  \struct bufrdeco_subset_bit_offsets
- *  \brief Array of offset in bits for every subset in a non-compressed bufr. Offset is counted in bits from the init of SEC4 data, usually b1it 32.
+ *  \brief Array of offset in bits for every subset in a non-compressed bufr. Offset is counted in bits from the init of SEC4 data, usually bit 32.
  *
  *   To set the offset for non compressed bufr it is neccesary to parse the expanded tree and extact the data of the prior subsets.
  *   If we already know the bit offset of the data then we can access directly to the subset data without parsing the prior subsets.
@@ -904,7 +896,6 @@ struct bufr_tableC
   buf_t x_start[64]; /*!< Index in array \a l[] for first x. x_start[j] is index for first descriptor which x == j */
   buf_t num[64]; /*!< Amonut of lines for x. num[i] is the amount of items in array where x = i */
   buf_t y_ref[64][256]; /*!< index for first y since first x. x_ref[i][j] is index since x_start[i] where y == j */
-  //char l[BUFR_MAXLINES_TABLEC][96]; /*!< Array with lines readed from file */
   struct bufr_tableC_decoded_item item[BUFR_MAXLINES_TABLEC]; /*!< Array of decoded lines */
 };
 
@@ -1002,11 +993,10 @@ extern const double pow10pos[8];
 extern const double pow10neg[8];
 extern const int32_t pow10pos_int[10];
 
-// Main API functions
+/************ Main API functions **************/
 char *bufrdeco_get_version ( char *version, size_t dversion, char *build, size_t dbuild, char *builder, size_t dbuilder,
                              int *version_major, int *version_minor, int *version_patch );
 int bufrdeco_parse_tree ( struct bufrdeco *b );
-int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *father, buf_t father_idesc, const char *key );
 int bufrdeco_init ( struct bufrdeco *b );
 int bufrdeco_close ( struct bufrdeco *b );
 int bufrdeco_reset ( struct bufrdeco *b );
@@ -1040,7 +1030,7 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename );
 int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename );
 int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, buf_t size );
 
-// Read bufr WMO csv
+// Read bufr WMO csv table files
 int get_wmo_tablenames ( struct bufrdeco *b );
 int bufr_read_tableB ( struct bufrdeco *b );
 int bufr_read_tableC ( struct bufrdeco *b );
@@ -1083,11 +1073,11 @@ char * get_formatted_value_from_escale ( char *fmt, size_t dim, int32_t escale, 
 char * get_formatted_value_from_escale2 ( char *fmt, size_t dim, int32_t escale, double val );
 
 // To parse. General
+int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *father, buf_t father_idesc, const char *key );
 int bufrdeco_decode_data_subset ( struct bufrdeco *b );
 int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *d, struct bufr_sequence *l, struct bufrdeco *b );
 int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *d, struct bufr_replicator *r, struct bufrdeco *b );
 int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, struct bufr_descriptor *d, struct bufrdeco *b );
-ibuf_t bufrdeco_find_bufr_atom_data ( struct bufr_sequence *s, buf_t is, struct bufrdeco_subset_sequence_data *d, buf_t start );
 
 // To parse compressed bufr
 int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, struct bufrdeco *b );
@@ -1105,8 +1095,7 @@ int bufrdeco_increase_compressed_data_references_count ( struct bufrdeco_compres
 // To get parsed data
 struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data ( struct bufrdeco *b );
 
-// To parse and print data and tree
-//buf_t bufrdeco_print_subset_data_tree ( char *o, buf_t osize, struct bufrdeco *b );
+// To parse and print data and tree in json format
 buf_t bufrdeco_print_json_sec0 ( FILE *out, struct bufrdeco *b );
 buf_t bufrdeco_print_json_sec1 ( FILE *out, struct bufrdeco *b );
 buf_t bufrdeco_print_json_sec2 ( FILE *out, struct bufrdeco *b );
@@ -1123,7 +1112,7 @@ buf_t bufrdeco_print_json_sequence_descriptor_final ( FILE *out );
 buf_t bufrdeco_print_json_separator( FILE *out );
 buf_t bufrdeco_print_json_scape_string_cvals( FILE *out, char *source);
 
-// To get bits functions
+// Functions to get bits of data
 uint32_t two_bytes_to_uint32 ( const uint8_t *source );
 uint32_t three_bytes_to_uint32 ( const uint8_t *source );
 uint32_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *source, buf_t *bit0_offset,

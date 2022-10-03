@@ -34,8 +34,7 @@
   \param s pointer to a struct \ref  bufrdeco_subset_sequence_data where to set data if any
   \param d pointer to the source descriptor
   \param b pointer to the base struct \ref bufrdeco
-
-  If succeded return 0, otherwise 1
+  \return If succeded return 0, otherwise 1
  */
 int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, struct bufr_descriptor *d, struct bufrdeco *b )
 {
@@ -402,8 +401,7 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
   \param r pointer to a struct \ref bufrdeco_compressed_data_references where to set data references if any
   \param d pointer to the source descriptor
   \param b pointer to the base struct \ref bufrdeco
-
-  If succeded return 0, otherwise 1
+  \return If succeded return 0, otherwise 1
  */
 int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_descriptor *d, struct bufrdeco *b )
 {
@@ -770,7 +768,7 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
  *  \param e string with explanation as result
  *  \param d pointer to the struct \ref bufr_descriptor to explain
  *
- *  As result, returns the explanation string or null if problems.
+ *  \return As result, returns the explanation string or null if problems.
  */
 char *bufrdeco_get_f2_descriptor_explanation ( char *e, size_t dim, struct bufr_descriptor *d )
 {

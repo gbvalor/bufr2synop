@@ -29,6 +29,7 @@
   \param target string target
   \param lmax available size in target
   \param b pointer to the source struct \ref bufrdeco
+  \return If succeeded return 0
 */ 
 int sprint_sec0_info_html ( char *target, size_t lmax, struct bufrdeco *b )
 {
@@ -49,6 +50,7 @@ int sprint_sec0_info_html ( char *target, size_t lmax, struct bufrdeco *b )
   \param target string target
   \param lmax available size in target
   \param b pointer to the source struct \ref bufrdeco
+  \return If succeeded return 0
 */
 int sprint_sec1_info_html ( char *target, size_t lmax, struct bufrdeco *b )
 {
@@ -97,6 +99,7 @@ int sprint_sec1_info_html ( char *target, size_t lmax, struct bufrdeco *b )
   \param target string target
   \param lmax available size in target
   \param b pointer to the source struct \ref bufrdeco
+  \return If succeeded return 0
 */
 int sprint_sec3_info_html ( char *target, size_t lmax, struct bufrdeco *b )
 {
@@ -128,6 +131,7 @@ int sprint_sec3_info_html ( char *target, size_t lmax, struct bufrdeco *b )
   \param target string target
   \param lmax available size in target
   \param b pointer to the source struct \ref bufrdeco
+  \return If succeeded return 0, 1 otherwise
 */
 int sprint_sec4_info_html ( char *target, size_t lmax, struct bufrdeco *b )
 {
@@ -151,7 +155,7 @@ int sprint_sec4_info_html ( char *target, size_t lmax, struct bufrdeco *b )
   \param a pointer to struct ref \ref bufr_atom_data with data to print
   \param ss index of subset in bufr
 
-  Returns a pointer to result string
+  \return a pointer to result string
 */
 char * bufrdeco_print_atom_data_html ( char *target, size_t lmax, struct bufr_atom_data *a, uint32_t ss )
 {
@@ -232,6 +236,7 @@ char * bufrdeco_print_atom_data_html ( char *target, size_t lmax, struct bufr_at
   \fn int bufrdeco_fprint_subset_sequence_data_html ( struct bufrdeco_subset_sequence_data *s )
   \brief Prints a struct \ref bufrdeco_subset_sequence_data as an html table
   \param s pointer to the struct to print
+  \return If succeeded return 0
 */
 int bufrdeco_fprint_subset_sequence_data_html ( FILE *f, struct bufrdeco_subset_sequence_data *s )
 {
@@ -255,6 +260,7 @@ int bufrdeco_fprint_subset_sequence_data_html ( FILE *f, struct bufrdeco_subset_
   \fn int bufrdeco_fprint_subset_sequence_data_html ( struct bufrdeco_subset_sequence_data *s )
   \brief Prints a struct \ref bufrdeco_subset_sequence_data as an html table
   \param s pointer to the struct to print
+  \return If succeeded return 0
 */
 int bufrdeco_print_subset_sequence_data_html ( struct bufrdeco_subset_sequence_data *s )
 {
@@ -268,6 +274,7 @@ int bufrdeco_print_subset_sequence_data_html ( struct bufrdeco_subset_sequence_d
   \brief Prints a struct \ref bufrdeco_subset_sequence_data as an html table
   \param s pointer to the struct to print
   \param id string with id for the subset
+  \return If succeeded return 0
 */
 int bufrdeco_fprint_subset_sequence_data_tagged_html ( FILE *f, struct bufrdeco_subset_sequence_data *s, char *id )
 {
@@ -294,6 +301,7 @@ int bufrdeco_fprint_subset_sequence_data_tagged_html ( FILE *f, struct bufrdeco_
   \brief Prints a struct \ref bufrdeco_subset_sequence_data as an html table
   \param s pointer to the struct to print
   \param id string with id for the subset
+  \return If succeeded return 0
 */
 int bufrdeco_print_subset_sequence_data_tagged_html ( struct bufrdeco_subset_sequence_data *s, char *id )
 {

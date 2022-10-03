@@ -28,6 +28,7 @@
   \brief Preliminary parse of a compressed data bufr
   \param r pointer to a struct \ref bufrdeco_compressed_data_references where to set the results
   \param b basic container struct \ref bufrdeco
+  \return Returns 0 if succeeded, 1 otherwise
 
   When a bufr report has compressed data, it is needed to do a first parse step to get references about
   where to find the data for every descriptor in subsets. This is what this function does. If succeeded
@@ -35,7 +36,6 @@
 
   Also be mind that the descriptors tree have to be already parsed when calling this function
 
-  Returns 0 if succeeded, 1 otherwise
 */
 int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
 {
@@ -71,8 +71,7 @@ int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, s
   \param r pointer to target struct \ref bufrdeco_compressed_data_references where to set results
   \param l pointer to a struct \ref bufr_sequence to parse in this call. If NULL then it is first root sequence
   \param b basic container struct \ref bufrdeco
-
-  Returns 0 if succeeded, 1 otherwise
+  \return Returns 0 if succeeded, 1 otherwise
 */
 int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_references *r, struct bufr_sequence *l, struct bufrdeco *b )
 {
@@ -348,7 +347,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
   \param rep pointer to a replicator which contains the data for replication
   \param b basic container struct \ref bufrdeco
 
-  Returns 0 if succeeded, 1 otherwise
+  \return Returns 0 if succeeded, 1 otherwise
 */
 int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_replicator *rep, struct bufrdeco *b )
 {
@@ -738,7 +737,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
   \param subset index for solicited subset. First subset has index 0
   \param b basic container struct \ref bufrdeco
 
-  Returns 0 if succeeded, 1 otherwise
+  \return Returns 0 if succeeded, 1 otherwise
 */
 int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, struct bufrdeco_compressed_ref *r,
     buf_t subset, struct bufrdeco *b )
@@ -961,8 +960,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
   \param s pointer to a struct \ref bufrdeco_subset_sequence_data where to set the results
   \param r pointer to the struct \ref bufrdeco_compressed_data_references with the info about how and where to get the data
   \param b basic container struct \ref bufrdeco
-
-  Returns 0 if succeeded, 1 otherwise
+  \return Returns 0 if succeeded, 1 otherwise
 */
 int bufr_decode_subset_data_compressed ( struct bufrdeco_subset_sequence_data *s, struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
 {

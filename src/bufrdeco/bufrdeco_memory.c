@@ -27,8 +27,7 @@
   \fn int bufrdeco_init_tables ( struct bufr_tables **t )
   \brief Init a struct \ref bufr_tables allocating space
   \param t pointer to the target pointer to struct \ref bufr_tables
-
-  Returns 0 if succeeded, 1 otherwise
+  \return 0 if succeeded, 1 otherwise
 */
 int bufrdeco_init_tables ( struct bufr_tables **t )
 {
@@ -47,8 +46,7 @@ int bufrdeco_init_tables ( struct bufr_tables **t )
   \fn int bufrdeco_free_tables ( struct bufr_tables **t )
   \brief Frees the allocated space for a struct \ref bufr_tables
   \param t pointer to the target pointer to struct \ref bufr_tables
-
-  Returns 0 and \a *t is set to NULL
+  \return 0 and \a *t is set to NULL
 */
 int bufrdeco_free_tables ( struct bufr_tables **t )
 {
@@ -67,7 +65,7 @@ int bufrdeco_free_tables ( struct bufr_tables **t )
   \brief Init a struct \ref bufrdeco_expanded_tree allocating space
   \param t pointer to the target pointer to struct \ref bufrdeco_expanded_tree
 
-  Returns 0 if succeeded, 1 otherwise
+  \return 0 if succeeded, 1 otherwise
 */
 int bufrdeco_init_expanded_tree ( struct bufrdeco_expanded_tree **t )
 {
@@ -86,7 +84,7 @@ int bufrdeco_init_expanded_tree ( struct bufrdeco_expanded_tree **t )
   \brief Frees the allocated space for a struct \ref bufrdeco_expanded_tree
   \param t pointer to the target pointer to struct \ref bufrdeco_expanded_tree
 
-  Returns 0 and \a *t is set to NULL
+  \return 0 and \a *t is set to NULL
 */
 int bufrdeco_free_expanded_tree ( struct bufrdeco_expanded_tree **t )
 {
@@ -106,6 +104,7 @@ int bufrdeco_free_expanded_tree ( struct bufrdeco_expanded_tree **t )
   \param replaced  Pointer where to set the replaced pointer
   \param source Pointer to a struct \ref bufr_tables
   \param b pointer to the container basic struct \ref bufrdeco
+  \return 0 if succeeded, 1 otherwise
 
   Remember that the struct \ref bufr_tables used in bufrdeco library is the one which pointer is in struct
   \ref bufrdeco . To avoid problems the struct must be initialized before substituted in this fucntion.
@@ -113,8 +112,6 @@ int bufrdeco_free_expanded_tree ( struct bufrdeco_expanded_tree **t )
 
   This is useful if we do not want to read and parse tables again if the caller has a pool of
   already readed tables.
-
-  Returns 0 if succeeded, 1 otherwise
 */
 int bufrdeco_substitute_tables ( struct bufr_tables **replaced, struct bufr_tables *source, struct bufrdeco *b )
 {
@@ -135,11 +132,10 @@ int bufrdeco_substitute_tables ( struct bufr_tables **replaced, struct bufr_tabl
    \fn int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
    \brief Init a struct \ref bufrdeco_subset_sequence_data
    \param ba pointer to the target struct
+   \return 0 if succeeded, 1 otherwise
 
    It is supossed that no memory is allocated for sequence. If we are not sure better use
    function \ref bufrdeco_clean_subset_sequence_data
-
-   Returns 0 if succeeded, 1 otherwise
 */
 int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
 {
@@ -158,11 +154,12 @@ int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *b
 /*!
   \fn int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
   \brief Cleans a struct \ref bufrdeco_subset_sequence_data
+  \param ba Pointer to struct \ref bufrdeco_subset_sequence_data to clean
+  \return 0 if succeeded, 1 otherwise
 
   For eficience, if sequence in the struct \ref bufrdeco_subset_sequence_data is allocated, just set the used
   elements to zero. If is still no allocated memory for sequence inits the struct
 
-  Returns 0 if succeeded, 1 otherwise
 */
 int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
 {
@@ -181,8 +178,7 @@ int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *
  \fn  int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
  \brief Free the memory for sequence array in a struct \ref bufrdeco_subset_sequence_data
  \param ba pointer to the target struct to free
-
- Returns 0
+ \return 0 if succeeded
 */
 int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
 {
@@ -200,11 +196,11 @@ int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *b
   \fn int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
   \brief Init a struct bufrdeco_compressed_data_references
   \param rf pointer ti the target struct
+  \return 0 if succeded, otherwise 1
 
   If already memory is allocated for array of references then just adjust the used index to zero. Otherwise
   it allocate the needed memory and init the struct
 
-  If succeeded return 0, otherwise 1
 */
 int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
 {
@@ -231,8 +227,8 @@ int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_r
 /*!
   \fn int bufrdeco_clean_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
   \brief Clean a struct \ref bufrdeco_compressed_data_references
-
-  If succeeded return 0, otherwise 1
+  \param rf pointer to the target struct \ref bufrdeco_compressed_data_references to clean
+  \return If succeeded return 0, otherwise 1
 */
 int bufrdeco_clean_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
 {
@@ -248,8 +244,8 @@ int bufrdeco_clean_compressed_data_references ( struct bufrdeco_compressed_data_
 /*!
   \fn int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
   \brief Free the memory allocated for array of references in a struct \ref bufrdeco_compressed_data_references
-
-  If succeeded return 0, otherwise 1
+  \param rf pointer to the target struct \ref bufrdeco_compressed_data_references to free
+  \return If succeeded return 0, otherwise 1
 */
 int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
 {
@@ -267,8 +263,8 @@ int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_r
 /*!
  * \fn int bufrdeco_allocate_bitmap ( struct bufrdeco *b )
  * \brief allocate bitmap
- * 
- *   If succeeded return 0, otherwise 1
+ * \param b the active struct \ref bufrdeco
+ * \return If succeeded return 0, otherwise 1
  */
 int bufrdeco_allocate_bitmap ( struct bufrdeco *b )
 {
@@ -306,8 +302,8 @@ int bufrdeco_allocate_bitmap ( struct bufrdeco *b )
 /*!
  *  \fn int bufrdeco_clean_bitmaps ( struct bufrdeco *b )
  *  \brief Clean all allocated bitmaps, but still is in memory
- * 
- *   If succeeded return 0, otherwise 1
+ * \param b the active struct \ref bufrdeco
+ * \return If succeeded return 0, otherwise 1
  */
 int bufrdeco_clean_bitmaps ( struct bufrdeco *b )
 {
@@ -329,8 +325,8 @@ int bufrdeco_clean_bitmaps ( struct bufrdeco *b )
 /*!
  * \fn int bufrdeco_free_bitmap_array ( struct bufrdeco_bitmap_array *a )
  * \brief Free an allocated bitmap array
- * 
- *   If succeeded return 0, otherwise 1
+ * \param a pointer to target struct \ref bufrdeco_bitmap_array to free
+ * \return If succeeded return 0, otherwise 1
  */
 int bufrdeco_free_bitmap_array ( struct bufrdeco_bitmap_array *a )
 {

@@ -28,6 +28,7 @@
   \brief Set to a struct \ref bufr_sequence an unexpanded descriptor array from sec3 in a BUFR report
   \param s Pointer to the target struct \ref bufr_sequence
   \param b Pointer to the base struct \ref bufrdeco
+  \return If succeded return 0
 
   Here we get a struct \ref bufr_sequence from the data about descriptors stored in sec3 of a bufr report
 */
@@ -53,8 +54,7 @@ int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct 
   \param key string with descriptor in form 'FXXYYY'
   \param father pointer to the father struct \ref bufr_sequence
   \param b pointer to the base struct \ref bufrdeco
-
-  Returns 0 if success, 1 otherwise
+  \return 0 if success, 1 otherwise
  */
 int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *father,  buf_t father_idesc, const char *key )
 {

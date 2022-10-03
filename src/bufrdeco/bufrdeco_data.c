@@ -28,13 +28,13 @@
   \fn struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data(struct bufrdeco *b)
   \brief Parse and get a struct \ref bufrdeco_subset_sequence_data
   \param b basic container struct \ref bufrdeco
+  \return If succeeded returns a pointer to the struct \ref bufrdeco_subset_sequence_data with the results for a
+  subset,  otherwise returns NULL
 
   Note that if succeeded the counter to current subset index is increased. Remember that in case of non
   compressed data we must to decode all previous subsets to get the desired one. In case of compressed
   we can access directly to a the desired subset
 
-  If succeeded returns a pointer to the struct \ref bufrdeco_subset_sequence_data with the results for a
-  subset,  otherwise returns NULL
 */
 struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data ( struct bufrdeco *b )
 {
@@ -52,12 +52,12 @@ struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data ( struc
   \fn  int bufrdeco_decode_data_subset ( struct bufrdeco *b )
   \brief  User interface to decode a BUFR subset
   \param b pointer to the base struct \ref bufrdeco
+  \return Return 0 in case of success, 1 otherwise
 
   Note that if succeeded the counter to current subset index is increased. Remember that in case of non
   compressed data we must to decode all previous subsets to get the desired one. In case of compressed
   we can access directly to a the desired subset
 
-  Return 0 in case of success, 1 otherwise
 */
 int bufrdeco_decode_data_subset ( struct bufrdeco *b )
 {
@@ -129,12 +129,12 @@ int bufrdeco_decode_data_subset ( struct bufrdeco *b )
   \fn int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s )
   \brief doubles the allocated space for a struct \ref bufrdeco_subset_sequence_data whenever is posible
   \param s pointer to source struct \ref bufrdeco_subset_sequence_data
+  \return 0 when success, otherwise return 1 and the struct is unmodified
 
   The amount of data in a bufr must be huge. In a first moment, the dimension of a sequence of structs
   \ref bufr_atom_data is \ref BUFR_NMAXSEQ but may be increased. This function task is try to double the
   allocated dimension and reallocate it.
 
-  Return 0 when success, otherwise return 1 and the struct is unmodified
 */
 int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *d )
 {
@@ -166,7 +166,7 @@ int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *d )
   \param l pointer to the source struct \ref bufr_sequence
   \param b pointer to the base struct \ref bufrdeco
 
-  Return 0 in case of success, 1 otherwise
+  \return 0 in case of success, 1 otherwise
 */
 int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *d, struct bufr_sequence *l, struct bufrdeco *b )
 {
@@ -504,8 +504,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
   \param s target struct \ref bufrdeco_subset_sequence_data
   \param r pointer to a struct \ref bufr_replicator which manage the replication task
   \param b pointer to the base struct \ref bufrdeco
-
-  If succeeded return 0, 1 otherwise
+  \return If succeeded return 0, 1 otherwise
 */
 int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *d, struct bufr_replicator *r, struct bufrdeco *b )
 {

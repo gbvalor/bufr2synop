@@ -29,7 +29,7 @@
   \brief Read bufr file and does preliminary and first decode pass
   \param b pointer to struct \ref bufrdeco
   \param filename complete path of BUFR file
-
+  \return 0 if all is OK, 1 otherwise
 
   This function does the folowing tasks:
   - Read the file and checks the marks at the begining and end to see wheter is a BUFR file
@@ -37,7 +37,6 @@
   - Splits and parse the BUFR sections (without expanding descriptors nor parsing data)
   - Reads the needed Table files and store them in memory.
 
-  Returns 0 if all is OK, 1 otherwise
  */
 int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
 {
@@ -108,7 +107,7 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
   \brief Read file and try to find a bufr report inserted in. Once found do the same that bufrdeco_read_file()
   \param b pointer to struct \ref bufrdeco
   \param filename complete path of BUFR file
-
+  \return 0 if all is OK, 1 otherwise
 
   This function does the folowing tasks:
   - Try to find first buffer of bytes begining with 'BUFR' chars and ending with '7777'. This will be considered as a bufr file.
@@ -117,7 +116,6 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
   - Splits and parse the BUFR sections (without expanding descriptors nor parsing data)
   - Reads the needed Table files and store them in memory.
 
-  Returns 0 if all is OK, 1 otherwise
  */
 int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename )
 {
@@ -217,12 +215,12 @@ int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename )
   \param b pointer to struct \ref bufrdeco
   \param bufrx buffer already allocated by caller
   \param size size of BUFR in buffer
+  \return 0 if all is OK, 1 otherwise
 
   This function does the folowing tasks:
   - Splits and parse the BUFR sections (without expanding descriptors nor parsing data)
   - Reads the needed Table files and store them in memory.
 
-  Returns 0 if all is OK, 1 otherwise
  */
 int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, buf_t size )
 {

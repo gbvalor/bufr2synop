@@ -43,7 +43,7 @@ const char CSV_FINAL = '\n';
   \param out resulting string
   \param in input string
 
-  If problem returns NULL
+  \return If problem returns NULL, otherwise out
 */
 char * csv_quoted_string ( char *out, char *in )
 {
@@ -79,9 +79,9 @@ char * csv_quoted_string ( char *out, char *in )
   \param nt pointer to a integer. On success is the number of items found
   \param tk array of pointers. Every pointer is a item on success
   \param lin input line which is modified in this routine to be splitted into items
+  \return On success return 0, otherwise -1
 
   NOTE that input line is modified
-  On success return 0, otherwise -1
 */
 int parse_csv_line2 ( int *nt, char *tk[], char *lin )
 {
@@ -246,6 +246,7 @@ int parse_csv_line2 ( int *nt, char *tk[], char *lin )
   \param nt pointer to a integer. On success is the number of items found
   \param tk array of pointers. Every pointer is a item on success
   \param lin input line which is modified in this routine to be splitted into items
+  \return On success return 0, otherwise -1
 
   This is an optimization of routine parse_csv_line2(). Here we suppose:
     -All no void items are closed between "" and separed by comas ','
@@ -253,7 +254,6 @@ int parse_csv_line2 ( int *nt, char *tk[], char *lin )
     -No blank spaces at the end nor begin of items
   
   NOTE that input line is modified
-  On success return 0, otherwise -1
 */
 int parse_csv_line ( int *nt, char *tk[], char *lin )
 {

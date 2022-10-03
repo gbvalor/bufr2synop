@@ -35,9 +35,9 @@ const double pow10neg[8]= {1.0,  0.1,  0.01,  0.001,  0.0001,  0.00001,  0.00000
   \fn int bufr_read_tableB ( struct bufrdeco b )
   \brief Read a Table B file from a WMO csv formatted file and set the result in a struct \ref bufr_tableB
   \param b pointer to the struct \ref bufrdeco where to set the results
+  \return  0 if success, 1 otherwise
 
   Note that this function assumes that file is csv formatted as WMO table B
-  Return 0 if success, 1 otherwise
 */
 int bufr_read_tableB ( struct bufrdeco *b )
 {
@@ -158,8 +158,7 @@ int bufr_read_tableB ( struct bufrdeco *b )
   \param b pointer to the basic struct \ref bufrdeco
   \param mode integer with bit mask about changed parameteres by operator descriptors
   \param key descriptor string in format FXXYYY
-
-  Return 0 if success, 1 otherwise
+  \return  0 if success, 1 otherwise
 */
 int bufr_restore_original_tableB_item ( struct bufr_tableB *tb, struct bufrdeco *b, uint8_t mode, char *key )
 {
@@ -201,8 +200,7 @@ int bufr_restore_original_tableB_item ( struct bufr_tableB *tb, struct bufrdeco 
   \param index pointer  to a size_t where to set the result if success
   \param tb pointer to struct \ref bufr_tableB where are stored all table B data
   \param key descriptor string in format FXXYYY
-
-  Return 0 if success, 1 otherwise
+  \return  0 if success, 1 otherwise
 */
 int bufr_find_tableB_index ( buf_t *index, struct bufr_tableB *tb, const char *key )
 {
@@ -247,8 +245,7 @@ int bufr_find_tableB_index ( buf_t *index, struct bufr_tableB *tb, const char *k
   \param b basic container struct \ref bufrdeco
   \param d pointer to the reference struct \ref bufr_descriptor
   \param mode If 0 then we are getting the data itself for a descriptor. If mode = 1 then we are dealing with associated bits
-
-  If succeeded returns 0. If problem returns 1. If mode = 1 and no associated bits returns -1
+  \return If succeeded returns 0. If problem returns 1. If mode = 1 and no associated bits returns -1
 */
 int bufrdeco_tableB_compressed ( struct bufrdeco_compressed_ref *r, struct bufrdeco *b, struct bufr_descriptor *d, int mode )
 {
@@ -449,8 +446,7 @@ int bufrdeco_tableB_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
   \param a pointer to a struct \ref bufr_atom_data where to set the results
   \param b pointer to the basic struct \ref bufrdeco
   \param d pointer to the target descriptor
-
-  Return 0 if success, 1 otherwise
+  \return  0 if success, 1 otherwise
 */
 int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct bufr_descriptor *d )
 {
