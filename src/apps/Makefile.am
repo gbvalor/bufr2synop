@@ -17,13 +17,13 @@ AM_CPPFLAGS= $(all_includes) -I/$(top_builddir) -I$(top_srcdir)/src/bufrdeco -I$
 # the library search path.
 AM_CFLAGS = -W -Wall
 
-bin_PROGRAMS = bufrnoaa bufrdeco_test bufrtotac build_bufrdeco_tables update_tableD
+bin_PROGRAMS = bufrnoaa bufrdeco_json bufrtotac build_bufrdeco_tables update_tableD
 noinst_HEADERS = bufrtotac.h bufrnoaa.h
 
 bufrnoaa_SOURCES = bufrnoaa.c bufrnoaa_io.c bufrnoaa_utils.c
 
-bufrdeco_test_SOURCES = bufrdeco_test.c
-bufrdeco_test_LDADD = $(top_builddir)/src/bufrdeco/libbufrdeco.la -lm 
+bufrdeco_json_SOURCES = bufrdeco_json.c
+bufrdeco_json_LDADD = $(top_builddir)/src/bufrdeco/libbufrdeco.la -lm 
 
 bufrtotac_SOURCES = bufrtotac.c bufrtotac_io.c
 bufrtotac_LDADD = $(top_builddir)/src/bufrdeco/libbufrdeco.la $(top_builddir)/src/libraries/libbufr2tac.la -lm

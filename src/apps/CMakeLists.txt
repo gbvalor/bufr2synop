@@ -18,8 +18,8 @@ LINK_DIRECTORIES( ${bufr2synop_SOURCE_DIR}/src/bufrdeco ${bufr2synop_SOURCE_DIR}
 
 add_executable(bufrnoaa bufrnoaa.h bufrnoaa.c bufrnoaa_io.c bufrnoaa_utils.c)
 
-add_executable(bufrdeco_test bufrdeco_test.c)
-target_link_libraries(bufrdeco_test m bufrdeco)
+add_executable(bufrdeco_json bufrdeco_json.c)
+target_link_libraries(bufrdeco_json m bufrdeco)
 
 add_executable(bufrtotac bufrtotac.h bufrtotac.c bufrtotac_io.c)
 target_link_libraries(bufrtotac m bufrdeco bufr2tac)
@@ -30,4 +30,4 @@ target_link_libraries(build_bufrdeco_tables m bufrdeco)
 add_executable(update_tableD update_tableD.c)
 target_link_libraries(update_tableD m bufrdeco)
 
-install (TARGETS bufrnoaa bufrtotac build_bufrdeco_tables update_tableD DESTINATION ${CMAKE_INSTALL_BINDIR} )
+install (TARGETS bufrnoaa bufrtotac bufrdeco_json build_bufrdeco_tables update_tableD DESTINATION ${CMAKE_INSTALL_BINDIR} )

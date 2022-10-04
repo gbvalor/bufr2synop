@@ -17,8 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-/*! \file bufrdeco_test.c
-    \brief This file includes the code to debug and test bufrdeco library
+/*! \file bufrdeco_json.c
+    \brief This file includes the code to get data from a BUFR report using bufrdeco library
 */
 #include "bufrdeco.h"
 
