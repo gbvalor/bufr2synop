@@ -1,12 +1,12 @@
 <map id="src/bufrdeco/bufrdeco_memory.c" name="src/bufrdeco/bufrdeco_memory.c">
-<area shape="rect" id="node1" title="This file has the memory stufs for library bufrdeco." alt="" coords="273,5,421,47"/>
-<area shape="rect" id="node2" href="$bufrdeco_8h.html" title="Include header file for bufrdeco library." alt="" coords="305,95,388,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,169,67,196"/>
-<area shape="rect" id="node4" title=" " alt="" coords="91,169,155,196"/>
-<area shape="rect" id="node5" title=" " alt="" coords="179,169,245,196"/>
-<area shape="rect" id="node6" title=" " alt="" coords="269,169,334,196"/>
-<area shape="rect" id="node7" title=" " alt="" coords="359,169,428,196"/>
-<area shape="rect" id="node8" title=" " alt="" coords="452,169,511,196"/>
-<area shape="rect" id="node9" title=" " alt="" coords="535,169,598,196"/>
-<area shape="rect" id="node10" title=" " alt="" coords="623,169,703,196"/>
+<area shape="rect" id="node1" title="This file has the memory stufs for library bufrdeco." alt="" coords="273,5,421,45"/>
+<area shape="rect" id="node2" href="$bufrdeco_8h.html" title="Include header file for bufrdeco library." alt="" coords="305,93,388,119"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,167,67,192"/>
+<area shape="rect" id="node4" title=" " alt="" coords="91,167,155,192"/>
+<area shape="rect" id="node5" title=" " alt="" coords="179,167,245,192"/>
+<area shape="rect" id="node6" title=" " alt="" coords="269,167,334,192"/>
+<area shape="rect" id="node7" title=" " alt="" coords="359,167,428,192"/>
+<area shape="rect" id="node8" title=" " alt="" coords="452,167,511,192"/>
+<area shape="rect" id="node9" title=" " alt="" coords="535,167,598,192"/>
+<area shape="rect" id="node10" title=" " alt="" coords="623,167,703,192"/>
 </map>

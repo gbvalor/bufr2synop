@@ -1,0 +1,6 @@
+<map id="bufrdeco_print_json_object_atom_data" name="bufrdeco_print_json_object_atom_data">
+<area shape="rect" id="node1" title="Print an json object with a descriptor data." alt="" coords="5,55,140,95"/>
+<area shape="rect" id="node2" href="$bufrdeco__utils_8c.html#ae2667eaa0605459867e88af6219e9592" title="Supress trailing blanks of a string." alt="" coords="195,5,321,31"/>
+<area shape="rect" id="node3" href="$bufrdeco_2bufrdeco__json_8c.html#ad9c7b4faf6722aca949e3ff9d2ed1e70" title="prints a descriptor string value scaping the &#39;&quot;&#39; for a json format" alt="" coords="188,55,328,95"/>
+<area shape="rect" id="node4" href="$bufrdeco__utils_8c.html#a4659b01cee4a157aae8bf1b4e540b155" title="gets a string with formatted value depending of scale" alt="" coords="189,119,327,159"/>
+</map>

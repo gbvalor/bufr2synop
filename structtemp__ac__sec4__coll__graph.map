@@ -1,4 +1,4 @@
 <map id="temp_ac_sec4" name="temp_ac_sec4">
-<area shape="rect" id="node1" title="Section 4 for parts A and C of a TEMP report." alt="" coords="27,95,133,121"/>
-<area shape="rect" id="node2" href="$structtemp__max__wind__data.html" title="Store the data of a maximum wind level in a TEMP report." alt="" coords="5,5,155,32"/>
+<area shape="rect" id="node1" title="Section 4 for parts A and C of a TEMP report." alt="" coords="27,93,133,119"/>
+<area shape="rect" id="node2" href="$structtemp__max__wind__data.html" title="Store the data of a maximum wind level in a TEMP report." alt="" coords="5,5,155,31"/>
 </map>

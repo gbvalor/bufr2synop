@@ -1,10 +1,10 @@
 <map id="time_period_duration" name="time_period_duration">
-<area shape="rect" id="node1" title="Get time period duration in seconds." alt="" coords="891,56,1033,83"/>
-<area shape="rect" id="node2" href="$bufr2tac__x12_8c.html#a7f1ed15f5027409b984c5b94b3538269" title="Parse a expanded descriptor with X = 12." alt="" coords="732,5,843,32"/>
-<area shape="rect" id="node7" href="$bufr2tac__x13_8c.html#a2647c457f4548120a3906acd6cb52eb8" title="Parse a expanded descriptor with X = 13." alt="" coords="732,56,843,83"/>
-<area shape="rect" id="node8" href="$bufr2tac__x14_8c.html#a9decf760b2013c011940e4d61257113e" title="Parse a expanded descriptor with X = 14." alt="" coords="732,107,843,133"/>
-<area shape="rect" id="node3" href="$bufr2tac__synop_8c.html#a3178eb404dc66ceccd7a08a3c719c2aa" title="parses a subset sequence as an Land fixed SYNOP FM&#45;12, SHIP FM&#45;13 or SYNOP&#45;mobil FM&#45;14 report" alt="" coords="521,56,684,83"/>
-<area shape="rect" id="node4" href="$bufr2tac__sqparse_8c.html#a7b839bfd63c95d7fdbad26be3c1d86be" title="Parse a sequence of expanded descriptors for a subset." alt="" coords="311,56,473,83"/>
-<area shape="rect" id="node5" href="$bufrtotac__io_8c.html#a156a5e3480972b5590b8ec744ba32252" title=" " alt="" coords="104,49,263,90"/>
-<area shape="rect" id="node6" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,56,56,83"/>
+<area shape="rect" id="node1" title="Get time period duration in seconds." alt="" coords="891,55,1033,80"/>
+<area shape="rect" id="node2" href="$bufr2tac__x12_8c.html#a7f1ed15f5027409b984c5b94b3538269" title="Parse a expanded descriptor with X = 12." alt="" coords="732,5,843,31"/>
+<area shape="rect" id="node7" href="$bufr2tac__x13_8c.html#a2647c457f4548120a3906acd6cb52eb8" title="Parse a expanded descriptor with X = 13." alt="" coords="732,55,843,80"/>
+<area shape="rect" id="node8" href="$bufr2tac__x14_8c.html#a9decf760b2013c011940e4d61257113e" title="Parse a expanded descriptor with X = 14." alt="" coords="732,104,843,129"/>
+<area shape="rect" id="node3" href="$bufr2tac__synop_8c.html#a3178eb404dc66ceccd7a08a3c719c2aa" title="parses a subset sequence as an Land fixed SYNOP FM&#45;12, SHIP FM&#45;13 or SYNOP&#45;mobil FM&#45;14 report" alt="" coords="521,55,684,80"/>
+<area shape="rect" id="node4" href="$bufr2tac__sqparse_8c.html#a7b839bfd63c95d7fdbad26be3c1d86be" title="Parse a sequence of expanded descriptors for a subset." alt="" coords="311,55,473,80"/>
+<area shape="rect" id="node5" href="$bufrtotac__io_8c.html#a156a5e3480972b5590b8ec744ba32252" title=" " alt="" coords="104,47,263,87"/>
+<area shape="rect" id="node6" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,55,56,80"/>
 </map>

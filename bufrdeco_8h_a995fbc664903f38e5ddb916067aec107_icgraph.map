@@ -1,11 +1,10 @@
 <map id="bufrdeco_parse_f2_compressed" name="bufrdeco_parse_f2_compressed">
-<area shape="rect" id="node1" title="parse a descritor with f = 2 in case of compressed bufr" alt="" coords="1413,122,1620,149"/>
-<area shape="rect" id="node2" href="$bufrdeco__compressed_8c.html#a12eb30c4bdf4d68d2839d15dacbcf647" title="decodes a repicated subsequence" alt="" coords="1181,85,1365,127"/>
-<area shape="rect" id="node3" href="$bufrdeco__compressed_8c.html#ac2034de9ae4ad0228a56c207689553b1" title="Parse recursively the compressed data in a bufr report to get references where to get data for every ..." alt="" coords="944,85,1133,127"/>
-<area shape="rect" id="node4" href="$bufrdeco__compressed_8c.html#ab5056984d71413ec42f7bb6971de2ce8" title="Preliminary parse of a compressed data bufr." alt="" coords="707,93,896,119"/>
-<area shape="rect" id="node5" href="$bufrdeco__data_8c.html#ae2d3eb10e84c09bd0d282f510bf720ee" title="User interface to decode a BUFR subset." alt="" coords="505,56,659,97"/>
-<area shape="rect" id="node7" href="$bufrdeco_8c.html#aead4ed5a0bc1b6ce477095653107e548" title="Prepare the struct." alt="" coords="104,64,267,105"/>
-<area shape="rect" id="node6" href="$bufrdeco__data_8c.html#a0e0289d12b117e4df8f37f14486d3d71" title="Parse and get a struct bufrdeco_subset_sequence_data." alt="" coords="315,5,457,47"/>
-<area shape="rect" id="node9" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="160,13,211,39"/>
-<area shape="rect" id="node8" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,71,56,98"/>
+<area shape="rect" id="node1" title="parse a descritor with f = 2 in case of compressed bufr" alt="" coords="1413,122,1620,147"/>
+<area shape="rect" id="node2" href="$bufrdeco__compressed_8c.html#a12eb30c4bdf4d68d2839d15dacbcf647" title="decodes a repicated subsequence" alt="" coords="1181,85,1365,125"/>
+<area shape="rect" id="node3" href="$bufrdeco__compressed_8c.html#ac2034de9ae4ad0228a56c207689553b1" title="Parse recursively the compressed data in a bufr report to get references where to get data for every ..." alt="" coords="944,85,1133,125"/>
+<area shape="rect" id="node4" href="$bufrdeco__compressed_8c.html#ab5056984d71413ec42f7bb6971de2ce8" title="Preliminary parse of a compressed data bufr." alt="" coords="707,93,896,118"/>
+<area shape="rect" id="node5" href="$bufrdeco__data_8c.html#ae2d3eb10e84c09bd0d282f510bf720ee" title="User interface to decode a BUFR subset." alt="" coords="505,56,659,96"/>
+<area shape="rect" id="node7" href="$bufrdeco_8c.html#aead4ed5a0bc1b6ce477095653107e548" title="Prepare the struct bufrdeco to get data from the solicited subset." alt="" coords="104,63,267,103"/>
+<area shape="rect" id="node6" href="$bufrdeco__data_8c.html#a0e0289d12b117e4df8f37f14486d3d71" title="Parse and get a struct bufrdeco_subset_sequence_data." alt="" coords="315,5,457,45"/>
+<area shape="rect" id="node8" href="$apps_2bufrdeco__json_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,70,56,95"/>
 </map>

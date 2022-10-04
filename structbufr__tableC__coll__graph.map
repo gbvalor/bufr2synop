@@ -1,4 +1,4 @@
 <map id="bufr_tableC" name="bufr_tableC">
-<area shape="rect" id="node1" title="Store a table C readed from a file formated and named as ECMWF bufrdc package." alt="" coords="49,95,139,121"/>
-<area shape="rect" id="node2" href="$structbufr__tableC__decoded__item.html" title="Store parameters for a descriptor in table C, i. e. for Table code and flags Remember this is NOT the..." alt="" coords="5,5,183,32"/>
+<area shape="rect" id="node1" title="Store a table C readed from a file formated and named as ECMWF bufrdc package." alt="" coords="49,93,139,119"/>
+<area shape="rect" id="node2" href="$structbufr__tableC__decoded__item.html" title="Store parameters for a descriptor in table C, i. e. for Table code and flags Remember this is NOT the..." alt="" coords="5,5,183,31"/>
 </map>

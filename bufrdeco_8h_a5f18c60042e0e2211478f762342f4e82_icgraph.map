@@ -1,5 +1,5 @@
 <map id="sprint_sec1_info" name="sprint_sec1_info">
-<area shape="rect" id="node1" title="Prints info from sec1." alt="" coords="263,5,380,32"/>
-<area shape="rect" id="node2" href="$bufrdeco__print_8c.html#afb7d79090706da7c9c119fd7d7d901fd" title="Prints info from sec1." alt="" coords="104,5,215,32"/>
-<area shape="rect" id="node3" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,5,56,32"/>
+<area shape="rect" id="node1" title="Prints info from sec1." alt="" coords="263,5,380,31"/>
+<area shape="rect" id="node2" href="$bufrdeco__print_8c.html#afb7d79090706da7c9c119fd7d7d901fd" title="Prints info from sec1." alt="" coords="104,5,215,31"/>
+<area shape="rect" id="node3" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,5,56,31"/>
 </map>

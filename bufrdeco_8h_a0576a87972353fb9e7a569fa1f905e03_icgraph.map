@@ -1,12 +1,12 @@
 <map id="bufrdeco_init_tables" name="bufrdeco_init_tables">
-<area shape="rect" id="node1" title="Init a struct bufr_tables allocating space." alt="" coords="933,81,1072,108"/>
-<area shape="rect" id="node2" href="$bufrdeco__wmo_8c.html#a690c1bdb0a65ccaa1391f64ea8df2fc6" title="Read the tables according with bufr file data from a bufr table directory." alt="" coords="568,31,687,57"/>
-<area shape="rect" id="node8" href="$bufrdeco_8c.html#af9cff1700125f2b6df2e7da8d628c8d5" title="Inits and allocate memory for a struct bufrdeco." alt="" coords="579,107,675,133"/>
-<area shape="rect" id="node9" href="$bufrdeco__wmo_8c.html#a9a6f68130c76bab155e074c2e98273ce" title="Init an element of array c&#45;&gt;tab[] if still not allocated. If allocated clean it and set *t pointing t..." alt="" coords="735,56,885,83"/>
-<area shape="rect" id="node10" href="$bufrdeco__memory_8c.html#a919d289258e542c37be03a8d726e09c2" title="substitute an struct bufr_tables into a struct bufrdeco" alt="" coords="742,158,878,199"/>
-<area shape="rect" id="node3" href="$bufrdeco__read_8c.html#a42b3789e2ddabf25f894e78f59897268" title=" " alt="" coords="376,31,520,57"/>
-<area shape="rect" id="node4" href="$bufrdeco__read_8c.html#ad44753d6491d1785ed3fe38af6557da6" title="Read file and try to find a bufr report inserted in. Once found do the same that bufrdeco_read_file()" alt="" coords="180,5,328,32"/>
-<area shape="rect" id="node7" href="$bufrdeco__read_8c.html#ae3cfc6802c196511223adc0a6324e4af" title="Read bufr file and does preliminary and first decode pass." alt="" coords="187,56,321,83"/>
-<area shape="rect" id="node5" href="$bufrdeco_8c.html#a429725844ceb27af702275748a444f2b" title="Read file and try to find a bufr report inserted in. Once found do the same that bufrdeco_read_bufr()" alt="" coords="5,5,132,32"/>
-<area shape="rect" id="node6" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="43,56,94,83"/>
+<area shape="rect" id="node1" title="Init a struct bufr_tables allocating space." alt="" coords="933,80,1072,105"/>
+<area shape="rect" id="node2" href="$bufrdeco__wmo_8c.html#a690c1bdb0a65ccaa1391f64ea8df2fc6" title="Read the tables according with bufr file data from a bufr table directory." alt="" coords="568,31,687,56"/>
+<area shape="rect" id="node8" href="$bufrdeco_8c.html#af9cff1700125f2b6df2e7da8d628c8d5" title="Inits and allocate memory for a struct bufrdeco." alt="" coords="579,105,675,131"/>
+<area shape="rect" id="node9" href="$bufrdeco__wmo_8c.html#a9a6f68130c76bab155e074c2e98273ce" title="Init an element of array c&#45;&gt;tab[] if still not allocated. If allocated clean it and set *t pointing t..." alt="" coords="735,55,885,80"/>
+<area shape="rect" id="node10" href="$bufrdeco__memory_8c.html#a919d289258e542c37be03a8d726e09c2" title="substitute an struct bufr_tables into a struct bufrdeco" alt="" coords="742,155,878,195"/>
+<area shape="rect" id="node3" href="$bufrdeco__read_8c.html#a42b3789e2ddabf25f894e78f59897268" title=" " alt="" coords="376,31,520,56"/>
+<area shape="rect" id="node4" href="$bufrdeco__read_8c.html#ad44753d6491d1785ed3fe38af6557da6" title="Read file and try to find a bufr report inserted in. Once found do the same that bufrdeco_read_file()" alt="" coords="180,5,328,31"/>
+<area shape="rect" id="node7" href="$bufrdeco__read_8c.html#ae3cfc6802c196511223adc0a6324e4af" title="Read bufr file and does preliminary and first decode pass." alt="" coords="187,55,321,80"/>
+<area shape="rect" id="node5" href="$bufrdeco_8c.html#a429725844ceb27af702275748a444f2b" title="Read file and try to find a bufr report inserted in. Once found do the same that bufrdeco_read_bufr()" alt="" coords="5,5,132,31"/>
+<area shape="rect" id="node6" href="$apps_2bufrdeco__json_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="43,55,94,80"/>
 </map>

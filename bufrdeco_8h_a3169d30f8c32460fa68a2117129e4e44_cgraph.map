@@ -1,6 +1,11 @@
 <map id="bufrdeco_parse_f2_descriptor" name="bufrdeco_parse_f2_descriptor">
-<area shape="rect" id="node1" title="parse a descritor with f = 2" alt="" coords="5,64,199,91"/>
-<area shape="rect" id="node2" href="$bufrdeco__memory_8c.html#a38f7dd296da40c3cc2ac80071f936f37" title="allocate bitmap" alt="" coords="247,5,417,32"/>
-<area shape="rect" id="node3" href="$bufrdeco__data_8c.html#aac640b0a169dcc99097be9053118bcea" title="doubles the allocated space for a struct bufrdeco_subset_sequence_data whenever is posible" alt="" coords="252,57,412,98"/>
-<area shape="rect" id="node4" href="$bufrdeco__utils_8c.html#a01acf8b7be269860c9a3228fa96bc4f8" title=" " alt="" coords="253,123,411,149"/>
+<area shape="rect" id="node1" title="parse a descritor with f = 2" alt="" coords="5,127,199,152"/>
+<area shape="rect" id="node2" href="$bufrdeco__memory_8c.html#a38f7dd296da40c3cc2ac80071f936f37" title="allocate bitmap" alt="" coords="247,5,417,31"/>
+<area shape="rect" id="node3" href="$bufrdeco__data_8c.html#a62790f7e23547e63cfb6946e8b8971e0" title="doubles the allocated space for a struct bufrdeco_subset_sequence_data whenever is posible" alt="" coords="252,55,412,95"/>
+<area shape="rect" id="node4" href="$bufrdeco_2bufrdeco__json_8c.html#a93f2b82967a4808d0216d131e80ceaeb" title="Print an json object with a descriptor data." alt="" coords="265,119,399,159"/>
+<area shape="rect" id="node8" href="$bufrdeco_2bufrdeco__json_8c.html#a158aa5bd5d71d3370fe6b9148bef7981" title="Print the comma &#39;,&#39; separator in an output." alt="" coords="265,183,399,223"/>
+<area shape="rect" id="node9" href="$bufrdeco__utils_8c.html#a01acf8b7be269860c9a3228fa96bc4f8" title=" " alt="" coords="253,248,411,273"/>
+<area shape="rect" id="node5" href="$bufrdeco__utils_8c.html#ae2667eaa0605459867e88af6219e9592" title="Supress trailing blanks of a string." alt="" coords="473,69,598,95"/>
+<area shape="rect" id="node6" href="$bufrdeco_2bufrdeco__json_8c.html#ad9c7b4faf6722aca949e3ff9d2ed1e70" title="prints a descriptor string value scaping the &#39;&quot;&#39; for a json format" alt="" coords="465,119,605,159"/>
+<area shape="rect" id="node7" href="$bufrdeco__utils_8c.html#a4659b01cee4a157aae8bf1b4e540b155" title="gets a string with formatted value depending of scale" alt="" coords="466,183,605,223"/>
 </map>

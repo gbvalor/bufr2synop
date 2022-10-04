@@ -1,6 +1,6 @@
 <map id="syn_parse_x06" name="syn_parse_x06">
-<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 06." alt="" coords="5,31,116,57"/>
-<area shape="rect" id="node2" href="$bufr2tac__error_8c.html#a223ffc74b013e1d1abe6f5cc5fe1148b" title=" " alt="" coords="164,5,291,32"/>
-<area shape="rect" id="node4" href="$bufr2tac__x06_8c.html#af3fb0411bdf6ebe59e26ee090c400358" title="convert latitude and longitude to a MMM string" alt="" coords="172,56,283,83"/>
-<area shape="rect" id="node3" href="$bufr2tac__error_8c.html#a6b6066c2f1fd1085397ee9c294ac2948" title=" " alt="" coords="339,5,476,32"/>
+<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 06." alt="" coords="5,31,116,56"/>
+<area shape="rect" id="node2" href="$bufr2tac__error_8c.html#a223ffc74b013e1d1abe6f5cc5fe1148b" title=" " alt="" coords="164,5,291,31"/>
+<area shape="rect" id="node4" href="$bufr2tac__x06_8c.html#af3fb0411bdf6ebe59e26ee090c400358" title="convert latitude and longitude to a MMM string" alt="" coords="172,55,283,80"/>
+<area shape="rect" id="node3" href="$bufr2tac__error_8c.html#a6b6066c2f1fd1085397ee9c294ac2948" title=" " alt="" coords="339,5,476,31"/>
 </map>

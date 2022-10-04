@@ -1,11 +1,11 @@
 <map id="bufrdeco_get_atom_data_from_compressed_data_ref" name="bufrdeco_get_atom_data_from_compressed_data_ref">
-<area shape="rect" id="node1" title="Get atom data from a descriptor for a given subset." alt="" coords="5,129,192,171"/>
-<area shape="rect" id="node2" href="$bufrdeco__tableC_8c.html#a4d3457bb516d1c1e673218f20bdb9824" title=" " alt="" coords="251,5,386,47"/>
-<area shape="rect" id="node3" href="$bufrdeco__tableC_8c.html#a2813b0332ec9389ddc3bc566bd358bf9" title=" " alt="" coords="251,71,386,112"/>
-<area shape="rect" id="node6" href="$bufrdeco__utils_8c.html#a01acf8b7be269860c9a3228fa96bc4f8" title=" " alt="" coords="240,137,397,163"/>
-<area shape="rect" id="node7" href="$bufrdeco__utils_8c.html#aab7f54057263b695a8c4bfffd0747a5a" title=" " alt="" coords="247,187,390,214"/>
-<area shape="rect" id="node9" href="$bufrdeco__utils_8c.html#a22d23c4377cba5193d77a3b38c0f8d79" title="check if a descriptor is a local descriptor" alt="" coords="247,238,391,265"/>
-<area shape="rect" id="node4" href="$bufrdeco__tableC_8c.html#ab438fb71e02d28c02c165af401f1a1f2" title=" " alt="" coords="447,71,593,112"/>
-<area shape="rect" id="node5" href="$bufrdeco__utils_8c.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary" alt="" coords="643,78,793,105"/>
-<area shape="rect" id="node8" href="$bufrdeco__utils_8c.html#ad26137576e21dbf0cd5b3cadfed38b5b" title="Read bits from an array of uint8_t and set them as an uint32_t." alt="" coords="445,187,595,214"/>
+<area shape="rect" id="node1" title="Get atom data from a descriptor for a given subset." alt="" coords="5,127,192,167"/>
+<area shape="rect" id="node2" href="$bufrdeco__tableC_8c.html#a4d3457bb516d1c1e673218f20bdb9824" title=" " alt="" coords="251,5,386,45"/>
+<area shape="rect" id="node3" href="$bufrdeco__tableC_8c.html#a2813b0332ec9389ddc3bc566bd358bf9" title=" " alt="" coords="251,69,386,109"/>
+<area shape="rect" id="node6" href="$bufrdeco__utils_8c.html#a01acf8b7be269860c9a3228fa96bc4f8" title=" " alt="" coords="240,134,397,159"/>
+<area shape="rect" id="node7" href="$bufrdeco__utils_8c.html#aab7f54057263b695a8c4bfffd0747a5a" title=" " alt="" coords="247,183,390,209"/>
+<area shape="rect" id="node9" href="$bufrdeco__utils_8c.html#a22d23c4377cba5193d77a3b38c0f8d79" title="check if a descriptor is a local descriptor" alt="" coords="247,233,391,258"/>
+<area shape="rect" id="node4" href="$bufrdeco__tableC_8c.html#ab438fb71e02d28c02c165af401f1a1f2" title=" " alt="" coords="447,69,593,109"/>
+<area shape="rect" id="node5" href="$bufrdeco__utils_8c.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary" alt="" coords="643,77,793,102"/>
+<area shape="rect" id="node8" href="$bufrdeco__utils_8c.html#ad26137576e21dbf0cd5b3cadfed38b5b" title="Read bits from an array of uint8_t and set them as an uint32_t." alt="" coords="445,183,595,209"/>
 </map>

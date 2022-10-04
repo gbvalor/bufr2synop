@@ -1,6 +1,6 @@
 <map id="synop_sec3" name="synop_sec3">
-<area shape="rect" id="node1" title="contains most of substrings from section 3 when a report is parsed with success" alt="" coords="13,184,105,211"/>
-<area shape="rect" id="node2" href="$structnub3.html" title="struct with info for a cloud group at section 3" alt="" coords="5,95,56,121"/>
-<area shape="rect" id="node3" href="$structdata9.html" title=" " alt="" coords="81,95,135,121"/>
-<area shape="rect" id="node4" href="$structmisc3.html" title="struct with mixed info for group SpSpspsp at section at section 3." alt="" coords="79,5,137,32"/>
+<area shape="rect" id="node1" title="contains most of substrings from section 3 when a report is parsed with success" alt="" coords="13,181,105,207"/>
+<area shape="rect" id="node2" href="$structnub3.html" title="struct with info for a cloud group at section 3" alt="" coords="5,93,56,119"/>
+<area shape="rect" id="node3" href="$structdata9.html" title=" " alt="" coords="81,93,135,119"/>
+<area shape="rect" id="node4" href="$structmisc3.html" title="struct with mixed info for group SpSpspsp at section at section 3." alt="" coords="79,5,137,31"/>
 </map>

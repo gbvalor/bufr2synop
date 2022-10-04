@@ -1,6 +1,6 @@
 <map id="climat_parse_x12" name="climat_parse_x12">
-<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 12." alt="" coords="5,31,129,57"/>
-<area shape="rect" id="node2" href="$bufr2tac__error_8c.html#a223ffc74b013e1d1abe6f5cc5fe1148b" title=" " alt="" coords="177,5,304,32"/>
-<area shape="rect" id="node4" href="$bufr2tac__x12_8c.html#ad9180c6833f9d5c360f7981ebcc08933" title="converts a kelvin temperature value into a snTTT string" alt="" coords="182,56,299,83"/>
-<area shape="rect" id="node3" href="$bufr2tac__error_8c.html#a6b6066c2f1fd1085397ee9c294ac2948" title=" " alt="" coords="352,5,489,32"/>
+<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 12." alt="" coords="5,31,129,56"/>
+<area shape="rect" id="node2" href="$bufr2tac__error_8c.html#a223ffc74b013e1d1abe6f5cc5fe1148b" title=" " alt="" coords="177,5,304,31"/>
+<area shape="rect" id="node4" href="$bufr2tac__x12_8c.html#ad9180c6833f9d5c360f7981ebcc08933" title="converts a kelvin temperature value into a snTTT string" alt="" coords="182,55,299,80"/>
+<area shape="rect" id="node3" href="$bufr2tac__error_8c.html#a6b6066c2f1fd1085397ee9c294ac2948" title=" " alt="" coords="352,5,489,31"/>
 </map>

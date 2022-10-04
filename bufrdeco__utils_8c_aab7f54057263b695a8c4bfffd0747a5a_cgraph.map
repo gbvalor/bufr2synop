@@ -1,4 +1,4 @@
 <map id="get_bits_as_uint32_t" name="get_bits_as_uint32_t">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,148,32"/>
-<area shape="rect" id="node2" href="$bufrdeco__utils_8c.html#ad26137576e21dbf0cd5b3cadfed38b5b" title="Read bits from an array of uint8_t and set them as an uint32_t." alt="" coords="196,5,345,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,5,148,31"/>
+<area shape="rect" id="node2" href="$bufrdeco__utils_8c.html#ad26137576e21dbf0cd5b3cadfed38b5b" title="Read bits from an array of uint8_t and set them as an uint32_t." alt="" coords="196,5,345,31"/>
 </map>

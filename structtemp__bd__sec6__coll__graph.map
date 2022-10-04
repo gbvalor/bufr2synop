@@ -1,4 +1,4 @@
 <map id="temp_bd_sec6" name="temp_bd_sec6">
-<area shape="rect" id="node1" title="Section 6 for parts B and D of a TEMP report." alt="" coords="12,95,119,121"/>
-<area shape="rect" id="node2" href="$structtemp__wind__point.html" title="Store wind data in a TEMP report." alt="" coords="5,5,125,32"/>
+<area shape="rect" id="node1" title="Section 6 for parts B and D of a TEMP report." alt="" coords="12,93,119,119"/>
+<area shape="rect" id="node2" href="$structtemp__wind__point.html" title="Store wind data in a TEMP report." alt="" coords="5,5,125,31"/>
 </map>

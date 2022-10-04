@@ -1,5 +1,5 @@
 <map id="bufrdeco_fprint_subset_sequence_data_html" name="bufrdeco_fprint_subset_sequence_data_html">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,160,47"/>
-<area shape="rect" id="node2" href="$bufrdeco__print__html_8c.html#a99e93ae78944243f8b005576613eb772" title="print the data in a struct bufr_atom_data to a string as cells of table rows" alt="" coords="208,5,348,47"/>
-<area shape="rect" id="node3" href="$bufrdeco__utils_8c.html#a88b737b3781a33d306d2a53bf07ee350" title=" " alt="" coords="396,5,535,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,5,160,45"/>
+<area shape="rect" id="node2" href="$bufrdeco__print__html_8c.html#a99e93ae78944243f8b005576613eb772" title="print the data in a struct bufr_atom_data to a string as cells of table rows" alt="" coords="208,5,348,45"/>
+<area shape="rect" id="node3" href="$bufrdeco__utils_8c.html#a88b737b3781a33d306d2a53bf07ee350" title="gets a string with formatted value depending of scale" alt="" coords="396,5,535,45"/>
 </map>

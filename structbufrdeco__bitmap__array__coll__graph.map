@@ -1,4 +1,4 @@
 <map id="bufrdeco_bitmap_array" name="bufrdeco_bitmap_array">
-<area shape="rect" id="node1" title="Stores all structs bufrdeco_bitmap for a bufr bitmap." alt="" coords="5,95,160,121"/>
-<area shape="rect" id="node2" href="$structbufrdeco__bitmap.html" title="Stores all structs bufrdeco_bitmap for a bufr bitmap." alt="" coords="23,5,142,32"/>
+<area shape="rect" id="node1" title="Stores all structs bufrdeco_bitmap for a bufr bitmap." alt="" coords="5,93,160,119"/>
+<area shape="rect" id="node2" href="$structbufrdeco__bitmap.html" title="Stores all needed data for a bufr bitmap." alt="" coords="23,5,142,31"/>
 </map>

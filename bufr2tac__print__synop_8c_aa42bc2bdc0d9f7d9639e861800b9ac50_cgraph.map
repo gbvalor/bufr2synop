@@ -1,0 +1,11 @@
+<map id="print_synop_report" name="print_synop_report">
+<area shape="rect" id="node1" title="prints a synop into a string" alt="" coords="5,179,136,204"/>
+<area shape="rect" id="node2" href="$bufr2tac__print_8c.html#aa9d2eecaf8f3e65344faa88562706464" title=" " alt="" coords="209,5,283,31"/>
+<area shape="rect" id="node3" href="$bufr2tac__print__synop_8c.html#a135178c234af936caba10f91ae06310b" title="Prints the synop section 0 (header)" alt="" coords="184,55,308,80"/>
+<area shape="rect" id="node4" href="$bufr2tac__print__synop_8c.html#aa09b86e061e5a1fc59726ed71c25ae75" title="Prints the synop section 1." alt="" coords="184,104,308,129"/>
+<area shape="rect" id="node5" href="$bufr2tac__print__synop_8c.html#a59ea57cad311e8c3f0ac6e81080ec4b1" title="Prints the synop section 2." alt="" coords="184,153,308,179"/>
+<area shape="rect" id="node6" href="$bufr2tac__print__synop_8c.html#ad5429bc3d979791b5a2b909396a3276f" title="Prints the synop section 3." alt="" coords="184,203,308,228"/>
+<area shape="rect" id="node7" href="$bufr2tac__print__synop_8c.html#af4e0d9220582f493808d6a8d56a17ce1" title="Prints the synop section 4." alt="" coords="184,252,308,277"/>
+<area shape="rect" id="node8" href="$bufr2tac__print__synop_8c.html#abcc1b1bc73b762b35ac1b72a17706e1a" title="Prints the synop section 5." alt="" coords="184,301,308,327"/>
+<area shape="rect" id="node9" href="$bufr2tac__print_8c.html#a22c69602b5f0f196b6a2c9f8131183d6" title=" " alt="" coords="193,351,299,376"/>
+</map>

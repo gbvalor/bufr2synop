@@ -1,10 +1,10 @@
 <map id="guess_WMO_region" name="guess_WMO_region">
-<area shape="rect" id="node1" title="get WMO region A1 and Reg items from II and iii (WMO index)" alt="" coords="963,56,1103,83"/>
-<area shape="rect" id="node2" href="$bufr2tac__synop_8c.html#a895702a2caf61966ef4cbeb09148a5f9" title="Try to find WMO region if it is not already set and WMO Block and number index are known." alt="" coords="732,5,915,32"/>
-<area shape="rect" id="node3" href="$bufr2tac__temp_8c.html#a9d459f1fcbb047c9fe46b82687cb6fa5" title=" " alt="" coords="735,56,911,83"/>
-<area shape="rect" id="node4" href="$bufr2tac__x01_8c.html#a7e01ae6b0c895b8a3e3a7d3d7051cf24" title="Parse a expanded descriptor with X = 01." alt="" coords="768,107,879,133"/>
-<area shape="rect" id="node5" href="$bufr2tac__synop_8c.html#a3178eb404dc66ceccd7a08a3c719c2aa" title="parses a subset sequence as an Land fixed SYNOP FM&#45;12, SHIP FM&#45;13 or SYNOP&#45;mobil FM&#45;14 report" alt="" coords="521,107,684,133"/>
-<area shape="rect" id="node6" href="$bufr2tac__sqparse_8c.html#a7b839bfd63c95d7fdbad26be3c1d86be" title="Parse a sequence of expanded descriptors for a subset." alt="" coords="311,107,473,133"/>
-<area shape="rect" id="node7" href="$bufrtotac__io_8c.html#a156a5e3480972b5590b8ec744ba32252" title=" " alt="" coords="104,99,263,141"/>
-<area shape="rect" id="node8" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,107,56,133"/>
+<area shape="rect" id="node1" title="get WMO region A1 and Reg items from II and iii (WMO index)" alt="" coords="963,55,1103,80"/>
+<area shape="rect" id="node2" href="$bufr2tac__synop_8c.html#a895702a2caf61966ef4cbeb09148a5f9" title="Try to find WMO region if it is not already set and WMO Block and number index are known." alt="" coords="732,5,915,31"/>
+<area shape="rect" id="node3" href="$bufr2tac__temp_8c.html#a9d459f1fcbb047c9fe46b82687cb6fa5" title=" " alt="" coords="735,55,911,80"/>
+<area shape="rect" id="node4" href="$bufr2tac__x01_8c.html#a7e01ae6b0c895b8a3e3a7d3d7051cf24" title="Parse a expanded descriptor with X = 01." alt="" coords="768,104,879,129"/>
+<area shape="rect" id="node5" href="$bufr2tac__synop_8c.html#a3178eb404dc66ceccd7a08a3c719c2aa" title="parses a subset sequence as an Land fixed SYNOP FM&#45;12, SHIP FM&#45;13 or SYNOP&#45;mobil FM&#45;14 report" alt="" coords="521,104,684,129"/>
+<area shape="rect" id="node6" href="$bufr2tac__sqparse_8c.html#a7b839bfd63c95d7fdbad26be3c1d86be" title="Parse a sequence of expanded descriptors for a subset." alt="" coords="311,104,473,129"/>
+<area shape="rect" id="node7" href="$bufrtotac__io_8c.html#a156a5e3480972b5590b8ec744ba32252" title=" " alt="" coords="104,97,263,137"/>
+<area shape="rect" id="node8" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,104,56,129"/>
 </map>

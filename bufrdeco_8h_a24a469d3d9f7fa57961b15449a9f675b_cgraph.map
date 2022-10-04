@@ -1,6 +1,6 @@
 <map id="bufrdeco_print_subset_sequence_data" name="bufrdeco_print_subset_sequence_data">
-<area shape="rect" id="node1" title="Prints a struct bufrdeco_subset_sequence_data." alt="" coords="5,5,156,47"/>
-<area shape="rect" id="node2" href="$bufrdeco__print_8c.html#a06ce87ad1ebfc5e53abdd047b188ae63" title=" " alt="" coords="204,5,359,47"/>
-<area shape="rect" id="node3" href="$bufrdeco__print_8c.html#ac2251257e270ec779622d782fed394af" title="print the data in a struct bufr_atom_data to a string" alt="" coords="407,13,579,39"/>
-<area shape="rect" id="node4" href="$bufrdeco__utils_8c.html#a88b737b3781a33d306d2a53bf07ee350" title=" " alt="" coords="627,5,765,47"/>
+<area shape="rect" id="node1" title="Prints a struct bufrdeco_subset_sequence_data." alt="" coords="5,5,156,45"/>
+<area shape="rect" id="node2" href="$bufrdeco__print_8c.html#a06ce87ad1ebfc5e53abdd047b188ae63" title=" " alt="" coords="204,5,359,45"/>
+<area shape="rect" id="node3" href="$bufrdeco__print_8c.html#ac2251257e270ec779622d782fed394af" title="print the data in a struct bufr_atom_data to a string" alt="" coords="407,13,579,38"/>
+<area shape="rect" id="node4" href="$bufrdeco__utils_8c.html#a88b737b3781a33d306d2a53bf07ee350" title="gets a string with formatted value depending of scale" alt="" coords="627,5,765,45"/>
 </map>

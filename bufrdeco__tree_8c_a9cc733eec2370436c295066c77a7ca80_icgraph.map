@@ -1,6 +1,6 @@
 <map id="get_unexpanded_descriptor_array_from_sec3" name="get_unexpanded_descriptor_array_from_sec3">
-<area shape="rect" id="node1" title="Set to a struct bufr_sequence an unexpanded descriptor array from sec3 in a BUFR report." alt="" coords="480,29,661,71"/>
-<area shape="rect" id="node2" href="$bufrdeco__tree_8c.html#a00f4341aa38b56eca75c207c59e9cc33" title="Parse the descriptor tree in a recursive way." alt="" coords="292,29,432,71"/>
-<area shape="rect" id="node3" href="$bufrdeco_8c.html#adc93880205e1dfb437cd0a438e2ad469" title="Parse the tree of descriptors without expand the replicators." alt="" coords="104,37,244,63"/>
-<area shape="rect" id="node4" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,37,56,63"/>
+<area shape="rect" id="node1" title="Set to a struct bufr_sequence an unexpanded descriptor array from sec3 in a BUFR report." alt="" coords="480,29,661,69"/>
+<area shape="rect" id="node2" href="$bufrdeco__tree_8c.html#a83133afb16c01bc2c5c8649df1892b79" title="Parse the descriptor tree in a recursive way." alt="" coords="292,29,432,69"/>
+<area shape="rect" id="node3" href="$bufrdeco_8c.html#adc93880205e1dfb437cd0a438e2ad469" title="Parse the tree of descriptors without expand the replicators." alt="" coords="104,37,244,62"/>
+<area shape="rect" id="node4" href="$apps_2bufrdeco__json_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,37,56,62"/>
 </map>

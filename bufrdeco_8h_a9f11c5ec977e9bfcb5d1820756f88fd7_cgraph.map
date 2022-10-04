@@ -1,10 +1,10 @@
 <map id="bufrdeco_tableB_compressed" name="bufrdeco_tableB_compressed">
-<area shape="rect" id="node1" title="get data from table B when parsing compressed data references" alt="" coords="5,144,200,171"/>
-<area shape="rect" id="node2" href="$bufrdeco__utils_8c.html#a01acf8b7be269860c9a3228fa96bc4f8" title=" " alt="" coords="250,5,407,32"/>
-<area shape="rect" id="node3" href="$bufrdeco__utils_8c.html#aab7f54057263b695a8c4bfffd0747a5a" title=" " alt="" coords="257,56,400,83"/>
-<area shape="rect" id="node5" href="$bufrdeco__utils_8c.html#a1d2fc8f6683d9697a36ca71eb513ef34" title="Get an int32_t from bits according with bufr criteria to change the reference of a descritor...." alt="" coords="253,107,404,149"/>
-<area shape="rect" id="node6" href="$bufrdeco__utils_8c.html#ac1a6900782df9782c8e1b5d1b373db13" title="check if a descriptor is a delayed descriptor" alt="" coords="248,173,409,200"/>
-<area shape="rect" id="node7" href="$bufrdeco__utils_8c.html#a22d23c4377cba5193d77a3b38c0f8d79" title="check if a descriptor is a local descriptor" alt="" coords="257,224,401,251"/>
-<area shape="rect" id="node8" href="$bufrdeco__utils_8c.html#aecab28a7bcc79da2d78872c77ec3e5fc" title="check if a descriptor is a short delayed descriptor" alt="" coords="261,275,396,317"/>
-<area shape="rect" id="node4" href="$bufrdeco__utils_8c.html#ad26137576e21dbf0cd5b3cadfed38b5b" title="Read bits from an array of uint8_t and set them as an uint32_t." alt="" coords="457,56,607,83"/>
+<area shape="rect" id="node1" title="get data from table B when parsing compressed data references" alt="" coords="5,141,200,167"/>
+<area shape="rect" id="node2" href="$bufrdeco__utils_8c.html#a01acf8b7be269860c9a3228fa96bc4f8" title=" " alt="" coords="250,5,407,31"/>
+<area shape="rect" id="node3" href="$bufrdeco__utils_8c.html#aab7f54057263b695a8c4bfffd0747a5a" title=" " alt="" coords="257,55,400,80"/>
+<area shape="rect" id="node5" href="$bufrdeco__utils_8c.html#a1d2fc8f6683d9697a36ca71eb513ef34" title="Get an int32_t from bits according with bufr criteria to change the reference of a descritor...." alt="" coords="253,105,404,145"/>
+<area shape="rect" id="node6" href="$bufrdeco__utils_8c.html#ac1a6900782df9782c8e1b5d1b373db13" title="check if a descriptor is a delayed descriptor" alt="" coords="248,169,409,195"/>
+<area shape="rect" id="node7" href="$bufrdeco__utils_8c.html#a22d23c4377cba5193d77a3b38c0f8d79" title="check if a descriptor is a local descriptor" alt="" coords="257,219,401,244"/>
+<area shape="rect" id="node8" href="$bufrdeco__utils_8c.html#aecab28a7bcc79da2d78872c77ec3e5fc" title="check if a descriptor is a short delayed descriptor" alt="" coords="261,269,396,309"/>
+<area shape="rect" id="node4" href="$bufrdeco__utils_8c.html#ad26137576e21dbf0cd5b3cadfed38b5b" title="Read bits from an array of uint8_t and set them as an uint32_t." alt="" coords="457,55,607,80"/>
 </map>

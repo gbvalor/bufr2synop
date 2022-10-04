@@ -1,5 +1,5 @@
 <map id="bufrdeco_init" name="bufrdeco_init">
-<area shape="rect" id="node1" title="Inits and allocate memory for a struct bufrdeco." alt="" coords="5,31,101,57"/>
-<area shape="rect" id="node2" href="$bufrdeco__memory_8c.html#a1d746042472e89d5c6092582919d1b98" title="Init a struct bufrdeco_expanded_tree allocating space." alt="" coords="149,5,337,32"/>
-<area shape="rect" id="node3" href="$bufrdeco__memory_8c.html#a0576a87972353fb9e7a569fa1f905e03" title="Init a struct bufr_tables allocating space." alt="" coords="174,56,313,83"/>
+<area shape="rect" id="node1" title="Inits and allocate memory for a struct bufrdeco." alt="" coords="5,31,101,56"/>
+<area shape="rect" id="node2" href="$bufrdeco__memory_8c.html#a1d746042472e89d5c6092582919d1b98" title="Init a struct bufrdeco_expanded_tree allocating space." alt="" coords="149,5,337,31"/>
+<area shape="rect" id="node3" href="$bufrdeco__memory_8c.html#a0576a87972353fb9e7a569fa1f905e03" title="Init a struct bufr_tables allocating space." alt="" coords="174,55,313,80"/>
 </map>

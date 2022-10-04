@@ -1,5 +1,5 @@
 <map id="temp_parse_x10" name="temp_parse_x10">
-<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 10." alt="" coords="5,5,124,32"/>
-<area shape="rect" id="node2" href="$bufr2tac__error_8c.html#a223ffc74b013e1d1abe6f5cc5fe1148b" title=" " alt="" coords="172,5,299,32"/>
-<area shape="rect" id="node3" href="$bufr2tac__error_8c.html#a6b6066c2f1fd1085397ee9c294ac2948" title=" " alt="" coords="347,5,484,32"/>
+<area shape="rect" id="node1" title="Parse a expanded descriptor with X = 10." alt="" coords="5,5,124,31"/>
+<area shape="rect" id="node2" href="$bufr2tac__error_8c.html#a223ffc74b013e1d1abe6f5cc5fe1148b" title=" " alt="" coords="172,5,299,31"/>
+<area shape="rect" id="node3" href="$bufr2tac__error_8c.html#a6b6066c2f1fd1085397ee9c294ac2948" title=" " alt="" coords="347,5,484,31"/>
 </map>

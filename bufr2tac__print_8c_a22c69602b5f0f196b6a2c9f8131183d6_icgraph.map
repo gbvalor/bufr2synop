@@ -1,0 +1,14 @@
+<map id="print_wigos_id" name="print_wigos_id">
+<area shape="rect" id="node1" title=" " alt="" coords="845,156,951,181"/>
+<area shape="rect" id="node2" href="$bufr2tac__print__buoy_8c.html#a51573ce51e49d8b9734d1f9240e346da" title="prints a buoy into a string" alt="" coords="525,5,648,31"/>
+<area shape="rect" id="node6" href="$bufr2tac__print__climat_8c.html#a6d89af85d1d8674c02c706b824a147a0" title="prints a climat into a string" alt="" coords="521,56,652,81"/>
+<area shape="rect" id="node7" href="$bufr2tac__print__synop_8c.html#aa42bc2bdc0d9f7d9639e861800b9ac50" title="prints a synop into a string" alt="" coords="521,105,652,131"/>
+<area shape="rect" id="node8" href="$bufr2tac__print__temp_8c.html#a904b870e3a5e63029c0a27a2d3ccba15" title="Prints the part A of a TEMP report into a string." alt="" coords="700,156,797,181"/>
+<area shape="rect" id="node10" href="$bufr2tac__print__temp_8c.html#ae1d2a43e4953a4ddd000bb373abaf5b8" title="Prints the part B of a TEMP report into a string." alt="" coords="700,205,797,231"/>
+<area shape="rect" id="node11" href="$bufr2tac__print__temp_8c.html#a9bd576c54aa5403bf4c05933849a8a62" title="Prints the part C of a TEMP report into a string." alt="" coords="700,255,797,280"/>
+<area shape="rect" id="node12" href="$bufr2tac__print__temp_8c.html#a2f80133326b1dc2b6746f1e3252ad883" title="Prints the part D of a TEMP report into a string." alt="" coords="700,304,797,329"/>
+<area shape="rect" id="node3" href="$bufr2tac__sqparse_8c.html#a7b839bfd63c95d7fdbad26be3c1d86be" title="Parse a sequence of expanded descriptors for a subset." alt="" coords="311,81,473,107"/>
+<area shape="rect" id="node4" href="$bufrtotac__io_8c.html#a156a5e3480972b5590b8ec744ba32252" title=" " alt="" coords="104,74,263,114"/>
+<area shape="rect" id="node5" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,81,56,107"/>
+<area shape="rect" id="node9" href="$bufr2tac__print__temp_8c.html#adcc2a167374960ed28e4c4d17dfca75a" title="print the four parts of a decoded TEMP report from a BUFR file into strings" alt="" coords="525,205,649,231"/>
+</map>

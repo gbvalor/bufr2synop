@@ -1,4 +1,6 @@
 <map id="bufrdeco_compressed_ref" name="bufrdeco_compressed_ref">
-<area shape="rect" id="node1" title="Struct to hold the needed reference bit offsets in a compressed BUFR." alt="" coords="5,95,177,121"/>
-<area shape="rect" id="node2" href="$structbufr__descriptor.html" title="BUFR descriptor." alt="" coords="37,5,145,32"/>
+<area shape="rect" id="node1" title="Struct to hold the needed reference bit offsets, descriptor tree and replications in a compressed BUF..." alt="" coords="5,244,177,269"/>
+<area shape="rect" id="node2" href="$structbufr__descriptor.html" title="BUFR descriptor." alt="" coords="16,13,124,38"/>
+<area shape="rect" id="node3" href="$structbufr__sequence.html" title="Stores an unexpanded sequence of descriptors." alt="" coords="127,154,234,179"/>
+<area shape="rect" id="node4" href="$structbufr__sequence__index__range.html" title="range of indexes in a struct bufr_sequence where a condition must me chequed or marked,..." alt="" coords="148,5,293,45"/>
 </map>

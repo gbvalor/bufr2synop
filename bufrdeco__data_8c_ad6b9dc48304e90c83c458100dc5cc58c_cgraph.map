@@ -1,0 +1,30 @@
+<map id="bufrdeco_decode_subset_data_recursive" name="bufrdeco_decode_subset_data_recursive">
+<area shape="rect" id="node1" title="decode the data from a subset in a recursive way" alt="" coords="5,330,172,370"/>
+<area shape="rect" id="node2" href="$bufrdeco__data_8c.html#adb361f81dc8e8fb9d52a9d0c02c38119" title="Decodes a replicated sequence." alt="" coords="220,272,404,312"/>
+<area shape="rect" id="node4" href="$bufrdeco__data_8c.html#a62790f7e23547e63cfb6946e8b8971e0" title="doubles the allocated space for a struct bufrdeco_subset_sequence_data whenever is posible" alt="" coords="703,6,863,46"/>
+<area shape="rect" id="node5" href="$bufrdeco__f2_8c.html#a3169d30f8c32460fa68a2117129e4e44" title="parse a descritor with f = 2" alt="" coords="452,148,645,173"/>
+<area shape="rect" id="node7" href="$bufrdeco_2bufrdeco__json_8c.html#a93f2b82967a4808d0216d131e80ceaeb" title="Print an json object with a descriptor data." alt="" coords="715,70,850,110"/>
+<area shape="rect" id="node11" href="$bufrdeco_2bufrdeco__json_8c.html#a158aa5bd5d71d3370fe6b9148bef7981" title="Print the comma &#39;,&#39; separator in an output." alt="" coords="715,184,850,224"/>
+<area shape="rect" id="node13" href="$bufrdeco_2bufrdeco__json_8c.html#a57bb1f3074afcb7153f383f6aa6a72e4" title="print an operator desciptor as a json object" alt="" coords="457,399,640,439"/>
+<area shape="rect" id="node15" href="$bufrdeco_2bufrdeco__json_8c.html#a92c10e5456545cc655bb7404cf47813b" title="print an operator desciptor as a json object" alt="" coords="455,463,643,503"/>
+<area shape="rect" id="node16" href="$bufrdeco__tableB_8c.html#acd32f541a08903094950979f6a0bc8d0" title="Get data from a table B descriptor." alt="" coords="479,349,618,374"/>
+<area shape="rect" id="node25" href="$bufrdeco_2bufrdeco__json_8c.html#a4af4f83d73860998dfbfca384b54e04f" title=" " alt="" coords="222,488,402,528"/>
+<area shape="rect" id="node26" href="$bufrdeco_2bufrdeco__json_8c.html#a84687ea45e442883c36d82e1f6f1e7fd" title="Print the header of a sequence descriptor (f == 3)" alt="" coords="237,553,387,608"/>
+<area shape="rect" id="node27" href="$bufrdeco_2bufrdeco__json_8c.html#aad2df858b5c8ee7f077ca9fce737cbca" title=" " alt="" coords="235,632,389,672"/>
+<area shape="rect" id="node28" href="$bufrdeco_2bufrdeco__json_8c.html#a02045267d87c33aa02af4fde381b8f23" title=" " alt="" coords="234,696,390,736"/>
+<area shape="rect" id="node3" href="$bufrdeco__utils_8c.html#a2ea0ec1223259f004c824006340b4f10" title="Push a bitmap element in a bufrdeco_bitmap." alt="" coords="467,300,631,325"/>
+<area shape="rect" id="node6" href="$bufrdeco__memory_8c.html#a38f7dd296da40c3cc2ac80071f936f37" title="allocate bitmap" alt="" coords="697,134,868,160"/>
+<area shape="rect" id="node12" href="$bufrdeco__utils_8c.html#a01acf8b7be269860c9a3228fa96bc4f8" title=" " alt="" coords="704,249,861,274"/>
+<area shape="rect" id="node8" href="$bufrdeco__utils_8c.html#ae2667eaa0605459867e88af6219e9592" title="Supress trailing blanks of a string." alt="" coords="932,20,1057,45"/>
+<area shape="rect" id="node9" href="$bufrdeco_2bufrdeco__json_8c.html#ad9c7b4faf6722aca949e3ff9d2ed1e70" title="prints a descriptor string value scaping the &#39;&quot;&#39; for a json format" alt="" coords="925,70,1065,110"/>
+<area shape="rect" id="node10" href="$bufrdeco__utils_8c.html#a4659b01cee4a157aae8bf1b4e540b155" title="gets a string with formatted value depending of scale" alt="" coords="925,134,1064,174"/>
+<area shape="rect" id="node14" href="$bufrdeco__f2_8c.html#aeeb87adbf48f29af58a448c7354d5075" title=" " alt="" coords="693,591,872,631"/>
+<area shape="rect" id="node17" href="$bufrdeco__tableC_8c.html#a4d3457bb516d1c1e673218f20bdb9824" title=" " alt="" coords="715,463,850,503"/>
+<area shape="rect" id="node18" href="$bufrdeco__tableC_8c.html#a2813b0332ec9389ddc3bc566bd358bf9" title=" " alt="" coords="715,527,850,567"/>
+<area shape="rect" id="node21" href="$bufrdeco__utils_8c.html#aab7f54057263b695a8c4bfffd0747a5a" title=" " alt="" coords="711,298,854,324"/>
+<area shape="rect" id="node23" href="$bufrdeco__utils_8c.html#a1d2fc8f6683d9697a36ca71eb513ef34" title="Get an int32_t from bits according with bufr criteria to change the reference of a descritor...." alt="" coords="707,348,858,388"/>
+<area shape="rect" id="node24" href="$bufrdeco__utils_8c.html#a22d23c4377cba5193d77a3b38c0f8d79" title="check if a descriptor is a local descriptor" alt="" coords="711,413,855,438"/>
+<area shape="rect" id="node19" href="$bufrdeco__tableC_8c.html#ab438fb71e02d28c02c165af401f1a1f2" title=" " alt="" coords="922,527,1067,567"/>
+<area shape="rect" id="node20" href="$bufrdeco__utils_8c.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary" alt="" coords="1117,534,1268,560"/>
+<area shape="rect" id="node22" href="$bufrdeco__utils_8c.html#ad26137576e21dbf0cd5b3cadfed38b5b" title="Read bits from an array of uint8_t and set them as an uint32_t." alt="" coords="920,298,1069,324"/>
+</map>

@@ -1,6 +1,5 @@
 <map id="bufrdeco_get_subset_sequence_data" name="bufrdeco_get_subset_sequence_data">
-<area shape="rect" id="node1" title="Parse and get a struct bufrdeco_subset_sequence_data." alt="" coords="315,35,457,76"/>
-<area shape="rect" id="node2" href="$bufrdeco_8c.html#aead4ed5a0bc1b6ce477095653107e548" title="Prepare the struct." alt="" coords="104,5,267,47"/>
-<area shape="rect" id="node4" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="160,71,211,98"/>
-<area shape="rect" id="node3" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,13,56,39"/>
+<area shape="rect" id="node1" title="Parse and get a struct bufrdeco_subset_sequence_data." alt="" coords="315,5,457,45"/>
+<area shape="rect" id="node2" href="$bufrdeco_8c.html#aead4ed5a0bc1b6ce477095653107e548" title="Prepare the struct bufrdeco to get data from the solicited subset." alt="" coords="104,5,267,45"/>
+<area shape="rect" id="node3" href="$apps_2bufrdeco__json_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,13,56,38"/>
 </map>

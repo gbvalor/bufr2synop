@@ -1,0 +1,12 @@
+<map id="src/apps/bufrdeco_json.c" name="src/apps/bufrdeco_json.c">
+<area shape="rect" id="node1" title="This file includes the code to get data from a BUFR report using bufrdeco library." alt="" coords="263,5,431,31"/>
+<area shape="rect" id="node2" href="$bufrdeco_8h.html" title="Include header file for bufrdeco library." alt="" coords="305,79,388,104"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,152,67,177"/>
+<area shape="rect" id="node4" title=" " alt="" coords="91,152,155,177"/>
+<area shape="rect" id="node5" title=" " alt="" coords="179,152,245,177"/>
+<area shape="rect" id="node6" title=" " alt="" coords="269,152,334,177"/>
+<area shape="rect" id="node7" title=" " alt="" coords="359,152,428,177"/>
+<area shape="rect" id="node8" title=" " alt="" coords="452,152,511,177"/>
+<area shape="rect" id="node9" title=" " alt="" coords="535,152,598,177"/>
+<area shape="rect" id="node10" title=" " alt="" coords="623,152,703,177"/>
+</map>

@@ -1,4 +1,4 @@
 <map id="bufrdeco_read_subset_offset_bits" name="bufrdeco_read_subset_offset_bits">
-<area shape="rect" id="node1" title="Write offset bit array for subsets in a non&#45;compressed bufr." alt="" coords="5,5,156,47"/>
-<area shape="rect" id="node2" href="$bufrdeco__utils_8c.html#a63d8e18cea1084c68943122cb4aedc7d" title="Write offset bit array for subsets in a non&#45;compressed bufr." alt="" coords="204,13,395,39"/>
+<area shape="rect" id="node1" title="Write offset bit array for subsets in a non&#45;compressed bufr." alt="" coords="5,5,156,45"/>
+<area shape="rect" id="node2" href="$bufrdeco__utils_8c.html#a63d8e18cea1084c68943122cb4aedc7d" title="Write offset bit array for subsets in a non&#45;compressed bufr." alt="" coords="204,13,395,38"/>
 </map>

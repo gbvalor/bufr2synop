@@ -1,8 +1,8 @@
 <map id="prec_to_RRRR" name="prec_to_RRRR">
-<area shape="rect" id="node1" title="converts a precipitation in Kg/m2 into a RRRR string (code table 3596)" alt="" coords="904,13,1016,39"/>
-<area shape="rect" id="node2" href="$bufr2tac__x13_8c.html#aa1f317808223dc7cd89d48712acbe1ca" title="Parse a expanded descriptor with X = 13." alt="" coords="732,13,856,39"/>
-<area shape="rect" id="node3" href="$bufr2tac__climat_8c.html#a9a64417498c5d0c1c66d9006e2ff8a45" title=" " alt="" coords="521,13,684,39"/>
-<area shape="rect" id="node4" href="$bufr2tac__sqparse_8c.html#a7b839bfd63c95d7fdbad26be3c1d86be" title="Parse a sequence of expanded descriptors for a subset." alt="" coords="311,13,473,39"/>
-<area shape="rect" id="node5" href="$bufrtotac__io_8c.html#a156a5e3480972b5590b8ec744ba32252" title=" " alt="" coords="104,5,263,47"/>
-<area shape="rect" id="node6" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,13,56,39"/>
+<area shape="rect" id="node1" title="converts a precipitation in Kg/m2 into a RRRR string (code table 3596)" alt="" coords="904,13,1016,38"/>
+<area shape="rect" id="node2" href="$bufr2tac__x13_8c.html#aa1f317808223dc7cd89d48712acbe1ca" title="Parse a expanded descriptor with X = 13." alt="" coords="732,13,856,38"/>
+<area shape="rect" id="node3" href="$bufr2tac__climat_8c.html#a9a64417498c5d0c1c66d9006e2ff8a45" title=" " alt="" coords="521,13,684,38"/>
+<area shape="rect" id="node4" href="$bufr2tac__sqparse_8c.html#a7b839bfd63c95d7fdbad26be3c1d86be" title="Parse a sequence of expanded descriptors for a subset." alt="" coords="311,13,473,38"/>
+<area shape="rect" id="node5" href="$bufrtotac__io_8c.html#a156a5e3480972b5590b8ec744ba32252" title=" " alt="" coords="104,5,263,45"/>
+<area shape="rect" id="node6" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,13,56,38"/>
 </map>

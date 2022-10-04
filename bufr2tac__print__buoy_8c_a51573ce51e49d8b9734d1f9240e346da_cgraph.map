@@ -1,0 +1,9 @@
+<map id="print_buoy_report" name="print_buoy_report">
+<area shape="rect" id="node1" title="prints a buoy into a string" alt="" coords="5,129,128,155"/>
+<area shape="rect" id="node2" href="$bufr2tac__print__buoy_8c.html#a1cc7e3ba1e1bbc172ba2f21999793452" title="Prints the buoy section 1." alt="" coords="176,5,293,31"/>
+<area shape="rect" id="node3" href="$bufr2tac__print__buoy_8c.html#a1a7891f27c0a2e81aad53dbda768b8fb" title="Prints the buoy section 1." alt="" coords="176,55,293,80"/>
+<area shape="rect" id="node4" href="$bufr2tac__print__buoy_8c.html#a48b82a91e84526d9668344604aef3aa1" title="Prints the buoy section 1." alt="" coords="176,104,293,129"/>
+<area shape="rect" id="node5" href="$bufr2tac__print__buoy_8c.html#abb65f7a37179edf921609e1599eb8dfe" title="Prints the buoy section 3." alt="" coords="176,153,293,179"/>
+<area shape="rect" id="node6" href="$bufr2tac__print_8c.html#aa9d2eecaf8f3e65344faa88562706464" title=" " alt="" coords="197,203,272,228"/>
+<area shape="rect" id="node7" href="$bufr2tac__print_8c.html#a22c69602b5f0f196b6a2c9f8131183d6" title=" " alt="" coords="182,252,287,277"/>
+</map>

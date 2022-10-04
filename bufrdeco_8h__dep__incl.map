@@ -1,61 +1,62 @@
 <map id="src/bufrdeco/bufrdeco.h" name="src/bufrdeco/bufrdeco.h">
-<area shape="rect" id="node1" title="Include header file for bufrdeco library." alt="" coords="1607,5,1765,32"/>
-<area shape="rect" id="node2" href="$bufrdeco__test_8c.html" title="This file includes the code to debug and test bufrdeco library." alt="" coords="5,87,172,114"/>
-<area shape="rect" id="node3" href="$bufrtotac_8h.html" title="Include header file for binary bufrtotac." alt="" coords="201,177,339,203"/>
-<area shape="rect" id="node6" href="$build__bufrdeco__tables_8c.html" title="This file includes the code for build_bufrdeco_tables binary." alt="" coords="247,80,407,121"/>
-<area shape="rect" id="node7" href="$update__tableD_8c.html" title="This file includes the code for update_TableD binary." alt="" coords="431,87,602,114"/>
-<area shape="rect" id="node8" href="$bufrdeco_8c.html" title="This file has the code for library bufrdeco API functions." alt="" coords="627,87,785,114"/>
-<area shape="rect" id="node9" href="$bufrdeco__compressed_8c.html" title="This file has the code to deal with compressed bufr reports." alt="" coords="809,80,957,121"/>
-<area shape="rect" id="node10" href="$bufrdeco__csv_8c.html" title="This file has the code of useful routines for read or write csv formatted lines." alt="" coords="981,80,1129,121"/>
-<area shape="rect" id="node11" href="$bufrdeco__data_8c.html" title="This file has the code which extract data from a bufr." alt="" coords="1153,80,1301,121"/>
-<area shape="rect" id="node12" href="$bufrdeco__f2_8c.html" title="file with the code to process some of the operations in B for F = 2" alt="" coords="1325,87,1503,114"/>
-<area shape="rect" id="node13" href="$bufrdeco__memory_8c.html" title="This file has the memory stufs for library bufrdeco." alt="" coords="1527,80,1675,121"/>
-<area shape="rect" id="node14" href="$bufrdeco__print_8c.html" title="file with the code to print data or any output from library decobufr" alt="" coords="1699,80,1847,121"/>
-<area shape="rect" id="node15" href="$bufrdeco__print__html_8c.html" title="file with the code to print data or any output from library decobufr in html format" alt="" coords="1871,80,2019,121"/>
-<area shape="rect" id="node16" href="$bufrdeco__read_8c.html" title="This file has the code to read bufr files." alt="" coords="2043,80,2191,121"/>
-<area shape="rect" id="node17" href="$bufrdeco__tableB_8c.html" title="file with the code to read table B data (code and flag tables)" alt="" coords="2215,80,2363,121"/>
-<area shape="rect" id="node18" href="$bufrdeco__tableC_8c.html" title="file with the code to read table C data (code and flag tables)" alt="" coords="2387,80,2535,121"/>
-<area shape="rect" id="node19" href="$bufrdeco__tableD_8c.html" title="file with the code to read table D data (code and flag tables)" alt="" coords="2559,80,2707,121"/>
-<area shape="rect" id="node20" href="$bufrdeco__tree_8c.html" title="This file has the code which parse sequences in a bufr." alt="" coords="2731,80,2879,121"/>
-<area shape="rect" id="node21" href="$bufrdeco__utils_8c.html" title="This file has the code of useful routines for library bufrdeco." alt="" coords="2903,80,3051,121"/>
-<area shape="rect" id="node22" href="$bufrdeco__wmo_8c.html" title="This file has the code to read bufr files from WMO csv files." alt="" coords="3075,80,3223,121"/>
-<area shape="rect" id="node23" href="$bufr2tac_8h.html" title=" " alt="" coords="3247,87,3397,114"/>
-<area shape="rect" id="node4" href="$bufrtotac_8c.html" title="This file includes the code to test bufr to TAC libraries using bufrdeco library to decode bufr." alt="" coords="115,259,254,285"/>
-<area shape="rect" id="node5" href="$bufrtotac__io_8c.html" title="file with the i/o code for binary bufrtotac" alt="" coords="279,259,435,285"/>
-<area shape="rect" id="node24" href="$bufr2tac_8c.html" title="This file has the code for functions to get information about library bufr2tac, and global vars." alt="" coords="393,177,544,203"/>
-<area shape="rect" id="node25" href="$bufr2tac__buoy_8c.html" title="file with the code to parse buoy FM&#45;18 sequences" alt="" coords="568,169,708,211"/>
-<area shape="rect" id="node26" href="$bufr2tac__climat_8c.html" title="file with the code to parse a sequence as a FM&#45;71 XII CLIMAT and FM&#45;72 XII CLIMAT SHIP" alt="" coords="732,169,872,211"/>
-<area shape="rect" id="node27" href="$bufr2tac__csv_8c.html" title="Output a struct metreport in csv labeled form." alt="" coords="896,169,1036,211"/>
-<area shape="rect" id="node28" href="$bufr2tac__env_8c.html" title="file with the code to set environments" alt="" coords="1060,169,1200,211"/>
-<area shape="rect" id="node29" href="$bufr2tac__error_8c.html" title="This file has the code for functions to manage errors in bufr2tac library." alt="" coords="1224,169,1364,211"/>
-<area shape="rect" id="node30" href="$bufr2tac__io_8c.html" title="file with the i/o code for binary bufr2tac" alt="" coords="1389,177,1557,203"/>
-<area shape="rect" id="node31" href="$bufr2tac__json_8c.html" title="Output a struct metreport in json form." alt="" coords="1581,169,1721,211"/>
-<area shape="rect" id="node32" href="$bufr2tac__mrproper_8c.html" title="file with the code to clean and init structures" alt="" coords="1745,169,1885,211"/>
-<area shape="rect" id="node33" href="$bufr2tac__print_8c.html" title="file with the code to print the results" alt="" coords="1909,169,2049,211"/>
-<area shape="rect" id="node34" href="$bufr2tac__print__buoy_8c.html" title="file with the code to print the results for buoy reports" alt="" coords="2073,169,2213,211"/>
-<area shape="rect" id="node35" href="$bufr2tac__print__climat_8c.html" title="file with the code to print the results for climat reports" alt="" coords="2237,169,2377,211"/>
-<area shape="rect" id="node36" href="$bufr2tac__print__synop_8c.html" title=" " alt="" coords="2401,169,2541,211"/>
-<area shape="rect" id="node37" href="$bufr2tac__print__temp_8c.html" title="file with the code to print the results in case of temp reposrt" alt="" coords="2565,169,2705,211"/>
-<area shape="rect" id="node38" href="$bufr2tac__sqparse_8c.html" title="file with the code to parse a sequence of descriptors for a subset" alt="" coords="2729,169,2869,211"/>
-<area shape="rect" id="node39" href="$bufr2tac__synop_8c.html" title="file with the code to parse a sequence as a SYNOP FM&#45;12, FM&#45;13 and FM&#45;14" alt="" coords="2893,169,3033,211"/>
-<area shape="rect" id="node40" href="$bufr2tac__tablec_8c.html" title="file with the code to read table C data (code and flag tables)" alt="" coords="3057,169,3197,211"/>
-<area shape="rect" id="node41" href="$bufr2tac__temp_8c.html" title="file with the code to parse a sequence as a FM&#45;35 TEMP, FM&#45;36 TEMP SHIP, FM&#45;37 TEMP DROP,..." alt="" coords="3221,169,3361,211"/>
-<area shape="rect" id="node42" href="$bufr2tac__utils_8c.html" title="file with the utility routines for binary bufr2tac" alt="" coords="3385,169,3525,211"/>
-<area shape="rect" id="node43" href="$bufr2tac__x01_8c.html" title="decodes the descriptors with X = 01 (station index, name and country)" alt="" coords="3549,169,3689,211"/>
-<area shape="rect" id="node44" href="$bufr2tac__x02_8c.html" title="decodes the descriptors with X = 02 (intrumentation and station type)" alt="" coords="3713,169,3853,211"/>
-<area shape="rect" id="node45" href="$bufr2tac__x04_8c.html" title="decodes the descriptors with X = 04 (date and time)" alt="" coords="3877,169,4017,211"/>
-<area shape="rect" id="node46" href="$bufr2tac__x05_8c.html" title="decodes the descriptors with X = 05 (Position&#45;1)" alt="" coords="4041,169,4181,211"/>
-<area shape="rect" id="node47" href="$bufr2tac__x06_8c.html" title="decodes the descriptors with X = 06 (Horizontal Position&#45;2)" alt="" coords="4205,169,4345,211"/>
-<area shape="rect" id="node48" href="$bufr2tac__x07_8c.html" title="decodes the descriptors with X = 07 (Vertical Position)" alt="" coords="4369,169,4509,211"/>
-<area shape="rect" id="node49" href="$bufr2tac__x08_8c.html" title="decodes the descriptors with X = 08 (Significance Qualifiers)" alt="" coords="4533,169,4673,211"/>
-<area shape="rect" id="node50" href="$bufr2tac__x10_8c.html" title="decodes the descriptors with X = 10 (air pressure)" alt="" coords="4697,169,4837,211"/>
-<area shape="rect" id="node51" href="$bufr2tac__x11_8c.html" title="decodes the descriptors with X = 11 (wind)" alt="" coords="4861,169,5001,211"/>
-<area shape="rect" id="node52" href="$bufr2tac__x12_8c.html" title="decodes the descriptors with X = 12 (Temperature)" alt="" coords="5025,169,5165,211"/>
-<area shape="rect" id="node53" href="$bufr2tac__x13_8c.html" title="decodes the descriptors with X = 13 . Precipitation and hidrology" alt="" coords="5189,169,5329,211"/>
-<area shape="rect" id="node54" href="$bufr2tac__x14_8c.html" title="decodes the descriptors with X = 14 (Radiation)" alt="" coords="5353,169,5493,211"/>
-<area shape="rect" id="node55" href="$bufr2tac__x20_8c.html" title="decodes the descriptors with X = 20 (Observed phenomena)" alt="" coords="5517,169,5657,211"/>
-<area shape="rect" id="node56" href="$bufr2tac__x22_8c.html" title="decodes the descriptors with X = 22 (oceanographic data)" alt="" coords="5681,169,5821,211"/>
-<area shape="rect" id="node57" href="$bufr2tac__x31_8c.html" title="decodes the descriptors with X = 31 (Control)" alt="" coords="5845,169,5985,211"/>
-<area shape="rect" id="node58" href="$bufr2tac__x33_8c.html" title="decodes the descriptors with X = 33 (Quality data)" alt="" coords="6009,169,6149,211"/>
-<area shape="rect" id="node59" href="$bufr2tac__xml_8c.html" title="Output a struct metreport in xml form." alt="" coords="6173,169,6313,211"/>
+<area shape="rect" id="node1" title="Include header file for bufrdeco library." alt="" coords="1694,5,1853,31"/>
+<area shape="rect" id="node2" href="$apps_2bufrdeco__json_8c.html" title="This file includes the code to get data from a BUFR report using bufrdeco library." alt="" coords="5,86,173,111"/>
+<area shape="rect" id="node3" href="$bufrtotac_8h.html" title="Include header file for binary bufrtotac." alt="" coords="287,174,425,199"/>
+<area shape="rect" id="node6" href="$build__bufrdeco__tables_8c.html" title="This file includes the code for build_bufrdeco_tables binary." alt="" coords="248,79,408,119"/>
+<area shape="rect" id="node7" href="$update__tableD_8c.html" title="This file includes the code for update_TableD binary." alt="" coords="432,86,603,111"/>
+<area shape="rect" id="node8" href="$bufrdeco_8c.html" title="This file has the code for library bufrdeco API functions." alt="" coords="627,86,786,111"/>
+<area shape="rect" id="node9" href="$bufrdeco__compressed_8c.html" title="This file has the code to deal with compressed bufr reports." alt="" coords="810,79,958,119"/>
+<area shape="rect" id="node10" href="$bufrdeco__csv_8c.html" title="This file has the code of useful routines for read or write csv formatted lines." alt="" coords="982,79,1130,119"/>
+<area shape="rect" id="node11" href="$bufrdeco__data_8c.html" title="This file has the code which extract data from a bufr." alt="" coords="1154,79,1302,119"/>
+<area shape="rect" id="node12" href="$bufrdeco__f2_8c.html" title="file with the code to process some of the operations in B for F = 2" alt="" coords="1326,86,1503,111"/>
+<area shape="rect" id="node13" href="$bufrdeco_2bufrdeco__json_8c.html" title="This file has the code which functions to print BUFR data in json format." alt="" coords="1527,79,1675,119"/>
+<area shape="rect" id="node14" href="$bufrdeco__memory_8c.html" title="This file has the memory stufs for library bufrdeco." alt="" coords="1699,79,1847,119"/>
+<area shape="rect" id="node15" href="$bufrdeco__print_8c.html" title="file with the code to print data or any output from library decobufr" alt="" coords="1871,79,2019,119"/>
+<area shape="rect" id="node16" href="$bufrdeco__print__html_8c.html" title="file with the code to print data or any output from library decobufr in html format" alt="" coords="2043,79,2191,119"/>
+<area shape="rect" id="node17" href="$bufrdeco__read_8c.html" title="This file has the code to read bufr files." alt="" coords="2215,79,2363,119"/>
+<area shape="rect" id="node18" href="$bufrdeco__tableB_8c.html" title="file with the code to read table B data (code and flag tables)" alt="" coords="2387,79,2535,119"/>
+<area shape="rect" id="node19" href="$bufrdeco__tableC_8c.html" title="file with the code to read table C data (code and flag tables)" alt="" coords="2559,79,2707,119"/>
+<area shape="rect" id="node20" href="$bufrdeco__tableD_8c.html" title="file with the code to read table D data (code and flag tables)" alt="" coords="2731,79,2879,119"/>
+<area shape="rect" id="node21" href="$bufrdeco__tree_8c.html" title="This file has the code which parse sequences in a bufr." alt="" coords="2903,79,3051,119"/>
+<area shape="rect" id="node22" href="$bufrdeco__utils_8c.html" title="This file has the code of useful routines for library bufrdeco." alt="" coords="3075,79,3223,119"/>
+<area shape="rect" id="node23" href="$bufrdeco__wmo_8c.html" title="This file has the code to read bufr files from WMO csv files." alt="" coords="3247,79,3395,119"/>
+<area shape="rect" id="node24" href="$bufr2tac_8h.html" title="Include header file for binary bufr2tac." alt="" coords="3419,86,3570,111"/>
+<area shape="rect" id="node4" href="$bufrtotac_8c.html" title="This file includes the code to test bufr to TAC libraries using bufrdeco library to decode bufr." alt="" coords="201,255,340,280"/>
+<area shape="rect" id="node5" href="$bufrtotac__io_8c.html" title="file with the i/o code for binary bufrtotac" alt="" coords="365,255,521,280"/>
+<area shape="rect" id="node25" href="$bufr2tac_8c.html" title="This file has the code for functions to get information about library bufr2tac, and global vars." alt="" coords="514,174,665,199"/>
+<area shape="rect" id="node26" href="$bufr2tac__buoy_8c.html" title="file with the code to parse buoy FM&#45;18 sequences" alt="" coords="689,167,829,207"/>
+<area shape="rect" id="node27" href="$bufr2tac__climat_8c.html" title="file with the code to parse a sequence as a FM&#45;71 XII CLIMAT and FM&#45;72 XII CLIMAT SHIP" alt="" coords="853,167,993,207"/>
+<area shape="rect" id="node28" href="$bufr2tac__csv_8c.html" title="Output a struct metreport in csv labeled form." alt="" coords="1017,167,1157,207"/>
+<area shape="rect" id="node29" href="$bufr2tac__env_8c.html" title="file with the code to set environments" alt="" coords="1181,167,1321,207"/>
+<area shape="rect" id="node30" href="$bufr2tac__error_8c.html" title="This file has the code for functions to manage errors in bufr2tac library." alt="" coords="1345,167,1485,207"/>
+<area shape="rect" id="node31" href="$bufr2tac__io_8c.html" title="file with the i/o code for binary bufr2tac" alt="" coords="1509,174,1677,199"/>
+<area shape="rect" id="node32" href="$bufr2tac__json_8c.html" title="Output a struct metreport in json form." alt="" coords="1702,167,1842,207"/>
+<area shape="rect" id="node33" href="$bufr2tac__mrproper_8c.html" title="file with the code to clean and init structures" alt="" coords="1866,167,2006,207"/>
+<area shape="rect" id="node34" href="$bufr2tac__print_8c.html" title="file with the code to print the results" alt="" coords="2030,167,2170,207"/>
+<area shape="rect" id="node35" href="$bufr2tac__print__buoy_8c.html" title="file with the code to print the results for buoy reports" alt="" coords="2194,167,2334,207"/>
+<area shape="rect" id="node36" href="$bufr2tac__print__climat_8c.html" title="file with the code to print the results for climat reports" alt="" coords="2358,167,2498,207"/>
+<area shape="rect" id="node37" href="$bufr2tac__print__synop_8c.html" title=" " alt="" coords="2522,167,2662,207"/>
+<area shape="rect" id="node38" href="$bufr2tac__print__temp_8c.html" title="file with the code to print the results in case of temp reposrt" alt="" coords="2686,167,2826,207"/>
+<area shape="rect" id="node39" href="$bufr2tac__sqparse_8c.html" title="file with the code to parse a sequence of descriptors for a subset" alt="" coords="2850,167,2990,207"/>
+<area shape="rect" id="node40" href="$bufr2tac__synop_8c.html" title="file with the code to parse a sequence as a SYNOP FM&#45;12, FM&#45;13 and FM&#45;14" alt="" coords="3014,167,3154,207"/>
+<area shape="rect" id="node41" href="$bufr2tac__tablec_8c.html" title="file with the code to read table C data (code and flag tables)" alt="" coords="3178,167,3318,207"/>
+<area shape="rect" id="node42" href="$bufr2tac__temp_8c.html" title="file with the code to parse a sequence as a FM&#45;35 TEMP, FM&#45;36 TEMP SHIP, FM&#45;37 TEMP DROP,..." alt="" coords="3342,167,3482,207"/>
+<area shape="rect" id="node43" href="$bufr2tac__utils_8c.html" title="file with the utility routines for binary bufr2tac" alt="" coords="3506,167,3646,207"/>
+<area shape="rect" id="node44" href="$bufr2tac__x01_8c.html" title="decodes the descriptors with X = 01 (station index, name and country)" alt="" coords="3670,167,3810,207"/>
+<area shape="rect" id="node45" href="$bufr2tac__x02_8c.html" title="decodes the descriptors with X = 02 (intrumentation and station type)" alt="" coords="3834,167,3974,207"/>
+<area shape="rect" id="node46" href="$bufr2tac__x04_8c.html" title="decodes the descriptors with X = 04 (date and time)" alt="" coords="3998,167,4138,207"/>
+<area shape="rect" id="node47" href="$bufr2tac__x05_8c.html" title="decodes the descriptors with X = 05 (Position&#45;1)" alt="" coords="4162,167,4302,207"/>
+<area shape="rect" id="node48" href="$bufr2tac__x06_8c.html" title="decodes the descriptors with X = 06 (Horizontal Position&#45;2)" alt="" coords="4326,167,4466,207"/>
+<area shape="rect" id="node49" href="$bufr2tac__x07_8c.html" title="decodes the descriptors with X = 07 (Vertical Position)" alt="" coords="4490,167,4630,207"/>
+<area shape="rect" id="node50" href="$bufr2tac__x08_8c.html" title="decodes the descriptors with X = 08 (Significance Qualifiers)" alt="" coords="4654,167,4794,207"/>
+<area shape="rect" id="node51" href="$bufr2tac__x10_8c.html" title="decodes the descriptors with X = 10 (air pressure)" alt="" coords="4818,167,4958,207"/>
+<area shape="rect" id="node52" href="$bufr2tac__x11_8c.html" title="decodes the descriptors with X = 11 (wind)" alt="" coords="4982,167,5122,207"/>
+<area shape="rect" id="node53" href="$bufr2tac__x12_8c.html" title="decodes the descriptors with X = 12 (Temperature)" alt="" coords="5146,167,5286,207"/>
+<area shape="rect" id="node54" href="$bufr2tac__x13_8c.html" title="decodes the descriptors with X = 13 . Precipitation and hidrology" alt="" coords="5310,167,5450,207"/>
+<area shape="rect" id="node55" href="$bufr2tac__x14_8c.html" title="decodes the descriptors with X = 14 (Radiation)" alt="" coords="5474,167,5614,207"/>
+<area shape="rect" id="node56" href="$bufr2tac__x20_8c.html" title="decodes the descriptors with X = 20 (Observed phenomena)" alt="" coords="5638,167,5778,207"/>
+<area shape="rect" id="node57" href="$bufr2tac__x22_8c.html" title="decodes the descriptors with X = 22 (oceanographic data)" alt="" coords="5802,167,5942,207"/>
+<area shape="rect" id="node58" href="$bufr2tac__x31_8c.html" title="decodes the descriptors with X = 31 (Control)" alt="" coords="5966,167,6106,207"/>
+<area shape="rect" id="node59" href="$bufr2tac__x33_8c.html" title="decodes the descriptors with X = 33 (Quality data)" alt="" coords="6130,167,6270,207"/>
+<area shape="rect" id="node60" href="$bufr2tac__xml_8c.html" title="Output a struct metreport in xml form." alt="" coords="6294,167,6434,207"/>
 </map>

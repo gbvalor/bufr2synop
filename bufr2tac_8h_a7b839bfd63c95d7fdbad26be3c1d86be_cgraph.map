@@ -1,62 +1,62 @@
 <map id="parse_subset_sequence" name="parse_subset_sequence">
-<area shape="rect" id="node1" title="Parse a sequence of expanded descriptors for a subset." alt="" coords="5,1334,168,1361"/>
-<area shape="rect" id="node2" href="$bufr2tac__error_8c.html#acde8e4dbca12d3a08d7b33f2b712da87" title=" " alt="" coords="230,426,365,453"/>
-<area shape="rect" id="node3" href="$bufr2tac__sqparse_8c.html#a4b149f5081f43061b1b038df578f28dc" title="Try to find a descriptor in an array." alt="" coords="244,477,351,503"/>
-<area shape="rect" id="node4" href="$bufr2tac__sqparse_8c.html#aa892b166420cbc147ac5bc4699621ea6" title=" " alt="" coords="219,527,375,554"/>
-<area shape="rect" id="node5" href="$bufr2tac__buoy_8c.html#ad8bb92861ee8db76f664f8fa8923a099" title=" " alt="" coords="219,578,375,605"/>
-<area shape="rect" id="node25" href="$bufr2tac__climat_8c.html#a9a64417498c5d0c1c66d9006e2ff8a45" title=" " alt="" coords="216,1334,379,1361"/>
-<area shape="rect" id="node40" href="$bufr2tac__synop_8c.html#a3178eb404dc66ceccd7a08a3c719c2aa" title="parses a subset sequence as an Land fixed SYNOP FM&#45;12, SHIP FM&#45;13 or SYNOP&#45;mobil FM&#45;14 report" alt="" coords="216,1917,379,1943"/>
-<area shape="rect" id="node56" href="$bufr2tac__temp_8c.html#a592db452b503cfcb75c74616ffe39548" title=" " alt="" coords="219,1119,376,1146"/>
-<area shape="rect" id="node57" href="$bufr2tac__print__buoy_8c.html#ad8fdc2b335e626dfeb2d4d8ebd670c82" title="prints a buoy into a string" alt="" coords="256,1967,339,1994"/>
-<area shape="rect" id="node58" href="$bufr2tac__print__climat_8c.html#a03940bf9abfc99ad3c26df1ca21bd609" title="prints a climat into a string" alt="" coords="253,2018,342,2045"/>
-<area shape="rect" id="node59" href="$bufr2tac__print__synop_8c.html#a8d3ee8187c7861a32a33cacc80cae0a8" title="prints a synop into a string" alt="" coords="253,2069,342,2095"/>
-<area shape="rect" id="node60" href="$bufr2tac__print__temp_8c.html#a629e347843e498bd1db0b3d118c56aef" title="print the four parts of a decoded TEMP report from a BUFR file into strings" alt="" coords="256,2119,339,2146"/>
-<area shape="rect" id="node6" href="$bufr2tac__mrproper_8c.html#ad61df10b35d34ae45a44d870fa0ae3f2" title="cleans a buoy_chunks struct" alt="" coords="453,5,595,47"/>
-<area shape="rect" id="node7" href="$bufr2tac__x01_8c.html#a5212280b7ff69cb2b4638650fc2ed238" title="Parse a expanded descriptor with X = 01." alt="" coords="465,71,583,98"/>
-<area shape="rect" id="node8" href="$bufr2tac__x02_8c.html#aa3e7d18b6f44a1b874510fbfb1c4c43f" title="Parse a expanded descriptor with X = 02." alt="" coords="465,122,583,149"/>
-<area shape="rect" id="node9" href="$bufr2tac__x04_8c.html#ab71429be3c91886b9983d76af3054d50" title="Parse a expanded descriptor with X = 04." alt="" coords="465,173,583,199"/>
-<area shape="rect" id="node10" href="$bufr2tac__x05_8c.html#a2ca6e5b32c6d7b123a39469139382b35" title="Parse a expanded descriptor with X = 05." alt="" coords="465,223,583,250"/>
-<area shape="rect" id="node11" href="$bufr2tac__x06_8c.html#a8bc51328fe43e276b87edc62cb2a6091" title="Parse a expanded descriptor with X = 06." alt="" coords="465,274,583,301"/>
-<area shape="rect" id="node12" href="$bufr2tac__x07_8c.html#a123bdaa7a4ea2ab50b54847ae8065539" title="Parse a expanded descriptor with X = 07." alt="" coords="465,325,583,351"/>
-<area shape="rect" id="node13" href="$bufr2tac__x08_8c.html#accd68a2d98a714c62d7347bfc7a19c74" title="Parse a expanded descriptor with X = 08." alt="" coords="465,375,583,402"/>
-<area shape="rect" id="node14" href="$bufr2tac__x10_8c.html#a7f84d42cff21769067b73129d547bfb7" title="Parse a expanded descriptor with X = 10." alt="" coords="465,426,583,453"/>
-<area shape="rect" id="node15" href="$bufr2tac__x11_8c.html#a5f491aa3de4795c7c9895598bccc9cac" title="Parse a expanded descriptor with X = 11." alt="" coords="465,477,583,503"/>
-<area shape="rect" id="node16" href="$bufr2tac__x12_8c.html#acaeb71cc40a4327dfb0718f153a1e54b" title="Parse a expanded descriptor with X = 12." alt="" coords="465,527,583,554"/>
-<area shape="rect" id="node17" href="$bufr2tac__x13_8c.html#a59affd05179d1563c347cadfda3f37ee" title="Parse a expanded descriptor with X = 13." alt="" coords="465,578,583,605"/>
-<area shape="rect" id="node18" href="$bufr2tac__x14_8c.html#a3f569ec2d6019d36a5a41fb6a26772ad" title="Parse a expanded descriptor with X = 14." alt="" coords="465,629,583,655"/>
-<area shape="rect" id="node19" href="$bufr2tac__x20_8c.html#ae525d797e425643a7df147d0894b7187" title="Parse a expanded descriptor with X = 20." alt="" coords="465,679,583,706"/>
-<area shape="rect" id="node20" href="$bufr2tac__x22_8c.html#a79e0f34b928b7b2787dc4e1c04cf3b8a" title="Parse a expanded descriptor with X = 22." alt="" coords="465,730,583,757"/>
-<area shape="rect" id="node21" href="$bufr2tac__x31_8c.html#ab5a590fb42450ad550445ee750bbc09b" title="Parse a expanded descriptor with X = 31." alt="" coords="465,781,583,807"/>
-<area shape="rect" id="node22" href="$bufr2tac__x33_8c.html#a0ad440149952a9d101b58b13194bc433" title="Parse a expanded descriptor with X = 33." alt="" coords="465,831,583,858"/>
-<area shape="rect" id="node23" href="$bufr2tac__buoy_8c.html#a1a369fad23de68a43b5cd34f9f1c6144" title="Sets YYGG from YYYYMMDDHHmm extended group." alt="" coords="427,883,621,924"/>
-<area shape="rect" id="node24" href="$bufr2tac__utils_8c.html#aaeb0b1348d967dccdf492c088172e36a" title="Parse the string YYYYMMDDHHmm[ss] and set a struct met_datetime." alt="" coords="429,948,619,989"/>
-<area shape="rect" id="node26" href="$bufr2tac__mrproper_8c.html#ab50ce5893ccb248e2347b91792fc872c" title="cleans a climat_chunks struct" alt="" coords="449,1065,599,1107"/>
-<area shape="rect" id="node27" href="$bufr2tac__utils_8c.html#a13ef46e3b3a4233f83a9e8025208bd80" title="Check a estructure metreport not from future." alt="" coords="443,1689,605,1715"/>
-<area shape="rect" id="node28" href="$bufr2tac__x01_8c.html#ad365ebf101bf7efa3ee0dd058ec653c2" title="Parse a expanded descriptor with X = 01." alt="" coords="462,1131,586,1158"/>
-<area shape="rect" id="node29" href="$bufr2tac__x02_8c.html#a90b4bad8753fa0bd538bdf4b15e54663" title="Parse a expanded descriptor with X = 02." alt="" coords="462,1182,586,1209"/>
-<area shape="rect" id="node30" href="$bufr2tac__x04_8c.html#aec556236b6d1220c5f6ae61a60003edf" title="Parse a expanded descriptor with X = 04." alt="" coords="462,1233,586,1259"/>
-<area shape="rect" id="node31" href="$bufr2tac__x05_8c.html#a938384718ae72365f55617a59b62a2cd" title="Parse a expanded descriptor with X = 05." alt="" coords="462,1283,586,1310"/>
-<area shape="rect" id="node32" href="$bufr2tac__x06_8c.html#a93cd817eaf6c29ec0fce362cb299b033" title="Parse a expanded descriptor with X = 06." alt="" coords="462,1334,586,1361"/>
-<area shape="rect" id="node33" href="$bufr2tac__x07_8c.html#af963f9f7f8b703889e75f63486fb1aea" title=" " alt="" coords="462,1385,586,1411"/>
-<area shape="rect" id="node34" href="$bufr2tac__x08_8c.html#acdaddd14d402ad1adf458466820d28e6" title="Parse a expanded descriptor with X = 08." alt="" coords="462,1435,586,1462"/>
-<area shape="rect" id="node35" href="$bufr2tac__x10_8c.html#a7526573f616e4ac29df1d948071527f2" title="Parse a expanded descriptor with X = 10." alt="" coords="462,1486,586,1513"/>
-<area shape="rect" id="node36" href="$bufr2tac__x11_8c.html#aba60de9babe98cf06b30eb5453cd4924" title="Parse a expanded descriptor with X = 11." alt="" coords="462,1537,586,1563"/>
-<area shape="rect" id="node37" href="$bufr2tac__x12_8c.html#a443ae060f9d3b3971de59f2a273e92d7" title="Parse a expanded descriptor with X = 12." alt="" coords="462,1587,586,1614"/>
-<area shape="rect" id="node38" href="$bufr2tac__x13_8c.html#aa1f317808223dc7cd89d48712acbe1ca" title="Parse a expanded descriptor with X = 13." alt="" coords="462,1638,586,1665"/>
-<area shape="rect" id="node39" href="$bufr2tac__x14_8c.html#af9c538cc020217b2b355d4f77e1e3ef5" title="Parse a expanded descriptor with X = 14." alt="" coords="462,1014,586,1041"/>
-<area shape="rect" id="node41" href="$bufr2tac__mrproper_8c.html#ad76507cd88fa87371c6687ae0195aca4" title=" " alt="" coords="449,2196,599,2237"/>
-<area shape="rect" id="node42" href="$bufr2tac__x01_8c.html#a7e01ae6b0c895b8a3e3a7d3d7051cf24" title="Parse a expanded descriptor with X = 01." alt="" coords="469,2262,579,2289"/>
-<area shape="rect" id="node43" href="$bufr2tac__x02_8c.html#a5f853e3c811203820f639a8c9ca88401" title="Parse a expanded descriptor with X = 02." alt="" coords="469,2313,579,2339"/>
-<area shape="rect" id="node44" href="$bufr2tac__x04_8c.html#a17ec058abfb64627141a11241d4e91c0" title="Parse a expanded descriptor with X = 04." alt="" coords="469,2363,579,2390"/>
-<area shape="rect" id="node45" href="$bufr2tac__x05_8c.html#ad4133f38bd367c5fdb5d875a2b17e5e4" title="Parse a expanded descriptor with X = 05." alt="" coords="469,2414,579,2441"/>
-<area shape="rect" id="node46" href="$bufr2tac__x06_8c.html#a45f7335decb72942fd1dc925d442d59e" title="Parse a expanded descriptor with X = 06." alt="" coords="469,2465,579,2491"/>
-<area shape="rect" id="node47" href="$bufr2tac__x07_8c.html#af0cdf4011f7dd01877f604f71ed7828b" title="Parse a expanded descriptor with X = 07." alt="" coords="469,1739,579,1766"/>
-<area shape="rect" id="node48" href="$bufr2tac__x08_8c.html#a901c7087a2eefcd688838916879c8875" title="Parse a expanded descriptor with X = 08." alt="" coords="469,1790,579,1817"/>
-<area shape="rect" id="node49" href="$bufr2tac__x10_8c.html#a847fd62bcfa21e68b86797f02135e9c1" title="Parse a expanded descriptor with X = 10." alt="" coords="469,1841,579,1867"/>
-<area shape="rect" id="node50" href="$bufr2tac__x11_8c.html#a2443dd0d8e43fa654267521fd3e3d0c2" title="Parse a expanded descriptor with X = 11." alt="" coords="469,1891,579,1918"/>
-<area shape="rect" id="node51" href="$bufr2tac__x12_8c.html#a7f1ed15f5027409b984c5b94b3538269" title="Parse a expanded descriptor with X = 12." alt="" coords="469,1942,579,1969"/>
-<area shape="rect" id="node52" href="$bufr2tac__x13_8c.html#a2647c457f4548120a3906acd6cb52eb8" title="Parse a expanded descriptor with X = 13." alt="" coords="469,1993,579,2019"/>
-<area shape="rect" id="node53" href="$bufr2tac__x14_8c.html#a9decf760b2013c011940e4d61257113e" title="Parse a expanded descriptor with X = 14." alt="" coords="469,2043,579,2070"/>
-<area shape="rect" id="node54" href="$bufr2tac__x20_8c.html#a6303f60df17a2c5678aaf424b5c52f7c" title="Parse a expanded descriptor with X = 20." alt="" coords="469,2094,579,2121"/>
-<area shape="rect" id="node55" href="$bufr2tac__x22_8c.html#aa2499d45c500d71dd8ec516a3be27aee" title="Parse a expanded descriptor with X = 01." alt="" coords="469,2145,579,2171"/>
+<area shape="rect" id="node1" title="Parse a sequence of expanded descriptors for a subset." alt="" coords="5,1301,168,1326"/>
+<area shape="rect" id="node2" href="$bufr2tac__error_8c.html#acde8e4dbca12d3a08d7b33f2b712da87" title=" " alt="" coords="230,415,365,441"/>
+<area shape="rect" id="node3" href="$bufr2tac__sqparse_8c.html#a4b149f5081f43061b1b038df578f28dc" title="Try to find a descriptor in an array." alt="" coords="244,465,351,490"/>
+<area shape="rect" id="node4" href="$bufr2tac__sqparse_8c.html#aa892b166420cbc147ac5bc4699621ea6" title=" " alt="" coords="219,514,375,539"/>
+<area shape="rect" id="node5" href="$bufr2tac__buoy_8c.html#ad8bb92861ee8db76f664f8fa8923a099" title=" " alt="" coords="219,563,375,589"/>
+<area shape="rect" id="node25" href="$bufr2tac__climat_8c.html#a9a64417498c5d0c1c66d9006e2ff8a45" title=" " alt="" coords="216,1301,379,1326"/>
+<area shape="rect" id="node40" href="$bufr2tac__synop_8c.html#a3178eb404dc66ceccd7a08a3c719c2aa" title="parses a subset sequence as an Land fixed SYNOP FM&#45;12, SHIP FM&#45;13 or SYNOP&#45;mobil FM&#45;14 report" alt="" coords="216,1867,379,1893"/>
+<area shape="rect" id="node56" href="$bufr2tac__temp_8c.html#a592db452b503cfcb75c74616ffe39548" title=" " alt="" coords="219,1091,376,1117"/>
+<area shape="rect" id="node57" href="$bufr2tac__print__buoy_8c.html#a51573ce51e49d8b9734d1f9240e346da" title="prints a buoy into a string" alt="" coords="236,1917,359,1942"/>
+<area shape="rect" id="node58" href="$bufr2tac__print__climat_8c.html#a6d89af85d1d8674c02c706b824a147a0" title="prints a climat into a string" alt="" coords="232,1966,363,1991"/>
+<area shape="rect" id="node59" href="$bufr2tac__print__synop_8c.html#aa42bc2bdc0d9f7d9639e861800b9ac50" title="prints a synop into a string" alt="" coords="232,2015,363,2041"/>
+<area shape="rect" id="node60" href="$bufr2tac__print__temp_8c.html#adcc2a167374960ed28e4c4d17dfca75a" title="print the four parts of a decoded TEMP report from a BUFR file into strings" alt="" coords="235,2065,359,2090"/>
+<area shape="rect" id="node6" href="$bufr2tac__mrproper_8c.html#ad61df10b35d34ae45a44d870fa0ae3f2" title="cleans a buoy_chunks struct" alt="" coords="453,5,595,45"/>
+<area shape="rect" id="node7" href="$bufr2tac__x01_8c.html#a5212280b7ff69cb2b4638650fc2ed238" title="Parse a expanded descriptor with X = 01." alt="" coords="465,70,583,95"/>
+<area shape="rect" id="node8" href="$bufr2tac__x02_8c.html#aa3e7d18b6f44a1b874510fbfb1c4c43f" title="Parse a expanded descriptor with X = 02." alt="" coords="465,119,583,145"/>
+<area shape="rect" id="node9" href="$bufr2tac__x04_8c.html#ab71429be3c91886b9983d76af3054d50" title="Parse a expanded descriptor with X = 04." alt="" coords="465,169,583,194"/>
+<area shape="rect" id="node10" href="$bufr2tac__x05_8c.html#a2ca6e5b32c6d7b123a39469139382b35" title="Parse a expanded descriptor with X = 05." alt="" coords="465,218,583,243"/>
+<area shape="rect" id="node11" href="$bufr2tac__x06_8c.html#a8bc51328fe43e276b87edc62cb2a6091" title="Parse a expanded descriptor with X = 06." alt="" coords="465,267,583,293"/>
+<area shape="rect" id="node12" href="$bufr2tac__x07_8c.html#a123bdaa7a4ea2ab50b54847ae8065539" title="Parse a expanded descriptor with X = 07." alt="" coords="465,317,583,342"/>
+<area shape="rect" id="node13" href="$bufr2tac__x08_8c.html#accd68a2d98a714c62d7347bfc7a19c74" title="Parse a expanded descriptor with X = 08." alt="" coords="465,366,583,391"/>
+<area shape="rect" id="node14" href="$bufr2tac__x10_8c.html#a7f84d42cff21769067b73129d547bfb7" title="Parse a expanded descriptor with X = 10." alt="" coords="465,415,583,441"/>
+<area shape="rect" id="node15" href="$bufr2tac__x11_8c.html#a5f491aa3de4795c7c9895598bccc9cac" title="Parse a expanded descriptor with X = 11." alt="" coords="465,465,583,490"/>
+<area shape="rect" id="node16" href="$bufr2tac__x12_8c.html#acaeb71cc40a4327dfb0718f153a1e54b" title="Parse a expanded descriptor with X = 12." alt="" coords="465,514,583,539"/>
+<area shape="rect" id="node17" href="$bufr2tac__x13_8c.html#a59affd05179d1563c347cadfda3f37ee" title="Parse a expanded descriptor with X = 13." alt="" coords="465,563,583,589"/>
+<area shape="rect" id="node18" href="$bufr2tac__x14_8c.html#a3f569ec2d6019d36a5a41fb6a26772ad" title="Parse a expanded descriptor with X = 14." alt="" coords="465,613,583,638"/>
+<area shape="rect" id="node19" href="$bufr2tac__x20_8c.html#ae525d797e425643a7df147d0894b7187" title="Parse a expanded descriptor with X = 20." alt="" coords="465,662,583,687"/>
+<area shape="rect" id="node20" href="$bufr2tac__x22_8c.html#a79e0f34b928b7b2787dc4e1c04cf3b8a" title="Parse a expanded descriptor with X = 22." alt="" coords="465,711,583,737"/>
+<area shape="rect" id="node21" href="$bufr2tac__x31_8c.html#ab5a590fb42450ad550445ee750bbc09b" title="Parse a expanded descriptor with X = 31." alt="" coords="465,761,583,786"/>
+<area shape="rect" id="node22" href="$bufr2tac__x33_8c.html#a0ad440149952a9d101b58b13194bc433" title="Parse a expanded descriptor with X = 33." alt="" coords="465,810,583,835"/>
+<area shape="rect" id="node23" href="$bufr2tac__buoy_8c.html#a1a369fad23de68a43b5cd34f9f1c6144" title="Sets YYGG from YYYYMMDDHHmm extended group." alt="" coords="427,860,621,900"/>
+<area shape="rect" id="node24" href="$bufr2tac__utils_8c.html#aaeb0b1348d967dccdf492c088172e36a" title="Parse the string YYYYMMDDHHmm[ss] and set a struct met_datetime." alt="" coords="429,924,619,964"/>
+<area shape="rect" id="node26" href="$bufr2tac__mrproper_8c.html#ab50ce5893ccb248e2347b91792fc872c" title="cleans a climat_chunks struct" alt="" coords="449,1039,599,1079"/>
+<area shape="rect" id="node27" href="$bufr2tac__utils_8c.html#a13ef46e3b3a4233f83a9e8025208bd80" title="Check a estructure metreport not from future." alt="" coords="443,1646,605,1671"/>
+<area shape="rect" id="node28" href="$bufr2tac__x01_8c.html#ad365ebf101bf7efa3ee0dd058ec653c2" title="Parse a expanded descriptor with X = 01." alt="" coords="462,1103,586,1129"/>
+<area shape="rect" id="node29" href="$bufr2tac__x02_8c.html#a90b4bad8753fa0bd538bdf4b15e54663" title="Parse a expanded descriptor with X = 02." alt="" coords="462,1153,586,1178"/>
+<area shape="rect" id="node30" href="$bufr2tac__x04_8c.html#aec556236b6d1220c5f6ae61a60003edf" title="Parse a expanded descriptor with X = 04." alt="" coords="462,1202,586,1227"/>
+<area shape="rect" id="node31" href="$bufr2tac__x05_8c.html#a938384718ae72365f55617a59b62a2cd" title="Parse a expanded descriptor with X = 05." alt="" coords="462,1251,586,1277"/>
+<area shape="rect" id="node32" href="$bufr2tac__x06_8c.html#a93cd817eaf6c29ec0fce362cb299b033" title="Parse a expanded descriptor with X = 06." alt="" coords="462,1301,586,1326"/>
+<area shape="rect" id="node33" href="$bufr2tac__x07_8c.html#af963f9f7f8b703889e75f63486fb1aea" title=" " alt="" coords="462,1350,586,1375"/>
+<area shape="rect" id="node34" href="$bufr2tac__x08_8c.html#acdaddd14d402ad1adf458466820d28e6" title="Parse a expanded descriptor with X = 08." alt="" coords="462,1399,586,1425"/>
+<area shape="rect" id="node35" href="$bufr2tac__x10_8c.html#a7526573f616e4ac29df1d948071527f2" title="Parse a expanded descriptor with X = 10." alt="" coords="462,1449,586,1474"/>
+<area shape="rect" id="node36" href="$bufr2tac__x11_8c.html#aba60de9babe98cf06b30eb5453cd4924" title="Parse a expanded descriptor with X = 11." alt="" coords="462,1498,586,1523"/>
+<area shape="rect" id="node37" href="$bufr2tac__x12_8c.html#a443ae060f9d3b3971de59f2a273e92d7" title="Parse a expanded descriptor with X = 12." alt="" coords="462,1547,586,1573"/>
+<area shape="rect" id="node38" href="$bufr2tac__x13_8c.html#aa1f317808223dc7cd89d48712acbe1ca" title="Parse a expanded descriptor with X = 13." alt="" coords="462,1597,586,1622"/>
+<area shape="rect" id="node39" href="$bufr2tac__x14_8c.html#af9c538cc020217b2b355d4f77e1e3ef5" title="Parse a expanded descriptor with X = 14." alt="" coords="462,989,586,1014"/>
+<area shape="rect" id="node41" href="$bufr2tac__mrproper_8c.html#ad76507cd88fa87371c6687ae0195aca4" title=" " alt="" coords="449,2140,599,2180"/>
+<area shape="rect" id="node42" href="$bufr2tac__x01_8c.html#a7e01ae6b0c895b8a3e3a7d3d7051cf24" title="Parse a expanded descriptor with X = 01." alt="" coords="469,2205,579,2230"/>
+<area shape="rect" id="node43" href="$bufr2tac__x02_8c.html#a5f853e3c811203820f639a8c9ca88401" title="Parse a expanded descriptor with X = 02." alt="" coords="469,2254,579,2279"/>
+<area shape="rect" id="node44" href="$bufr2tac__x04_8c.html#a17ec058abfb64627141a11241d4e91c0" title="Parse a expanded descriptor with X = 04." alt="" coords="469,2303,579,2329"/>
+<area shape="rect" id="node45" href="$bufr2tac__x05_8c.html#ad4133f38bd367c5fdb5d875a2b17e5e4" title="Parse a expanded descriptor with X = 05." alt="" coords="469,2353,579,2378"/>
+<area shape="rect" id="node46" href="$bufr2tac__x06_8c.html#a45f7335decb72942fd1dc925d442d59e" title="Parse a expanded descriptor with X = 06." alt="" coords="469,2402,579,2427"/>
+<area shape="rect" id="node47" href="$bufr2tac__x07_8c.html#af0cdf4011f7dd01877f604f71ed7828b" title="Parse a expanded descriptor with X = 07." alt="" coords="469,1695,579,1721"/>
+<area shape="rect" id="node48" href="$bufr2tac__x08_8c.html#a901c7087a2eefcd688838916879c8875" title="Parse a expanded descriptor with X = 08." alt="" coords="469,1745,579,1770"/>
+<area shape="rect" id="node49" href="$bufr2tac__x10_8c.html#a847fd62bcfa21e68b86797f02135e9c1" title="Parse a expanded descriptor with X = 10." alt="" coords="469,1794,579,1819"/>
+<area shape="rect" id="node50" href="$bufr2tac__x11_8c.html#a2443dd0d8e43fa654267521fd3e3d0c2" title="Parse a expanded descriptor with X = 11." alt="" coords="469,1843,579,1869"/>
+<area shape="rect" id="node51" href="$bufr2tac__x12_8c.html#a7f1ed15f5027409b984c5b94b3538269" title="Parse a expanded descriptor with X = 12." alt="" coords="469,1893,579,1918"/>
+<area shape="rect" id="node52" href="$bufr2tac__x13_8c.html#a2647c457f4548120a3906acd6cb52eb8" title="Parse a expanded descriptor with X = 13." alt="" coords="469,1942,579,1967"/>
+<area shape="rect" id="node53" href="$bufr2tac__x14_8c.html#a9decf760b2013c011940e4d61257113e" title="Parse a expanded descriptor with X = 14." alt="" coords="469,1991,579,2017"/>
+<area shape="rect" id="node54" href="$bufr2tac__x20_8c.html#a6303f60df17a2c5678aaf424b5c52f7c" title="Parse a expanded descriptor with X = 20." alt="" coords="469,2041,579,2066"/>
+<area shape="rect" id="node55" href="$bufr2tac__x22_8c.html#aa2499d45c500d71dd8ec516a3be27aee" title="Parse a expanded descriptor with X = 01." alt="" coords="469,2090,579,2115"/>
 </map>

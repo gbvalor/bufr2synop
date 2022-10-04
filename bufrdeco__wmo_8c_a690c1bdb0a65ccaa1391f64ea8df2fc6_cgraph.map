@@ -1,12 +1,12 @@
 <map id="bufr_read_tables" name="bufr_read_tables">
-<area shape="rect" id="node1" title="Read the tables according with bufr file data from a bufr table directory." alt="" coords="5,165,124,192"/>
-<area shape="rect" id="node2" href="$bufrdeco__tableB_8c.html#ae1e363f8ede994991842fe230e327918" title=" " alt="" coords="190,5,310,32"/>
-<area shape="rect" id="node5" href="$bufrdeco__tableC_8c.html#a225eb080f58ab76ab10872400140dc03" title="Reads a file with table C content (Code table and bit flags) according with csv WMO format." alt="" coords="189,56,311,83"/>
-<area shape="rect" id="node6" href="$bufrdeco__tableD_8c.html#a48da10ad04b938f7d0385e83aabf75f8" title="Reads a file with table D content according with WMO csv format." alt="" coords="189,107,311,133"/>
-<area shape="rect" id="node7" href="$bufrdeco__wmo_8c.html#acbe10abf7cfd44a4d185e37915856e98" title="Search a struct bufr_tables in bufr_tables_cache." alt="" coords="172,158,328,199"/>
-<area shape="rect" id="node8" href="$bufrdeco__memory_8c.html#a0576a87972353fb9e7a569fa1f905e03" title="Init a struct bufr_tables allocating space." alt="" coords="382,249,521,276"/>
-<area shape="rect" id="node9" href="$bufrdeco__wmo_8c.html#a9a6f68130c76bab155e074c2e98273ce" title="Init an element of array c&#45;&gt;tab[] if still not allocated. If allocated clean it and set *t pointing t..." alt="" coords="175,224,325,251"/>
-<area shape="rect" id="node10" href="$bufrdeco__wmo_8c.html#a8581ce4806d095d950244b72411ad66d" title="Get the complete pathnames for WMO csv table files needed by a bufr message." alt="" coords="175,325,325,352"/>
-<area shape="rect" id="node3" href="$bufrdeco__csv_8c.html#a9685dcec12aa968d7146aa55965dda5e" title="Parse a csv line." alt="" coords="397,81,506,108"/>
-<area shape="rect" id="node4" href="$bufrdeco__utils_8c.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary" alt="" coords="376,31,527,57"/>
+<area shape="rect" id="node1" title="Read the tables according with bufr file data from a bufr table directory." alt="" coords="5,161,124,187"/>
+<area shape="rect" id="node2" href="$bufrdeco__tableB_8c.html#ae1e363f8ede994991842fe230e327918" title=" " alt="" coords="190,5,310,31"/>
+<area shape="rect" id="node5" href="$bufrdeco__tableC_8c.html#a225eb080f58ab76ab10872400140dc03" title="Reads a file with table C content (Code table and bit flags) according with csv WMO format." alt="" coords="189,55,311,80"/>
+<area shape="rect" id="node6" href="$bufrdeco__tableD_8c.html#a48da10ad04b938f7d0385e83aabf75f8" title="Reads a file with table D content according with WMO csv format." alt="" coords="189,104,311,129"/>
+<area shape="rect" id="node7" href="$bufrdeco__wmo_8c.html#acbe10abf7cfd44a4d185e37915856e98" title="Search a struct bufr_tables in bufr_tables_cache." alt="" coords="172,154,328,194"/>
+<area shape="rect" id="node8" href="$bufrdeco__memory_8c.html#a0576a87972353fb9e7a569fa1f905e03" title="Init a struct bufr_tables allocating space." alt="" coords="382,244,521,269"/>
+<area shape="rect" id="node9" href="$bufrdeco__wmo_8c.html#a9a6f68130c76bab155e074c2e98273ce" title="Init an element of array c&#45;&gt;tab[] if still not allocated. If allocated clean it and set *t pointing t..." alt="" coords="175,219,325,244"/>
+<area shape="rect" id="node10" href="$bufrdeco__wmo_8c.html#a8581ce4806d095d950244b72411ad66d" title="Get the complete pathnames for WMO csv table files needed by a bufr message." alt="" coords="175,320,325,345"/>
+<area shape="rect" id="node3" href="$bufrdeco__csv_8c.html#a9685dcec12aa968d7146aa55965dda5e" title="Parse a csv line." alt="" coords="397,80,506,105"/>
+<area shape="rect" id="node4" href="$bufrdeco__utils_8c.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary" alt="" coords="376,31,527,56"/>
 </map>

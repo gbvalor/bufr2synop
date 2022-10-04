@@ -1,4 +1,4 @@
 <map id="guess_gts_header" name="guess_gts_header">
-<area shape="rect" id="node1" title="Guess the WMO GTS header from filename." alt="" coords="5,5,133,32"/>
-<area shape="rect" id="node2" href="$bufr2tac__utils_8c.html#a4ef4777dfa46d3929577005a97abc3f6" title="Split the report string into tokens." alt="" coords="181,5,291,32"/>
+<area shape="rect" id="node1" title="Guess the WMO GTS header from filename." alt="" coords="5,5,133,31"/>
+<area shape="rect" id="node2" href="$bufr2tac__utils_8c.html#a4ef4777dfa46d3929577005a97abc3f6" title="Split the report string into tokens." alt="" coords="181,5,291,31"/>
 </map>

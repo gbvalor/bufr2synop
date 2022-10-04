@@ -1,8 +1,11 @@
 <map id="bufr_find_tableB_index" name="bufr_find_tableB_index">
-<area shape="rect" id="node1" title="found a descriptor index in a struct bufr_tableB" alt="" coords="476,58,631,85"/>
-<area shape="rect" id="node2" href="$bufrdeco__tableB_8c.html#abbd3a179a8779962077302196dce5b11" title="Restores the original table B parameters for a BUFR descriptor." alt="" coords="289,5,428,47"/>
-<area shape="rect" id="node3" href="$bufrdeco__print_8c.html#ae8a394b99aa70839d87876b867e69d29" title="Print a tree of descriptors to a file in a recursive way." alt="" coords="290,95,427,136"/>
-<area shape="rect" id="node4" href="$bufrdeco__print_8c.html#aaf80f3d3a341f3a76f9ab66ab93f4083" title="Print a tree of descriptors." alt="" coords="104,77,241,103"/>
-<area shape="rect" id="node5" href="$bufrdeco__print_8c.html#ad98da3e6db0fde223dfc2dd975295837" title="Print a tree of descriptors." alt="" coords="106,127,239,154"/>
-<area shape="rect" id="node6" href="$bufrdeco__test_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,127,56,154"/>
+<area shape="rect" id="node1" title="found a descriptor index in a struct bufr_tableB" alt="" coords="503,101,657,126"/>
+<area shape="rect" id="node2" href="$bufrdeco__tableB_8c.html#abbd3a179a8779962077302196dce5b11" title="Restores the original table B parameters for a BUFR descriptor." alt="" coords="316,5,455,45"/>
+<area shape="rect" id="node3" href="$bufrdeco__print_8c.html#ae8a394b99aa70839d87876b867e69d29" title="Print a tree of descriptors to a file in a recursive way." alt="" coords="317,93,454,133"/>
+<area shape="rect" id="node7" href="$bufrdeco_2bufrdeco__json_8c.html#a3b8abe9538bd1d78bffb274270a7c03c" title="Print a tree of descriptors to a file in a recursive way in json format." alt="" coords="318,181,453,221"/>
+<area shape="rect" id="node4" href="$bufrdeco__print_8c.html#aaf80f3d3a341f3a76f9ab66ab93f4083" title="Print a tree of descriptors." alt="" coords="117,71,255,97"/>
+<area shape="rect" id="node5" href="$bufrdeco__print_8c.html#ad98da3e6db0fde223dfc2dd975295837" title="Print a tree of descriptors." alt="" coords="119,121,253,146"/>
+<area shape="rect" id="node6" href="$bufrtotac_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,121,56,146"/>
+<area shape="rect" id="node8" href="$bufrdeco_2bufrdeco__json_8c.html#a5761a0ebdb9b605657bde2ab63d641f9" title=" " alt="" coords="104,189,268,214"/>
+<area shape="rect" id="node9" href="$apps_2bufrdeco__json_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,189,56,214"/>
 </map>

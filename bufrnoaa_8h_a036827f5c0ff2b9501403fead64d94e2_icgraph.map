@@ -1,4 +1,4 @@
 <map id="bufr_is_selected" name="bufr_is_selected">
-<area shape="rect" id="node1" title="returns 1 if selected message 0 otherwise" alt="" coords="104,5,221,32"/>
-<area shape="rect" id="node2" href="$bufrnoaa_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,5,56,32"/>
+<area shape="rect" id="node1" title="returns 1 if selected message 0 otherwise" alt="" coords="104,5,221,31"/>
+<area shape="rect" id="node2" href="$bufrnoaa_8c.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,5,56,31"/>
 </map>

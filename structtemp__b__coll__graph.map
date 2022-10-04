@@ -1,11 +1,11 @@
 <map id="temp_b" name="temp_b">
-<area shape="rect" id="node1" title="Contains part B of a TEMP REPORT." alt="" coords="353,184,419,211"/>
-<area shape="rect" id="node2" href="$structreport__date__ext.html" title="contains extensions, not in wmo. Date/time UTC information" alt="" coords="5,95,119,121"/>
-<area shape="rect" id="node3" href="$structtemp__b__sec1.html" title="Stores section 1 for parts B of a TEMP report." alt="" coords="143,95,243,121"/>
-<area shape="rect" id="node4" href="$structtemp__bd__sec5.html" title="Section 5 for parts B and D of a TEMP report." alt="" coords="267,95,374,121"/>
-<area shape="rect" id="node5" href="$structtemp__th__point.html" title="Store temperature and dewpoint depresion data in a TEMP report." alt="" coords="266,5,370,32"/>
-<area shape="rect" id="node6" href="$structtemp__bd__sec6.html" title="Section 6 for parts B and D of a TEMP report." alt="" coords="398,95,505,121"/>
-<area shape="rect" id="node7" href="$structtemp__wind__point.html" title="Store wind data in a TEMP report." alt="" coords="394,5,514,32"/>
-<area shape="rect" id="node8" href="$structtemp__sec7.html" title="Section 7 for a part of TEMP report." alt="" coords="529,95,616,121"/>
-<area shape="rect" id="node9" href="$structtemp__b__sec8.html" title="Section 8 for part B a TEMP report." alt="" coords="640,95,740,121"/>
+<area shape="rect" id="node1" title="Contains part B of a TEMP REPORT." alt="" coords="353,181,419,207"/>
+<area shape="rect" id="node2" href="$structreport__date__ext.html" title="contains extensions, not in wmo. Date/time UTC information" alt="" coords="5,93,119,119"/>
+<area shape="rect" id="node3" href="$structtemp__b__sec1.html" title="Stores section 1 for parts B of a TEMP report." alt="" coords="143,93,243,119"/>
+<area shape="rect" id="node4" href="$structtemp__bd__sec5.html" title="Section 5 for parts B and D of a TEMP report." alt="" coords="267,93,374,119"/>
+<area shape="rect" id="node5" href="$structtemp__th__point.html" title="Store temperature and dewpoint depresion data in a TEMP report." alt="" coords="266,5,370,31"/>
+<area shape="rect" id="node6" href="$structtemp__bd__sec6.html" title="Section 6 for parts B and D of a TEMP report." alt="" coords="398,93,505,119"/>
+<area shape="rect" id="node7" href="$structtemp__wind__point.html" title="Store wind data in a TEMP report." alt="" coords="394,5,514,31"/>
+<area shape="rect" id="node8" href="$structtemp__sec7.html" title="Section 7 for a part of TEMP report." alt="" coords="529,93,616,119"/>
+<area shape="rect" id="node9" href="$structtemp__b__sec8.html" title="Section 8 for part B a TEMP report." alt="" coords="640,93,740,119"/>
 </map>

@@ -1,5 +1,5 @@
 <map id="bufrdeco_tableD_get_descriptors_array" name="bufrdeco_tableD_get_descriptors_array">
-<area shape="rect" id="node1" title="get the descriptors array for a descriptor sequence defined in table D with F = 3" alt="" coords="5,23,148,65"/>
-<area shape="rect" id="node2" href="$bufrdeco__tableD_8c.html#a1b808ce81391491f01bcf2b37be2d6c4" title=" " alt="" coords="196,5,351,32"/>
-<area shape="rect" id="node3" href="$bufrdeco__utils_8c.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary" alt="" coords="198,56,349,83"/>
+<area shape="rect" id="node1" title="get the descriptors array for a descriptor sequence defined in table D with F = 3" alt="" coords="5,23,148,63"/>
+<area shape="rect" id="node2" href="$bufrdeco__tableD_8c.html#a1b808ce81391491f01bcf2b37be2d6c4" title=" " alt="" coords="196,5,351,31"/>
+<area shape="rect" id="node3" href="$bufrdeco__utils_8c.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary" alt="" coords="198,55,349,80"/>
 </map>

@@ -1,5 +1,5 @@
 <map id="temp_a_sec2" name="temp_a_sec2">
-<area shape="rect" id="node1" title="Section 2 for a part A of a TEMP report." alt="" coords="116,95,216,121"/>
-<area shape="rect" id="node2" href="$structtemp__main__level__data.html" title="It stores a main level data in a TEMP report." alt="" coords="5,5,156,32"/>
-<area shape="rect" id="node3" href="$structtemp__std__level__data.html" title="It stores a standard level data in TEMP report." alt="" coords="181,5,322,32"/>
+<area shape="rect" id="node1" title="Section 2 for a part A of a TEMP report." alt="" coords="116,93,216,119"/>
+<area shape="rect" id="node2" href="$structtemp__main__level__data.html" title="It stores a main level data in a TEMP report." alt="" coords="5,5,156,31"/>
+<area shape="rect" id="node3" href="$structtemp__std__level__data.html" title="It stores a standard level data in TEMP report." alt="" coords="181,5,322,31"/>
 </map>

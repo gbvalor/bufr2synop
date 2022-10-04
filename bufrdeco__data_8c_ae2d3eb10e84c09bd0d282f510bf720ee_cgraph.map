@@ -1,32 +1,45 @@
 <map id="bufrdeco_decode_data_subset" name="bufrdeco_decode_data_subset">
-<area shape="rect" id="node1" title="User interface to decode a BUFR subset." alt="" coords="5,281,159,323"/>
-<area shape="rect" id="node2" href="$bufrdeco__compressed_8c.html#ad2f986d73d85c08ffa6560d80c244b33" title="Get data for a given subset in a compressed data bufr." alt="" coords="704,5,843,47"/>
-<area shape="rect" id="node13" href="$bufrdeco__memory_8c.html#a10e2f4d22e6412620ff7a5c673521f24" title="Clean all allocated bitmaps, but still is in memory." alt="" coords="220,339,383,366"/>
-<area shape="rect" id="node14" href="$bufrdeco__memory_8c.html#ac39a1653e65fddaa1c96134f8e5cc995" title="Cleans a struct bufrdeco_subset_sequence_data." alt="" coords="223,413,379,455"/>
-<area shape="rect" id="node16" href="$bufrdeco__data_8c.html#a37d001fbe5872fa6c77e8316af1dcd0f" title="decode the data from a subset in a recursive way" alt="" coords="455,216,622,257"/>
-<area shape="rect" id="node23" href="$bufrdeco__compressed_8c.html#ab5056984d71413ec42f7bb6971de2ce8" title="Preliminary parse of a compressed data bufr." alt="" coords="207,289,396,315"/>
-<area shape="rect" id="node3" href="$bufrdeco__compressed_8c.html#a5589ee116b873030ba3134506dc87041" title="Get atom data from a descriptor for a given subset." alt="" coords="923,172,1110,213"/>
-<area shape="rect" id="node12" href="$bufrdeco__data_8c.html#aac640b0a169dcc99097be9053118bcea" title="doubles the allocated space for a struct bufrdeco_subset_sequence_data whenever is posible" alt="" coords="1173,41,1333,83"/>
-<area shape="rect" id="node4" href="$bufrdeco__tableC_8c.html#a4d3457bb516d1c1e673218f20bdb9824" title=" " alt="" coords="1186,107,1321,148"/>
-<area shape="rect" id="node5" href="$bufrdeco__tableC_8c.html#a2813b0332ec9389ddc3bc566bd358bf9" title=" " alt="" coords="1186,172,1321,213"/>
-<area shape="rect" id="node8" href="$bufrdeco__utils_8c.html#a01acf8b7be269860c9a3228fa96bc4f8" title=" " alt="" coords="1175,339,1332,366"/>
-<area shape="rect" id="node9" href="$bufrdeco__utils_8c.html#aab7f54057263b695a8c4bfffd0747a5a" title=" " alt="" coords="1182,289,1325,315"/>
-<area shape="rect" id="node11" href="$bufrdeco__utils_8c.html#a22d23c4377cba5193d77a3b38c0f8d79" title="check if a descriptor is a local descriptor" alt="" coords="1181,238,1325,265"/>
-<area shape="rect" id="node6" href="$bufrdeco__tableC_8c.html#ab438fb71e02d28c02c165af401f1a1f2" title=" " alt="" coords="1389,172,1534,213"/>
-<area shape="rect" id="node7" href="$bufrdeco__utils_8c.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary" alt="" coords="1584,179,1735,206"/>
-<area shape="rect" id="node10" href="$bufrdeco__utils_8c.html#ad26137576e21dbf0cd5b3cadfed38b5b" title="Read bits from an array of uint8_t and set them as an uint32_t." alt="" coords="1387,289,1536,315"/>
-<area shape="rect" id="node15" href="$bufrdeco__memory_8c.html#a119c6d89e7edbbe328149d2e0f91b0c3" title="Init a struct bufrdeco_subset_sequence_data." alt="" coords="467,436,610,477"/>
-<area shape="rect" id="node17" href="$bufrdeco__data_8c.html#a9fab831b9b513d6dfb8235bd909b4acf" title="Decodes a replicated sequence." alt="" coords="681,223,865,264"/>
-<area shape="rect" id="node19" href="$bufrdeco__f2_8c.html#a3169d30f8c32460fa68a2117129e4e44" title="parse a descritor with f = 2" alt="" coords="920,289,1113,315"/>
-<area shape="rect" id="node21" href="$bufrdeco__tableB_8c.html#acd32f541a08903094950979f6a0bc8d0" title="Get data from a table B descriptor." alt="" coords="947,238,1086,265"/>
-<area shape="rect" id="node18" href="$bufrdeco__utils_8c.html#a109df194c2d821c3cf7b2242389a8859" title=" " alt="" coords="935,339,1099,366"/>
-<area shape="rect" id="node20" href="$bufrdeco__memory_8c.html#a38f7dd296da40c3cc2ac80071f936f37" title="allocate bitmap" alt="" coords="1168,457,1339,483"/>
-<area shape="rect" id="node22" href="$bufrdeco__utils_8c.html#a1d2fc8f6683d9697a36ca71eb513ef34" title="Get an int32_t from bits according with bufr criteria to change the reference of a descritor...." alt="" coords="1178,391,1329,432"/>
-<area shape="rect" id="node24" href="$bufrdeco__memory_8c.html#a683946b7b763416ffa9ab8849a608aaa" title="Init a struct bufrdeco_compressed_data_references." alt="" coords="451,281,626,323"/>
-<area shape="rect" id="node25" href="$bufrdeco__compressed_8c.html#ac2034de9ae4ad0228a56c207689553b1" title="Parse recursively the compressed data in a bufr report to get references where to get data for every ..." alt="" coords="444,371,633,412"/>
-<area shape="rect" id="node26" href="$bufrdeco__compressed_8c.html#a12eb30c4bdf4d68d2839d15dacbcf647" title="decodes a repicated subsequence" alt="" coords="681,364,865,405"/>
-<area shape="rect" id="node27" href="$bufrdeco__f2_8c.html#a995fbc664903f38e5ddb916067aec107" title="parse a descritor with f = 2 in case of compressed bufr" alt="" coords="913,390,1120,417"/>
-<area shape="rect" id="node28" href="$bufrdeco__tableB_8c.html#a9f11c5ec977e9bfcb5d1820756f88fd7" title="get data from table B when parsing compressed data references" alt="" coords="919,441,1114,467"/>
-<area shape="rect" id="node29" href="$bufrdeco__utils_8c.html#ac1a6900782df9782c8e1b5d1b373db13" title="check if a descriptor is a delayed descriptor" alt="" coords="1173,507,1334,534"/>
-<area shape="rect" id="node30" href="$bufrdeco__utils_8c.html#aecab28a7bcc79da2d78872c77ec3e5fc" title="check if a descriptor is a short delayed descriptor" alt="" coords="1186,559,1321,600"/>
+<area shape="rect" id="node1" title="User interface to decode a BUFR subset." alt="" coords="5,709,159,749"/>
+<area shape="rect" id="node2" href="$bufrdeco__compressed_8c.html#ad2f986d73d85c08ffa6560d80c244b33" title="Get data for a given subset in a compressed data bufr." alt="" coords="704,318,843,358"/>
+<area shape="rect" id="node25" href="$bufrdeco__memory_8c.html#a10e2f4d22e6412620ff7a5c673521f24" title="Clean all allocated bitmaps, but still is in memory." alt="" coords="220,766,383,791"/>
+<area shape="rect" id="node26" href="$bufrdeco__memory_8c.html#ac39a1653e65fddaa1c96134f8e5cc995" title="Cleans a struct bufrdeco_subset_sequence_data." alt="" coords="223,998,379,1038"/>
+<area shape="rect" id="node28" href="$bufrdeco__data_8c.html#ad6b9dc48304e90c83c458100dc5cc58c" title="decode the data from a subset in a recursive way" alt="" coords="455,554,622,594"/>
+<area shape="rect" id="node35" href="$bufrdeco__compressed_8c.html#ab5056984d71413ec42f7bb6971de2ce8" title="Preliminary parse of a compressed data bufr." alt="" coords="207,716,396,742"/>
+<area shape="rect" id="node3" href="$bufrdeco__compressed_8c.html#a5589ee116b873030ba3134506dc87041" title="Get atom data from a descriptor for a given subset." alt="" coords="923,902,1110,942"/>
+<area shape="rect" id="node12" href="$bufrdeco__data_8c.html#a62790f7e23547e63cfb6946e8b8971e0" title="doubles the allocated space for a struct bufrdeco_subset_sequence_data whenever is posible" alt="" coords="1177,593,1337,633"/>
+<area shape="rect" id="node13" href="$bufrdeco_2bufrdeco__json_8c.html#a93f2b82967a4808d0216d131e80ceaeb" title="Print an json object with a descriptor data." alt="" coords="1190,352,1325,392"/>
+<area shape="rect" id="node17" href="$bufrdeco_2bufrdeco__json_8c.html#a57bb1f3074afcb7153f383f6aa6a72e4" title="print an operator desciptor as a json object" alt="" coords="925,110,1108,150"/>
+<area shape="rect" id="node19" href="$bufrdeco_2bufrdeco__json_8c.html#a92c10e5456545cc655bb7404cf47813b" title="print an operator desciptor as a json object" alt="" coords="923,585,1111,625"/>
+<area shape="rect" id="node20" href="$bufrdeco_2bufrdeco__json_8c.html#a158aa5bd5d71d3370fe6b9148bef7981" title="Print the comma &#39;,&#39; separator in an output." alt="" coords="1190,724,1325,764"/>
+<area shape="rect" id="node21" href="$bufrdeco_2bufrdeco__json_8c.html#a4af4f83d73860998dfbfca384b54e04f" title=" " alt="" coords="927,46,1107,86"/>
+<area shape="rect" id="node22" href="$bufrdeco_2bufrdeco__json_8c.html#a84687ea45e442883c36d82e1f6f1e7fd" title="Print the header of a sequence descriptor (f == 3)" alt="" coords="942,327,1091,382"/>
+<area shape="rect" id="node23" href="$bufrdeco_2bufrdeco__json_8c.html#aad2df858b5c8ee7f077ca9fce737cbca" title=" " alt="" coords="939,406,1094,446"/>
+<area shape="rect" id="node24" href="$bufrdeco_2bufrdeco__json_8c.html#a02045267d87c33aa02af4fde381b8f23" title=" " alt="" coords="939,470,1095,510"/>
+<area shape="rect" id="node4" href="$bufrdeco__tableC_8c.html#a4d3457bb516d1c1e673218f20bdb9824" title=" " alt="" coords="1190,838,1325,878"/>
+<area shape="rect" id="node5" href="$bufrdeco__tableC_8c.html#a2813b0332ec9389ddc3bc566bd358bf9" title=" " alt="" coords="1190,902,1325,942"/>
+<area shape="rect" id="node8" href="$bufrdeco__utils_8c.html#a01acf8b7be269860c9a3228fa96bc4f8" title=" " alt="" coords="1179,967,1336,992"/>
+<area shape="rect" id="node9" href="$bufrdeco__utils_8c.html#aab7f54057263b695a8c4bfffd0747a5a" title=" " alt="" coords="1186,1066,1329,1091"/>
+<area shape="rect" id="node11" href="$bufrdeco__utils_8c.html#a22d23c4377cba5193d77a3b38c0f8d79" title="check if a descriptor is a local descriptor" alt="" coords="1185,1016,1329,1042"/>
+<area shape="rect" id="node6" href="$bufrdeco__tableC_8c.html#ab438fb71e02d28c02c165af401f1a1f2" title=" " alt="" coords="1397,902,1542,942"/>
+<area shape="rect" id="node7" href="$bufrdeco__utils_8c.html#a21db34de4334426d1c212ffdabee02cb" title="parse an integer with a descriptor fom bufr ECWMF libary" alt="" coords="1592,910,1743,935"/>
+<area shape="rect" id="node10" href="$bufrdeco__utils_8c.html#ad26137576e21dbf0cd5b3cadfed38b5b" title="Read bits from an array of uint8_t and set them as an uint32_t." alt="" coords="1395,1066,1544,1091"/>
+<area shape="rect" id="node14" href="$bufrdeco__utils_8c.html#ae2667eaa0605459867e88af6219e9592" title="Supress trailing blanks of a string." alt="" coords="1407,416,1532,442"/>
+<area shape="rect" id="node15" href="$bufrdeco_2bufrdeco__json_8c.html#ad9c7b4faf6722aca949e3ff9d2ed1e70" title="prints a descriptor string value scaping the &#39;&quot;&#39; for a json format" alt="" coords="1399,288,1539,328"/>
+<area shape="rect" id="node16" href="$bufrdeco__utils_8c.html#a4659b01cee4a157aae8bf1b4e540b155" title="gets a string with formatted value depending of scale" alt="" coords="1400,352,1539,392"/>
+<area shape="rect" id="node18" href="$bufrdeco__f2_8c.html#aeeb87adbf48f29af58a448c7354d5075" title=" " alt="" coords="1168,110,1347,150"/>
+<area shape="rect" id="node27" href="$bufrdeco__memory_8c.html#a119c6d89e7edbbe328149d2e0f91b0c3" title="Init a struct bufrdeco_subset_sequence_data." alt="" coords="467,1121,610,1161"/>
+<area shape="rect" id="node29" href="$bufrdeco__data_8c.html#adb361f81dc8e8fb9d52a9d0c02c38119" title="Decodes a replicated sequence." alt="" coords="681,680,865,720"/>
+<area shape="rect" id="node31" href="$bufrdeco__f2_8c.html#a3169d30f8c32460fa68a2117129e4e44" title="parse a descritor with f = 2" alt="" coords="920,802,1113,827"/>
+<area shape="rect" id="node33" href="$bufrdeco__tableB_8c.html#acd32f541a08903094950979f6a0bc8d0" title="Get data from a table B descriptor." alt="" coords="947,967,1086,992"/>
+<area shape="rect" id="node30" href="$bufrdeco__utils_8c.html#a2ea0ec1223259f004c824006340b4f10" title="Push a bitmap element in a bufrdeco_bitmap." alt="" coords="935,1016,1099,1042"/>
+<area shape="rect" id="node32" href="$bufrdeco__memory_8c.html#a38f7dd296da40c3cc2ac80071f936f37" title="allocate bitmap" alt="" coords="1172,788,1343,814"/>
+<area shape="rect" id="node34" href="$bufrdeco__utils_8c.html#a1d2fc8f6683d9697a36ca71eb513ef34" title="Get an int32_t from bits according with bufr criteria to change the reference of a descritor...." alt="" coords="1182,1116,1333,1156"/>
+<area shape="rect" id="node36" href="$bufrdeco__memory_8c.html#a683946b7b763416ffa9ab8849a608aaa" title="Init a struct bufrdeco_compressed_data_references." alt="" coords="451,709,626,749"/>
+<area shape="rect" id="node37" href="$bufrdeco__compressed_8c.html#ac2034de9ae4ad0228a56c207689553b1" title="Parse recursively the compressed data in a bufr report to get references where to get data for every ..." alt="" coords="444,1057,633,1097"/>
+<area shape="rect" id="node38" href="$bufrdeco__compressed_8c.html#a12eb30c4bdf4d68d2839d15dacbcf647" title="decodes a repicated subsequence" alt="" coords="681,1057,865,1097"/>
+<area shape="rect" id="node39" href="$bufrdeco__compressed_8c.html#ac8828eb4ae2ec405691fe7b178526bfb" title="Increment the count of a struct bufrdeco_compressed_data_references." alt="" coords="913,1165,1120,1205"/>
+<area shape="rect" id="node40" href="$bufrdeco__f2_8c.html#a995fbc664903f38e5ddb916067aec107" title="parse a descritor with f = 2 in case of compressed bufr" alt="" coords="913,1066,1120,1091"/>
+<area shape="rect" id="node41" href="$bufrdeco__tableB_8c.html#a9f11c5ec977e9bfcb5d1820756f88fd7" title="get data from table B when parsing compressed data references" alt="" coords="919,1115,1114,1140"/>
+<area shape="rect" id="node42" href="$bufrdeco__utils_8c.html#ac1a6900782df9782c8e1b5d1b373db13" title="check if a descriptor is a delayed descriptor" alt="" coords="1177,1244,1338,1270"/>
+<area shape="rect" id="node43" href="$bufrdeco__utils_8c.html#aecab28a7bcc79da2d78872c77ec3e5fc" title="check if a descriptor is a short delayed descriptor" alt="" coords="1190,1180,1325,1220"/>
 </map>

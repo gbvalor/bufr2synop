@@ -1,7 +1,7 @@
 <map id="bufrdeco_parse_f2_compressed" name="bufrdeco_parse_f2_compressed">
-<area shape="rect" id="node1" title="parse a descritor with f = 2 in case of compressed bufr" alt="" coords="5,56,212,83"/>
-<area shape="rect" id="node2" href="$bufrdeco__memory_8c.html#a38f7dd296da40c3cc2ac80071f936f37" title="allocate bitmap" alt="" coords="260,5,431,32"/>
-<area shape="rect" id="node3" href="$bufrdeco__utils_8c.html#a01acf8b7be269860c9a3228fa96bc4f8" title=" " alt="" coords="267,56,424,83"/>
-<area shape="rect" id="node4" href="$bufrdeco__utils_8c.html#aab7f54057263b695a8c4bfffd0747a5a" title=" " alt="" coords="274,107,417,133"/>
-<area shape="rect" id="node5" href="$bufrdeco__utils_8c.html#ad26137576e21dbf0cd5b3cadfed38b5b" title="Read bits from an array of uint8_t and set them as an uint32_t." alt="" coords="479,107,628,133"/>
+<area shape="rect" id="node1" title="parse a descritor with f = 2 in case of compressed bufr" alt="" coords="5,55,212,80"/>
+<area shape="rect" id="node2" href="$bufrdeco__memory_8c.html#a38f7dd296da40c3cc2ac80071f936f37" title="allocate bitmap" alt="" coords="260,5,431,31"/>
+<area shape="rect" id="node3" href="$bufrdeco__utils_8c.html#a01acf8b7be269860c9a3228fa96bc4f8" title=" " alt="" coords="267,55,424,80"/>
+<area shape="rect" id="node4" href="$bufrdeco__utils_8c.html#aab7f54057263b695a8c4bfffd0747a5a" title=" " alt="" coords="274,104,417,129"/>
+<area shape="rect" id="node5" href="$bufrdeco__utils_8c.html#ad26137576e21dbf0cd5b3cadfed38b5b" title="Read bits from an array of uint8_t and set them as an uint32_t." alt="" coords="479,104,628,129"/>
 </map>

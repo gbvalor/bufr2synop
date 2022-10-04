@@ -1,11 +1,11 @@
 <map id="climat_chunks" name="climat_chunks">
-<area shape="rect" id="node1" title="contains all possible substrings from a synop report is parsed with success" alt="" coords="192,183,299,209"/>
-<area shape="rect" id="node2" href="$structreport__date__ext.html" title="contains extensions, not in wmo. Date/time UTC information" alt="" coords="5,5,119,32"/>
-<area shape="rect" id="node3" href="$structwigos__id.html" title="WIGOS station identifier." alt="" coords="25,56,99,83"/>
-<area shape="rect" id="node4" href="$structclimat__sec0.html" title="contains all possible substrings from section 0 when a report is parsed with success" alt="" coords="16,107,108,133"/>
-<area shape="rect" id="node5" href="$structclimat__sec1.html" title="contains all possible substrings from section 1 when a report is parsed with success" alt="" coords="16,157,108,184"/>
-<area shape="rect" id="node6" href="$structclimat__sec2.html" title="contains all possible substrings from section 2 when a report is parsed with success" alt="" coords="16,208,108,235"/>
-<area shape="rect" id="node7" href="$structclimat__sec3.html" title="contains all possible substrings from section 3 when a report is parsed with success" alt="" coords="16,259,108,285"/>
-<area shape="rect" id="node8" href="$structclimat__sec4.html" title="contains all possible substrings from section 4 when a report is parsed with success" alt="" coords="16,309,108,336"/>
-<area shape="rect" id="node9" href="$structclimat__old.html" title="contains all possible substrings from old CLIMAT format when a report is parsed with success" alt="" coords="21,360,103,387"/>
+<area shape="rect" id="node1" title="contains all possible substrings from a synop report is parsed with success" alt="" coords="192,179,299,204"/>
+<area shape="rect" id="node2" href="$structreport__date__ext.html" title="contains extensions, not in wmo. Date/time UTC information" alt="" coords="5,5,119,31"/>
+<area shape="rect" id="node3" href="$structwigos__id.html" title="WIGOS station identifier." alt="" coords="25,55,99,80"/>
+<area shape="rect" id="node4" href="$structclimat__sec0.html" title="contains all possible substrings from section 0 when a report is parsed with success" alt="" coords="16,104,108,129"/>
+<area shape="rect" id="node5" href="$structclimat__sec1.html" title="contains all possible substrings from section 1 when a report is parsed with success" alt="" coords="16,153,108,179"/>
+<area shape="rect" id="node6" href="$structclimat__sec2.html" title="contains all possible substrings from section 2 when a report is parsed with success" alt="" coords="16,203,108,228"/>
+<area shape="rect" id="node7" href="$structclimat__sec3.html" title="contains all possible substrings from section 3 when a report is parsed with success" alt="" coords="16,252,108,277"/>
+<area shape="rect" id="node8" href="$structclimat__sec4.html" title="contains all possible substrings from section 4 when a report is parsed with success" alt="" coords="16,301,108,327"/>
+<area shape="rect" id="node9" href="$structclimat__old.html" title="contains all possible substrings from old CLIMAT format when a report is parsed with success" alt="" coords="21,351,103,376"/>
 </map>

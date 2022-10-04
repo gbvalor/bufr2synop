@@ -1,5 +1,5 @@
 <map id="buoy_sec3" name="buoy_sec3">
-<area shape="rect" id="node1" title="contains all possible substrings from section 3 when a report is parsed with success" alt="" coords="79,95,165,121"/>
-<area shape="rect" id="node2" href="$structb__sec3__layer1.html" title="A layer with Temperature and salinity for a buoy report." alt="" coords="5,5,111,32"/>
-<area shape="rect" id="node3" href="$structb__sec3__layer2.html" title="A layer with direction and speed for a sea current." alt="" coords="135,5,240,32"/>
+<area shape="rect" id="node1" title="contains all possible substrings from section 3 when a report is parsed with success" alt="" coords="79,93,165,119"/>
+<area shape="rect" id="node2" href="$structb__sec3__layer1.html" title="A layer with Temperature and salinity for a buoy report." alt="" coords="5,5,111,31"/>
+<area shape="rect" id="node3" href="$structb__sec3__layer2.html" title="A layer with direction and speed for a sea current." alt="" coords="135,5,240,31"/>
 </map>
