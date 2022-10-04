@@ -194,6 +194,7 @@ buf_t bufrdeco_print_json_object_atom_data ( FILE *out,  struct bufr_atom_data *
 /*!
  *  \fn buf_t bufrdeco_print_json_object_operator_descriptor (FILE *out, struct bufr_descriptor *d, char *add )
  *  \brief print an operator desciptor as a json object
+ *  \param out output stream opened by caller
  *  \param d pointer to operator descriptor
  *  \param add adtional optional info
  *
@@ -339,7 +340,7 @@ buf_t bufrdeco_print_json_sec1 ( FILE *out, struct bufrdeco *b )
 }
 
 /*!
-  \fn int sprint_sec2_info( FILE *out, struct bufrdeco *b )
+  \fn buf_t bufrdeco_print_json_sec2( FILE *out, struct bufrdeco *b )
 * \brief Print info form optional sec 2 in json format
  * \param out string where to print
  * \param b actuve struct \ref bufrdeco
@@ -396,7 +397,7 @@ buf_t bufrdeco_print_json_sec3 ( FILE *out, struct bufrdeco *b )
 /*!
   \fn int bufrdeco_print_json_tree_recursive ( FILE *out, struct bufrdeco *b, struct bufr_sequence *seq )
   \brief  Print a tree of descriptors to a file in a recursive way in json format
-  \param f Pointer to file opened by caller
+  \param out stream opened by caller
   \param b pointer to the basic container struct \ref bufrdeco
   \param seq pointer to the struct \ref bufr_sequence  to print
   \return The amount of bytes sent to out

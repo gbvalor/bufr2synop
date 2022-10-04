@@ -450,15 +450,15 @@ char *get_formatted_value_from_escale2 ( char *fmt, size_t dim, int32_t escale, 
 
 
 /*!
-   \fn int bufrdeco_add_to_bitmap( struct bufrdeco_bitmap *bm, uint32_t index_to, uint32_t index_by )
-   \brief Push a struct \ref bufrdeco_bitmap_element in a \ref bufrdeco_bitmap
+   \fn int bufrdeco_add_to_bitmap( struct bufrdeco_bitmap *bm, buf_t index_to, buf_t index_by )
+   \brief Push a bitmap element in a \ref bufrdeco_bitmap
    \param bm target struct \ref bufrdeco_bitmap where to push
-   \param index_to index of the \ref bufrdeco_bitmap_element which this is bitmapping to
-   \param index_by index of the \ref bufrdeco_bitmap_element which this is bitmapped by
+   \param index_to index of the \ref bufrdeco_bitmap which this is bitmapping to
+   \param index_by index of the \ref bufrdeco_bitmap which this is bitmapped by
    
    \return If no space to push returns 1, otherwise 0
 */
-int bufrdeco_add_to_bitmap ( struct bufrdeco_bitmap *bm, uint32_t index_to, uint32_t index_by )
+int bufrdeco_add_to_bitmap ( struct bufrdeco_bitmap *bm, buf_t index_to, buf_t index_by )
 {
   //bufrdeco_assert (bm != NULL);
   

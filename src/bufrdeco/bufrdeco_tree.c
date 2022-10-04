@@ -53,6 +53,7 @@ int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct 
   \brief Parse the descriptor tree in a recursive way
   \param key string with descriptor in form 'FXXYYY'
   \param father pointer to the father struct \ref bufr_sequence
+  \param father_idesc index of sequence descriptor in father \ref bufr_sequence which this sequence derived  
   \param b pointer to the base struct \ref bufrdeco
   \return 0 if success, 1 otherwise
  */

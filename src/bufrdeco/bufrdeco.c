@@ -386,7 +386,7 @@ int bufrdeco_read_subset_offset_bits ( struct bufrdeco *b, char *filename )
 
 /*!
  *  \fn struct bufrdeco_subset_sequence_data *bufrdeco_get_target_subset_sequence_data (buf_t nset, struct bufrdeco *b)
- *  \brief Prepare the struct \def bufrdeco to get data from the solicited subset
+ *  \brief Prepare the struct \ref bufrdeco to get data from the solicited subset
  *  \param nset index of subset we want to parse and get data. First subset in a BUFR file has index 0.
  *  \param b pointer to the struct \ref bufrdeco
  *

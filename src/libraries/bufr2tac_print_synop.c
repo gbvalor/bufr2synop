@@ -29,6 +29,7 @@
   \param sec0 the pointer where to print section
   \param lmax max length permited
   \param syn pointer to s atruct \ref synop_chunks where the parse results are set
+  \return Used bytes
 */
 size_t print_synop_sec0 ( char **sec0, size_t lmax, struct synop_chunks *syn )
 {
@@ -102,6 +103,7 @@ size_t print_synop_sec0 ( char **sec0, size_t lmax, struct synop_chunks *syn )
   \param sec1 the pointer where to print section
   \param lmax max length permited
   \param syn pointer to s atruct \ref synop_chunks where the parse results are set
+  \return Used bytes
 */
 size_t print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn )
 {
@@ -243,6 +245,7 @@ size_t print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn )
   \param sec2 the pointer where to print section
   \param lmax max length permited
   \param syn pointer to s atruct \ref synop_chunks where the parse results are set
+  \return Used bytes
 */
 size_t print_synop_sec2 ( char **sec2, size_t lmax, struct synop_chunks *syn )
 {
@@ -405,6 +408,7 @@ size_t print_synop_sec2 ( char **sec2, size_t lmax, struct synop_chunks *syn )
   \param sec3 the pointer where to print section
   \param lmax max length permited
   \param syn pointer to s atruct \ref synop_chunks where the parse results are set
+  \return Used bytes
 */
 size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
 {
@@ -710,6 +714,7 @@ size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
   \param sec4 the pointer where to print section
   \param lmax max length permited
   \param syn pointer to s atruct \ref synop_chunks where the parse results are set
+  \return Used bytes
 */
 size_t print_synop_sec4 ( char **sec4, size_t lmax, struct synop_chunks *syn )
 {
@@ -763,6 +768,7 @@ size_t print_synop_sec4 ( char **sec4, size_t lmax, struct synop_chunks *syn )
   \param sec5 the pointer where to print section
   \param lmax max length permited
   \param syn pointer to s atruct \ref synop_chunks where the parse results are set
+  \return Used bytes
 */
 size_t print_synop_sec5 ( char **sec5, size_t lmax, struct synop_chunks *syn )
 {
@@ -810,7 +816,7 @@ size_t print_synop_sec5 ( char **sec5, size_t lmax, struct synop_chunks *syn )
 
 
 /*!
- \fn int print_synop(struct metreport *m)
+ \fn int print_synop_report(struct metreport *m)
  \brief prints a synop into a string
  \param m pointer to struct \ref metreport where are both target and source
 

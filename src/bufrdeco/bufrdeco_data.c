@@ -126,9 +126,9 @@ int bufrdeco_decode_data_subset ( struct bufrdeco *b )
 
 
 /*!
-  \fn int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s )
+  \fn int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *d )
   \brief doubles the allocated space for a struct \ref bufrdeco_subset_sequence_data whenever is posible
-  \param s pointer to source struct \ref bufrdeco_subset_sequence_data
+  \param d pointer to source struct \ref bufrdeco_subset_sequence_data
   \return 0 when success, otherwise return 1 and the struct is unmodified
 
   The amount of data in a bufr must be huge. In a first moment, the dimension of a sequence of structs
@@ -160,9 +160,9 @@ int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *d )
 }
 
 /*!
-  \fn int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *s, struct bufr_sequence *l, struct bufrdeco *b )
+  \fn int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *d, struct bufr_sequence *l, struct bufrdeco *b )
   \brief decode the data from a subset in a recursive way
-  \param s pointer to the target struct \ref bufrdeco_subset_sequence_data
+  \param d pointer to the target struct \ref bufrdeco_subset_sequence_data
   \param l pointer to the source struct \ref bufr_sequence
   \param b pointer to the base struct \ref bufrdeco
 
@@ -499,9 +499,9 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
 };
 
 /*!
-  \fn int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *s, struct bufr_replicator *r, struct bufrdeco *b )
+  \fn int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *d, struct bufr_replicator *r, struct bufrdeco *b )
   \brief Decodes a replicated sequence
-  \param s target struct \ref bufrdeco_subset_sequence_data
+  \param d target struct \ref bufrdeco_subset_sequence_data
   \param r pointer to a struct \ref bufr_replicator which manage the replication task
   \param b pointer to the base struct \ref bufrdeco
   \return If succeeded return 0, 1 otherwise

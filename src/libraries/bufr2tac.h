@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 /*!
- \file bufr2synop.h
- \brief Include header file for binary bufr2synop
+ \file bufr2tac.h
+ \brief Include header file for binary bufr2tac
 */
 #ifndef BUFR2TAC_H
 #define BUFR2TAC_H
@@ -203,13 +203,13 @@
 
 /*!
  *  \def PRINT_BITMASK_WIGOS
- *  \brief Bit mask to member \ref print_mask in struct \ref metreport to print WIGOS Identifier
+ *  \brief Bit mask to member \a print_mask in struct \ref metreport to print WIGOS Identifier
  */
 #define PRINT_BITMASK_WIGOS (1)
 
 /*!
  *  \def PRINT_BITMASK_GEO
- *  \brief Bit mask to member \ref print_mask in struct \ref metreport to print geographic position
+ *  \brief Bit mask to member \a print_mask in struct \ref metreport to print geographic position
  */
 #define PRINT_BITMASK_GEO (2)
 

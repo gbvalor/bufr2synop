@@ -464,7 +464,7 @@ struct bufrdeco_subset_sequence_data
 
 /*!
   \struct bufrdeco_bitmap
-  \brief Stores all structs \ref bufrdeco_bitmap for a bufr bitmap
+  \brief Stores all needed data for a bufr bitmap
 */
 struct bufrdeco_bitmap
 {
@@ -942,7 +942,7 @@ struct bufr_tables
 };
 
 /*!
- * \struct
+ * \struct bufr_tables_cache
  * \brief Struct to store the cache of structs \ref bufr_tables
  *
  * When used, the member \a tables in main struct \ref bufrdeco is pointing to one of the elements in member array \a tab
@@ -1111,6 +1111,9 @@ buf_t bufrdeco_print_json_sequence_descriptor_header (FILE *out,  struct bufr_se
 buf_t bufrdeco_print_json_sequence_descriptor_final ( FILE *out );
 buf_t bufrdeco_print_json_separator( FILE *out );
 buf_t bufrdeco_print_json_scape_string_cvals( FILE *out, char *source);
+buf_t bufrdeco_print_json_subset_data_prologue ( FILE *out,  struct bufrdeco *b );
+buf_t bufrdeco_print_json_subset_data_epilogue ( FILE *out );
+
 
 // Functions to get bits of data
 uint32_t two_bytes_to_uint32 ( const uint8_t *source );
@@ -1142,7 +1145,7 @@ char *bufrdeco_get_f2_descriptor_explanation ( char *e, size_t dim, struct bufr_
 int bufrdeco_allocate_bitmap ( struct bufrdeco *b );
 int bufrdeco_clean_bitmaps ( struct bufrdeco *b );
 int bufrdeco_free_bitmap_array ( struct bufrdeco_bitmap_array *a );
-int bufrdeco_add_to_bitmap ( struct bufrdeco_bitmap *bm, uint32_t index_to, uint32_t index_by );
+int bufrdeco_add_to_bitmap ( struct bufrdeco_bitmap *bm, buf_t index_to, buf_t index_by );
 
 // utilities for descriptors
 int two_bytes_to_descriptor ( struct bufr_descriptor *d, const uint8_t *source );
