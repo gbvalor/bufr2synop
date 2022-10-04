@@ -320,7 +320,7 @@
   \def BUFR_TABLEB_NAME_LENGTH
   \brief Max length (in chars) reserved for the unit string in table B
 */
-#define BUFR_TABLEB_UNIT_LENGTH (32)
+#define BUFR_TABLEB_UNIT_LENGTH (64)
 
 /*!
  * \def BUFR_CVAL_LENGTH
