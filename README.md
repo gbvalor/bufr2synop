@@ -27,7 +27,7 @@ several ways, and there is not a regional even national decision about them. As 
 A numeric value for heigh of base clouds can be coded in two ways. And there some few more
 examples.
 
-Since version 0.23.0 the old support for supress the legacy code to support bufrdc ECMAWF library
+Since version 0.23.0 the old support for supress the legacy code to support bufrdc ECMWF library
 has been supressed.
 
 In this package, the included library **bufrdeco** to decode **BUFR** files has been completed and
@@ -54,6 +54,9 @@ Since version 0.23.0 two interesting optional features has been added to **bufrd
   because the extension of a subset data is not known before parse it for non compressed cases. The creation of this 
   index file save a lot of work if we are only interested in the data of a single subset.
   
+Since version 0.24.0 **bufrdeco** also includes json output fetaures. It can print **BUFR** sections, expanded tree and 
+expanded data results in json format. You can play with it using the binary **bufrdeco_test** as is explained in following
+sections.
 
 ## BUILD ##
 
@@ -100,21 +103,25 @@ To build the package
 
 Assume you built the package. you will have up to five binaries:
 
+- ***bufrdeco_json***
+    Binary to check and view all data from **BUFR** files in json format. 
 - ***bufrtotac*** .
-    The same than bufr2ynop but using the own ***bufrdeco*** library and tables. It is several times faster
+    Main binary to extract **BUFR** report data in Traditional Alphanumeric Code. This binary uses the own ***bufrdeco*** library and tables. 
+    It is several times faster than old software based in ECMWF library.
 - ***bufrnoaa***
-    An utility to extract and select bufr files from **NOAA** bin archives.
+    An utility to extract and select bufr files from **NOAA** bin archives. This is used in Ogimet.com site to extract bufr files from NOAA GTS gateway 
 - ***build_bufrdeco_tables***
-    A binary to convert BUFR table files from ECMWF and WMO to table files used by bufrdeco library
+    A binary to convert BUFR table files from ECMWF and WMO to table files used by bufrdeco library. This is used by **bufr2synp`** developers ans the
+    results included in the directory tables of the package. User do not need to used it.
     
     
 And also the libraries :
 
 - ***libbufrdeco***  A light and very fast bufr decode library. Since version 0.20.0 it can
                      decode any BUFR report, but just a subset of them are suited to get the target TAC 
-                     reports.
-- ***libbufr2tac***  Used by binaries bufr2synop and ***bufrtotac*** to transform a decoded bufr into a
-                     **TAC** (Traditional Alphanumeric Form). Before version 0.7 this library was named
+                     reports using **bufrtorac** binary.
+- ***libbufr2tac***  Used by binary ***bufrtotac*** to transform a decoded bufr into a
+                     **TAC** (Traditional Alphanumeric Format). Before version 0.7 this library was named
                      ***bufr2synop***. It seems the new name is the right name.
 
 
@@ -148,7 +155,7 @@ or
 
 In a working dir we want to get a **BUFR** archive from **NOAA GTS gateway** and see the reports we can extract
 from it. On some enviroments, do not forget to set **BUFR_TABLES** variable to directory containing
-ECMWF bufr tables if you are using them.
+customized bufr tables if you are using them.
 
 1. Get a bufr bin file from [NOAA GTS gateway](https://tgftp.nws.noaa.gov/SL.us008001/DF.bf/DC.intl/). Is a
    cyclic directory file, with file names in the form **sn.NNNN.bin**, **NNNN** varying from **0000**
@@ -195,7 +202,8 @@ ECMWF bufr tables if you are using them.
 
 ~~~
 $> bufr2noaa -h
-bufrnoaa: Version '0.23.0' built using GNU C compiler gcc 12.1.1 at Aug 30 2022 18:17:41 and cmake.
+bufrnoaa -h
+bufrnoaa: Version '0.24.0' built using GNU C compiler gcc 12.2.1 at Oct  3 2022 06:41:17 and cmake.
 Usage: 
 
 bufrnoaa -i input_file [-h][-v][-f][-l][-F prefix][-T T2_selection][-O selo][-S sels][-U selu]
@@ -226,19 +234,23 @@ bufrnoaa -i input_file [-h][-v][-f][-l][-F prefix][-T T2_selection][-O selo][-S 
    
    ~~~
 $> butrtotac -h
-bufrtotac: Version '0.23.0' built using GNU C compiler gcc 12.1.1 at Aug 30 2022 18:39:58 and cmake.
-Linked to bufr2tac library version '0.23.0' built using GNU C compiler gcc 12.1.1 at Aug 30 2022 18:17:37 and cmake.
-Linked to bufrdeco library version '0.23.0' built using GNU C compiler gcc 12.1.1 at Aug 30 2022 18:17:35 and cmake.
+bufrtotac -h
+bufrtotac: Version '0.24.0' built using GNU C compiler gcc 12.2.1 at Oct  3 2022 10:41:51 and cmake.
+Linked to bufr2tac library version '0.24.0' built using GNU C compiler gcc 12.2.1 at Oct  3 2022 06:57:27 and cmake.
+Linked to bufrdeco library version '0.24.0' built using GNU C compiler gcc 12.2.1 at Oct  3 2022 06:57:25 and cmake.
 
 Usage: 
-bufrtotac -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-X][-c][-h]
+bufrtotac -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-X][-c][-h][more optional args....]
        -c. The output is in csv format
        -D debug level. 0 = No debug, 1 = Debug, 2 = Verbose debug (default = 0)
+       -E. Print expanded tree in json format
+       -G. Print latitude, logitude and altitude 
        -g. Print WIGOS ID
        -h Print this help
        -i Input file. Complete input path file for bufr file
        -I list_of_files. Pathname of a file with the list of files to parse, one filename per line
        -j. The output is in json format
+       -J. Output expanded subset SEC 4 data in json format
        -n. Do not try to decode to TAC, just parse BUFR report
        -o output. Pathname of output file. Default is standar output
        -R. Read bit_offsets file if exists. The path of these files is to add '.offs' to the name of input BUFR file
@@ -251,6 +263,10 @@ bufrtotac -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o out
        -v. Print version
        -x. The output is in xml format
        -X. Try to extract an embebed bufr in a file seraching for a first '7777' after first 'BUFR'
+       -0. Prints BUFR Sec 0 information in json format
+       -1. Prints BUFR Sec 1 information in json format
+       -2. Prints BUFR Sec 2 information in json format
+       -3. Prints BUFR Sec 3 information in json formatbufrtotac: Version '0.23.0' built using GNU C compiler gcc 12.1.1 at Aug 30 2022 18:39:58 and cmake.
    ~~~
 
 Since version 0.23.0 there are four new interesting options in **buftotac** as you can see. 
@@ -280,8 +296,98 @@ Since version 0.23.0 there are four new interesting options in **buftotac** as y
   to decode the same bufr file many times and only access to a given subset. First time you decode a file using **bufrdeco** with *-W* option. Next times 
   you can use *-R* option to read the data for subsets in a optimized way
   
+Since 0.24.0 there are also some options to get bufr data in json format. 
 
+- The options ***-0*** ***-1*** ***-2*** ***-3*** display json objects for the sections 0 to 3 respectively. 
+
+- The option ***-E*** display a json object with the expanded descriptor tree (without data nor replications)
+
+- The option ***-J*** display a json object with all the expanded and replicated tree of descriptors, sequences and data in the bufr report.
   
+As example, you can view the content of sec3 of the file 20141018211119_ISIN03_EGRR_182100.bufr using the folowing command. 
+In addition of option **-3**, the option **-n** is used to not decode the data into TAC. Note that also is used the utility [jq](https://stedolan.github.io/jq/) to view the results in a readble mode (***bufrdeco*** library output json objects in a 
+single line and is not easy to read by humans in this form).
+  
+~~~
+bufrtotac -i 20141018211119_ISIN03_EGRR_182100.bufr -n -3 | jq
+{
+  "Sec 3": {
+    "Sec3 length": 9,
+    "Subsets": 58,
+    "Observed": 1,
+    "Compressed": 0,
+    "Unexpanded descriptors": 1,
+    "Unexpanded array": [
+      {
+        "0": "3 07 080"
+      }
+    ]
+  }
+}
+~~~
+  
+The binary bufrdeco_json is build to get data from a bufr report in json format without decode any data in TAC format. Options are
+
+~~~
+bufrdeco_json -h
+Usage: 
+bufrdeco_test -i input_file [-h][more optional args...]
+   -h Print this help
+   -i Input file. Complete input path file for bufr file
+   -J. Information, tree and data in json format. Equivalent to option -E01234
+   -S first..last . Print only results for subsets in range first..last (First subset available is 0). Default is all subsets
+   -T. Print expanded tree in json format
+   -X. Extract first BUFR buffer found in input file (from first 'BUFR' item to next '7777')
+   -0. Prints BUFR Sec 0 information in json format
+   -1. Prints BUFR Sec 1 information in json format
+   -2. Prints BUFR Sec 2 information in json format
+   -3. Prints BUFR Sec 3 information in json format
+   -4. Prints BUFR data in json format
+~~~
+
+As example, we can use it to view Secs 1 and 3 of file 20150705121512_ISCD01_LIIB_050000.bufr included in example directory.
+
+~~~
+bufrdeco_json -i 20150705121512_ISCD01_LIIB_050000.bufr -13 |jq
+{
+  "Sec 1": {
+    "Length": 22,
+    "Bufr master table": 0,
+    "Centre": 80,
+    "Sub-Centre": 0,
+    "Update sequence": 0,
+    "Options": "0x0",
+    "Category": 0,
+    "Subcategory": 20,
+    "Sub-category local": 255,
+    "Master table version": 16,
+    "Master table local": 0,
+    "Year": 2015,
+    "Month": 6,
+    "Day": 1,
+    "Hour": 0,
+    "Minute": 0,
+    "Second": 0,
+    "Aditional space": 0
+  }
+}
+{
+  "Sec 3": {
+    "Sec3 length": 9,
+    "Subsets": 19,
+    "Observed": 1,
+    "Compressed": 0,
+    "Unexpanded descriptors": 1,
+    "Unexpanded array": [
+      {
+        "0": "3 07 073"
+      }
+    ]
+  }
+}
+~~~
+
+
   And finally, you also can read the doc pages at [github project site](http://gbvalor.github.io/bufr2synop)
    
    
