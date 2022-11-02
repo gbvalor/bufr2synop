@@ -32,7 +32,7 @@ void print_usage ( void )
 {
   print_version();
   printf ( "Usage: \n" );
-  printf ( "\n%s -i input_file [-h][-v][-f][-l][-F prefix][-T T2_selection][-O selo][-S sels][-U selu]\n" , OWN);
+  printf ( "\n%s -i input_file [-h][-v][-f][-l][-F prefix][-T T2_selection][-O selo][-S sels][-U selu][-P selp][-t selt][-X selx][-Z selz]\n" , OWN);
   printf ( "   -h Print this help\n" );
   printf ( "   -v Print information about build and version\n" );
   printf ( "   -i Input file. Complete input path file for NOAA *.bin bufr archive file\n" );
@@ -54,6 +54,14 @@ void print_usage ( void )
   printf ( "   -O selo. String with selection for A1 when T2='O'\n" );
   printf ( "      By default all A1 are selected\n" );
   printf ( "   -U sels. String with selection for A1 when T2='U'\n" );
+  printf ( "      By default all A1 are selected\n" );
+  printf ( "   -P selp. String with selection for A1 when T2='P'\n" );
+  printf ( "      By default all A1 are selected\n" );
+  printf ( "   -t selt. String with selection for A1 when T2='T'\n" );
+  printf ( "      By default all A1 are selected\n" );
+  printf ( "   -X selx. String with selection for A1 when T2='X'\n" );
+  printf ( "      By default all A1 are selected\n" );
+  printf ( "   -Z sels. String with selection for A1 when T2='Z'\n" );
   printf ( "      By default all A1 are selected\n" );
 }
 
@@ -136,6 +144,7 @@ int read_args ( int _argc, char * _argv[] )
   SELS[0] = '\0';
   SELO[0] = '\0';
   SELU[0] = '\0';
+  
   PREFIX[0] =  '\0';
   SELECT = 0;
   INDIVIDUAL = 0;
@@ -148,7 +157,7 @@ int read_args ( int _argc, char * _argv[] )
   /*
      Read input options
   */
-  while ( ( iopt = getopt ( _argc, _argv, "hv2i:flF:O:qS:T:U:" ) ) !=-1 )
+  while ( ( iopt = getopt ( _argc, _argv, "hv2i:flF:O:P:qS:t:T:U:X:Z:" ) ) !=-1 )
     switch ( iopt )
       {
       case 'i':
@@ -198,6 +207,30 @@ int read_args ( int _argc, char * _argv[] )
         if ( strlen ( optarg ) < 64 )
           {
             strcpy ( SELU, optarg );
+          }
+        break;
+      case 'P':
+        if ( strlen ( optarg ) < 64 )
+          {
+            strcpy ( SELP, optarg );
+          }
+        break;
+      case 't':
+        if ( strlen ( optarg ) < 64 )
+          {
+            strcpy ( SELT, optarg );
+          }
+        break;
+      case 'X':
+        if ( strlen ( optarg ) < 64 )
+          {
+            strcpy ( SELX, optarg );
+          }
+        break;
+      case 'Z':
+        if ( strlen ( optarg ) < 64 )
+          {
+            strcpy ( SELZ, optarg );
           }
         break;
       case 'v':

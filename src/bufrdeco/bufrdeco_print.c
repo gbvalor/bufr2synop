@@ -43,7 +43,7 @@ int sprint_sec0_info ( char *target, size_t lmax, struct bufrdeco *b )
       snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
       return 1;
     }
-    
+
   if ( b->mask & BUFRDECO_OUTPUT_HTML )
     return sprint_sec0_info_html ( target, lmax, b );
 
@@ -83,7 +83,7 @@ int print_sec0_info ( struct bufrdeco *b )
 int sprint_sec1_info ( char *target, size_t lmax, struct bufrdeco *b )
 {
   size_t used = 0;
-  
+
   bufrdeco_assert ( b != NULL );
 
   if ( lmax == 0 || target == NULL )
@@ -158,8 +158,8 @@ int sprint_sec3_info ( char *target, size_t lmax, struct bufrdeco *b )
   size_t used = 0;
 
   bufrdeco_assert ( b != NULL );
-  
-  if ( lmax == 0 || target == NULL)
+
+  if ( lmax == 0 || target == NULL )
     {
       snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
       return 1;
@@ -215,7 +215,7 @@ int sprint_sec4_info ( char *target, size_t lmax, struct bufrdeco *b )
   size_t used = 0;
 
   bufrdeco_assert ( b != NULL );
-  
+
   if ( lmax == 0 || target == NULL )
     {
       snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
@@ -425,7 +425,7 @@ int bufrdeco_print_atom_data_stdout ( struct bufr_atom_data *a )
   \fn char * bufrdeco_print_atom_data ( char *target, size_t lmax, struct bufr_atom_data *a )
   \brief print the data in a struct \ref bufr_atom_data to a string
   \param target string where to print the result
-  \param lmax size of allocated string \a target 
+  \param lmax size of allocated string \a target
   \param a pointer to struct ref \ref bufr_atom_data with data to print
 
   \return a pointer to result string
@@ -435,7 +435,7 @@ char * bufrdeco_print_atom_data ( char *target, size_t lmax, struct bufr_atom_da
   char aux[256];
   size_t used = 0;
   size_t nlimit, climit;
-  
+
   bufrdeco_assert ( a != NULL && target != NULL );
 
   used += snprintf ( target + used, lmax - used, "%u %02u %03u ", a->desc.f, a->desc.x, a->desc.y );
@@ -522,7 +522,7 @@ int bufrdeco_fprint_subset_sequence_data ( FILE *f, struct bufrdeco_subset_seque
   size_t i;
   char aux[1024];
 
-  bufrdeco_assert ( f != NULL && s != NULL);
+  bufrdeco_assert ( f != NULL && s != NULL );
 
   for ( i = 0; i < s->nd ; i++ )
     {
@@ -555,14 +555,11 @@ int bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *
   \param r pointer to the struct to print
   \return If succeeded return 0
 */
-int fprint_bufrdeco_compressed_ref ( FILE *f, struct bufrdeco_compressed_ref *r )
+int fprint_bufrdeco_compressed_ref ( FILE *f, struct bufrdeco_compressed_ref *r, buf_t index )
 {
   bufrdeco_assert ( f != NULL && r != NULL );
-  
-  if ((r->mask & BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK) == 0)
-    return 0;
-  
-  fprintf ( f, "%s -> A=%u, D=%u, ",r->desc->c,r->is_associated,r->has_data );
+
+  fprintf ( f, "%6u: %s -> A=%u, D=%u, ",index, r->desc->c,r->is_associated,r->has_data );
   if ( r->cref0[0] == '\0' )
     {
       fprintf ( f, "bits=%2u, ref=%10d, escale=%3d,",  r->bits, r->ref, r->escale );
@@ -582,11 +579,11 @@ int fprint_bufrdeco_compressed_ref ( FILE *f, struct bufrdeco_compressed_ref *r 
   \param r pointer to the struct to print
   \return If succeeded return 0
 */
-int print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r )
+int print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r, buf_t index )
 {
   bufrdeco_assert ( r != NULL );
-  
-  return fprint_bufrdeco_compressed_ref ( stdout, r );
+
+  return fprint_bufrdeco_compressed_ref ( stdout, r, index );
 }
 
 /*!
@@ -603,7 +600,7 @@ int print_bufrdeco_compressed_data_references ( struct bufrdeco_compressed_data_
   bufrdeco_assert ( r != NULL );
 
   for ( i = 0; i < r->nd; i++ )
-    print_bufrdeco_compressed_ref ( & r->refs[i] );
+    print_bufrdeco_compressed_ref ( & r->refs[i], i );
 
   return 0;
 }
@@ -619,11 +616,61 @@ int print_bufrdeco_compressed_data_references ( struct bufrdeco_compressed_data_
 int fprint_bufrdeco_compressed_data_references ( FILE *f, struct bufrdeco_compressed_data_references *r )
 {
   size_t  i;
-  
-  bufrdeco_assert ( f != NULL && r != NULL);
+
+  bufrdeco_assert ( f != NULL && r != NULL );
 
   for ( i = 0; i < r->nd; i++ )
-    fprint_bufrdeco_compressed_ref ( f, & r->refs[i] );
+    fprint_bufrdeco_compressed_ref ( f, & r->refs[i], i );
 
   return 0;
 }
+
+int bufrdeco_print_event ( struct bufrdeco_decode_subset_event *e, struct bufrdeco *b )
+{
+  char aux[128], *c;
+  printf ( "Event: %u, Mask:", b->bitacora.nd );
+  c = aux;
+  if ( e->mask & BUFRDECO_EVENT_SEQUENCE_INIT_BITMASK )
+    c += sprintf ( c, " INIQ" ); 
+  if ( e->mask & BUFRDECO_EVENT_SEQUENCE_FINAL_BITMASK )
+    c += sprintf ( c, " FINQ" );
+  if ( e->mask & BUFRDECO_EVENT_OPERATOR_DESCRIPTOR_BITMASK )
+    c += sprintf ( c, " OPER" );
+  if ( e->mask & BUFRDECO_EVENT_REPLICATOR_DESCRIPTOR_BITMASK )
+    c += sprintf ( c, " REPL" );
+  if ( e->mask & BUFRDECO_EVENT_DATA_ASSOCIATED_BITMASK )
+    c += sprintf ( c, " ASSO" );
+  if ( e->mask & BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK )
+    c += sprintf ( c, " DATA" );
+  if ( e->mask & BUFRDECO_EVENT_DATA_QUALIFIYER_BITMASK )
+    c += sprintf ( c, " QUAL" );
+  if ( e->mask & BUFRDECO_EVENT_DATA_FIRST_ORDER_STAT_BITMASK )
+    c += sprintf ( c, " STA1" );
+  if ( e->mask & BUFRDECO_EVENT_DATA_DIFF_STAT_BITMASK )
+    c += sprintf ( c, " SDIF" );
+  if ( e->mask & BUFRDECO_EVENT_DATA_BITMAP_BITMASK )
+    c += sprintf ( c, " BMAP" );
+  if ( e->mask & BUFRDECO_EVENT_DATA_SUBSITUTE_BITMASK )
+    c += sprintf ( c, " SUBS" );
+  if ( e->mask & BUFRDECO_EVENT_DATA_REPLACED_BITMASK )
+    c += sprintf ( c, " RETA" );
+  printf ( "%-20s", aux);
+  printf ( ", ref_index: %4d", e->ref_index );
+  //printf ("\n");
+  printf ( ", iseq: %3u", e->iaux[0] );
+  printf ( ", iqal: %3u", e->iaux[1] );
+  printf ( ", iasf: %3u", e->iaux[6] );
+  if ( b->sec3.compressed == 0 )
+    {
+      printf ( ", idsc: %3u", e->iaux[2] );
+      printf ( ", ndsc: %3u", e->iaux[3] );
+      printf ( ", ilop: %3u", e->iaux[4] );
+      printf ( ", nlop: %3u", e->iaux[5] );
+    }
+  /*
+  printf (", pointer: %p", e->pointer);
+  printf (", pointer2: %p", e->pointer2);
+  */
+  printf("\n");
+  return 0;
+};

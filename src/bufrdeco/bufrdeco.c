@@ -32,6 +32,8 @@
   clock_t bufrdeco_clock_start, bufrdeco_clock_end;
 #endif
 
+const struct bufr_descriptor DESCRIPTOR_ROOT = {0,0,0,0,"000000"}; /*!< This is a descriptor supposed to be the sequence descriptor for sec3 descriptors */ 
+  
 /*!
   \fn char *bufrdeco_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch)
   \brief Get strings with version information and build date and time
@@ -163,6 +165,9 @@ int bufrdeco_init ( struct bufrdeco *b )
       return 1;
     }
 
+  // allocate memory for bitacora
+  if (bufrdeco_init_subset_bitacora( b ) )
+    return 1;
 
   return 0;
 }
@@ -195,7 +200,7 @@ int bufrdeco_reset ( struct bufrdeco *b )
   bufrdeco_free_compressed_data_references ( & ( b->refs ) );
   bufrdeco_free_expanded_tree ( & ( b->tree ) );
   bufrdeco_free_bitmap_array ( & ( b->bitmap ) );
-
+  bufrdeco_free_decode_subset_bitacora( & (b->bitacora ) );
   memset ( b, 0, sizeof ( struct bufrdeco ) );
   
   // Restore data
@@ -211,7 +216,10 @@ int bufrdeco_reset ( struct bufrdeco *b )
       snprintf ( b->error, sizeof ( b->error ),"%s(): Cannot allocate space for expanded tree of descriptors\n", __func__ );
       return 1;
     }
-
+  
+  if (bufrdeco_init_subset_bitacora( b ) )
+    return 1;
+  
   return 0;
 }
 
@@ -264,6 +272,7 @@ int bufrdeco_close ( struct bufrdeco *b )
   bufrdeco_free_subset_sequence_data ( & ( b->seq ) );
   bufrdeco_free_compressed_data_references ( & ( b->refs ) );
   bufrdeco_free_expanded_tree ( & ( b->tree ) );
+  bufrdeco_free_decode_subset_bitacora( &(b->bitacora ) );
   if (b->mask & BUFRDECO_USE_TABLES_CACHE)
   {
     bufrdeco_free_cache_tables(&(b->cache));
@@ -440,7 +449,7 @@ struct bufrdeco_subset_sequence_data *bufrdeco_get_target_subset_sequence_data (
             {
               // In every call to bufrdeco_decode_data_subset(), b->state.subset is incremented and b->offsets is updated if needed
 #ifdef __DEBUG
-              printf ("# Go to parse for subset %lu waiting %lu\n", b->state.subset, nset);
+              printf ("# Go to parse for subset %u waiting %u\n", b->state.subset, nset);
 #endif              
               bufrdeco_decode_data_subset ( b );
             }
@@ -452,7 +461,8 @@ struct bufrdeco_subset_sequence_data *bufrdeco_get_target_subset_sequence_data (
   
   // and now parse and get the desired subset data
 #ifdef __DEBUG  
-  printf ("# Finally going to target parse for subset %lu\n", b->state.subset);
+  printf ("# Finally going to target parse for subset %u\n", b->state.subset);
 #endif  
   return bufrdeco_get_subset_sequence_data ( b );
 }
+

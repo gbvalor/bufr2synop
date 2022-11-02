@@ -41,6 +41,7 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
   buf_t nbits;
   struct bufr_atom_data *a;
   uint8_t has_data;
+  struct bufrdeco_associated_field af;
 
   // Check args
   bufrdeco_assert ( b != NULL );
@@ -101,7 +102,46 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
       // information. This operation associates a data field
       // (e.g. quality control information) of YYY bits with each
       // data element.
-      b->state.assoc_bits = d->y;
+      //
+      // if YYY is not 0, then it push a new associated field in the stack
+      // if YYY = 0, then pops the last associated field from the stack
+      if ( d->y )
+        {
+          if ( d->y > 32 )
+            {
+              snprintf ( b->error, sizeof ( b->error ), "%s(): This bufrdeco version cannot manage associated fields with more than 32 bits. Solicited %u bits.\n", __func__, d->y );
+              return 1;
+            }
+          memset ( &af, 0, sizeof ( struct bufrdeco_associated_field ) );
+          af.assoc_bits = d->y; // Set the amount of bits
+          af.index = b->assoc.nd; // Set the index of struct in array 
+          
+          // store in associated field array
+          /*if ( bufrdeco_add_associated_field ( &af, &b->assoc ) )
+          {
+            {
+              snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot add associated field with %u bits into array. Limit exceeded\n", __func__, d->y );
+              return 1;
+            }
+          }*/
+          // push into current associated field stack
+          if ( bufrdeco_push_associated_field ( &af, &b->state.associated ) )
+            {
+              snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot push associated field with %u bits into stack.\n", __func__, d->y );
+              return 1;
+            }
+            
+        }
+      else
+        {
+          if ( bufrdeco_pop_associated_field ( &af, &b->state.associated ) )
+            {
+              snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot pop associated field from stack. It is already void\n", __func__ );
+              return 1;
+            }
+        }
+
+      ///b->state.assoc_bits = d->y;
       break;
 
     case 5:
@@ -127,12 +167,12 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
       //strcpy_safe ( a->unit, "CCITTIA5" ); // unit
       strcpy ( a->name, "SIGNIFY CHARACTER" );
       strcpy ( a->unit, "CCITTIA5" ); // unit
-      if (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA)
-      {
-        bufrdeco_print_json_separator( b->out );
-        bufrdeco_print_json_object_atom_data (b->out, a, NULL);
-      }
-      
+      if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+        {
+          bufrdeco_print_json_separator ( b->out );
+          bufrdeco_print_json_object_atom_data ( b->out, a, 0, b, NULL );
+        }
+
       if ( s->nd < ( s->dim - 1 ) )
         {
           ( s->nd ) ++;
@@ -229,6 +269,19 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
           b->state.stat1_active = 0;
           b->state.dstat_active = 0;
         }
+      else if ( d->y == 255 )
+        {
+          // Substituted values marker operator
+          //
+          // This operator shall signify a data item containing a
+          // substituted value; the element descriptor for the
+          // substituted value is obtained by the application of the
+          // data present bit-map associated with the substituted
+          // values operator.
+
+          // Descriptor is not parsed here because it is parsed in recursive calls
+          // of replicacted subsequences
+        }
       break;
 
     case 24:
@@ -243,6 +296,23 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
           b->state.retained_active = 0;
           b->state.stat1_active = 1;
           b->state.dstat_active = 0;
+        }
+      else if ( d->y == 255 )
+        {
+          // First-order statistical values marker operator
+          //
+          // This operator shall signify a data item containing a
+          // first-order statistical value of the type indicated by
+          // the preceding 0 08 023 element descriptor; the
+          // element descriptor to which the first-order statistic
+          // relates is obtained by the application of the data
+          // present bit-map associated with the first-order
+          // statistical values follow operator; first-order statistical
+          // values shall be represented as defined by this element
+          // descriptor.
+
+          // Descriptor is not parsed here because it is parsed in recursive calls
+          // of replicacted subsequences
         }
       break;
 
@@ -259,6 +329,27 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
           b->state.stat1_active = 0;
           b->state.dstat_active = 1;
         }
+      else if ( d->y == 255 )
+        {
+          // Difference statistical values marker operator
+          //
+          // This operator shall signify a data item containing a
+          // difference statistical value of the type indicated by
+          // the preceding 0 08 024 element descriptor; the
+          // element descriptor to which the difference statistical
+          // value relates is obtained by the application of the
+          // data present bit-map associated with the difference
+          // statistical values follow operator; difference statistical
+          // values shall be represented as defined by this
+          // element descriptor, but with a reference value of –(2**n)
+          // and a data width of (n+1), where n is the data width
+          // given by the original descriptor. This special reference
+          // value allows the statistical difference values to
+          // be centred around zero.
+
+          // Descriptor is not parsed here because it is parsed in recursive calls
+          // of replicacted subsequences
+        }
       break;
 
     case 32:
@@ -273,6 +364,9 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
           b->state.retained_active = 1;
           b->state.stat1_active = 0;
           b->state.dstat_active = 0;
+        }
+      else if ( d->y == 255 )
+        {
         }
       break;
 
@@ -408,6 +502,8 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
   buf_t nbits;
   uint32_t ival;
   struct bufrdeco_compressed_ref *rf;
+  struct bufrdeco_decode_subset_event event;
+  struct bufrdeco_associated_field af;
   uint8_t has_data;
 
   // Check args
@@ -469,7 +565,46 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
       // information. This operation associates a data field
       // (e.g. quality control information) of YYY bits with each
       // data element.
-      b->state.assoc_bits = d->y;
+      //
+      // if YYY is not 0, then it push a new associated field in the stack
+      // if YYY = 0, then pops the last associated field from the stack
+      if ( d->y )
+        {
+          if ( d->y > 32 )
+            {
+              snprintf ( b->error, sizeof ( b->error ), "%s(): This bufrdeco version cannot manage associated fields with more than 32 bits. Solicited %u bits.\n", __func__, d->y );
+              return 1;
+            }
+          memset ( &af, 0, sizeof ( struct bufrdeco_associated_field ) );
+          af.assoc_bits = d->y; // Set the amount of bits
+          af.index = b->assoc.nd; // Set the index of struct in array 
+          
+          // store in associated field array
+          if ( bufrdeco_add_associated_field ( &af, &b->assoc ) )
+          {
+            {
+              snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot add associated field with %u bits into array. Limit exceeded\n", __func__, d->y );
+              return 1;
+            }
+          }
+          // push into current associated field stack
+          if ( bufrdeco_push_associated_field ( &af, &b->state.associated ) )
+            {
+              snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot push associated field with %u bits into stack.\n", __func__, d->y );
+              return 1;
+            }
+            
+        }
+      else
+        {
+          if ( bufrdeco_pop_associated_field ( &af, &b->state.associated ) )
+            {
+              snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot pop associated field from stack. It is already void\n", __func__ );
+              return 1;
+            }
+        }
+
+      ///b->state.assoc_bits = d->y;
       break;
 
     case 5:
@@ -477,7 +612,6 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
       // inserted as a data field of YYY x 8 bits in length.
       nbits = 8 * d->y;
       rf = & ( r->refs[r->nd] );
-      rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
       rf->desc = d;
       if ( get_bits_as_char_array ( rf->cref0, &rf->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
         {
@@ -503,15 +637,19 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
         }
       rf->inc_bits = ival;
       b->state.bit_offset += rf->inc_bits * 8 * b->sec3.subsets;
-      if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
-        {
-          r->nd += 1;
-        }
-      else
-        {
-          snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
+
+      // Set the event to mark the data descriptor
+      {
+        event.mask = ( BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK | BUFRDECO_EVENT_OPERATOR_DESCRIPTOR_BITMASK );
+        event.ref_index = r->nd;
+        event.pointer = d; // The descriptor with data
+        rf->bitac = b->bitacora.nd;     // set the bitacora index in ref
+        if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
           return 1;
-        }
+      }
+
+      if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+        return 1;
       break;
 
     case 6:
@@ -595,6 +733,20 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
           b->state.stat1_active = 0;
           b->state.dstat_active = 0;
         }
+      else if ( d->y == 255 )
+        {
+          // Substituted values marker operator
+          //
+          // This operator shall signify a data item containing a
+          // substituted value; the element descriptor for the
+          // substituted value is obtained by the application of the
+          // data present bit-map associated with the substituted
+          // values operator.
+
+          // Descriptor is not parsed here because it is parsed in recursive calls
+          // of replicacted subsequences
+
+        }
       break;
 
     case 24:
@@ -609,6 +761,24 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
           b->state.retained_active = 0;
           b->state.stat1_active = 1;
           b->state.dstat_active = 0;
+        }
+      else if ( d->y == 255 )
+        {
+          // First-order statistical values marker operator
+          //
+          // This operator shall signify a data item containing a
+          // first-order statistical value of the type indicated by
+          // the preceding 0 08 023 element descriptor; the
+          // element descriptor to which the first-order statistic
+          // relates is obtained by the application of the data
+          // present bit-map associated with the first-order
+          // statistical values follow operator; first-order statistical
+          // values shall be represented as defined by this element
+          // descriptor.
+
+          // Descriptor is not parsed here because it is parsed in recursive calls
+          // of replicacted subsequences
+
         }
       break;
 
@@ -625,6 +795,27 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
           b->state.stat1_active = 0;
           b->state.dstat_active = 1;
         }
+      else if ( d->y == 255 )
+        {
+          // Difference statistical values marker operator
+          //
+          // This operator shall signify a data item containing a
+          // difference statistical value of the type indicated by
+          // the preceding 0 08 024 element descriptor; the
+          // element descriptor to which the difference statistical
+          // value relates is obtained by the application of the
+          // data present bit-map associated with the difference
+          // statistical values follow operator; difference statistical
+          // values shall be represented as defined by this
+          // element descriptor, but with a reference value of –(2**n)
+          // and a data width of (n+1), where n is the data width
+          // given by the original descriptor. This special reference
+          // value allows the statistical difference values to
+          // be centred around zero.
+
+          // Descriptor is not parsed here because it is parsed in recursive calls
+          // of replicacted subsequences
+        }
       break;
 
     case 32:
@@ -639,6 +830,18 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
           b->state.retained_active = 1;
           b->state.stat1_active = 0;
           b->state.dstat_active = 0;
+        }
+      else if ( d->y == 255 )
+        {
+          // Replaced/retained value marker operator
+          //
+          // This operator shall signify a data item containing the
+          // original of an element which has been replaced
+          // by a substituted value. The element descriptor for the
+          // retained value is obtained by the application of
+          // the data present bit-map associated with the
+          // substituted values operator.
+
         }
       break;
 
@@ -679,7 +882,7 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
       break;
 
     case 37:
-      //  if y = 0000 use defined data present bit-map
+      //  if y = 000 use defined data present bit-map
       //  This operator causes the defined data present bit-map to be used again.
       //
       //  if y = 255  Cancel use defined data present bit-map
@@ -778,17 +981,17 @@ char *bufrdeco_get_f2_descriptor_explanation ( char *e, size_t dim, struct bufr_
   switch ( d->x )
     {
     case 1:
-      if (d->y)
+      if ( d->y )
         snprintf ( e, dim, "Change data width %d bits.", d->y - 128 );
       else
-        snprintf ( e, dim, "Change data width 0 bits.");
+        snprintf ( e, dim, "Change data width 0 bits." );
       break;
 
     case 2:
-      if (d->y)
+      if ( d->y )
         snprintf ( e, dim, "Change scale %d units.", d->y - 128 );
       else
-        snprintf ( e, dim, "Change scale 0 units.");
+        snprintf ( e, dim, "Change scale 0 units." );
       break;
 
     case 3:

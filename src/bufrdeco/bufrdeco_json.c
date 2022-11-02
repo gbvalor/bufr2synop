@@ -117,10 +117,11 @@ buf_t bufrdeco_print_json_sequence_descriptor_final ( FILE *out )
 
 
 /*!
- *  \fn buf_t bufrdeco_print_json_object_atom_data (FILE *out, struct bufr_atom_data *a, char *add )
+ *  \fn buf_t bufrdeco_print_json_object_atom_data (FILE *out, struct bufr_atom_data *a, buf_t index_data, char *add )
  *  \brief Print an json object with a descriptor data
  *  \param out output stream opened by caller
  *  \param a pointer to target struct \ref bufr_atom_data
+ *  \param index_data index in array of data
  *  \param add adtional optional info
  *
  * \return The amount of bytes sent to out
@@ -131,12 +132,13 @@ buf_t bufrdeco_print_json_sequence_descriptor_final ( FILE *out )
  * { "descriptor":"f xx yyy", "name":"name_of_descriptor" , "unit":"Flag value", "value":"numeric_value", "meaning":"explanation_string}
  * { "descriptor":"f xx yyy", "name":"name_of_descriptor" , "unit":"name_of_unit", "value":"numeric_value"}
  */
-buf_t bufrdeco_print_json_object_atom_data ( FILE *out,  struct bufr_atom_data *a, char *add )
+buf_t bufrdeco_print_json_object_atom_data ( FILE *out,  struct bufr_atom_data *a, buf_t index_data, struct bufrdeco *b, char *add )
 {
   char aux[256];
   buf_t used = 0;
 
-  used += fprintf ( out,  "{\"Descriptor\":\"%u %02u %03u\",\"Name\":\"%s\",", a->desc.f, a->desc.x, a->desc.y, bufr_adjust_string ( a->name ) );
+  used += fprintf ( out,  "{\"Datafield\":\"#%u_%u\",", b->seq.ss, index_data );
+  used += fprintf ( out,  "\"Descriptor\":\"%u %02u %03u\",\"Name\":\"%s\",", a->desc.f, a->desc.x, a->desc.y, bufr_adjust_string ( a->name ) );
 
   // add aditional info keys
   if ( add != NULL && add[0] )
@@ -514,3 +516,192 @@ buf_t bufrdeco_print_json_tree ( struct bufrdeco *b )
     used += bufrdeco_print_json_tree_recursive ( b->out, b, NULL );
   return used;
 };
+
+buf_t bufrdeco_print_json_subset_data ( struct bufrdeco *b )
+{
+  buf_t i, j, used = 0;
+  struct bufrdeco_decode_subset_event *event;
+  struct bufr_atom_data *a;
+  char aux[80];
+
+  bufrdeco_assert ( b != NULL && b->bitacora.event != NULL && b->seq.sequence != NULL );
+
+  // print prologue
+  used += bufrdeco_print_json_subset_data_prologue ( b->out,  b );
+
+  for ( i = 0, j = 0; i < b->bitacora.nd ; i++ )
+    {
+      // Set utils vars
+      event = & ( b->bitacora.event[i] ); // to write/read code easily
+      if ( event->iaux[2] && event->iaux[4] )
+        snprintf ( aux, sizeof ( aux ), "\"Replicated\":\"Descriptor %u/%u of loop %u/%u\"", event->iaux[2], event->iaux[3],
+                   event->iaux[4], event->iaux[5] );
+      else
+        aux[0] = '\0';
+      
+      if ( event->ref_index >= 0 )
+        {
+          a = & ( b->seq.sequence[event->ref_index] );
+        }
+      else
+        {
+          a = NULL;
+          aux[0] = '\0';
+        }
+
+      if ( event->mask & BUFRDECO_EVENT_SEQUENCE_INIT_BITMASK )
+        {
+          if ( j )
+            bufrdeco_print_json_separator ( b->out );
+          used += bufrdeco_print_json_sequence_descriptor_header ( b->out,  event->pointer );
+          j = 0;
+        }
+      else if ( event->mask & BUFRDECO_EVENT_SEQUENCE_FINAL_BITMASK )
+        {
+          used += bufrdeco_print_json_sequence_descriptor_final ( b->out );
+          j++;
+        }
+
+      if ( event->mask & BUFRDECO_EVENT_REPLICATOR_DESCRIPTOR_BITMASK )
+        {
+          if ( j )
+            bufrdeco_print_json_separator ( b->out );
+          used += bufrdeco_print_json_object_replicator_descriptor ( b->out, event->pointer, aux );
+          j++;
+        }
+
+      if ( event->mask & BUFRDECO_EVENT_OPERATOR_DESCRIPTOR_BITMASK )
+        {
+          if ( j )
+            bufrdeco_print_json_separator ( b->out );
+          if ( event->mask & BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK )
+            {
+              used += bufrdeco_print_json_object_event_data ( b->out, a, event, b, aux );
+            }
+          else
+            {
+              used += bufrdeco_print_json_object_operator_descriptor ( b->out, event->pointer, aux );
+            }
+          j++;
+        }
+      else if ( event->mask & BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK )
+        {
+          if ( j )
+            bufrdeco_print_json_separator ( b->out );
+          used += bufrdeco_print_json_object_event_data ( b->out, a, event, b, aux );
+          j++;
+        }
+    }
+  // print prologue
+  used += bufrdeco_print_json_subset_data_epilogue ( b->out );
+  return used;
+}
+
+buf_t bufrdeco_print_json_object_event_data ( FILE *out,  struct bufr_atom_data *a, struct bufrdeco_decode_subset_event *event, struct bufrdeco *b, char *add )
+{
+  char aux[256];
+  buf_t used = 0, i, j;
+  //struct bufrdeco_bitmap *bitmap;
+
+  used += fprintf ( out,  "{\"Datafield\":\"#%u_%u\",", b->seq.ss, event->ref_index );
+  used += fprintf ( out,  "\"Descriptor\":\"%u %02u %03u\",\"Name\":\"%s\",", a->desc.f, a->desc.x, a->desc.y, bufr_adjust_string ( a->name ) );
+
+  // add aditional info keys
+  if ( add != NULL && add[0] )
+    used += fprintf ( out, "%s,", add );
+
+
+  if ( a->mask & DESCRIPTOR_HAVE_STRING_VALUE )
+    {
+      // string data case
+      if ( a->mask & DESCRIPTOR_VALUE_MISSING )
+        used += fprintf ( out, "\"Unit\":\"CCITT5\",\"Value\":\"MISSING\"" ) ;
+      else
+        {
+          used += fprintf ( out, "\"Unit\":\"CCITT5\",\"Value\":\"" ) ;
+          used += bufrdeco_print_json_scape_string_cvals ( out, a->cval );
+          used += fprintf ( out, "\"" );
+        }
+    }
+  else if ( a->mask & DESCRIPTOR_IS_CODE_TABLE )
+    {
+      // code table case
+      if ( a->mask & DESCRIPTOR_VALUE_MISSING )
+        used += fprintf ( out, "\"Unit\":\"Code table\",\"Value\":\"MISSING\"" ) ;
+      else
+        {
+          used += fprintf ( out, "\"Unit\":\"Code table\",\"Value\":%u,", ( uint32_t ) ( a->val + 0.5 ) ) ;
+          used += fprintf ( out, "\"Meaning\":\"%s\"", bufr_adjust_string ( a->ctable ) );
+        }
+    }
+  else if ( a->mask & DESCRIPTOR_IS_FLAG_TABLE )
+    {
+      // flag table case
+      if ( a->mask & DESCRIPTOR_VALUE_MISSING )
+        used += fprintf ( out, "\"Unit\":\"Flag table\",\"Value\":\"MISSING\"" ) ;
+      else
+        {
+          used += fprintf ( out, "\"Unit\":\"Flag table\",\"Value\":\"0x%08X\",", ( uint32_t ) ( a->val ) ) ;
+          used += fprintf ( out, "\"Meaning\":\"%s\"", bufr_adjust_string ( a->ctable ) );
+        }
+    }
+  else
+    {
+      // numeric data case
+      if ( a->mask & DESCRIPTOR_VALUE_MISSING )
+        used += fprintf ( out, "\"Unit\":\"%s\",\"Value\":\"MISSING\"", a->unit ) ;
+      else
+        {
+          used += fprintf ( out, "\"Unit\":\"%s\",\"Value\":%s", a->unit,
+                            get_formatted_value_from_escale2 ( aux, sizeof ( aux ), a->escale, a->val ) );
+
+        }
+    }
+
+  if ( a->is_bitmaped_by )
+    {
+      if ( bufrdeco_get_bitmaped_info ( &b->brv, event->ref_index, b ) )
+        return 1;
+      used += fprintf ( out, ",\"Bitmaped_by\":\"#%u_%u\"", b->seq.ss, a->is_bitmaped_by );
+      for ( i = 0; i < b->bitmap.nba; i++ )
+        {
+
+          for ( j = 0; j < b->bitmap.bmap[i]->nq ; j++ )
+            {
+              used += fprintf ( out, ",\"Qualified_by\":\"#%u_%u\"", b->seq.ss, b->brv.qualified_by[j] + 1 );
+            }
+
+          for ( j = 0; j < b->bitmap.bmap[i]->ns1 ; j++ )
+            {
+              used += fprintf ( out, ",\"First_stat_by\":\"#%u_%u\"", b->seq.ss, b->brv.stat1_desc[j] + 1 );
+            }
+          for ( j = 0; j < b->bitmap.bmap[i]->nds ; j++ )
+            {
+              used += fprintf ( out, ",\"Diff_stat_by\":\"#%u_%u\"", b->seq.ss, b->brv.dstat_desc[j] + 1 );
+            }
+        }
+    }
+  else if ( a->related_to )
+    {
+      if ( event->mask & BUFRDECO_EVENT_DATA_QUALIFIYER_BITMASK )
+        used += fprintf ( out, ",\"Qualify_to\":\"#%u_%u\"", b->seq.ss, a->related_to );
+      else if ( event->mask & BUFRDECO_EVENT_DATA_FIRST_ORDER_STAT_BITMASK )
+        used += fprintf ( out, ",\"Stats_to\":\"#%u_%u\"", b->seq.ss, a->related_to );
+      else if ( event->mask & BUFRDECO_EVENT_DATA_DIFF_STAT_BITMASK )
+        used += fprintf ( out, ",\"Diff_stats_to\":\"#%u_%u\"", b->seq.ss, a->related_to );
+      else
+        used += fprintf ( out, ",\"Related_to\":\"#%u_%u\"", b->seq.ss, a->related_to );
+    }
+  else if ( a->bitmap_to )
+    {
+      used += fprintf ( out, ",\"Bitmap_to\":\"#%u_%u\"", b->seq.ss, a->bitmap_to );
+    }
+  else if ( a->associated_to )
+    {
+      used += fprintf ( out, ",\"Associated_to\":\"#%u_%u\"", b->seq.ss, a->associated_to );
+    }
+
+  used += fprintf ( out, "}" );
+  return used;
+}
+

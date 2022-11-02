@@ -75,11 +75,14 @@ int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, s
 */
 int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_references *r, struct bufr_sequence *l, struct bufrdeco *b )
 {
-  int res;
-  buf_t i, k;
+  buf_t i, j, k;
   struct bufr_sequence *seq; // auxiliar pointer
   struct bufrdeco_compressed_ref *rf;
   struct bufr_replicator replicator;
+  struct bufrdeco_decode_subset_bitacora *dsb;
+  struct bufrdeco_decode_subset_event event;
+  struct bufr_tableB *tb;
+
 
   // Check arguments
   if ( b == NULL )
@@ -126,14 +129,22 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
       seq = l;
     }
 
-  // Mark the init of a sequence. It waste a  reference to mark it
-  rf = & ( r->refs[r->nd] );
-  rf->mask = BUFRDECO_COMPRESSED_REF_SEQUENCE_INIT_BITMASK;
-  rf->seq = seq;
-  // Set the used elements of array in r
-  if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+  // to write easily
+  dsb = &b->bitacora;
+
+  // Mark the init of a sequence.
+  // Set the event to mark the init of a sequence
+  memset ( &event, 0, sizeof ( struct bufrdeco_decode_subset_event ) );
+  event.mask =  BUFRDECO_EVENT_SEQUENCE_INIT_BITMASK;
+  event.ref_index = -1; // No data, just the init of a sequence
+  event.pointer = seq; // The sequence
+  event.iaux[0] = seq->iseq; // The bufr_sequence index in expanded tree
+  if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
     return 1;
 
+  // to write easily
+  rf = & ( r->refs[r->nd] );
+  rf->seq = seq;
 
   // loop for a sequence
   for ( i = 0; i < seq->ndesc ; i++ )
@@ -141,7 +152,12 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
       // switch according to 'f' of the descriptor of sequence
       switch ( seq->lseq[i].f )
         {
+
         case 0:
+
+          // clean de event
+          memset ( &event, 0, sizeof ( struct bufrdeco_decode_subset_event ) );
+
           // Checks if no_data_present is active for this descriptor in this sequence
           if ( seq->no_data_present.active &&
                i >= seq->no_data_present.first &&
@@ -154,24 +170,74 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
                   snprintf ( b->error, sizeof ( b->error ), "%s(): Getting data from table b with class other than 1-9,31 and no data present activated\n", __func__ );
                   return 1;
                 }
+            }
 
+          // Check about associated bit fields already defined
+          //
+          // Note that the associated fields are not prefixed onto the data described by 0 31 YYY
+          // descriptor. This is a general rule: none of the Table C operators are applied to any of the
+          // Table B, Class 31 Data description operator qualifiers.
+
+          if ( b->state.associated.nd && seq->lseq[i].x != 31 )
+            {
+              //j = b->state.associated.nd;
+              for ( j = 1; j <= b->state.associated.nd ; j++ )
+                {
+                  rf = & ( r->refs[r->nd] );
+                  k = b->state.associated.afield[j - 1].index + 1; // index in array of associated fields which currently is position j in stack (plus one)
+                  if ( bufrdeco_tableB_compressed ( rf, b, & ( seq->lseq[i] ), k ) )
+                    {
+                      return 1; // case of error
+                    }
+                  // Set the event to mark the data descriptor
+                  event.mask |=  BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK ;
+                  event.mask |=  BUFRDECO_EVENT_DATA_ASSOCIATED_BITMASK ;
+                  event.ref_index = r->nd;
+                  event.pointer = & ( seq->lseq[i] ); // The descriptor with data
+                  event.iaux[0] = seq->iseq; // The bufr_sequence index in expanded tree
+                  event.iaux[6] = k; // The index of associated in array (plus one)
+                  rf->bitac = dsb->nd;     // set the bitacora index in ref
+                  rf->associated_to = r->nd + b->state.associated.nd - j + 1; // mark wich reference is associated
+                  rf->seq = seq;
+
+                  if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                    return 1;
+
+                  // associated field read with success, set again the used elements of r
+                  if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+                    return 1;
+                }
             }
 
           // Get data from table B
+          // Then the the data itself
           rf = & ( r->refs[r->nd] ); // pointer to the target struct bufrdeco_compressed ref. To read/write code easily
-
-          // First the the data itself
           if ( bufrdeco_tableB_compressed ( rf, b, & ( seq->lseq[i] ), 0 ) )
             {
               return 1;
+            }
+
+          //case of defining an associated field meaning (operator 0 31 021)
+          if ( b->state.associated.nd &&
+               seq->lseq[i].x == 31 && seq->lseq[i].y == 21 )
+            {
+              // Set the extracted val to
+              b->state.associated.afield[b->state.associated.nd - 1].val = rf->ref0;
+              b->assoc.afield[b->assoc.nd - 1].val = rf->ref0;
+              // Get the meaning of associated field
+              tb = & ( b->tables->b );
+              k = tb->x_start[31] + tb->y_ref[31][21];
+              bufrdeco_explained_table_val ( b->assoc.afield[b->assoc.nd - 1].cval, 256, & ( b->tables->c ),
+                                             & ( tb->item[i].tableC_ref ), & ( seq->lseq[i] ), rf->ref0 );
+              strcpy ( b->state.associated.afield[b->state.associated.nd - 1].cval, b->assoc.afield[b->assoc.nd - 1].cval );
             }
 
           //case of first order statistics
           if ( b->state.stat1_active &&
                seq->lseq[i].x == 8 && seq->lseq[i].y == 23 )
             {
-              k = b->bitmap.bmap[b->bitmap.nba - 1]->ns1; // index un stqts
-              b->bitmap.bmap[b->bitmap.nba - 1]->stat1_desc[k] = r->nd; // Set the value of statistical parameter
+              k = b->bitmap.bmap[b->bitmap.nba - 1]->ns1; // index of first statistical var
+              b->bitmap.bmap[b->bitmap.nba - 1]->stat1_desc[k] = r->nd; // Set the index of statistical parameter
               // update the number of quality variables for the bitmap
               if ( k < BUFR_MAX_QUALITY_DATA )
                 ( b->bitmap.bmap[b->bitmap.nba - 1]->ns1 )++;
@@ -180,6 +246,10 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
                   snprintf ( b->error, sizeof ( b->error ), "%s(): No more space for first order statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n", __func__ );
                   return 1;
                 }
+
+              event.mask |= BUFRDECO_EVENT_DATA_FIRST_ORDER_STAT_BITMASK;
+              event.iaux[1] = k; // k is the index of first statistical var assiciated to current bitmap
+              event.pointer2 = ( b->bitmap.bmap[b->bitmap.nba - 1] ); // pointer2 is the pointer to current bitmap
             }
 
           //case of difference statistics
@@ -196,45 +266,43 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
                   snprintf ( b->error, sizeof ( b->error ), "%s(): No more space for difference statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n", __func__ );
                   return 1;
                 }
+              event.mask |= BUFRDECO_EVENT_DATA_DIFF_STAT_BITMASK;
+              event.iaux[1] = k; // k is the index of diff statistical var assiciated to current bitmap
+              event.pointer2 = ( b->bitmap.bmap[b->bitmap.nba - 1] ); // pointer2 is the pointer to current bitmap
             }
 
-          rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
+          // Complete the event to mark the data descriptor
+          event.mask |=  BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK ;
+          event.ref_index = r->nd; // the subset ref index
+          event.pointer = & ( seq->lseq[i] ); // The descriptor with data
+          event.iaux[0] = seq->iseq; // The bufr_sequence index in expanded tree
+          rf->bitac = dsb->nd; // set the bitacora index in ref
+          if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+            return 1;
+
           rf->seq = seq;
           if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
             return 1;
-
-          // Then we check for an associated field
-          rf = & ( r->refs[r->nd] );
-          // If is not an associated field returned value is -1 and no action is made
-          res = bufrdeco_tableB_compressed ( rf, b, & ( seq->lseq[i] ), 1 );
-          if ( res > 0 )
-            {
-              return 1; // case of error
-            }
-          else if ( res == 0 )
-            {
-              rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
-              rf->seq = seq;
-              // associated field read with success, set again the used elements of r
-              if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
-                return 1;
-
-              // Update the pointer to the target struct bufrdeco_compressed ref
-              i++; // Update main loop index, note that i is also incrmented at the end of loop.
-            }
-
 
           break;
 
         case 1:
-          // Case of replicator descriptor. waste a reference
+
+          // Set the event to mark the init of a replicator
+          memset ( &event, 0, sizeof ( struct bufrdeco_decode_subset_event ) );
+          event.mask =  BUFRDECO_EVENT_REPLICATOR_DESCRIPTOR_BITMASK;
+          event.ref_index = -1; // No data, just the init of a replicator descriptor
+          event.pointer = & ( seq->lseq[i] ); // The descritor sequence
+          event.iaux[0] = seq->iseq; // The bufr_sequence index in expanded tree
+          event.iaux[3] = seq->lseq[i].x;
+          event.iaux[5] = seq->lseq[i].y;
+          if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+            return 1;
+
+
           rf = & ( r->refs[r->nd] );
-          rf->mask = BUFRDECO_COMPRESSED_REF_REPLICATOR_DESCRIPTOR;
           rf->seq = seq;
           rf->desc = & ( seq->lseq[i] );
-          // Set the used elements of array in r
-          if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
-            return 1;
 
           memset ( &replicator, 0, sizeof ( struct bufr_replicator ) ); // mr proper
           replicator.s = seq;
@@ -250,6 +318,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
               if ( b->state.bitmaping )
                 {
                   b->state.bitmaping = replicator.nloops; // set it properly
+                  b->bitmap.bmap[b->bitmap.nba - 1]->dim = replicator.nloops; // set the dim of bitmap
                 }
 
               // call to decode a replicated subsequence
@@ -270,9 +339,18 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
                 {
                   return 1;
                 }
-              rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
-              rf->seq = seq;
 
+              // Set the event to mark the data descriptor
+              event.mask =  BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK ;
+              event.ref_index = r->nd;
+              event.pointer = & ( seq->lseq[i] ); // The descriptor with data
+              event.iaux[0] = seq->iseq; // The bufr_sequence index in expanded tree
+              event.iaux[5] = rf->ref0;
+              rf->bitac = dsb->nd;     // set the bitacora index in ref
+              if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                return 1;
+
+              rf->seq = seq;
               // Set the used elements of bufrdeco_compressed_ref
               if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
                 return 1;
@@ -285,6 +363,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
               if ( b->state.bitmaping )
                 {
                   b->state.bitmaping = replicator.nloops; // set it properly
+                  b->bitmap.bmap[b->bitmap.nba - 1]->dim = replicator.nloops; // set the dim of bitmap
                 }
 
               // call to decode a replicated subsequence
@@ -298,14 +377,23 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
 
         case 2:
           // Case of operator descriptor
+
+          // clean de event
+          memset ( &event, 0, sizeof ( struct bufrdeco_decode_subset_event ) );
+
+          // Set the event to mark the operator descriptor
+          {
+            event.mask =  BUFRDECO_EVENT_OPERATOR_DESCRIPTOR_BITMASK ;
+            event.ref_index = -1;
+            event.pointer = & ( seq->lseq[i] ); // The descriptor with data
+            event.iaux[0] = seq->iseq; // The bufr_sequence index in expanded tree
+            if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+              return 1;
+          }
+
           rf = & ( r->refs[r->nd] );
-          rf->mask = BUFRDECO_COMPRESSED_REF_OPERATOR_DESCRIPTOR;
           rf->seq = seq;
           rf->desc = & ( seq->lseq[i] );
-          // Set the used elements of array in r
-          if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
-            return 1;
-
           if ( bufrdeco_parse_f2_compressed ( r, & ( seq->lseq[i] ), b ) )
             {
               return 1;
@@ -329,13 +417,13 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
         }
     }
 
-  // Mark end of sequence. waste a reference
-  rf = & ( r->refs[r->nd] );
-  rf->mask = BUFRDECO_COMPRESSED_REF_SEQUENCE_FINAL_BITMASK;
-  rf->seq = seq;
-  if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
-     return 1;
-
+  // Set the event to mark the end of a sequence
+  event.mask =  BUFRDECO_EVENT_SEQUENCE_FINAL_BITMASK;
+  event.ref_index = -1; // No data, just the final of a sequence
+  event.pointer = seq; // The descritor sequence
+  event.iaux[0] = seq->iseq; // The bufr_sequence index in expanded tree
+  if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+    return 1;
 
   return 0;
 }
@@ -351,11 +439,12 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
 */
 int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_replicator *rep, struct bufrdeco *b )
 {
-  int res;
-  buf_t i, k;
+  buf_t i, j, k;
   buf_t ixloop; // Index for loop
   buf_t ixd; // Index for descriptor
   struct bufrdeco_compressed_ref *rf;
+  struct bufrdeco_decode_subset_bitacora *dsb;
+  struct bufrdeco_decode_subset_event event;
   struct bufr_replicator replicator;
   struct bufr_sequence *l = rep->s; // sequence
 
@@ -373,6 +462,8 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
   if ( rep->nloops == 0 )
     return 0;
 
+  // the registry
+  dsb = &b->bitacora;
 
   // The big loop
   for ( ixloop = 0; ixloop < rep->nloops; ixloop++ )
@@ -380,9 +471,23 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
       for ( ixd = 0; ixd < rep->ndesc ; ixd ++ )
         {
           i = ixd + rep->ixdel + 1;
+
+          // init and common event members
+          event.mask = 0;
+          event.pointer = & ( l->lseq[i] ); // The descriptor with data
+          event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+          event.iaux[2] = ixd + 1;
+          event.iaux[3] = rep->ndesc;
+          event.iaux[4] = ixloop + 1;
+          event.iaux[5] = rep->nloops;
+          event.iaux[6] = 0;
+          event.iaux[7] = 0;
+          event.iaux[8] = 0;
+
           switch ( l->lseq[i].f )
             {
             case 0:
+
               // Checks if no_data_present is active for this descriptor in this sequence
               if ( l->no_data_present.active &&
                    i >= l->no_data_present.first &&
@@ -397,35 +502,95 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                     }
 
                 }
+
+              // Check about associated bit fields already defined
+              //
+              // Note that the associated fields are not prefixed onto the data described by 0 31 YYY
+              // descriptor. This is a general rule: none of the Table C operators are applied to any of the
+              // Table B, Class 31 Data description operator qualifiers.
+
+              if ( b->state.associated.nd && l->lseq[i].x != 31 )
+                {
+                  j = b->state.associated.nd;
+                  for ( j = 1; j <= b->state.associated.nd ; j++ )
+                    {
+                      rf = & ( r->refs[r->nd] );
+                      k = b->state.associated.afield[j - 1].index + 1; //index in array of associated fields which currently is position j in stack (plus one)
+                      if ( bufrdeco_tableB_compressed ( rf, b, & ( l->lseq[i] ), j ) )
+                        {
+                          return 1; // case of error
+                        }
+                      // Set the event to mark the data descriptor
+                      event.mask |=  BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK ;
+                      event.mask |=  BUFRDECO_EVENT_DATA_ASSOCIATED_BITMASK ;
+                      event.ref_index = r->nd;
+                      event.pointer = & ( l->lseq[i] ); // The descriptor with data
+                      event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+                      event.iaux[6] = k; // The index of associated in array (plus one)
+                      rf->bitac = dsb->nd;     // set the bitacora index in ref
+                      rf->associated_to = r->nd + b->state.associated.nd - ( j - 1 ); // mark wich reference is associated
+                      rf->seq = l;
+
+                      if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                        return 1;
+
+                      // associated field read with success, set again the used elements of r
+                      if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+                        return 1;
+                    }
+                }
+
+
               // Get data from table B
               rf = & ( r->refs[r->nd] );
               rf->replicated_desc = ixd + 1;
               rf->replicated_loop = ixloop + 1;
               rf->replicated_ndesc = rep->ndesc;
               rf->replicated_nloop = rep->nloops;
-              
-              // First then the data itself
+
+              // then the data itself
               if ( bufrdeco_tableB_compressed ( rf, b, & ( l->lseq[i] ), 0 ) )
                 {
                   return 1;
                 }
 
+              //case of defining an associated field meaning (operator 0 31 021)
+              if ( b->state.associated.nd &&
+                   l->lseq[i].x == 31 && l->lseq[i].y == 21 )
+                {
+                  // Set the extracted val to
+                  b->state.associated.afield[b->state.associated.nd - 1].val = rf->ref0;
+                  b->assoc.afield[b->assoc.nd - 1].val = rf->ref0;
+                }
+
+
               // Case of defining bitmap 0 31 031
+              // Descriptor 0 31 031, used in conjunction with quality control or statistics operators 2 22 YYY through 2 32 YYY,
+              // shall indicate the presence of quality control information when the indicator value is set to zero. It may be used
+              // in conjunction with the replication operator 1 01 YYY to construct a table of data present/not present indicators,
+              // forming a data present bit-map as defined in Regulation 94.5.5.3. This makes it possible to present
+              // quality control information and statistical information for selected data corresponding to element descriptors which
+              // precede the 2 22 YYY to 2 32 YYY operators.
               if ( l->lseq[i].x == 31 && l->lseq[i].y == 31 && b->state.bitmaping )
                 {
+                  // Mark the init of bitmap
+                  if ( ixloop == 0 )
+                    b->bitmap.bmap[b->bitmap.nba - 1]->nb0 = r->nd;
+
                   if ( rf->ref0 == 0 ) // Assume if ref0 == 0 then all subsets are present in same bits
                     {
-                      r->refs[r->nd - b->state.bitmaping].is_bitmaped_by = ( uint32_t ) r->nd ;
-                      rf->bitmap_to = r->nd - b->state.bitmaping;
+                      r->refs[r->nd - b->state.bitmaping].is_bitmaped_by = ( uint32_t ) r->nd;
+                      rf->bitmap_to = r->nd - b->state.bitmaping ;
                       bufrdeco_add_to_bitmap ( b->bitmap.bmap[b->bitmap.nba - 1], r->nd - b->state.bitmaping, r->nd );
                     }
+                  event.mask |= BUFRDECO_EVENT_DATA_BITMAP_BITMASK;
                 }
 
               // Process quality data
               if ( b->state.quality_active &&
                    l->lseq[i].x == 33 )
                 {
-                  if ( ixloop == 0 )
+                  if ( ixloop == 0 )   // here ixloop is refered to those bits = 0 in the bimap
                     {
                       k = b->bitmap.bmap[b->bitmap.nba - 1]->nq; // index un quality_given_by array to set
                       b->bitmap.bmap[b->bitmap.nba - 1]->quality[k] = r->nd; // Set the value
@@ -439,7 +604,9 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                         }
                     }
                   rf->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
-
+                  event.mask |= BUFRDECO_EVENT_DATA_QUALIFIYER_BITMASK;
+                  event.pointer2 = b->bitmap.bmap[b->bitmap.nba - 1];
+                  event.iaux[1] = b->bitmap.bmap[b->bitmap.nba - 1]->nq - 1;
                 }
 
               //case of first order statistics
@@ -450,6 +617,8 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                     {
                       k = b->bitmap.bmap[b->bitmap.nba - 1]->ns1; // index un stqts
                       b->bitmap.bmap[b->bitmap.nba - 1]->stat1_desc[k] = r->nd; // Set the value of statistical parameter
+                      // the member stat1_expl is the ctable value of descriptor 0 08 023
+                      // Should be set when reading data
                       // update the number of quality variables for the bitmap
                       if ( k < BUFR_MAX_QUALITY_DATA )
                         ( b->bitmap.bmap[b->bitmap.nba - 1]->ns1 )++;
@@ -458,8 +627,12 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                           snprintf ( b->error, sizeof ( b->error ), "%s(): No more space for first order statistic vars in bitmap. Check BUFR_MAX_QUALITY_DATA\n", __func__ );
                           return 1;
                         }
+
                     }
                   rf->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                  event.mask |= BUFRDECO_EVENT_DATA_FIRST_ORDER_STAT_BITMASK;
+                  event.pointer2 = b->bitmap.bmap[b->bitmap.nba - 1];
+                  event.iaux[1] = b->bitmap.bmap[b->bitmap.nba - 1]->ns1 - 1;
                 }
 
               //case of difference statistics
@@ -480,40 +653,32 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                         }
                     }
                   rf->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                  event.mask |= BUFRDECO_EVENT_DATA_DIFF_STAT_BITMASK;
+                  event.pointer2 = b->bitmap.bmap[b->bitmap.nba - 1] ;
+                  event.iaux[1] = b->bitmap.bmap[b->bitmap.nba - 1]->nds - 1;
                 }
 
-              rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
-              rf->seq = l;
+              // Complete the event to mark the data descriptor
+              event.mask |=  BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK ;
+              event.ref_index = r->nd;
+              event.pointer = & ( l->lseq[i] ); // The descriptor with data
+              event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+              rf->bitac = dsb->nd;     // set the bitacora index in ref
+              if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                return 1;
 
+
+              rf->seq = l;
               // Set the used elements of array in r
               if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
                 return 1;
 
-              // Then associated field
-              rf = & ( r->refs[r->nd] );
-              res = bufrdeco_tableB_compressed ( rf, b, & ( l->lseq[i] ), 1 );
-              if ( res > 0 )
-                {
-                  return 1; // case of error
-                }
-              else if ( res == 0 )
-                {
-                  //print_bufrdeco_compressed_ref ( rf );
-                  // associated field read with success
-                  rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
-                  rf->seq = l;
-                  // Set the used elements of array in r
-                  if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
-                    return 1;
-                  b->state.assoc_bits = 0; // Set again the assoc_bits to 0
-                }
 
               break;
 
             case 1:
               // Case of replicator descriptor
               rf = & ( r->refs[r->nd] );
-              rf->mask = BUFRDECO_COMPRESSED_REF_REPLICATOR_DESCRIPTOR;
               rf->seq = l;
               rf->desc = & ( l->lseq[i] );
               rf->replicated_desc = ixd + 1;
@@ -521,8 +686,15 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
               rf->replicated_ndesc = rep->ndesc;
               rf->replicated_nloop = rep->nloops;
 
-              // Set the used elements of array in r
-              if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
+              // Set the event to mark the init of a replicator
+              memset ( &event, 0, sizeof ( struct bufrdeco_decode_subset_event ) );
+              event.mask =  BUFRDECO_EVENT_REPLICATOR_DESCRIPTOR_BITMASK;
+              event.ref_index = -1; // No data, just the init of a replicator descriptor
+              event.pointer = & ( l->lseq[i] ); // The descritor sequence
+              event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+              event.iaux[3] = l->lseq[i].x;
+              event.iaux[5] = l->lseq[i].y;
+              if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
                 return 1;
 
               replicator.s = l;
@@ -548,7 +720,17 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                     {
                       return 1;
                     }
-                  rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
+
+                  // Set the event to mark the data descriptor
+                  event.mask =  BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK ;
+                  event.ref_index = r->nd;
+                  event.pointer = & ( l->lseq[i] ); // The descriptor with data
+                  event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+                  event.iaux[5] = rf->ref0;
+                  rf->bitac = dsb->nd;     // set the bitacora index in ref
+                  if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                    return 1;
+
                   rf->seq = l;
 
                   // Set the used elements of bufrdeco_compressed_ref
@@ -563,18 +745,29 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
               break;
 
             case 2:
-              rf = & ( r->refs[r->nd] );
-              rf->mask = BUFRDECO_COMPRESSED_REF_OPERATOR_DESCRIPTOR;
-              rf->seq = l;
-              rf->desc = & ( l->lseq[i] );
-              rf->replicated_desc = ixd + 1;
-              rf->replicated_loop = ixloop + 1;
-              rf->replicated_ndesc = rep->ndesc;
-              rf->replicated_nloop = rep->nloops;
+              if ( l->lseq[i].x != 5 &&
+                   strcmp ( l->lseq[i].c,"223255" ) &&
+                   strcmp ( l->lseq[i].c,"224255" ) &&
+                   strcmp ( l->lseq[i].c,"225255" ) &&
+                   strcmp ( l->lseq[i].c,"232255" )
+                 )
+                {
+                  rf = & ( r->refs[r->nd] );
+                  rf->seq = l;
+                  rf->desc = & ( l->lseq[i] );
+                  rf->replicated_desc = ixd + 1;
+                  rf->replicated_loop = ixloop + 1;
+                  rf->replicated_ndesc = rep->ndesc;
+                  rf->replicated_nloop = rep->nloops;
 
-              // Set the used elements of array in r
-              if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
-                return 1;
+                  event.mask =  BUFRDECO_EVENT_OPERATOR_DESCRIPTOR_BITMASK ;
+                  event.ref_index = -1;
+                  event.pointer = & ( l->lseq[i] ); // The descriptor with data
+                  event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+                  if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                    return 1;
+
+                }
 
               // Case of operator descriptor
               if ( bufrdeco_parse_f2_compressed ( r, & ( l->lseq[i] ), b ) )
@@ -596,19 +789,31 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                     {
                       return 1;
                     }
-                  rf->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
-                  rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
+                  rf->related_to = k;
+
+                  // Set the event to mark the data descriptor
+                  event.mask = ( BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK | BUFRDECO_EVENT_OPERATOR_DESCRIPTOR_BITMASK );
+                  event.mask |= BUFRDECO_EVENT_DATA_SUBSITUTE_BITMASK;
+                  event.ref_index = r->nd;
+                  event.pointer = & ( l->lseq[i] ); // The descriptor with data
+                  event.pointer2 =  b->bitmap.bmap[b->bitmap.nba - 1];
+                  event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+                  rf->bitac = b->bitacora.nd;     // set the bitacora index in ref
+                  rf->me = r->nd;
+                  if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                    return 1;
+
                   rf->seq = l;
-                  rf->desc = & ( l->lseq[k] );
+                  rf->desc = & ( l->lseq[i] );
                   if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
                     return 1;
                 }
 
-              // Case of repaced/retained values
+              // Case of replaced/retained values
               if ( b->state.retained_active && l->lseq[i].x == 32 && l->lseq[i].y == 255 )
                 {
-                  k = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
                   // Get the bitmaped descriptor k
+                  k = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
                   rf = & ( r->refs[r->nd] );
                   if ( ixloop == 0 )
                     {
@@ -619,10 +824,22 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                       return 1;
                     }
 
-                  rf->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
-                  rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
+                  rf->related_to = k;
+
+                  // Set the event to mark the data descriptor
+                  event.mask = ( BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK | BUFRDECO_EVENT_OPERATOR_DESCRIPTOR_BITMASK );
+                  event.mask |= BUFRDECO_EVENT_DATA_REPLACED_BITMASK;
+                  event.ref_index = r->nd;
+                  event.pointer = & ( l->lseq[i] ); // The descriptor with data
+                  event.pointer2 =  b->bitmap.bmap[b->bitmap.nba - 1];
+                  event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+                  rf->bitac = b->bitacora.nd;     // set the bitacora index in ref
+                  rf->me = r->nd;
+                  if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                    return 1;
+
                   rf->seq = l;
-                  rf->desc = & ( l->lseq[k] );
+                  rf->desc = & ( l->lseq[i] );
                   if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
                     return 1;
                 }
@@ -640,9 +857,8 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
               // descriptor.
               if ( b->state.stat1_active && l->lseq[i].x == 24 && l->lseq[i].y == 255 )
                 {
+                  // Get the bitmaped descriptor k to which is related
                   k = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
-
-                  // Get the bitmaped descriptor k
                   rf = & ( r->refs[r->nd] );
                   if ( ixloop == 0 )
                     {
@@ -653,10 +869,25 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                     {
                       return 1;
                     }
-                  rf->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
-                  rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
+
+                  rf->related_to = k;
+
+                  // Set the event to mark the data descriptor
+                  event.mask = ( BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK | BUFRDECO_EVENT_OPERATOR_DESCRIPTOR_BITMASK );
+                  event.mask |= ( BUFRDECO_EVENT_DATA_FIRST_ORDER_STAT_BITMASK );
+                  event.ref_index = r->nd;
+                  event.pointer = & ( l->lseq[i] ); // The descriptor with data
+                  event.pointer2 = b->bitmap.bmap[b->bitmap.nba - 1];
+                  event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+                  event.iaux[1] = b->bitmap.bmap[b->bitmap.nba - 1]->ns1 -1;
+                  rf->bitac = b->bitacora.nd;     // set the bitacora index in ref
+                  rf->me = r->nd;
+                  if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                    return 1;
+
                   rf->seq = l;
-                  rf->desc = & ( l->lseq[k] );
+                  rf->desc = & ( l->lseq[i] );
+
                   if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
                     return 1;
                 }
@@ -678,9 +909,9 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
               // be centred around zero.
               if ( b->state.dstat_active && l->lseq[i].x == 25 && l->lseq[i].y == 255 )
                 {
-                  k = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
 
                   // Get the bitmaped descriptor k
+                  k = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
                   rf = & ( r->refs[r->nd] );
                   if ( ixloop == 0 )
                     {
@@ -692,23 +923,31 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                       return 1;
                     }
 
+                  rf->related_to = k;
+
                   // here is where we change ref and bits
                   rf->ref = - ( ( int32_t ) 1 << rf->bits );
                   rf->bits++;
-                  rf->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
-                  rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
+
+                  // Set the event to mark the data descriptor
+                  event.mask = ( BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK | BUFRDECO_EVENT_OPERATOR_DESCRIPTOR_BITMASK );
+                  event.mask |= ( BUFRDECO_EVENT_DATA_DIFF_STAT_BITMASK );
+                  event.ref_index = r->nd;
+                  event.pointer = & ( l->lseq[i] ); // The descriptor with data
+                  event.pointer2 = b->bitmap.bmap[b->bitmap.nba - 1];
+                  event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+                  event.iaux[1] = b->bitmap.bmap[b->bitmap.nba - 1]->nds -1;
+                  rf->bitac = b->bitacora.nd;     // set the bitacora index in ref
+                  rf->me = r->nd;
+                  if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                    return 1;
+
                   rf->seq = l;
+                  rf->desc = & ( l->lseq[i] );
                   if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
                     return 1;
                 }
 
-              if ( l->lseq[i].x == 5 ) // cases wich produces a new ref
-                {
-                  rf->mask = BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK;
-                  rf->seq = l;
-                  if ( bufrdeco_increase_compressed_data_references_count ( r, b ) )
-                    return 1;
-                }
               break;
 
             case 3:
@@ -742,11 +981,13 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
 int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, struct bufrdeco_compressed_ref *r,
     buf_t subset, struct bufrdeco *b )
 {
-  buf_t i, bit_offset;
+  buf_t i, j, bit_offset, k;
   uint8_t has_data;
   uint32_t ival, ival0;
   int32_t ivals;
+  char aux[8 * BUFR_TABLEB_NAME_LENGTH];
   struct bufr_tableB *tb;
+  struct bufrdeco_bitmap *bitmap;
 
   if ( b == NULL )
     return 1;
@@ -756,6 +997,9 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
       snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
       return 1;
     }
+
+  // first we set the 'me' member
+  a->me = ( b->seq.nd );
 
   if ( is_a_local_descriptor ( r->desc ) )
     {
@@ -787,12 +1031,42 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
 
   // descriptor
   memcpy ( & ( a->desc ), r->desc, sizeof ( struct bufr_descriptor ) );
+
   // name
-  //strcpy_safe ( a->name, r->name );
   strcpy ( a->name, r->name );
+
+  // In some cases of bitmap we need to change the name of parameters
+  if ( strcmp ( a->desc.c, "224255" ) == 0 )
+    {
+      // case of first statistics
+      bitmap = ( struct bufrdeco_bitmap * ) b->bitacora.event[r->bitac].pointer2;
+      j = b->bitacora.event[r->bitac].iaux[1];
+      k = bitmap->stat1_desc[j];// k is the data wich define the type or first statistical
+      sprintf ( aux,"%s <- %s",bufr_adjust_string ( b->seq.sequence[k].ctable ), bufr_adjust_string ( r->name ) );
+      memcpy ( a->name, aux, 127 );
+      a->name[127] = '\0';
+    }
+  else if ( strcmp ( a->desc.c,"225255" ) == 0 )
+    {
+      // case of diff statistics
+      bitmap = ( struct bufrdeco_bitmap * ) b->bitacora.event[r->bitac].pointer2;
+      j = b->bitacora.event[r->bitac].iaux[1];
+      k = bitmap->dstat_desc[j];// k is the data wich define the type or first statistical
+      sprintf ( aux,"%s <- %s",bufr_adjust_string ( b->seq.sequence[k].ctable ), bufr_adjust_string ( r->name ) );
+      memcpy ( a->name, aux, 127 );
+      a->name[127] = '\0';
+    }
+
+  // Case to define what associated field is
+  if ( r->is_associated && strcmp ( a->desc.c,"031021" ) )
+    {
+
+    }
+
   //unit
   //strcpy_safe ( a->unit, r->unit );
   strcpy ( a->unit, r->unit );
+
   //scale
   a->escale = r->escale;
 
@@ -854,7 +1128,7 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
   // now we check for associated data
   if ( r->is_associated )
     {
-      strcpy ( a->name, "Associated value" );
+      strcpy ( a->name, "Associated value to next data field" );
       strcpy ( a->unit, "Associated unit" );
       if ( r->has_data == 0 )
         {
@@ -964,9 +1238,8 @@ int bufrdeco_get_atom_data_from_compressed_data_ref ( struct bufr_atom_data *a, 
 */
 int bufr_decode_subset_data_compressed ( struct bufrdeco_subset_sequence_data *s, struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
 {
-  size_t i, j = 0; // references index
-  char aux[80];
-  
+  size_t i = 0, /*j = 0,*/ k; // references index
+
   if ( b == NULL )
     return 1;
 
@@ -983,119 +1256,50 @@ int bufr_decode_subset_data_compressed ( struct bufrdeco_subset_sequence_data *s
       s->nd = 0;
     }
 
+
   // The subset index
   s->ss = b->state.subset;
 
-  if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
-    bufrdeco_print_json_subset_data_prologue (b->out, b );
-
   // then get sequence
-  for ( i = 0; i < r->nd; i++ )
+  for ( k = 0; k < b->bitacora.nd; k++ )
     {
-      if ( (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA) &&
-           (r->refs[i].replicated_desc || r->refs[i].replicated_loop) )
-        snprintf(aux, sizeof (aux), "\"Replicated\":\"Descriptor %u/%u of loop %u/%u\"", r->refs[i].replicated_desc, r->refs[i].replicated_ndesc,
-                r->refs[i].replicated_loop, r->refs[i].replicated_nloop);
+      if ( b->bitacora.event[k].ref_index >= 0 )
+        i = b->bitacora.event[k].ref_index;
       else
-        aux[0] = '\0';
-      
-      if ( r->refs[i].mask & BUFRDECO_COMPRESSED_REF_DATA_DESCRIPTOR_BITMASK )
-        {
-          if ( bufrdeco_get_atom_data_from_compressed_data_ref ( & ( s->sequence[s->nd] ), & ( r->refs[i] ), b->state.subset, b ) )
-            return 1;
+        continue;// index in compressed refs
 
-          if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
-            {
-              if ( j )
-                bufrdeco_print_json_separator(b->out );
-              bufrdeco_print_json_object_atom_data (b->out, & ( s->sequence[s->nd] ), aux );
-            }
-          if ( r->refs[i].is_associated == 0 )
-            {
-              if ( s->nd < ( s->dim - 1 ) )
-                ( s->nd ) ++;
-              else if ( bufrdeco_increase_data_array ( s ) == 0 )
-                ( s->nd ) ++;
-              else
-                {
-                  snprintf ( b->error, sizeof ( b->error ), "%s(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n", __func__ );
-                  return 1;
-                }
-            }
+      if ( bufrdeco_get_atom_data_from_compressed_data_ref ( & ( s->sequence[s->nd] ), & ( r->refs[i] ), b->state.subset, b ) )
+        return 1;
+
+      if ( r->refs[i].is_associated == 0 )
+        {
+          if ( s->nd < ( s->dim - 1 ) )
+            ( s->nd ) ++;
+          else if ( bufrdeco_increase_data_array ( s ) == 0 )
+            ( s->nd ) ++;
           else
             {
-              if ( s->nd < ( s->dim - 1 ) )
-                ( s->nd ) ++;
-              else if ( bufrdeco_increase_data_array ( s ) == 0 )
-                ( s->nd ) ++;
-              else
-                {
-                  snprintf ( b->error, sizeof ( b->error ), "%s(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n", __func__ );
-                  return 1;
-                }
+              snprintf ( b->error, sizeof ( b->error ), "%s(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n", __func__ );
+              return 1;
             }
-          j++;
         }
-      else if ( r->refs[i].mask & BUFRDECO_COMPRESSED_REF_SEQUENCE_INIT_BITMASK )
+      else
         {
-          if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+          if ( s->nd < ( s->dim - 1 ) )
+            ( s->nd ) ++;
+          else if ( bufrdeco_increase_data_array ( s ) == 0 )
+            ( s->nd ) ++;
+          else
             {
-              if ( j )
-                bufrdeco_print_json_separator(b->out );
-              bufrdeco_print_json_sequence_descriptor_header (b->out, r->refs[i].seq );
-              j = 0;
+              snprintf ( b->error, sizeof ( b->error ), "%s(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n", __func__ );
+              return 1;
             }
-        }
-      else if ( r->refs[i].mask & BUFRDECO_COMPRESSED_REF_SEQUENCE_FINAL_BITMASK )
-        {
-          if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
-            bufrdeco_print_json_sequence_descriptor_final (b->out);
-        }
-      else if ( r->refs[i].mask & BUFRDECO_COMPRESSED_REF_REPLICATOR_DESCRIPTOR )
-        {
-          if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
-            {
-              if ( j )
-                bufrdeco_print_json_separator(b->out );
-              bufrdeco_print_json_object_replicator_descriptor (b->out, r->refs[i].desc, aux );
-              j++;
-            }
-        }
-      else if ( r->refs[i].mask & BUFRDECO_COMPRESSED_REF_OPERATOR_DESCRIPTOR )
-        {
-          if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
-          {
-            if ( j )
-               bufrdeco_print_json_separator(b->out );
-            bufrdeco_print_json_object_operator_descriptor (b->out, r->refs[i].desc, aux );
-          }
-          j++;
         }
     }
+
   if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
-    bufrdeco_print_json_subset_data_epilogue (b->out );
-
+    bufrdeco_print_json_subset_data ( b );
   return 0;
 }
 
-/*!
- * \fn int bufrdeco_increase_compressed_data_references_count ( struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
- * \brief Increment the count of a struct \ref bufrdeco_compressed_data_references
- * \param r pointer to the target struct
- * \param b pointer to the current active struct \ref bufrdeco
- *
- * \return 0 if succeeded, 1 otherwise
- */
-int bufrdeco_increase_compressed_data_references_count ( struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
-{
-  if ( r->nd < ( BUFR_NMAXSEQ - 1 ) )
-    {
-      r->nd += 1;
-    }
-  else
-    {
-      snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
-      return 1;
-    }
-  return 0;
-}
+

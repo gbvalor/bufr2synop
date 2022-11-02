@@ -193,6 +193,66 @@ int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *b
 }
 
 /*!
+  \fn int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *d )
+  \brief doubles the allocated space for a struct \ref bufrdeco_subset_sequence_data whenever is posible
+  \param d pointer to source struct \ref bufrdeco_subset_sequence_data
+  \return 0 when success, otherwise return 1 and the struct is unmodified
+
+  The amount of data in a bufr must be huge. In a first moment, the dimension of a sequence of structs
+  \ref bufr_atom_data is \ref BUFR_NMAXSEQ but may be increased. This function task is try to double the
+  allocated dimension and reallocate it.
+
+*/
+int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *d )
+{
+  bufrdeco_assert ( d != NULL );
+
+  if ( d->dim < ( BUFR_NMAXSEQ * 16 ) ) // check if reached the limit
+    {
+      if ( ( d->sequence = ( struct bufr_atom_data * ) realloc ( ( void * ) d->sequence,
+                           d->dim * 2 * sizeof ( struct bufr_atom_data ) ) ) == NULL )
+        {
+          return 1;
+        }
+      else
+        {
+          d->dim *= 2;
+          return 0;
+        }
+    }
+  else
+    {
+      return 1;
+    }
+}
+
+/*!
+ * \fn int bufrdeco_increase_subset_sequence_data_count ( struct bufrdeco_subset_sequence_data *d, struct bufrdeco *b )
+ * \brief Increment the count of a struct \ref bufrdeco_subset_sequence_data
+ * \param d pointer to the target struct
+ * \param b pointer to the current active struct \ref bufrdeco
+ *
+ * \return 0 if succeeded, 1 otherwise
+ */
+int bufrdeco_increase_subset_sequence_data_count ( struct bufrdeco_subset_sequence_data *d, struct bufrdeco *b )
+{
+  if ( d->nd < ( d->dim - 1 ) )
+    {
+      d->nd += 1;
+      return 0;
+    }
+  else if ( bufrdeco_increase_data_array ( d ) )
+    {
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increase BUFR_NMAXSEQ\n", __func__ );
+      return 1;
+    }
+
+  // increase now
+  d->nd += 1;
+  return 0;
+}
+
+/*!
   \fn int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
   \brief Init a struct bufrdeco_compressed_data_references
   \param rf pointer ti the target struct
@@ -256,6 +316,65 @@ int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_r
       free ( ( void * ) rf->refs );
       rf->refs = NULL;
     }
+  return 0;
+}
+
+/*!
+  \fn int bufrdeco_increase_compressed_ref_array ( struct bufrdeco_compressed_data_references *r )
+  \brief doubles the allocated space for a struct \ref bufrdeco_compressed_data_references whenever is posible
+  \param r pointer to source struct \ref bufrdeco_compressed_data_references
+  \return 0 when success, otherwise return 1 and the struct is unmodified
+
+  The amount of data in a bufr must be huge. In a first moment, the dimension of a sequence of structs
+  \ref bufr_atom_data is \ref BUFR_NMAXSEQ but may be increased. This function task is try to double the
+  allocated dimension and reallocate it.
+*/
+int bufrdeco_increase_compressed_ref_array ( struct bufrdeco_compressed_data_references *r )
+{
+  bufrdeco_assert ( r != NULL );
+
+  if ( r->dim < ( BUFR_NMAXSEQ * 16 ) ) // check if reached the limit
+    {
+      if ( ( r->refs = ( struct bufrdeco_compressed_ref * ) realloc ( ( void * ) r->refs,
+                           r->dim * 2 * sizeof ( struct bufrdeco_compressed_ref ) ) ) == NULL )
+        {
+          return 1;
+        }
+      else
+        {
+          r->dim *= 2;
+          return 0;
+        }
+    }
+  else
+    {
+      return 1;
+    }
+}
+
+/*!
+ * \fn int bufrdeco_increase_compressed_data_references_count ( struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
+ * \brief Increment the count of a struct \ref bufrdeco_compressed_data_references
+ * \param r pointer to the target struct
+ * \param b pointer to the current active struct \ref bufrdeco
+ *
+ * \return 0 if succeeded, 1 otherwise
+ */
+int bufrdeco_increase_compressed_data_references_count ( struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
+{
+  if ( r->nd < ( r->dim - 1 ) )
+    {
+      r->nd += 1;
+      return 0;
+    }
+  else if ( bufrdeco_increase_compressed_ref_array ( r ) )
+    {
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increase BUFR_NMAXSEQ\n", __func__ );
+      return 1;
+    }
+
+  // increase now
+  r->nd += 1;
   return 0;
 }
 
@@ -346,3 +465,176 @@ int bufrdeco_free_bitmap_array ( struct bufrdeco_bitmap_array *a )
   return 0;
 }
 
+/*!
+ *  \fn int bufrdeco_add_event_to_bitacora ( struct bufrdeco *b )
+ *  \brief Add an element into a struct \ref bufrdeco_compressed_data_registry 
+ * \param b pointer to the current active struct \ref bufrdeco
+ *
+ * \return 0 if succeeded, 1 otherwise
+ *   
+ */
+int bufrdeco_add_event_to_bitacora ( struct bufrdeco *b, struct bufrdeco_decode_subset_event *event )
+{
+  if ( b->bitacora.nd < b->bitacora.dim - 1 )
+    {
+      // Copy the source event to array
+      memcpy (&(b->bitacora.event[b->bitacora.nd]), event, sizeof (struct bufrdeco_decode_subset_event ) );
+#ifdef __DEBUG      
+      bufrdeco_print_event(event, b);
+#endif
+      ( b->bitacora.nd )++;
+      return 0;
+    }
+  else if ( bufrdeco_increase_decode_subset_bitacora_array( &(b->bitacora) ) )
+    {
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
+      return 1;
+    }
+    
+  // add now  
+  memcpy (&(b->bitacora.event[b->bitacora.nd]), event, sizeof (struct bufrdeco_decode_subset_event ) );
+  ( b->bitacora.nd )++;
+   return 0;
+}
+
+/*!
+ *  \fn int bufrdeco_init_subset_bitacora ( struct bufrdeco *b)
+ *  \brief Init struct \ref bufrdeco_decode_subset_bitacora 
+ *  \param active struct \ref bufrdeco
+ *
+ *  \return if succeeded return 0. Exit with failure otherwise 
+ */
+int bufrdeco_init_subset_bitacora ( struct bufrdeco *b)
+{
+  bufrdeco_assert ( b != NULL );
+  
+  if ( b->bitacora.event != NULL && b->bitacora.dim != 0 )
+    {
+      b->bitacora.nd = 0; // Here we set the used elements to 0 of dim
+    }
+  else if ( b->bitacora.event == NULL )
+    {
+      // Here memory is still not allocated. Proceed to allocate with BUFR_NMAXSEQ
+      if ( ( b->bitacora.event = ( struct bufrdeco_decode_subset_event * ) calloc ( 1, BUFR_NMAXSEQ * sizeof ( struct bufrdeco_decode_subset_event ) ) ) == NULL )
+        {
+          fprintf ( b->err,"%s(): Cannot allocate memory for bufrdeco_decode_subset_bitacora array\n", __func__ );
+          return 1;
+        }
+      b->bitacora.nd = 0; // Set de used elements 
+      b->bitacora.dim = BUFR_NMAXSEQ; // Set de allocated buf_t elements in index array
+    }
+  return 0;
+}
+
+/*!
+  \fn int bufrdeco_increase_subset_bitacora_array ( struct bufrdeco_deocde_subset_bitacora *dsb )
+  \brief doubles the allocated space for a struct \ref bufrdeco_decode_subset_bitacora whenever is posible
+  \param dsb pointer to source struct \ref bufrdeco_decode_subset_bitacora
+  \return 0 when success, otherwise return 1 and the struct is unmodified
+
+  The amount of data in a bufr must be huge. In a first moment, the dimension of a sequence of structs
+  \ref bufrdeco_decode_subset_bitacora is \ref BUFR_NMAXSEQ but may be increased. This function task is try to double the
+  allocated dimension and reallocate it.
+*/
+int bufrdeco_increase_decode_subset_bitacora_array ( struct bufrdeco_decode_subset_bitacora *dsb )
+{
+  bufrdeco_assert ( dsb != NULL );
+
+  if ( dsb->dim < ( BUFR_NMAXSEQ * 16 ) ) // check if reached the limit
+    {
+      if ( ( dsb->event = ( struct bufrdeco_decode_subset_event * ) realloc ( ( void * ) dsb->event,
+                           dsb->dim * 2 * sizeof ( struct bufrdeco_decode_subset_event ) ) ) == NULL )
+        {
+          return 1;
+        }
+      else
+        {
+          dsb->dim *= 2;
+          return 0;
+        }
+    }
+  else
+    {
+      return 1;
+    }
+}
+
+/*!
+  \fn int bufrdeco_free_subset_data_registry ( struct bufrdeco_subset_data_registry *sdr )
+  \brief Free the memory allocated for array of indexes \ref bufrdeco_subset_data_registry
+  \param rf pointer to the target struct \ref bufrdeco_subset_data_registry to free
+  \return If succeeded return 0, otherwise 1
+*/
+int bufrdeco_free_decode_subset_bitacora ( struct bufrdeco_decode_subset_bitacora *dsb )
+{
+  bufrdeco_assert ( dsb != NULL );
+  
+  if ( dsb->event != NULL )
+    {
+      free ( ( void * ) dsb->event );
+      dsb->event = NULL;
+    }
+  return 0;
+}
+
+/*! \fn int bufrdeco_pop_associated_field (struct bufrdeco_associated_field *popped, struct bufrdeco_associated_field_stack *afs )
+ *  \brief pop a struct \ref bufrdeco_associated_field into a struct \ref bufrdeco_associated_field_stack 
+ *  \param popped pointer to the struct where the popped struct is moved
+ *  \param afs pointer to the target struct \ref bufrdeco_associated_field_stack
+ *  \return If succeeded return 0, otherwise 1
+ */
+int bufrdeco_pop_associated_field (struct bufrdeco_associated_field *popped, struct bufrdeco_associated_field_stack *afs )
+{
+  
+  bufrdeco_assert (afs != NULL && popped != NULL );
+  if ( afs->nd == 0)
+    return 1; // cannot pop associated field
+    
+  // copy the struct  
+  memcpy (popped, &(afs->afield[afs->nd -1]), sizeof (struct bufrdeco_associated_field ));
+  // clear in the stack
+  memset (&afs->afield[afs->nd - 1], 0, sizeof (struct bufrdeco_associated_field ));
+  // set the count
+  (afs->nd)--;
+  return 0;
+}
+
+/*! \fn int bufrdeco_push_associated_field (struct bufrdeco_associated_field *pushed, struct bufrdeco_associated_field_stack *afs )
+ *  \brief push a struct \ref bufrdeco_associated_field into a struct \ref bufrdeco_associated_field_stack 
+ *  \param pushed pointer to the struct to push
+ *  \param afs pointer to the target struct \ref bufrdeco_associated_field_stack
+ *  \return If succeeded return 0, otherwise 1
+ */
+int bufrdeco_push_associated_field (struct bufrdeco_associated_field *pushed, struct bufrdeco_associated_field_stack *afs )
+{
+  bufrdeco_assert (afs != NULL && pushed != NULL );
+
+  if ( afs->nd == BUFRDECO_MAX_ASSOCIATED_FIELD_STACK )
+    return 1; // cannot pop associated field
+    
+  // copy the struct  
+  memcpy (&(afs->afield[afs->nd]), pushed, sizeof (struct bufrdeco_associated_field ));
+  // set the count
+  (afs->nd)++;
+  return 0;
+}
+
+/*! \fn int bufrdeco_add_associated_field (struct bufrdeco_associated_field *pushed, struct bufrdeco_associated_field_stack *afa )
+ *  \brief add a struct \ref bufrdeco_associated_field into a struct \ref bufrdeco_associated_field_array 
+ *  \param pushed pointer to the struct to push
+ *  \param afa pointer to the target struct \ref bufrdeco_associated_field_array
+ *  \return If succeeded return 0, otherwise 1
+ */
+int bufrdeco_add_associated_field (struct bufrdeco_associated_field *added, struct bufrdeco_associated_field_array *afa )
+{
+  bufrdeco_assert (afa != NULL && added != NULL );
+
+  if ( afa->nd == (BUFRDECO_MAX_ASSOCIATED_FIELD_STACK * 4) )
+    return 1; // cannot pop associated field
+    
+  // copy the struct  
+  memcpy (&(afa->afield[afa->nd]), added, sizeof (struct bufrdeco_associated_field ));
+  // set the count
+  (afa->nd)++;
+  return 0;
+}

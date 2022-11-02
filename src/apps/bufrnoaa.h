@@ -33,7 +33,7 @@
 
 #define BLEN 1024
 // longitud maxima de un bufr 8 MB
-#define BUFRLEN 8388608
+#define BUFRLEN (8388608)
 
 extern int STAGE, SELECT, INDIVIDUAL, COLECT, VERBOSE;
 extern int LISTF;
@@ -41,7 +41,7 @@ extern unsigned char BUFR[BUFRLEN];
 extern unsigned char BUF[BLEN];
 extern char ENTRADA[256], PREFIX[64];
 extern struct stat INSTAT;
-extern char SEL[64], SELS[64], SELO[64], SELU[64];
+extern char SEL[64], SELS[64], SELO[64], SELU[64], SELP[64], SELT[64], SELX[64], SELZ[64];
 extern char OWN[];
 extern char HEADER_MARK;
 extern char FINAL_SEP[4];

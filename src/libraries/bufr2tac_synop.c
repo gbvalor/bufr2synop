@@ -145,6 +145,10 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
   /**** First pass, sequential analysis *****/
   for ( is = 0; is < sq->nd; is++ )
     {
+      // Check if associated
+      if (sq->sequence[is].associated_to)
+        continue;
+      
       // check if is a significance qualifier
       if ( sq->sequence[is].desc.x == 8 )
         {

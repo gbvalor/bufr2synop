@@ -89,10 +89,17 @@ int bufrdeco_decode_data_subset ( struct bufrdeco *b )
       return 1;
     }
 
-  // also we clean the possible defined bitmaps in prior subsets
-  if ( bufrdeco_clean_bitmaps ( b ) )
+  // also we clean the possible defined bitmaps and bitacora in prior subsets when no compressed data
+  if ( b->sec3.compressed == 0 )
     {
-      return 1;
+      if ( bufrdeco_clean_bitmaps ( b ) )
+        {
+          return 1;
+        }
+      if ( bufrdeco_init_subset_bitacora ( b ) )
+        {
+          return 1;
+        }
     }
 
   // Then we get the data from an already parsed descriptor tree
@@ -119,45 +126,15 @@ int bufrdeco_decode_data_subset ( struct bufrdeco *b )
         }
     }
 
+  // print json output if needed
+  if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
+    bufrdeco_print_json_subset_data ( b );
+
   // Finally we update the subset counter
   ( b->state.subset ) ++;
   return 0;
 }
 
-
-/*!
-  \fn int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *d )
-  \brief doubles the allocated space for a struct \ref bufrdeco_subset_sequence_data whenever is posible
-  \param d pointer to source struct \ref bufrdeco_subset_sequence_data
-  \return 0 when success, otherwise return 1 and the struct is unmodified
-
-  The amount of data in a bufr must be huge. In a first moment, the dimension of a sequence of structs
-  \ref bufr_atom_data is \ref BUFR_NMAXSEQ but may be increased. This function task is try to double the
-  allocated dimension and reallocate it.
-
-*/
-int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *d )
-{
-  bufrdeco_assert ( d != NULL );
-
-  if ( d->dim < ( BUFR_NMAXSEQ * 8 ) ) // check if reached the limit
-    {
-      if ( ( d->sequence = ( struct bufr_atom_data * ) realloc ( ( void * ) d->sequence,
-                           d->dim * 2 * sizeof ( struct bufr_atom_data ) ) ) == NULL )
-        {
-          return 1;
-        }
-      else
-        {
-          d->dim *= 2;
-          return 0;
-        }
-    }
-  else
-    {
-      return 1;
-    }
-}
 
 /*!
   \fn int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *d, struct bufr_sequence *l, struct bufrdeco *b )
@@ -173,6 +150,9 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
   size_t i, j, k;
   struct bufr_sequence *seq;
   struct bufr_replicator replicator;
+  struct bufrdeco_decode_subset_bitacora *dsb;
+  struct bufrdeco_decode_subset_event event;
+  struct bufr_atom_data *a;
 
   bufrdeco_assert ( b != NULL );
 
@@ -236,30 +216,34 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
       b->state.bitmaping = 0;
       b->state.data_repetition_factor = 0;
       b->state.bitmap = NULL;
-
-      // print prologue if needed
-      if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
-        bufrdeco_print_json_subset_data_prologue ( b->out,  b );
-
     }
   else
     {
       seq = l;
     }
 
-  // loop for a sequence
-  if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
-    {
-      //if (seq->iseq)
-      //  bufrdeco_print_json_separator ( b->out ); // print json array element separator
-      bufrdeco_print_json_sequence_descriptor_header ( b->out, seq );
-    }
+  // to write easily
+  dsb = &b->bitacora;
 
-  for ( i = 0, j = 0 ; i < seq->ndesc ; i++ )
+  // Mark the init of a sequence.
+  // Set the event to mark the init of a sequence
+  memset ( &event, 0, sizeof ( struct bufrdeco_decode_subset_event ) );
+  event.mask =  BUFRDECO_EVENT_SEQUENCE_INIT_BITMASK;
+  event.ref_index = -1; // No data, just the init of a sequence
+  event.pointer = seq; // The sequence
+  event.iaux[0] = seq->iseq; // The bufr_sequence index in expanded tree
+  if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+    return 1;
+
+
+  for ( i = 0 ; i < seq->ndesc ; i++ )
     {
       switch ( seq->lseq[i].f )
         {
         case 0:
+
+          // clean de event
+          memset ( &event, 0, sizeof ( struct bufrdeco_decode_subset_event ) );
 
           // Checks if no_data_present is active for this descriptor in this sequence
           if ( seq->no_data_present.active &&
@@ -278,35 +262,116 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
             }
 
 
-          // Repeat the extraction of data if b->state.data_repetition_factor != 0
-          // It get data al least a time
-          // It is supossed that prior parsed descriptor was 0 31 011 or 0 31 012 which set de value of repetition data
-          do
+          if ( b->state.data_repetition_factor )
             {
-              // decrement counter if not zero
-              if ( b->state.data_repetition_factor )
-                ( b->state.data_repetition_factor )--;
-
-              // Get data from table B
-              if ( bufrdeco_tableB_val ( & ( d->sequence[d->nd] ), b, & ( seq->lseq[i] ) ) )
+              // Repeat the extraction of data if b->state.data_repetition_factor != 0
+              // It get data al least a time
+              // It is supossed that prior parsed descriptor was 0 31 011 or 0 31 012 which set de value of repetition data
+              do
                 {
-                  return 1;
+                  a = & ( d->sequence[d->nd] ); // to write easily
+
+                  // decrement counter if not zero
+                  if ( b->state.data_repetition_factor )
+                    ( b->state.data_repetition_factor )--;
+
+                  // Get data from table B
+                  if ( bufrdeco_tableB_val ( a, b, & ( seq->lseq[i] ), 0) )
+                    {
+                      return 1;
+                    }
+
+                  // Add info about common sequence to which bufr_atom_data belongs
+                  a->seq = seq;
+                  a->ns = i;
+                  a->me = d->nd;
+
+                  // Add event to bitacora
+                  event.mask =  BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK ;
+                  event.ref_index = d->nd; // the subset ref index
+                  event.pointer = & ( seq->lseq[i] ); // The descriptor with data
+                  event.iaux[0] = seq->iseq; // The bufr_sequence index in expanded tree
+                  a->bitac = dsb->nd; // set the bitacora index in ref
+                  if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                    return 1;
+
+                  // increase data count
+                  if ( bufrdeco_increase_subset_sequence_data_count ( d, b ) )
+                    return 1;
+
                 }
-              if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
-              {
-                if (j)
-                  bufrdeco_print_json_separator ( b->out );
-                bufrdeco_print_json_object_atom_data ( b->out, & ( d->sequence[d->nd] ), NULL );
-                j++;
-              }
+              while ( b->state.data_repetition_factor != 0 );
+
+              // here we supposed that descriptor is not "0 08 023" nor "0 08 024"
+              break;
             }
-          while ( b->state.data_repetition_factor != 0 );
+
+          // Check about associated bit fields already defined
+          //
+          // Note that the associated fields are not prefixed onto the data described by 0 31 YYY
+          // descriptor. This is a general rule: none of the Table C operators are applied to any of the
+          // Table B, Class 31 Data description operator qualifiers.
+
+          if ( b->state.associated.nd && seq->lseq[i].x != 31 )
+            {
+              for ( j = 0; j < b->state.associated.nd ; j++ )
+                {
+                  a = & ( d->sequence[d->nd] ); // to write easily
+                  if ( bufrdeco_tableB_val ( a, b, & ( seq->lseq[i] ), j + 1) )
+                    {
+                      return 1; // case of error
+                    }
+
+                  // Set the event to mark the data descriptor
+                  event.mask |=  BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK ;
+                  event.mask |=  BUFRDECO_EVENT_DATA_ASSOCIATED_BITMASK ;
+                  event.ref_index = d->nd;
+                  event.pointer = & ( seq->lseq[i] ); // The descriptor with data
+                  event.iaux[0] = seq->iseq; // The bufr_sequence index in expanded tree
+                  event.iaux[6] = j + 1; // The index of associated in array (plus one)
+                  a->bitac = dsb->nd;     // set the bitacora index in ref
+                  a->associated_to = d->nd + b->state.associated.nd - j + 1; // mark wich reference is associated
+                  a->seq = seq;
+                  a->ns = i;
+                  a->me = d->nd;
+
+                  if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                    return 1;
+
+                  // increase data count
+                  if ( bufrdeco_increase_subset_sequence_data_count ( d, b ) )
+                    return 1;
+                }
+            }
+
+          // to write easily
+          a = & ( d->sequence[d->nd] ); // to write easily
+
+          // Get data from table B for field istself
+          if ( bufrdeco_tableB_val ( a, b, & ( seq->lseq[i] ), 0 ) )
+            {
+              return 1;
+            }
 
           // case of delayed replicator description and data
           if ( seq->lseq[i].x == 31 && ( seq->lseq[i].y == 11 || seq->lseq[i].y == 12 ) )
             {
               b->state.data_repetition_factor = ( buf_t ) d->sequence[d->nd].val;
             }
+
+
+          //case of defining an associated field meaning (operator 0 31 021)
+          if ( b->state.associated.nd &&
+               seq->lseq[i].x == 31 && seq->lseq[i].y == 21 )
+            {
+              // Set the extracted val to
+              b->state.associated.afield[b->state.associated.nd - 1].val = a->val;
+              b->assoc.afield[b->state.associated.nd - 1].val = a->val;
+              strcpy ( b->state.associated.afield[b->state.associated.nd - 1].cval, a->ctable );
+            }
+
+
+
 
           //case of first order statistics
           if ( b->state.stat1_active &&
@@ -323,6 +388,10 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
                              __func__ );
                   return 1;
                 }
+
+              event.mask |= BUFRDECO_EVENT_DATA_FIRST_ORDER_STAT_BITMASK;
+              event.iaux[1] = k; // k is the index of first statistical var assiciated to current bitmap
+              event.pointer2 = ( b->bitmap.bmap[b->bitmap.nba - 1] ); // pointer2 is the pointer to current bitmap
             }
 
           //case of difference statistics
@@ -340,42 +409,52 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
                              __func__ );
                   return 1;
                 }
-            }
 
+              event.mask |= BUFRDECO_EVENT_DATA_DIFF_STAT_BITMASK;
+              event.iaux[1] = k; // k is the index of diff statistical var assiciated to current bitmap
+              event.pointer2 = ( b->bitmap.bmap[b->bitmap.nba - 1] ); // pointer2 is the pointer to current bitmap
+            }
 
 
           // Add info about common sequence to which bufr_atom_data belongs
-          d->sequence[d->nd].seq = seq;
-          d->sequence[d->nd].ns = i;
+          a->seq = seq;
+          a->ns = i;
+          a->me = d->nd;
+
+          // Add event to bitacora
+          event.mask |=  BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK ;
+          event.ref_index = d->nd; // the subset ref index
+          event.pointer = & ( seq->lseq[i] ); // The descriptor with data
+          event.iaux[0] = seq->iseq; // The bufr_sequence index in expanded tree
+          d->sequence[d->nd].bitac = dsb->nd; // set the bitacora index in ref
+          if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+            return 1;
 
           //bufr_print_atom_data_stdout(& ( d->sequence[d->nd] ));
-          if ( d->nd < ( d->dim - 1 ) )
-            {
-              ( d->nd ) ++;
-            }
-          else if ( bufrdeco_increase_data_array ( d ) == 0 )
-            {
-              ( d->nd ) ++;
-            }
-          else
-            {
-              snprintf ( b->error, sizeof ( b->error ), "%s(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n", __func__ );
-              return 1;
-            }
+          // increase data count
+          if ( bufrdeco_increase_subset_sequence_data_count ( d, b ) )
+            return 1;
+
           break;
 
         case 1:
+
+          // Set the event to mark the init of a replicator
+          memset ( &event, 0, sizeof ( struct bufrdeco_decode_subset_event ) );
+          event.mask =  BUFRDECO_EVENT_REPLICATOR_DESCRIPTOR_BITMASK;
+          event.ref_index = -1; // No data, just the init of a replicator descriptor
+          event.pointer = & ( seq->lseq[i] ); // The descritor sequence
+          event.iaux[0] = seq->iseq; // The bufr_sequence index in expanded tree
+          event.iaux[3] = seq->lseq[i].x;
+          event.iaux[5] = seq->lseq[i].y;
+          if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+            return 1;
+
           // Case of replicator descriptor
+          memset ( &replicator, 0, sizeof ( struct bufr_replicator ) ); // mr proper
           replicator.s = seq;
           replicator.ixrep = i;
-          if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
-            {
-              if (j)
-                bufrdeco_print_json_separator ( b->out );
-              bufrdeco_print_json_object_replicator_descriptor ( b->out, & ( seq->lseq[i] ), NULL );
-              j++;
-            }
-          
+
           if ( seq->lseq[i].y != 0 )
             {
               // no delayed
@@ -391,33 +470,41 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
 
               bufrdeco_decode_replicated_subsequence ( d, &replicator, b );
 
-              // and then set again bitamping to 0, because it is finished
+              // and then set again bitmaping to 0, because it is finished
               b->state.bitmaping = 0;
 
               i += replicator.ndesc;
             }
           else
             {
+              // to write easily
+              a = & ( d->sequence[d->nd] ); // to write easily
+
               // case of delayed;
               replicator.ixdel = i + 1;
               replicator.ndesc = seq->lseq[i].x;
               // here we read ndesc from delayed replicator descriptor
-              if ( bufrdeco_tableB_val ( & ( d->sequence[d->nd] ), b, & ( seq->lseq[i + 1] ) ) )
+              if ( bufrdeco_tableB_val ( a, b, & ( seq->lseq[i + 1] ), 0 ) )
                 {
                   return 1;
                 }
-              if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
-                {
-                  if (j)
-                    bufrdeco_print_json_separator ( b->out );
-                  bufrdeco_print_json_object_atom_data ( b->out, & ( d->sequence[d->nd] ), NULL );
-                  j++;
-                }
-              // Add info about common sequence to which bufr_atom_data belongs
-              d->sequence[d->nd].seq = seq;
-              d->sequence[d->nd].ns = i + 1;
 
-              replicator.nloops = ( size_t ) ( d->sequence[d->nd].val );
+              // Set the event to mark the data descriptor
+              event.mask =  BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK ;
+              event.ref_index = d->nd;
+              event.pointer = & ( seq->lseq[i] ); // The descriptor with data
+              event.iaux[0] = seq->iseq; // The bufr_sequence index in expanded tree
+              event.iaux[5] = a->val;
+              a->bitac = dsb->nd;     // set the bitacora index in ref
+              if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                return 1;
+
+              // Add info about common sequence to which bufr_atom_data belongs
+              a->seq = seq;
+              a->ns = i + 1;
+              a->me = d->nd;
+
+              replicator.nloops = ( size_t ) ( a->val );
 
               // Check if this replicator is for a bit-map defining
               if ( b->state.bitmaping )
@@ -425,20 +512,10 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
                   b->state.bitmaping = replicator.nloops; // set it properly
                 }
 
-              if ( d->nd < ( d->dim - 1 ) )
-                {
-                  ( d->nd ) ++;
-                }
-              else if ( bufrdeco_increase_data_array ( d ) == 0 )
-                {
-                  ( d->nd ) ++;
-                }
-              else
-                {
+              // increase data count
+              if ( bufrdeco_increase_subset_sequence_data_count ( d, b ) )
+                return 1;
 
-                  snprintf ( b->error, sizeof ( b->error ), "%s(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n", __func__ );
-                  return 1;
-                }
               bufrdeco_decode_replicated_subsequence ( d, &replicator, b );
 
               // and then set again bitamping to 0, because it is finished
@@ -451,26 +528,25 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
 
         case 2:
           // Case of operator descriptor
+
+          // clean de event
+          memset ( &event, 0, sizeof ( struct bufrdeco_decode_subset_event ) );
+
+          // Set the event to mark the operator descriptor
+          event.mask =  BUFRDECO_EVENT_OPERATOR_DESCRIPTOR_BITMASK ;
+          event.ref_index = -1;
+          event.pointer = & ( seq->lseq[i] ); // The descriptor with data
+          event.iaux[0] = seq->iseq; // The bufr_sequence index in expanded tree
+          if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+            return 1;
+
           if ( bufrdeco_parse_f2_descriptor ( d, & ( seq->lseq[i] ), b ) )
             {
               return 1;
             }
-          if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
-          {
-            if (j)
-              bufrdeco_print_json_separator ( b->out );
-            bufrdeco_print_json_object_operator_descriptor ( b->out, & ( seq->lseq[i] ), NULL );
-            j++;
-          }
           break;
 
         case 3:
-          if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
-          {
-            if (j)
-              bufrdeco_print_json_separator ( b->out ); // print json array element separator
-            j++;
-          }
           // Case of sequence descriptor
           if ( bufrdeco_decode_subset_data_recursive ( d, seq->sons[i], b ) )
             {
@@ -486,13 +562,13 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
         }
     }
 
-  // End of sequence
-  if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
-    bufrdeco_print_json_sequence_descriptor_final ( b->out );
-
-  // End of data subset
-  if ( l == NULL && ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA ) )
-    bufrdeco_print_json_subset_data_epilogue ( b->out );
+  // Set the event to mark the end of a sequence
+  event.mask =  BUFRDECO_EVENT_SEQUENCE_FINAL_BITMASK;
+  event.ref_index = -1; // No data, just the final of a sequence
+  event.pointer = seq; // The descritor sequence
+  event.iaux[0] = seq->iseq; // The bufr_sequence index in expanded tree
+  if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+    return 1;
 
   return 0;
 
@@ -508,12 +584,14 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
 */
 int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *d, struct bufr_replicator *r, struct bufrdeco *b )
 {
-  buf_t i, k;
+  buf_t i, j, k;
   buf_t ixloop; // Index for loop
   buf_t ixd; // Index for descriptor
   struct bufr_sequence *l = r->s; // sequence
+  struct bufrdeco_decode_subset_bitacora *dsb;
   struct bufr_replicator replicator;
-  char aux[80];
+  struct bufrdeco_decode_subset_event event;
+  struct bufr_atom_data *a;
 
   bufrdeco_assert ( b != NULL );
 
@@ -525,14 +603,27 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
       }
     }
 
+  // to write easily
+  dsb = &b->bitacora;
+
   for ( ixloop = 0; ixloop < r->nloops; ixloop++ )
     {
       for ( ixd = 0; ixd < r->ndesc ; ixd ++ )
         {
-          if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
-            snprintf(aux, sizeof (aux), "\"Replicated\":\"Descriptor %u/%u of loop %u/%u\"", ixd + 1, ixloop + 1, r->ndesc, r->nloops);
-  
           i = ixd + r->ixdel + 1;
+
+          // init and common event members
+          event.mask = 0;
+          event.pointer = & ( l->lseq[i] ); // The descriptor with data
+          event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+          event.iaux[2] = ixd + 1;
+          event.iaux[3] = r->ndesc;
+          event.iaux[4] = ixloop + 1;
+          event.iaux[5] = r->nloops;
+          event.iaux[6] = 0;
+          event.iaux[7] = 0;
+          event.iaux[8] = 0;
+
           switch ( l->lseq[i].f )
             {
             case 0:
@@ -550,42 +641,136 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                     }
                 }
 
-              // Repeat the extraction of data if b->state.data_repetition_factor != 0
-              // It get data al least a time
-              do
+              if ( b->state.data_repetition_factor )
                 {
-                  // decrement counter if not zero
-                  if ( b->state.data_repetition_factor )
-                    ( b->state.data_repetition_factor )++;
-
-                  // Get data from table B
-                  if ( bufrdeco_tableB_val ( & ( d->sequence[d->nd] ), b, & ( l->lseq[i] ) ) )
+                  // Repeat the extraction of data if b->state.data_repetition_factor != 0
+                  // It get data al least a time
+                  // It is supossed that prior parsed descriptor was 0 31 011 or 0 31 012 which set de value of repetition data
+                  do
                     {
-                      return 1;
+                      a = & ( d->sequence[d->nd] ); // to write easily
+
+                      // decrement counter if not zero
+                      if ( b->state.data_repetition_factor )
+                        ( b->state.data_repetition_factor )--;
+
+                      // Get data from table B
+                      if ( bufrdeco_tableB_val ( a, b, & ( l->lseq[i] ), 0 ) )
+                        {
+                          return 1;
+                        }
+
+                      // Add info about common sequence to which bufr_atom_data belongs
+                      a->seq = l;
+                      a->ns = i;
+                      a->me = d->nd;
+
+                      // Add event to bitacora
+                      event.mask =  BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK ;
+                      event.ref_index = d->nd; // the subset ref index
+                      event.pointer = & ( l->lseq[i] ); // The descriptor with data
+                      event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+                      a->bitac = dsb->nd; // set the bitacora index in ref
+                      if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                        return 1;
+
+                      // increase data count
+                      if ( bufrdeco_increase_subset_sequence_data_count ( d, b ) )
+                        return 1;
+
                     }
-                  if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
-                  {
-                    bufrdeco_print_json_separator ( b->out );
-                    bufrdeco_print_json_object_atom_data ( b->out, & ( d->sequence[d->nd] ), aux );
-                  }
+                  while ( b->state.data_repetition_factor != 0 );
+
+                  // here we supposed that descriptor is not "0 08 023" nor "0 08 024"
+                  break;
                 }
-              while ( b->state.data_repetition_factor != 0 );
+
+              a = & ( d->sequence[d->nd] ); // to write easily
 
               // case of delayed replicator description and data
               if ( l->lseq[i].x == 31 && ( l->lseq[i].y == 11 || l->lseq[i].y == 12 ) )
                 b->state.data_repetition_factor = ( buf_t ) d->sequence[d->nd].val;
 
 
-              // Case of defining bitmap 0 31 031
+              //case of defining an associated field meaning (operator 0 31 021)
+              if ( b->state.associated.nd &&
+                   l->lseq[i].x == 31 && l->lseq[i].y == 21 )
+                {
+                  // Set the extracted val to
+                  b->state.associated.afield[b->state.associated.nd - 1].val = a->val;
+                  //b->assoc.afield[b->assoc.nd - 1].val = a->val;
+                  strcpy ( b->state.associated.afield[b->state.associated.nd - 1].cval, a->ctable );
+                }
+
+              // Check about associated bit fields already defined
+              //
+              // Note that the associated fields are not prefixed onto the data described by 0 31 YYY
+              // descriptor. This is a general rule: none of the Table C operators are applied to any of the
+              // Table B, Class 31 Data description operator qualifiers.
+
+              if ( b->state.associated.nd && l->lseq[i].x != 31 )
+                {
+                  for ( j = 0; j < b->state.associated.nd ; j++ )
+                    {
+                      a = & ( d->sequence[d->nd] ); // to write easily
+                      if ( bufrdeco_tableB_val ( a, b, & ( l->lseq[i] ), j + 1 ) )
+                        {
+                          return 1; // case of error
+                        }
+                      // Set the event to mark the data descriptor
+                      event.mask |=  BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK ;
+                      event.mask |=  BUFRDECO_EVENT_DATA_ASSOCIATED_BITMASK ;
+                      event.ref_index = d->nd;
+                      event.pointer = & ( l->lseq[i] ); // The descriptor with data
+                      event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+                      event.iaux[6] = j + 1; // The index of associated in array (plus one)
+                      a->bitac = dsb->nd;     // set the bitacora index in ref
+                      a->associated_to = d->nd + b->state.associated.nd - j ; // mark wich reference is associated
+                      a->seq = l;
+
+                      if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                      {
+                        return 1;
+                      }
+                      // increase data count
+                      if ( bufrdeco_increase_subset_sequence_data_count ( d, b ) )
+                      {
+                        return 1;
+                      }
+                    }
+                }
+
+                
+              // to write easily
+              a = & ( d->sequence[d->nd] ); // to write easily
+
+              // then the data itself
+              if ( bufrdeco_tableB_val ( a, b, & ( l->lseq[i] ), 0 ) )
+                {
+                  return 1;
+                }
+
+              // Case of defining bitmap 0 31 031 (NOTE that a defining bitmap must be under a replication interval)
+              //
+              // Descriptor 0 31 031, used in conjunction with quality control or statistics operators 2 22 YYY through 2 32 YYY,
+              // shall indicate the presence of quality control information when the indicator value is set to zero. It may be used
+              // in conjunction with the replication operator 1 01 YYY to construct a table of data present/not present indicators,
+              // forming a data present bit-map as defined in Regulation 94.5.5.3. This makes it possible to present
+              // quality control information and statistical information for selected data corresponding to element descriptors which
+              // precede the 2 22 YYY to 2 32 YYY operators.
               if ( l->lseq[i].x == 31 && l->lseq[i].y == 31 && b->state.bitmaping )
                 {
+                  // remember that b->state.bitmapiing is ne number of loops in replication
                   if ( d->sequence[d->nd].val == 0.0 ) // Check if it is meaning present data
                     {
+                      // Assing bit_bitmapped by
                       d->sequence[d->nd - b->state.bitmaping].is_bitmaped_by =  d->nd;
+                      // assign bitmap_to, i.e
                       d->sequence[d->nd].bitmap_to =  d->nd - b->state.bitmaping;
                       // Add reference to bitmap
                       bufrdeco_add_to_bitmap ( b->bitmap.bmap[b->bitmap.nba - 1], d->nd - b->state.bitmaping, d->nd );
                     }
+                  event.mask |= BUFRDECO_EVENT_DATA_BITMAP_BITMASK;
                 }
 
               // Process quality data
@@ -604,7 +789,10 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                           return 1;
                         }
                     }
-                  d->sequence[d->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                  a->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                  event.mask |= BUFRDECO_EVENT_DATA_QUALIFIYER_BITMASK;
+                  event.pointer2 = b->bitmap.bmap[b->bitmap.nba - 1];
+                  event.iaux[1] = b->bitmap.bmap[b->bitmap.nba - 1]->nq - 1;
                 }
 
               //case of first order statistics
@@ -624,7 +812,10 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                           return 1;
                         }
                     }
-                  d->sequence[d->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                  a->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                  event.mask |= BUFRDECO_EVENT_DATA_FIRST_ORDER_STAT_BITMASK;
+                  event.pointer2 = b->bitmap.bmap[b->bitmap.nba - 1];
+                  event.iaux[1] = b->bitmap.bmap[b->bitmap.nba - 1]->ns1 - 1;
                 }
 
               //case of difference statistics
@@ -644,33 +835,45 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                           return 1;
                         }
                     }
-                  d->sequence[d->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                  event.mask |= BUFRDECO_EVENT_DATA_DIFF_STAT_BITMASK;
+                  event.pointer2 = b->bitmap.bmap[b->bitmap.nba - 1] ;
+                  event.iaux[1] = b->bitmap.bmap[b->bitmap.nba - 1]->nds - 1;
+                  a->related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
                 }
 
-              if ( d->nd < ( d->dim - 1 ) )
-                {
-                  ( d->nd ) ++;
-                }
-              else if ( bufrdeco_increase_data_array ( d ) == 0 )
-                {
-                  ( d->nd ) ++;
-                }
-              else
-                {
-                  snprintf ( b->error, sizeof ( b->error ), "%s(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n", __func__ );
-                  return 1;
-                }
+              // Complete the event to mark the data descriptor
+              event.mask |=  BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK ;
+              event.ref_index = d->nd;
+              event.pointer = & ( l->lseq[i] ); // The descriptor with data
+              event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+              if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                return 1;
+              a->bitac = dsb->nd;     // set the bitacora index in ref
+              a->seq = l;
+              a->me = d->nd;
+
+              // increase data count
+              if ( bufrdeco_increase_subset_sequence_data_count ( d, b ) )
+                return 1;
+
               break;
 
             case 1:
               // Case of replicator descriptor
               replicator.s = l;
               replicator.ixrep = i;
-              if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
-                {
-                  bufrdeco_print_json_separator ( b->out );
-                  bufrdeco_print_json_object_replicator_descriptor ( b->out, & ( l->lseq[i] ), aux );
-                }
+              a = & ( d->sequence[d->nd] );
+
+              // Set the event to mark the init of a replicator
+              memset ( &event, 0, sizeof ( struct bufrdeco_decode_subset_event ) );
+              event.mask =  BUFRDECO_EVENT_REPLICATOR_DESCRIPTOR_BITMASK;
+              event.ref_index = -1; // No data, just the init of a replicator descriptor
+              event.pointer = & ( l->lseq[i] ); // The descritor sequence
+              event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+              event.iaux[3] = l->lseq[i].x;
+              event.iaux[5] = l->lseq[i].y;
+              if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                return 1;
 
               if ( l->lseq[i].y != 0 )
                 {
@@ -687,29 +890,28 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
                   replicator.ixdel = i + 1;
                   replicator.ndesc = l->lseq[i].x;
                   // here we read ndesc from delayed replicator descriptor
-                  if ( bufrdeco_tableB_val ( & ( d->sequence[d->nd] ), b, & ( l->lseq[i + 1] ) ) )
+                  if ( bufrdeco_tableB_val ( & ( d->sequence[d->nd] ), b, & ( l->lseq[i + 1] ), 0 ) )
                     {
                       return 1;
                     }
-                  if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
-                    {
-                      bufrdeco_print_json_separator ( b->out );
-                      bufrdeco_print_json_object_atom_data ( b->out, & ( d->sequence[d->nd] ), aux );
-                    }
+
+                  // Set the event to mark the data descriptor
+                  event.mask =  BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK ;
+                  event.ref_index = d->nd;
+                  event.pointer = & ( l->lseq[i] ); // The descriptor with data
+                  event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+                  event.iaux[5] = a->val;
+                  a->bitac = dsb->nd;     // set the bitacora index in ref
+                  a->me = d->nd;
+
+                  if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                    return 1;
+
                   replicator.nloops = ( size_t ) d->sequence[d->nd].val;
-                  if ( d->nd < ( d->dim - 1 ) )
-                    {
-                      ( d->nd ) ++;
-                    }
-                  else if ( bufrdeco_increase_data_array ( d ) == 0 )
-                    {
-                      ( d->nd ) ++;
-                    }
-                  else
-                    {
-                      snprintf ( b->error, sizeof ( b->error ), "%s(): No more bufr_atom_data available. Check BUFR_NMAXSEQ\n", __func__ );
-                      return 1;
-                    }
+                  // increase data count
+                  if ( bufrdeco_increase_subset_sequence_data_count ( d, b ) )
+                    return 1;
+
                   bufrdeco_decode_replicated_subsequence ( d, &replicator, b );
                   ixd += replicator.ndesc + 1; // update ixd properly
                 }
@@ -718,66 +920,101 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
 
             case 2:
               // Case of operator descriptor
+
+              // Special operators
+              if ( l->lseq[i].x != 5 &&
+                   strcmp ( l->lseq[i].c,"223255" ) &&
+                   strcmp ( l->lseq[i].c,"224255" ) &&
+                   strcmp ( l->lseq[i].c,"225255" ) &&
+                   strcmp ( l->lseq[i].c,"232255" )
+                 )
+                {
+                  a = & ( d->sequence[d->nd] );
+                  a->me = d->nd;
+
+                  event.mask =  BUFRDECO_EVENT_OPERATOR_DESCRIPTOR_BITMASK ;
+                  event.ref_index = -1;
+                  event.pointer = & ( l->lseq[i] ); // The descriptor with data
+                  event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+                  a->bitac = dsb->nd;
+
+                  if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                    return 1;
+                }
+
               if ( bufrdeco_parse_f2_descriptor ( d, & ( l->lseq[i] ), b ) )
                 {
                   return 1;
                 }
 
-              if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
-              {
-                bufrdeco_print_json_separator ( b->out );
-                bufrdeco_print_json_object_operator_descriptor ( b->out, & ( l->lseq[i] ), aux );
-              }
               // Case of subsituted values
               if ( b->state.subs_active && l->lseq[i].x == 23 && l->lseq[i].y == 255 )
                 {
-                  k = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop]; // ref which is bitmaped_to
+                  a = & ( d->sequence[d->nd] );
+
                   // Get the bitmaped descriptor k
+                  k = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop]; // ref which is bitmaped_to
                   if ( ixloop == 0 )
                     {
                       b->bitmap.bmap[b->bitmap.nba - 1]->subs = d->nd;
                     }
-                  if ( bufrdeco_tableB_val ( & ( d->sequence[d->nd] ), b, & ( l->lseq[k] ) ) )
+                  if ( bufrdeco_tableB_val ( a, b, & ( l->lseq[k] ), 0 ) )
                     {
                       return 1;
                     }
-                  d->sequence[d->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
 
-                  if ( d->nd < ( d->dim - 1 ) )
-                    {
-                      d->nd += 1;
-                    }
-                  else
-                    {
-                      snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
-                      return 1;
-                    }
+                  // Set the event to mark the data descriptor
+                  event.mask = ( BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK | BUFRDECO_EVENT_OPERATOR_DESCRIPTOR_BITMASK );
+                  event.mask |= BUFRDECO_EVENT_DATA_SUBSITUTE_BITMASK;
+                  event.ref_index = d->nd;
+                  event.pointer = & ( l->lseq[i] ); // The descriptor with data
+                  event.pointer2 =  b->bitmap.bmap[b->bitmap.nba - 1];
+                  event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+                  a->bitac = dsb->nd;
+                  if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                    return 1;
+
+                  a->me = d->nd;
+                  a->related_to = k;
+
+                  // increase data count
+                  if ( bufrdeco_increase_subset_sequence_data_count ( d, b ) )
+                    return 1;
                 }
 
               // Case of replaced/retained values
               if ( b->state.retained_active && l->lseq[i].x == 32 && l->lseq[i].y == 255 )
                 {
-                  k = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
+                  a = & ( d->sequence[d->nd] );
+
                   // Get the bitmaped descriptor k
+                  k = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
                   if ( ixloop == 0 )
                     {
                       b->bitmap.bmap[b->bitmap.nba - 1]->retain = d->nd;
                     }
-                  if ( bufrdeco_tableB_val ( & ( d->sequence[d->nd] ), b, & ( l->lseq[k] ) ) )
+                  if ( bufrdeco_tableB_val ( a, b, & ( l->lseq[k] ), 0 ) )
                     {
                       return 1;
                     }
 
-                  d->sequence[d->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
-                  if ( d->nd < ( d->dim - 1 ) )
-                    {
-                      d->nd += 1;
-                    }
-                  else
-                    {
-                      snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
-                      return 1;
-                    }
+                  // Set the event to mark the data descriptor
+                  event.mask = ( BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK | BUFRDECO_EVENT_OPERATOR_DESCRIPTOR_BITMASK );
+                  event.mask |= BUFRDECO_EVENT_DATA_REPLACED_BITMASK;
+                  event.ref_index = d->nd;
+                  event.pointer = & ( l->lseq[i] ); // The descriptor with data
+                  event.pointer2 =  b->bitmap.bmap[b->bitmap.nba - 1];
+                  event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+                  a->bitac = b->bitacora.nd;     // set the bitacora index in ref
+                  if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                    return 1;
+
+                  a->related_to = k;
+                  a->me = d->nd;
+
+                  // increase data count
+                  if ( bufrdeco_increase_subset_sequence_data_count ( d, b ) )
+                    return 1;
                 }
 
               // Case of first order statistics
@@ -793,29 +1030,37 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
               // descriptor.
               if ( b->state.stat1_active && l->lseq[i].x == 24 && l->lseq[i].y == 255 )
                 {
+                  a = & ( d->sequence[d->nd] );
+                  // Get the bitmaped descriptor k to which is related
                   k = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
-
-                  // Get the bitmaped descriptor k
                   if ( ixloop == 0 )
                     {
                       b->bitmap.bmap[b->bitmap.nba - 1]->stat1[b->bitmap.bmap[b->bitmap.nba - 1]->ns1 -1] = d->nd;
                     }
 
-                  if ( bufrdeco_tableB_val ( & ( d->sequence[d->nd] ), b, & ( l->lseq[k] ) ) )
+                  if ( bufrdeco_tableB_val ( & ( d->sequence[d->nd] ), b, & ( l->lseq[k] ), 0 ) )
                     {
                       return 1;
                     }
 
-                  d->sequence[d->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
-                  if ( d->nd < ( d->dim - 1 ) )
-                    {
-                      d->nd += 1;
-                    }
-                  else
-                    {
-                      snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
-                      return 1;
-                    }
+                  // Set the event to mark the data descriptor
+                  event.mask = ( BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK | BUFRDECO_EVENT_OPERATOR_DESCRIPTOR_BITMASK );
+                  event.mask |= ( BUFRDECO_EVENT_DATA_FIRST_ORDER_STAT_BITMASK );
+                  event.ref_index = d->nd;
+                  event.pointer = & ( l->lseq[i] ); // The descriptor with data
+                  event.pointer2 = b->bitmap.bmap[b->bitmap.nba - 1];
+                  event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+                  event.iaux[1] = b->bitmap.bmap[b->bitmap.nba - 1]->ns1 -1;
+                  a->bitac = b->bitacora.nd;     // set the bitacora index in ref
+                  if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                    return 1;
+
+                  a->related_to = k;
+                  a->me = d->nd;
+
+                  // increase data count
+                  if ( bufrdeco_increase_subset_sequence_data_count ( d, b ) )
+                    return 1;
                 }
 
               // Case of difference statistics
@@ -835,39 +1080,45 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
               // be centred around zero.
               if ( b->state.dstat_active && l->lseq[i].x == 25 && l->lseq[i].y == 255 )
                 {
+
+                  a = & ( d->sequence[d->nd] );
+                  // Get the bitmaped descriptor k
                   k = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
 
-                  // Get the bitmaped descriptor k
                   if ( ixloop == 0 )
                     {
                       b->bitmap.bmap[b->bitmap.nba - 1]->stat1[b->bitmap.bmap[b->bitmap.nba - 1]->nds -1] = d->nd;
                     }
 
                   // in bufrdeco_tableB_val() is taken into acount when is difference statistics active
-                  if ( bufrdeco_tableB_val ( & ( d->sequence[d->nd] ), b, & ( l->lseq[k] ) ) )
+                  if ( bufrdeco_tableB_val ( & ( d->sequence[d->nd] ), b, & ( l->lseq[k] ), 0 ) )
                     {
                       return 1;
                     }
 
-                  /*d->sequence[d->nd].ref = - ( ( int32_t ) 1 << d->sequence[d->nd].bits );
-                  d->sequence[d->nd].bits++;*/
-                  d->sequence[d->nd].related_to = b->bitmap.bmap[b->bitmap.nba - 1]->bitmap_to[ixloop];
-                  if ( d->nd < ( d->dim - 1 ) )
-                    {
-                      d->nd += 1;
-                    }
-                  else
-                    {
-                      snprintf ( b->error, sizeof ( b->error ), "%s(): Reached limit. Consider increas BUFR_NMAXSEQ\n", __func__ );
-                      return 1;
-                    }
+                  // Set the event to mark the data descriptor
+                  event.mask = ( BUFRDECO_EVENT_DATA_DESCRIPTOR_BITMASK | BUFRDECO_EVENT_OPERATOR_DESCRIPTOR_BITMASK );
+                  event.mask |= ( BUFRDECO_EVENT_DATA_DIFF_STAT_BITMASK );
+                  event.ref_index = d->nd;
+                  event.pointer = & ( l->lseq[i] ); // The descriptor with data
+                  event.pointer2 = b->bitmap.bmap[b->bitmap.nba - 1];
+                  event.iaux[0] = l->iseq; // The bufr_sequence index in expanded tree
+                  event.iaux[1] = b->bitmap.bmap[b->bitmap.nba - 1]->nds -1;
+                  a->bitac = b->bitacora.nd;     // set the bitacora index in ref
+                  if ( bufrdeco_add_event_to_bitacora ( b, &event ) )
+                    return 1;
+
+                  a->me = d->nd;
+                  a->related_to = k;
+
+                  // increase data count
+                  if ( bufrdeco_increase_subset_sequence_data_count ( d, b ) )
+                    return 1;
                 }
 
               break;
 
             case 3:
-              if ( b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA )
-                bufrdeco_print_json_separator ( b->out );
               if ( bufrdeco_decode_subset_data_recursive ( d, l->sons[i], b ) )
                 {
                   return 1;

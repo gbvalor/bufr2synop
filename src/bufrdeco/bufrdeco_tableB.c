@@ -53,8 +53,8 @@ int bufr_read_tableB ( struct bufrdeco *b )
   struct bufr_descriptor desc;
 
   //bufrdeco_assert ( b != NULL );
-  
-  tb = &(b->tables->b);
+
+  tb = & ( b->tables->b );
   if ( tb->path[0] == 0 )
     {
       return 1;
@@ -63,9 +63,9 @@ int bufr_read_tableB ( struct bufrdeco *b )
   // If we've already readed this table. We just regenerate the table with original values
   if ( strcmp ( tb->path, tb->old_path ) == 0 )
     {
-#ifdef __DEBUG      
-      printf ("# Reused table %s\n", tb->path);
-#endif      
+#ifdef __DEBUG
+      printf ( "# Reused table %s\n", tb->path );
+#endif
       for ( i = 0; i < tb->nlines ; i++ )
         {
           tb->item[i].scale = tb->item[i].scale_ori;
@@ -81,7 +81,7 @@ int bufr_read_tableB ( struct bufrdeco *b )
   strcpy ( tb->path, caux );
   if ( ( t = fopen ( tb->path, "r" ) ) == NULL )
     {
-      snprintf ( b->error, sizeof (b->error),"Unable to open table B file '%s'\n", tb->path );
+      snprintf ( b->error, sizeof ( b->error ),"Unable to open table B file '%s'\n", tb->path );
       return 1;
     }
 
@@ -93,7 +93,7 @@ int bufr_read_tableB ( struct bufrdeco *b )
       // Parse line
       if ( parse_csv_line ( &nt, tk, l ) < 0 || nt != 7 )
         {
-          snprintf ( b->error, sizeof (b->error),"Error parsing csv line from table B file '%s'\n", tb->path );
+          snprintf ( b->error, sizeof ( b->error ),"Error parsing csv line from table B file '%s'\n", tb->path );
           return 1;
         }
 
@@ -165,10 +165,10 @@ int bufr_restore_original_tableB_item ( struct bufr_tableB *tb, struct bufrdeco 
   buf_t i;
 
   bufrdeco_assert ( b != NULL && tb != NULL );
-  
+
   if ( bufr_find_tableB_index ( &i, tb, key ) )
     {
-      snprintf (b->error, sizeof (b->error), "%s(): descriptor '%s' not found in table B\n", __func__, key );
+      snprintf ( b->error, sizeof ( b->error ), "%s(): descriptor '%s' not found in table B\n", __func__, key );
       return 1; // descritor not found
     }
 
@@ -210,7 +210,7 @@ int bufr_find_tableB_index ( buf_t *index, struct bufr_tableB *tb, const char *k
   struct bufr_descriptor desc;
 
   //bufrdeco_assert ( tb != NULL);
-  
+
   ix = strtoul ( key, &c, 10 );
   uint32_t_to_descriptor ( &desc, ix );
 
@@ -253,21 +253,51 @@ int bufrdeco_tableB_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
   uint32_t ival;
   uint8_t has_data;
   struct bufr_tableB *tb;
-  
-  bufrdeco_assert ( b != NULL && r != NULL && d != NULL );
-  
+
+  //bufrdeco_assert ( b != NULL && r != NULL && d != NULL );
+  bufrdeco_assert ( b != NULL );
+  bufrdeco_assert ( r != NULL );
+  bufrdeco_assert ( d != NULL );
   tb = & ( b->tables->b );
 
-  // if mode 1 then we search for associated_bits
-  if ( mode && b->state.assoc_bits == 0 )
+  // if mode != 0 then we search for associated_bits
+  if ( mode && b->state.associated.nd == 0 )
     {
       // This is not an associated field, return -1
       return -1;
     }
 
+  // Check for assoicated field
   if ( mode )
     {
-      r->is_associated = 1; // Mark this reference as asociated
+      r->is_associated = mode; // Mark the index of array in associated fields
+      r->desc = d; // Borrow de descriptor to which is associated
+      r->ref = 0 ; // The references is always 0 for associated field
+      r->bits = b->assoc.afield[mode - 1].assoc_bits; // copy the bits from associated field stack
+      r->escale = 0; // The scale is 0 for associated field
+      // build the index for tableB
+      i = tb->x_start[d->x] + tb->y_ref[d->x][d->y];
+      strcpy_safe ( r->name, b->state.associated.afield[mode - 1].cval ); // copy the name from associated field stack
+      strcpy ( r->unit, "Code table" ); // copy the unit name
+      r->bit0 = b->state.bit_offset; // Sets the reference offset to current state offset
+
+      if ( get_bits_as_uint32_t ( &r->ref0, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), r->bits ) == 0 )
+        {
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get associated bits from '%s'\n", __func__, d->c );
+          return 1;
+        }
+      // extracting inc_bits from next 6 bits for inc_bits
+      if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), 6 ) == 0 )
+        {
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get 6 bits for inc_bits from '%s'\n", __func__, d->c );
+          return 1;
+        }
+      r->inc_bits = ival;
+
+      // Set the bit_offset after all bits needed by this element in all subsets
+      b->state.bit_offset += r->inc_bits * b->sec3.subsets;
+
+      return 0;
     }
 
   if ( is_a_local_descriptor ( d ) )
@@ -284,14 +314,14 @@ int bufrdeco_tableB_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
       if ( get_bits_as_uint32_t ( &r->ref0, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ),
                                   b->state.local_bit_reserved ) == 0 )
         {
-          snprintf (b->error, sizeof (b->error), "%s(): Cannot get bits from '%s'\n", __func__, d->c );
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get bits from '%s'\n", __func__, d->c );
           return 1;
         }
 
       // and get 6 bits for inc_bits
       if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), 6 ) == 0 )
         {
-          snprintf (b->error, sizeof (b->error), "%s(): Cannot get 6 bits for inc_bits from '%s'\n", __func__, d->c );
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get 6 bits for inc_bits from '%s'\n", __func__, d->c );
           return 1;
         }
 
@@ -333,7 +363,7 @@ int bufrdeco_tableB_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
       // get the bits
       if ( get_bits_as_uint32_t ( &ival, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), b->state.changing_reference ) == 0 )
         {
-          snprintf (b->error, sizeof (b->error), "%s(): Cannot get bits from '%s'\n", __func__, d->c );
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get bits from '%s'\n", __func__, d->c );
           return 1;
         }
 
@@ -341,24 +371,24 @@ int bufrdeco_tableB_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
       // (we still have the original value in reference_ori)
       if ( get_table_b_reference_from_uint32_t ( & ( tb->item[i].reference ), b->state.changing_reference, ival ) )
         {
-          snprintf (b->error, sizeof (b->error), "%s(): Cannot change reference in 2 03 YYY operator for '%s'\n", __func__, d->c );
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot change reference in 2 03 YYY operator for '%s'\n", __func__, d->c );
           return 1;
         }
-        
+
       strcpy_safe ( r->unit, "NEW REFERENCE" );
       r->ref = tb->item[i].reference;
 
       // extracting inc_bits from next 6 bits
       if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), 6 ) == 0 )
         {
-          snprintf (b->error, sizeof (b->error), "%s(): Cannot get 6 bits for inc_bits from '%s'\n", __func__, d->c );
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get 6 bits for inc_bits from '%s'\n", __func__, d->c );
           return 1;
         }
       // Here is supossed that all subsets will have the same reference change,
       // so inc_bits must be 0 and no inc data should be present
       if ( ival )
         {
-          snprintf (b->error, sizeof (b->error), "%s(): Bad format for compressed data when changing reference from '%s'\n", __func__, d->c );
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Bad format for compressed data when changing reference from '%s'\n", __func__, d->c );
           return 1;
         }
       r->ref0 = 0; // here we also assume that ref0 = 0
@@ -375,13 +405,13 @@ int bufrdeco_tableB_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
 
       if ( get_bits_as_char_array ( r->cref0, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), r->bits ) == 0 )
         {
-          snprintf (b->error, sizeof (b->error), "%s(): Cannot get uchars from '%s'\n", __func__, d->c );
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get uchars from '%s'\n", __func__, d->c );
           return 1;
         }
       // extracting inc_bits from next 6 bits
       if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), 6 ) == 0 )
         {
-          snprintf (b->error, sizeof (b->error), "%s(): Cannot get 6 bits for inc_bits from '%s'\n", __func__, d->c );
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get 6 bits for inc_bits from '%s'\n", __func__, d->c );
           return 1;
         }
       r->inc_bits = ival;
@@ -396,44 +426,30 @@ int bufrdeco_tableB_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
 
   // is a numeric field, i.e, a data value, a flag code or a code
   // get reference value
-  if ( mode ) // case of associated field
+  if ( get_bits_as_uint32_t ( &r->ref0, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), r->bits ) == 0 )
     {
-      if ( get_bits_as_uint32_t ( &r->ref0, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), b->state.assoc_bits ) == 0 )
-        {
-          snprintf (b->error, sizeof (b->error), "%s(): Cannot get associated bits from '%s'\n", __func__, d->c );
-          return 1;
-        }
-      // patch for delayed descriptor: it allways have data
-      if ( is_a_delayed_descriptor ( d ) || is_a_short_delayed_descriptor( d ) )
-        r->has_data = 1;
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get the data bits from '%s'\n", __func__, d->c );
+      return 1;
     }
-  else // case of data
-    {
-      if ( get_bits_as_uint32_t ( &r->ref0, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), r->bits ) == 0 )
-        {
-          snprintf (b->error, sizeof (b->error), "%s(): Cannot get the data bits from '%s'\n", __func__, d->c );
-          return 1;
-        }
-      // patch for delayed descriptor: it allways have data
-      if ( is_a_delayed_descriptor ( d ) || is_a_short_delayed_descriptor ( d ) )
-        r->has_data = 1;
-    }
+  // patch for delayed descriptor: it allways have data
+  if ( is_a_delayed_descriptor ( d ) || is_a_short_delayed_descriptor ( d ) )
+    r->has_data = 1;
 
   // extracting inc_bits from next 6 bits for inc_bits
   if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), 6 ) == 0 )
     {
-      snprintf (b->error, sizeof (b->error), "%s(): Cannot get 6 bits for inc_bits from '%s'\n", __func__, d->c );
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get 6 bits for inc_bits from '%s'\n", __func__, d->c );
       return 1;
     }
   r->inc_bits = ival;
 
   // if is a delayed descriptor then inc_bits MUST be 0.
-  if ( (is_a_delayed_descriptor ( d ) || is_a_short_delayed_descriptor( d ) ) && r->inc_bits )
+  if ( ( is_a_delayed_descriptor ( d ) || is_a_short_delayed_descriptor ( d ) ) && r->inc_bits )
     {
-      snprintf (b->error, sizeof (b->error), "%s(): Found a delayed descriptor with inc_bits != 0\n", __func__ );
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Found a delayed descriptor with inc_bits != 0\n", __func__ );
       return 1;
     }
-    
+
   // Set the bit_offset after all bits needed by this element in all subsets
   b->state.bit_offset += r->inc_bits * b->sec3.subsets;
 
@@ -448,7 +464,7 @@ int bufrdeco_tableB_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
   \param d pointer to the target descriptor
   \return  0 if success, 1 otherwise
 */
-int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct bufr_descriptor *d )
+int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct bufr_descriptor *d, buf_t mode )
 {
   buf_t i, nbits = 0;
   uint32_t ival;
@@ -457,8 +473,39 @@ int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
   struct bufr_tableB *tb;
 
   //bufrdeco_assert ( a != NULL && b != NULL && d != NULL );
-  
+
   tb = & ( b->tables->b );
+
+  // if mode != 0 then we search for associated_bits
+  if ( mode && b->state.associated.nd == 0 )
+    {
+      // This is not an associated field, return -1
+      return -1;
+    }
+
+  // Check for assoicated field
+  if ( mode )
+    {
+      memcpy ( & ( a->desc ), d, sizeof ( struct bufr_descriptor ) ); // Copy
+      nbits = b->state.associated.afield[mode - 1].assoc_bits; // copy the bits from associated field stack
+      //printf("nbits=%u\n", nbits );
+      a->escale = 0; // The scale is 0 for associated field
+ 
+      strcpy (a->name, "Associated value"); 
+      //strcpy_safe ( a->name, b->state.associated.afield[mode - 1].cval ); // copy the name from associated field stack
+      strcpy ( a->unit, "Code table" ); // copy the unit name
+
+      // get associated bits
+      if ( get_bits_as_uint32_t ( & ( a->associated ), &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
+        {
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get associated bits from '%s'\n", __func__, d->c );
+          return 1;
+        }
+
+      a->val = (double) a->associated; 
+      return 0;
+    }
+
 
   if ( is_a_local_descriptor ( d ) )
     {
@@ -468,7 +515,7 @@ int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
       strcpy_safe ( a->unit, "UNKNOWN" );
       if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), b->state.local_bit_reserved ) == 0 )
         {
-          snprintf (b->error, sizeof (b->error), "%s(): Cannot get bits from '%s'\n", __func__, d->c );
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get bits from '%s'\n", __func__, d->c );
           return 1;
         }
       a->val = ival; // we assume escale = 0 and ref = 0
@@ -496,14 +543,14 @@ int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
       // Get preliminar value
       if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), b->state.changing_reference ) == 0 )
         {
-          snprintf (b->error, sizeof (b->error), "%s(): Cannot get bits from '%s'\n", __func__, d->c );
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get bits from '%s'\n", __func__, d->c );
           return 1;
         }
-        
+
       // Then change the preliminar reference value because of rules for negative numbers
       if ( get_table_b_reference_from_uint32_t ( & ( tb->item[i].reference ), b->state.changing_reference, ival ) )
         {
-          snprintf (b->error, sizeof (b->error), "%s(): Cannot change reference in 2 03 YYY operator for '%s'\n", __func__, d->c );
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot change reference in 2 03 YYY operator for '%s'\n", __func__, d->c );
           return 1;
         }
       strcpy_safe ( a->unit, "NEW REFERENCE" );
@@ -511,7 +558,7 @@ int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
       return 0;
     }
 
-  // case of difference statistics active  
+  // case of difference statistics active
   if ( b->state.dstat_active )
     reference = - ( ( int32_t ) 1 << ( tb->item[i].nbits ) );
   else
@@ -525,7 +572,7 @@ int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
 
       if ( get_bits_as_char_array ( a->cval, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
         {
-          snprintf (b->error, sizeof (b->error), "%s(): Cannot get uchars from '%s'\n", __func__, d->c );
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get uchars from '%s'\n", __func__, d->c );
           return 1;
         }
       if ( has_data == 0 )
@@ -545,7 +592,7 @@ int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
        a->desc.x != 31 &&  // Data description qualifier has not associated bits itself
        get_bits_as_uint32_t ( &a->associated, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), b->state.assoc_bits ) == 0 )
     {
-      snprintf (b->error, sizeof (b->error), "%s(): Cannot get associated bits from '%s'\n", __func__, d->c );
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get associated bits from '%s'\n", __func__, d->c );
       return 1;
     }
   else
@@ -562,7 +609,7 @@ int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
 
   if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
     {
-      snprintf (b->error, sizeof (b->error), "%s(): Cannot get bits from '%s'\n", __func__, d->c );
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get bits from '%s'\n", __func__, d->c );
       return 1;
     }
 
@@ -622,3 +669,4 @@ int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct b
 
   return 0;
 }
+

@@ -195,9 +195,13 @@ unsigned char BUFR[BUFRLEN];
 unsigned char BUF[BLEN];
 char ENTRADA[256];
 char SEL[64]; /*!< Selection string for argument -T according with T1 */
-char SELS[64]; /*!< Selection string for A1 when T2='S' (argument -S)   */
-char SELU[64]; /*!< Selection string for A1 when T2='U' (argument -U)   */
+char SELS[64]; /*!< Selection string for A1 when T2='S' (argument -S) */
+char SELU[64]; /*!< Selection string for A1 when T2='U' (argument -U) */
 char SELO[64]; /*!< Selection string for A1 when T2='O' (argument -O) */
+char SELP[64]; /*!< Selection string for A1 when T2='P' (argument -O) */
+char SELT[64]; /*!< Selection string for A1 when T2='T' (argument -O) */
+char SELX[64]; /*!< Selection string for A1 when T2='X' (argument -O) */
+char SELZ[64]; /*!< Selection string for A1 when T2='Z' (argument -O) */
 char PREFIX[64];
 char HEADER_MARK; /*!< Header mark character who is repeated four times at the begining */
 
@@ -213,7 +217,7 @@ int main ( int argc, char *argv[] )
   FILE* ficin;
   FILE* ficout = NULL;
   FILE* ficol = NULL;
-  unsigned char b[4], header[256];
+  unsigned char b[5], header[256];
   unsigned int expected = 0;
   char name[256], namex[256], namec[256];
   double tx;
@@ -268,6 +272,7 @@ int main ( int argc, char *argv[] )
       for ( i = 0; i < nc ; i++ )
         {
           // ingest a byte
+          b[4] = b[3];
           b[3] = b[2];
           b[2] = b[1];
           b[1] = b[0];
@@ -385,9 +390,11 @@ int main ( int argc, char *argv[] )
                 }
 
               // Has been detected some void and fakes bufr
-              if ( b[0] == HEADER_MARK &&
+              if ( b[0] == '0' && // This is supossed to be the first '0' in the extension of next BUFR
                    b[1] == HEADER_MARK &&
-                   b[2] == HEADER_MARK
+                   b[2] == HEADER_MARK &&
+                   b[3] == HEADER_MARK &&
+                   b[4] == HEADER_MARK 
                  )
                 {
                   // Ooops. a fake bufr

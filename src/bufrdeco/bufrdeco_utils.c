@@ -44,7 +44,7 @@ buf_t get_bits_as_char_array2 ( char *target, uint8_t *has_data, uint8_t *source
   uint8_t *c;
 
   //bufrdeco_assert (has_data != NULL && source != NULL && target != NULL && bit0_offset != NULL);
-  
+
   if ( bit_length % 8 )
     return 0; // bit_length needs to be divisible by 8
 
@@ -139,7 +139,7 @@ uint32_t get_bits_as_uint32_t2 ( uint32_t *target, uint8_t *has_data, uint8_t *s
   uint8_t *c;
 
   //bufrdeco_assert (has_data != NULL && source != NULL && target != NULL && bit0_offset != NULL);
-  
+
   if ( bit_length > 32 || bit_length == 0 )
     return 0;
 
@@ -223,7 +223,7 @@ int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_
   uint32_t mask = 1;
 
   //bufrdeco_assert (target != NULL);
-  
+
 
   if ( bits > 32 || bits == 0 )
     return 1;
@@ -249,9 +249,9 @@ int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_
 */
 uint32_t two_bytes_to_uint32 ( const uint8_t *source )
 {
-  
+
   //bufrdeco_assert (source != NULL);
-  
+
   return ( ( uint32_t ) source[1] + ( uint32_t ) source[0] * 256 );
 }
 
@@ -278,7 +278,7 @@ uint32_t three_bytes_to_uint32 ( const uint8_t *source )
 int uint32_t_to_descriptor ( struct bufr_descriptor *d, uint32_t id )
 {
   //bufrdeco_assert (d != NULL);
-  
+
   d->f = id / 100000;
   d->x = ( id % 100000 ) / 1000;
   d->y = id % 1000;
@@ -297,7 +297,7 @@ int uint32_t_to_descriptor ( struct bufr_descriptor *d, uint32_t id )
 int two_bytes_to_descriptor ( struct bufr_descriptor *d, const uint8_t *source )
 {
   //bufrdeco_assert (source != NULL && d != NULL);
-  
+
   d->y = source[1];
   d->x = source[0] & 0x3f;
   d->f = ( source[0] >> 6 ) & 0x03;
@@ -316,9 +316,9 @@ int two_bytes_to_descriptor ( struct bufr_descriptor *d, const uint8_t *source )
 char * bufr_charray_to_string ( char *s, char *buf, size_t size )
 {
   //bufrdeco_assert (s != NULL && buf != NULL);
-  
+
   // copy
-  memcpy ( s , buf, size );
+  memcpy ( s, buf, size );
   // add final string mark
   s[size] = '\0';
   return s;
@@ -351,7 +351,7 @@ char * bufr_adjust_string ( char *s )
 int is_a_delayed_descriptor ( struct bufr_descriptor *d )
 {
   //bufrdeco_assert (d != NULL);
-  
+
   if ( ( d->f == 0 ) &&
        ( d->x == 31 ) &&
        ( d->y == 1 || d->y == 2 || d->y == 11 || d->y == 12 ) )
@@ -414,11 +414,11 @@ char *get_formatted_value_from_escale ( char *fmt, size_t dim, int32_t escale, d
 
   if ( escale >= 0 )
     {
-      sprintf ( aux, "%%17.%dlf " , escale );
+      sprintf ( aux, "%%17.%dlf ", escale );
       snprintf ( fmt, dim, aux, val );
     }
   else
-    snprintf ( fmt, dim, "%17.0lf " , val );
+    snprintf ( fmt, dim, "%17.0lf ", val );
   return fmt;
 }
 
@@ -430,7 +430,7 @@ char *get_formatted_value_from_escale ( char *fmt, size_t dim, int32_t escale, d
    \param escale value scale in descriptor
    \param val double to printf
    \return the resulting fmt string
-   
+
    Differs from get_formatted_value_from_escale that no blanks are written
  */
 char *get_formatted_value_from_escale2 ( char *fmt, size_t dim, int32_t escale, double val )
@@ -440,11 +440,11 @@ char *get_formatted_value_from_escale2 ( char *fmt, size_t dim, int32_t escale, 
 
   if ( escale >= 0 )
     {
-      sprintf ( aux, "%%.%dlf" , escale );
+      sprintf ( aux, "%%.%dlf", escale );
       snprintf ( fmt, dim, aux, val );
     }
   else
-    snprintf ( fmt, dim, "%.0lf" , val );
+    snprintf ( fmt, dim, "%.0lf", val );
   return fmt;
 }
 
@@ -455,17 +455,17 @@ char *get_formatted_value_from_escale2 ( char *fmt, size_t dim, int32_t escale, 
    \param bm target struct \ref bufrdeco_bitmap where to push
    \param index_to index of the \ref bufrdeco_bitmap which this is bitmapping to
    \param index_by index of the \ref bufrdeco_bitmap which this is bitmapped by
-   
+
    \return If no space to push returns 1, otherwise 0
 */
 int bufrdeco_add_to_bitmap ( struct bufrdeco_bitmap *bm, buf_t index_to, buf_t index_by )
 {
   //bufrdeco_assert (bm != NULL);
-  
+
   if ( bm->nb < BUFR_MAX_BITMAP_PRESENT_DATA )
     {
       bm->bitmap_to[bm->nb] = index_to;
-      bm->bitmaped_by[bm->nb] = index_by;
+      bm->me[bm->nb] = index_by;
       ( bm->nb )++;
       return 0;
     }
@@ -473,118 +473,119 @@ int bufrdeco_add_to_bitmap ( struct bufrdeco_bitmap *bm, buf_t index_to, buf_t i
 }
 
 /*!
- * \fn int get_bitmaped_info ( struct bufrdeco_bitmap_related_vars *brv, uint32_t target, struct bufrdeco *b )
+ * \fn int bufrdeco_get_bitmaped_info ( struct bufrdeco_bitmap_related_vars *brv, uint32_t target, struct bufrdeco *b )
  * \brief Get bitmap info searching into bitmaps
  * \param brv pointer to struct \ref bufrdeco_bitmap_related_vars where to set the results
- * \param target The key to find in array of bitmaps
+ * \param target The key to find in array of bitmaps. It is the index of a ref in compressed case or an atom data in other case
  * \param b pointer to the current struct \ref bufrdeco
- * 
- * \return If found the target return 0, othewise return 1 
+ *
+ * \return If found the target return 0, othewise return 1
  */
-int get_bitmaped_info ( struct bufrdeco_bitmap_related_vars *brv, uint32_t target, struct bufrdeco *b )
+int bufrdeco_get_bitmaped_info ( struct bufrdeco_bitmap_related_vars *brv, uint32_t target, struct bufrdeco *b )
 {
-  size_t i, j, k;
-  uint32_t delta;
+  buf_t i, j, k;
+  buf_t delta;
   struct bufrdeco_bitmap *bm;
 
   //bufrdeco_assert (b != NULL && brv != NULL);
-  
   brv->target = target;
+  memset(brv, 0, sizeof (struct bufrdeco_bitmap_related_vars ));
   for ( i = 0; i < b->bitmap.nba ; i++ )
     {
-      bm = b->bitmap.bmap[i];  
+      bm = b->bitmap.bmap[i];
       for ( j = 0; j < bm->nb ; j++ )
         {
           if ( bm->bitmap_to[j] == target )
-            { 
+            {
               brv->nba = i;
               brv->nb = j;
-              brv->bitmaped_by = bm->bitmaped_by[j];
-              delta = bm->bitmaped_by[j] - bm->bitmaped_by[0];
+              brv->bitmaped_by = bm->me[j]; // is the index of bit present data in ref/data
+              delta = bm->me[j] - bm->me[0]; // delta is the refence with recpect the reference of first data present (bit = 0) in bitmap
               // quality data
-              if (bm->nq)
-              {
-                for (k = 0; k < bm->nq; k++)
+              if ( bm->nq )
                 {
-                   brv->qualified_by[k] = bm->quality[k] + delta;    
+                  for ( k = 0; k < bm->nq; k++ )
+                    {
+                      brv->qualified_by[k] = bm->quality[k] + delta; // remeber that bm->quality[k] is refered to first data_present
+                    }
                 }
-              }
-              
-              // substituded
-              if (bm->subs)
-                  brv->substituted = bm->subs + delta;
-              
-              if (bm->retain )
-                  brv->retained = bm->retain + delta;
-              
-              if (bm->ns1)
-              {
-                for (k = 0; k < bm->ns1; k++)
-                {
-                   brv->stat1[k] = bm->stat1[k] + delta;    
-                   brv->stat1_desc[k] = bm->stat1[k];    
-                }
-              }
 
-              if (bm->nds)
-              {
-                for (k = 0; k < bm->nds; k++)
+              // substituded
+              if ( bm->subs )
+                brv->substituted = bm->subs + delta; // bm->subs is for first data present
+
+              if ( bm->retain )
+                brv->retained = bm->retain + delta; 
+
+              if ( bm->ns1 )
                 {
-                   brv->dstat[k] = bm->dstat[k] + delta;    
-                   brv->stat1_desc[k] = bm->dstat[k];    
+                  for ( k = 0; k < bm->ns1; k++ )
+                    {
+                      brv->stat1[k] = bm->stat1[k] + delta; 
+                      brv->stat1_desc[k] = bm->stat1_desc[k];
+                    }
                 }
-              }
-   
+
+              if ( bm->nds )
+                {
+                  for ( k = 0; k < bm->nds; k++ )
+                    {
+                      brv->dstat[k] = bm->dstat[k] + delta;
+                      brv->dstat_desc[k] = bm->dstat_desc[k];
+                    }
+                }
+
               return 0;
             }
           else if ( b->bitmap.bmap[i]->bitmap_to[j] > target )
             break;
         }
     }
-    return 1;
+  return 1;
 }
 
 
 /*!
  * \fn int bufr_write_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offsets *off)
- * \brief Write offset bit array for subsets in a non-compressed bufr 
+ * \brief Write offset bit array for subsets in a non-compressed bufr
  * \param f file pointer opened by caller
  * \param off pointer to the struct \ref bufrdeco_subset_bit_offsets with the data to write into file
  * \return if success return 0, otherwise 1
  */
-int bufr_write_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offsets *off)
+int bufr_write_subset_offset_bits ( FILE *f, struct bufrdeco_subset_bit_offsets *off )
 {
   size_t wrote;
-  
+
   //bufrdeco_assert (off != NULL && f != NULL );
 
-  wrote = fwrite( &(off->nr), sizeof (buf_t ), 1, f);
-  bufrdeco_assert_with_return_val (wrote == 1, 1);
-    
-  wrote = fwrite( &(off->ofs[0]), sizeof (buf_t ), off->nr, f);
-  bufrdeco_assert_with_return_val (wrote == off->nr, 1);
-  
+  wrote = fwrite ( & ( off->nr ), sizeof ( buf_t ), 1, f );
+  bufrdeco_assert_with_return_val ( wrote == 1, 1 );
+
+  wrote = fwrite ( & ( off->ofs[0] ), sizeof ( buf_t ), off->nr, f );
+  bufrdeco_assert_with_return_val ( wrote == off->nr, 1 );
+
   return 0;
 }
 
 /*!
  * \fn int bufr_read_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offsets *off)
- * \brief Write offset bit array for subsets in a non-compressed bufr 
+ * \brief Write offset bit array for subsets in a non-compressed bufr
  * \param f file pointer opened by caller
  * \param off pointer to the struct \ref bufrdeco_subset_bit_offsets with the data to write into file
  * \return if success return 0, otherwise 1
  */
-int bufr_read_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offsets *off)
+int bufr_read_subset_offset_bits ( FILE *f, struct bufrdeco_subset_bit_offsets *off )
 {
   size_t readed;
-  
+
   //bufrdeco_assert (off != NULL && f != NULL );
-  
-  readed = fread( &(off->nr), sizeof (buf_t ), 1, f);
-  bufrdeco_assert_with_return_val (readed == 1, 1);
-    
-  readed = fread( &(off->ofs[0]), sizeof (buf_t ), off->nr, f);
-  bufrdeco_assert_with_return_val (readed == off->nr, 1);
-  
+
+  readed = fread ( & ( off->nr ), sizeof ( buf_t ), 1, f );
+  bufrdeco_assert_with_return_val ( readed == 1, 1 );
+
+  readed = fread ( & ( off->ofs[0] ), sizeof ( buf_t ), off->nr, f );
+  bufrdeco_assert_with_return_val ( readed == off->nr, 1 );
+
   return 0;
 }
+
