@@ -2,7 +2,7 @@
 ###########################################################################
 #   Project: bufr2synop                                                   #
 #                                                                         #
-#   Copyright (C) 2016-2022 by Guillermo Ballester Valor                  #
+#   Copyright (C) 2016-2023 by Guillermo Ballester Valor                  #
 #   gbvalor@ogimet.com                                                    #
 #                                                                         #
 #   GNU General Public License v2 or above                                #
@@ -28,7 +28,7 @@ FIXER=/usr/local/bin/fix_double_quotes
 # versions
 WMO_VERSIONS="18_0_0 18_1_0 19_0_0 19_1_1 20_0_0 21_0_0 22_0_1 23_0_0 24_0_0 25_0_0 26_0_0 27_0_0 28_0_0 29_0_0 30_0_0 31_0_0 32_0_0 33_0_0 34_0_0"
 WMO_VERSIONS_2="35_0_0 36_0_0 37_0_0"
-WMO_VERSIONS_3="38_1_0"
+WMO_VERSIONS_3="38_1_0 39_0_0"
 
 ECMWF_VERSIONS="13 14 15 16 17"
 
