@@ -282,8 +282,8 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, buf_t size )
   // raw
   memcpy ( &b->sec0.raw[0], &bufrx[0], 8 );
 
-  if (b->mask & BUFRDECO_OUTPUT_JSON_SEC0)
-    bufrdeco_print_json_sec0(b->out, b);
+  if ( b->mask & BUFRDECO_OUTPUT_JSON_SEC0 )
+    bufrdeco_print_json_sec0 ( b->out, b );
 
   /******************* section 1 *****************************/
   c = &bufrx[8]; // pointer to begin of sec1
@@ -332,24 +332,35 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, buf_t size )
       break;
     default:
       snprintf ( b->error, sizeof ( b->error ), "%s(): This file is coded with version %u and is not supported\n", __func__, b->sec0.edition );
-      free ( ( void * ) bufrx );
+      return 1;
+    }
+
+  if ( b->sec1.length > BUFR_LEN_SEC1 )
+    {
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Sec1 length %u is over limit %u\n", __func__, b->sec1.length, BUFR_LEN_SEC1 );
       return 1;
     }
   memcpy ( b->sec1.raw, c, b->sec1.length ); // raw data
   c += b->sec1.length;
-  
-  if (b->mask & BUFRDECO_OUTPUT_JSON_SEC1)
-    bufrdeco_print_json_sec1(b->out, b);
+
+  if ( b->mask & BUFRDECO_OUTPUT_JSON_SEC1 )
+    bufrdeco_print_json_sec1 ( b->out, b );
 
   /******************* section 2 (Optional) ******************/
   if ( b->sec1.options & 0x80 )
     {
       b->sec2.length = three_bytes_to_uint32 ( c );
+      if ( b->sec2.length > BUFR_LEN_SEC2 )
+        {
+          snprintf ( b->error, sizeof ( b->error ), "%s(): Sec2 length %u is over limit %u \n", __func__, b->sec2.length, BUFR_LEN_SEC2 );
+          return 1;
+        }
       memcpy ( b->sec2.raw, c, b->sec2.length );
       c += b->sec2.length;
     }
-  if (b->mask & BUFRDECO_OUTPUT_JSON_SEC2)
-    bufrdeco_print_json_sec2(b->out, b);
+
+  if ( b->mask & BUFRDECO_OUTPUT_JSON_SEC2 )
+    bufrdeco_print_json_sec2 ( b->out, b );
 
   /******************* section 3 *****************************/
   b->sec3.length = three_bytes_to_uint32 ( c );
@@ -371,15 +382,28 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, buf_t size )
         ud++;
     }
   b->sec3.ndesc = ud;
+
+  if ( b->sec3.length > BUFR_LEN_SEC3 )
+    {
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Sec3 length %u is over limit %u\n", __func__, b->sec3.length, BUFR_LEN_SEC3 );
+      return 1;
+    }
   memcpy ( b->sec3.raw, c, b->sec3.length );
   c += b->sec3.length;
 
-  if (b->mask & BUFRDECO_OUTPUT_JSON_SEC3)
-    bufrdeco_print_json_sec3(b->out, b);
+  if ( b->mask & BUFRDECO_OUTPUT_JSON_SEC3 )
+    bufrdeco_print_json_sec3 ( b->out, b );
 
   /******************* section 4 *****************************/
   b->sec4.length = three_bytes_to_uint32 ( c );
+  
   // we copy 4 byte more without danger because of latest '7777' and to use fastest exctracting bits algorithm
+  if ( (b->sec4.length + 4) > BUFR_LEN )
+    {
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Sec4 length %u is over limit %u \n", __func__, b->sec3.length, BUFR_LEN );
+      free ( ( void * ) bufrx );
+      return 1;
+    }
   memcpy ( b->sec4.raw, c, b->sec4.length + 4 );
 
   b->sec4.bit_offset = 32; // the first bit in byte 4
