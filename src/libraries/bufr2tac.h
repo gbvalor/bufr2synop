@@ -24,6 +24,11 @@
 #ifndef BUFR2TAC_H
 #define BUFR2TAC_H
 
+// If is used by c++ code
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
 #endif
@@ -554,5 +559,10 @@ int buprt_ ( int *, int *, int *, int *, char **, char **, char **, int *, doubl
 
 // Global static vars
 extern int BUFR2TAC_DEBUG_LEVEL;
+
+
+#ifdef __cplusplus
+} /* closing brace for extern "C" */
+#endif
 
 #endif  // from ifndef BUFR2TAC_H

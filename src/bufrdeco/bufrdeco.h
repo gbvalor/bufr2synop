@@ -24,6 +24,11 @@
 #ifndef BUFRDECO_H
 #define BUFRDECO_H
 
+// If is used by c++ code
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
 #endif
@@ -1305,5 +1310,10 @@ char * bufr_charray_to_string ( char *s, char *buf, size_t size );
 // I/O of bit offset for subsets
 int bufr_read_subset_offset_bits ( FILE *f, struct bufrdeco_subset_bit_offsets *off );
 int bufr_write_subset_offset_bits ( FILE *f, struct bufrdeco_subset_bit_offsets *off );
+
+
+#ifdef __cplusplus
+} /* closing brace for extern "C" */
+#endif
 
 #endif  // from ifndef BUFRDECO_H
