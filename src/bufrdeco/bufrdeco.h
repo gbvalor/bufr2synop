@@ -326,7 +326,7 @@ extern "C" {
   \def BUFR_TABLEB_NAME_LENGTH
   \brief Max length (in chars) reserved for a name of variable in table B
 */
-#define BUFR_TABLEB_NAME_LENGTH (128)
+#define BUFR_TABLEB_NAME_LENGTH (512)
 
 /*!
   \def BUFR_TABLEB_NAME_LENGTH
