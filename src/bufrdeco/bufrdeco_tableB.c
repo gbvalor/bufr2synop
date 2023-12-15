@@ -276,7 +276,7 @@ int bufrdeco_tableB_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
       r->bits = b->assoc.afield[mode - 1].assoc_bits; // copy the bits from associated field stack
       r->escale = 0; // The scale is 0 for associated field
       // build the index for tableB
-      i = tb->x_start[d->x] + tb->y_ref[d->x][d->y];
+      //i = tb->x_start[d->x] + tb->y_ref[d->x][d->y];
       strcpy_safe ( r->name, b->state.associated.afield[mode - 1].cval ); // copy the name from associated field stack
       strcpy ( r->unit, "Code table" ); // copy the unit name
       r->bit0 = b->state.bit_offset; // Sets the reference offset to current state offset

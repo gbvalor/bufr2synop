@@ -49,6 +49,7 @@ int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, stru
   if ( d == NULL || s == NULL )
     {
       snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
+      return 1;
     }
 
   if ( d->f != 2 )
@@ -512,6 +513,7 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
   if ( d == NULL || r == NULL )
     {
       snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
+      return 1;
     }
 
   if ( d->f != 2 )

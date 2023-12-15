@@ -201,10 +201,13 @@ int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename )
   if ( size < 8 )
     {
       snprintf ( b->error, sizeof ( b->error ), "%s(): not found a '7777' item after 'BUFR'\n", __func__ );
+      if (bufrx != NULL)
+        free ( (void *) bufrx );
       return 1;
     }
   res = bufrdeco_read_buffer ( b, pbeg, size );
-  free ( bufrx );
+  if (bufrx != NULL)
+    free ( (void *) bufrx );
   return res;
 }
 

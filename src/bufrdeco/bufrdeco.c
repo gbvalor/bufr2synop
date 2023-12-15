@@ -299,9 +299,10 @@ int bufrdeco_close ( struct bufrdeco *b )
  */
 int bufrdeco_set_tables_dir ( struct bufrdeco *b, char *tables_dir )
 {
-  bufrdeco_assert_with_return_val ( b != NULL || tables_dir == NULL, 1 );
+  bufrdeco_assert_with_return_val ( b != NULL, 1 );
 
-  strncpy_safe ( b->bufrtables_dir, tables_dir, BUFRDECO_PATH_LENGTH );
+  if (tables_dir != NULL)
+     strncpy_safe ( b->bufrtables_dir, tables_dir, BUFRDECO_PATH_LENGTH );
   return 0;
 }
 
@@ -370,7 +371,7 @@ int bufrdeco_read_subset_offset_bits ( struct bufrdeco *b, char *filename )
   FILE *f;
 
   // assert nice args
-  bufrdeco_assert_with_return_val ( b != NULL || filename == NULL, 1 );
+  bufrdeco_assert_with_return_val ( b != NULL && filename != NULL, 1 );
 
   // silently return if cannot stat the file
   if ( stat ( filename, &st ) < 0 )

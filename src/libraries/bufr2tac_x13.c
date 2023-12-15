@@ -562,7 +562,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       break;
 
     case 19: // 0 13 019 . Total precipitaction past 1 hour
-      hr = hour_rounded ( syn );
+      //hr = hour_rounded ( syn );
       if ( syn->s3.RRR[0] == 0 )
         {
           if ( strcmp ( "1", syn->s0.A1 ) == 0 ||

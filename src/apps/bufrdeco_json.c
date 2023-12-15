@@ -188,7 +188,6 @@ int set_bufrdeco_mask ( struct bufrdeco *b )
 int main ( int argc, char *argv[] )
 {
   size_t subset, first_subset, last_subset;
-  struct bufrdeco_subset_sequence_data *seq;
 
   if ( read_args ( argc, argv ) < 0 )
     exit ( EXIT_FAILURE );
@@ -239,7 +238,7 @@ int main ( int argc, char *argv[] )
 
   for ( subset = first_subset; subset <= last_subset ; subset++ )
     {
-      if ( ( seq = bufrdeco_get_target_subset_sequence_data ( subset, &BUFR ) ) == NULL )
+      if ( bufrdeco_get_target_subset_sequence_data ( subset, &BUFR ) == NULL )
         {
           printf ( "# %s", BUFR.error );
           bufrdeco_close ( &BUFR );

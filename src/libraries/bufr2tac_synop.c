@@ -35,6 +35,7 @@ int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
   time_t t;
   struct tm tim;
 
+  aux[0] = '\0';
   if ( strlen ( syn->e.YYYY ) &&
        strlen ( syn->e.MM ) &&
        strlen ( syn->e.DD ) &&

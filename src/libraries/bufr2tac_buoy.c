@@ -34,6 +34,7 @@ int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b )
   time_t t;
   struct tm tim;
 
+  aux[0] = '\0';
   if ( strlen ( b->e.YYYY ) &&
        strlen ( b->e.MM ) &&
        strlen ( b->e.DD ) &&

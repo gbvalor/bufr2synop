@@ -603,6 +603,9 @@ buf_t bufrdeco_print_json_object_event_data ( FILE *out,  struct bufr_atom_data 
   buf_t used = 0, i, j;
   //struct bufrdeco_bitmap *bitmap;
 
+  if (a == NULL || b == NULL)
+    return 0;
+  
   used += fprintf ( out,  "{\"Datafield\":\"#%u_%u\",", b->seq.ss, event->ref_index );
   used += fprintf ( out,  "\"Descriptor\":\"%u %02u %03u\",\"Name\":\"%s\",", a->desc.f, a->desc.x, a->desc.y, bufr_adjust_string ( a->name ) );
 
