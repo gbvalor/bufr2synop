@@ -49,7 +49,7 @@ int sprint_sec0_info ( char *target, size_t lmax, struct bufrdeco *b )
 
   used += snprintf ( target + used, lmax - used, "#### SEC 0 INFO ###\n" );
   used += snprintf ( target + used, lmax - used, "Bufr length:           %5u\n", b->sec0.bufr_length );
-  used += snprintf ( target + used, lmax - used, "Bufr edition:          %5u\n", b->sec0.edition );
+  snprintf ( target + used, lmax - used, "Bufr edition:          %5u\n", b->sec0.edition );
   return 0;
 }
 
@@ -121,7 +121,7 @@ int sprint_sec1_info ( char *target, size_t lmax, struct bufrdeco *b )
     {
       used += snprintf ( target + used, lmax - used, "Tables used: '%s'\n", b->tables->b.path );
       used += snprintf ( target + used, lmax - used, "             '%s'\n", b->tables->c.path );
-      used += snprintf ( target + used, lmax - used, "             '%s'\n", b->tables->d.path );
+      snprintf ( target + used, lmax - used, "             '%s'\n", b->tables->d.path );
     }
   return 0;
 }
@@ -226,7 +226,7 @@ int sprint_sec4_info ( char *target, size_t lmax, struct bufrdeco *b )
     return sprint_sec4_info_html ( target, lmax, b );
 
   used += snprintf ( target + used, lmax - used, "\n#### SEC 4 INFO ###\n" );
-  used += snprintf ( target + used, lmax - used, "Sec4 length:           %5u\n\n", b->sec4.length );
+  snprintf ( target + used, lmax - used, "Sec4 length:           %5u\n\n", b->sec4.length );
   return 0;
 }
 
@@ -625,7 +625,7 @@ int fprint_bufrdeco_compressed_data_references ( FILE *f, struct bufrdeco_compre
   return 0;
 }
 
-int bufrdeco_print_event ( struct bufrdeco_decode_subset_event *e, struct bufrdeco *b )
+int bufrdeco_print_event ( const struct bufrdeco_decode_subset_event *e, struct bufrdeco *b )
 {
   char aux[128], *c;
   printf ( "Event: %u, Mask:", b->bitacora.nd );

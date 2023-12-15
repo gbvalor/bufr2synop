@@ -30,7 +30,7 @@
 
   This is used mainly for debug
 */
-int print_temp_raw_data ( struct temp_raw_data *r )
+int print_temp_raw_data ( const struct temp_raw_data *r )
 {
   size_t i;
 
@@ -41,12 +41,12 @@ int print_temp_raw_data ( struct temp_raw_data *r )
            r->raw[i].Td != MISSING_REAL &&
            r->raw[i].dd != MISSING_REAL &&
            r->raw[i].ff != MISSING_REAL )
-        printf ( "i=%3ld, dt=%4d, flags=%08X, P=%6.1lf, h=%6.0lf, dlat=%7.4lf, dlon=%7.4lf, T=%6.1lf, Td=%6.1lf, dd=%03.0lf, ff=%5.1lf\n",
+        printf ( "i=%3lu, dt=%4d, flags=%08X, P=%6.1lf, h=%6.0lf, dlat=%7.4lf, dlon=%7.4lf, T=%6.1lf, Td=%6.1lf, dd=%03.0lf, ff=%5.1lf\n",
                  i, r->raw[i].dt, r->raw[i].flags, r->raw[i].p * 0.01, r->raw[i].h, r->raw[i].dlat, r->raw[i].dlon,
                  r->raw[i].T - 273.15, r->raw[i].Td - 273.15, r->raw[i].dd, r->raw[i].ff );
       else
         {
-          printf ( "i=%3ld, dt=%4d, flags=%08X, P=%6.1lf, h=%6.0lf, dlat=%7.4lf, dlon=%7.4lf, ",
+          printf ( "i=%3lu, dt=%4d, flags=%08X, P=%6.1lf, h=%6.0lf, dlat=%7.4lf, dlon=%7.4lf, ",
                    i, r->raw[i].dt, r->raw[i].flags, r->raw[i].p * 0.01, r->raw[i].h, r->raw[i].dlat, r->raw[i].dlon );
           if ( r->raw[i].T != MISSING_REAL )
             {
@@ -95,7 +95,7 @@ int print_temp_raw_data ( struct temp_raw_data *r )
 
   Used in debug stage
 */
-int print_temp_raw_wind_shear_data ( struct temp_raw_wind_shear_data *w )
+int print_temp_raw_wind_shear_data ( const struct temp_raw_wind_shear_data *w )
 {
   size_t i;
 
@@ -103,12 +103,12 @@ int print_temp_raw_wind_shear_data ( struct temp_raw_wind_shear_data *w )
   for ( i = 0; i < w->n ; i++ )
     {
       if ( w->raw[i].ws_blw != MISSING_REAL && w->raw[i].ws_abv != MISSING_REAL )
-        printf ( "i=%3ld, dt=%4d, flags=%08X, P=%6.1lf, dlat=%7.4lf, dlon=%7.4lf, ws_blw=%5.1lf, ws_abv=%5.1lf\n",
+        printf ( "i=%3lu, dt=%4d, flags=%08X, P=%6.1lf, dlat=%7.4lf, dlon=%7.4lf, ws_blw=%5.1lf, ws_abv=%5.1lf\n",
                  i, w->raw[i].dt, w->raw[i].flags, w->raw[i].p * 0.01, w->raw[i].dlat, w->raw[i].dlon,
                  w->raw[i].ws_blw, w->raw[i].ws_abv );
       else
         {
-          printf ( "i=%3ld, dt=%4d, flags=%08X, P=%6.1lf, dlat=%7.4lf, dlon=%7.4lf, ",
+          printf ( "i=%3lu, dt=%4d, flags=%08X, P=%6.1lf, dlat=%7.4lf, dlon=%7.4lf, ",
                    i, w->raw[i].dt, w->raw[i].flags, w->raw[i].p * 0.01, w->raw[i].dlat, w->raw[i].dlon );
 
           if ( w->raw[i].ws_blw != MISSING_REAL )
@@ -241,7 +241,6 @@ size_t print_temp_a_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t )
 */
 size_t print_temp_a_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
 {
-  size_t i;
   size_t used = 0;
   char *c = *sec3;
 
@@ -251,7 +250,7 @@ size_t print_temp_a_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
     }
   else
     {
-      for ( i = 0; i < t->a.s3.n ; i++ )
+      for ( size_t i = 0; i < t->a.s3.n ; i++ )
         {
           used += snprintf ( c + used, lmax - used, " 88%s", t->a.s3.trop[i].PnPnPn );
           used += snprintf ( c + used, lmax - used, " %s%s", t->a.s3.trop[i].TnTnTan, t->a.s3.trop[i].DnDn );
@@ -275,7 +274,6 @@ size_t print_temp_a_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
 */
 size_t print_temp_a_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
 {
-  size_t i;
   size_t used = 0;
   char *c = *sec4;
 
@@ -285,7 +283,7 @@ size_t print_temp_a_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
     }
   else
     {
-      for ( i = 0; i < t->a.s4.n ; i++ )
+      for ( size_t i = 0; i < t->a.s4.n ; i++ )
         {
           if ( t->a.s4.windx[i].no_last_wind )
             {
@@ -372,7 +370,7 @@ int print_temp_a (  struct metreport *m )
   used += print_temp_a_sec3 ( &c, lmax - used, t );
   used += print_temp_a_sec4 ( &c, lmax - used, t );
   used += print_temp_a_sec7 ( &c, lmax - used, t );
-  used += snprintf ( c, lmax - used, "=" );
+  snprintf ( c, lmax - used, "=" );
   return 0;
 }
 
@@ -534,7 +532,7 @@ size_t print_temp_b_sec8 ( char **sec8, size_t lmax, struct temp_chunks *t )
   size_t used = 0;
   char *c = *sec8;
 
-  if ( t->b.s8.h[0] )
+  if ( t->b.s8.h[0] || t->b.s8.Nh[0] || t->b.s8.Cl[0] || t->b.s8.Cm[0] || t->b.s8.Ch[0] )
     {
       used += snprintf ( c + used, lmax - used, " 41414 " );
       if ( t->b.s8.Nh[0] )
@@ -626,7 +624,7 @@ int print_temp_b ( struct metreport *m )
   used += print_temp_b_sec6 ( &c, lmax - used, t );
   used += print_temp_b_sec7 ( &c, lmax - used, t );
   used += print_temp_b_sec8 ( &c, lmax - used, t );
-  used += snprintf ( c, lmax - used, "=" );
+  snprintf ( c, lmax - used, "=" );
   return 0;
 }
 
@@ -734,7 +732,6 @@ size_t print_temp_c_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t )
 */
 size_t print_temp_c_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
 {
-  size_t i;
   size_t used = 0;
   char *c = *sec3;
 
@@ -744,7 +741,7 @@ size_t print_temp_c_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
     }
   else
     {
-      for ( i = 0; i < t->c.s3.n ; i++ )
+      for ( size_t i = 0; i < t->c.s3.n ; i++ )
         {
           used += snprintf ( c + used, lmax - used, " 88%s", t->c.s3.trop[i].PnPnPn );
           used += snprintf ( c + used, lmax - used, " %s%s", t->c.s3.trop[i].TnTnTan, t->c.s3.trop[i].DnDn );
@@ -768,7 +765,6 @@ size_t print_temp_c_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
 */
 size_t print_temp_c_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
 {
-  size_t i;
   size_t used = 0;
   char *c = *sec4;
 
@@ -778,7 +774,7 @@ size_t print_temp_c_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
     }
   else
     {
-      for ( i = 0; i < t->c.s4.n ; i++ )
+      for (size_t i = 0; i < t->c.s4.n ; i++ )
         {
           if ( t->c.s4.windx[i].no_last_wind )
             {
@@ -864,7 +860,7 @@ int print_temp_c ( struct metreport *m )
   used += print_temp_c_sec3 ( &c, lmax - used, t );
   used += print_temp_c_sec4 ( &c, lmax - used, t );
   used += print_temp_c_sec7 ( &c, lmax - used, t );
-  used += snprintf ( c, lmax - used, "=" );
+  snprintf ( c, lmax - used, "=" );
   return 0;
 }
 
@@ -1046,7 +1042,7 @@ int print_temp_d ( struct metreport *m )
   used += print_temp_d_sec5 ( &c, lmax - used, t );
   used += print_temp_d_sec6 ( &c, lmax - used, t );
   used += print_temp_d_sec7 ( &c, lmax - used, t );
-  used += snprintf ( c, lmax - used, "=" );
+  snprintf ( c, lmax - used, "=" );
   return 0;
 }
 

@@ -40,7 +40,7 @@
 
   If standard WMO tables are used, the Originating centre xxxxx will be set to
 */
-char * get_ecmwf_tablename ( char *target, char type, char *bufrtables_dir, int ksec1[40] )
+char * get_ecmwf_tablename ( char *target, char type, const char *bufrtables_dir, const int ksec1[40] )
 {
   if ( 0 )
     {
@@ -77,7 +77,7 @@ int read_table_c ( char tablec[MAXLINES_TABLEC][92], size_t *nlines_tablec, char
       return 0;
     }
 
-  while ( fgets ( tablec[i], 90, t ) != NULL && i < MAXLINES_TABLEC )
+  while ( i < MAXLINES_TABLEC && fgets ( tablec[i], 90, t ) != NULL )
     {
       // supress the newline
       if ( ( c = strrchr ( tablec[i],'\n' ) ) != NULL )
@@ -100,7 +100,7 @@ int read_table_c ( char tablec[MAXLINES_TABLEC][92], size_t *nlines_tablec, char
 
   If something went wrong, it returns NULL . Otherwise it returns \a expl
 */
-char * get_explained_table_val ( char *expl, size_t dim, char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec, struct bufr_descriptor *d, int ival )
+char * get_explained_table_val ( char *expl, size_t dim, const char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec, const struct bufr_descriptor *d, int ival )
 {
   char *c;
   long nv, v,  nl;
@@ -178,7 +178,7 @@ char * get_explained_table_val ( char *expl, size_t dim, char tablec[MAXLINES_TA
 
   If something went wrong, it returns NULL . Otherwise it returns \a expl
 */
-char * get_explained_flag_val ( char *expl, size_t dim, char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec, struct bufr_descriptor *d, unsigned long ival )
+char * get_explained_flag_val ( char *expl, size_t dim, const char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec, const struct bufr_descriptor *d, unsigned long ival )
 {
   char *c, *s;
   unsigned long test, test0;

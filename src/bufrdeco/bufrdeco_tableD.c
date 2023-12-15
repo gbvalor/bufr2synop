@@ -35,7 +35,7 @@ int bufr_read_tableD ( struct bufrdeco *b )
   char *tk[16];
   int nt;
   FILE *t;
-  buf_t ix = 0;
+  buf_t ix;
   buf_t i = 0;
   int j0, nj = 0;
   char oldkey[8];
@@ -215,12 +215,12 @@ int bufrdeco_tableD_get_descriptors_array ( struct bufr_sequence *s, struct bufr
   char *c;
   struct bufr_tableD *td;
 
-  bufrdeco_assert ( b != NULL && s != NULL && key != NULL );
+  bufrdeco_assert ( b != NULL );
   
   td = & ( b->tables->d );
 
   // Reject wrong arguments
-  if ( s == NULL || b == NULL || key == NULL )
+  if ( s == NULL || key == NULL )
     {
       snprintf ( b->error, sizeof (b->error),"%s(): Wrong entry arguments\n", __func__ );
       return 1;

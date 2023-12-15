@@ -152,7 +152,7 @@ int bufr_read_tableB ( struct bufrdeco *b )
 
 
 /*!
-  \fn int bufr_restore_original_tableB_item ( struct bufr_tableB *tb, struct bufrdeco *b, uint8_t mode, char *key )
+  \fn int bufr_restore_original_tableB_item ( struct bufr_tableB *tb, struct bufrdeco *b, uint8_t mode, const char *key )
   \brief Restores the original table B parameters for a BUFR descriptor
   \param tb pointer to struct \ref bufr_tableB where are stored all table B data
   \param b pointer to the basic struct \ref bufrdeco
@@ -160,7 +160,7 @@ int bufr_read_tableB ( struct bufrdeco *b )
   \param key descriptor string in format FXXYYY
   \return  0 if success, 1 otherwise
 */
-int bufr_restore_original_tableB_item ( struct bufr_tableB *tb, struct bufrdeco *b, uint8_t mode, char *key )
+int bufr_restore_original_tableB_item ( struct bufr_tableB *tb, struct bufrdeco *b, uint8_t mode, const char *key )
 {
   buf_t i;
 

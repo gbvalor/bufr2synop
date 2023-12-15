@@ -30,7 +30,7 @@
 
   Returns 1 if success, 0 othewise
 */
-int is_bufr ( unsigned char *b )
+int is_bufr ( const unsigned char *b )
 {
   if ( b[0] == 'R' && b[1] == 'F' && b[2] == 'U' && b[3] == 'B' )
     return 1;
@@ -44,7 +44,7 @@ int is_bufr ( unsigned char *b )
 
   Returns 1 if success, 0 othewise
 */
-int is_head ( unsigned char *b )
+int is_head (const unsigned char *b )
 {
   if ( b[0] == '*' && b[1] == '*' && b[2] == '*' && b[3] == '*' )
     return 1;
@@ -58,7 +58,7 @@ int is_head ( unsigned char *b )
  \param mark char to be found repeated four times since \a b 
   Returns 1 if success, 0 othewise
 */
-int is_head_custom ( unsigned char *b, char mark )
+int is_head_custom ( const unsigned char *b, char mark )
 {
   if ( b[0] == mark && b[1] == mark && b[2] == mark && b[3] == mark )
     return 1;
@@ -73,7 +73,7 @@ int is_head_custom ( unsigned char *b, char mark )
 
   Returns 1 if success, 0 othewise
 */
-int is_endb ( unsigned char *b )
+int is_endb ( const unsigned char *b )
 {
   if ( b[0] == '7' && b[1] == '7' && b[2] == '7' && b[3] == '7' )
     return 1;
@@ -121,7 +121,7 @@ int timeval_substract ( struct timeval *result, struct timeval *x,
   \brief returns 1 if selected message 0 otherwise
   \param name string with name to check
 */
-int bufr_is_selected ( char *name )
+int bufr_is_selected ( const char *name )
 {
   if ( strlen ( SEL ) == 0 )
     return 0;
@@ -175,7 +175,7 @@ int date_mtime_from_stat ( char *date, struct stat *st )
  \param filename string with the pathname of file to modify
  \param st pointer to a struct stat as reference
 */
-int mtime_from_stat ( char *filename, struct stat *st )
+int mtime_from_stat ( char *filename, const struct stat *st )
 {
   struct utimbuf ut;
   ut.modtime = st->st_mtime;

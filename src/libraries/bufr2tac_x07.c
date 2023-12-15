@@ -161,7 +161,7 @@ int syn_parse_x07 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int buoy_parse_x07 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
+int buoy_parse_x07 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 {
 
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
@@ -205,7 +205,7 @@ int buoy_parse_x07 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int climat_parse_x07 ( struct climat_chunks *c, struct bufr2tac_subset_state *s )
+int climat_parse_x07 ( const struct climat_chunks *c, struct bufr2tac_subset_state *s )
 {
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
     {

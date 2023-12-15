@@ -220,7 +220,6 @@ int main ( int argc, char *argv[] )
   unsigned char b[5], header[256];
   unsigned int expected = 0;
   char name[256], namex[256], namec[256];
-  double tx;
   struct timeval tini, tfin, tt;
 
   // Initial time
@@ -498,6 +497,7 @@ int main ( int argc, char *argv[] )
   // A brief stat output
   if ( VERBOSE )
     {
+      double tx;
       printf ( "Found %lu bufr reports. Selected: %lu. Wrong: %lu\n", nbuf, nsel, nerr );
       timeval_substract ( &tt, &tfin, &tini );
       tx = ( double ) tt.tv_sec + ( double ) tt.tv_usec *1e-6;

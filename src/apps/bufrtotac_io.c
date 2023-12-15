@@ -94,7 +94,7 @@ char *bufrtotac_get_version(char *version, size_t dversion, char *build, size_t 
 #if defined(__INTEL_COMPILER)
        used += snprintf(build + used, dbuild - used, "using INTEL C compiler icc %d.%d ", __INTEL_COMPILER, __INTEL_COMPILER_UPDATE);
 #elif defined(__clang_version__) 
-       used += snprintf(build + used, dbuild - used, "using clang C compiler ", __clang_version__);
+       used += snprintf(build + used, dbuild - used, "using clang C compiler %s ", __clang_version__);
 #elif defined(__GNUC__) 
        used += snprintf(build + used, dbuild - used, "using GNU C compiler gcc %d.%d.%d ", __GNUC__ , __GNUC_MINOR__ , __GNUC_PATCHLEVEL__);
 #elif defined(_MSC_VER) 
@@ -418,7 +418,7 @@ int bufrtotac_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subse
 */
 char * get_bufrfile_path ( char *filename, char *fileoffset, char *err )
 {
-  char aux[256], *c;
+  char aux[256];
   if ( LISTOFFILES[0] == 0 )
     {
       if ( NFILES == 0 )
@@ -440,7 +440,7 @@ char * get_bufrfile_path ( char *filename, char *fileoffset, char *err )
     }
   if ( fgets ( aux, 256, FL ) )
     {
-      c =  strrchr ( aux,'\n' );
+      char *c =  strrchr ( aux,'\n' );
       if ( c )
         *c = 0;
       strcpy ( filename, aux );

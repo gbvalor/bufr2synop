@@ -25,7 +25,7 @@
 
 
 
-int print_xml_alphanum ( FILE *f, char *type, char *alphanum, struct metreport *m )
+int print_xml_alphanum ( FILE *f, const char *type, const char *alphanum, struct metreport *m )
 {
   // prints header
   fprintf ( f, "<metreport type=%s>\n", type );

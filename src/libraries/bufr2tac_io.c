@@ -31,7 +31,7 @@
   \param filename string with complete pathname of bufr file to read
   \param length On input max length allocated by caller. On output real length of bufr
 */
-int read_bufr ( unsigned char *bufr, char *filename, int *length )
+int read_bufr ( unsigned char *bufr, const char *filename, int *length )
 {
   int aux;
   size_t n = 0;

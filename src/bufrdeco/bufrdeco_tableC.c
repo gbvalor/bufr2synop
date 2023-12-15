@@ -165,7 +165,7 @@ int bufr_find_tableC_csv_index ( buf_t *index, struct bufr_tableC *tc, const cha
   \param ival integer value for the descriptor
   \return If something went wrong, it returns NULL . Otherwise it returns \a expl
 */
-char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tableC *tc, uint32_t *index, struct bufr_descriptor *d, uint32_t ival )
+char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tableC *tc, uint32_t *index, const struct bufr_descriptor *d, uint32_t ival )
 {
   buf_t i;
 
@@ -197,7 +197,7 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tableC
   1 when all others are also set to one, i.e. in case of missing value.
 
 */
-char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tableC *tc, struct bufr_descriptor *d,
+char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tableC *tc, const struct bufr_descriptor *d,
     uint64_t ival, uint8_t nbits )
 {
   size_t used = 0;
@@ -231,7 +231,7 @@ char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tableC 
           if ( ival == 0 )
             {
               used += snprintf ( expl + used, dim - used, "|" );
-              used += snprintf ( expl + used, dim - used, "%s", tc->item[i].description );
+              snprintf ( expl + used, dim - used, "%s", tc->item[i].description );
               return expl;
             }
         }

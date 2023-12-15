@@ -69,7 +69,7 @@ char *bufrdeco_get_version ( char *version, size_t dversion, char *build, size_t
 #if defined(__INTEL_COMPILER)
       used += snprintf ( build + used, dbuild - used, "using INTEL C compiler icc %d.%d ", __INTEL_COMPILER, __INTEL_COMPILER_UPDATE );
 #elif defined(__clang_version__)
-      used += snprintf ( build + used, dbuild - used, "using clang C compiler ", __clang_version__ );
+      used += snprintf ( build + used, dbuild - used, "using clang C compiler %s ", __clang_version__ );
 #elif defined(__GNUC__)
       used += snprintf ( build + used, dbuild - used, "using GNU C compiler gcc %d.%d.%d ", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__ );
 #elif defined(_MSC_VER)
@@ -297,7 +297,7 @@ int bufrdeco_close ( struct bufrdeco *b )
  * The default directories are '/usr/share/bufr2synop' and '/usr/local/share/bufr2synop'
  *
  */
-int bufrdeco_set_tables_dir ( struct bufrdeco *b, char *tables_dir )
+int bufrdeco_set_tables_dir ( struct bufrdeco *b, const char *tables_dir )
 {
   bufrdeco_assert_with_return_val ( b != NULL, 1 );
 
@@ -337,12 +337,12 @@ int bufrdeco_get_bufr ( struct bufrdeco *b, char *filename )
  * \param b pointer to the struct \ref bufrdeco
  * \return 1 if problem, 0 otherwise
  */
-int bufrdeco_write_subset_offset_bits ( struct bufrdeco *b, char *filename )
+int bufrdeco_write_subset_offset_bits ( struct bufrdeco *b, const char *filename )
 {
   FILE *f;
 
   // assert nice args
-  bufrdeco_assert_with_return_val ( b != NULL || filename == NULL, 1 );
+  bufrdeco_assert_with_return_val ( b != NULL && filename != NULL, 1 );
 
   // open the file
   f = fopen ( filename, "w" );
@@ -405,13 +405,13 @@ int bufrdeco_read_subset_offset_bits ( struct bufrdeco *b, char *filename )
  */
 struct bufrdeco_subset_sequence_data *bufrdeco_get_target_subset_sequence_data ( buf_t nset, struct bufrdeco *b )
 {
-  buf_t n = 0;
+  buf_t n;
   bufrdeco_assert ( b != NULL );
   uint32_t mask0 = b->mask;
   
   if ( b->sec3.subsets <= nset )
     {
-      snprintf ( b->error, sizeof ( b->error ), "%s(): The index of target subset is over the bufr subsets (%d)\n", __func__, b->sec3.subsets );
+      snprintf ( b->error, sizeof ( b->error ), "%s(): The index of target subset is over the bufr subsets (%u)\n", __func__, b->sec3.subsets );
       return NULL;
     }
 

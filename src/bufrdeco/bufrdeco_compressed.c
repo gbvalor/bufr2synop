@@ -446,7 +446,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
   struct bufrdeco_decode_subset_bitacora *dsb;
   struct bufrdeco_decode_subset_event event;
   struct bufr_replicator replicator;
-  struct bufr_sequence *l = rep->s; // sequence
+  struct bufr_sequence *l; // sequence
 
   // check arguments
   if ( b == NULL )
@@ -458,6 +458,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
       return 1;
     }
 
+   l = rep->s; 
   // if no loops the we save process time and space in data
   if ( rep->nloops == 0 )
     return 0;
@@ -511,7 +512,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
 
               if ( b->state.associated.nd && l->lseq[i].x != 31 )
                 {
-                  j = b->state.associated.nd;
+                  //j = b->state.associated.nd;
                   for ( j = 1; j <= b->state.associated.nd ; j++ )
                     {
                       rf = & ( r->refs[r->nd] );

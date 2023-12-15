@@ -412,7 +412,6 @@ size_t print_synop_sec2 ( char **sec2, size_t lmax, struct synop_chunks *syn )
 */
 size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
 {
-  size_t i;
   char *c = *sec3;
   size_t used = 0, used0;
 
@@ -506,7 +505,7 @@ size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
               used += snprintf ( c + used, lmax - used, " 55%s", syn->s3.SSS );
             }
 
-          for ( i = 0; i < 7; i++ )
+          for ( size_t i = 0; i < 7; i++ )
             {
               if ( syn->s3.j524[i][0] )
                 {
@@ -530,7 +529,7 @@ size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
               used += snprintf ( c + used, lmax - used, " 553%s", syn->s3.SS );
             }
 
-          for ( i = 0; i < 7; i++ )
+          for ( size_t i = 0; i < 7; i++ )
             {
               if ( syn->s3.j5[i][0] )
                 {
@@ -623,7 +622,7 @@ size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
         }
 
       // additional cloud layers
-      for ( i = 0; i < 4 ; i++ )
+      for ( size_t i = 0; i < 4 ; i++ )
         {
           if ( syn->s3.nub[i].hshs[0] )
             {
@@ -659,7 +658,7 @@ size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
         }
 
       // additional info
-      for ( i = 0; i < syn->s3.d9.n && i < SYNOP_NMISC ; i++ )
+      for ( size_t i = 0; i < syn->s3.d9.n && i < SYNOP_NMISC ; i++ )
         {
           if ( syn->s3.d9.misc[i].SpSp[0] && syn->s3.d9.misc[i].spsp[0] )
             {
@@ -672,9 +671,9 @@ size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
       if ( syn->mask & SYNOP_SEC3_8 )
         {
           used += snprintf ( c + used, lmax - used, " 80000" );
-          for ( i = 0; i < SYNOP_NMISC; i++ )
+          for ( size_t i = 0; i < SYNOP_NMISC; i++ )
             {
-              if ( syn->s3.R8[i][0] || syn->s3.R8[i][0] || syn->s3.R8[i][0] || syn->s3.R8[i][0] )
+              if ( syn->s3.R8[i][0] || syn->s3.R8[i][1] || syn->s3.R8[i][2] || syn->s3.R8[i][3] )
                 {
                   if ( syn->s3.R8[i][0] == 0 )
                     {
@@ -772,7 +771,6 @@ size_t print_synop_sec4 ( char **sec4, size_t lmax, struct synop_chunks *syn )
 */
 size_t print_synop_sec5 ( char **sec5, size_t lmax, struct synop_chunks *syn )
 {
-  size_t i;
   char *c = *sec5;
   size_t used = 0, used0;
 
@@ -799,7 +797,7 @@ size_t print_synop_sec5 ( char **sec5, size_t lmax, struct synop_chunks *syn )
         }
 
       // additional info
-      for ( i = 0; i < syn->s5.d9.n ; i++ )
+      for ( size_t i = 0; i < syn->s5.d9.n ; i++ )
         {
           used += snprintf ( c + used, lmax - used, " %s%s", syn->s5.d9.misc[i].SpSp, syn->s5.d9.misc[i].spsp );
         }

@@ -294,7 +294,7 @@ int climat_parse_x10 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int temp_parse_x10 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
+int temp_parse_x10 ( const struct temp_chunks *t, struct bufr2tac_subset_state *s )
 {
   if ( t == NULL || s == NULL )
     {

@@ -40,7 +40,7 @@ int sprint_sec0_info_html ( char *target, size_t lmax, struct bufrdeco *b )
   used += snprintf ( target + used, lmax - used, "<table class='bufr_sec0'>\n<caption>SEC 0 INFO</caption>\n" );
   used += snprintf ( target + used, lmax - used, "<tr><td>Bufr length</td><td>%5u</td></tr>\n", b->sec0.bufr_length );
   used += snprintf ( target + used, lmax - used, "<tr><td>Bufr edition</td><td>%5u</td></tr>\n", b->sec0.edition );
-  used += snprintf ( target + used, lmax - used, "</table>\n" );
+  snprintf ( target + used, lmax - used, "</table>\n" );
   return 0;
 }
 
@@ -89,7 +89,7 @@ int sprint_sec1_info_html ( char *target, size_t lmax, struct bufrdeco *b )
       used += snprintf ( target + used , lmax - used,"'%s'</td></tr>\n", b->tables->d.path );
     }
   used += snprintf ( target + used , lmax - used,"</table>\n" );
-  used += snprintf ( target + used , lmax - used,"</div>\n" );
+  snprintf ( target + used , lmax - used,"</div>\n" );
   return 0;
 }
 
@@ -121,7 +121,7 @@ int sprint_sec3_info_html ( char *target, size_t lmax, struct bufrdeco *b )
                      b->sec3.unexpanded[i].x, b->sec3.unexpanded[i].y );
     }
   used += snprintf ( target + used , lmax - used,"</table>\n" );
-  used += snprintf ( target + used , lmax - used,"</div>\n" );
+  snprintf ( target + used , lmax - used,"</div>\n" );
   return 0;
 }
 
@@ -143,7 +143,7 @@ int sprint_sec4_info_html ( char *target, size_t lmax, struct bufrdeco *b )
   used += snprintf ( target + used , lmax - used,"<table>\n<caption>SEC 4 INFO</caption>\n" );
   used += snprintf ( target + used , lmax - used,"<tr><td>Sec4 length</td><td>%5u</td></tr>\n", b->sec4.length );
   used += snprintf ( target + used , lmax - used,"</table>\n" );
-  used += snprintf ( target + used , lmax - used,"</div>\n" );
+  snprintf ( target + used , lmax - used,"</div>\n" );
   return 0;
 }
 
@@ -170,26 +170,26 @@ char * bufrdeco_print_atom_data_html ( char *target, size_t lmax, struct bufr_at
   if ( a->mask & DESCRIPTOR_VALUE_MISSING )
     {
       if ( a->is_bitmaped_by != 0 )
-        used += snprintf ( target + used , lmax - used,"<td class='missing'>MISSING</td><td>NOTE: Bitmaped by <a href='#d%u_%u'>#%u</a></td>", ss, a->is_bitmaped_by, a->is_bitmaped_by );
+        snprintf ( target + used , lmax - used,"<td class='missing'>MISSING</td><td>NOTE: Bitmaped by <a href='#d%u_%u'>#%u</a></td>", ss, a->is_bitmaped_by, a->is_bitmaped_by );
       else if ( a->bitmap_to != 0 )
-        used += snprintf ( target + used , lmax - used,"<td class='missing'>MISSING</td><td>NOTE: Bitmap to <a href='#d%u_%u'>#%u</a></td>", ss, a->bitmap_to, a->bitmap_to );
+        snprintf ( target + used , lmax - used,"<td class='missing'>MISSING</td><td>NOTE: Bitmap to <a href='#d%u_%u'>#%u</a></td>", ss, a->bitmap_to, a->bitmap_to );
       else if ( a->related_to != 0 )
-        used += snprintf ( target + used , lmax - used,"<td class='missing'>MISSING</td><td>NOTE: Related to <a href='#d%u_%u'>#%u</a></td>", ss, a->related_to, a->related_to );
+        snprintf ( target + used , lmax - used,"<td class='missing'>MISSING</td><td>NOTE: Related to <a href='#d%u_%u'>#%u</a></td>", ss, a->related_to, a->related_to );
       else
-        used += snprintf ( target + used , lmax - used,"<td class='missing'>MISSING</td><td></td>" );
+        snprintf ( target + used , lmax - used,"<td class='missing'>MISSING</td><td></td>" );
     }
   else
     {
       if ( a->mask & DESCRIPTOR_HAVE_STRING_VALUE )
         {
           if ( a->is_bitmaped_by != 0 )
-            used += snprintf ( target + used , lmax - used,"<td></td><td class='cval'>%s<br>NOTE: Bitmaped by <a href='#d%u_%u'>#%u</a></td>\n", a->cval, ss, a->is_bitmaped_by, a->is_bitmaped_by );
+            snprintf ( target + used , lmax - used,"<td></td><td class='cval'>%s<br>NOTE: Bitmaped by <a href='#d%u_%u'>#%u</a></td>\n", a->cval, ss, a->is_bitmaped_by, a->is_bitmaped_by );
           else if ( a->bitmap_to != 0 )
-            used += snprintf ( target + used , lmax - used,"<td></td><td class='cval'>%s<br>NOTE: Bitmap to <a href='#d%u_%u'>#%u</a></td>\n", a->cval, ss, a->bitmap_to, a->bitmap_to );
+            snprintf ( target + used , lmax - used,"<td></td><td class='cval'>%s<br>NOTE: Bitmap to <a href='#d%u_%u'>#%u</a></td>\n", a->cval, ss, a->bitmap_to, a->bitmap_to );
           else if ( a->related_to != 0 )
-            used += snprintf ( target + used , lmax - used,"<td></td><td class='cval'>%s<br>NOTE: Related to <a href='#d%u_%u'>#%u</a></td>\n", a->cval, ss, a->related_to, a->related_to );
+            snprintf ( target + used , lmax - used,"<td></td><td class='cval'>%s<br>NOTE: Related to <a href='#d%u_%u'>#%u</a></td>\n", a->cval, ss, a->related_to, a->related_to );
           else
-            used += snprintf ( target + used , lmax - used,"<td></td><td class='cval'>%s</td>\n", a->cval );
+            snprintf ( target + used , lmax - used,"<td></td><td class='cval'>%s</td>\n", a->cval );
         }
       else if ( a->mask & DESCRIPTOR_HAVE_CODE_TABLE_STRING
                 || strstr ( a->unit, "CODE TABLE" ) == a->unit
@@ -197,36 +197,36 @@ char * bufrdeco_print_atom_data_html ( char *target, size_t lmax, struct bufr_at
         {
           used += snprintf ( target + used , lmax - used,"<td class='ival'>%17u</td>", ( uint32_t ) a->val );
           if ( a->is_bitmaped_by != 0 )
-            used += snprintf ( target + used , lmax - used,"<td class='ctable'>%s<br>NOTE: Bitmaped by <a href='#d%u_%u'>#%u</a></td>\n", a->ctable, ss, a->is_bitmaped_by, a->is_bitmaped_by );
+            snprintf ( target + used , lmax - used,"<td class='ctable'>%s<br>NOTE: Bitmaped by <a href='#d%u_%u'>#%u</a></td>\n", a->ctable, ss, a->is_bitmaped_by, a->is_bitmaped_by );
           else if ( a->bitmap_to != 0 )
-            used += snprintf ( target + used , lmax - used,"<td class='ctable'>%s<br>NOTE: Bitmap to <a href='#d%u_%u'>#%u</a></td>\n", a->ctable, ss, a->bitmap_to, a->bitmap_to  );
+            snprintf ( target + used , lmax - used,"<td class='ctable'>%s<br>NOTE: Bitmap to <a href='#d%u_%u'>#%u</a></td>\n", a->ctable, ss, a->bitmap_to, a->bitmap_to  );
           else if ( a->related_to != 0 )
-            used += snprintf ( target + used , lmax - used,"<td class='ctable'>%s<br>NOTE: Related to <a href='#d%u_%u'>#%u</a></td>\n", a->ctable, ss, a->related_to, a->related_to  );
+            snprintf ( target + used , lmax - used,"<td class='ctable'>%s<br>NOTE: Related to <a href='#d%u_%u'>#%u</a></td>\n", a->ctable, ss, a->related_to, a->related_to  );
           else
-            used += snprintf ( target + used , lmax - used,"<td class='ctable'>%s</td>\n", a->ctable );
+            snprintf ( target + used , lmax - used,"<td class='ctable'>%s</td>\n", a->ctable );
         }
       else if ( a->mask & DESCRIPTOR_HAVE_FLAG_TABLE_STRING )
         {
           used += snprintf ( target + used , lmax - used,"<td class='hval'>0x%08X</td>", ( uint32_t ) a->val );
           if ( a->is_bitmaped_by != 0 )
-            used += snprintf ( target + used , lmax - used,"<td class='ctable'>%s<br>NOTE: Bitmaped by <a href='#%du_%u'>#%u</a></td>\n", a->ctable, ss, a->is_bitmaped_by, a->is_bitmaped_by );
+            snprintf ( target + used , lmax - used,"<td class='ctable'>%s<br>NOTE: Bitmaped by <a href='#d%u_%u'>#%u</a></td>\n", a->ctable, ss, a->is_bitmaped_by, a->is_bitmaped_by );
           else if ( a->bitmap_to != 0 )
-            used += snprintf ( target + used , lmax - used,"<td class='ctable'>%s<br>NOTE: Bitmap to <a href='#d%u_%u'>#%u</a></td>\n", a->ctable, ss, a->bitmap_to, a->bitmap_to  );
+            snprintf ( target + used , lmax - used,"<td class='ctable'>%s<br>NOTE: Bitmap to <a href='#d%u_%u'>#%u</a></td>\n", a->ctable, ss, a->bitmap_to, a->bitmap_to  );
           else if ( a->related_to != 0 )
-            used += snprintf ( target + used , lmax - used,"<td class='ctable'>%s<br>NOTE: Related to <a href='#d%u_%u'>#%u</a></td>\n", a->ctable, ss, a->related_to, a->related_to  );
+            snprintf ( target + used , lmax - used,"<td class='ctable'>%s<br>NOTE: Related to <a href='#d%u_%u'>#%u</a></td>\n", a->ctable, ss, a->related_to, a->related_to  );
           else
-            used += snprintf ( target + used , lmax - used,"<td class='ctable'>%s</td>\n", a->ctable );
+            snprintf ( target + used , lmax - used,"<td class='ctable'>%s</td>\n", a->ctable );
         }
       else
         {
           if ( a->is_bitmaped_by != 0 )
-            used += snprintf ( target + used , lmax - used,"<td class='rval'>%s</td><td>NOTE: Bitmaped by <a href='#d%u_%u'>#%u</a></td>" , get_formatted_value_from_escale ( aux, sizeof (aux), a->escale, a->val ), ss, a->is_bitmaped_by, a->is_bitmaped_by );
+            snprintf ( target + used , lmax - used,"<td class='rval'>%s</td><td>NOTE: Bitmaped by <a href='#d%u_%u'>#%u</a></td>" , get_formatted_value_from_escale ( aux, sizeof (aux), a->escale, a->val ), ss, a->is_bitmaped_by, a->is_bitmaped_by );
           else if ( a->bitmap_to != 0 )
-            used += snprintf ( target + used , lmax - used,"<td class='rval'>%s</td><td>NOTE: Bitmap to <a href='#d%u_%u'>#%u</a></td>" , get_formatted_value_from_escale ( aux, sizeof (aux), a->escale, a->val ) , ss, a->bitmap_to, a->bitmap_to );
+            snprintf ( target + used , lmax - used,"<td class='rval'>%s</td><td>NOTE: Bitmap to <a href='#d%u_%u'>#%u</a></td>" , get_formatted_value_from_escale ( aux, sizeof (aux), a->escale, a->val ) , ss, a->bitmap_to, a->bitmap_to );
           else if ( a->related_to != 0 )
-            used += snprintf ( target + used , lmax - used,"<td class='rval'>%s</td><td>NOTE: Related to <a href='#d%u_%u'>#%u</a></td>" , get_formatted_value_from_escale ( aux, sizeof (aux), a->escale, a->val ), ss, a->related_to, a->related_to );
+            snprintf ( target + used , lmax - used,"<td class='rval'>%s</td><td>NOTE: Related to <a href='#d%u_%u'>#%u</a></td>" , get_formatted_value_from_escale ( aux, sizeof (aux), a->escale, a->val ), ss, a->related_to, a->related_to );
           else
-            used += snprintf ( target + used , lmax - used,"<td class='rval'>%s</td><td></td>" , get_formatted_value_from_escale ( aux, sizeof (aux), a->escale, a->val ) );
+            snprintf ( target + used , lmax - used,"<td class='rval'>%s</td><td></td>" , get_formatted_value_from_escale ( aux, sizeof (aux), a->escale, a->val ) );
         }
     }
   return target;

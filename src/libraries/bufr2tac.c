@@ -63,7 +63,7 @@ char *bufr2tac_get_version(char *version, size_t dversion, char *build, size_t d
 #if defined(__INTEL_COMPILER)
        used += snprintf(build + used, dbuild - used, "using INTEL C compiler icc %d.%d ", __INTEL_COMPILER, __INTEL_COMPILER_UPDATE);
 #elif defined(__clang_version__) 
-       used += snprintf(build + used, dbuild - used, "using clang C compiler ", __clang_version__);
+       used += snprintf(build + used, dbuild - used, "using clang C compiler %s ", __clang_version__);
 #elif defined(__GNUC__) 
        used += snprintf(build + used, dbuild - used, "using GNU C compiler gcc %d.%d.%d ", __GNUC__ , __GNUC_MINOR__ , __GNUC_PATCHLEVEL__);
 #elif defined(_MSC_VER) 

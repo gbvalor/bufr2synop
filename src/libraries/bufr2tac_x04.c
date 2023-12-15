@@ -30,7 +30,7 @@
 
   Returns -1 if no duration is computed. Otherwise returns time duration in seconds
 */
-int time_period_duration ( struct bufr2tac_subset_state *s )
+int time_period_duration ( const struct bufr2tac_subset_state *s )
 {
   if ( s->k_itval == ( s->k_jtval + 1 ) )
     {

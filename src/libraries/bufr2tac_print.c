@@ -29,7 +29,7 @@
   \param f pointer to file where to write to
   \param m pointer to struct \ref metreport where the decoded report is stored
 */
-int print_plain ( FILE *f, struct metreport *m )
+int print_plain ( FILE *f, const struct metreport *m )
 {
   if ( m->alphanum[0] )
     fprintf ( f, "%s\n", m->alphanum );
@@ -48,7 +48,7 @@ int print_plain ( FILE *f, struct metreport *m )
   \param f pointer to file where to write to
   \param m pointer to struct \ref metreport where the decoded report is stored
 */
-int print_html ( FILE *f, struct metreport *m )
+int print_html ( FILE *f, const struct metreport *m )
 {
   fprintf(f, "<pre>");
   if ( m->alphanum[0] )

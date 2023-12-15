@@ -30,7 +30,7 @@
  * \param source source string
  * \return The amount of bytes sent to out
  */
-buf_t bufrdeco_print_json_scape_string_cvals ( FILE *out, char *source )
+buf_t bufrdeco_print_json_scape_string_cvals ( FILE *out, const char *source )
 {
   buf_t i = 0, used = 0;
   while ( source[i] )
@@ -91,7 +91,7 @@ buf_t bufrdeco_print_json_subset_data_epilogue ( FILE *out )
  *
  * \return The amount of bytes sent to out
  */
-buf_t bufrdeco_print_json_sequence_descriptor_header ( FILE *out,  struct bufr_sequence *seq )
+buf_t bufrdeco_print_json_sequence_descriptor_header ( FILE *out,  const struct bufr_sequence *seq )
 {
   buf_t used = 0;
 
@@ -132,7 +132,7 @@ buf_t bufrdeco_print_json_sequence_descriptor_final ( FILE *out )
  * { "descriptor":"f xx yyy", "name":"name_of_descriptor" , "unit":"Flag value", "value":"numeric_value", "meaning":"explanation_string}
  * { "descriptor":"f xx yyy", "name":"name_of_descriptor" , "unit":"name_of_unit", "value":"numeric_value"}
  */
-buf_t bufrdeco_print_json_object_atom_data ( FILE *out,  struct bufr_atom_data *a, buf_t index_data, struct bufrdeco *b, char *add )
+buf_t bufrdeco_print_json_object_atom_data ( FILE *out,  struct bufr_atom_data *a, buf_t index_data, struct bufrdeco *b, const char *add )
 {
   char aux[256];
   buf_t used = 0;
@@ -202,7 +202,7 @@ buf_t bufrdeco_print_json_object_atom_data ( FILE *out,  struct bufr_atom_data *
  *
  * \return The amount of bytes sent to out
  */
-buf_t bufrdeco_print_json_object_operator_descriptor ( FILE *out,  struct bufr_descriptor *d, char *add )
+buf_t bufrdeco_print_json_object_operator_descriptor ( FILE *out,  struct bufr_descriptor *d, const char *add )
 {
   buf_t used = 0;
   char explanation[256];
@@ -229,7 +229,7 @@ buf_t bufrdeco_print_json_object_operator_descriptor ( FILE *out,  struct bufr_d
  *
  * \return The amount of bytes sent to out
  */
-buf_t bufrdeco_print_json_object_replicator_descriptor ( FILE *out,  struct bufr_descriptor *d, char *add )
+buf_t bufrdeco_print_json_object_replicator_descriptor ( FILE *out,  const struct bufr_descriptor *d, const char *add )
 {
   buf_t used = 0;
 
@@ -439,13 +439,10 @@ buf_t bufrdeco_print_json_tree_recursive ( FILE *out, struct bufrdeco *b, struct
                   used += fprintf ( out, ":\"" );
                   if ( l->replicated[i] )
                     {
-                      if ( l->replicated[i] )
-                        {
-                          if ( l->replicated[i] == 1 )
-                            used += fprintf ( out, "Replicated | " );
-                          else
-                            used += fprintf ( out, "Replicated depth %u | ", l->replicated[i] );
-                        }
+                       if ( l->replicated[i] == 1 )
+                          used += fprintf ( out, "Replicated | " );
+                       else
+                          used += fprintf ( out, "Replicated depth %u | ", l->replicated[i] );
                     }
                   if ( is_a_delayed_descriptor ( & l->lseq[i] ) ||
                        is_a_short_delayed_descriptor ( & l->lseq[i] ) )
@@ -597,7 +594,7 @@ buf_t bufrdeco_print_json_subset_data ( struct bufrdeco *b )
   return used;
 }
 
-buf_t bufrdeco_print_json_object_event_data ( FILE *out,  struct bufr_atom_data *a, struct bufrdeco_decode_subset_event *event, struct bufrdeco *b, char *add )
+buf_t bufrdeco_print_json_object_event_data ( FILE *out,  struct bufr_atom_data *a, const struct bufrdeco_decode_subset_event *event, struct bufrdeco *b, const char *add )
 {
   char aux[256];
   buf_t used = 0, i, j;
@@ -606,7 +603,7 @@ buf_t bufrdeco_print_json_object_event_data ( FILE *out,  struct bufr_atom_data 
   if (a == NULL || b == NULL)
     return 0;
   
-  used += fprintf ( out,  "{\"Datafield\":\"#%u_%u\",", b->seq.ss, event->ref_index );
+  used += fprintf ( out,  "{\"Datafield\":\"#%u_%d\",", b->seq.ss, event->ref_index );
   used += fprintf ( out,  "\"Descriptor\":\"%u %02u %03u\",\"Name\":\"%s\",", a->desc.f, a->desc.x, a->desc.y, bufr_adjust_string ( a->name ) );
 
   // add aditional info keys

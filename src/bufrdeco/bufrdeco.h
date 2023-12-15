@@ -62,7 +62,7 @@ extern "C" {
   \def BUFR_LEN
   \brief Max length of a BUFR file
 */
-#define BUFR_LEN (512000)
+#define BUFR_LEN (512000U)
 
 /*!
    \def BUFR_OBS_DATA_MASK
@@ -202,33 +202,33 @@ extern "C" {
   \def BUFR_LEN_SEC1
   \brief Max length in bytes for a sec1
 */
-#define BUFR_LEN_SEC1 (8192)
+#define BUFR_LEN_SEC1 (8192U)
 
 /*!
   \def BUFR_LEN_SEC2
   \brief Max length in bytes for a sec2
 */
-#define BUFR_LEN_SEC2 (8192)
+#define BUFR_LEN_SEC2 (8192U)
 
 
 /*!
   \def BUFR_LEN_UNEXPANDED_DESCRIPTOR
   \brief Max amount of unexpanded descriptors in a SEC3
 */
-#define BUFR_LEN_UNEXPANDED_DESCRIPTOR (512)
+#define BUFR_LEN_UNEXPANDED_DESCRIPTOR (512U)
 
 
 /*!
   \def BUFR_MAX_EXPANDED_SEQUENCES
   \brief Max amount of unexpanded sequences in a struct \ref bufrdeco_expanded_tree
 */
-#define BUFR_MAX_EXPANDED_SEQUENCES (128)
+#define BUFR_MAX_EXPANDED_SEQUENCES (128U)
 
 /*!
   \def BUFR_MAX_QUALITY_DATA
   \brief Max amount of quality data which is maped by a struct \ref bufrdeco_bitmap element
 */
-#define BUFR_MAX_QUALITY_DATA (32)
+#define BUFR_MAX_QUALITY_DATA (32U)
 
 /*!
   \def BUFR_MAX_BITMAP_PRESENT_DATA
@@ -246,20 +246,20 @@ extern "C" {
  * \def BUFR_MAX_SUBSETS
  * \brief Max number of subsets in the array off bitoffset subset marks the bufrdeco library can manage
  */
-#define BUFR_MAX_SUBSETS (2048)
+#define BUFR_MAX_SUBSETS (2048U)
 
 /*!
  * \def BUFRDECO_MAX_ASSOCIATED_FIELD_STACK
  * \brief Max number of associated_fields_defined in a struct \ref bufrdeco_associated_field_stack 
  */
-#define BUFRDECO_MAX_ASSOCIATED_FIELD_STACK (4)
+#define BUFRDECO_MAX_ASSOCIATED_FIELD_STACK (4U)
 
 
 /*!
   \def BUFR_LEN_SEC3
   \brief Max length in bytes for a sec3
 */
-#define BUFR_LEN_SEC3 (8 + 2 * BUFR_LEN_UNEXPANDED_DESCRIPTOR)
+#define BUFR_LEN_SEC3 (8U + 2U * BUFR_LEN_UNEXPANDED_DESCRIPTOR)
 
 /*!
   \def BUFRDECO_OUTPUT_HTML
@@ -326,31 +326,31 @@ extern "C" {
   \def BUFR_TABLEB_NAME_LENGTH
   \brief Max length (in chars) reserved for a name of variable in table B
 */
-#define BUFR_TABLEB_NAME_LENGTH (128)
+#define BUFR_TABLEB_NAME_LENGTH (128U)
 
 /*!
   \def BUFR_TABLEB_NAME_LENGTH
   \brief Max length (in chars) reserved for the unit string in table B
 */
-#define BUFR_TABLEB_UNIT_LENGTH (64)
+#define BUFR_TABLEB_UNIT_LENGTH (64U)
 
 /*!
  * \def BUFR_CVAL_LENGTH
  * \brief Max length (in chars) of a cval in a \ref bufr_atom_data
  */
-#define BUFR_CVAL_LENGTH (128)
+#define BUFR_CVAL_LENGTH (128U)
 
 /*!
  *  \def BUFRDECO_PATH_LENGTH
  *  \brief Length for files/directory path strings
  */
-#define BUFRDECO_PATH_LENGTH (256)
+#define BUFRDECO_PATH_LENGTH (256U)
 
 /*!
  * \def BUFRDECO_TABLES_CACHE_SIZE
  * \brief Max number of structs \ref bufr_tables in a \ref bufr_tables_cache
  */
-#define BUFRDECO_TABLES_CACHE_SIZE (16)
+#define BUFRDECO_TABLES_CACHE_SIZE (16U)
 
 /*! \typedef buf_t
     \brief Type to set offsets and dimension of arrays or counters used in bufrdeco
@@ -1134,13 +1134,13 @@ int bufrdeco_parse_tree ( struct bufrdeco *b );
 int bufrdeco_init ( struct bufrdeco *b );
 int bufrdeco_close ( struct bufrdeco *b );
 int bufrdeco_reset ( struct bufrdeco *b );
-int bufrdeco_set_tables_dir ( struct bufrdeco *b, char *tables_dir );
+int bufrdeco_set_tables_dir ( struct bufrdeco *b, const char *tables_dir );
 int bufrdeco_set_out_stream (FILE *out, struct bufrdeco *b);
 int bufrdeco_set_err_stream (FILE *err, struct bufrdeco *b);
 int bufrdeco_get_bufr ( struct bufrdeco *b, char *filename );
 struct bufrdeco_subset_sequence_data *bufrdeco_get_target_subset_sequence_data ( buf_t nset, struct bufrdeco *b );
 int bufrdeco_read_subset_offset_bits ( struct bufrdeco *b, char *filename );
-int bufrdeco_write_subset_offset_bits ( struct bufrdeco *b, char *filename );
+int bufrdeco_write_subset_offset_bits ( struct bufrdeco *b, const char *filename );
 
 
 // Memory funcions
@@ -1159,15 +1159,15 @@ int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_r
 int bufrdeco_increase_compressed_ref_array ( struct bufrdeco_compressed_data_references *r );
 int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s );
 int bufrdeco_store_tables ( struct bufr_tables **t, struct bufr_tables_cache *c, uint8_t ver );
-int bufrdeco_cache_tables_search ( struct bufr_tables_cache *c, uint8_t ver );
+int bufrdeco_cache_tables_search ( const struct bufr_tables_cache *c, uint8_t ver );
 int bufrdeco_free_cache_tables ( struct bufr_tables_cache *c );
 int bufrdeco_add_event_to_bitacora ( struct bufrdeco *b, struct bufrdeco_decode_subset_event *event);
 int bufrdeco_init_subset_bitacora ( struct bufrdeco *b);
 int bufrdeco_increase_decode_subset_bitacora_array ( struct bufrdeco_decode_subset_bitacora *dsb );
 int bufrdeco_free_decode_subset_bitacora ( struct bufrdeco_decode_subset_bitacora *dsb );
 int bufrdeco_pop_associated_field (struct bufrdeco_associated_field *popped, struct bufrdeco_associated_field_stack *afs );
-int bufrdeco_push_associated_field (struct bufrdeco_associated_field *pushed, struct bufrdeco_associated_field_stack *afs );
-int bufrdeco_add_associated_field (struct bufrdeco_associated_field *added, struct bufrdeco_associated_field_array *afa );
+int bufrdeco_push_associated_field (const struct bufrdeco_associated_field *pushed, struct bufrdeco_associated_field_stack *afs );
+int bufrdeco_add_associated_field (const struct bufrdeco_associated_field *added, struct bufrdeco_associated_field_array *afa );
 
 
 // Read bufr functions
@@ -1216,7 +1216,7 @@ char * bufrdeco_print_atom_data ( char *target, size_t lmax, struct bufr_atom_da
 char * bufrdeco_print_atom_data_html ( char *target, size_t lmax, struct bufr_atom_data *a, uint32_t ss );
 char * get_formatted_value_from_escale ( char *fmt, size_t dim, int32_t escale, double val );
 char * get_formatted_value_from_escale2 ( char *fmt, size_t dim, int32_t escale, double val );
-int bufrdeco_print_event( struct bufrdeco_decode_subset_event *e, struct bufrdeco *b);
+int bufrdeco_print_event( const struct bufrdeco_decode_subset_event *e, struct bufrdeco *b);
 
 // To parse. General
 int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *father, buf_t father_idesc, const char *key );
@@ -1250,14 +1250,14 @@ buf_t bufrdeco_print_json_tree ( struct bufrdeco *b );
 buf_t bufrdeco_print_json_tree_recursive ( FILE *out, struct bufrdeco *b, struct bufr_sequence *seq );
 buf_t bufrdeco_print_json_subset_data_prologue (FILE *out,  struct bufrdeco *b );
 buf_t bufrdeco_print_json_subset_data_epilogue ( FILE *out );
-buf_t bufrdeco_print_json_object_atom_data (FILE *out, struct bufr_atom_data *a, buf_t index_data, struct bufrdeco *b, char *aux );
-buf_t bufrdeco_print_json_object_operator_descriptor (FILE *out,  struct bufr_descriptor *d, char *aux );
-buf_t bufrdeco_print_json_object_replicator_descriptor (FILE *out,  struct bufr_descriptor *d, char *aux );
-buf_t bufrdeco_print_json_object_event_data ( FILE *out,  struct bufr_atom_data *a, struct bufrdeco_decode_subset_event *event, struct bufrdeco *b, char *add );
-buf_t bufrdeco_print_json_sequence_descriptor_header (FILE *out,  struct bufr_sequence *seq );
+buf_t bufrdeco_print_json_object_atom_data (FILE *out, struct bufr_atom_data *a, buf_t index_data, struct bufrdeco *b, const char *aux );
+buf_t bufrdeco_print_json_object_operator_descriptor (FILE *out,  struct bufr_descriptor *d, const char *aux );
+buf_t bufrdeco_print_json_object_replicator_descriptor (FILE *out,  const struct bufr_descriptor *d, const char *aux );
+buf_t bufrdeco_print_json_object_event_data ( FILE *out,  struct bufr_atom_data *a, const struct bufrdeco_decode_subset_event *event, struct bufrdeco *b, const char *add );
+buf_t bufrdeco_print_json_sequence_descriptor_header (FILE *out, const struct bufr_sequence *seq );
 buf_t bufrdeco_print_json_sequence_descriptor_final ( FILE *out );
 buf_t bufrdeco_print_json_separator( FILE *out );
-buf_t bufrdeco_print_json_scape_string_cvals( FILE *out, char *source);
+buf_t bufrdeco_print_json_scape_string_cvals( FILE *out, const char *source);
 buf_t bufrdeco_print_json_subset_data_prologue ( FILE *out,  struct bufrdeco *b );
 buf_t bufrdeco_print_json_subset_data_epilogue ( FILE *out );
 buf_t bufrdeco_print_json_subset_data ( struct bufrdeco *b);
@@ -1273,8 +1273,8 @@ uint32_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *sour
 
 // Utilities for tables
 char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tableC *tc, uint32_t *index,
-                                      struct bufr_descriptor *d, uint32_t ival );
-char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tableC *tc, struct bufr_descriptor *d,
+                                      const struct bufr_descriptor *d, uint32_t ival );
+char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tableC *tc, const struct bufr_descriptor *d,
                                      uint64_t ival, uint8_t nbits );
 char * bufrdeco_explained_table_csv_val ( char *expl, size_t dim, struct bufr_tableC *tc, uint32_t *index,
     struct bufr_descriptor *d, uint32_t ival );
@@ -1299,17 +1299,17 @@ int bufrdeco_get_bitmaped_info ( struct bufrdeco_bitmap_related_vars *brv, uint3
 // utilities for descriptors
 int two_bytes_to_descriptor ( struct bufr_descriptor *d, const uint8_t *source );
 int uint32_t_to_descriptor ( struct bufr_descriptor *d, uint32_t id );
-int is_a_delayed_descriptor ( struct bufr_descriptor *d );
-int is_a_local_descriptor ( struct bufr_descriptor *d );
-int is_a_short_delayed_descriptor ( struct bufr_descriptor *d );
+int is_a_delayed_descriptor ( const struct bufr_descriptor *d );
+int is_a_local_descriptor ( const struct bufr_descriptor *d );
+int is_a_short_delayed_descriptor ( const struct bufr_descriptor *d );
 
 // Utilities for strings
 char * bufr_adjust_string ( char *s );
-char * bufr_charray_to_string ( char *s, char *buf, size_t size );
+char * bufr_charray_to_string ( char *s, const char *buf, size_t size );
 
 // I/O of bit offset for subsets
 int bufr_read_subset_offset_bits ( FILE *f, struct bufrdeco_subset_bit_offsets *off );
-int bufr_write_subset_offset_bits ( FILE *f, struct bufrdeco_subset_bit_offsets *off );
+int bufr_write_subset_offset_bits ( FILE *f, const struct bufrdeco_subset_bit_offsets *off );
 
 
 #ifdef __cplusplus

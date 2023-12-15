@@ -23,7 +23,7 @@
 */
 #include "bufr2tac.h"
 
-int print_csv_alphanum ( FILE *f, char *type, char *alphanum, struct metreport *m )
+int print_csv_alphanum ( FILE *f, const char *type, const char *alphanum, struct metreport *m )
 {
   // prints header
   fprintf ( f, "\"%s\",", type );

@@ -605,7 +605,7 @@ int bufrdeco_pop_associated_field (struct bufrdeco_associated_field *popped, str
  *  \param afs pointer to the target struct \ref bufrdeco_associated_field_stack
  *  \return If succeeded return 0, otherwise 1
  */
-int bufrdeco_push_associated_field (struct bufrdeco_associated_field *pushed, struct bufrdeco_associated_field_stack *afs )
+int bufrdeco_push_associated_field (const struct bufrdeco_associated_field *pushed, struct bufrdeco_associated_field_stack *afs )
 {
   bufrdeco_assert (afs != NULL && pushed != NULL );
 
@@ -625,7 +625,7 @@ int bufrdeco_push_associated_field (struct bufrdeco_associated_field *pushed, st
  *  \param afa pointer to the target struct \ref bufrdeco_associated_field_array
  *  \return If succeeded return 0, otherwise 1
  */
-int bufrdeco_add_associated_field (struct bufrdeco_associated_field *added, struct bufrdeco_associated_field_array *afa )
+int bufrdeco_add_associated_field (const struct bufrdeco_associated_field *added, struct bufrdeco_associated_field_array *afa )
 {
   bufrdeco_assert (afa != NULL && added != NULL );
 

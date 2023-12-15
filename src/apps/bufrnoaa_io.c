@@ -93,7 +93,7 @@ char *bufrnoaa_get_version(char *version, char *build, char *builder, int *versi
 #if defined(__INTEL_COMPILER)
        c += sprintf(build, "using INTEL C compiler icc %d.%d ", __INTEL_COMPILER, __INTEL_COMPILER_UPDATE);
 #elif defined(__clang_version__) 
-       c += sprintf(build, "using clang C compiler ", __clang_version__);
+       c += sprintf(build, "using clang C compiler %s ", __clang_version__);
 #elif defined(__GNUC__) 
        c += sprintf(build, "using GNU C compiler gcc %d.%d.%d ", __GNUC__ , __GNUC_MINOR__ , __GNUC_PATCHLEVEL__);
 #elif defined(_MSC_VER) 

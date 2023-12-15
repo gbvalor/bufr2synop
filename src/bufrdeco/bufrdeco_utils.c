@@ -313,7 +313,7 @@ int two_bytes_to_descriptor ( struct bufr_descriptor *d, const uint8_t *source )
   \param size number of chars in array
   \result the resulting s string
 */
-char * bufr_charray_to_string ( char *s, char *buf, size_t size )
+char * bufr_charray_to_string ( char *s, const char *buf, size_t size )
 {
   //bufrdeco_assert (s != NULL && buf != NULL);
 
@@ -348,7 +348,7 @@ char * bufr_adjust_string ( char *s )
   \param d pointer to a struct \ref bufr_descriptor to check
   \return If is a delayed desccriptor return 1, 0 otherwise.
 */
-int is_a_delayed_descriptor ( struct bufr_descriptor *d )
+int is_a_delayed_descriptor ( const struct bufr_descriptor *d )
 {
   //bufrdeco_assert (d != NULL);
 
@@ -366,7 +366,7 @@ int is_a_delayed_descriptor ( struct bufr_descriptor *d )
   \param d pointer to a struct \ref bufr_descriptor to check
   \return If is a delayed descriptor return 1, 0 otherwise.
 */
-int is_a_short_delayed_descriptor ( struct bufr_descriptor *d )
+int is_a_short_delayed_descriptor ( const struct bufr_descriptor *d )
 {
   //bufrdeco_assert (d != NULL);
 
@@ -385,7 +385,7 @@ int is_a_short_delayed_descriptor ( struct bufr_descriptor *d )
   \param d pointer to a struct \ref bufr_descriptor to check
   \return If is a local desccriptor return 1, 0 otherwise.
 */
-int is_a_local_descriptor ( struct bufr_descriptor *d )
+int is_a_local_descriptor ( const struct bufr_descriptor *d )
 {
   //bufrdeco_assert (d != NULL);
 
@@ -552,7 +552,7 @@ int bufrdeco_get_bitmaped_info ( struct bufrdeco_bitmap_related_vars *brv, uint3
  * \param off pointer to the struct \ref bufrdeco_subset_bit_offsets with the data to write into file
  * \return if success return 0, otherwise 1
  */
-int bufr_write_subset_offset_bits ( FILE *f, struct bufrdeco_subset_bit_offsets *off )
+int bufr_write_subset_offset_bits ( FILE *f, const struct bufrdeco_subset_bit_offsets *off )
 {
   size_t wrote;
 

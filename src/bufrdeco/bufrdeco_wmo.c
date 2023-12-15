@@ -195,7 +195,7 @@ int bufr_read_tables ( struct bufrdeco *b )
       else
         {
 #ifdef __DEBUG
-          printf ( "# Tables for version %u not found in cache. Stored in index %d\n", b->sec1.master_version, b->cache.next );
+          printf ( "# Tables for version %u not found in cache. Stored in index %u\n", b->sec1.master_version, b->cache.next );
 #endif
           // If not in cache, the new master version tables has to be stored. This implies that
           bufrdeco_store_tables ( & ( b->tables ), & ( b->cache ), b->sec1.master_version );
@@ -303,7 +303,7 @@ int bufrdeco_store_tables ( struct bufr_tables **t, struct bufr_tables_cache *c,
  * 
  * \return The index of found struct. If no struct found returns -1
  */
-int bufrdeco_cache_tables_search ( struct bufr_tables_cache *c, uint8_t ver )
+int bufrdeco_cache_tables_search ( const struct bufr_tables_cache *c, uint8_t ver )
 {
   buf_t i = 0;
 

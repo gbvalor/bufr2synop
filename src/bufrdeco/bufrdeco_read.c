@@ -165,7 +165,7 @@ int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename )
       return 1;
     }
 
-  beg = end = st.st_size;
+  beg = st.st_size;
   while ( ( aux = fgetc ( fp ) ) != EOF && ( int ) n < st.st_size )
     {
       bufrx[n++] = ( uint8_t ) aux;

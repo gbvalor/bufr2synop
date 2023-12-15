@@ -23,7 +23,7 @@
 */
 #include "bufr2tac.h"
 
-int bufr2tac_push_error ( struct bufr2tac_error_stack *e, int severity, char *description )
+int bufr2tac_push_error ( struct bufr2tac_error_stack *e, int severity, const char *description )
 {
   // avoid segfaults
   if ( e == NULL )
@@ -56,7 +56,7 @@ int bufr2tac_clean_error_stack ( struct bufr2tac_error_stack *e )
   return -1;
 }
 
-int bufr2tac_set_error ( struct bufr2tac_subset_state *s, int severity, char *origin, char *explanation )
+int bufr2tac_set_error ( struct bufr2tac_subset_state *s, int severity, const char *origin, const char *explanation )
 {
   char description[BUFR2TAC_ERROR_DESCRIPTION_LENGTH], *c;
 
@@ -84,7 +84,7 @@ int bufr2tac_set_error ( struct bufr2tac_subset_state *s, int severity, char *or
   return bufr2tac_push_error ( &s->e, severity, description );
 }
 
-int bufr2tac_print_error ( struct bufr2tac_error_stack *e )
+int bufr2tac_print_error ( const struct bufr2tac_error_stack *e )
 {
   unsigned int i;
   if ( e->ne == 0 )

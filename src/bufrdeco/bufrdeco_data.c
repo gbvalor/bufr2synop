@@ -70,12 +70,6 @@ int bufrdeco_decode_data_subset ( struct bufrdeco *b )
   s = & ( b->seq );
   r = & ( b->refs );
 
-  if ( s == NULL || r == NULL )
-    {
-      snprintf ( b->error, sizeof ( b->error ), "%s(): Unspected NULL argument(s)\n", __func__ );
-      return 1;
-    }
-
   // Check about parsed tree
   if ( b->tree == NULL || b->tree->nseq == 0 )
     {
@@ -587,7 +581,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
   buf_t i, j, k;
   buf_t ixloop; // Index for loop
   buf_t ixd; // Index for descriptor
-  struct bufr_sequence *l = r->s; // sequence
+  struct bufr_sequence *l;; // sequence
   struct bufrdeco_decode_subset_bitacora *dsb;
   struct bufr_replicator replicator;
   struct bufrdeco_decode_subset_event event;
@@ -603,6 +597,8 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
       }
     }
 
+  l = r->s; 
+  
   // to write easily
   dsb = &b->bitacora;
 

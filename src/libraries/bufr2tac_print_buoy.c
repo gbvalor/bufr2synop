@@ -304,7 +304,7 @@ size_t print_buoy_sec3 ( char **sec3, size_t lmax, struct buoy_chunks *b )
 
       // check if has 8887k2
       l = 0;
-      while ( b->s3.l1[l].zzzz[0] && l < 32 )
+      while ( l < 32 && b->s3.l1[l].zzzz[0] )
         {
           if ( l == 0 )
             {
@@ -325,7 +325,7 @@ size_t print_buoy_sec3 ( char **sec3, size_t lmax, struct buoy_chunks *b )
         }
 
       l = 0;
-      while ( b->s3.l2[l].zzzz[0] && l < 32 )
+      while ( l < 32 && b->s3.l2[l].zzzz[0] )
         {
           if ( l == 0 )
             {

@@ -23,7 +23,7 @@
 */
 #include "bufr2tac.h"
 
-int print_json_alphanum ( FILE *f, char *type, char *alphanum, struct metreport *m )
+int print_json_alphanum ( FILE *f, const char *type, const char *alphanum, struct metreport *m )
 {
   fprintf ( f, " { \n  \"type\": \"%s\",\n", type );
   if ( m->h != NULL )

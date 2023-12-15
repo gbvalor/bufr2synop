@@ -457,14 +457,14 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 }
 
 /*!
-  \fn int buoy_parse_x14 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
+  \fn int buoy_parse_x14 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *s )
   \brief Parse a expanded descriptor with X = 14
   \param b pointer to a struct \ref buoy_chunks where to set the results
   \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int buoy_parse_x14 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
+int buoy_parse_x14 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 {
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
     {
