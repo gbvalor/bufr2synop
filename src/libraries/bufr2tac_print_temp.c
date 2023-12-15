@@ -532,7 +532,7 @@ size_t print_temp_b_sec8 ( char **sec8, size_t lmax, struct temp_chunks *t )
   size_t used = 0;
   char *c = *sec8;
 
-  if ( t->b.s8.h[0] || t->b.s8.Nh[0] || t->b.s8.Cl[0] || t->b.s8.Cm[0] || t->b.s8.Ch[0] )
+  if ( t->b.s8.h[0] )
     {
       used += snprintf ( c + used, lmax - used, " 41414 " );
       if ( t->b.s8.Nh[0] )
@@ -553,14 +553,7 @@ size_t print_temp_b_sec8 ( char **sec8, size_t lmax, struct temp_chunks *t )
           used += snprintf ( c + used, lmax - used, "/" );
         }
 
-      if ( t->b.s8.h[0] )
-        {
-          used += snprintf ( c + used, lmax - used, "%s", t->b.s8.h );
-        }
-      else
-        {
-          used += snprintf ( c + used, lmax - used, "/" );
-        }
+      used += snprintf ( c + used, lmax - used, "%s", t->b.s8.h );
 
       if ( t->b.s8.Cm[0] )
         {
