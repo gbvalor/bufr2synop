@@ -61,7 +61,7 @@ char * get_ecmwf_tablename ( char *target, char type, const char *bufrtables_dir
   \fn int read_table_c(void)
   \brief read a Table C file with code TABLE and flag descriptors
 */
-int read_table_c ( char tablec[MAXLINES_TABLEC][92], size_t *nlines_tablec, char *bufrtables_dir, int ksec1[40] )
+int read_table_c ( char tablec[MAXLINES_TABLEC][92], size_t *nlines_tablec, const char *bufrtables_dir, int ksec1[40] )
 {
   char *c, file[256];
   FILE *t;

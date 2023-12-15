@@ -29,14 +29,14 @@
 #include "bufrdeco.h"
 
 /*!
-  \fn int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, struct bufr_descriptor *d, struct bufrdeco *b )
+  \fn int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, const struct bufr_descriptor *d, struct bufrdeco *b )
   \brief parse a descritor with f = 2
   \param s pointer to a struct \ref  bufrdeco_subset_sequence_data where to set data if any
   \param d pointer to the source descriptor
   \param b pointer to the base struct \ref bufrdeco
   \return If succeded return 0, otherwise 1
  */
-int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, struct bufr_descriptor *d, struct bufrdeco *b )
+int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, const struct bufr_descriptor *d, struct bufrdeco *b )
 {
   buf_t nbits;
   struct bufr_atom_data *a;
@@ -968,14 +968,14 @@ int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r
 }
 
 /*!
- *  \fn char *bufrdeco_get_f2_descriptor_explanation ( char *e, struct bufr_descriptor *d)
+ *  \fn char *bufrdeco_get_f2_descriptor_explanation ( char *e, const struct bufr_descriptor *d)
  *  \brief Return a stribg with brief explanation of descriptor when f = 2.
  *  \param e string with explanation as result
  *  \param d pointer to the struct \ref bufr_descriptor to explain
  *
  *  \return As result, returns the explanation string or null if problems.
  */
-char *bufrdeco_get_f2_descriptor_explanation ( char *e, size_t dim, struct bufr_descriptor *d )
+char *bufrdeco_get_f2_descriptor_explanation ( char *e, size_t dim, const struct bufr_descriptor *d )
 {
   // check the input
   bufrdeco_assert ( e != NULL && d != NULL && d->f == 2 )

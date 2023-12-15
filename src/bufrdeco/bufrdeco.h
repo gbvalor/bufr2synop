@@ -1210,7 +1210,7 @@ int bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *
 int bufrdeco_print_subset_sequence_data_html ( struct bufrdeco_subset_sequence_data *s );
 int bufrdeco_print_subset_sequence_data_tagged_html ( struct bufrdeco_subset_sequence_data *s, char *id );
 int bufrdeco_fprint_subset_sequence_data_html ( FILE *f, struct bufrdeco_subset_sequence_data *s );
-int bufrdeco_fprint_subset_sequence_data_tagged_html ( FILE *f, struct bufrdeco_subset_sequence_data *s, char *id );
+int bufrdeco_fprint_subset_sequence_data_tagged_html ( FILE *f, struct bufrdeco_subset_sequence_data *s, const char *id );
 int bufrdeco_fprint_subset_sequence_data ( FILE *f, struct bufrdeco_subset_sequence_data *s );
 char * bufrdeco_print_atom_data ( char *target, size_t lmax, struct bufr_atom_data *a );
 char * bufrdeco_print_atom_data_html ( char *target, size_t lmax, struct bufr_atom_data *a, uint32_t ss );
@@ -1223,7 +1223,7 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
 int bufrdeco_decode_data_subset ( struct bufrdeco *b );
 int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *d, struct bufr_sequence *l, struct bufrdeco *b );
 int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *d, struct bufr_replicator *r, struct bufrdeco *b );
-int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, struct bufr_descriptor *d, struct bufrdeco *b );
+int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, const struct bufr_descriptor *d, struct bufrdeco *b );
 
 // To parse compressed bufr
 int bufrdeco_parse_compressed ( struct bufrdeco_compressed_data_references *r, struct bufrdeco *b );
@@ -1282,12 +1282,12 @@ char * bufrdeco_explained_flag_csv_val ( char *expl, size_t dim, struct bufr_tab
     uint64_t ival, uint8_t nbits );
 int bufrdeco_tableD_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b,
     const char *key );
-int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct bufr_descriptor *d, buf_t mode );
+int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, const struct bufr_descriptor *d, buf_t mode );
 int bufr_find_tableB_index ( buf_t *index, struct bufr_tableB *tb, const char *key );
 int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_t source );
 int bufrdeco_tableD_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key );
 int bufr_find_tableC_csv_index ( buf_t *index, struct bufr_tableC *tc, const char *key, uint32_t code );
-char *bufrdeco_get_f2_descriptor_explanation ( char *e, size_t dim, struct bufr_descriptor *d );
+char *bufrdeco_get_f2_descriptor_explanation ( char *e, size_t dim, const struct bufr_descriptor *d );
 
 // utilities for bitmaps
 int bufrdeco_allocate_bitmap ( struct bufrdeco *b );

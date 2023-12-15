@@ -377,9 +377,9 @@ int check_date_from_future ( struct metreport *m );
 char *guess_WMO_region ( char *A1, char *Reg, const char *II, const char *iii );
 char * guess_WMO_region_synop ( struct synop_chunks *syn );
 char *guess_WMO_region_temp ( struct temp_chunks *temp );
-int read_table_c ( char tablec[MAXLINES_TABLEC][92], size_t *nlines_tablec, char *bufrtables_dir, int ksec1[40] );
+int read_table_c ( char tablec[MAXLINES_TABLEC][92], size_t *nlines_tablec, const char *bufrtables_dir, int ksec1[40] );
 int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr2tac_subset_state *st,
-                            int *kdtlst, size_t nlst, const int *ksec1, char *err );
+                            const int *kdtlst, size_t nlst, const int *ksec1, char *err );
 int find_descriptor ( const int *haystack, size_t nlst, int needle );
 int find_descriptor_interval ( const int *haystack, size_t nlst, int needlemin, int needlemax );
 int bufr_set_environment ( char *default_bufrtables, char *bufrtables_dir );

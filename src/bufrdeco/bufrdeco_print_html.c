@@ -276,7 +276,7 @@ int bufrdeco_print_subset_sequence_data_html ( struct bufrdeco_subset_sequence_d
   \param id string with id for the subset
   \return If succeeded return 0
 */
-int bufrdeco_fprint_subset_sequence_data_tagged_html ( FILE *f, struct bufrdeco_subset_sequence_data *s, char *id )
+int bufrdeco_fprint_subset_sequence_data_tagged_html ( FILE *f, struct bufrdeco_subset_sequence_data *s, const char *id )
 {
   size_t i;
   char aux[1024];

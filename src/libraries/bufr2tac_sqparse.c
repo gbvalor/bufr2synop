@@ -78,7 +78,7 @@ int find_descriptor_interval ( const int *haystack, size_t nlst, int needlemin, 
   \param ksec1 array of auxiliar integers decoded by bufrdc ECMWF library
   \param err string where to write errors if any
 */
-int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr2tac_subset_state *st,  int *kdtlst, size_t nlst, const int *ksec1, char *err )
+int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr2tac_subset_state *st,  const int *kdtlst, size_t nlst, const int *ksec1, char *err )
 {
   /* Clean the state */
   memset ( st, 0, sizeof ( struct bufr2tac_subset_state ) );

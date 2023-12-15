@@ -457,14 +457,14 @@ int bufrdeco_tableB_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
 }
 
 /*!
-  \fn int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct bufr_descriptor *d )
+  \fn int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, const struct bufr_descriptor *d )
   \brief Get data from a table B descriptor
   \param a pointer to a struct \ref bufr_atom_data where to set the results
   \param b pointer to the basic struct \ref bufrdeco
   \param d pointer to the target descriptor
   \return  0 if success, 1 otherwise
 */
-int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, struct bufr_descriptor *d, buf_t mode )
+int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, const struct bufr_descriptor *d, buf_t mode )
 {
   buf_t i, nbits = 0;
   uint32_t ival;
