@@ -78,10 +78,7 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
       l->iseq = 0; // first
       strcpy ( l->name, "Main sequence from SEC3" );
       // here we get l->ndesc and l->lsec[] array
-      if ( get_unexpanded_descriptor_array_from_sec3 ( l, b ) )
-        {
-          return 1;
-        }
+      get_unexpanded_descriptor_array_from_sec3 ( l, b );
     }
   else
     {

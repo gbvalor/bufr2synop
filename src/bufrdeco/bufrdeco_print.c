@@ -177,7 +177,7 @@ int sprint_sec3_info ( char *target, size_t lmax, struct bufrdeco *b )
 
   for ( i = 0; i < b->sec3.ndesc; i++ )
     {
-      used += snprintf ( target + used, lmax - used, "  %3lu:                      %u %02u %03u\n", i, b->sec3.unexpanded[i].f,
+      used += snprintf ( target + used, lmax - used, "  %3zu:                      %u %02u %03u\n", i, b->sec3.unexpanded[i].f,
                          b->sec3.unexpanded[i].x, b->sec3.unexpanded[i].y );
     }
   return 0;
@@ -506,7 +506,7 @@ char * bufrdeco_print_atom_data ( char *target, size_t lmax, struct bufr_atom_da
     used += snprintf ( target + used, lmax - used, " *BITMAP TO #%u*", a->bitmap_to );
 
   if ( a->related_to != 0 )
-    used += snprintf ( target + used, lmax - used, " *RELATED TO #%u*", a->related_to );
+    snprintf ( target + used, lmax - used, " *RELATED TO #%u*", a->related_to );
 
   return target;
 }
@@ -529,7 +529,7 @@ int bufrdeco_fprint_subset_sequence_data ( FILE *f, struct bufrdeco_subset_seque
       if ( i && s->sequence[i].seq != s->sequence[i - 1].seq )
         fprintf ( f, "\n" );
 
-      fprintf ( f, "%5lu:  %s\n", i, bufrdeco_print_atom_data ( aux, sizeof ( aux ), &s->sequence[i] ) );
+      fprintf ( f, "%5zu:  %s\n", i, bufrdeco_print_atom_data ( aux, sizeof ( aux ), &s->sequence[i] ) );
     }
   return 0;
 
@@ -653,7 +653,7 @@ int bufrdeco_print_event ( const struct bufrdeco_decode_subset_event *e, struct 
   if ( e->mask & BUFRDECO_EVENT_DATA_SUBSITUTE_BITMASK )
     c += sprintf ( c, " SUBS" );
   if ( e->mask & BUFRDECO_EVENT_DATA_REPLACED_BITMASK )
-    c += sprintf ( c, " RETA" );
+    sprintf ( c, " RETA" );
   printf ( "%-20s", aux);
   printf ( ", ref_index: %4d", e->ref_index );
   //printf ("\n");

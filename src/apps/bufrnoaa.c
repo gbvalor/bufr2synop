@@ -428,7 +428,7 @@ int main ( int argc, char *argv[] )
                                 }
                               if ( ( nw = fwrite ( &BUFR[0], sizeof ( unsigned char ), nb, ficout ) ) != nb )
                                 {
-                                  printf ( "Error: Writen %lu bytes instead of %lu in %s file\n", nw, nb, namex );
+                                  printf ( "Error: Writen %zu bytes instead of %zu in %s file\n", nw, nb, namex );
                                   fclose ( ficin );
                                   fclose ( ficout );
                                   exit ( EXIT_FAILURE );
@@ -443,7 +443,7 @@ int main ( int argc, char *argv[] )
                               // first write header
                               if ( ( nw = fwrite ( &header[0], sizeof ( char ), nh, ficol ) ) != nh )
                                 {
-                                  printf ( "%s: Error: Writen %lu bytes instead of %lu in %s file\n", OWN, nw, nh, namec );
+                                  printf ( "%s: Error: Writen %zu bytes instead of %zu in %s file\n", OWN, nw, nh, namec );
                                   fclose ( ficin );
                                   fclose ( ficol );
                                   exit ( EXIT_FAILURE );
@@ -452,7 +452,7 @@ int main ( int argc, char *argv[] )
                               // then bufr message
                               if ( ( nw = fwrite ( &BUFR[0], sizeof ( unsigned char ), nb, ficol ) ) != nb )
                                 {
-                                  printf ( "%s: Error: Writen %lu bytes instead of %lu in %s file\n", OWN, nw, nb, namex );
+                                  printf ( "%s: Error: Writen %zu bytes instead of %zu in %s file\n", OWN, nw, nb, namex );
                                   fclose ( ficin );
                                   fclose ( ficout );
                                   exit ( EXIT_FAILURE );
@@ -462,7 +462,7 @@ int main ( int argc, char *argv[] )
                               {
                               if ( ( nw = fwrite ( &FINAL_SEP[0], sizeof ( char ), 3, ficol ) ) != 3 )
                                 {
-                                  printf ( "%s: Error: Writen %lu bytes instead of 3 chars separing messages in %s\n", OWN, nw, namex );
+                                  printf ( "%s: Error: Writen %zu bytes instead of 3 chars separing messages in %s\n", OWN, nw, namex );
                                   fclose ( ficin );
                                   fclose ( ficout );
                                   exit ( EXIT_FAILURE );
@@ -498,7 +498,7 @@ int main ( int argc, char *argv[] )
   if ( VERBOSE )
     {
       double tx;
-      printf ( "Found %lu bufr reports. Selected: %lu. Wrong: %lu\n", nbuf, nsel, nerr );
+      printf ( "Found %zu bufr reports. Selected: %zu. Wrong: %zu\n", nbuf, nsel, nerr );
       timeval_substract ( &tt, &tfin, &tini );
       tx = ( double ) tt.tv_sec + ( double ) tt.tv_usec *1e-6;
       printf ( "%lf seg.  ", tx );

@@ -10,7 +10,7 @@
 # CMadkeLists.txt for root directory for project bufr2synop
 #
 
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8.12)
+CMAKE_MINIMUM_REQUIRED (VERSION 3.5)
 
 # Next line is to set versioºn 
 cmake_policy(SET CMP0048 NEW)

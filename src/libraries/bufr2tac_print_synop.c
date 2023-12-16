@@ -691,7 +691,7 @@ size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
                     {
                       syn->s3.R8[i][3] = '/';
                     }
-                  used += snprintf ( c + used, lmax - used, " %ld%s", i, syn->s3.R8[i] );
+                  used += snprintf ( c + used, lmax - used, " %zu%s", i, syn->s3.R8[i] );
                 }
             }
         }

@@ -34,19 +34,19 @@ int print_temp_raw_data ( const struct temp_raw_data *r )
 {
   size_t i;
 
-  printf ( "raw points %lu\n", r->n );
+  printf ( "raw points %zu\n", r->n );
   for ( i = 0; i < r->n ; i++ )
     {
       if ( r->raw[i].T != MISSING_REAL &&
            r->raw[i].Td != MISSING_REAL &&
            r->raw[i].dd != MISSING_REAL &&
            r->raw[i].ff != MISSING_REAL )
-        printf ( "i=%3lu, dt=%4d, flags=%08X, P=%6.1lf, h=%6.0lf, dlat=%7.4lf, dlon=%7.4lf, T=%6.1lf, Td=%6.1lf, dd=%03.0lf, ff=%5.1lf\n",
+        printf ( "i=%3zu, dt=%4d, flags=%08X, P=%6.1lf, h=%6.0lf, dlat=%7.4lf, dlon=%7.4lf, T=%6.1lf, Td=%6.1lf, dd=%03.0lf, ff=%5.1lf\n",
                  i, r->raw[i].dt, r->raw[i].flags, r->raw[i].p * 0.01, r->raw[i].h, r->raw[i].dlat, r->raw[i].dlon,
                  r->raw[i].T - 273.15, r->raw[i].Td - 273.15, r->raw[i].dd, r->raw[i].ff );
       else
         {
-          printf ( "i=%3lu, dt=%4d, flags=%08X, P=%6.1lf, h=%6.0lf, dlat=%7.4lf, dlon=%7.4lf, ",
+          printf ( "i=%3zu, dt=%4d, flags=%08X, P=%6.1lf, h=%6.0lf, dlat=%7.4lf, dlon=%7.4lf, ",
                    i, r->raw[i].dt, r->raw[i].flags, r->raw[i].p * 0.01, r->raw[i].h, r->raw[i].dlat, r->raw[i].dlon );
           if ( r->raw[i].T != MISSING_REAL )
             {
@@ -99,16 +99,16 @@ int print_temp_raw_wind_shear_data ( const struct temp_raw_wind_shear_data *w )
 {
   size_t i;
 
-  printf ( "raw share wind points %lu\n", w->n );
+  printf ( "raw share wind points %zu\n", w->n );
   for ( i = 0; i < w->n ; i++ )
     {
       if ( w->raw[i].ws_blw != MISSING_REAL && w->raw[i].ws_abv != MISSING_REAL )
-        printf ( "i=%3lu, dt=%4d, flags=%08X, P=%6.1lf, dlat=%7.4lf, dlon=%7.4lf, ws_blw=%5.1lf, ws_abv=%5.1lf\n",
+        printf ( "i=%3zu, dt=%4d, flags=%08X, P=%6.1lf, dlat=%7.4lf, dlon=%7.4lf, ws_blw=%5.1lf, ws_abv=%5.1lf\n",
                  i, w->raw[i].dt, w->raw[i].flags, w->raw[i].p * 0.01, w->raw[i].dlat, w->raw[i].dlon,
                  w->raw[i].ws_blw, w->raw[i].ws_abv );
       else
         {
-          printf ( "i=%3lu, dt=%4d, flags=%08X, P=%6.1lf, dlat=%7.4lf, dlon=%7.4lf, ",
+          printf ( "i=%3zu, dt=%4d, flags=%08X, P=%6.1lf, dlat=%7.4lf, dlon=%7.4lf, ",
                    i, w->raw[i].dt, w->raw[i].flags, w->raw[i].p * 0.01, w->raw[i].dlat, w->raw[i].dlon );
 
           if ( w->raw[i].ws_blw != MISSING_REAL )

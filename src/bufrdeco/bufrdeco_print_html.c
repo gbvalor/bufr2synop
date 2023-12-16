@@ -117,7 +117,7 @@ int sprint_sec3_info_html ( char *target, size_t lmax, struct bufrdeco *b )
   used += snprintf ( target + used , lmax - used,"<tr><td>Unexpanded descriptors</td><td>%5u</td></tr>\n", b->sec3.ndesc );
   for ( i = 0; i < b->sec3.ndesc; i++ )
     {
-      used += snprintf ( target + used , lmax - used,"<tr><td>%3lu:</td><td>%u %02u %03u</td></tr>\n", i, b->sec3.unexpanded[i].f,
+      used += snprintf ( target + used , lmax - used,"<tr><td>%3zu:</td><td>%u %02u %03u</td></tr>\n", i, b->sec3.unexpanded[i].f,
                      b->sec3.unexpanded[i].x, b->sec3.unexpanded[i].y );
     }
   used += snprintf ( target + used , lmax - used,"</table>\n" );
@@ -249,7 +249,7 @@ int bufrdeco_fprint_subset_sequence_data_html ( FILE *f, struct bufrdeco_subset_
   fprintf ( f, "<table>\n" );
   for ( i = 0; i < s->nd ; i++ )
     {
-      fprintf ( f, "<tr><td>%5lu:</td>%s</tr>\n", i, bufrdeco_print_atom_data_html ( aux, sizeof (aux), &s->sequence[i], s->ss ) );
+      fprintf ( f, "<tr><td>%5zu:</td>%s</tr>\n", i, bufrdeco_print_atom_data_html ( aux, sizeof (aux), &s->sequence[i], s->ss ) );
     }
   fprintf ( f, "</table>\n" );
   fprintf ( f, "</div>\n" );
@@ -289,7 +289,7 @@ int bufrdeco_fprint_subset_sequence_data_tagged_html ( FILE *f, struct bufrdeco_
   fprintf ( f, "<tr><th></th><th>Descriptor</th><th>Name</th><th>Unit</th><th>Value</th><th>Description</th></tr>\n" );
   for ( i = 0; i < s->nd ; i++ )
     {
-      fprintf ( f, "<tr><td class='ndesc' id='d_%u_%lu' >#%lu</td>%s</tr>\n", s->ss, i, i, bufrdeco_print_atom_data_html ( aux, sizeof (aux), &s->sequence[i], s->ss ) );
+      fprintf ( f, "<tr><td class='ndesc' id='d_%u_%zu' >#%lu</td>%s</tr>\n", s->ss, i, i, bufrdeco_print_atom_data_html ( aux, sizeof (aux), &s->sequence[i], s->ss ) );
     }
   fprintf ( f, "</table>\n" );
   fprintf ( f, "</div>\n" );

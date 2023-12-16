@@ -473,7 +473,7 @@ int bufrdeco_free_bitmap_array ( struct bufrdeco_bitmap_array *a )
  * \return 0 if succeeded, 1 otherwise
  *   
  */
-int bufrdeco_add_event_to_bitacora ( struct bufrdeco *b, struct bufrdeco_decode_subset_event *event )
+int bufrdeco_add_event_to_bitacora ( struct bufrdeco *b, const struct bufrdeco_decode_subset_event *event )
 {
   if ( b->bitacora.nd < b->bitacora.dim - 1 )
     {

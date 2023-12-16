@@ -1161,7 +1161,7 @@ int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *s );
 int bufrdeco_store_tables ( struct bufr_tables **t, struct bufr_tables_cache *c, uint8_t ver );
 int bufrdeco_cache_tables_search ( const struct bufr_tables_cache *c, uint8_t ver );
 int bufrdeco_free_cache_tables ( struct bufr_tables_cache *c );
-int bufrdeco_add_event_to_bitacora ( struct bufrdeco *b, struct bufrdeco_decode_subset_event *event);
+int bufrdeco_add_event_to_bitacora ( struct bufrdeco *b, const struct bufrdeco_decode_subset_event *event);
 int bufrdeco_init_subset_bitacora ( struct bufrdeco *b);
 int bufrdeco_increase_decode_subset_bitacora_array ( struct bufrdeco_decode_subset_bitacora *dsb );
 int bufrdeco_free_decode_subset_bitacora ( struct bufrdeco_decode_subset_bitacora *dsb );
@@ -1251,7 +1251,7 @@ buf_t bufrdeco_print_json_tree_recursive ( FILE *out, struct bufrdeco *b, struct
 buf_t bufrdeco_print_json_subset_data_prologue (FILE *out,  struct bufrdeco *b );
 buf_t bufrdeco_print_json_subset_data_epilogue ( FILE *out );
 buf_t bufrdeco_print_json_object_atom_data (FILE *out, struct bufr_atom_data *a, buf_t index_data, struct bufrdeco *b, const char *aux );
-buf_t bufrdeco_print_json_object_operator_descriptor (FILE *out,  struct bufr_descriptor *d, const char *aux );
+buf_t bufrdeco_print_json_object_operator_descriptor (FILE *out,  const struct bufr_descriptor *d, const char *aux );
 buf_t bufrdeco_print_json_object_replicator_descriptor (FILE *out,  const struct bufr_descriptor *d, const char *aux );
 buf_t bufrdeco_print_json_object_event_data ( FILE *out,  struct bufr_atom_data *a, const struct bufrdeco_decode_subset_event *event, struct bufrdeco *b, const char *add );
 buf_t bufrdeco_print_json_sequence_descriptor_header (FILE *out, const struct bufr_sequence *seq );

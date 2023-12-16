@@ -202,7 +202,7 @@ buf_t bufrdeco_print_json_object_atom_data ( FILE *out,  struct bufr_atom_data *
  *
  * \return The amount of bytes sent to out
  */
-buf_t bufrdeco_print_json_object_operator_descriptor ( FILE *out,  struct bufr_descriptor *d, const char *add )
+buf_t bufrdeco_print_json_object_operator_descriptor ( FILE *out,  const struct bufr_descriptor *d, const char *add )
 {
   buf_t used = 0;
   char explanation[256];
@@ -597,7 +597,7 @@ buf_t bufrdeco_print_json_subset_data ( struct bufrdeco *b )
 buf_t bufrdeco_print_json_object_event_data ( FILE *out,  struct bufr_atom_data *a, const struct bufrdeco_decode_subset_event *event, struct bufrdeco *b, const char *add )
 {
   char aux[256];
-  buf_t used = 0, i, j;
+  buf_t used = 0;
   //struct bufrdeco_bitmap *bitmap;
 
   if (a == NULL || b == NULL)
@@ -663,19 +663,19 @@ buf_t bufrdeco_print_json_object_event_data ( FILE *out,  struct bufr_atom_data 
       if ( bufrdeco_get_bitmaped_info ( &b->brv, event->ref_index, b ) )
         return 1;
       used += fprintf ( out, ",\"Bitmaped_by\":\"#%u_%u\"", b->seq.ss, a->is_bitmaped_by );
-      for ( i = 0; i < b->bitmap.nba; i++ )
+      for ( buf_t i = 0; i < b->bitmap.nba; i++ )
         {
 
-          for ( j = 0; j < b->bitmap.bmap[i]->nq ; j++ )
+          for ( buf_t j = 0; j < b->bitmap.bmap[i]->nq ; j++ )
             {
               used += fprintf ( out, ",\"Qualified_by\":\"#%u_%u\"", b->seq.ss, b->brv.qualified_by[j] + 1 );
             }
 
-          for ( j = 0; j < b->bitmap.bmap[i]->ns1 ; j++ )
+          for ( buf_t j = 0; j < b->bitmap.bmap[i]->ns1 ; j++ )
             {
               used += fprintf ( out, ",\"First_stat_by\":\"#%u_%u\"", b->seq.ss, b->brv.stat1_desc[j] + 1 );
             }
-          for ( j = 0; j < b->bitmap.bmap[i]->nds ; j++ )
+          for ( buf_t j = 0; j < b->bitmap.bmap[i]->nds ; j++ )
             {
               used += fprintf ( out, ",\"Diff_stat_by\":\"#%u_%u\"", b->seq.ss, b->brv.dstat_desc[j] + 1 );
             }
