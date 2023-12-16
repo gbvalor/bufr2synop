@@ -81,7 +81,7 @@ int hour_rounded ( struct synop_chunks *syn )
   struct tm tim;
   char aux[32];
 
-  sprintf ( aux, "%s%s%s%s%s", syn->e.YYYY,syn->e.MM,syn->e.DD,syn->e.HH, syn->e.mm );
+  snprintf ( aux, sizeof (aux), "%s%s%s%s%s", syn->e.YYYY,syn->e.MM,syn->e.DD,syn->e.HH, syn->e.mm );
   memset ( &tim, 0, sizeof ( struct tm ) );
   if ( strlen ( aux ) == 12 )
     {

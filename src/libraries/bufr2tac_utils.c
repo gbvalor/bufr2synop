@@ -220,7 +220,7 @@ char *guess_WMO_region ( char *A1, char *Reg, const char *II, const char *iii )
     return NULL;
 
   // aux string
-  sprintf ( aux,"%s%s", II, iii );
+  snprintf ( aux, sizeof (aux), "%s%s", II, iii );
 
   if ( ( II[0] == '0' && ( strstr ( aux,"042" ) != aux ) && ( strstr ( aux,"043" ) != aux )  &&
          ( strstr ( aux,"044" ) != aux )  && ( strstr ( aux,"0858" ) != aux ) && ( strstr ( aux,"0859" ) != aux ) ) ||

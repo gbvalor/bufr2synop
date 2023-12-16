@@ -42,7 +42,7 @@ int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
        strlen ( syn->e.HH ) &&
        strlen ( syn->e.mm ) )
     {
-      sprintf ( aux,"%s%s%s%s%s", syn->e.YYYY, syn->e.MM, syn->e.DD, syn->e.HH, syn->e.mm );
+      snprintf ( aux, sizeof (aux), "%s%s%s%s%s", syn->e.YYYY, syn->e.MM, syn->e.DD, syn->e.HH, syn->e.mm );
     }
 
   if ( strlen ( aux ) != 12 )
