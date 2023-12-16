@@ -41,7 +41,7 @@ int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b )
        strlen ( b->e.HH ) &&
        strlen ( b->e.mm ) )
     {
-      sprintf ( aux,"%s%s%s%s%s", b->e.YYYY, b->e.MM, b->e.DD, b->e.HH, b->e.mm );
+      snprintf ( aux, sizeof (aux), "%s%s%s%s%s", b->e.YYYY, b->e.MM, b->e.DD, b->e.HH, b->e.mm );
     }
 
   if ( strlen ( aux ) != 12 )

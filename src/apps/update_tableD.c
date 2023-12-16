@@ -65,12 +65,12 @@ int main ( int argc, char *argv[] )
     switch ( iopt )
       {
       case 'i':
-        if ( strlen ( optarg ) < 256 )
-          strcpy ( INPUT_FILE, optarg );
+        if ( strlen ( optarg ) < sizeof (INPUT_FILE) )
+          strlcpy ( INPUT_FILE, optarg, sizeof (INPUT_FILE) );
         break;
       case 'r':
-        if ( strlen ( optarg ) < 256 )
-          strcpy ( REFERENCE_FILE, optarg );
+        if ( strlen ( optarg ) < sizeof (REFERENCE_FILE) )
+          strlcpy ( REFERENCE_FILE, optarg, sizeof (REFERENCE_FILE) );
         break;
       case 'h':
       default:
@@ -131,7 +131,7 @@ int main ( int argc, char *argv[] )
             {
               if ( strcmp ( TK[k][0], tk[0] ) == 0 )
                 {
-                  strcpy ( caux2, TK[k][2] );
+                  strlcpy ( caux2, TK[k][2], sizeof (caux2) );
                   j = k;
                   break;
                 }

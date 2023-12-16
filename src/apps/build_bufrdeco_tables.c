@@ -93,11 +93,11 @@ int main ( int argc, char *argv[] )
     switch ( iopt )
       {
       case 'i':
-        if ( strlen ( optarg ) < 256 )
+        if ( strlen ( optarg ) < sizeof (INPUT_FILE) )
           strcpy ( INPUT_FILE, optarg );
         break;
       case 't':
-        if ( strlen ( optarg ) < 8 )
+        if ( strlen ( optarg ) < sizeof (TABLE_TYPE) )
           strcpy ( TABLE_TYPE, optarg );
         break;
       case '2':
@@ -281,26 +281,12 @@ int main ( int argc, char *argv[] )
                 {
                   if ( lin[22] != ' ' )
                     {
-                      if ( strlen ( caux ) + strlen ( lin + 22 ) < BUFR_EXPLAINED_LENGTH )
-                        strcat ( caux, lin + 22 );
-                      else
-                        {
-                          // cut the explanation
-                          * ( lin + 22 + BUFR_EXPLAINED_LENGTH - strlen ( caux ) - 1 ) = '\0';
-                          strcat ( caux, lin + 22 );
-                        }
+                      strlcat ( caux, lin + 22, BUFR_EXPLAINED_LENGTH );
                     }
                   else
                     {
                       // this is valid for versions < 15
-                      if ( strlen ( caux ) + strlen ( lin + 24 ) < BUFR_EXPLAINED_LENGTH )
-                        strcat ( caux, lin + 24 );
-                      else
-                        {
-                          // cut the explanation
-                          * ( lin + 24 + BUFR_EXPLAINED_LENGTH - strlen ( caux ) - 1 ) = '\0';
-                          strcat ( caux, lin + 24 );
-                        }
+                      strlcat ( caux, lin + 24, BUFR_EXPLAINED_LENGTH );
                     }
                 }
 

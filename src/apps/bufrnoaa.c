@@ -219,7 +219,7 @@ int main ( int argc, char *argv[] )
   FILE* ficol = NULL;
   unsigned char b[5], header[256];
   unsigned int expected = 0;
-  char name[256], namex[256], namec[256];
+  char name[256], namex[512], namec[512];
   struct timeval tini, tfin, tt;
 
   // Initial time
@@ -251,7 +251,7 @@ int main ( int argc, char *argv[] )
 
       // build a name
       strcpy ( namec, PREFIX );
-      strcat ( namec, ENTRADA );
+      strlcat ( namec, ENTRADA, sizeof (namec) );
 
       // open the file
       if ( ( ficol = fopen ( namec, "w" ) ) == NULL )
@@ -417,9 +417,9 @@ int main ( int argc, char *argv[] )
                             {
                               // prefix with input file timestamp
                               date_mtime_from_stat ( namex, &INSTAT );
-                              strcat ( namex,"_" );
-                              strcat ( namex, name );
-                              strcat ( namex, ".bufr" );
+                              strlcat ( namex,"_", sizeof (namex) );
+                              strlcat ( namex, name, sizeof (namex) );
+                              strlcat ( namex, ".bufr", sizeof (namex) );
                               if ( ( ficout = fopen ( namex, "w" ) ) == NULL )
                                 {
                                   printf ( "Error: cannot open %s\n", name );

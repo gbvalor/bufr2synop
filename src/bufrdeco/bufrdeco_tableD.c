@@ -45,8 +45,8 @@ int bufr_read_tableD ( struct bufrdeco *b )
   struct bufr_tableD *td;
 
   //bufrdeco_assert (b != NULL);
-  
-  td = &(b->tables->d);
+
+  td = & ( b->tables->d );
   if ( td->path[0] == 0 )
     {
       return 1;
@@ -55,18 +55,18 @@ int bufr_read_tableD ( struct bufrdeco *b )
   // Check if we've already readed this table.
   if ( strcmp ( td->path, td->old_path ) == 0 )
     {
-#ifdef __DEBUG      
-      printf ("# Reused table %s\n", td->path);
-#endif      
+#ifdef __DEBUG
+      printf ( "# Reused table %s\n", td->path );
+#endif
       return 0; // all done
     }
 
-  strcpy ( caux, td->path );
+  strlcpy ( caux, td->path, sizeof (caux) );
   memset ( td, 0, sizeof ( struct bufr_tableD ) );
-  strcpy ( td->path,caux );
+  strlcpy ( td->path, caux, sizeof (td->path) );
   if ( ( t = fopen ( td->path, "r" ) ) == NULL )
     {
-      snprintf ( b->error, sizeof (b->error),"Unable to open table D file '%s'\n", td->path );
+      snprintf ( b->error, sizeof ( b->error ),"Unable to open table D file '%s'\n", td->path );
       return 1;
     }
 
@@ -80,23 +80,23 @@ int bufr_read_tableD ( struct bufrdeco *b )
     {
       // Parse line
       //printf("%s\n",laux);
-      if ( parse_csv_line ( &nt, tk, laux ) < 0 || ( nt != 2 && nt != 4) )
+      if ( parse_csv_line ( &nt, tk, laux ) < 0 || ( nt != 2 && nt != 4 ) )
         {
-          snprintf ( b->error, sizeof (b->error),"Error parsing csv line from table D file '%s' found %d tokens in line %u\n", td->path, nt, i );
+          snprintf ( b->error, sizeof ( b->error ),"Error parsing csv line from table D file '%s' found %d tokens in line %u\n", td->path, nt, i );
           return 1;
         }
 
       // item fields
-      strcpy(td->item[i].key, tk[0]);
-      strcpy(td->item[i].key2, tk[1]);
+      strlcpy ( td->item[i].key, tk[0], sizeof ( td->item[i].key ) );
+      strlcpy ( td->item[i].key2, tk[1], sizeof ( td->item[i].key2 ) );
 
-      if (nt == 4 && tk[2][0])
-        strcpy (td->item[i].description, tk[2]);
+      if ( nt == 4 && tk[2][0] )
+        strlcpy ( td->item[i].description, tk[2], sizeof (td->item[i].description) );
       else
         td->item[i].description[0] = 0;
 
-      if (nt == 4 && tk[3][0])
-        strcpy(td->item[i].description2, tk[3]);
+      if ( nt == 4 && tk[3][0] )
+        strlcpy ( td->item[i].description2, tk[3], sizeof (td->item[i].description2) );
       else
         td->item[i].description2[0] = 0;
 
@@ -105,7 +105,7 @@ int bufr_read_tableD ( struct bufrdeco *b )
           if ( oldkey[0] )
             {
               // write number of descriptors in emulated ECMWF line
-              sprintf ( aux, "%s%3d", oldkey, nj );
+              snprintf ( aux, sizeof (aux), "%s%3d", oldkey, nj );
               td->l[j0][1] = aux[0];
               td->l[j0][2] = aux[1];
               td->l[j0][3] = aux[2];
@@ -123,7 +123,7 @@ int bufr_read_tableD ( struct bufrdeco *b )
         {
           nj++;
         }
-      strcpy ( oldkey, tk[0] );
+      strlcpy ( oldkey, tk[0], sizeof (oldkey) );
 
       ix = strtoul ( tk[0], &c, 10 );
       uint32_t_to_descriptor ( &desc, ix );
@@ -135,13 +135,13 @@ int bufr_read_tableD ( struct bufrdeco *b )
       ( td->num[desc.x] ) ++;
 
       // Now emule ECMWF format
-      sprintf ( td->l[i], "           %s", tk[1] );
+      snprintf ( td->l[i], sizeof (td->l[i]) , "           %s", tk[1] );
       i++;
     }
   fclose ( t );
 
   // Last sequence
-  sprintf ( aux, "%s%3d", oldkey, nj );
+  snprintf ( aux, sizeof (aux), "%s%3d", oldkey, nj );
   td->l[j0][1] = aux[0];
   td->l[j0][2] = aux[1];
   td->l[j0][3] = aux[2];
@@ -154,7 +154,7 @@ int bufr_read_tableD ( struct bufrdeco *b )
 
   td->nlines = i;
   td->wmo_table = 1;
-  strcpy ( td->old_path, td->path ); // store latest path
+  strlcpy ( td->old_path, td->path, sizeof (td->old_path) ); // store latest path
   return 0;
 }
 
@@ -171,9 +171,9 @@ int bufr_find_tableD_index ( buf_t *index, struct bufr_tableD *td, const char *k
   buf_t i, i0;
   buf_t ix = 0;
   char *c, aux[8];
- 
+
   //bufrdeco_assert ( td != NULL && key != NULL && index != NULL);
-  
+
   aux[0] = key[1];
   aux[1] = key[2];
   aux[2] = '\0';
@@ -216,13 +216,13 @@ int bufrdeco_tableD_get_descriptors_array ( struct bufr_sequence *s, struct bufr
   struct bufr_tableD *td;
 
   bufrdeco_assert ( b != NULL );
-  
+
   td = & ( b->tables->d );
 
   // Reject wrong arguments
   if ( s == NULL || key == NULL )
     {
-      snprintf ( b->error, sizeof (b->error),"%s(): Wrong entry arguments\n", __func__ );
+      snprintf ( b->error, sizeof ( b->error ),"%s(): Wrong entry arguments\n", __func__ );
       return 1;
     }
 
@@ -230,16 +230,16 @@ int bufrdeco_tableD_get_descriptors_array ( struct bufr_sequence *s, struct bufr
 
   if ( bufr_find_tableD_index ( &i, td, key ) )
     {
-      snprintf ( b->error, sizeof (b->error), "%s(): descriptor '%s' not found in table D\n", __func__, key );
+      snprintf ( b->error, sizeof ( b->error ), "%s(): descriptor '%s' not found in table D\n", __func__, key );
       return 1; // descritor not found
     }
 
   // Get the name of common sequence
-  if (td->item[i].description[0])
-     strcpy(s->name, td->item[i].description);
+  if ( td->item[i].description[0] )
+    strlcpy ( s->name, td->item[i].description, sizeof (s->name) );
   else
-     s->name[0] = 0;
-  
+    s->name[0] = 0;
+
   // reads the amount of possible values
   nv = strtoul ( &td->l[i][7], &c, 10 );
 

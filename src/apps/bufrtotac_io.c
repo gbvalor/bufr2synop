@@ -424,7 +424,7 @@ char * get_bufrfile_path ( char *filename, char *fileoffset, char *err )
       if ( NFILES == 0 )
         {
           if ( filename != INPUTFILE )
-            strcpy ( filename, INPUTFILE );
+            strlcpy ( filename, INPUTFILE, sizeof (INPUTFILE) );
           return filename;
         }
       else
@@ -434,7 +434,7 @@ char * get_bufrfile_path ( char *filename, char *fileoffset, char *err )
     {
       if ( ( FL = fopen ( LISTOFFILES,"r" ) ) == NULL )
         {
-          sprintf ( err,"Cannot open '%s'", LISTOFFILES );
+          snprintf ( err, ERR_SIZE, "Cannot open '%s'", LISTOFFILES );
           return NULL;
         }
     }
@@ -443,7 +443,7 @@ char * get_bufrfile_path ( char *filename, char *fileoffset, char *err )
       char *c =  strrchr ( aux,'\n' );
       if ( c )
         *c = 0;
-      strcpy ( filename, aux );
+      strlcpy ( filename, aux, sizeof (aux) );
       snprintf (fileoffset, BUFRDECO_PATH_LENGTH , "%s.offs", filename);
       return filename;
     }

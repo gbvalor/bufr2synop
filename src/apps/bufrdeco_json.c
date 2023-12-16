@@ -118,12 +118,12 @@ int read_args ( int _argc, char * _argv[] )
 
       case 'S':
         // Process subset sequence to show
-        if ( strlen ( optarg ) < 128 &&
+        if ( strlen ( optarg ) < sizeof (aux) &&
              strspn ( optarg, "0123456789." ) == strlen ( optarg ) )
           {
             if ( strstr ( optarg, ".." ) != NULL )
               {
-                strcpy ( aux, optarg );
+                strlcpy ( aux, optarg, sizeof(aux) );
                 c = strstr ( aux, ".." );
                 if ( strlen ( c ) > 2 )
                   {
@@ -143,8 +143,8 @@ int read_args ( int _argc, char * _argv[] )
           }
         break;
       case 'i':
-        if ( strlen ( optarg ) < 256 )
-          strcpy ( ENTRADA, optarg );
+        if ( strlen ( optarg ) < sizeof (ENTRADA) )
+          strlcpy ( ENTRADA, optarg, sizeof (ENTRADA) );
         break;
 
       case 'h':

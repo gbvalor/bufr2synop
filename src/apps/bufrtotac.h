@@ -24,6 +24,11 @@
 #include "bufrdeco.h"
 #include "bufr2tac.h"
 
+/*! \def ERR_SIZE
+ *  \brief Size (in bytes) of error strings 
+ */
+#define ERR_SIZE (512U)
+
 extern struct bufrdeco BUFR;
 extern struct bufrdeco_subset_sequence_data SEQ;
 extern struct bufrdeco_compressed_data_references REF;
@@ -32,12 +37,12 @@ extern struct bufr2tac_subset_state STATE;
 extern struct bufr2tac_error_stack ERRS;
 
 extern const char SELF[];
-extern char ERR[256];
-extern char INPUTFILE[256];
-extern char OUTPUTFILE[256];
+extern char ERR[ERR_SIZE];
+extern char INPUTFILE[BUFRDECO_PATH_LENGTH];
+extern char OUTPUTFILE[BUFRDECO_PATH_LENGTH];
 extern char OFFSETFILE[BUFRDECO_PATH_LENGTH + 8]; 
-extern char BUFRTABLES_DIR[256];
-extern char LISTOFFILES[256];
+extern char BUFRTABLES_DIR[BUFRDECO_PATH_LENGTH];
+extern char LISTOFFILES[BUFRDECO_PATH_LENGTH];
 extern int NFILES;
 extern int SUBSET;
 extern int GTS_HEADER;

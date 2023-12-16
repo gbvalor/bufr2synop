@@ -76,9 +76,9 @@ int bufr_read_tableB ( struct bufrdeco *b )
       return 0; // all done
     }
 
-  strcpy ( caux, tb->path );
+  strlcpy ( caux, tb->path, sizeof ( caux ) );
   memset ( tb, 0, sizeof ( struct bufr_tableB ) );
-  strcpy ( tb->path, caux );
+  strlcpy ( tb->path, caux, sizeof ( tb->path ) );
   if ( ( t = fopen ( tb->path, "r" ) ) == NULL )
     {
       snprintf ( b->error, sizeof ( b->error ),"Unable to open table B file '%s'\n", tb->path );
@@ -103,7 +103,7 @@ int bufr_read_tableB ( struct bufrdeco *b )
       tb->item[i].changed = 0; // Original from table B
       tb->item[i].x = desc.x; // x
       tb->item[i].y = desc.y; // y
-      strcpy ( tb->item[i].key, desc.c ); // key
+      strlcpy ( tb->item[i].key, desc.c, sizeof ( tb->item[i].key ) ); // key
       if ( tb->num[desc.x] == 0 )
         {
           tb->x_start[desc.x] = i;  // marc the start
@@ -114,19 +114,19 @@ int bufr_read_tableB ( struct bufrdeco *b )
       // detailed name
       if ( tk[2][0] )
         {
-          sprintf ( caux,"%s %s", tk[1], tk[2] );
+          snprintf ( caux, sizeof ( tb->item[i].name ), "%s %s", tk[1], tk[2] );
         }
       else
         {
-          strcpy ( caux, tk[1] );
+          strlcpy ( caux, tk[1], sizeof ( tb->item[i].name ) );
         }
 
       // and finally copy
-      strcpy ( tb->item[i].name, caux );
+      strlcpy ( tb->item[i].name, caux, sizeof ( tb->item[i].name ) );
 
       // unit
-      strcpy ( caux, tk[3] );
-      strcpy ( tb->item[i].unit, caux );
+      strlcpy ( caux, tk[3], sizeof ( tb->item[i].unit ) );
+      strlcpy ( tb->item[i].unit, caux, sizeof ( tb->item[i].unit ) );
 
       // escale
       tb->item[i].scale_ori = strtol ( tk[4], &c, 10 );
@@ -146,7 +146,7 @@ int bufr_read_tableB ( struct bufrdeco *b )
   fclose ( t );
   tb->nlines = i;
   tb->wmo_table = 1;
-  strcpy ( tb->old_path, tb->path ); // store latest path
+  strlcpy ( tb->old_path, tb->path, sizeof ( tb->old_path ) ); // store latest path
   return 0;
 }
 
@@ -490,8 +490,8 @@ int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, const st
       nbits = b->state.associated.afield[mode - 1].assoc_bits; // copy the bits from associated field stack
       //printf("nbits=%u\n", nbits );
       a->escale = 0; // The scale is 0 for associated field
- 
-      strcpy (a->name, "Associated value"); 
+
+      strcpy ( a->name, "Associated value" );
       //strcpy_safe ( a->name, b->state.associated.afield[mode - 1].cval ); // copy the name from associated field stack
       strcpy ( a->unit, "Code table" ); // copy the unit name
 
@@ -502,7 +502,7 @@ int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, const st
           return 1;
         }
 
-      a->val = (double) a->associated; 
+      a->val = ( double ) a->associated;
       return 0;
     }
 

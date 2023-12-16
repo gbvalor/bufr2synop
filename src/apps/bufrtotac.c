@@ -92,12 +92,12 @@ struct bufr2tac_subset_state STATE; /*!< Includes the info when parsing a subset
 struct bufr2tac_error_stack ERRS; /*!< struct to store warnings and errors */
 
 const char SELF[]= "bufrtotac"; /*! < the name of this binary */
-char ERR[256]; /*!< string with an error */
-char BUFRTABLES_DIR[256]; /*!< Directory for BUFR tables set by user */
-char LISTOFFILES[256]; /*!< The pathname of a file which includes a list of bufr files to parse */
-char INPUTFILE[256]; /*!< The pathname of input file */
+char ERR[ERR_SIZE]; /*!< string with an error */
+char BUFRTABLES_DIR[BUFRDECO_PATH_LENGTH]; /*!< Directory for BUFR tables set by user */
+char LISTOFFILES[BUFRDECO_PATH_LENGTH]; /*!< The pathname of a file which includes a list of bufr files to parse */
+char INPUTFILE[BUFRDECO_PATH_LENGTH]; /*!< The pathname of input file */
 char OFFSETFILE[BUFRDECO_PATH_LENGTH + 8]; /*< The path name of optional file with bit offsets for non-compressed BUFR. */
-char OUTPUTFILE[256]; /*!< The pathname of output file */
+char OUTPUTFILE[BUFRDECO_PATH_LENGTH]; /*!< The pathname of output file */
 int VERBOSE; /*!< If != 0 the verbose output */
 int SHOW_SEQUENCE; /*!< Output explained sequence */
 int DEBUG; /*!< Show debug information */

@@ -92,7 +92,7 @@ int bufr_read_tableC ( struct bufrdeco *b )
       // First we build the descriptor
       ix = strtoul ( tk[0], &c, 10 );
       uint32_t_to_descriptor ( &desc, ix );
-      strcpy ( tc->item[i].key, tk[0] );
+      strlcpy ( tc->item[i].key, tk[0], 8 );
       tc->item[i].x = desc.x;
       tc->item[i].y = desc.y;
 
