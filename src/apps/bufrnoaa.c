@@ -251,7 +251,7 @@ int main ( int argc, char *argv[] )
 
       // build a name
       strcpy ( namec, PREFIX );
-      strlcat ( namec, ENTRADA, sizeof (namec) );
+      strcat ( namec, ENTRADA );
 
       // open the file
       if ( ( ficol = fopen ( namec, "w" ) ) == NULL )
