@@ -118,11 +118,11 @@ int bufr_read_tableB ( struct bufrdeco *b )
         }
       else
         {
-          strlcpy ( caux, tk[1], sizeof ( tb->item[i].name ) );
+          strcpy_safe ( caux, tk[1] );
         }
 
       // and finally copy
-      strlcpy ( tb->item[i].name, caux, sizeof ( tb->item[i].name ) );
+      strcpy_safe ( tb->item[i].name, caux );
 
       // unit
       strlcpy ( caux, tk[3], sizeof ( tb->item[i].unit ) );
@@ -146,7 +146,7 @@ int bufr_read_tableB ( struct bufrdeco *b )
   fclose ( t );
   tb->nlines = i;
   tb->wmo_table = 1;
-  strlcpy ( tb->old_path, tb->path, sizeof ( tb->old_path ) ); // store latest path
+  strcpy_safe ( tb->old_path, tb->path ); // store latest path
   return 0;
 }
 

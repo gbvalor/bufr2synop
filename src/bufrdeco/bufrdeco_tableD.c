@@ -63,7 +63,7 @@ int bufr_read_tableD ( struct bufrdeco *b )
 
   strcpy_safe ( caux, td->path );
   memset ( td, 0, sizeof ( struct bufr_tableD ) );
-  strlcpy ( td->path, caux, sizeof (td->path) );
+  strcpy_safe ( td->path, caux );
   if ( ( t = fopen ( td->path, "r" ) ) == NULL )
     {
       snprintf ( b->error, sizeof ( b->error ),"Unable to open table D file '%s'\n", td->path );
@@ -87,16 +87,16 @@ int bufr_read_tableD ( struct bufrdeco *b )
         }
 
       // item fields
-      strlcpy ( td->item[i].key, tk[0], sizeof ( td->item[i].key ) );
-      strlcpy ( td->item[i].key2, tk[1], sizeof ( td->item[i].key2 ) );
+      strcpy_safe ( td->item[i].key, tk[0] );
+      strcpy_safe ( td->item[i].key2, tk[1] );
 
       if ( nt == 4 && tk[2][0] )
-        strlcpy ( td->item[i].description, tk[2], sizeof (td->item[i].description) );
+        strcpy_safe ( td->item[i].description, tk[2] )
       else
         td->item[i].description[0] = 0;
 
       if ( nt == 4 && tk[3][0] )
-        strlcpy ( td->item[i].description2, tk[3], sizeof (td->item[i].description2) );
+        strcpy_safe ( td->item[i].description2, tk[3] )
       else
         td->item[i].description2[0] = 0;
 
@@ -123,7 +123,7 @@ int bufr_read_tableD ( struct bufrdeco *b )
         {
           nj++;
         }
-      strlcpy ( oldkey, tk[0], sizeof (oldkey) );
+      strcpy_safe ( oldkey, tk[0] );
 
       ix = strtoul ( tk[0], &c, 10 );
       uint32_t_to_descriptor ( &desc, ix );
@@ -154,7 +154,7 @@ int bufr_read_tableD ( struct bufrdeco *b )
 
   td->nlines = i;
   td->wmo_table = 1;
-  strlcpy ( td->old_path, td->path, sizeof (td->old_path) ); // store latest path
+  strcpy_safe ( td->old_path, td->path ); // store latest path
   return 0;
 }
 
@@ -236,7 +236,7 @@ int bufrdeco_tableD_get_descriptors_array ( struct bufr_sequence *s, struct bufr
 
   // Get the name of common sequence
   if ( td->item[i].description[0] )
-    strlcpy ( s->name, td->item[i].description, sizeof (s->name) );
+    strcpy_safe ( s->name, td->item[i].description )
   else
     s->name[0] = 0;
 
