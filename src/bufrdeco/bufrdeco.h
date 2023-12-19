@@ -1208,7 +1208,7 @@ int bufrdeco_print_atom_data_stdout ( struct bufr_atom_data *a );
 int bufrdeco_print_atom_data_file ( FILE *f, struct bufr_atom_data *a );
 int bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *s );
 int bufrdeco_print_subset_sequence_data_html ( struct bufrdeco_subset_sequence_data *s );
-int bufrdeco_print_subset_sequence_data_tagged_html ( struct bufrdeco_subset_sequence_data *s, char *id );
+int bufrdeco_print_subset_sequence_data_tagged_html ( struct bufrdeco_subset_sequence_data *s, const char *id );
 int bufrdeco_fprint_subset_sequence_data_html ( FILE *f, struct bufrdeco_subset_sequence_data *s );
 int bufrdeco_fprint_subset_sequence_data_tagged_html ( FILE *f, struct bufrdeco_subset_sequence_data *s, const char *id );
 int bufrdeco_fprint_subset_sequence_data ( FILE *f, struct bufrdeco_subset_sequence_data *s );

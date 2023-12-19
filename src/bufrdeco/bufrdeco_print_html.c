@@ -303,7 +303,7 @@ int bufrdeco_fprint_subset_sequence_data_tagged_html ( FILE *f, struct bufrdeco_
   \param id string with id for the subset
   \return If succeeded return 0
 */
-int bufrdeco_print_subset_sequence_data_tagged_html ( struct bufrdeco_subset_sequence_data *s, char *id )
+int bufrdeco_print_subset_sequence_data_tagged_html ( struct bufrdeco_subset_sequence_data *s, const char *id )
 {
   bufrdeco_assert ( s != NULL );
   
