@@ -61,7 +61,7 @@ int bufr_read_tableD ( struct bufrdeco *b )
       return 0; // all done
     }
 
-  strlcpy ( caux, td->path, sizeof (caux) );
+  strcpy_safe ( caux, td->path );
   memset ( td, 0, sizeof ( struct bufr_tableD ) );
   strlcpy ( td->path, caux, sizeof (td->path) );
   if ( ( t = fopen ( td->path, "r" ) ) == NULL )

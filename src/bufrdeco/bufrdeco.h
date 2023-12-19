@@ -1306,6 +1306,7 @@ int is_a_short_delayed_descriptor ( const struct bufr_descriptor *d );
 // Utilities for strings
 char * bufr_adjust_string ( char *s );
 char * bufr_charray_to_string ( char *s, const char *buf, size_t size );
+char * strcat_safe ( char *dst, const char *src, size_t n );
 
 // I/O of bit offset for subsets
 int bufr_read_subset_offset_bits ( FILE *f, struct bufrdeco_subset_bit_offsets *off );
