@@ -158,7 +158,7 @@ char * get_explained_table_val ( char *expl, size_t dim, const char tablec[MAXLI
   if ( nl > 1 )
     {
       for ( nv = 1 ; nv < nl; nv++ )
-        strlcat ( expl, &tablec[i + nv][22], dim );
+        strcat_safe ( expl, &tablec[i + nv][22], dim );
     }
 
   return expl;

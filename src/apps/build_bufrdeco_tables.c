@@ -281,12 +281,12 @@ int main ( int argc, char *argv[] )
                 {
                   if ( lin[22] != ' ' )
                     {
-                      strlcat ( caux, lin + 22, BUFR_EXPLAINED_LENGTH );
+                      strcat_safe ( caux, lin + 22, BUFR_EXPLAINED_LENGTH );
                     }
                   else
                     {
                       // this is valid for versions < 15
-                      strlcat ( caux, lin + 24, BUFR_EXPLAINED_LENGTH );
+                      strcat_safe ( caux, lin + 24, BUFR_EXPLAINED_LENGTH );
                     }
                 }
 

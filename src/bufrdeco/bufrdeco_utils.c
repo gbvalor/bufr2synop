@@ -489,7 +489,7 @@ int bufrdeco_get_bitmaped_info ( struct bufrdeco_bitmap_related_vars *brv, uint3
 
   //bufrdeco_assert (b != NULL && brv != NULL);
   brv->target = target;
-  memset(brv, 0, sizeof (struct bufrdeco_bitmap_related_vars ));
+  memset ( brv, 0, sizeof ( struct bufrdeco_bitmap_related_vars ) );
   for ( i = 0; i < b->bitmap.nba ; i++ )
     {
       bm = b->bitmap.bmap[i];
@@ -515,13 +515,13 @@ int bufrdeco_get_bitmaped_info ( struct bufrdeco_bitmap_related_vars *brv, uint3
                 brv->substituted = bm->subs + delta; // bm->subs is for first data present
 
               if ( bm->retain )
-                brv->retained = bm->retain + delta; 
+                brv->retained = bm->retain + delta;
 
               if ( bm->ns1 )
                 {
                   for ( k = 0; k < bm->ns1; k++ )
                     {
-                      brv->stat1[k] = bm->stat1[k] + delta; 
+                      brv->stat1[k] = bm->stat1[k] + delta;
                       brv->stat1_desc[k] = bm->stat1_desc[k];
                     }
                 }
@@ -589,3 +589,27 @@ int bufr_read_subset_offset_bits ( FILE *f, struct bufrdeco_subset_bit_offsets *
   return 0;
 }
 
+/*!
+ * \fn char *strcat_safe ( char *dst, const char *src, size_t n )
+ * \brief An secure version emulation of strcat.
+ */
+char *strcat_safe ( char *dst, const char *src, size_t n )
+{
+  char *p = dst;
+
+  while ( n != 0 && *p != '\0' )
+    {
+      p++;
+      n--;
+    }
+  if ( n != 0 )
+    {
+      for ( ; --n != 0; p++, src++ )
+        {
+          if ( ( *p = *src ) == '\0' )
+            return dst;
+        }
+      *p = '\0';
+    }
+  return dst;
+}

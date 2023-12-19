@@ -251,7 +251,7 @@ int main ( int argc, char *argv[] )
 
       // build a name
       strcpy ( namec, PREFIX );
-      strlcat ( namec, ENTRADA, sizeof (namec) );
+      strcat ( namec, ENTRADA );
 
       // open the file
       if ( ( ficol = fopen ( namec, "w" ) ) == NULL )
@@ -417,9 +417,9 @@ int main ( int argc, char *argv[] )
                             {
                               // prefix with input file timestamp
                               date_mtime_from_stat ( namex, &INSTAT );
-                              strlcat ( namex,"_", sizeof (namex) );
-                              strlcat ( namex, name, sizeof (namex) );
-                              strlcat ( namex, ".bufr", sizeof (namex) );
+                              strcat ( namex,"_" );
+                              strcat ( namex, name );
+                              strcat ( namex, ".bufr" );
                               if ( ( ficout = fopen ( namex, "w" ) ) == NULL )
                                 {
                                   printf ( "Error: cannot open %s\n", name );

@@ -76,9 +76,9 @@ int bufr_read_tableB ( struct bufrdeco *b )
       return 0; // all done
     }
 
-  strlcpy ( caux, tb->path, sizeof ( caux ) );
+  strcpy_safe ( caux, tb->path );
   memset ( tb, 0, sizeof ( struct bufr_tableB ) );
-  strlcpy ( tb->path, caux, sizeof ( tb->path ) );
+  strcpy_safe ( tb->path, caux );
   if ( ( t = fopen ( tb->path, "r" ) ) == NULL )
     {
       snprintf ( b->error, sizeof ( b->error ),"Unable to open table B file '%s'\n", tb->path );
@@ -103,7 +103,7 @@ int bufr_read_tableB ( struct bufrdeco *b )
       tb->item[i].changed = 0; // Original from table B
       tb->item[i].x = desc.x; // x
       tb->item[i].y = desc.y; // y
-      strlcpy ( tb->item[i].key, desc.c, sizeof ( tb->item[i].key ) ); // key
+      strcpy_safe ( tb->item[i].key, desc.c ); // key
       if ( tb->num[desc.x] == 0 )
         {
           tb->x_start[desc.x] = i;  // marc the start
@@ -118,15 +118,15 @@ int bufr_read_tableB ( struct bufrdeco *b )
         }
       else
         {
-          strlcpy ( caux, tk[1], sizeof ( tb->item[i].name ) );
+          strcpy_safe ( caux, tk[1] );
         }
 
       // and finally copy
-      strlcpy ( tb->item[i].name, caux, sizeof ( tb->item[i].name ) );
+      strcpy_safe ( tb->item[i].name, caux );
 
       // unit
-      strlcpy ( caux, tk[3], sizeof ( tb->item[i].unit ) );
-      strlcpy ( tb->item[i].unit, caux, sizeof ( tb->item[i].unit ) );
+      strcpy_safe ( caux, tk[3] );
+      strcpy_safe ( tb->item[i].unit, caux );
 
       // escale
       tb->item[i].scale_ori = strtol ( tk[4], &c, 10 );
@@ -146,7 +146,7 @@ int bufr_read_tableB ( struct bufrdeco *b )
   fclose ( t );
   tb->nlines = i;
   tb->wmo_table = 1;
-  strlcpy ( tb->old_path, tb->path, sizeof ( tb->old_path ) ); // store latest path
+  strcpy_safe ( tb->old_path, tb->path ); // store latest path
   return 0;
 }
 
