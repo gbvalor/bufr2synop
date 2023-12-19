@@ -66,11 +66,11 @@ int main ( int argc, char *argv[] )
       {
       case 'i':
         if ( strlen ( optarg ) < sizeof (INPUT_FILE) )
-          strlcpy ( INPUT_FILE, optarg, sizeof (INPUT_FILE) );
+          strcpy_safe ( INPUT_FILE, optarg );
         break;
       case 'r':
         if ( strlen ( optarg ) < sizeof (REFERENCE_FILE) )
-          strlcpy ( REFERENCE_FILE, optarg, sizeof (REFERENCE_FILE) );
+          strcpy_safe ( REFERENCE_FILE, optarg );
         break;
       case 'h':
       default:
@@ -131,7 +131,7 @@ int main ( int argc, char *argv[] )
             {
               if ( strcmp ( TK[k][0], tk[0] ) == 0 )
                 {
-                  strlcpy ( caux2, TK[k][2], sizeof (caux2) );
+                  strcpy_safe ( caux2, TK[k][2] );
                   j = k;
                   break;
                 }

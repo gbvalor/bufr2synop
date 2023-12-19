@@ -424,7 +424,7 @@ char * get_bufrfile_path ( char *filename, char *fileoffset, char *err )
       if ( NFILES == 0 )
         {
           if ( filename != INPUTFILE )
-            strlcpy ( filename, INPUTFILE, sizeof (INPUTFILE) );
+            strcpy_safe ( filename, INPUTFILE );
           return filename;
         }
       else
@@ -443,7 +443,7 @@ char * get_bufrfile_path ( char *filename, char *fileoffset, char *err )
       char *c =  strrchr ( aux,'\n' );
       if ( c )
         *c = 0;
-      strlcpy ( filename, aux, sizeof (aux) );
+      strcpy_safe ( filename, aux );
       snprintf (fileoffset, BUFRDECO_PATH_LENGTH , "%s.offs", filename);
       return filename;
     }
