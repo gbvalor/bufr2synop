@@ -50,9 +50,9 @@ int B_FIELDS[8] = {3,4,5,6,7,8,9,-1}; // fields selected for table B type
 int C_FIELDS[8] = {1,3,4,5,6,7,-1,-1}; // Fields selected for CodeFlag (C) type.
 int D_FIELDS[8] = {3,6,4,7,-1,-1,-1,-1}; // Fields selected for D type (Common sequences)
 
-int B_FIELDS_2[8] = {2,3,4,5,6,7,8,-1}; // fields selected for table B type for 38 > version >= 35
-int C_FIELDS_2[8] = {0,2,3,4,5,6,-1,-1}; // Fields selected for CodeFlag (C) type for 38 > version >= 35.
-int D_FIELDS_2[8] = {2,5,3,6,-1,-1,-1,-1}; // Fields selected for D type (Common sequences) for 38 > version >= 35
+int B_FIELDS_2[8] = {2,3,4,5,6,7,8,-1}; // fields selected for table B type for version >= 35
+int C_FIELDS_2[8] = {0,2,3,4,5,6,-1,-1}; // Fields selected for CodeFlag (C) type for version >= 35.
+int D_FIELDS_2[8] = {2,5,3,6,-1,-1,-1,-1}; // Fields selected for D type (Common sequences) version >= 35
 
 int B_FIELDS_3[8] = {2,3,11,4,5,6,7,-1}; // fields selected for table B type for version >= 38
 int C_FIELDS_3[8] = {0,2,3,4,5,6,-1,-1}; // Fields selected for CodeFlag (C) type for version >= 38.
