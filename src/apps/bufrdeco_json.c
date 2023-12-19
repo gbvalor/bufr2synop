@@ -123,7 +123,7 @@ int read_args ( int _argc, char * _argv[] )
           {
             if ( strstr ( optarg, ".." ) != NULL )
               {
-                strlcpy ( aux, optarg, sizeof(aux) );
+                strcpy_safe ( aux, optarg );
                 c = strstr ( aux, ".." );
                 if ( strlen ( c ) > 2 )
                   {
@@ -144,7 +144,7 @@ int read_args ( int _argc, char * _argv[] )
         break;
       case 'i':
         if ( strlen ( optarg ) < sizeof (ENTRADA) )
-          strlcpy ( ENTRADA, optarg, sizeof (ENTRADA) );
+          strcpy_safe ( ENTRADA, optarg );
         break;
 
       case 'h':
