@@ -125,8 +125,8 @@ int bufr_read_tableB ( struct bufrdeco *b )
       strcpy_safe ( tb->item[i].name, caux );
 
       // unit
-      strlcpy ( caux, tk[3], sizeof ( tb->item[i].unit ) );
-      strlcpy ( tb->item[i].unit, caux, sizeof ( tb->item[i].unit ) );
+      strcpy_safe ( caux, tk[3] );
+      strcpy_safe ( tb->item[i].unit, caux );
 
       // escale
       tb->item[i].scale_ori = strtol ( tk[4], &c, 10 );
