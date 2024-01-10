@@ -12,7 +12,7 @@
 
 CMAKE_MINIMUM_REQUIRED (VERSION 3.5)
 
-# Next line is to set versioºn 
+# Next line is to set version 
 cmake_policy(SET CMP0048 NEW)
 
 # Establecemos la version 
