@@ -39,21 +39,37 @@ set (all_includes "/usr/include /usr/local/include")
 # Usual system library directories
 set (dir_libs "/usr/lib /usr/lib64 /usr/local/lib /usr/local/lib64") 
 
-# check for compiler
-find_program(ICC_PROGRAM icc)
-IF(ICC_PROGRAM)
-  MESSAGE(STATUS "** Using Intel c/c++ compiler **")
-  set(CMAKE_C_COMPILER "icc") 
-  set(CMAKE_CXX_COMPILER "icc")
-  set(CMAKE_C_FLAGS "-O2 -xHOST -Wall -g")
-  set(CMAKE_CXX_FLAGS "-O2 -xHOST -Wall -g")
-  set(USING_ICC 1)
-else (ICC_PROGRAM)
-  MESSAGE(STATUS "** Using GNU gcc compiler **")
-  set(CMAKE_C_FLAGS "-O2 -Wall -W -Wextra -g -Wno-stringop-truncation")
-  set(CMAKE_CXX_FLAGS "-O2 -Wall -W -Wextra -g -Wno-stringop-truncation")
-  set(USING_GCC 1)
-ENDIF(ICC_PROGRAM)
+# Using GNU gcc compiler by default
+set(CMAKE_C_FLAGS "-O2 -Wall -W -Wextra -g -Wno-stringop-truncation")
+set(CMAKE_CXX_FLAGS "-O2 -Wall -W -Wextra -g -Wno-stringop-truncation")
+
+# Check if need to try Intel icc complier
+IF (DEFINED TRY_ICC)
+  if ("${TRY_ICC}" STREQUAL "ON")
+    MESSAGE(STATUS "***** Trying to use Intel compiler c/c++ **") 
+    # If not found icc then will use gcc
+    find_program(ICC_PROGRAM icc)
+    IF(ICC_PROGRAM)
+      MESSAGE(STATUS "** Using Intel c/c++ compiler **")
+      set(CMAKE_C_COMPILER "icc")
+      set(CMAKE_CXX_COMPILER "icc")
+      set(CMAKE_C_FLAGS "-O2 -xHOST -Wall")
+      set(CMAKE_CXX_FLAGS "-O2 -xHOST -Wall -std=c++20")
+      set(USING_ICC 1)
+    else (ICC_PROGRAM)
+      MESSAGE(STATUS "*** Intel compiler not found ***")
+      MESSAGE(STATUS "******  Using GNU compiler *****")
+      set(USING_GCC 1) 
+    ENDIF(ICC_PROGRAM)
+  ELSE()  
+    MESSAGE(STATUS "******  Using GNU compiler *****")
+    set(USING_GCC 1) 
+  ENDIF()
+ELSE()
+    MESSAGE(STATUS "******  Using GNU compiler *****")
+    set(USING_GCC 1) 
+ENDIF()
+
 
 # Summary of compiler options
 MESSAGE(STATUS "  CMAKE_C_COMPILER:   ${CMAKE_C_COMPILER}")
