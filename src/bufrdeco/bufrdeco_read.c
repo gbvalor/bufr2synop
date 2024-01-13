@@ -404,7 +404,6 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, buf_t size )
   if ( (b->sec4.length + 4) > BUFR_LEN )
     {
       snprintf ( b->error, sizeof ( b->error ), "%s(): Sec4 length %u is over limit %u \n", __func__, b->sec3.length, BUFR_LEN );
-      free ( ( void * ) bufrx );
       return 1;
     }
   memcpy ( b->sec4.raw, c, b->sec4.length + 4 );
