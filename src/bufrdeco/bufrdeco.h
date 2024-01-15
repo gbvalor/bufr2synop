@@ -50,7 +50,7 @@ extern "C" {
 #include <sys/stat.h>
 
 // Uncomment following line to debug
-#define __DEBUG
+//#define __DEBUG
 
 /*!
  *  \def BUFRDECO
