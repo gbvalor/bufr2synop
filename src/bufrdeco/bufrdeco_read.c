@@ -367,6 +367,12 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, buf_t size )
 
   /******************* section 3 *****************************/
   b->sec3.length = three_bytes_to_uint32 ( c );
+  if ( b->sec3.length > BUFR_LEN_SEC3 )
+    {
+      snprintf ( b->error, sizeof ( b->error ), "%s(): Sec3 length %u is over limit %u\n", __func__, b->sec3.length, BUFR_LEN_SEC3 );
+      return 1;
+    }
+    
   b->sec3.subsets = two_bytes_to_uint32 ( &c[4] );
   if ( c[6] & 0x80 )
     b->sec3.observed = 1;
@@ -386,11 +392,6 @@ int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, buf_t size )
     }
   b->sec3.ndesc = ud;
 
-  if ( b->sec3.length > BUFR_LEN_SEC3 )
-    {
-      snprintf ( b->error, sizeof ( b->error ), "%s(): Sec3 length %u is over limit %u\n", __func__, b->sec3.length, BUFR_LEN_SEC3 );
-      return 1;
-    }
   memcpy ( b->sec3.raw, c, b->sec3.length );
   c += b->sec3.length;
 
