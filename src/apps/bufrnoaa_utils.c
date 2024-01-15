@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -90,7 +90,7 @@ int is_endb ( const unsigned char *b )
    Return 1 if the difference is negative, otherwise 0.
 */
 
-int timeval_substract ( struct timeval *result, struct timeval *x,
+int timeval_substract ( struct timeval *result, const struct timeval *x,
                         struct timeval *y )
 {
   /* Perform the carry for the later subtraction by updating Y. */

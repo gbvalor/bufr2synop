@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,13 +24,13 @@
 #include "bufr2tac.h"
 
 /*!
-  \fn size_t print_buoy_sec0 (char **sec0, size_t lmax, struct buoy_chunks *b)
+  \fn size_t print_buoy_sec0 (char **sec0, size_t lmax, const struct buoy_chunks *b)
   \brief Prints the buoy section 1
   \param sec0 the pointer where to print section
   \param lmax max length permited
   \param b pointer to s atruct \ref buoy_chunks where the parse results are set
 */
-size_t print_buoy_sec0 ( char **sec0, size_t lmax, struct buoy_chunks *b )
+size_t print_buoy_sec0 ( char **sec0, size_t lmax, const struct buoy_chunks *b )
 {
   size_t used = 0;
   char *c = *sec0;
@@ -203,13 +203,13 @@ size_t print_buoy_sec1 ( char **sec1, size_t lmax, struct buoy_chunks *b )
 }
 
 /*!
-  \fn size_t print_buoy_sec2 (char **sec2, size_t lmax, struct buoy_chunks *b)
+  \fn size_t print_buoy_sec2 (char **sec2, size_t lmax, const struct buoy_chunks *b)
   \brief Prints the buoy section 1
   \param sec2 the pointer where to print section
   \param lmax max length permited
   \param b pointer to s atruct \ref buoy_chunks where the parse results are set
 */
-size_t print_buoy_sec2 ( char **sec2, size_t lmax, struct buoy_chunks *b )
+size_t print_buoy_sec2 ( char **sec2, size_t lmax, const struct buoy_chunks *b )
 {
   size_t used = 0;
   char *c = *sec2;
@@ -286,13 +286,13 @@ size_t print_buoy_sec2 ( char **sec2, size_t lmax, struct buoy_chunks *b )
 }
 
 /*!
-  \fn size_t print_buoy_sec3 (char **sec3, size_t lmax, struct buoy_chunks *b)
+  \fn size_t print_buoy_sec3 (char **sec3, size_t lmax, const struct buoy_chunks *b)
   \brief Prints the buoy section 3
   \param sec3 the pointer where to print section
   \param lmax max length permited
   \param b pointer to s atruct \ref buoy_chunks where the parse results are set
 */
-size_t print_buoy_sec3 ( char **sec3, size_t lmax, struct buoy_chunks *b )
+size_t print_buoy_sec3 ( char **sec3, size_t lmax, const struct buoy_chunks *b )
 {
   size_t used = 0;
   char *c = *sec3;
@@ -361,10 +361,10 @@ size_t print_buoy_sec3 ( char **sec3, size_t lmax, struct buoy_chunks *b )
 }
 
 /*!
- *  \fn size_t print_synop_wigos_id ( char **wid,  size_t lmax, struct buoy_chunks *b )
+ *  \fn size_t print_synop_wigos_id ( char **wid,  size_t lmax, const struct buoy_chunks *b )
  *  \brief Prints a WIGOS identifier in a buoy report
  */
-size_t print_buoy_wigos_id ( char **wid,  size_t lmax, struct buoy_chunks *b )
+size_t print_buoy_wigos_id ( char **wid,  size_t lmax, const struct buoy_chunks *b )
 {
   char aux[40];
   size_t used = 0;

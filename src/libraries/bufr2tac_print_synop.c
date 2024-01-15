@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,14 +24,14 @@
 #include "bufr2tac.h"
 
 /*!
-  \fn size_t print_synop_sec0 (char **sec0, size_t lmax, struct synop_chunks *syn)
+  \fn size_t print_synop_sec0 (char **sec0, size_t lmax, const struct synop_chunks *syn)
   \brief Prints the synop section 0 (header)
   \param sec0 the pointer where to print section
   \param lmax max length permited
   \param syn pointer to s atruct \ref synop_chunks where the parse results are set
   \return Used bytes
 */
-size_t print_synop_sec0 ( char **sec0, size_t lmax, struct synop_chunks *syn )
+size_t print_synop_sec0 ( char **sec0, size_t lmax, const struct synop_chunks *syn )
 {
   char *c = *sec0;
   size_t used = 0;
@@ -240,14 +240,14 @@ size_t print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn )
 
 
 /*!
-  \fn size_t print_synop_sec2 (char **sec2, size_t lmax, struct synop_chunks *syn)
+  \fn size_t print_synop_sec2 (char **sec2, size_t lmax, const struct synop_chunks *syn)
   \brief Prints the synop section 2
   \param sec2 the pointer where to print section
   \param lmax max length permited
   \param syn pointer to s atruct \ref synop_chunks where the parse results are set
   \return Used bytes
 */
-size_t print_synop_sec2 ( char **sec2, size_t lmax, struct synop_chunks *syn )
+size_t print_synop_sec2 ( char **sec2, size_t lmax, const struct synop_chunks *syn )
 {
   char *c = *sec2;
   size_t used = 0;

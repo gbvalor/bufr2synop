@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -64,11 +64,11 @@ int print_html ( FILE *f, const struct metreport *m )
 }
 
 /*!
- *  \fn size_t print_geo ( char **geo,  size_t lmax, struct metrepor *m )
+ *  \fn size_t print_geo ( char **geo,  size_t lmax, const struct metrepor *m )
  *  \brief Prints a WIGOS identifier in a TAC output report
  *  \param m pointer to struct \ref metreport where are both target and source
  */
-size_t print_geo ( char **geo,  size_t lmax, struct metreport *m )
+size_t print_geo ( char **geo,  size_t lmax, const struct metreport *m )
 {
   size_t used;
   char sep = '|';
@@ -79,11 +79,11 @@ size_t print_geo ( char **geo,  size_t lmax, struct metreport *m )
 }
 
 /*!
- *  \fn size_t print_wigos_id ( char **wid,  size_t lmax, struct metrepor *m )
+ *  \fn size_t print_wigos_id ( char **wid,  size_t lmax, const struct metrepor *m )
  *  \brief Prints a WIGOS identifier in a TAC output report
  *  \param m pointer to struct \ref metreport where are both target and source
  */
-  size_t print_wigos_id ( char **wid,  size_t lmax, struct metreport *m )
+  size_t print_wigos_id ( char **wid,  size_t lmax, const struct metreport *m )
 {
   char aux[40];
   size_t used;

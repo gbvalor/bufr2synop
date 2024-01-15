@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -55,7 +55,7 @@ buf_t bufrdeco_print_json_scape_string_cvals ( FILE *out, const char *source )
  * \param b pointer to active struct \ref bufrdeco
  * \return The amount of bytes sent to out
  */
-buf_t bufrdeco_print_json_subset_data_prologue ( FILE *out,  struct bufrdeco *b )
+buf_t bufrdeco_print_json_subset_data_prologue ( FILE *out,  const struct bufrdeco *b )
 {
   buf_t used = 0;
 
@@ -132,7 +132,7 @@ buf_t bufrdeco_print_json_sequence_descriptor_final ( FILE *out )
  * { "descriptor":"f xx yyy", "name":"name_of_descriptor" , "unit":"Flag value", "value":"numeric_value", "meaning":"explanation_string}
  * { "descriptor":"f xx yyy", "name":"name_of_descriptor" , "unit":"name_of_unit", "value":"numeric_value"}
  */
-buf_t bufrdeco_print_json_object_atom_data ( FILE *out,  struct bufr_atom_data *a, buf_t index_data, struct bufrdeco *b, const char *add )
+buf_t bufrdeco_print_json_object_atom_data ( FILE *out,  struct bufr_atom_data *a, buf_t index_data, const struct bufrdeco *b, const char *add )
 {
   char aux[256];
   buf_t used = 0;
@@ -272,14 +272,14 @@ buf_t bufrdeco_print_json_separator ( FILE *out )
 }
 
 /*!
-  \fn int sprint_sec0_info( FILE *out, struct bufrdeco *b )
+  \fn int sprint_sec0_info( FILE *out, const struct bufrdeco *b )
 * \brief Print info form sec 0 in json format
  * \param out string where to print
  * \param b actuve struct \ref bufrdeco
  *
  * \return The amount of bytes sent to out
 */
-buf_t bufrdeco_print_json_sec0 ( FILE *out, struct bufrdeco *b )
+buf_t bufrdeco_print_json_sec0 ( FILE *out, const struct bufrdeco *b )
 {
   size_t used = 0;
 
@@ -292,14 +292,14 @@ buf_t bufrdeco_print_json_sec0 ( FILE *out, struct bufrdeco *b )
 
 
 /*!
- * \fn bufrdeco_print_json_sec1 (FILE *out, struct bufrdeco *b)
+ * \fn bufrdeco_print_json_sec1 (FILE *out, const struct bufrdeco *b)
  * \brief Print info form sec 1 in json format
  * \param out string where to print
  * \param b actuve struct \ref bufrdeco
  *
  * \return The amount of bytes sent to out
 */
-buf_t bufrdeco_print_json_sec1 ( FILE *out, struct bufrdeco *b )
+buf_t bufrdeco_print_json_sec1 ( FILE *out, const struct bufrdeco *b )
 {
   size_t used = 0;
 
@@ -342,14 +342,14 @@ buf_t bufrdeco_print_json_sec1 ( FILE *out, struct bufrdeco *b )
 }
 
 /*!
-  \fn buf_t bufrdeco_print_json_sec2( FILE *out, struct bufrdeco *b )
+  \fn buf_t bufrdeco_print_json_sec2( FILE *out, const struct bufrdeco *b )
 * \brief Print info form optional sec 2 in json format
  * \param out string where to print
  * \param b actuve struct \ref bufrdeco
  *
  * \return The amount of bytes sent to out
 */
-buf_t bufrdeco_print_json_sec2 ( FILE *out, struct bufrdeco *b )
+buf_t bufrdeco_print_json_sec2 ( FILE *out, const struct bufrdeco *b )
 {
   size_t used = 0;
 
@@ -364,14 +364,14 @@ buf_t bufrdeco_print_json_sec2 ( FILE *out, struct bufrdeco *b )
 }
 
 /*!
- * \fn bufrdeco_print_json_sec3 (FILE *out, struct bufrdeco *b)
+ * \fn bufrdeco_print_json_sec3 (FILE *out, const struct bufrdeco *b)
  * \brief Print info form sec 3 in json format
  * \param out string where to print
  * \param b actuve struct \ref bufrdeco
  *
  * \return The amount of bytes sent to out
 */
-buf_t bufrdeco_print_json_sec3 ( FILE *out, struct bufrdeco *b )
+buf_t bufrdeco_print_json_sec3 ( FILE *out, const struct bufrdeco *b )
 {
   buf_t used = 0, i;
 

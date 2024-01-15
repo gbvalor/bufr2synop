@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -76,7 +76,7 @@ void print_usage ( void )
 
 int main ( int argc, char *argv[] )
 {
-  int iopt, i, *fs;
+  int iopt, *fs;
   FILE *f;
   char lin[CSV_MAXL], caux[CSV_MAXL], caux2[32];
   char *tk[16], *c;
@@ -183,7 +183,7 @@ int main ( int argc, char *argv[] )
               exit ( EXIT_FAILURE );
             }
 
-          i = 0;
+          size_t i = 0;
           while ( fs[i] >= 0 )
             {
               if ( i > 0 )

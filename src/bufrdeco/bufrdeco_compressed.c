@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -226,7 +226,6 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
               b->assoc.afield[b->assoc.nd - 1].val = rf->ref0;
               // Get the meaning of associated field
               tb = & ( b->tables->b );
-              k = tb->x_start[31] + tb->y_ref[31][21];
               bufrdeco_explained_table_val ( b->assoc.afield[b->assoc.nd - 1].cval, 256, & ( b->tables->c ),
                                              & ( tb->item[i].tableC_ref ), & ( seq->lseq[i] ), rf->ref0 );
               strcpy ( b->state.associated.afield[b->state.associated.nd - 1].cval, b->assoc.afield[b->assoc.nd - 1].cval );

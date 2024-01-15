@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -282,14 +282,14 @@ char *guess_WMO_region ( char *A1, char *Reg, const char *II, const char *iii )
 }
 
 /*!
-   \fn int check_date_from_future(struct metreport *m)
+   \fn int check_date_from_future(const struct metreport *m)
    \brief Check a estructure \ref metreport not from future
    \param m pointer to a struct metreport to check about date and time
 
    It resturns 1 if date/time is from future, and likely wrong
    Returns 0 otherwise
 */
-int check_date_from_future ( struct metreport *m )
+int check_date_from_future ( const struct metreport *m )
 {
   time_t now;
 

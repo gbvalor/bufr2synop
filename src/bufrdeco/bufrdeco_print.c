@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -549,13 +549,13 @@ int bufrdeco_print_subset_sequence_data ( struct bufrdeco_subset_sequence_data *
 }
 
 /*!
-  \fn int fprint_bufrdeco_compressed_ref ( FILE *f, struct bufrdeco_compressed_ref *r )
+  \fn int fprint_bufrdeco_compressed_ref ( FILE *f, const struct bufrdeco_compressed_ref *r, buf_t index  )
   \brief prints a struct bufrdeco_compressed_ref
   \param f pointer to a file opened by caller
   \param r pointer to the struct to print
   \return If succeeded return 0
 */
-int fprint_bufrdeco_compressed_ref ( FILE *f, struct bufrdeco_compressed_ref *r, buf_t index )
+int fprint_bufrdeco_compressed_ref ( FILE *f, const struct bufrdeco_compressed_ref *r, buf_t index )
 {
   bufrdeco_assert ( f != NULL && r != NULL );
 
@@ -574,12 +574,12 @@ int fprint_bufrdeco_compressed_ref ( FILE *f, struct bufrdeco_compressed_ref *r,
 }
 
 /*!
-  \fn int print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r )
+  \fn int print_bufrdeco_compressed_ref ( const struct bufrdeco_compressed_ref *r )
   \brief prints a struct bufrdeco_compressed_ref
   \param r pointer to the struct to print
   \return If succeeded return 0
 */
-int print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r, buf_t index )
+int print_bufrdeco_compressed_ref ( const struct bufrdeco_compressed_ref *r, buf_t index )
 {
   bufrdeco_assert ( r != NULL );
 
@@ -625,7 +625,7 @@ int fprint_bufrdeco_compressed_data_references ( FILE *f, struct bufrdeco_compre
   return 0;
 }
 
-int bufrdeco_print_event ( const struct bufrdeco_decode_subset_event *e, struct bufrdeco *b )
+int bufrdeco_print_event ( const struct bufrdeco_decode_subset_event *e, const struct bufrdeco *b )
 {
   char aux[128], *c;
   printf ( "Event: %u, Mask:", b->bitacora.nd );

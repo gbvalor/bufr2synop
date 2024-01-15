@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,7 +23,7 @@
 */
 #include "bufr2tac.h"
 
-int print_csv_alphanum ( FILE *f, const char *type, const char *alphanum, struct metreport *m )
+int print_csv_alphanum ( FILE *f, const char *type, const char *alphanum, const struct metreport *m )
 {
   // prints header
   fprintf ( f, "\"%s\",", type );
@@ -77,12 +77,12 @@ int print_csv_alphanum ( FILE *f, const char *type, const char *alphanum, struct
 }
 
 /*!
-  \fn int print_csv(FILE *f, struct metreport *m)
+  \fn int print_csv(FILE *f, const struct metreport *m)
   \brief prints a struct \ref metreport in labeled csv format
   \param f pointer to a file already open by caller routine
   \param m pointer to a struct \ref metreport containing the data to print
 */
-int print_csv ( FILE *f, struct metreport *m )
+int print_csv ( FILE *f, const struct metreport *m )
 {
   // Single report
   if ( m->alphanum[0] )

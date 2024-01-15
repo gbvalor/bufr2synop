@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,14 +24,14 @@
 #include "bufrdeco.h"
 
 /*!
-  \fn void sprint_sec0_info_html( char *target, size_t lmax, struct bufrdeco *b )
+  \fn void sprint_sec0_info_html( char *target, size_t lmax, const struct bufrdeco *b )
   \brief Prints info from sec0 in html format
   \param target string target
   \param lmax available size in target
   \param b pointer to the source struct \ref bufrdeco
   \return If succeeded return 0
 */ 
-int sprint_sec0_info_html ( char *target, size_t lmax, struct bufrdeco *b )
+int sprint_sec0_info_html ( char *target, size_t lmax, const struct bufrdeco *b )
 {
   size_t used = 0;
 
@@ -45,14 +45,14 @@ int sprint_sec0_info_html ( char *target, size_t lmax, struct bufrdeco *b )
 }
 
 /*!
-  \fn int sprint_sec1_info_html( char *target, size_t lmax, struct bufrdeco *b )
+  \fn int sprint_sec1_info_html( char *target, size_t lmax, const struct bufrdeco *b )
   \brief Prints info from sec1
   \param target string target
   \param lmax available size in target
   \param b pointer to the source struct \ref bufrdeco
   \return If succeeded return 0
 */
-int sprint_sec1_info_html ( char *target, size_t lmax, struct bufrdeco *b )
+int sprint_sec1_info_html ( char *target, size_t lmax, const struct bufrdeco *b )
 {
   size_t used = 0;
 
@@ -94,14 +94,14 @@ int sprint_sec1_info_html ( char *target, size_t lmax, struct bufrdeco *b )
 }
 
 /*!
-  \fn int sprint_sec3_info_html( char *target, size_t lmax, struct bufrdeco *b )
+  \fn int sprint_sec3_info_html( char *target, size_t lmax, const struct bufrdeco *b )
   \brief Prints info from sec3 formatted as html
   \param target string target
   \param lmax available size in target
   \param b pointer to the source struct \ref bufrdeco
   \return If succeeded return 0
 */
-int sprint_sec3_info_html ( char *target, size_t lmax, struct bufrdeco *b )
+int sprint_sec3_info_html ( char *target, size_t lmax, const struct bufrdeco *b )
 {
   size_t i;
   size_t used = 0; 
@@ -126,14 +126,14 @@ int sprint_sec3_info_html ( char *target, size_t lmax, struct bufrdeco *b )
 }
 
 /*!
-  \fn int sprint_sec4_info_html( char *target, size_t lmax, struct bufrdeco *b )
+  \fn int sprint_sec4_info_html( char *target, size_t lmax, const struct bufrdeco *b )
   \brief Prints info from sec4
   \param target string target
   \param lmax available size in target
   \param b pointer to the source struct \ref bufrdeco
   \return If succeeded return 0, 1 otherwise
 */
-int sprint_sec4_info_html ( char *target, size_t lmax, struct bufrdeco *b )
+int sprint_sec4_info_html ( char *target, size_t lmax, const struct bufrdeco *b )
 {
   size_t used = 0;
 

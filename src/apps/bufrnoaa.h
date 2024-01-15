@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2004-2024 by Guillermo Ballester Valor                  *
  *   gbv@oxixares.com                                                      *
  *                                                                         *
  *   This file is part of Ogimet                                           *
@@ -52,7 +52,7 @@ int is_bufr ( const unsigned char *b );
 int is_endb ( const unsigned char *b );
 int is_head ( const unsigned char *b );
 int is_head_custom ( const unsigned char *b, char mark );
-int timeval_substract ( struct timeval *result, struct timeval *x, struct timeval *y );
+int timeval_substract ( struct timeval *result, const struct timeval *x, struct timeval *y );
 int read_args ( int _argc, char * _argv[] );
 void print_usage ( void );
 void print_version ( void );

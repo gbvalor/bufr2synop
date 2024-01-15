@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,13 +24,13 @@
 #include "bufr2tac.h"
 
 /*!
-  \fn size_t print_climat_sec0 (char **sec0, size_t lmax, struct climat_chunks *cl)
+  \fn size_t print_climat_sec0 (char **sec0, size_t lmax, const struct climat_chunks *cl)
   \brief Prints the climat section 0 (header)
   \param sec0 the pointer where to print section
   \param lmax max length permited
   \param cl pointer to s atruct \ref climat_chunks where the parse results are set
 */
-size_t print_climat_sec0 ( char **sec0, size_t lmax, struct climat_chunks *cl )
+size_t print_climat_sec0 ( char **sec0, size_t lmax, const struct climat_chunks *cl )
 {
   char *c = *sec0;
   size_t used = 0;

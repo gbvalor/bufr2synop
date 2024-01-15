@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -134,7 +134,7 @@ int print_temp_raw_wind_shear_data ( const struct temp_raw_wind_shear_data *w )
 }
 
 /*!
-  \fn size_t print_temp_a_sec1 (char **sec1, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_a_sec1 (char **sec1, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 1 of part A of a TEMP report
   \param sec1 the pointer where to print section
   \param lmax max length permited
@@ -142,7 +142,7 @@ int print_temp_raw_wind_shear_data ( const struct temp_raw_wind_shear_data *w )
 
   returns the string sec1
 */
-size_t print_temp_a_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
+size_t print_temp_a_sec1 ( char **sec1, size_t lmax, const struct temp_chunks *t )
 {
   size_t used = 0;
   char *c = *sec1;
@@ -200,7 +200,7 @@ size_t print_temp_a_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 
 
 /*!
-  \fn size_t print_temp_a_sec2 (char **sec2, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_a_sec2 (char **sec2, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 2 of part A of a TEMP report
   \param sec2 the pointer where to print section
   \param lmax max length permited
@@ -208,7 +208,7 @@ size_t print_temp_a_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 
   returns the string sec2
 */
-size_t print_temp_a_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t )
+size_t print_temp_a_sec2 ( char **sec2, size_t lmax, const struct temp_chunks *t )
 {
   size_t i;
   size_t used = 0;
@@ -231,7 +231,7 @@ size_t print_temp_a_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
-  \fn size_t print_temp_a_sec3 (char **sec3, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_a_sec3 (char **sec3, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 3 of part A of a TEMP report
   \param sec3 the pointer where to print section
   \param lmax max length permited
@@ -239,7 +239,7 @@ size_t print_temp_a_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t )
 
   returns the string sec3
 */
-size_t print_temp_a_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
+size_t print_temp_a_sec3 ( char **sec3, size_t lmax, const struct temp_chunks *t )
 {
   size_t used = 0;
   char *c = *sec3;
@@ -264,7 +264,7 @@ size_t print_temp_a_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
-  \fn size_t print_temp_a_sec4 (char **sec4, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_a_sec4 (char **sec4, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 4 of part A of a TEMP report
   \param sec4 the pointer where to print section
   \param lmax max length permited
@@ -272,7 +272,7 @@ size_t print_temp_a_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
 
   returns the string sec1
 */
-size_t print_temp_a_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
+size_t print_temp_a_sec4 ( char **sec4, size_t lmax, const struct temp_chunks *t )
 {
   size_t used = 0;
   char *c = *sec4;
@@ -308,7 +308,7 @@ size_t print_temp_a_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
-  \fn size_t print_temp_a_sec7 (char **sec7, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_a_sec7 (char **sec7, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 7 of part A of a TEMP report
   \param sec7 the pointer where to print section
   \param lmax max length permited
@@ -316,7 +316,7 @@ size_t print_temp_a_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
 
   returns the string sec7
 */
-size_t print_temp_a_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
+size_t print_temp_a_sec7 ( char **sec7, size_t lmax, const struct temp_chunks *t )
 {
   size_t used = 0;
   char *c = *sec7;
@@ -375,7 +375,7 @@ int print_temp_a (  struct metreport *m )
 }
 
 /*!
-  \fn size_t print_temp_b_sec1 (char **sec1, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_b_sec1 (char **sec1, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 1 of part B of a TEMP report
   \param sec1 the pointer where to print section
   \param lmax max length permited
@@ -383,7 +383,7 @@ int print_temp_a (  struct metreport *m )
 
   returns the string sec1
 */
-size_t print_temp_b_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
+size_t print_temp_b_sec1 ( char **sec1, size_t lmax, const struct temp_chunks *t )
 {
   size_t used = 0;
   char *c = *sec1;
@@ -440,7 +440,7 @@ size_t print_temp_b_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
-  \fn size_t print_temp_b_sec5 (char **sec5, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_b_sec5 (char **sec5, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 5 of part B of a TEMP report
   \param sec5 the pointer where to print section
   \param lmax max length permited
@@ -448,7 +448,7 @@ size_t print_temp_b_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 
   returns the string sec5
 */
-size_t print_temp_b_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t )
+size_t print_temp_b_sec5 ( char **sec5, size_t lmax, const struct temp_chunks *t )
 {
   size_t used = 0;
   size_t i;
@@ -465,7 +465,7 @@ size_t print_temp_b_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
-  \fn size_t print_temp_b_sec6 (char **sec6, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_b_sec6 (char **sec6, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 6 of part B of a TEMP report
   \param sec6 the pointer where to print section
   \param lmax max length permited
@@ -473,7 +473,7 @@ size_t print_temp_b_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t )
 
   returns the string sec6
 */
-size_t print_temp_b_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
+size_t print_temp_b_sec6 ( char **sec6, size_t lmax, const struct temp_chunks *t )
 {
   size_t i;
   size_t used = 0;
@@ -492,7 +492,7 @@ size_t print_temp_b_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
-  \fn size_t print_temp_b_sec7 (char **sec7, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_b_sec7 (char **sec7, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 7 of part B of a TEMP report
   \param sec7 the pointer where to print section
   \param lmax max length permited
@@ -500,7 +500,7 @@ size_t print_temp_b_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
 
   returns the string sec7
 */
-size_t print_temp_b_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
+size_t print_temp_b_sec7 ( char **sec7, size_t lmax, const struct temp_chunks *t )
 {
   size_t used = 0;
   char *c = *sec7;
@@ -519,7 +519,7 @@ size_t print_temp_b_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
-  \fn size_t print_temp_b_sec8 (char **sec8, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_b_sec8 (char **sec8, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 8 of part B of a TEMP report
   \param sec8 the pointer where to print section
   \param lmax max length permited
@@ -527,7 +527,7 @@ size_t print_temp_b_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
 
   returns the string sec8
 */
-size_t print_temp_b_sec8 ( char **sec8, size_t lmax, struct temp_chunks *t )
+size_t print_temp_b_sec8 ( char **sec8, size_t lmax, const struct temp_chunks *t )
 {
   size_t used = 0;
   char *c = *sec8;
@@ -623,7 +623,7 @@ int print_temp_b ( struct metreport *m )
 
 
 /*!
-  \fn size_t print_temp_c_sec1 (char **sec1, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_c_sec1 (char **sec1, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 1 of part C of a TEMP report
   \param sec1 the pointer where to print section
   \param lmax max length permited
@@ -631,7 +631,7 @@ int print_temp_b ( struct metreport *m )
 
   returns the string sec1
 */
-size_t print_temp_c_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
+size_t print_temp_c_sec1 ( char **sec1, size_t lmax, const struct temp_chunks *t )
 {
   size_t used = 0;
   char *c = *sec1;
@@ -688,7 +688,7 @@ size_t print_temp_c_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
-  \fn size_t print_temp_c_sec2 (char **sec2, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_c_sec2 (char **sec2, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 2 of part C of a TEMP report
   \param sec2 the pointer where to print section
   \param lmax max length permited
@@ -696,7 +696,7 @@ size_t print_temp_c_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 
   returns the string sec2
 */
-size_t print_temp_c_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t )
+size_t print_temp_c_sec2 ( char **sec2, size_t lmax, const struct temp_chunks *t )
 {
   size_t i;
   size_t used = 0;
@@ -715,7 +715,7 @@ size_t print_temp_c_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
-  \fn size_t print_temp_c_sec3 (char **sec3, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_c_sec3 (char **sec3, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 3 of part C of a TEMP report
   \param sec3 the pointer where to print section
   \param lmax max length permited
@@ -723,7 +723,7 @@ size_t print_temp_c_sec2 ( char **sec2, size_t lmax, struct temp_chunks *t )
 
   returns the string sec3
 */
-size_t print_temp_c_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
+size_t print_temp_c_sec3 ( char **sec3, size_t lmax, const struct temp_chunks *t )
 {
   size_t used = 0;
   char *c = *sec3;
@@ -748,7 +748,7 @@ size_t print_temp_c_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
-  \fn size_t print_temp_c_sec4 (char **sec4, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_c_sec4 (char **sec4, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 4 of part C of a TEMP report
   \param sec4 the pointer where to print section
   \param lmax max length permited
@@ -756,7 +756,7 @@ size_t print_temp_c_sec3 ( char **sec3, size_t lmax, struct temp_chunks *t )
 
   returns the string sec4
 */
-size_t print_temp_c_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
+size_t print_temp_c_sec4 ( char **sec4, size_t lmax, const struct temp_chunks *t )
 {
   size_t used = 0;
   char *c = *sec4;
@@ -791,7 +791,7 @@ size_t print_temp_c_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
-  \fn size_t print_temp_c_sec7 (char **sec7, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_c_sec7 (char **sec7, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 7 of part C of a TEMP report
   \param sec7 the pointer where to print section
   \param lmax max length permited
@@ -799,7 +799,7 @@ size_t print_temp_c_sec4 ( char **sec4, size_t lmax, struct temp_chunks *t )
 
   returns the string sec7
 */
-size_t print_temp_c_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
+size_t print_temp_c_sec7 ( char **sec7, size_t lmax, const struct temp_chunks *t )
 {
   size_t used = 0;
   char *c = *sec7;
@@ -858,7 +858,7 @@ int print_temp_c ( struct metreport *m )
 }
 
 /*!
-  \fn size_t print_temp_d_sec1 (char **sec1, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_d_sec1 (char **sec1, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 1 of part D of a TEMP report
   \param sec1 the pointer where to print section
   \param lmax max length permited
@@ -866,7 +866,7 @@ int print_temp_c ( struct metreport *m )
 
   returns the string sec1
 */
-size_t print_temp_d_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
+size_t print_temp_d_sec1 ( char **sec1, size_t lmax, const struct temp_chunks *t )
 {
   size_t used = 0;
   char *c = *sec1;
@@ -923,7 +923,7 @@ size_t print_temp_d_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
-  \fn size_t print_temp_d_sec5 (char **sec5, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_d_sec5 (char **sec5, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 5 of part D of a TEMP report
   \param sec5 the pointer where to print section
   \param lmax max length permited
@@ -931,7 +931,7 @@ size_t print_temp_d_sec1 ( char **sec1, size_t lmax, struct temp_chunks *t )
 
   returns the string sec5
 */
-size_t print_temp_d_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t )
+size_t print_temp_d_sec5 ( char **sec5, size_t lmax, const struct temp_chunks *t )
 {
   size_t i;
   size_t used = 0;
@@ -948,7 +948,7 @@ size_t print_temp_d_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
-  \fn size_t print_temp_d_sec6 (char **sec6, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_d_sec6 (char **sec6, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 6 of part D of a TEMP report
   \param sec6 the pointer where to print section
   \param lmax max length permited
@@ -956,7 +956,7 @@ size_t print_temp_d_sec5 ( char **sec5, size_t lmax, struct temp_chunks *t )
 
   returns the string sec6
 */
-size_t print_temp_d_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
+size_t print_temp_d_sec6 ( char **sec6, size_t lmax, const struct temp_chunks *t )
 {
   size_t i;
   size_t used = 0;
@@ -975,7 +975,7 @@ size_t print_temp_d_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
 }
 
 /*!
-  \fn size_t print_temp_d_sec7 (char **sec7, size_t lmax, struct temp_chunks *t)
+  \fn size_t print_temp_d_sec7 (char **sec7, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 7 of part D of a TEMP report
   \param sec7 the pointer where to print section
   \param lmax max length permited
@@ -983,7 +983,7 @@ size_t print_temp_d_sec6 ( char **sec6, size_t lmax, struct temp_chunks *t )
 
   returns the string sec7
 */
-size_t print_temp_d_sec7 ( char **sec7, size_t lmax, struct temp_chunks *t )
+size_t print_temp_d_sec7 ( char **sec7, size_t lmax, const struct temp_chunks *t )
 {
   size_t used = 0;
   char *c = *sec7;

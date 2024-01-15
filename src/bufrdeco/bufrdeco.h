@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -1186,8 +1186,8 @@ int parse_csv_line ( int *nt, char *tk[], char *lin );
 
 
 // Print and output functions
-int print_bufrdeco_compressed_ref ( struct bufrdeco_compressed_ref *r, buf_t index );
-int fprint_bufrdeco_compressed_ref ( FILE *f, struct bufrdeco_compressed_ref *r, buf_t index );
+int print_bufrdeco_compressed_ref ( const struct bufrdeco_compressed_ref *r, buf_t index );
+int fprint_bufrdeco_compressed_ref ( FILE *f, const struct bufrdeco_compressed_ref *r, buf_t index );
 int print_bufrdeco_compressed_data_references ( struct bufrdeco_compressed_data_references *r );
 int fprint_bufrdeco_compressed_data_references ( FILE *f, struct bufrdeco_compressed_data_references *r );
 int print_sec0_info ( struct bufrdeco *b );
@@ -1198,10 +1198,10 @@ int sprint_sec0_info ( char *target, size_t lmax, struct bufrdeco *b );
 int sprint_sec1_info ( char *target, size_t lmax, struct bufrdeco *b );
 int sprint_sec3_info ( char *target, size_t lmax, struct bufrdeco *b );
 int sprint_sec4_info ( char *target, size_t lmax, struct bufrdeco *b );
-int sprint_sec0_info_html ( char *target, size_t lmax, struct bufrdeco *b );
-int sprint_sec1_info_html ( char *target, size_t lmax, struct bufrdeco *b );
-int sprint_sec3_info_html ( char *target, size_t lmax, struct bufrdeco *b );
-int sprint_sec4_info_html ( char *target, size_t lmax, struct bufrdeco *b );
+int sprint_sec0_info_html ( char *target, size_t lmax, const struct bufrdeco *b );
+int sprint_sec1_info_html ( char *target, size_t lmax, const struct bufrdeco *b );
+int sprint_sec3_info_html ( char *target, size_t lmax, const struct bufrdeco *b );
+int sprint_sec4_info_html ( char *target, size_t lmax, const struct bufrdeco *b );
 int bufrdeco_print_tree ( struct bufrdeco *b );
 int bufrdeco_fprint_tree ( FILE *f, struct bufrdeco *b );
 int bufrdeco_print_atom_data_stdout ( struct bufr_atom_data *a );
@@ -1216,7 +1216,7 @@ char * bufrdeco_print_atom_data ( char *target, size_t lmax, struct bufr_atom_da
 char * bufrdeco_print_atom_data_html ( char *target, size_t lmax, struct bufr_atom_data *a, uint32_t ss );
 char * get_formatted_value_from_escale ( char *fmt, size_t dim, int32_t escale, double val );
 char * get_formatted_value_from_escale2 ( char *fmt, size_t dim, int32_t escale, double val );
-int bufrdeco_print_event( const struct bufrdeco_decode_subset_event *e, struct bufrdeco *b);
+int bufrdeco_print_event( const struct bufrdeco_decode_subset_event *e, const struct bufrdeco *b);
 
 // To parse. General
 int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *father, buf_t father_idesc, const char *key );
@@ -1242,15 +1242,15 @@ int bufrdeco_increase_compressed_data_references_count ( struct bufrdeco_compres
 struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data ( struct bufrdeco *b );
 
 // To parse and print data and tree in json format
-buf_t bufrdeco_print_json_sec0 ( FILE *out, struct bufrdeco *b );
-buf_t bufrdeco_print_json_sec1 ( FILE *out, struct bufrdeco *b );
-buf_t bufrdeco_print_json_sec2 ( FILE *out, struct bufrdeco *b );
-buf_t bufrdeco_print_json_sec3 ( FILE *out, struct bufrdeco *b );
+buf_t bufrdeco_print_json_sec0 ( FILE *out, const struct bufrdeco *b );
+buf_t bufrdeco_print_json_sec1 ( FILE *out, const struct bufrdeco *b );
+buf_t bufrdeco_print_json_sec2 ( FILE *out, const struct bufrdeco *b );
+buf_t bufrdeco_print_json_sec3 ( FILE *out, const struct bufrdeco *b );
 buf_t bufrdeco_print_json_tree ( struct bufrdeco *b );
 buf_t bufrdeco_print_json_tree_recursive ( FILE *out, struct bufrdeco *b, struct bufr_sequence *seq );
-buf_t bufrdeco_print_json_subset_data_prologue (FILE *out,  struct bufrdeco *b );
+buf_t bufrdeco_print_json_subset_data_prologue (FILE *out,  const struct bufrdeco *b );
 buf_t bufrdeco_print_json_subset_data_epilogue ( FILE *out );
-buf_t bufrdeco_print_json_object_atom_data (FILE *out, struct bufr_atom_data *a, buf_t index_data, struct bufrdeco *b, const char *aux );
+buf_t bufrdeco_print_json_object_atom_data (FILE *out, struct bufr_atom_data *a, buf_t index_data, const struct bufrdeco *b, const char *aux );
 buf_t bufrdeco_print_json_object_operator_descriptor (FILE *out,  const struct bufr_descriptor *d, const char *aux );
 buf_t bufrdeco_print_json_object_replicator_descriptor (FILE *out,  const struct bufr_descriptor *d, const char *aux );
 buf_t bufrdeco_print_json_object_event_data ( FILE *out,  struct bufr_atom_data *a, const struct bufrdeco_decode_subset_event *event, struct bufrdeco *b, const char *add );
@@ -1258,7 +1258,6 @@ buf_t bufrdeco_print_json_sequence_descriptor_header (FILE *out, const struct bu
 buf_t bufrdeco_print_json_sequence_descriptor_final ( FILE *out );
 buf_t bufrdeco_print_json_separator( FILE *out );
 buf_t bufrdeco_print_json_scape_string_cvals( FILE *out, const char *source);
-buf_t bufrdeco_print_json_subset_data_prologue ( FILE *out,  struct bufrdeco *b );
 buf_t bufrdeco_print_json_subset_data_epilogue ( FILE *out );
 buf_t bufrdeco_print_json_subset_data ( struct bufrdeco *b);
 

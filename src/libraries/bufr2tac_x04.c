@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -69,13 +69,13 @@ int time_period_duration ( const struct bufr2tac_subset_state *s )
 }
 
 /*!
-  \fn int hour_rounded(struct synop_chunks *syn)
+  \fn int hour_rounded(const struct synop_chunks *syn)
   \brief Get the rounded hour of a given date
   \param syn pointer to the \ref synop_chunks struct
 
   It returns the rounded hour if >= 0. If < 0 problems
 */
-int hour_rounded ( struct synop_chunks *syn )
+int hour_rounded ( const struct synop_chunks *syn )
 {
   time_t t;
   struct tm tim;
