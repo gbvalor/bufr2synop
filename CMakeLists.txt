@@ -16,7 +16,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 3.5)
 cmake_policy(SET CMP0048 NEW)
 
 # Establecemos la version 
-project (bufr2synop LANGUAGES C VERSION 0.29.0)
+project (bufr2synop LANGUAGES C VERSION 0.29.1)
 
 #Definitions needed to generate config.h
 SET(PACKAGE_NAME "${PROJECT_NAME}")
@@ -34,10 +34,10 @@ message (STATUS "** Configuring package ${PROJECT_NAME}. Version ${PROJECT_VERSI
 SET (CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Usual system include directories
-set (all_includes "/usr/include /usr/local/include")
+list (APPEND all_includes "/usr/include" "/usr/local/include")
 
 # Usual system library directories
-set (dir_libs "/usr/lib /usr/lib64 /usr/local/lib /usr/local/lib64") 
+list (APPEND dir_libs "/usr/lib" "/usr/lib64" "/usr/local/lib" "/usr/local/lib64") 
 
 # Using GNU gcc compiler by default
 set(CMAKE_C_FLAGS "-O2 -Wall -W -Wextra -g -Wno-stringop-truncation")
