@@ -40,6 +40,7 @@ extern "C" {
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <libgen.h>
 #include <getopt.h>
 #include <time.h>
 #ifdef DEBUG_TIME
@@ -362,6 +363,11 @@ typedef uint32_t buf_t;
 */
 typedef int32_t ibuf_t;
 
+/*!
+ * \def Exp10
+ * \biref Macro inplementation of exp10() function to avoid problems in some SO 
+ */
+#define Exp10(_a_) exp(M_LN10 * (_a_))
 
 /*!
  * \def strcpy_safe

@@ -638,7 +638,7 @@ int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, const st
         }
       else
         {
-          a->val = ( double ) ( ( int32_t ) ival + reference ) * exp10 ( ( double ) ( -a->escale ) );
+          a->val = ( double ) ( ( int32_t ) ival + reference ) * Exp10 ( ( double ) ( -a->escale ) );
         }
 
       if ( strstr ( a->unit, "CODE TABLE" ) == a->unit || strstr ( a->unit, "Code table" ) == a->unit )
