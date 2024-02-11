@@ -1,7 +1,7 @@
 ###########################################################################
 #   Project: bufr2synop                                                   #
 #                                                                         #
-#   Copyright (C) 2016-2022 by Guillermo Ballester Valor                  #
+#   Copyright (C) 2016-2024 by Guillermo Ballester Valor                  #
 #   gbvalor@ogimet.com                                                    #
 #                                                                         #
 #   GNU General Public License v2 or above                                #

@@ -16,7 +16,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 3.5)
 cmake_policy(SET CMP0048 NEW)
 
 # Establecemos la version 
-project (bufr2synop LANGUAGES C VERSION 0.29.0)
+project (bufr2synop LANGUAGES C VERSION 0.29.2)
 
 #Definitions needed to generate config.h
 SET(PACKAGE_NAME "${PROJECT_NAME}")
@@ -34,14 +34,23 @@ message (STATUS "** Configuring package ${PROJECT_NAME}. Version ${PROJECT_VERSI
 SET (CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Usual system include directories
-set (all_includes "/usr/include /usr/local/include")
+list (APPEND all_includes "/usr/include" "/usr/local/include")
 
 # Usual system library directories
-set (dir_libs "/usr/lib /usr/lib64 /usr/local/lib /usr/local/lib64") 
+list (APPEND dir_libs "/usr/lib" "/usr/local/lib") 
 
-# Using GNU gcc compiler by default
-set(CMAKE_C_FLAGS "-O2 -Wall -W -Wextra -g -Wno-stringop-truncation")
-set(CMAKE_CXX_FLAGS "-O2 -Wall -W -Wextra -g -Wno-stringop-truncation")
+# Check if default compiler is Clang based 
+if (CMAKE_C_COMPILER_ID MATCHES "Clang")
+  # using Clang compiler
+  set(CMAKE_C_FLAGS "-O2 -Wall -W -Wextra -g")
+  add_link_options("-Wl,-no_warn_duplicate_libraries")
+  set( compiler_id_message "*****  Using Clang compiler ****")
+elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
+  # using GNU compiler
+  set(CMAKE_C_FLAGS "-O2 -Wall -W -Wextra -g -Wno-stringop-truncation")
+  set( compiler_id_message "******  Using GNU compiler *****")
+  list (APPEND dir_libs "/usr/lib64" "/usr/local/lib64") 
+endif()
 
 # Check if need to try Intel icc complier
 IF (DEFINED TRY_ICC)
@@ -52,30 +61,25 @@ IF (DEFINED TRY_ICC)
     IF(ICC_PROGRAM)
       MESSAGE(STATUS "** Using Intel c/c++ compiler **")
       set(CMAKE_C_COMPILER "icc")
-      set(CMAKE_CXX_COMPILER "icc")
       set(CMAKE_C_FLAGS "-O2 -xHOST -Wall")
-      set(CMAKE_CXX_FLAGS "-O2 -xHOST -Wall -std=c++20")
       set(USING_ICC 1)
     else (ICC_PROGRAM)
       MESSAGE(STATUS "*** Intel compiler not found ***")
-      MESSAGE(STATUS "******  Using GNU compiler *****")
+      MESSAGE(STATUS "${compiler_id_message}")
       set(USING_GCC 1) 
     ENDIF(ICC_PROGRAM)
   ELSE()  
-    MESSAGE(STATUS "******  Using GNU compiler *****")
+    MESSAGE(STATUS "${compiler_id_message}")
     set(USING_GCC 1) 
   ENDIF()
 ELSE()
-    MESSAGE(STATUS "******  Using GNU compiler *****")
-    set(USING_GCC 1) 
+  MESSAGE(STATUS "${compiler_id_message}")
+  set(USING_GCC 1) 
 ENDIF()
-
 
 # Summary of compiler options
 MESSAGE(STATUS "  CMAKE_C_COMPILER:   ${CMAKE_C_COMPILER}")
-MESSAGE(STATUS "  CMAKE_CXX_COMPILER: ${CMAKE_C_COMPILER}")
 MESSAGE(STATUS "  CMAKE_C_FLAGS:      ${CMAKE_C_FLAGS}")
-MESSAGE(STATUS "  CMAKE_CXX_FLAGS:    ${CMAKE_CXX_FLAGS}")
 MESSAGE(STATUS "**************************************")
 
 # Uncomment following line if we want a verbose output at build time

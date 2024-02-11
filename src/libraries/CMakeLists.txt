@@ -1,7 +1,7 @@
 ###########################################################################
 #   Project: bufr2synop                                                   #
 #                                                                         #
-#   Copyright (C) 2016-2022 by Guillermo Ballester Valor                  #
+#   Copyright (C) 2016-2024 by Guillermo Ballester Valor                  #
 #   gbvalor@ogimet.com                                                    #
 #                                                                         #
 #   GNU General Public License v2 or above                                #
@@ -11,7 +11,7 @@
 #
 
 INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR} ${bufr2synop_SOURCE_DIR}/src/bufrdeco ${all_includes})
-LINK_DIRECTORIES(${bufr2synop_SOURCE_DIR}/src/librerias ${dir_libs})
+LINK_DIRECTORIES(${bufr2synop_SOURCE_DIR}/src/libraries ${dir_libs})
 
 add_library(bufr2tac SHARED bufr2tac.h bufr2tac.c metbuoy.h metsynop.h mettemp.h metclimat.h 
     metcommon.h bufr2tac_buoy.c bufr2tac_csv.c bufr2tac_env.c bufr2tac_error.c
