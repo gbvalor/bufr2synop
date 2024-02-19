@@ -48,9 +48,14 @@ if (CMAKE_C_COMPILER_ID MATCHES "Clang")
 elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
   # using GNU compiler
   set(CMAKE_C_FLAGS "-O2 -Wall -W -Wextra -g -Wno-stringop-truncation")
+  if (APPLE)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-format-overflow" )
+  else()
+    list (APPEND dir_libs "/usr/lib64" "/usr/local/lib64") 
+  endif()
   set( compiler_id_message "******  Using GNU compiler *****")
-  list (APPEND dir_libs "/usr/lib64" "/usr/local/lib64") 
 endif()
+
 
 # Check if need to try Intel icc complier
 IF (DEFINED TRY_ICC)
