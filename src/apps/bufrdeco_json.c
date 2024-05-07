@@ -200,7 +200,7 @@ int main ( int argc, char *argv[] )
   // Check read file
   if ( EXTRACT )
     {
-      if ( bufrdeco_extract_bufr ( &BUFR, ENTRADA ) )
+      if ( bufrdeco_extract_bufr ( &BUFR, ENTRADA, NULL ) )
         {
           printf ( "%s", BUFR.error );
           exit ( EXIT_FAILURE );

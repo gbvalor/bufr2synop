@@ -325,8 +325,9 @@ int bufrdeco_set_tables_dir ( struct bufrdeco *b, const char *tables_dir )
 int bufrdeco_get_bufr ( struct bufrdeco *b, char *filename )
 {
   bufrdeco_assert_with_return_val ( b != NULL || filename == NULL, 1 );
-
-  return bufrdeco_extract_bufr ( b, filename );
+  
+  // Third argument is NULL because we do not want to write the extracted BUFR to a file
+  return bufrdeco_extract_bufr ( b, filename, NULL ); 
 }
 
 

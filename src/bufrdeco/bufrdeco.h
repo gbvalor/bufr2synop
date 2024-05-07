@@ -1178,7 +1178,7 @@ int bufrdeco_add_associated_field (const struct bufrdeco_associated_field *added
 
 // Read bufr functions
 int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename );
-int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename );
+int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename, char *bufr_xout );
 int bufrdeco_read_buffer ( struct bufrdeco *b,  uint8_t *bufrx, buf_t size );
 
 // Read bufr WMO csv table files

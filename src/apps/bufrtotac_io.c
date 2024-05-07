@@ -55,6 +55,7 @@ void bufrtotac_print_usage ( void )
   printf ( "       -v. Print version\n" );
   printf ( "       -x. The output is in xml format\n" );
   printf ( "       -X. Try to extract an embebed bufr in a file seraching for a first '7777' after first 'BUFR'\n" );
+  printf ( "       -B  bufr_xfile. In case of -X flag, write the extracted BUFR to bufr_xfile\n");
   printf ( "       -0. Prints BUFR Sec 0 information in json format\n");
   printf ( "       -1. Prints BUFR Sec 1 information in json format\n");
   printf ( "       -2. Prints BUFR Sec 2 information in json format\n");
@@ -153,6 +154,7 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
   OUTPUTFILE[0] = '\0';
   LISTOFFILES[0] = '\0';
   BUFRTABLES_DIR[0] = '\0';
+  BUFR_XFILE[0] = '\0';
   VERBOSE = 0;
   SHOW_SEQUENCE = 0;
   DEBUG = 0;
@@ -178,11 +180,11 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
   /*
      Read input options
   */
-  while ( ( iopt = getopt ( _argc, _argv, "cD:Ehi:jJHI:no:S:st:TvgGVWRxX0123" ) ) !=-1 )
+  while ( ( iopt = getopt ( _argc, _argv, "cD:Ehi:jJHI:no:S:st:TvgGVWRxX0123B:" ) ) !=-1 )
     switch ( iopt )
       {
       case 'i':
-        if ( strlen ( optarg ) < 256 )
+        if ( strlen ( optarg ) < BUFRDECO_PATH_LENGTH )
         {
           strcpy ( INPUTFILE, optarg );
           snprintf( OFFSETFILE, sizeof (OFFSETFILE), "%s.offs", INPUTFILE);
@@ -202,7 +204,7 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
         break;
         
       case 'I':
-        if ( strlen ( optarg ) < 256 )
+        if ( strlen ( optarg ) < BUFRDECO_PATH_LENGTH )
           strcpy ( LISTOFFILES, optarg );
         break;
         
@@ -211,12 +213,12 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
         break;
         
       case 'o':
-        if ( strlen ( optarg ) < 256 )
+        if ( strlen ( optarg ) < BUFRDECO_PATH_LENGTH )
           strcpy ( OUTPUTFILE, optarg );
         break;
         
       case 't':
-        if ( strlen ( optarg ) < 256 )
+        if ( strlen ( optarg ) < BUFRDECO_PATH_LENGTH )
           {
             strcpy ( BUFRTABLES_DIR, optarg );
           }
@@ -323,6 +325,11 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
          PRINT_JSON_SEC3 = 1;
          break;
          
+      case 'B':
+        if ( strlen ( optarg ) < BUFRDECO_PATH_LENGTH )
+          strcpy ( BUFR_XFILE, optarg );
+        break;
+
       case 'h':
       default:
         bufrtotac_print_usage();

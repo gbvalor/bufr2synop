@@ -98,6 +98,8 @@ char LISTOFFILES[BUFRDECO_PATH_LENGTH]; /*!< The pathname of a file which includ
 char INPUTFILE[BUFRDECO_PATH_LENGTH]; /*!< The pathname of input file */
 char OFFSETFILE[BUFRDECO_PATH_LENGTH + 8]; /*< The path name of optional file with bit offsets for non-compressed BUFR. */
 char OUTPUTFILE[BUFRDECO_PATH_LENGTH]; /*!< The pathname of output file */
+char BUFR_XFILE[BUFRDECO_PATH_LENGTH]; /*!< Pathname of the file in case of extract an embebed BUFR in the input file */
+
 int VERBOSE; /*!< If != 0 the verbose output */
 int SHOW_SEQUENCE; /*!< Output explained sequence */
 int DEBUG; /*!< Show debug information */
@@ -182,8 +184,8 @@ int main ( int argc, char *argv[] )
 #ifdef DEBUG_TIME      
       clk_start = clock ();
 #endif
-      
-      if ( ( EXTRACT && bufrdeco_extract_bufr ( &BUFR, INPUTFILE ) ) ||
+
+      if ( ( EXTRACT && bufrdeco_extract_bufr ( &BUFR, INPUTFILE, BUFR_XFILE) ) ||
            ( EXTRACT == 0 && bufrdeco_read_bufr ( &BUFR, INPUTFILE ) ) )
         {
           if ( DEBUG )

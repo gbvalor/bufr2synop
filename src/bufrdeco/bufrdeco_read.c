@@ -107,6 +107,7 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
   \brief Read file and try to find a bufr report inserted in. Once found do the same that bufrdeco_read_file()
   \param b pointer to struct \ref bufrdeco
   \param filename complete path of BUFR file
+  \param buf_xout if != NULL and strlen(bufrout) != 0 then it writes the extracted bufrfile to a file named as argument 
   \return 0 if all is OK, 1 otherwise
 
   This function does the folowing tasks:
@@ -117,16 +118,16 @@ int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
   - Reads the needed Table files and store them in memory.
 
  */
-int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename )
+int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename, char *bufr_xout )
 {
   int aux, res;
   uint8_t *bufrx = NULL, *pbeg = NULL; /*!< pointer to a memory buffer where we write raw bufr file */
   buf_t n = 0, beg, end, size = 0;
-  FILE *fp;
+  FILE *fp, *fpo;
   struct stat st;
 
   bufrdeco_assert ( b != NULL );
-
+ 
   /* Stat input file */
   if ( stat ( filename, &st ) < 0 )
     {
@@ -205,6 +206,22 @@ int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename )
         free ( (void *) bufrx );
       return 1;
     }
+
+  // Shall we print the extracted BUFR to a file ?
+  if (bufr_xout != NULL &&  bufr_xout[0] != '\0')
+    {
+       // open the file
+       if ( ( fpo = fopen(bufr_xout, "w") ) == NULL )
+         {
+           snprintf ( b->error, sizeof ( b->error ), "%s(): cannot open file '%s'\n", __func__, filename );
+           free ( ( void * ) bufrx );
+           return 1;
+         }
+
+        fwrite( pbeg, 1, size, fpo );
+          fclose(fpo);
+    }  
+
   res = bufrdeco_read_buffer ( b, pbeg, size );
   if (bufrx != NULL)
     free ( (void *) bufrx );
