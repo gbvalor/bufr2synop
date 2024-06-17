@@ -109,7 +109,7 @@ buf_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source,
           * ( target + j ) <<= i;
           * ( target + j ) |= ( ( * ( c + 1 ) & bitk[i - 1] ) >> k );
         }
-      if ( * ( target + j ) != -1 )
+      if ( * ( target + j ) != (char)(-1) )
         *has_data = 1;
       //printf("%c", * ( target + j ) );
       *bit0_offset += 8; // update bit0_offset
