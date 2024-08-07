@@ -135,7 +135,8 @@ int get_wmo_tablenames ( struct bufrdeco *b )
     case 37:
     case 39:  
     case 40:  
-    case 41:  
+    case 41:
+    case 42:  
       snprintf ( b->tables->b.path, sizeof ( b->tables->b.path ),"%sBUFR_%d_0_0_TableB_en.csv", aux, b->sec1.master_version );
       snprintf ( b->tables->c.path, sizeof ( b->tables->c.path ),"%sBUFR_%d_0_0_TableC_en.csv", aux, b->sec1.master_version );
       snprintf ( b->tables->d.path, sizeof ( b->tables->d.path ),"%sBUFR_%d_0_0_TableD_en.csv", aux, b->sec1.master_version );
@@ -146,9 +147,9 @@ int get_wmo_tablenames ( struct bufrdeco *b )
       snprintf ( b->tables->d.path, sizeof ( b->tables->d.path ),"%sBUFR_%d_1_0_TableD_en.csv", aux, b->sec1.master_version );
       break;
     default: // last version for BUFR tables
-      snprintf ( b->tables->b.path, sizeof ( b->tables->b.path ),"%sBUFR_41_0_0_TableB_en.csv", aux );
-      snprintf ( b->tables->c.path, sizeof ( b->tables->c.path ),"%sBUFR_41_0_0_TableC_en.csv", aux );
-      snprintf ( b->tables->d.path, sizeof ( b->tables->d.path ),"%sBUFR_41_0_0_TableD_en.csv", aux );
+      snprintf ( b->tables->b.path, sizeof ( b->tables->b.path ),"%sBUFR_42_0_0_TableB_en.csv", aux );
+      snprintf ( b->tables->c.path, sizeof ( b->tables->c.path ),"%sBUFR_42_0_0_TableC_en.csv", aux );
+      snprintf ( b->tables->d.path, sizeof ( b->tables->d.path ),"%sBUFR_42_0_0_TableD_en.csv", aux );
       break;
     }
   return 0;
