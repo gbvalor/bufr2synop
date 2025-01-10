@@ -84,6 +84,97 @@ char * secs_to_tt ( char *tt, int secs )
 }
 
 /*!
+  \fn void direction_to_0877 ( char *dd, uint32_t ival );
+  \brief encode dd from ival
+  \param dd target string according to WMO 306 Vol I.1 (TAC), I.2 (BUFR)
+  \param ival wind direction (value range: 0 .. 511)
+
+TAC
+===
+FM 12 SYNOP, FM 13 SHIP, FM 14 SYNOP MOBIL,
+FM 18 BUOY,
+FM 35 TEMP, FM 36 TEMP SHIP, FM 37 TEMP DROP, FM 38 TEMP MOBIL
+
+dd
+    True direction, in tens of degrees, from which wind is blowing (or will
+    blow).
+    (Code table 0877; stations within 1° of the North Pole use Code table 0878)
+    (FM 12, FM 13, FM 14, FM 18, ...
+    (1)
+        When encoding wind direction that has been rounded off to the nearest
+        5°, the hundreds and tens figures of this rounded direction shall be
+        reported by dd and the units figure shall be added to the hundreds
+        figure of the wind speed.
+    (2)
+        Stations within 1° of the South Pole shall use Code table 0877 for
+        reporting wind direction.
+        These stations shall orient their azimuth rings so that the ring's zero
+        coincides with the Greenwich meridian, e.g. wind from 0° longitude is
+        coded 36, from 90°E longitude is coded 09, from 180° longitude is coded
+        18, and from 90°W longitude is coded 27, etc.
+
+dBdB
+    Drift direction of the buoy, expressed in tens of degrees, at the last
+    known position of the buoy given in the groups YYMMJ GGgg/.
+    (FM 18)
+
+dtdt
+    True direction (rounded off to the nearest 5°), in tens of degrees, from
+    which wind is blowing at the tropopause level.
+    (FM 35, FM 36, FM 37, FM 38)
+    (1)
+        See Note (1) under dd.
+
+dw1dw1
+dw2dw2
+    True direction, in tens of degrees, from which swell waves are coming.
+    (Code table 0877)
+    (FM 12, FM 13, FM 14)
+
+d0d0
+...
+dndn
+    True direction, in tens of degrees, towards which sea current at selected
+    and/or significant depths starting with the sea surface is moving.
+    (Code table 0877)
+    (FM 18, FM 64)
+
+Code table 0877: Direction in two figures
+    00 Calm
+    01 5° – 14°
+    ..
+    36 355° – 4°
+
+BUFR
+====
+
+    0 11 001 Wind direction
+    0 11 011 Wind direction at 10 m
+    0 22 001 Direction of waves
+    0 22 002 Direction of wind waves
+    0 22 003 Direction of swell waves
+    0 22 004 Direction towards which current is flowing
+    0 22 005 Direction of sea-surface current
+UNIT: degree true, SCALE: 0, REFERENCE VALUE: 0, DATA WIDTH (Bits): 9
+
+Wind and wind waves reporting standards:
+    Calm: speed: 0, direction: 0°
+    Normal observation: speed >0, direction 1° - 360°
+*/
+void direction_to_0877 ( char *dd, uint32_t ival )
+{
+  uint32_t ix;
+
+  if ( ival == 0 ) {
+      strcpy ( dd, "00" );
+  } else {
+      ix = (( ival + 5 ) / 10 ) % 36;
+      sprintf ( dd, "%02u", ix == 0u ? 36u : ix );
+  }
+}
+
+
+/*!
   \fn char * wind_to_dndnfnfnfn( char target, double dd, double ff)
   \brief sets dndnfnfnfn item in a temp report
   \param target string set as resul
@@ -125,7 +216,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     {
     case 1: // 0 11 001 . Wind direction
     case 11: // 0 11 011 . Wind direction at 10 meters
-      sprintf ( syn->s1.dd, "%02d", abs((s->ival + 5 ) / 10) % 100 );
+      direction_to_0877 ( syn->s1.dd, s->ival );
       syn->mask |= SYNOP_SEC1;
       break;
 
@@ -145,6 +236,10 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           sprintf ( syn->s1.fff, "%03d", ( int ) ( s->val + 0.5 ) );
         }
       syn->mask |= SYNOP_SEC1;
+      if (strcmp ( syn->s1.dd, "00" ) == 0 && strcmp ( syn->s1.ff, "00" ) != 0 )
+        {
+          strcpy ( syn->s1.dd, "99" );
+        }
       break;
 
     case 41: // 0 11 041 . Max wind gust speed
@@ -396,7 +491,7 @@ int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
     {
     case 1: // 0 11 001 . Wind direction
     case 11: // 0 11 011 . Wind direction at 10m
-      sprintf ( b->s1.dd, "%02d", abs((s->ival + 5 ) / 10) % 100 );
+      direction_to_0877 ( b->s1.dd, s->ival );
       b->mask |= BUOY_SEC1;
       break;
     
@@ -416,6 +511,10 @@ int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
           sprintf ( b->s1.fff, "%03d", ( int ) ( s->val + 0.5 ) );
         }
       b->mask |= BUOY_SEC1;
+      if (strcmp ( b->s1.dd, "00" ) == 0 && strcmp ( b->s1.ff, "00" ) != 0 )
+        {
+          strcpy ( b->s1.dd, "99" );
+        }
       break;
 
     case 84: // 0 11 084  (wind in knots)

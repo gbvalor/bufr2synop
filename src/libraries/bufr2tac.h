@@ -387,6 +387,7 @@ int guess_gts_header ( struct gts_header *h, const char *f );
 int read_bufr ( unsigned char *bufr, const char *filename, int *length );
 int time_period_duration ( const struct bufr2tac_subset_state *s );
 int hour_rounded ( const struct synop_chunks *syn );
+void direction_to_0877 ( char *dd, uint32_t ival );
 
 char * latlon_to_MMM ( char *target, double lat, double lon );
 char * kelvin_to_TTTT ( char *target, double T );

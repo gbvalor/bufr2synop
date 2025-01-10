@@ -45,11 +45,11 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 3: // 0 22 003 Direction of swell waves
       if ( syn->s2.dw1dw1[0] == 0 )
         {
-          sprintf ( syn->s2.dw1dw1, "%02d", abs(( s->ival + 5 ) /10) % 100 );
+          direction_to_0877 ( syn->s2.dw1dw1, s->ival );
         }
       else if ( syn->s2.dw2dw2[0] == 0 )
         {
-          sprintf ( syn->s2.dw2dw2, "%02d", abs(( s->ival + 5 ) /10) % 100 );
+          direction_to_0877 ( syn->s2.dw2dw2, s->ival );
         }
       syn->mask |= SYNOP_SEC2; // have sec2 data
       break;
@@ -159,7 +159,7 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         {
           if ( b->s3.l2[s->layer].dd[0] == 0 )
             {
-              sprintf ( b->s3.l2[s->layer].dd, "%02d", ( int ) ( s->val + 5.0 ) / 10 ) ;
+              direction_to_0877 ( b->s3.l2[s->layer].dd, s->ival );
               b->mask |= BUOY_SEC3;
             }
           if ( b->s3.l2[s->layer].zzzz[0] == 0 ) // also stores pendent deep
@@ -196,12 +196,12 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         }
       break;
 
-    case 31: // 0 22 033 current speed
+    case 31: // 0 22 031 current speed
       if ( s->layer < 32 ) // only 32 max layers
         {
-          if ( b->s3.l2[s->layer].dd[0] == 0 )
+          if ( b->s3.l2[s->layer].ccc[0] == 0 )
             {
-              sprintf ( b->s3.l2[s->layer].dd, "%03d", ( int ) ( s->val * 100.0 + 0.5 ) ) ;
+              sprintf ( b->s3.l2[s->layer].ccc, "%03d", ( int ) ( s->val * 100.0 + 0.5 ) ) ;
               b->mask |= BUOY_SEC3;
             }
           if ( b->s3.l2[s->layer].zzzz[0] == 0 ) // also stores pendent deep
