@@ -543,7 +543,9 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
           if ( is_over_100 )
             {
               ix = ( int ) ( d->p * 0.1 + 0.5 );
-              sprintf ( t->c.s3.trop[itc].PnPnPn, "%03d", ix % 1000 ); // PnPnPn
+              if (ix == 1000)
+                  ix = 999;
+              sprintf ( t->c.s3.trop[itc].PnPnPn, "%03d", ix ); // PnPnPn
               kelvin_to_TTTa ( t->c.s3.trop[itc].TnTnTan, d->T ); // TnTnTan
               dewpoint_depression_to_DnDn ( t->c.s3.trop[itc].DnDn, d->T , d->Td ); // DnDn
               wind_to_dndnfnfnfn ( t->c.s3.trop[itc].dndnfnfnfn, d->dd, d->ff ); // dndnfnfnfn
@@ -578,7 +580,9 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
           if ( is_over_100 )
             {
               ix = ( int ) ( d->p * 0.1 + 0.5 );
-              sprintf ( t->c.s4.windx[iwxc].PmPmPm, "%03d", ix % 1000 ); // PnPnPn
+              if (ix == 1000)
+                ix = 999;
+              sprintf ( t->c.s4.windx[iwxc].PmPmPm, "%03d", ix ); // PnPnPn
               wind_to_dndnfnfnfn ( t->c.s4.windx[iwxc].dmdmfmfmfm, d->dd, d->ff ); // dndnfnfnfn
               // check if more wind data
               for ( j = i + 1; j < r->n ; j++ )
@@ -627,6 +631,8 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
             {
               sprintf ( t->d.s5.th[itd].nini, "%d%d", ( ( int ) itd ) %9 + 1, ( ( int ) itd ) %9 + 1 );
               ix = ( int ) ( d->p * 0.1 + 0.5 );
+              if (ix == 1000)
+                ix = 999;
               sprintf ( t->d.s5.th[itd].PnPnPn, "%03d", ix ); // PnPnPn
               kelvin_to_TTTa ( t->d.s5.th[itd].TnTnTan, d->T ); // TnTnTan
               dewpoint_depression_to_DnDn ( t->d.s5.th[itd].DnDn, d->T , d->Td ); // DnDn
@@ -669,6 +675,8 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
             {
               sprintf ( t->d.s6.wd[iwd].nini, "%d%d", ( ( int ) iwd ) %9 + 1, ( ( int ) iwd ) %9 + 1 );
               ix = ( int ) ( d->p * 0.1 + 0.5 );
+              if (ix == 1000)
+                ix = 999;
               sprintf ( t->d.s6.wd[iwd].PnPnPn, "%03d", ix ); // PnPnPn
               wind_to_dndnfnfnfn ( t->d.s6.wd[iwd].dndnfnfnfn, d->dd, d->ff ); // dndnfnfnfn
               if ( ix && iwd < TEMP_NMAX_POINTS )
