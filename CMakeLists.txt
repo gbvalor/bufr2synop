@@ -39,6 +39,11 @@ list (APPEND all_includes "/usr/include" "/usr/local/include")
 # Usual system library directories
 list (APPEND dir_libs "/usr/lib" "/usr/local/lib") 
 
+# To avid problems with RPATH in macOS
+if (APPLE)
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+endif()
+
 # Check if default compiler is Clang based 
 if (CMAKE_C_COMPILER_ID MATCHES "Clang")
   # using Clang compiler
