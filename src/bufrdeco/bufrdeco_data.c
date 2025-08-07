@@ -144,7 +144,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
   size_t i, j, k;
   struct bufr_sequence *seq;
   struct bufr_replicator replicator;
-  struct bufrdeco_decode_subset_bitacora *dsb;
+  const struct bufrdeco_decode_subset_bitacora *dsb;
   struct bufrdeco_decode_subset_event event;
   struct bufr_atom_data *a;
 

@@ -260,7 +260,7 @@ int parse_csv_line ( int *nt, char *tk[], char *lin )
   char *cq[CSV_MAXL / 4], *cc[CSV_MAXL / 4], *c0;
   buf_t nc, nq, i, j;
 
-  //bufrdeco_assert (lin != NULL && tk != NULL && nt != NULL);
+  bufrdeco_assert (lin != NULL && tk != NULL && nt != NULL);
   
   *nt = 0;
 

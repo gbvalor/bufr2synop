@@ -79,7 +79,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
   struct bufr_sequence *seq; // auxiliar pointer
   struct bufrdeco_compressed_ref *rf;
   struct bufr_replicator replicator;
-  struct bufrdeco_decode_subset_bitacora *dsb;
+  const struct bufrdeco_decode_subset_bitacora *dsb;
   struct bufrdeco_decode_subset_event event;
   struct bufr_tableB *tb;
 
@@ -331,7 +331,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
               // case of delayed;
               replicator.ixdel = i + 1; // the index of descriptor in sequence with information about the actual amonut of replications
               replicator.ndesc = seq->lseq[i].x;
-              rf = & ( r->refs[r->nd] );
+              //rf = & ( r->refs[r->nd] );
 
               // The the data itself to get the loops
               if ( bufrdeco_tableB_compressed ( rf, b, & ( seq->lseq[ replicator.ixdel ] ), 0 ) )
@@ -713,7 +713,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
                   // case of delayed;
                   replicator.ixdel = i + 1;
                   replicator.ndesc = l->lseq[i].x;
-                  rf = & ( r->refs[r->nd] );
+                  //rf = & ( r->refs[r->nd] );
 
                   // The data itself to get the loops
                   if ( bufrdeco_tableB_compressed ( rf, b, & ( l->lseq[replicator.ixdel] ), 0 ) )
