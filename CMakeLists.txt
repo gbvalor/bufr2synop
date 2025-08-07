@@ -39,6 +39,13 @@ list (APPEND all_includes "/usr/include" "/usr/local/include")
 # Usual system library directories
 list (APPEND dir_libs "/usr/lib" "/usr/local/lib") 
 
+# Specific configuration for macOS (rpath, etc.)
+if(APPLE)
+  set(CMAKE_MACOSX_RPATH ON)
+  set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib;/usr/local/lib")
+endif()
+
 # Check if default compiler is Clang based 
 if (CMAKE_C_COMPILER_ID MATCHES "Clang")
   # using Clang compiler
@@ -148,13 +155,6 @@ if (BUFRDC)
     MESSAGE(FATAL_ERROR "Cannot found ECMWF BUFR library. Please install it")
   ENDIF(BUFR)
 endif (BUFRDC)
-
-# Configuración específica para macOS (rpath, etc.)
-if(APPLE)
-  set(CMAKE_MACOSX_RPATH ON)
-  set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib;/usr/local/lib")
-endif()
 
 ######################################################################
 ###### create config.h fromconfig.h.cmake.in      ####################
