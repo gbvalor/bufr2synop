@@ -149,6 +149,13 @@ if (BUFRDC)
   ENDIF(BUFR)
 endif (BUFRDC)
 
+# Configuración específica para macOS (rpath, etc.)
+if(APPLE)
+  set(CMAKE_MACOSX_RPATH ON)
+  set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib;/usr/local/lib")
+endif()
+
 ######################################################################
 ###### create config.h fromconfig.h.cmake.in      ####################
 ######################################################################
