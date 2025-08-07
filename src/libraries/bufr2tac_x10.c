@@ -44,16 +44,26 @@ char * pascal_to_ppp ( char *target, double P )
   return target;
 }
 
+/*!
+  \fn char * pascal_to_pnpnpn ( char *target, double P )
+  \brief Converts pascal values into a pnpnpn string
+  \param P the pressure variation in Pascal units
+  \param target string with the result
+  If the value is below 10000.0 it should be expressed in decapascal units
+  otherwise in hectopascal units
+*/
 char * pascal_to_pnpnpn ( char *target, double P )
 {
   int ic;
-  if ( P > 10000.0 )
+  if ( P >= 10000.0 ) 
     {
       ic = ( int ) ( P * 0.01 + 0.5 );
     }
   else
     {
       ic = ( int ) ( P * 0.1 + 0.5 );
+      if (ic == 1000)
+        ic = 999;
     }
   sprintf ( target, "%03d", ic % 1000 );
   return target;

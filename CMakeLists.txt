@@ -16,7 +16,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 3.10)
 cmake_policy(SET CMP0048 NEW)
 
 # Establecemos la version 
-project (bufr2synop LANGUAGES C VERSION 0.32.0)
+project (bufr2synop LANGUAGES C VERSION 0.32.1)
 
 #Definitions needed to generate config.h
 SET(PACKAGE_NAME "${PROJECT_NAME}")
@@ -39,11 +39,9 @@ list (APPEND all_includes "/usr/include" "/usr/local/include")
 # Usual system library directories
 list (APPEND dir_libs "/usr/lib" "/usr/local/lib") 
 
-# Specific configuration for macOS (rpath, etc.)
-if(APPLE)
-  set(CMAKE_MACOSX_RPATH ON)
+# To avid problems with RPATH in macOS
+if (APPLE)
   set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib;/usr/local/lib")
 endif()
 
 # Check if default compiler is Clang based 
