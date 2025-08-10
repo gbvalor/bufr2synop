@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,6 +23,8 @@
  */
 #include "bufr2tac.h"
 
+char BUFR_TABLES_DIRENV[PATH_MAX];  
+
 /*!
   \fn int bufr_set_environment(char *default_bufrtables, char *bufrtables_dir)
   \brief set the environment vars needed to work properly with ECMWF bufrdc library
@@ -41,7 +43,7 @@
 int bufr_set_environment ( char *default_bufrtables, char *bufrtables_dir )
 {
   int i;
-  char aux[256], *c;
+  const char *c;
   struct stat s;
 
   i = stat ( default_bufrtables, &s );
@@ -58,8 +60,8 @@ int bufr_set_environment ( char *default_bufrtables, char *bufrtables_dir )
   */
   if ( bufrtables_dir[0] )
     {
-      sprintf ( aux,"BUFR_TABLES=%s", bufrtables_dir );
-      if ( putenv ( aux ) )
+      snprintf ( BUFR_TABLES_DIRENV, sizeof (BUFR_TABLES_DIRENV), "BUFR_TABLES=%s", bufrtables_dir );      
+      if ( putenv ( BUFR_TABLES_DIRENV ) )
         {
           fprintf ( stderr, "bufr2tac: Failure setting the environment\n" );
           exit ( EXIT_FAILURE );
@@ -72,8 +74,8 @@ int bufr_set_environment ( char *default_bufrtables, char *bufrtables_dir )
   else if ( i == 0 && S_ISDIR ( s.st_mode ) ) // last chance, the default dir
     {
       strcpy ( bufrtables_dir, default_bufrtables );
-      sprintf ( aux,"BUFR_TABLES=%s", bufrtables_dir );
-      if ( putenv ( aux ) )
+      snprintf ( BUFR_TABLES_DIRENV, sizeof (BUFR_TABLES_DIRENV), "BUFR_TABLES=%s", bufrtables_dir );      
+      if ( putenv ( BUFR_TABLES_DIRENV ) )
         {
           fprintf ( stderr, "bufr2tac: Failure setting the environment\n" );
           exit ( EXIT_FAILURE );

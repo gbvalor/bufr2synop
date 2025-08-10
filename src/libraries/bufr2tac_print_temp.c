@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -346,7 +346,7 @@ int print_temp_a (  struct metreport *m )
   char *c = &(m->alphanum[0]);
   size_t used = 0;
   size_t lmax = sizeof(m->alphanum);
-  struct temp_chunks *t = &m->temp;
+  const struct temp_chunks *t = &m->temp;
 
 
   // Needs time extension
@@ -593,7 +593,7 @@ int print_temp_b ( struct metreport *m )
   char *c = &(m->alphanum2[0]);
   size_t used = 0;
   size_t lmax = sizeof(m->alphanum);
-  struct temp_chunks *t = &m->temp;
+  const struct temp_chunks *t = &m->temp;
 
 
   // Needs time extension
@@ -829,7 +829,7 @@ int print_temp_c ( struct metreport *m )
   char *c = &(m->alphanum3[0]);
   size_t used = 0;
   size_t lmax = sizeof(m->alphanum);
-  struct temp_chunks *t = &m->temp;
+  const struct temp_chunks *t = &m->temp;
 
 
   // Needs time extension
@@ -1046,6 +1046,11 @@ int print_temp_d ( struct metreport *m )
 */
 int print_temp_report ( struct metreport *m )
 {
+  if (m == NULL)
+    {
+      return 1; // No temp report to print
+    }
+
   // It is required that al lesat a standard level where decoded in SEC A
   if ( m->temp.a.mask & TEMP_SEC_2 )
     {

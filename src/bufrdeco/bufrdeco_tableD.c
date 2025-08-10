@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -44,7 +44,7 @@ int bufr_read_tableD ( struct bufrdeco *b )
   struct bufr_descriptor desc;
   struct bufr_tableD *td;
 
-  //bufrdeco_assert (b != NULL);
+  bufrdeco_assert (b != NULL);
 
   td = & ( b->tables->d );
   if ( td->path[0] == 0 )
@@ -76,8 +76,22 @@ int bufr_read_tableD ( struct bufrdeco *b )
   oldkey[0] = 0;
   j0 = 0;
 
-  while ( fgets ( laux, CSV_MAXL, t ) != NULL && i < BUFR_MAXLINES_TABLED )
+  while (i < BUFR_MAXLINES_TABLED)
     {
+      if (fgets(laux, CSV_MAXL, t) == NULL)
+        {
+          if (feof(t)) {
+            break; // End of file reached, normal exit
+          } else if (ferror(t)) {
+            snprintf ( b->error, sizeof ( b->error ),"Error reading from table D file '%s'\n", td->path );
+            clearerr(t);
+            fclose(t);
+            return 1;
+          }
+          clearerr(t);
+          break;
+        }
+        
       // Parse line
       //printf("%s\n",laux);
       if ( parse_csv_line ( &nt, tk, laux ) < 0 || ( nt != 2 && nt != 4 ) )
@@ -172,7 +186,7 @@ int bufr_find_tableD_index ( buf_t *index, struct bufr_tableD *td, const char *k
   buf_t ix = 0;
   char *c, aux[8];
 
-  //bufrdeco_assert ( td != NULL && key != NULL && index != NULL);
+  bufrdeco_assert ( td != NULL && key != NULL && index != NULL);
 
   aux[0] = key[1];
   aux[1] = key[2];

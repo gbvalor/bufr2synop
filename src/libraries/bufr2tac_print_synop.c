@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -413,7 +413,7 @@ size_t print_synop_sec2 ( char **sec2, size_t lmax, const struct synop_chunks *s
 size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
 {
   char *c = *sec3;
-  size_t used = 0, used0;
+  size_t used = 0;
 
   if ( syn->mask & SYNOP_SEC3 )
     {
@@ -421,15 +421,11 @@ size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
 
       // init point to write info.
       // in case we finally write nothing in this section
-      used0 = used;
+      size_t used0 = used;
 
       // printf 0XoXoXoXo
       if ( syn->s3.XoXoXoXo[0] && ( strstr ( syn->s3.XoXoXoXo,"///" ) == NULL ) )
         {
-          if ( syn->s3.XoXoXoXo[0] == 0 )
-            {
-              syn->s3.XoXoXoXo[0] = '/';
-            }
           if ( syn->s3.XoXoXoXo[1] == 0 )
             {
               syn->s3.XoXoXoXo[1] = '/';
@@ -718,7 +714,7 @@ size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
 size_t print_synop_sec4 ( char **sec4, size_t lmax, struct synop_chunks *syn )
 {
   char *c = *sec4;
-  size_t used = 0, used0;
+  size_t used = 0;
 
   if ( syn->mask & SYNOP_SEC5 )
     {
@@ -726,7 +722,7 @@ size_t print_synop_sec4 ( char **sec4, size_t lmax, struct synop_chunks *syn )
 
       // init point to write info.
       // in case we finally write nothing in this section
-      used0 = used;
+      size_t used0 = used;
 
       // printf N1C1H1H1Ct
       if ( syn->s4.N1[0] || syn->s4.C1[0] || syn->s4.H1H1[0] || syn->s4.Ct[0] )
@@ -822,6 +818,11 @@ size_t print_synop_sec5 ( char **sec5, size_t lmax, struct synop_chunks *syn )
 */
 int print_synop_report (struct metreport *m)
 {
+  if (m == NULL)
+    {
+      return 1; // No climat report to print
+    }
+  
   char *c = &(m->alphanum[0]);
   size_t used = 0;
   size_t lmax = sizeof(m->alphanum);

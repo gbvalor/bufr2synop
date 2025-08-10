@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -61,9 +61,9 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
 {
   buf_t i, j, nl;
   struct bufr_sequence *l;
-  struct bufr_descriptor *d;
+  
 
-  //bufrdeco_assert (b != NULL);
+  bufrdeco_assert (b != NULL);
   
   if ( key == NULL )
     {
@@ -118,7 +118,7 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
   // Checks for replication levels, no data present, event or conditioning event
   for ( i = 0; i < l->ndesc ; i++ )
     {
-      d = & ( l->lseq[i] ); // To write/read code easily
+      struct bufr_descriptor *d = & ( l->lseq[i] ); // To write/read code easily
 
       // Case of replication
       if ( d->f == 1 )

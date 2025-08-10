@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -40,10 +40,9 @@ uint8_t bitk[8] = {0x80,0xc0,0xe0,0xf0,0xf8,0xfc,0xfe,0xff}; /*!< Mask first bit
 buf_t get_bits_as_char_array2 ( char *target, uint8_t *has_data, uint8_t *source, buf_t *bit0_offset, buf_t bit_length )
 {
   buf_t i, j;
-  buf_t r, d, nc;
-  uint8_t *c;
+  buf_t nc;
 
-  //bufrdeco_assert (has_data != NULL && source != NULL && target != NULL && bit0_offset != NULL);
+  bufrdeco_assert (has_data != NULL && source != NULL && target != NULL && bit0_offset != NULL);
 
   if ( bit_length % 8 )
     return 0; // bit_length needs to be divisible by 8
@@ -52,12 +51,12 @@ buf_t get_bits_as_char_array2 ( char *target, uint8_t *has_data, uint8_t *source
   *has_data = 0; // marc if no missing data is present
   for ( j = 0; j < nc ; j++ )
     {
-      r = 8;
-      d = 0;
+      buf_t r = 8;
+      buf_t d = 0;
       * ( target + j ) = 0;
       do
         {
-          c = source + ( *bit0_offset + d ) / 8;
+          const uint8_t *c = source + ( *bit0_offset + d ) / 8;
           i = ( *bit0_offset + d ) % 8;
           if ( *c & bitf[i] )
             * ( target + j ) += ( 1U << ( r - 1 ) );
@@ -87,9 +86,9 @@ buf_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source,
 {
   buf_t i, j, k;
   buf_t nc;
-  uint8_t *c;
+  
 
-  //bufrdeco_assert (has_data != NULL && source != NULL && target != NULL && bit0_offset != NULL);
+  bufrdeco_assert (has_data != NULL && source != NULL && target != NULL && bit0_offset != NULL);
 
   if ( bit_length % 8 )
     return 0; // bit_length needs to be divisible by 8
@@ -102,7 +101,7 @@ buf_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source,
   *has_data = 0; // marc if no missing data is present
   for ( j = 0; j < nc ; j++ )
     {
-      c = source + ( *bit0_offset )  / 8;
+      const uint8_t *c = source + ( *bit0_offset )  / 8;
       * ( target + j ) = ( *c & biti[i] );
       if ( i )
         {
@@ -134,11 +133,9 @@ buf_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source,
 */
 uint32_t get_bits_as_uint32_t2 ( uint32_t *target, uint8_t *has_data, uint8_t *source, buf_t *bit0_offset, buf_t bit_length )
 {
-  buf_t i;
   buf_t r, d;
-  uint8_t *c;
 
-  //bufrdeco_assert (has_data != NULL && source != NULL && target != NULL && bit0_offset != NULL);
+  bufrdeco_assert (has_data != NULL && source != NULL && target != NULL && bit0_offset != NULL);
 
   if ( bit_length > 32 || bit_length == 0 )
     return 0;
@@ -150,8 +147,8 @@ uint32_t get_bits_as_uint32_t2 ( uint32_t *target, uint8_t *has_data, uint8_t *s
 
   do
     {
-      c = source + ( *bit0_offset + d ) / 8;
-      i = ( *bit0_offset + d ) % 8;
+      const uint8_t *c = source + ( *bit0_offset + d ) / 8;
+      buf_t i = ( *bit0_offset + d ) % 8;
       if ( *c & bitf[i] )
         *target += ( 1U << ( r - 1 ) );
       else
@@ -185,7 +182,7 @@ uint32_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *so
   uint8_t *c;
   uint64_t x;
 
-  //bufrdeco_assert (has_data != NULL && source != NULL && target != NULL && bit0_offset != NULL);
+  bufrdeco_assert (has_data != NULL && source != NULL && target != NULL && bit0_offset != NULL);
 
   if ( bit_length > 32 || bit_length == 0 )
     return 0;
@@ -222,7 +219,7 @@ int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_
 {
   uint32_t mask = 1;
 
-  //bufrdeco_assert (target != NULL);
+  bufrdeco_assert (target != NULL);
 
 
   if ( bits > 32 || bits == 0 )
@@ -250,7 +247,7 @@ int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_
 uint32_t two_bytes_to_uint32 ( const uint8_t *source )
 {
 
-  //bufrdeco_assert (source != NULL);
+  bufrdeco_assert (source != NULL);
 
   return ( ( uint32_t ) source[1] + ( uint32_t ) source[0] * 256 );
 }
@@ -264,7 +261,7 @@ uint32_t two_bytes_to_uint32 ( const uint8_t *source )
 */
 uint32_t three_bytes_to_uint32 ( const uint8_t *source )
 {
-  //bufrdeco_assert (source != NULL);
+  bufrdeco_assert (source != NULL);
   return ( ( uint32_t ) source[2] + ( uint32_t ) source[1] * 256 + ( uint32_t ) source[0] * 65536 );
 }
 
@@ -277,7 +274,7 @@ uint32_t three_bytes_to_uint32 ( const uint8_t *source )
 */
 int uint32_t_to_descriptor ( struct bufr_descriptor *d, uint32_t id )
 {
-  //bufrdeco_assert (d != NULL);
+  bufrdeco_assert (d != NULL);
 
   d->f = id / 100000;
   d->x = ( id % 100000 ) / 1000;
@@ -296,7 +293,7 @@ int uint32_t_to_descriptor ( struct bufr_descriptor *d, uint32_t id )
  */
 int two_bytes_to_descriptor ( struct bufr_descriptor *d, const uint8_t *source )
 {
-  //bufrdeco_assert (source != NULL && d != NULL);
+  bufrdeco_assert (source != NULL && d != NULL);
 
   d->y = source[1];
   d->x = source[0] & 0x3f;
@@ -315,7 +312,7 @@ int two_bytes_to_descriptor ( struct bufr_descriptor *d, const uint8_t *source )
 */
 char * bufr_charray_to_string ( char *s, const char *buf, size_t size )
 {
-  //bufrdeco_assert (s != NULL && buf != NULL);
+  bufrdeco_assert (s != NULL && buf != NULL);
 
   // copy
   memcpy ( s, buf, size );
@@ -334,7 +331,7 @@ char * bufr_adjust_string ( char *s )
 {
   size_t l;
 
-  //bufrdeco_assert (s != NULL);
+  bufrdeco_assert (s != NULL);
 
   l = strlen ( s );
   while ( l && s[--l] == ' ' )
@@ -350,7 +347,7 @@ char * bufr_adjust_string ( char *s )
 */
 int is_a_delayed_descriptor ( const struct bufr_descriptor *d )
 {
-  //bufrdeco_assert (d != NULL);
+  bufrdeco_assert (d != NULL);
 
   if ( ( d->f == 0 ) &&
        ( d->x == 31 ) &&
@@ -368,7 +365,7 @@ int is_a_delayed_descriptor ( const struct bufr_descriptor *d )
 */
 int is_a_short_delayed_descriptor ( const struct bufr_descriptor *d )
 {
-  //bufrdeco_assert (d != NULL);
+  bufrdeco_assert (d != NULL);
 
   if ( ( d->f == 0 ) &&
        ( d->x == 31 ) &&
@@ -387,7 +384,7 @@ int is_a_short_delayed_descriptor ( const struct bufr_descriptor *d )
 */
 int is_a_local_descriptor ( const struct bufr_descriptor *d )
 {
-  //bufrdeco_assert (d != NULL);
+  bufrdeco_assert (d != NULL);
 
   if ( ( d->f == 0 ) &&
        ( d->x >= 48 ) &&
@@ -409,11 +406,11 @@ int is_a_local_descriptor ( const struct bufr_descriptor *d )
 */
 char *get_formatted_value_from_escale ( char *fmt, size_t dim, int32_t escale, double val )
 {
-  char aux[32];
-  //bufrdeco_assert (fmt != NULL);
+  bufrdeco_assert (fmt != NULL);
 
   if ( escale >= 0 )
     {
+      char aux[32];
       sprintf ( aux, "%%17.%dlf ", escale );
       snprintf ( fmt, dim, aux, val );
     }
@@ -435,11 +432,11 @@ char *get_formatted_value_from_escale ( char *fmt, size_t dim, int32_t escale, d
  */
 char *get_formatted_value_from_escale2 ( char *fmt, size_t dim, int32_t escale, double val )
 {
-  char aux[32];
-  //bufrdeco_assert (fmt != NULL);
+  bufrdeco_assert (fmt != NULL);
 
   if ( escale >= 0 )
     {
+      char aux[32];
       sprintf ( aux, "%%.%dlf", escale );
       snprintf ( fmt, dim, aux, val );
     }
@@ -460,7 +457,7 @@ char *get_formatted_value_from_escale2 ( char *fmt, size_t dim, int32_t escale, 
 */
 int bufrdeco_add_to_bitmap ( struct bufrdeco_bitmap *bm, buf_t index_to, buf_t index_by )
 {
-  //bufrdeco_assert (bm != NULL);
+  bufrdeco_assert (bm != NULL);
 
   if ( bm->nb < BUFR_MAX_BITMAP_PRESENT_DATA )
     {
@@ -487,7 +484,7 @@ int bufrdeco_get_bitmaped_info ( struct bufrdeco_bitmap_related_vars *brv, uint3
   buf_t delta;
   struct bufrdeco_bitmap *bm;
 
-  //bufrdeco_assert (b != NULL && brv != NULL);
+  bufrdeco_assert (b != NULL && brv != NULL);
   brv->target = target;
   memset ( brv, 0, sizeof ( struct bufrdeco_bitmap_related_vars ) );
   for ( i = 0; i < b->bitmap.nba ; i++ )
@@ -556,7 +553,7 @@ int bufr_write_subset_offset_bits ( FILE *f, const struct bufrdeco_subset_bit_of
 {
   size_t wrote;
 
-  //bufrdeco_assert (off != NULL && f != NULL );
+  bufrdeco_assert (off != NULL && f != NULL );
 
   wrote = fwrite ( & ( off->nr ), sizeof ( buf_t ), 1, f );
   bufrdeco_assert_with_return_val ( wrote == 1, 1 );
@@ -578,7 +575,7 @@ int bufr_read_subset_offset_bits ( FILE *f, struct bufrdeco_subset_bit_offsets *
 {
   size_t readed;
 
-  //bufrdeco_assert (off != NULL && f != NULL );
+  bufrdeco_assert (off != NULL && f != NULL );
 
   readed = fread ( & ( off->nr ), sizeof ( buf_t ), 1, f );
   bufrdeco_assert_with_return_val ( readed == 1, 1 );

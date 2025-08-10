@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -123,7 +123,7 @@ int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename, char *bufr_xout
   int aux, res;
   uint8_t *bufrx = NULL, *pbeg = NULL; /*!< pointer to a memory buffer where we write raw bufr file */
   buf_t n = 0, beg, end, size = 0;
-  FILE *fp, *fpo;
+  FILE *fp;
   struct stat st;
 
   bufrdeco_assert ( b != NULL );
@@ -211,6 +211,7 @@ int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename, char *bufr_xout
   if (bufr_xout != NULL &&  bufr_xout[0] != '\0')
     {
        // open the file
+       FILE *fpo;
        if ( ( fpo = fopen(bufr_xout, "w") ) == NULL )
          {
            snprintf ( b->error, sizeof ( b->error ), "%s(): cannot open file '%s'\n", __func__, filename );

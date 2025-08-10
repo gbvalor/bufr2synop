@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -108,16 +108,6 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s,
   // set pointers
   s->r = r;
   s->w = w;
-
-  // reject if still not coded type
-  if ( strcmp ( s->type_report,"TTXX" ) == 0  && 0 )
-    {
-      // FIXME
-      sprintf ( err,"bufr2tac: parse_subset_as_temp(): '%s' reports still not decoded in this software", s->type_report );
-      free ( ( void * ) ( r ) );
-      free ( ( void * ) ( w ) );
-      return 1;
-    }
 
   // Set the part. We are sure of this
   strcpy ( t->a.s1.MjMj, "AA" );
@@ -407,8 +397,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
   size_t iwxa = 0, iwxc = 0, itb = 0, itd = 0;
   size_t iwd = 0, iwb = 0;
   size_t isav = 0, iscv = 0; // valid data counters for standard levels
-  struct temp_raw_point_data *d;
-
+  
   if ( t == NULL || r == NULL )
     {
       return 1;
@@ -424,7 +413,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
   t->c.s1.id[0] = '/';
   for ( i = 0; i < r->n; i++ )
     {
-      d = & ( r->raw[i] ); // to make code easy
+      const struct temp_raw_point_data *d = & ( r->raw[i] ); // to make code easy
 
       if ( d->p < 10000.0 ) // to select which part
         {
@@ -768,7 +757,6 @@ int parse_temp_raw_wind_shear_data ( struct temp_chunks *t, struct temp_raw_wind
   int ix, is_over_100;
   char aux[16];
 
-  struct temp_raw_wind_shear_point *d;
 
   if ( t == NULL || w == NULL )
     {
@@ -782,7 +770,7 @@ int parse_temp_raw_wind_shear_data ( struct temp_chunks *t, struct temp_raw_wind
 
   for ( i = 0; i < w->n; i++ )
     {
-      d = & ( w->raw[i] ); // to make code easy
+      const struct temp_raw_wind_shear_point *d = & ( w->raw[i] ); // to make code easy
 
       if ( d->p < 10000.0 ) // to select which part
         {

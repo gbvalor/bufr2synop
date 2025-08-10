@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -323,7 +323,7 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 */
 int climat_parse_x01 ( struct climat_chunks *c, struct bufr2tac_subset_state *s )
 {
-  char aux[80];
+
 
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
     return 0;
@@ -359,6 +359,7 @@ int climat_parse_x01 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
     case 19: // 0 01 019 . Long station or site name
       if ( strlen ( s->a->cval ) <= 80 )
         {
+          char aux[80];
           strcpy ( aux, s->a->cval );
           adjust_string ( aux );
           strcpy ( s->name, aux );

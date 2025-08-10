@@ -266,8 +266,13 @@ int main ( int argc, char *argv[] )
 
   memset ( &b, 0, 4 * sizeof ( unsigned char ) );
 
-  while ( ( nc = fread ( &BUF[0], sizeof ( unsigned char ), BLEN, ficin ) ) > 0 )
+  while ( !feof(ficin) && ( nc = fread ( &BUF[0], sizeof ( unsigned char ), BLEN, ficin ) ) > 0 )
     {
+      if (ferror(ficin)) 
+        {
+          printf("%s: Error reading from %s\n", OWN, ENTRADA);
+          break;
+        }
       for ( i = 0; i < nc ; i++ )
         {
           // ingest a byte
@@ -485,7 +490,8 @@ int main ( int argc, char *argv[] )
 
   if ( COLECT )
     {
-      fclose ( ficol );
+      if ( ficol != NULL )
+        fclose ( ficol );
       // change archive file timestamp
       mtime_from_stat ( namec, &INSTAT );
     }

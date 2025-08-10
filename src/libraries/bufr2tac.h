@@ -560,6 +560,7 @@ int buprt_ ( int *, int *, int *, int *, char **, char **, char **, int *, doubl
 
 // Global static vars
 extern int BUFR2TAC_DEBUG_LEVEL;
+extern char BUFR_TABLES_DIRENV[PATH_MAX];
 
 
 #ifdef __cplusplus

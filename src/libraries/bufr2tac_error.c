@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -78,7 +78,7 @@ int bufr2tac_set_error ( struct bufr2tac_subset_state *s, int severity, const ch
         c += sprintf ( c, " = %lf . ", s->a->val );
     }
 
-  c += sprintf ( c, "%s", explanation );
+  sprintf ( c, "%s", explanation );
 
 
   return bufr2tac_push_error ( &s->e, severity, description );

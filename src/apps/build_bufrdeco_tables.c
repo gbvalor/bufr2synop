@@ -76,12 +76,11 @@ void print_usage ( void )
 
 int main ( int argc, char *argv[] )
 {
-  int iopt, *fs;
+  int iopt;
   FILE *f;
-  char lin[CSV_MAXL], caux[CSV_MAXL], caux2[32];
-  char *tk[16], *c;
+  char lin[CSV_MAXL], caux[CSV_MAXL];
+  char *c;
   int nt;
-  uint32_t ix = 0;
   long int il;
   struct bufr_descriptor desc;
 
@@ -134,6 +133,7 @@ int main ( int argc, char *argv[] )
 
   if ( IS_WMO )
     {
+      int *fs;
       switch ( TABLE_TYPE[0] )
         {
         case 'A':
@@ -175,6 +175,7 @@ int main ( int argc, char *argv[] )
 
       while ( fgets ( lin, CSV_MAXL, f ) != NULL )
         {
+          char *tk[16];
           // Parse line
           if ( parse_csv_line ( &nt, tk, lin ) < 0 )
             {
@@ -197,6 +198,9 @@ int main ( int argc, char *argv[] )
     }
   else
     {
+      char caux2[32];
+      uint32_t ix = 0;
+
       // Decode ECMWF tables
       // first line with the name of fields
       switch ( TABLE_TYPE[0] )

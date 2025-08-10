@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -391,6 +391,10 @@ size_t print_buoy_wigos_id ( char **wid,  size_t lmax, const struct buoy_chunks 
 */
 int print_buoy_report ( struct metreport *m )
 {
+  if (m == NULL)
+    {
+      return 1; // No buoy report to print
+    }
   char *c = & ( m->alphanum[0] );
   size_t used = 0;
   size_t lmax = sizeof ( m->alphanum );

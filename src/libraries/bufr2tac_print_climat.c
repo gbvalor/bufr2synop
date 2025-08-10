@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -717,6 +717,11 @@ size_t print_climat_sec4 ( char **sec4, size_t lmax, struct climat_chunks *cl )
 */
 int print_climat_report ( struct metreport *m )
 {
+  if (m == NULL)
+    {
+      return 1; // No climat report to print
+    }
+
   char *c = &(m->alphanum[0]);
   size_t used = 0;
   size_t lmax = sizeof(m->alphanum);

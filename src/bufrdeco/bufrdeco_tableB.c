@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -52,7 +52,7 @@ int bufr_read_tableB ( struct bufrdeco *b )
   struct bufr_tableB *tb;
   struct bufr_descriptor desc;
 
-  //bufrdeco_assert ( b != NULL );
+  bufrdeco_assert ( b != NULL );
 
   tb = & ( b->tables->b );
   if ( tb->path[0] == 0 )
@@ -209,7 +209,7 @@ int bufr_find_tableB_index ( buf_t *index, struct bufr_tableB *tb, const char *k
   char *c;
   struct bufr_descriptor desc;
 
-  //bufrdeco_assert ( tb != NULL);
+  bufrdeco_assert ( tb != NULL);
 
   ix = strtoul ( key, &c, 10 );
   uint32_t_to_descriptor ( &desc, ix );
@@ -472,7 +472,7 @@ int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, const st
   int32_t /*escale = 0,*/ reference = 0;
   struct bufr_tableB *tb;
 
-  //bufrdeco_assert ( a != NULL && b != NULL && d != NULL );
+  bufrdeco_assert ( a != NULL && b != NULL && d != NULL );
 
   tb = & ( b->tables->b );
 

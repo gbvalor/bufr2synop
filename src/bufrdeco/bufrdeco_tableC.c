@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -43,7 +43,7 @@ int bufr_read_tableC ( struct bufrdeco *b )
   char *tk[16];
   char caux[256], l[CSV_MAXL];
 
-  //bufrdeco_assert ( b != NULL );
+  bufrdeco_assert ( b != NULL );
   
   tc = & ( b->tables->c );
   
@@ -73,13 +73,25 @@ int bufr_read_tableC ( struct bufrdeco *b )
   // read first line, it is ignored
   fgets ( l, CSV_MAXL, t );
 
-  while ( fgets ( l, CSV_MAXL, t ) != NULL && i < BUFR_MAXLINES_TABLEC )
+  while (i < BUFR_MAXLINES_TABLEC)
     {
+      if (fgets(l, CSV_MAXL, t) == NULL)
+        {
+          if (ferror(t))
+            {
+              snprintf ( b->error, sizeof ( b->error ),"Error reading from table C file '%s'\n", tc->path );
+              fclose ( t );
+              return 1;
+            }
+          clearerr(t); // Clear error indicator to avoid indeterminate file position
+          break;
+        }
 
       // Parse line
       if ( parse_csv_line ( &nt, tk, l ) < 0 || nt != 6 )
         {
           snprintf ( b->error, sizeof ( b->error ),"Error parsing csv line from table C file '%s'. Found %d fields in line %u \n", tc->path, nt, i );
+          fclose ( t );
           return 1;
         }
 
@@ -201,7 +213,7 @@ char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tableC 
     uint64_t ival, uint8_t nbits )
 {
   size_t used = 0;
-  uint64_t test, test0;
+  uint64_t test0;
   uint64_t v;
   size_t i, j;
 
@@ -236,7 +248,7 @@ char * bufrdeco_explained_flag_val ( char *expl, size_t dim, struct bufr_tableC 
             }
         }
 
-      test = test0 << ( nbits - v );
+      uint64_t test = test0 << ( nbits - v );
 
       if ( v && ( test & ival ) != 0 )
         {
