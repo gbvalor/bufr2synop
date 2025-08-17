@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -560,6 +560,11 @@ int buprt_ ( int *, int *, int *, int *, char **, char **, char **, int *, doubl
 
 // Global static vars
 extern int BUFR2TAC_DEBUG_LEVEL;
+
+#ifndef PATH_MAX
+#define PATH_MAX 1024
+#endif
+
 extern char BUFR_TABLES_DIRENV[PATH_MAX];
 
 
