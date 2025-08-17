@@ -363,6 +363,20 @@ int main ( int argc, char *argv[] )
                   nerr++;
                   break;
                 }
+              // Has been detected some void and fakes bufr
+              if ( b[0] == '0' && // This is supossed to be the first '0' in the extension of next BUFR
+                   b[1] == HEADER_MARK &&
+                   b[2] == HEADER_MARK &&
+                   b[3] == HEADER_MARK &&
+                   b[4] == HEADER_MARK 
+                 )
+                {
+                  // Ooops. a fake bufr
+                  // it seems a new header has been found before 'BUFR'
+                  STAGE = 0;
+                  nerr++;
+                  break;
+                }
               if ( is_bufr ( &b[0] ) )
                 {
                   STAGE = 5;
