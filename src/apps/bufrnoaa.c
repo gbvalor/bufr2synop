@@ -343,7 +343,7 @@ int main ( int argc, char *argv[] )
                   STAGE = 0;
                   break;
                 }
-              if ( b[0] == 0x01a || b[0] == 0x0d )
+              if ( b[0] == 0x0a || b[0] == 0x0d )
                 {
                   STAGE = 4;
                   name[nx++] = '\0';
