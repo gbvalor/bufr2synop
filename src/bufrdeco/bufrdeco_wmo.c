@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2023 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -139,6 +139,7 @@ int get_wmo_tablenames ( struct bufrdeco *b )
     case 42:
     case 43:
     case 44: 
+    case 45:
       snprintf ( b->tables->b.path, sizeof ( b->tables->b.path ),"%sBUFR_%d_0_0_TableB_en.csv", aux, b->sec1.master_version );
       snprintf ( b->tables->c.path, sizeof ( b->tables->c.path ),"%sBUFR_%d_0_0_TableC_en.csv", aux, b->sec1.master_version );
       snprintf ( b->tables->d.path, sizeof ( b->tables->d.path ),"%sBUFR_%d_0_0_TableD_en.csv", aux, b->sec1.master_version );
@@ -149,9 +150,9 @@ int get_wmo_tablenames ( struct bufrdeco *b )
       snprintf ( b->tables->d.path, sizeof ( b->tables->d.path ),"%sBUFR_%d_1_0_TableD_en.csv", aux, b->sec1.master_version );
       break;
     default: // last version for BUFR tables
-      snprintf ( b->tables->b.path, sizeof ( b->tables->b.path ),"%sBUFR_44_0_0_TableB_en.csv", aux );
-      snprintf ( b->tables->c.path, sizeof ( b->tables->c.path ),"%sBUFR_44_0_0_TableC_en.csv", aux );
-      snprintf ( b->tables->d.path, sizeof ( b->tables->d.path ),"%sBUFR_44_0_0_TableD_en.csv", aux );
+      snprintf ( b->tables->b.path, sizeof ( b->tables->b.path ),"%sBUFR_45_0_0_TableB_en.csv", aux );
+      snprintf ( b->tables->c.path, sizeof ( b->tables->c.path ),"%sBUFR_45_0_0_TableC_en.csv", aux );
+      snprintf ( b->tables->d.path, sizeof ( b->tables->d.path ),"%sBUFR_45_0_0_TableD_en.csv", aux );
       break;
     }
   return 0;
