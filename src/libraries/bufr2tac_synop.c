@@ -67,8 +67,8 @@ int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
 
   t = mktime ( &tim ) + 1799 ; // rounding trick
   gmtime_r ( &t, &tim );
-  sprintf ( syn->s0.YY, "%02d", tim.tm_mday );
-  sprintf ( syn->s0.GG, "%02d", tim.tm_hour );
+  snprintf ( syn->s0.YY, sizeof(syn->s0.YY), "%02d", tim.tm_mday );
+  snprintf ( syn->s0.GG, sizeof(syn->s0.GG), "%02d", tim.tm_hour );
 
   // Revert TZ changes
   if ( tz[0] )
@@ -132,7 +132,7 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
   // reject if still not coded type
   if ( strcmp ( s->type_report,"AAXX" ) && strcmp ( s->type_report,"BBXX" ) && strcmp ( s->type_report,"OOXX" ) )
     {
-      sprintf ( err,"bufr2tac: parse_subset_as_synop(): '%s' reports still not decoded in this software", s->type_report );
+      snprintf ( err, sizeof(err), "bufr2tac: parse_subset_as_synop(): '%s' reports still not decoded in this software", s->type_report );
       return 1;
     }
 
@@ -247,7 +247,7 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
        ( ( s->mask & SUBSET_MASK_HAVE_MINUTE ) == 0 )
      )
     {
-      sprintf ( err,"bufr2tac: %s(): lack of mandatory descriptor in sequence", __func__ );
+      snprintf ( err, sizeof(err), "bufr2tac: %s(): lack of mandatory descriptor in sequence", __func__ );
       return 1;
     }
 
@@ -266,7 +266,7 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
         }
       else
         {
-          sprintf ( err,"bufr2tac: %s(): lack of mandatory index station for AAXX report", __func__ );
+          snprintf ( err, sizeof(err), "bufr2tac: %s(): lack of mandatory index station for AAXX report", __func__ );
           return 1;
         }
     }
@@ -362,7 +362,7 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
          syn->s3.j5[4][0] || syn->s3.j5[5][0] ||
          syn->s3.j5[6][0] ) )
     {
-      sprintf ( syn->s3.SS, "//" );
+      snprintf ( syn->s3.SS, sizeof(syn->s3.SS), "//" );
     }
 
   if ( ( syn->mask & SYNOP_SEC3 ) && ( syn->s3.SSS[0] == '\0' ) &&
@@ -371,14 +371,14 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
          syn->s3.j524[4][0] || syn->s3.j524[5][0] ||
          syn->s3.j524[6][0] ) )
     {
-      sprintf ( syn->s3.SSS, "///" );
+      snprintf ( syn->s3.SSS, sizeof(syn->s3.SSS), "///" );
     }
 
   /****** Final Adjust ***********/
 
   // fix YYGG according with YYYYMMDDHHmm
   if ( syn->e.mm[0] == 0 )
-    sprintf ( syn->e.mm, "00" );
+    snprintf ( syn->e.mm, sizeof(syn->e.mm), "00" );
   synop_YYYYMMDDHHmm_to_YYGG ( syn );
   if ( strcmp ( syn->e.mm,"00" ) )
     {
@@ -426,7 +426,7 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
       strcpy ( m->g.country, s->country );
     }
 
-  sprintf ( aux,"%s%s%s%s%s", syn->e.YYYY, syn->e.MM, syn->e.DD, syn->e.HH, syn->e.mm );
+  snprintf ( aux, sizeof(aux), "%s%s%s%s%s", syn->e.YYYY, syn->e.MM, syn->e.DD, syn->e.HH, syn->e.mm );
   YYYYMMDDHHmm_to_met_datetime ( &m->t, aux );
 
   if ( check_date_from_future ( m ) )

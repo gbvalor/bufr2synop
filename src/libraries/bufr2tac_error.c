@@ -61,24 +61,24 @@ int bufr2tac_set_error ( struct bufr2tac_subset_state *s, int severity, const ch
   char description[BUFR2TAC_ERROR_DESCRIPTION_LENGTH], *c;
 
   c = description;
-  c += sprintf ( c, "%s: ", origin );
-  c += sprintf ( c, " Descriptor: %u %02u %03u: \"%s\"",s->a->desc.f, s->a->desc.x, s->a->desc.y, s->a->name );
+  c += snprintf ( c, sizeof(c), "%s: ", origin );
+  c += snprintf ( c, sizeof(c), " Descriptor: %u %02u %03u: \"%s\"",s->a->desc.f, s->a->desc.x, s->a->desc.y, s->a->name );
 
   if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
     {
-      c+= sprintf ( c, " = MISSING. " );
+      c+= snprintf ( c, sizeof(c), " = MISSING. " );
     }
   else
     {
       if ( s->a->cval[0] )
-        c += sprintf ( c, " = '%s'. ", s->a->cval );
+        c += snprintf ( c, sizeof(c), " = '%s'. ", s->a->cval );
       else if ( s->a->desc.x == 2 )
-        c += sprintf ( c, " = '%s'. ", s->a->ctable );
+        c += snprintf ( c, sizeof(c), " = '%s'. ", s->a->ctable );
       else
-        c += sprintf ( c, " = %lf . ", s->a->val );
+        c += snprintf ( c, sizeof(c), " = %lf . ", s->a->val );
     }
 
-  sprintf ( c, "%s", explanation );
+  snprintf ( c, sizeof(c), "%s", explanation );
 
 
   return bufr2tac_push_error ( &s->e, severity, description );

@@ -40,7 +40,7 @@ char * pascal_to_ppp ( char *target, double P )
     {
       ic = ( int ) ( -P * 0.1 );
     }
-  sprintf ( target, "%03d", ic % 1000 );
+  snprintf ( target, sizeof(target), "%03d", ic % 1000 );
   return target;
 }
 
@@ -65,7 +65,7 @@ char * pascal_to_pnpnpn ( char *target, double P )
       if (ic == 1000)
         ic = 999;
     }
-  sprintf ( target, "%03d", ic % 1000 );
+  snprintf ( target, sizeof(target), "%03d", ic % 1000 );
   return target;
 }
 
@@ -80,7 +80,7 @@ char * pascal_to_PPPP ( char *target, double P )
 {
   int ic;
   ic = ( int ) ( P * 0.1 );
-  sprintf ( target, "%04d", ic % 10000 );
+  snprintf ( target, sizeof(target), "%04d", ic % 10000 );
   return target;
 }
 
@@ -112,7 +112,7 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       break;
 
     case 9: // 0 10 009. Geopotential at standard level
-      sprintf ( syn->s1.hhh, "%03d", abs(s->ival) % 1000 );
+      snprintf ( syn->s1.hhh, sizeof(syn->s1.hhh), "%03d", abs(s->ival) % 1000 );
       syn->mask |= SYNOP_SEC1;
       break;
 
@@ -148,7 +148,7 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 63: // 0 10 063 . Characteristic of pressure tendency
       if ( s->ival > 9 || s->ival < 0)
         return 1;
-      sprintf ( syn->s1.a, "%1d",s->ival );
+      snprintf ( syn->s1.a, sizeof(syn->s1.a), "%1d",s->ival );
       syn->mask |= SYNOP_SEC1;
       break;
 
@@ -193,7 +193,7 @@ int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       break;
 
     case 63: // 0 10 063 . Characteristic of pressure tendency
-      sprintf ( b->s1.a, "%1d",s->ival );
+      snprintf ( b->s1.a, sizeof(b->s1.a), "%1d",s->ival );
       b->mask |= BUOY_SEC1;
       break;
 
@@ -259,12 +259,12 @@ int climat_parse_x10 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           if ( s->is_normal == 0 )
             {
-              sprintf ( c->s1.PPPP, "%04d", s->ival );
+              snprintf ( c->s1.PPPP, sizeof(c->s1.PPPP), "%04d", s->ival );
               c->mask |= CLIMAT_SEC1;
             }
           else
             {
-              sprintf ( c->s1.PPPP, "%04d", s->ival );
+              snprintf ( c->s1.PPPP, sizeof(c->s1.PPPP), "%04d", s->ival );
               c->mask |= CLIMAT_SEC2;
             }
         }

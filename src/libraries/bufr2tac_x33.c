@@ -41,12 +41,12 @@ int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
   switch ( s->a->desc.y )
     {
     case 20: // 0 33 020. Quality control indication of followinf value
-      sprintf ( b->s0.Qt, "%d", s->ival );
+      snprintf ( b->s0.Qt, sizeof(b->s0.Qt), "%d", s->ival );
       b->mask |= BUOY_SEC1;
       break;
 
     case 21: // 0 33 021. Quality control of following value
-      sprintf ( b->s4.Qp, "%d", s->ival );
+      snprintf ( b->s4.Qp, sizeof(b->s4.Qp), "%d", s->ival );
       b->mask |= BUOY_SEC1;
       break;
 
@@ -54,31 +54,31 @@ int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       if ( s->ival == 0 )
         {
           if ( b->s0.Qt[0] == 0 )
-            sprintf ( b->s0.Qt, "1" );
+            snprintf ( b->s0.Qt, sizeof(b->s0.Qt), "1" );
           if ( b->s1.Qd[0] == 0 )
-            sprintf ( b->s1.Qd, "1" );
+            snprintf ( b->s1.Qd, sizeof(b->s1.Qd), "1" );
           if ( b->s2.Qd[0] == 0 )
-            sprintf ( b->s2.Qd, "1" );
+            snprintf ( b->s2.Qd, sizeof(b->s2.Qd), "1" );
         }
       if ( s->ival == 2 )
         {
           if ( b->s0.Qt[0] == 0 )
-            sprintf ( b->s0.Qt, "3" );
+            snprintf ( b->s0.Qt, sizeof(b->s0.Qt), "3" );
           if ( b->s1.Qd[0] == 0 )
-            sprintf ( b->s1.Qd, "3" );
+            snprintf ( b->s1.Qd, sizeof(b->s1.Qd), "3" );
           if ( b->s2.Qd[0] == 0 )
-            sprintf ( b->s2.Qd, "3" );
+            snprintf ( b->s2.Qd, sizeof(b->s2.Qd), "3" );
         }
       break;
 
     case 23: // 0 33 023 . Quality of buoy location
-      sprintf ( b->s0.Ql, "%d", s->ival );
-      sprintf ( b->s4.QL, "%d", s->ival );
+      snprintf ( b->s0.Ql, sizeof(b->s0.Ql), "%d", s->ival );
+      snprintf ( b->s4.QL, sizeof(b->s4.QL), "%d", s->ival );
       break;
 
     case 27: // 0 33 027. Location quality class (range of ratiuos of 66% confidence)
-      sprintf ( b->s0.QA, "%d", s->ival );
-      sprintf ( b->s4.QA, "%d", s->ival );
+      snprintf ( b->s0.QA, sizeof(b->s0.QA), "%d", s->ival );
+      snprintf ( b->s4.QA, sizeof(b->s4.QA), "%d", s->ival );
       break;
 
     default:
@@ -114,10 +114,10 @@ int temp_parse_x33 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
 
       if ( s->ival >= 0 && s->ival < 9 )
         {
-          sprintf ( t->a.s1.im, "%d", s->ival );
-          sprintf ( t->a.s1.im, "%d", s->ival );
-          sprintf ( t->a.s1.im, "%d", s->ival );
-          sprintf ( t->a.s1.im, "%d", s->ival );
+          snprintf ( t->a.s1.im, sizeof(t->a.s1.im), "%d", s->ival );
+          snprintf ( t->a.s1.im, sizeof(t->a.s1.im), "%d", s->ival );
+          snprintf ( t->a.s1.im, sizeof(t->a.s1.im), "%d", s->ival );
+          snprintf ( t->a.s1.im, sizeof(t->a.s1.im), "%d", s->ival );
         }
       else
         {

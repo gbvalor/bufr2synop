@@ -51,7 +51,7 @@ char * latlon_to_MMM ( char *target, double lat, double lon )
       row = ( int ) ( -lat * 0.1 );
     }
 
-  sprintf ( target,"%03d", col + ori + row * 36 );
+  snprintf ( target, sizeof(target), "%03d", col + ori + row * 36 );
 
   return target;
 }
@@ -79,7 +79,7 @@ int syn_parse_x06 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
       s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
       ia = ( int ) ( fabs ( s->val ) * 10.0 + 0.5 );
-      sprintf ( syn->s0.LoLoLoLo, "%04d",ia );
+      snprintf ( syn->s0.LoLoLoLo, sizeof(syn->s0.LoLoLoLo), "%04d",ia );
       syn->s0.Ulo[0] = syn->s0.LoLoLoLo[2];
       s->lon = s->val;
       break;
@@ -142,7 +142,7 @@ int buoy_parse_x06 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
       s->lon = s->val;
       ia = ( int ) ( fabs ( s->val ) * 1000.0 + 0.5 );
-      sprintf ( b->s0.LoLoLoLoLoLo, "%06d",ia );
+      snprintf ( b->s0.LoLoLoLoLoLo, sizeof(b->s0.LoLoLoLoLoLo), "%06d",ia );
       break;
 
     default:
@@ -212,10 +212,10 @@ int temp_parse_x06 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
         s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
       s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
       ia = ( int ) ( fabs ( s->val ) * 10.0 + 0.5 );
-      sprintf ( t->a.s1.LoLoLoLo, "%04d",ia );
-      sprintf ( t->b.s1.LoLoLoLo, "%04d",ia );
-      sprintf ( t->c.s1.LoLoLoLo, "%04d",ia );
-      sprintf ( t->d.s1.LoLoLoLo, "%04d",ia );
+      snprintf ( t->a.s1.LoLoLoLo, sizeof(t->a.s1.LoLoLoLo), "%04d",ia );
+      snprintf ( t->b.s1.LoLoLoLo, sizeof(t->b.s1.LoLoLoLo), "%04d",ia );
+      snprintf ( t->c.s1.LoLoLoLo, sizeof(t->c.s1.LoLoLoLo), "%04d",ia );
+      snprintf ( t->d.s1.LoLoLoLo, sizeof(t->d.s1.LoLoLoLo), "%04d",ia );
       t->a.s1.Ulo[0] = t->a.s1.LoLoLoLo[2];
       t->b.s1.Ulo[0] = t->b.s1.LoLoLoLo[2];
       t->c.s1.Ulo[0] = t->c.s1.LoLoLoLo[2];

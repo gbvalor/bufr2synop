@@ -51,11 +51,11 @@ char * kelvin_to_snTTT ( char *target, double T )
   ic = ( int ) ( floor ( 10.0 * ( Tx - 273.15 ) + 0.45 ) );
   if ( ic < 0 )
     {
-      sprintf ( target, "1%03d",  -ic );
+      snprintf ( target, sizeof(target), "1%03d",  -ic );
     }
   else
     {
-      sprintf ( target, "0%03d",  ic );
+      snprintf ( target, sizeof(target), "0%03d",  ic );
     }
   return target;
 }
@@ -78,11 +78,11 @@ char * kelvin_to_snTT ( char *target, double T )
   ic = ( int ) ( floor ( ( T - 273.15 ) + 0.5 ) );
   if ( ic < 0 )
     {
-      sprintf ( target, "1%02d", -ic );
+      snprintf ( target, sizeof(target), "1%02d", -ic );
     }
   else
     {
-      sprintf ( target, "%03d", ic );
+      snprintf ( target, sizeof(target), "%03d", ic );
     }
   return target;
 }
@@ -105,11 +105,11 @@ char * kelvin_to_TT ( char *target, double T )
   ic = ( int ) ( floor ( ( T - 273.15 ) + 0.5 ) );
   if ( ic < 0 )
     {
-      sprintf ( target, "%02d", 50 - ic );
+      snprintf ( target, sizeof(target), "%02d", 50 - ic );
     }
   else
     {
-      sprintf ( target, "%02d", ic );
+      snprintf ( target, sizeof(target), "%02d", ic );
     }
   return target;
 }
@@ -133,7 +133,7 @@ char * kelvin_to_TTTT ( char *target, double T )
     {
       ic = 5000 - ic;
     }
-  sprintf ( target, "%04d", ic );
+  snprintf ( target, sizeof(target), "%04d", ic );
   return target;
 }
 
@@ -150,7 +150,7 @@ char * kelvin_to_TTTa ( char *target, double T )
 
   if ( T == MISSING_REAL )
     {
-      sprintf ( target, "///" );
+      snprintf ( target, sizeof(target), "///" );
       return target;
     }
 
@@ -165,7 +165,7 @@ char * kelvin_to_TTTa ( char *target, double T )
       ix = ( -ix );
       ix |= 1;
     }
-  sprintf ( target, "%03d", ix );
+  snprintf ( target, sizeof(target), "%03d", ix );
   return target;
 }
 
@@ -204,7 +204,7 @@ char * dewpoint_depression_to_DnDn ( char * target, double T, double Td )
     {
       ix = 50 + ( ix + 5 ) / 10;
     }
-  sprintf ( target, "%02d", ix );
+  snprintf ( target, sizeof(target), "%02d", ix );
 
   return target;
 }
@@ -561,11 +561,11 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
                   strcpy ( c->s4.Tax, aux + 1 );
                   if ( s->more_days == 0 )
                     {
-                      sprintf ( c->s4.yax, "%02d", s->day );
+                      snprintf ( c->s4.yax, sizeof(c->s4.yax), "%02d", s->day );
                     }
                   else
                     {
-                      sprintf ( c->s4.yax, "%02d", ( s->day + 50 ) % 100 );
+                      snprintf ( c->s4.yax, sizeof(c->s4.yax), "%02d", ( s->day + 50 ) % 100 );
                     }
                   c->mask |= CLIMAT_SEC4;
                 }
@@ -581,11 +581,11 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
                   strcpy ( c->s4.Tan, aux + 1 );
                   if ( s->more_days == 0 )
                     {
-                      sprintf ( c->s4.yan, "%02d", s->day );
+                      snprintf ( c->s4.yan, sizeof(c->s4.yan), "%02d", s->day );
                     }
                   else
                     {
-                      sprintf ( c->s4.yan, "%02d", ( s->day + 50 ) % 100 );
+                      snprintf ( c->s4.yan, sizeof(c->s4.yan), "%02d", ( s->day + 50 ) % 100 );
                     }
                   c->mask |= CLIMAT_SEC4;
                 }
@@ -673,7 +673,7 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
       break;
 
     case 151: // 0 12 151 . Standard deviation of daily mean temperature
-      sprintf ( aux, "%03d", ( int ) ( s->val * 10.0 + 0.5 ) );
+      snprintf ( aux, sizeof(aux), "%03d", ( int ) ( s->val * 10.0 + 0.5 ) );
       if ( s->is_normal == 0 )
         {
           strcpy ( c->s1.ststst, aux );
@@ -699,11 +699,11 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
 
           if ( s->isq_val == 0 )
             {
-              sprintf ( c->s4.yx, "%02d", s->day );
+              snprintf ( c->s4.yx, sizeof(c->s4.yx), "%02d", s->day );
             }
           else
             {
-              sprintf ( c->s4.yx, "%02d", ( s->day + 50 ) % 100 );
+              snprintf ( c->s4.yx, sizeof(c->s4.yx), "%02d", ( s->day + 50 ) % 100 );
             }
           c->mask |= CLIMAT_SEC4;
         }
@@ -722,11 +722,11 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
 
           if ( s->isq_val == 0 )
             {
-              sprintf ( c->s4.yn, "%02d", s->day );
+              snprintf ( c->s4.yn, sizeof(c->s4.yn), "%02d", s->day );
             }
           else
             {
-              sprintf ( c->s4.yn, "%02d", ( s->day + 50 ) % 100 );
+              snprintf ( c->s4.yn, sizeof(c->s4.yn), "%02d", ( s->day + 50 ) % 100 );
             }
           c->mask |= CLIMAT_SEC4;
         }

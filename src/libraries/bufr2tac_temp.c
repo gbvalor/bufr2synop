@@ -94,13 +94,13 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s,
   // allocate memory for array of points in raw form
   if ( ( r = calloc ( 1, sizeof ( struct temp_raw_data ) ) ) == NULL )
     {
-      sprintf ( err,"bufr2tac: parse_subset_as_temp(): Cannot allocate memory for raw data" );
+      snprintf ( err, sizeof(err), "bufr2tac: parse_subset_as_temp(): Cannot allocate memory for raw data" );
       return 1;
     }
 
   if ( ( w = calloc ( 1, sizeof ( struct temp_raw_wind_shear_data ) ) ) == NULL )
     {
-      sprintf ( err,"bufr2tac: parse_subset_as_temp(): Cannot allocate memory for raw data" );
+      snprintf ( err, sizeof(err), "bufr2tac: parse_subset_as_temp(): Cannot allocate memory for raw data" );
       free ( ( void * ) ( r ) );
       return 1;
     }
@@ -267,7 +267,7 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s,
        ( ( s->mask & SUBSET_MASK_HAVE_MINUTE ) == 0 )
      )
     {
-      sprintf ( err,"bufr2tac: parse_subset_as_temp(): lack of mandatory descriptor in sequence" );
+      snprintf ( err, sizeof(err), "bufr2tac: parse_subset_as_temp(): lack of mandatory descriptor in sequence" );
       free ( ( void * ) ( r ) );
       free ( ( void * ) ( w ) );
       return 1;
@@ -311,18 +311,18 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s,
     }
   else
     {
-      sprintf ( err,"bufr2tac: parse_subset_as_temp(): Unknown type TEMP report" );
+      snprintf ( err, sizeof(err), "bufr2tac: parse_subset_as_temp(): Unknown type TEMP report" );
       free ( ( void * ) ( r ) );
       free ( ( void * ) ( w ) );
       return 1;
     }
-  sprintf ( m->type, "%s%s" , t->a.s1.MiMi, t->a.s1.MjMj );
-  sprintf ( m->type2, "%s%s" , t->b.s1.MiMi, t->b.s1.MjMj );
-  sprintf ( m->type3, "%s%s" , t->c.s1.MiMi, t->c.s1.MjMj );
-  sprintf ( m->type4, "%s%s" , t->d.s1.MiMi, t->d.s1.MjMj );
+  snprintf ( m->type, sizeof(m->type), "%s%s" , t->a.s1.MiMi, t->a.s1.MjMj );
+  snprintf ( m->type2, sizeof(m->type2), "%s%s" , t->b.s1.MiMi, t->b.s1.MjMj );
+  snprintf ( m->type3, sizeof(m->type3), "%s%s" , t->c.s1.MiMi, t->c.s1.MjMj );
+  snprintf ( m->type4, sizeof(m->type4), "%s%s" , t->d.s1.MiMi, t->d.s1.MjMj );
 
   /****** Second pass. Global results and consistence analysis ************/
-  sprintf ( aux,"%s%s%s%s%s%s", t->a.e.YYYY, t->a.e.MM, t->a.e.DD, t->a.e.HH, t->a.e.mm, t->a.e.ss );
+  snprintf ( aux, sizeof(aux), "%s%s%s%s%s%s", t->a.e.YYYY, t->a.e.MM, t->a.e.DD, t->a.e.HH, t->a.e.mm, t->a.e.ss );
   YYYYMMDDHHmm_to_met_datetime ( &dtm, aux );
   round_met_datetime_to_hour ( &m->t, &dtm );
   memcpy ( &m->temp.t, &m->t, sizeof ( struct met_datetime ) );
@@ -373,7 +373,7 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s,
   // Finally parse raw data to fill all needed points for a TEMP
   if ( parse_temp_raw_data ( t, r ) )
     {
-      sprintf ( err,"bufr2tac: parse_temp_raw_data(): Too much significant points" );
+      snprintf ( err, sizeof(err), "bufr2tac: parse_temp_raw_data(): Too much significant points" );
       free ( ( void * ) ( r ) );
       free ( ( void * ) ( w ) );
       return 1;
@@ -440,11 +440,11 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
           ix = ( ix / 10 ) % 100; // coded
           if ( is_over_100 )
             {
-              sprintf ( t->c.s2.std[isc].PnPn, "%02d", ix );  // PnPn
+              snprintf ( t->c.s2.std[isc].PnPn, sizeof(t->c.s2.std[isc].PnPn), "%02d", ix );  // PnPn
             }
           else
             {
-              sprintf ( t->a.s2.std[isa].PnPn, "%02d", ix );  // PnPn
+              snprintf ( t->a.s2.std[isa].PnPn, sizeof(t->a.s2.std[isa].PnPn), "%02d", ix );  // PnPn
             }
 
           ix = ( int ) ( d->h + 0.5 );
@@ -452,26 +452,26 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
             {
               if ( is_over_100 )
                 {
-                  sprintf ( t->c.s2.std[isc].hnhnhn, "%03d", ( ( ix + 5 ) / 10 ) % 1000 );
+                  snprintf ( t->c.s2.std[isc].hnhnhn, sizeof(t->c.s2.std[isc].hnhnhn), "%03d", ( ( ix + 5 ) / 10 ) % 1000 );
                 }
               else
                 {
-                  sprintf ( t->a.s2.std[isa].hnhnhn, "%03d", ( ( ix + 5 ) / 10 ) % 1000 );
+                  snprintf ( t->a.s2.std[isa].hnhnhn, sizeof(t->a.s2.std[isa].hnhnhn), "%03d", ( ( ix + 5 ) / 10 ) % 1000 );
                 }
             }
           else
             {
               if ( is_over_100 )
                 {
-                  sprintf ( t->c.s2.std[isc].hnhnhn, "%03d", ix % 1000 );
+                  snprintf ( t->c.s2.std[isc].hnhnhn, sizeof(t->c.s2.std[isc].hnhnhn), "%03d", ix % 1000 );
                 }
               else if ( ix >= 0 )
                 {
-                  sprintf ( t->a.s2.std[isa].hnhnhn, "%03d", ix % 1000 );
+                  snprintf ( t->a.s2.std[isa].hnhnhn, sizeof(t->a.s2.std[isa].hnhnhn), "%03d", ix % 1000 );
                 }
               else
                 {
-                  sprintf ( t->a.s2.std[isa].hnhnhn, "%03d", ( -ix + 500 ) % 1000 );
+                  snprintf ( t->a.s2.std[isa].hnhnhn, sizeof(t->a.s2.std[isa].hnhnhn), "%03d", ( -ix + 500 ) % 1000 );
                 }
             }
           if ( is_over_100 )
@@ -534,7 +534,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
               ix = ( int ) ( d->p * 0.1 + 0.5 );
               if (ix == 1000)
                   ix = 999;
-              sprintf ( t->c.s3.trop[itc].PnPnPn, "%03d", ix ); // PnPnPn
+              snprintf ( t->c.s3.trop[itc].PnPnPn, sizeof(t->c.s3.trop[itc].PnPnPn), "%03d", ix ); // PnPnPn
               kelvin_to_TTTa ( t->c.s3.trop[itc].TnTnTan, d->T ); // TnTnTan
               dewpoint_depression_to_DnDn ( t->c.s3.trop[itc].DnDn, d->T , d->Td ); // DnDn
               wind_to_dndnfnfnfn ( t->c.s3.trop[itc].dndnfnfnfn, d->dd, d->ff ); // dndnfnfnfn
@@ -549,7 +549,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
           else
             {
               ix = ( int ) ( d->p * 0.01 + 0.5 );
-              sprintf ( t->a.s3.trop[ita].PnPnPn, "%03d", ix % 1000 ); // PnPnPn.
+              snprintf ( t->a.s3.trop[ita].PnPnPn, sizeof(t->a.s3.trop[ita].PnPnPn), "%03d", ix % 1000 ); // PnPnPn.
               kelvin_to_TTTa ( t->a.s3.trop[ita].TnTnTan, d->T ); // TnTnTan
               dewpoint_depression_to_DnDn ( t->a.s3.trop[ita].DnDn, d->T , d->Td ); // DnDn
               wind_to_dndnfnfnfn ( t->a.s3.trop[ita].dndnfnfnfn, d->dd, d->ff ); // dndnfnfnfn
@@ -571,7 +571,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
               ix = ( int ) ( d->p * 0.1 + 0.5 );
               if (ix == 1000)
                 ix = 999;
-              sprintf ( t->c.s4.windx[iwxc].PmPmPm, "%03d", ix ); // PnPnPn
+              snprintf ( t->c.s4.windx[iwxc].PmPmPm, sizeof(t->c.s4.windx[iwxc].PmPmPm), "%03d", ix ); // PnPnPn
               wind_to_dndnfnfnfn ( t->c.s4.windx[iwxc].dmdmfmfmfm, d->dd, d->ff ); // dndnfnfnfn
               // check if more wind data
               for ( j = i + 1; j < r->n ; j++ )
@@ -593,7 +593,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
           else
             {
               ix = ( int ) ( d->p * 0.01 + 0.5 );
-              sprintf ( t->a.s4.windx[iwxa].PmPmPm, "%03d", ix % 1000 ); // PnPnPn.
+              snprintf ( t->a.s4.windx[iwxa].PmPmPm, sizeof(t->a.s4.windx[iwxa].PmPmPm), "%03d", ix % 1000 ); // PnPnPn.
               wind_to_dndnfnfnfn ( t->a.s4.windx[iwxa].dmdmfmfmfm, d->dd, d->ff ); // dndnfnfnfn
               for ( j = i + 1; j < r->n ; j++ )
                 {
@@ -618,11 +618,11 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
         {
           if ( is_over_100 )
             {
-              sprintf ( t->d.s5.th[itd].nini, "%d%d", ( ( int ) itd ) %9 + 1, ( ( int ) itd ) %9 + 1 );
+              snprintf ( t->d.s5.th[itd].nini, sizeof(t->d.s5.th[itd].nini), "%d%d", ( ( int ) itd ) %9 + 1, ( ( int ) itd ) %9 + 1 );
               ix = ( int ) ( d->p * 0.1 + 0.5 );
               if (ix == 1000)
                 ix = 999;
-              sprintf ( t->d.s5.th[itd].PnPnPn, "%03d", ix ); // PnPnPn
+              snprintf ( t->d.s5.th[itd].PnPnPn, sizeof(t->d.s5.th[itd].PnPnPn), "%03d", ix ); // PnPnPn
               kelvin_to_TTTa ( t->d.s5.th[itd].TnTnTan, d->T ); // TnTnTan
               dewpoint_depression_to_DnDn ( t->d.s5.th[itd].DnDn, d->T , d->Td ); // DnDn
               if ( ix && itd < TEMP_NMAX_POINTS )
@@ -641,10 +641,10 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
                 }
               else
                 {
-                  sprintf ( t->b.s5.th[itb].nini, "%d%d", ( ( int ) itb - 1 ) %9 + 1, ( ( int ) itb - 1 ) %9 + 1 );
+                  snprintf ( t->b.s5.th[itb].nini, sizeof(t->b.s5.th[itb].nini), "%d%d", ( ( int ) itb - 1 ) %9 + 1, ( ( int ) itb - 1 ) %9 + 1 );
                 }
               ix = ( int ) ( d->p * 0.01 + 0.5 );
-              sprintf ( t->b.s5.th[itb].PnPnPn, "%03d", ix % 1000 ); // PnPnPn.
+              snprintf ( t->b.s5.th[itb].PnPnPn, sizeof(t->b.s5.th[itb].PnPnPn), "%03d", ix % 1000 ); // PnPnPn.
               kelvin_to_TTTa ( t->b.s5.th[itb].TnTnTan, d->T ); // TnTnTan
               dewpoint_depression_to_DnDn ( t->b.s5.th[itb].DnDn, d->T , d->Td ); // DnDn
               if ( ix && itb < TEMP_NMAX_POINTS )
@@ -662,11 +662,11 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
         {
           if ( is_over_100 )
             {
-              sprintf ( t->d.s6.wd[iwd].nini, "%d%d", ( ( int ) iwd ) %9 + 1, ( ( int ) iwd ) %9 + 1 );
+              snprintf ( t->d.s6.wd[iwd].nini, sizeof(t->d.s6.wd[iwd].nini), "%d%d", ( ( int ) iwd ) %9 + 1, ( ( int ) iwd ) %9 + 1 );
               ix = ( int ) ( d->p * 0.1 + 0.5 );
               if (ix == 1000)
                 ix = 999;
-              sprintf ( t->d.s6.wd[iwd].PnPnPn, "%03d", ix ); // PnPnPn
+              snprintf ( t->d.s6.wd[iwd].PnPnPn, sizeof(t->d.s6.wd[iwd].PnPnPn), "%03d", ix ); // PnPnPn
               wind_to_dndnfnfnfn ( t->d.s6.wd[iwd].dndnfnfnfn, d->dd, d->ff ); // dndnfnfnfn
               if ( ix && iwd < TEMP_NMAX_POINTS )
                 {
@@ -685,10 +685,10 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r )
                 }
               else
                 {
-                  sprintf ( t->b.s6.wd[iwb].nini, "%d%d", ( ( int ) iwb - 1 ) %9 + 1, ( ( int ) iwb - 1 ) %9 + 1 );
+                  snprintf ( t->b.s6.wd[iwb].nini, sizeof(t->b.s6.wd[iwb].nini), "%d%d", ( ( int ) iwb - 1 ) %9 + 1, ( ( int ) iwb - 1 ) %9 + 1 );
                 }
               ix = ( int ) ( d->p * 0.01 + 0.5 );
-              sprintf ( t->b.s6.wd[iwb].PnPnPn, "%03d", ix % 1000 ); // PnPnPn.
+              snprintf ( t->b.s6.wd[iwb].PnPnPn, sizeof(t->b.s6.wd[iwb].PnPnPn), "%03d", ix % 1000 ); // PnPnPn.
               wind_to_dndnfnfnfn ( t->b.s6.wd[iwb].dndnfnfnfn, d->dd, d->ff ); // dndnfnfnfn
               if ( ix && iwb < TEMP_NMAX_POINTS )
                 {
@@ -790,7 +790,7 @@ int parse_temp_raw_wind_shear_data ( struct temp_chunks *t, struct temp_raw_wind
             }
 
           ix = ( int ) ( d->p * 0.1 + 0.5 );
-          sprintf ( aux, "%03d", ix % 1000 ); // PnPnPn
+          snprintf ( aux, sizeof(aux), "%03d", ix % 1000 ); // PnPnPn
 
           // checks for a significant wind level in section 4 with same pnpnpn
           for ( j = 0 ; j < t->c.s4.n ; j++ )
@@ -799,11 +799,11 @@ int parse_temp_raw_wind_shear_data ( struct temp_chunks *t, struct temp_raw_wind
                 {
                   if ( d->ws_blw != MISSING_REAL )
                     {
-                      sprintf ( t->c.s4.windx[j].vbvb, "%02.0lf", d->ws_blw );
+                      snprintf ( t->c.s4.windx[j].vbvb, sizeof(t->c.s4.windx[j].vbvb), "%02.0lf", d->ws_blw );
                     }
                   if ( d->ws_abv != MISSING_REAL )
                     {
-                      sprintf ( t->c.s4.windx[j].vava, "%02.0lf", d->ws_abv );
+                      snprintf ( t->c.s4.windx[j].vava, sizeof(t->c.s4.windx[j].vava), "%02.0lf", d->ws_abv );
                     }
                   break;
                 }
@@ -816,7 +816,7 @@ int parse_temp_raw_wind_shear_data ( struct temp_chunks *t, struct temp_raw_wind
               continue;
             }
           ix = ( int ) ( d->p * 0.01 + 0.5 );
-          sprintf ( aux, "%03d", ix % 1000 ); // PnPnPn.
+          snprintf ( aux, sizeof(aux), "%03d", ix % 1000 ); // PnPnPn.
           // checks for a significant wind level in section 4 with same pnpnpn
           for ( j = 0 ; j < t->a.s4.n ; j++ )
             {
@@ -826,11 +826,11 @@ int parse_temp_raw_wind_shear_data ( struct temp_chunks *t, struct temp_raw_wind
                   //printf("%.1lf %.1lf\n", d->ws_blw, d->ws_abv);
                   if ( d->ws_blw != MISSING_REAL )
                     {
-                      sprintf ( t->a.s4.windx[j].vbvb, "%02.0lf", d->ws_blw );
+                      snprintf ( t->a.s4.windx[j].vbvb, sizeof(t->a.s4.windx[j].vbvb), "%02.0lf", d->ws_blw );
                     }
                   if ( d->ws_abv != MISSING_REAL )
                     {
-                      sprintf ( t->a.s4.windx[j].vava, "%02.0lf", d->ws_abv );
+                      snprintf ( t->a.s4.windx[j].vava, sizeof(t->a.s4.windx[j].vava), "%02.0lf", d->ws_abv );
                     }
                   break;
                 }

@@ -371,9 +371,9 @@ size_t print_buoy_wigos_id ( char **wid,  size_t lmax, const struct buoy_chunks 
   char sep = '|';
 
   if ( b->wid.series == 0 && b->wid.issuer == 0 && b->wid.issue == 0 && b->wid.local_id[0] == '\0' )
-    sprintf ( aux,"0-0-0-MISSING" );
+    snprintf ( aux, sizeof(aux), "0-0-0-MISSING" );
   else
-    sprintf ( aux,"%d-%d-%d-%s", b->wid.series, b->wid.issuer, b->wid.issue, b->wid.local_id );
+    snprintf ( aux, sizeof(aux), "%d-%d-%d-%s", b->wid.series, b->wid.issuer, b->wid.issue, b->wid.local_id );
 
   used = snprintf ( *wid, lmax, "%-32s%c", aux, sep );
   *wid += used;

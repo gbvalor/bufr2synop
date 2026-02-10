@@ -69,7 +69,7 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           return 0;
         }
       strcpy ( syn->s3.j524[4], "4" );
-      sprintf ( syn->s3.FFFF24[4], "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
+      snprintf ( syn->s3.FFFF24[4], sizeof(syn->s3.FFFF24[4]), "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
       syn->mask |= SYNOP_SEC3;
       break;
 
@@ -91,12 +91,12 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
                   if ( s->ival >= 0 )
                     {
                       strcpy ( syn->s3.j524[4], "4" );
-                      sprintf ( syn->s3.FFFF24[4], "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
+                      snprintf ( syn->s3.FFFF24[4], sizeof(syn->s3.FFFF24[4]), "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
                     }
                   else
                     {
                       strcpy ( syn->s3.j524[5], "5" );
-                      sprintf ( syn->s3.FFFF24[5], "%04d", ( int ) ( - ( s->val ) / 10000.0 + 0.5 ) );
+                      snprintf ( syn->s3.FFFF24[5], sizeof(syn->s3.FFFF24[5]), "%04d", ( int ) ( - ( s->val ) / 10000.0 + 0.5 ) );
                     }
                   syn->mask |= SYNOP_SEC3;
                 }
@@ -106,12 +106,12 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               if ( s->ival >= 0 )
                 {
                   strcpy ( syn->s3.j524[4], "4" );
-                  sprintf ( syn->s3.FFFF24[4], "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
+                  snprintf ( syn->s3.FFFF24[4], sizeof(syn->s3.FFFF24[4]), "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
                 }
               else
                 {
                   strcpy ( syn->s3.j524[5], "5" );
-                  sprintf ( syn->s3.FFFF24[5], "%04d", ( int ) ( - ( s->val ) / 10000.0 + 0.5 ) );
+                  snprintf ( syn->s3.FFFF24[5], sizeof(syn->s3.FFFF24[5]), "%04d", ( int ) ( - ( s->val ) / 10000.0 + 0.5 ) );
                 }
               syn->mask |= SYNOP_SEC3;
             }
@@ -123,12 +123,12 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           if ( s->ival >= 0 )
             {
               strcpy ( syn->s3.j5[4], "4" );
-              sprintf ( syn->s3.FFFF[4], "%04d", ( int ) ( s->val / 1000.0 + 0.5 ) );
+              snprintf ( syn->s3.FFFF[4], sizeof(syn->s3.FFFF[4]), "%04d", ( int ) ( s->val / 1000.0 + 0.5 ) );
             }
           else
             {
               strcpy ( syn->s3.j5[4], "5" );
-              sprintf ( syn->s3.FFFF[4], "%04d", ( int ) ( - ( s->val ) / 1000.0 + 0.5 ) );
+              snprintf ( syn->s3.FFFF[4], sizeof(syn->s3.FFFF[4]), "%04d", ( int ) ( - ( s->val ) / 1000.0 + 0.5 ) );
             }
         }
       syn->mask |= SYNOP_SEC3;
@@ -143,7 +143,7 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       if ( check_j_cm2 ( s->val ) == 0 )
         return 0;
       strcpy ( syn->s3.j524[6], "6" );
-      sprintf ( syn->s3.FFFF24[6], "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
+      snprintf ( syn->s3.FFFF24[6], sizeof(syn->s3.FFFF24[6]), "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
       syn->mask |= SYNOP_SEC3;
       break;
 
@@ -162,13 +162,13 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               if ( strcmp ( "06", syn->e.HH ) == 0 )
                 {
                   strcpy ( syn->s3.j524[6], "6" );
-                  sprintf ( syn->s3.FFFF24[6], "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
+                  snprintf ( syn->s3.FFFF24[6], sizeof(syn->s3.FFFF24[6]), "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
                 }
             }
           else
             {
               strcpy ( syn->s3.j524[6], "6" );
-              sprintf ( syn->s3.FFFF24[6], "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
+              snprintf ( syn->s3.FFFF24[6], sizeof(syn->s3.FFFF24[6]), "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
             }
         }
       else if ( tpd == 3600 )
@@ -176,7 +176,7 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           if ( check_kj_m2 ( s->val ) == 0 )
             return 0;
           strcpy ( syn->s3.j5[6], "6" );
-          sprintf ( syn->s3.FFFF[6], "%04d", ( int ) ( s->val / 1000.0 + 0.5 ) );
+          snprintf ( syn->s3.FFFF[6], sizeof(syn->s3.FFFF[6]), "%04d", ( int ) ( s->val / 1000.0 + 0.5 ) );
         }
       syn->mask |= SYNOP_SEC3;
       break;
@@ -195,13 +195,13 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               if ( strcmp ( "06", syn->e.HH ) == 0 )
                 {
-                  sprintf ( syn->s3.FFFF507, "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
+                  snprintf ( syn->s3.FFFF507, sizeof(syn->s3.FFFF507), "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
                   syn->mask |= SYNOP_SEC3;
                 }
             }
           else
             {
-              sprintf ( syn->s3.FFFF507, "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
+              snprintf ( syn->s3.FFFF507, sizeof(syn->s3.FFFF507), "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
               syn->mask |= SYNOP_SEC3;
             }
         }
@@ -209,7 +209,7 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           if ( check_kj_m2 ( s->val ) == 0 )
             return 0;
-          sprintf ( syn->s3.FFFF407, "%04d", ( int ) ( s->val / 1000.0 + 0.5 ) );
+          snprintf ( syn->s3.FFFF407, sizeof(syn->s3.FFFF407), "%04d", ( int ) ( s->val / 1000.0 + 0.5 ) );
         }
       syn->mask |= SYNOP_SEC3;
       break;
@@ -232,12 +232,12 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
                   if ( s->ival >= 0 )
                     {
                       strcpy ( syn->s3.j524[0], "0" );
-                      sprintf ( syn->s3.FFFF24[0], "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
+                      snprintf ( syn->s3.FFFF24[0], sizeof(syn->s3.FFFF24[0]), "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
                     }
                   else
                     {
                       strcpy ( syn->s3.j524[1], "1" );
-                      sprintf ( syn->s3.FFFF24[1], "%04d", ( int ) ( - ( s->val ) / 10000.0 + 0.5 ) );
+                      snprintf ( syn->s3.FFFF24[1], sizeof(syn->s3.FFFF24[1]), "%04d", ( int ) ( - ( s->val ) / 10000.0 + 0.5 ) );
                     }
                   syn->mask |= SYNOP_SEC3;
                 }
@@ -247,12 +247,12 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               if ( s->ival >= 0 )
                 {
                   strcpy ( syn->s3.j524[0], "0" );
-                  sprintf ( syn->s3.FFFF24[0], "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
+                  snprintf ( syn->s3.FFFF24[0], sizeof(syn->s3.FFFF24[0]), "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
                 }
               else
                 {
                   strcpy ( syn->s3.j524[1], "1" );
-                  sprintf ( syn->s3.FFFF24[1], "%04d", ( int ) ( - ( s->val ) / 10000.0 + 0.5 ) );
+                  snprintf ( syn->s3.FFFF24[1], sizeof(syn->s3.FFFF24[1]), "%04d", ( int ) ( - ( s->val ) / 10000.0 + 0.5 ) );
                 }
               syn->mask |= SYNOP_SEC3;
             }
@@ -264,12 +264,12 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           if ( s->ival >= 0 )
             {
               strcpy ( syn->s3.j5[0], "0" );
-              sprintf ( syn->s3.FFFF[0], "%04d", ( int ) ( s->val / 1000.0 + 0.5 ) );
+              snprintf ( syn->s3.FFFF[0], sizeof(syn->s3.FFFF[0]), "%04d", ( int ) ( s->val / 1000.0 + 0.5 ) );
             }
           else
             {
               strcpy ( syn->s3.j5[1], "1" );
-              sprintf ( syn->s3.FFFF[1], "%04d", ( int ) ( - ( s->val ) / 1000.0 + 0.5 ) );
+              snprintf ( syn->s3.FFFF[1], sizeof(syn->s3.FFFF[1]), "%04d", ( int ) ( - ( s->val ) / 1000.0 + 0.5 ) );
             }
         }
       syn->mask |= SYNOP_SEC3;
@@ -290,14 +290,14 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               if ( strcmp ( "06", syn->e.HH ) == 0 )
                 {
                   strcpy ( syn->s3.j524[2], "2" );
-                  sprintf ( syn->s3.FFFF24[2], "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
+                  snprintf ( syn->s3.FFFF24[2], sizeof(syn->s3.FFFF24[2]), "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
                   syn->mask |= SYNOP_SEC3;
                 }
             }
           else
             {
               strcpy ( syn->s3.j524[2], "2" );
-              sprintf ( syn->s3.FFFF24[2], "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
+              snprintf ( syn->s3.FFFF24[2], sizeof(syn->s3.FFFF24[2]), "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
               syn->mask |= SYNOP_SEC3;
             }
         }
@@ -306,7 +306,7 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           if ( check_kj_m2 ( s->val ) == 0 )
             return 0;
           strcpy ( syn->s3.j5[2], "2" );
-          sprintf ( syn->s3.FFFF[2], "%04d", ( int ) ( s->val / 1000.0 + 0.5 ) );
+          snprintf ( syn->s3.FFFF[2], sizeof(syn->s3.FFFF[2]), "%04d", ( int ) ( s->val / 1000.0 + 0.5 ) );
         }
       syn->mask |= SYNOP_SEC3;
       break;
@@ -326,14 +326,14 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               if ( strcmp ( "06", syn->e.HH ) == 0 )
                 {
                   strcpy ( syn->s3.j524[3], "3" );
-                  sprintf ( syn->s3.FFFF24[3], "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
+                  snprintf ( syn->s3.FFFF24[3], sizeof(syn->s3.FFFF24[3]), "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
                   syn->mask |= SYNOP_SEC3;
                 }
             }
           else
             {
               strcpy ( syn->s3.j524[3], "3" );
-              sprintf ( syn->s3.FFFF24[3], "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
+              snprintf ( syn->s3.FFFF24[3], sizeof(syn->s3.FFFF24[3]), "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
               syn->mask |= SYNOP_SEC3;
             }
         }
@@ -342,7 +342,7 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           if ( check_kj_m2 ( s->val ) == 0 )
             return 0;
           strcpy ( syn->s3.j5[3], "3" );
-          sprintf ( syn->s3.FFFF[3], "%04d", ( int ) ( s->val / 1000.0 + 0.5 ) );
+          snprintf ( syn->s3.FFFF[3], sizeof(syn->s3.FFFF[3]), "%04d", ( int ) ( s->val / 1000.0 + 0.5 ) );
         }
       syn->mask |= SYNOP_SEC3;
       break;
@@ -362,13 +362,13 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               if ( strcmp ( "06", syn->e.HH ) == 0 )
                 {
-                  sprintf ( syn->s3.FFFF508, "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
+                  snprintf ( syn->s3.FFFF508, sizeof(syn->s3.FFFF508), "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
                   syn->mask |= SYNOP_SEC3;
                 }
             }
           else
             {
-              sprintf ( syn->s3.FFFF508, "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
+              snprintf ( syn->s3.FFFF508, sizeof(syn->s3.FFFF508), "%04d", ( int ) ( s->val / 10000.0 + 0.5 ) );
               syn->mask |= SYNOP_SEC3;
             }
         }
@@ -376,7 +376,7 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           if ( check_kj_m2 ( s->val ) == 0 )
             return 0;
-          sprintf ( syn->s3.FFFF408, "%04d", ( int ) ( s->val / 1000.0 + 0.5 ) );
+          snprintf ( syn->s3.FFFF408, sizeof(syn->s3.FFFF408), "%04d", ( int ) ( s->val / 1000.0 + 0.5 ) );
         }
       syn->mask |= SYNOP_SEC3;
       break;
@@ -395,13 +395,13 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               if ( strcmp ( "06", syn->e.HH ) == 0 )
                 {
-                  sprintf ( syn->s3.SSS, "%03d", (abs(s->ival) / 6) % 1000 );
+                  snprintf ( syn->s3.SSS, sizeof(syn->s3.SSS), "%03d", (abs(s->ival) / 6) % 1000 );
                   syn->mask |= SYNOP_SEC3;
                 }
             }
           else
             {
-              sprintf ( syn->s3.SSS, "%03d", (abs(s->ival) / 6) % 1000 );
+              snprintf ( syn->s3.SSS, sizeof(syn->s3.SSS), "%03d", (abs(s->ival) / 6) % 1000 );
               syn->mask |= SYNOP_SEC3;
             }
         }
@@ -409,7 +409,7 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           if ( check_kj_m2 ( s->val ) == 0 )
             return 0;
-          sprintf ( syn->s3.SS, "%02d", abs(s->ival / 6) % 100 );
+          snprintf ( syn->s3.SS, sizeof(syn->s3.SS), "%02d", abs(s->ival / 6) % 100 );
           syn->mask |= SYNOP_SEC3;
         }
       break;
@@ -428,13 +428,13 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               if ( strcmp ( "06", syn->e.HH ) == 0 )
                 {
-                  sprintf ( syn->s3.SSS, "%03d", s->ival * 10 );
+                  snprintf ( syn->s3.SSS, sizeof(syn->s3.SSS), "%03d", s->ival * 10 );
                   syn->mask |= SYNOP_SEC3;
                 }
             }
           else
             {
-              sprintf ( syn->s3.SSS, "%03d", s->ival * 10 );
+              snprintf ( syn->s3.SSS, sizeof(syn->s3.SSS), "%03d", s->ival * 10 );
               syn->mask |= SYNOP_SEC3;
             }
         }
@@ -442,7 +442,7 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           if ( check_kj_m2 ( s->val ) == 0 )
             return 0;
-          sprintf ( syn->s3.SS, "%02d", s->ival * 10 );
+          snprintf ( syn->s3.SS, sizeof(syn->s3.SS), "%02d", s->ival * 10 );
           syn->mask |= SYNOP_SEC3;
         }
       break;
@@ -511,18 +511,18 @@ int climat_parse_x14 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
     case 32: // 0 14 032 . Total sunshine
       if ( s->is_normal == 0 )
         {
-          sprintf ( c->s1.S1S1S1, "%03d", s->ival );
+          snprintf ( c->s1.S1S1S1, sizeof(c->s1.S1S1S1), "%03d", s->ival );
           c->mask |= CLIMAT_SEC1;
         }
       else
         {
-          sprintf ( c->s2.S1S1S1, "%03d", s->ival );
+          snprintf ( c->s2.S1S1S1, sizeof(c->s2.S1S1S1), "%03d", s->ival );
           c->mask |= CLIMAT_SEC2;
         }
       break;
 
     case 33: // 0 14 033 . total sunshine percentage
-      sprintf ( c->s1.pspsps, "%03d", s->ival );
+      snprintf ( c->s1.pspsps, sizeof(c->s1.pspsps), "%03d", s->ival );
       c->mask |= CLIMAT_SEC1;
       break;
 

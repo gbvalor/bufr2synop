@@ -22,18 +22,18 @@
  \brief This file has the code for library bufrdeco API functions
 */
 #ifndef CONFIG_H
-# include "config.h"
-# define CONFIG_H
+#include "config.h"
+#define CONFIG_H
 #endif
 
 #include "bufrdeco.h"
- 
+
 #ifdef DEBUG_TIME
-  clock_t bufrdeco_clock_start, bufrdeco_clock_end;
+clock_t bufrdeco_clock_start, bufrdeco_clock_end;
 #endif
 
-const struct bufr_descriptor DESCRIPTOR_ROOT = {0,0,0,0,"000000"}; /*!< This is a descriptor supposed to be the sequence descriptor for sec3 descriptors */ 
-  
+const struct bufr_descriptor DESCRIPTOR_ROOT = { 0, 0, 0, 0, "000000" }; /*!< This is a descriptor supposed to be the sequence descriptor for sec3 descriptors */
+
 /*!
   \fn char *bufrdeco_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch)
   \brief Get strings with version information and build date and time
@@ -49,50 +49,49 @@ const struct bufr_descriptor DESCRIPTOR_ROOT = {0,0,0,0,"000000"}; /*!< This is 
 
   Retuns string pointer \ref version.
  */
-char *bufrdeco_get_version ( char *version, size_t dversion, char *build, size_t dbuild, char *builder, size_t dbuilder,
-                             int *version_major, int *version_minor, int *version_patch )
+char* bufrdeco_get_version(char* version, size_t dversion, char* build, size_t dbuild, char* builder, size_t dbuilder,
+    int* version_major, int* version_minor, int* version_patch)
 {
-  int major = 0, minor = 0, patch = 0;
-  size_t used;
+    int major = 0, minor = 0, patch = 0;
+    size_t used;
 
-  // Check argument
-  if ( version == NULL )
-    return NULL;
+    // Check argument
+    if (version == NULL)
+        return NULL;
 
-  snprintf ( version, dversion, "%s", VERSION );
-  // default
-  sscanf ( version, "%d.%d.%d", &major, &minor, &patch );
+    snprintf(version, dversion, "%s", VERSION);
+    // default
+    sscanf(version, "%d.%d.%d", &major, &minor, &patch);
 
-  if ( build )
-    {
-      used = 0;
+    if (build) {
+        used = 0;
 #if defined(__INTEL_COMPILER)
-      used += snprintf ( build + used, dbuild - used, "using INTEL C compiler icc %d.%d ", __INTEL_COMPILER, __INTEL_COMPILER_UPDATE );
+        used += snprintf(build + used, dbuild - used, "using INTEL C compiler icc %d.%d ", __INTEL_COMPILER, __INTEL_COMPILER_UPDATE);
 #elif defined(__clang_version__)
-      used += snprintf ( build + used, dbuild - used, "using clang C compiler %s ", __clang_version__ );
+        used += snprintf(build + used, dbuild - used, "using clang C compiler %s ", __clang_version__);
 #elif defined(__GNUC__)
-      used += snprintf ( build + used, dbuild - used, "using GNU C compiler gcc %d.%d.%d ", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__ );
+        used += snprintf(build + used, dbuild - used, "using GNU C compiler gcc %d.%d.%d ", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
 #elif defined(_MSC_VER)
-      used += snprintf ( build + used, dbuild - used, "using MICROSOFT C compiler %d ", _MSC_VER );
+        used += snprintf(build + used, dbuild - used, "using MICROSOFT C compiler %d ", _MSC_VER);
 #else
-      used += snprintf ( build + used, dbuild - used, "using an unknown C compiler " );
+        used += snprintf(build + used, dbuild - used, "using an unknown C compiler ");
 #endif
-      snprintf ( build + used, dbuild - used,"at %s %s",__DATE__,__TIME__ );
+        snprintf(build + used, dbuild - used, "at %s %s", __DATE__, __TIME__);
     }
 
-  if ( builder )
+    if (builder)
 #ifdef BUILD_USING_CMAKE
-    strncpy_safe ( builder, "cmake", dbuilder );
+        strncpy_safe(builder, "cmake", dbuilder);
 #else
-    strncpy_safe ( builder, "autotools", dbuilder );
+        strncpy_safe(builder, "autotools", dbuilder);
 #endif
-  if ( version_major )
-    *version_major = major;
-  if ( version_minor )
-    *version_minor = minor;
-  if ( version_patch )
-    *version_patch = patch;
-  return version;
+    if (version_major)
+        *version_major = major;
+    if (version_minor)
+        *version_minor = minor;
+    if (version_patch)
+        *version_patch = patch;
+    return version;
 }
 
 /*!
@@ -119,12 +118,12 @@ char *bufrdeco_get_version ( char *version, size_t dversion, char *build, size_t
 
   \return If success return 0, if something went wrong return 1
 */
-int bufrdeco_parse_tree ( struct bufrdeco *b )
+int bufrdeco_parse_tree(struct bufrdeco* b)
 {
-  bufrdeco_assert ( b != NULL );
+    bufrdeco_assert(b != NULL);
 
-  // here we start the parse
-  return  bufrdeco_parse_tree_recursive ( b, NULL, 0, NULL );
+    // here we start the parse
+    return bufrdeco_parse_tree_recursive(b, NULL, 0, NULL);
 }
 
 /*!
@@ -137,39 +136,37 @@ int bufrdeco_parse_tree ( struct bufrdeco *b )
 
    \return If succeeded return 0, otherwise 1
 */
-int bufrdeco_init ( struct bufrdeco *b )
+int bufrdeco_init(struct bufrdeco* b)
 {
-  bufrdeco_assert ( b != NULL );
+    bufrdeco_assert(b != NULL);
 
-  // First clear all
-  memset ( b, 0, sizeof ( struct bufrdeco ) );
+    // First clear all
+    memset(b, 0, sizeof(struct bufrdeco));
 
-  // Then allocate all needed memory when starting. Further we will need to allocate some more depending on
-  // data
+    // Then allocate all needed memory when starting. Further we will need to allocate some more depending on
+    // data
 
-  // allocate memory for Tables
-  if ( bufrdeco_init_tables ( &b->tables ) )
-    {
-      snprintf ( b->error, sizeof ( b->error ),"%s(): Cannot allocate space for tables\n", __func__ );
-      return 1;
+    // allocate memory for Tables
+    if (bufrdeco_init_tables(&b->tables)) {
+        snprintf(b->error, sizeof(b->error), "%s(): Cannot allocate space for tables\n", __func__);
+        return 1;
     }
 
-  // Output default streams
-  b->out = stdout;
-  b->err = stderr;
-    
-  // allocate memory for expanded tree of descriptors
-  if ( bufrdeco_init_expanded_tree ( &b->tree ) )
-    {
-      snprintf ( b->error, sizeof ( b->error ),"%s(): Cannot allocate space for expanded tree of descriptors\n", __func__ );
-      return 1;
+    // Output default streams
+    b->out = stdout;
+    b->err = stderr;
+
+    // allocate memory for expanded tree of descriptors
+    if (bufrdeco_init_expanded_tree(&b->tree)) {
+        snprintf(b->error, sizeof(b->error), "%s(): Cannot allocate space for expanded tree of descriptors\n", __func__);
+        return 1;
     }
 
-  // allocate memory for bitacora
-  if (bufrdeco_init_subset_bitacora( b ) )
-    return 1;
+    // allocate memory for bitacora
+    if (bufrdeco_init_subset_bitacora(b))
+        return 1;
 
-  return 0;
+    return 0;
 }
 
 /*!
@@ -178,79 +175,78 @@ int bufrdeco_init ( struct bufrdeco *b )
    \param b pointer to the target struct to be resed with another bufrfile
 
    This function must be called when parsing another BUFR report without calling
-   \ref bufrdeco_close and \ref bufrdeco_init. It 
+   \ref bufrdeco_close and \ref bufrdeco_init. It
 
    \return If succeeded return 0, otherwise 1
 */
-int bufrdeco_reset ( struct bufrdeco *b )
+int bufrdeco_reset(struct bufrdeco* b)
 {
-  struct bufr_tables *tb;
-  struct bufr_tables_cache ch;
-  FILE *out,*err;
-  uint32_t mask;
-  bufrdeco_assert ( b != NULL );
+    struct bufr_tables* tb;
+    struct bufr_tables_cache ch;
+    FILE *out, *err;
+    uint32_t mask;
+    bufrdeco_assert(b != NULL);
 
-  // save the data we do not reset
-  memcpy(&ch, &b->cache, sizeof (struct bufr_tables_cache));
-  tb = b->tables;
-  mask = b->mask;
-  out = b->out;
-  err = b->err;
-  bufrdeco_free_subset_sequence_data ( & ( b->seq ) );
-  bufrdeco_free_compressed_data_references ( & ( b->refs ) );
-  bufrdeco_free_expanded_tree ( & ( b->tree ) );
-  bufrdeco_free_bitmap_array ( & ( b->bitmap ) );
-  bufrdeco_free_decode_subset_bitacora( & (b->bitacora ) );
-  memset ( b, 0, sizeof ( struct bufrdeco ) );
-  
-  // Restore data
-  b->out = out;
-  b->err = err;
-  b->mask = mask;
-  b->tables = tb;
-  memcpy(&b->cache, &ch, sizeof (struct bufr_tables_cache));
+    // save the data we do not reset
+    memcpy(&ch, &b->cache, sizeof(struct bufr_tables_cache));
+    tb = b->tables;
+    mask = b->mask;
+    out = b->out;
+    err = b->err;
+    bufrdeco_free_subset_sequence_data(&(b->seq));
+    bufrdeco_free_compressed_data_references(&(b->refs));
+    bufrdeco_free_expanded_tree(&(b->tree));
+    bufrdeco_free_bitmap_array(&(b->bitmap));
+    bufrdeco_free_decode_subset_bitacora(&(b->bitacora));
+    memset(b, 0, sizeof(struct bufrdeco));
 
-  // allocate memory for expanded tree of descriptors
-  if ( bufrdeco_init_expanded_tree ( &b->tree ) )
-    {
-      snprintf ( b->error, sizeof ( b->error ),"%s(): Cannot allocate space for expanded tree of descriptors\n", __func__ );
-      return 1;
+    // Restore data
+    b->out = out;
+    b->err = err;
+    b->mask = mask;
+    b->tables = tb;
+    memcpy(&b->cache, &ch, sizeof(struct bufr_tables_cache));
+
+    // allocate memory for expanded tree of descriptors
+    if (bufrdeco_init_expanded_tree(&b->tree)) {
+        snprintf(b->error, sizeof(b->error), "%s(): Cannot allocate space for expanded tree of descriptors\n", __func__);
+        return 1;
     }
-  
-  if (bufrdeco_init_subset_bitacora( b ) )
-    return 1;
-  
-  return 0;
+
+    if (bufrdeco_init_subset_bitacora(b))
+        return 1;
+
+    return 0;
 }
 
 /*!
  * \fn int bufrdeco_set_out_stream (FILE *out, struct bufrdeco *b)
- * \brief Set the library normal output stream. 
+ * \brief Set the library normal output stream.
  * \param out stream opened by caller
  * \param b pointer to current active struct \ref bufrdeco
  * \return If succeeded return 0, otherwise 1
- * 
+ *
  * Without calling to this funcion, the default is stdout
-*/
-int bufrdeco_set_out_stream (FILE *out, struct bufrdeco *b)
+ */
+int bufrdeco_set_out_stream(FILE* out, struct bufrdeco* b)
 {
-  b->out = out;
-  return 0;
+    b->out = out;
+    return 0;
 }
 
 /*!
  * \fn int bufrdeco_set_err_stream (FILE *err, struct bufrdeco *b)
- * \brief Set the error stream. 
+ * \brief Set the error stream.
  * \param err stream opened by caller
  * \param b pointer to current active struct \ref bufrdeco
  * \return If succeeded return 0, otherwise 1
- * 
+ *
  * Without calling to this funcion, the default is stderr
  */
-int bufrdeco_set_err_stream (FILE *err, struct bufrdeco *b)
+int bufrdeco_set_err_stream(FILE* err, struct bufrdeco* b)
 {
-  b->out = err;
-  return 0;
+    b->err = err;
+    return 0;
 }
 
 /*!
@@ -260,31 +256,28 @@ int bufrdeco_set_err_stream (FILE *err, struct bufrdeco *b)
   \return If succeeded return 0, otherwise 1
 
   This function must be called at the end when no more calls to bufrdeco library is needed
-  
-  b->out and b->err must be closed by caller if are not the default stdout or stderr
-  
-*/
-int bufrdeco_close ( struct bufrdeco *b )
-{
-  bufrdeco_assert ( b != NULL );
 
-  // first deallocate all memory
-  bufrdeco_free_subset_sequence_data ( & ( b->seq ) );
-  bufrdeco_free_compressed_data_references ( & ( b->refs ) );
-  bufrdeco_free_expanded_tree ( & ( b->tree ) );
-  bufrdeco_free_decode_subset_bitacora( &(b->bitacora ) );
-  if (b->mask & BUFRDECO_USE_TABLES_CACHE)
-  {
-    bufrdeco_free_cache_tables(&(b->cache));
-    b->tables = 0;
-  }
-  else
-  {
-    bufrdeco_free_tables ( & ( b->tables ) );
-  }
-  bufrdeco_free_bitmap_array ( & ( b->bitmap ) );
-  
-  return 0;
+  b->out and b->err must be closed by caller if are not the default stdout or stderr
+
+*/
+int bufrdeco_close(struct bufrdeco* b)
+{
+    bufrdeco_assert(b != NULL);
+
+    // first deallocate all memory
+    bufrdeco_free_subset_sequence_data(&(b->seq));
+    bufrdeco_free_compressed_data_references(&(b->refs));
+    bufrdeco_free_expanded_tree(&(b->tree));
+    bufrdeco_free_decode_subset_bitacora(&(b->bitacora));
+    if (b->mask & BUFRDECO_USE_TABLES_CACHE) {
+        bufrdeco_free_cache_tables(&(b->cache));
+        b->tables = 0;
+    } else {
+        bufrdeco_free_tables(&(b->tables));
+    }
+    bufrdeco_free_bitmap_array(&(b->bitmap));
+
+    return 0;
 }
 
 /*!
@@ -297,13 +290,13 @@ int bufrdeco_close ( struct bufrdeco *b )
  * The default directories are '/usr/share/bufr2synop' and '/usr/local/share/bufr2synop'
  *
  */
-int bufrdeco_set_tables_dir ( struct bufrdeco *b, const char *tables_dir )
+int bufrdeco_set_tables_dir(struct bufrdeco* b, const char* tables_dir)
 {
-  bufrdeco_assert_with_return_val ( b != NULL, 1 );
+    bufrdeco_assert_with_return_val(b != NULL, 1);
 
-  if (tables_dir != NULL)
-     strncpy_safe ( b->bufrtables_dir, tables_dir, BUFRDECO_PATH_LENGTH );
-  return 0;
+    if (tables_dir != NULL)
+        strncpy_safe(b->bufrtables_dir, tables_dir, BUFRDECO_PATH_LENGTH);
+    return 0;
 }
 
 /*!
@@ -322,14 +315,13 @@ int bufrdeco_set_tables_dir ( struct bufrdeco *b, const char *tables_dir )
   - Reads the needed Table files and store them in memory.
 
  */
-int bufrdeco_get_bufr ( struct bufrdeco *b, char *filename )
+int bufrdeco_get_bufr(struct bufrdeco* b, char* filename)
 {
-  bufrdeco_assert_with_return_val ( b != NULL || filename == NULL, 1 );
-  
-  // Third argument is NULL because we do not want to write the extracted BUFR to a file
-  return bufrdeco_extract_bufr ( b, filename, NULL ); 
-}
+    bufrdeco_assert_with_return_val(b != NULL || filename == NULL, 1);
 
+    // Third argument is NULL because we do not want to write the extracted BUFR to a file
+    return bufrdeco_extract_bufr(b, filename, NULL);
+}
 
 /*!
  * \fn int bufrdeco_write_subset_offset_bits ( struct bufrdeco *b, char *filename )
@@ -338,25 +330,24 @@ int bufrdeco_get_bufr ( struct bufrdeco *b, char *filename )
  * \param b pointer to the struct \ref bufrdeco
  * \return 1 if problem, 0 otherwise
  */
-int bufrdeco_write_subset_offset_bits ( struct bufrdeco *b, const char *filename )
+int bufrdeco_write_subset_offset_bits(struct bufrdeco* b, const char* filename)
 {
-  FILE *f;
+    FILE* f;
 
-  // assert nice args
-  bufrdeco_assert_with_return_val ( b != NULL && filename != NULL, 1 );
+    // assert nice args
+    bufrdeco_assert_with_return_val(b != NULL && filename != NULL, 1);
 
-  // open the file
-  f = fopen ( filename, "w" );
-  bufrdeco_assert_with_return_val ( f != NULL, 1 );
+    // open the file
+    f = fopen(filename, "w");
+    bufrdeco_assert_with_return_val(f != NULL, 1);
 
-  // Read the offsets
-  if ( bufr_write_subset_offset_bits ( f, & ( b->offsets ) ) )
-    {
-      fclose ( f );
-      return 1;
+    // Read the offsets
+    if (bufr_write_subset_offset_bits(f, &(b->offsets))) {
+        fclose(f);
+        return 1;
     }
-  fclose ( f );
-  return 0;
+    fclose(f);
+    return 0;
 }
 
 /*!
@@ -366,34 +357,31 @@ int bufrdeco_write_subset_offset_bits ( struct bufrdeco *b, const char *filename
  * \param b pointer to the struct \ref bufrdeco
  * \return 1 if problem, 0 otherwise
  */
-int bufrdeco_read_subset_offset_bits ( struct bufrdeco *b, char *filename )
+int bufrdeco_read_subset_offset_bits(struct bufrdeco* b, char* filename)
 {
-  struct stat st;
-  FILE *f;
+    struct stat st;
+    FILE* f;
 
-  // assert nice args
-  bufrdeco_assert_with_return_val ( b != NULL && filename != NULL, 1 );
+    // assert nice args
+    bufrdeco_assert_with_return_val(b != NULL && filename != NULL, 1);
 
-  // silently return if cannot stat the file
-  if ( stat ( filename, &st ) < 0 )
-    {
-      return 1;
+    // silently return if cannot stat the file
+    if (stat(filename, &st) < 0) {
+        return 1;
     }
 
-  // open the file
-  f = fopen ( filename, "r" );
-  bufrdeco_assert_with_return_val ( f != NULL, 1 );
+    // open the file
+    f = fopen(filename, "r");
+    bufrdeco_assert_with_return_val(f != NULL, 1);
 
-  // Read the offsets
-  if ( bufr_read_subset_offset_bits ( f, & ( b->offsets ) ) )
-    {
-      fclose ( f );
-      return 1;
+    // Read the offsets
+    if (bufr_read_subset_offset_bits(f, &(b->offsets))) {
+        fclose(f);
+        return 1;
     }
-  fclose ( f );
-  return 0;
+    fclose(f);
+    return 0;
 }
-
 
 /*!
  *  \fn struct bufrdeco_subset_sequence_data *bufrdeco_get_target_subset_sequence_data (buf_t nset, struct bufrdeco *b)
@@ -404,67 +392,57 @@ int bufrdeco_read_subset_offset_bits ( struct bufrdeco *b, char *filename )
  *  \return If succeeded returns a pointer to the struct \ref bufrdeco_subset_sequence_data with the results for the
  * desired subset,  otherwise returns NULL
  */
-struct bufrdeco_subset_sequence_data *bufrdeco_get_target_subset_sequence_data ( buf_t nset, struct bufrdeco *b )
+struct bufrdeco_subset_sequence_data* bufrdeco_get_target_subset_sequence_data(buf_t nset, struct bufrdeco* b)
 {
-  buf_t n;
-  bufrdeco_assert ( b != NULL );
-  uint32_t mask0 = b->mask;
-  
-  if ( b->sec3.subsets <= nset )
-    {
-      snprintf ( b->error, sizeof ( b->error ), "%s(): The index of target subset is over the bufr subsets (%u)\n", __func__, b->sec3.subsets );
-      return NULL;
+    buf_t n;
+    bufrdeco_assert(b != NULL);
+    uint32_t mask0 = b->mask;
+
+    if (b->sec3.subsets <= nset) {
+        snprintf(b->error, sizeof(b->error), "%s(): The index of target subset is over the bufr subsets (%u)\n", __func__, b->sec3.subsets);
+        return NULL;
     }
 
-  if ( b->sec3.compressed )
-    {
+    if (b->sec3.compressed) {
 #ifdef __DEBUG
-      printf ("# Compressed\n");
-#endif      
-      // case of compressed, we just need the compressed references
-      if ( b->refs.nd == 0 )
-        {
-          // case of compressed data and still not parsed the refs
-          if ( bufrdeco_parse_compressed ( & ( b->refs ), b ) )
-            {
-              return NULL;
+        printf("# Compressed\n");
+#endif
+        // case of compressed, we just need the compressed references
+        if (b->refs.nd == 0) {
+            // case of compressed data and still not parsed the refs
+            if (bufrdeco_parse_compressed(&(b->refs), b)) {
+                return NULL;
             }
-
         }
-    }
-  else if ( nset > 0 )
-    {
-      // In case of not compressed bufr, to parse a subset we need to know the bit offset of the subset data in sec4
-      // There are only two ways to know that offset:
-      //    1) Parse the data of all prior subsets from n = 0 to (nset - 1).
-      //    2) Get the subset bit offset from the struct bufrdeco_subset_bit_offset already stored.
-      //       This is only possible if we already parsed this subset in this session (among two bufrdeco_reset() calls)
-      //       or if readed the struct from a file
-      // In any case the subset bit offset array must be poluted for all n < (nset - 1)
+    } else if (nset > 0) {
+        // In case of not compressed bufr, to parse a subset we need to know the bit offset of the subset data in sec4
+        // There are only two ways to know that offset:
+        //    1) Parse the data of all prior subsets from n = 0 to (nset - 1).
+        //    2) Get the subset bit offset from the struct bufrdeco_subset_bit_offset already stored.
+        //       This is only possible if we already parsed this subset in this session (among two bufrdeco_reset() calls)
+        //       or if readed the struct from a file
+        // In any case the subset bit offset array must be poluted for all n < (nset - 1)
 
-      // clear bit BUFRDECO_OUTPUT_JSON_SUBSET_DATA if actived
-      b->mask &= ~((uint32_t) BUFRDECO_OUTPUT_JSON_SUBSET_DATA);
- 
-      if ( b->offsets.nr == 0 || b->offsets.ofs[nset] == 0 )
-        {
-          for ( n = b->state.subset ; n < nset ; n++ )
-            {
-              // In every call to bufrdeco_decode_data_subset(), b->state.subset is incremented and b->offsets is updated if needed
+        // clear bit BUFRDECO_OUTPUT_JSON_SUBSET_DATA if actived
+        b->mask &= ~((uint32_t)BUFRDECO_OUTPUT_JSON_SUBSET_DATA);
+
+        if (b->offsets.nr == 0 || b->offsets.ofs[nset] == 0) {
+            for (n = b->state.subset; n < nset; n++) {
+                // In every call to bufrdeco_decode_data_subset(), b->state.subset is incremented and b->offsets is updated if needed
 #ifdef __DEBUG
-              printf ("# Go to parse for subset %u waiting %u\n", b->state.subset, nset);
-#endif              
-              bufrdeco_decode_data_subset ( b );
+                printf("# Go to parse for subset %u waiting %u\n", b->state.subset, nset);
+#endif
+                bufrdeco_decode_data_subset(b);
             }
         }
     }
-  // Once the previous task is made, we just adjust the subset
-  b->state.subset = nset;
-  b->mask = mask0;
-  
-  // and now parse and get the desired subset data
-#ifdef __DEBUG  
-  printf ("# Finally going to target parse for subset %u\n", b->state.subset);
-#endif  
-  return bufrdeco_get_subset_sequence_data ( b );
+    // Once the previous task is made, we just adjust the subset
+    b->state.subset = nset;
+    b->mask = mask0;
+
+    // and now parse and get the desired subset data
+#ifdef __DEBUG
+    printf("# Finally going to target parse for subset %u\n", b->state.subset);
+#endif
+    return bufrdeco_get_subset_sequence_data(b);
 }
-

@@ -148,14 +148,14 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
         }
       break;
     default:
-      sprintf ( err, "The data category %d is not parsed at the moment", ksec1[5] );
+      snprintf ( err, sizeof(err), "The data category %d is not parsed at the moment", ksec1[5] );
       return 1;
     }
   
   
   if ( st->type_report[0] == '\0' )
     {
-      sprintf ( err, "Cannot find the report type\n" );
+      snprintf ( err, sizeof(err), "Cannot find the report type\n" );
       return 1;
     }
 

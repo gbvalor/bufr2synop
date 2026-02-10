@@ -45,7 +45,7 @@ int integer_to_descriptor ( struct bufr_descriptor *d, int id )
   d->f = id / 100000;
   d->x = ( id % 100000 ) / 1000;
   d->y = id % 1000;
-  sprintf ( d->c, "%06d", id );
+  snprintf ( d->c, sizeof(d->c), "%06d", id );
   return 0;
 }
 

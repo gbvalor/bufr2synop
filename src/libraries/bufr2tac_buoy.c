@@ -54,11 +54,11 @@ int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b )
 
   t = mktime ( &tim );
   gmtime_r ( &t, &tim );
-  sprintf ( b->s0.YY, "%02d", tim.tm_mday );
-  sprintf ( b->s0.GG, "%02d", tim.tm_hour );
-  sprintf ( b->s0.MM, "%02d", (tim.tm_mon + 1) % 100 );
-  sprintf ( b->s0.J, "%d", tim.tm_year % 10 );
-  sprintf ( b->s0.gg, "%02d", tim.tm_min );
+  snprintf ( b->s0.YY, sizeof(b->s0.YY), "%02d", tim.tm_mday );
+  snprintf ( b->s0.GG, sizeof(b->s0.GG), "%02d", tim.tm_hour );
+  snprintf ( b->s0.MM, sizeof(b->s0.MM), "%02d", (tim.tm_mon + 1) % 100 );
+  snprintf ( b->s0.J, sizeof(b->s0.J), "%d", tim.tm_year % 10 );
+  snprintf ( b->s0.gg, sizeof(b->s0.gg), "%02d", tim.tm_min );
 
   return 0;
 }
@@ -87,7 +87,7 @@ int parse_subset_as_buoy ( struct metreport *m, struct bufr2tac_subset_state *s,
   // reject if still not coded type
   if ( strcmp ( s->type_report,"ZZYY" ) )
     {
-      sprintf ( err,"bufr2tac: '%s' report still not decoded in this software", s->type_report );
+      snprintf ( err, sizeof(err), "bufr2tac: '%s' report still not decoded in this software", s->type_report );
       return 1;
     }
 
@@ -201,7 +201,7 @@ int parse_subset_as_buoy ( struct metreport *m, struct bufr2tac_subset_state *s,
        ( ( s->mask & SUBSET_MASK_HAVE_DAY ) == 0 ) ||
        ( ( s->mask & SUBSET_MASK_HAVE_HOUR ) == 0 ) )
     {
-      sprintf ( err,"bufr2tac: parse_subset_as_buoy(): lack of mandatory descriptor in sequence" );
+      snprintf ( err, sizeof(err), "bufr2tac: parse_subset_as_buoy(): lack of mandatory descriptor in sequence" );
       return 1;
     }
 
@@ -251,13 +251,13 @@ int parse_subset_as_buoy ( struct metreport *m, struct bufr2tac_subset_state *s,
     {
       strcpy ( m->g.name, s->name );
     }
-  sprintf ( aux,"%s%s%s%s%s", b->e.YYYY, b->e.MM, b->e.DD, b->e.HH, b->e.mm );
+  snprintf ( aux, sizeof(aux), "%s%s%s%s%s", b->e.YYYY, b->e.MM, b->e.DD, b->e.HH, b->e.mm );
   YYYYMMDDHHmm_to_met_datetime ( &m->t, aux );
 
   // Fill some metreport fields
   if ( b->s0.A1[0] && b->s0.bw[0] && b->s0.nbnbnb[0] )
     {
-      sprintf ( m->g.index, "%s%s%s", b->s0.A1, b->s0.bw, b->s0.nbnbnb );
+      snprintf ( m->g.index, sizeof(m->g.index), "%s%s%s", b->s0.A1, b->s0.bw, b->s0.nbnbnb );
     }
 
   // check if set both LaLaLa and LoLoLoLo to set Qc

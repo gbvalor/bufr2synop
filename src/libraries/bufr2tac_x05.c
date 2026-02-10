@@ -80,7 +80,7 @@ int syn_parse_x05 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       ia = ( int ) ( fabs ( s->val ) * 10.0 + 0.5 );
       if (ia > 999 || ia < 0)
         return 1;
-      sprintf ( syn->s0.LaLaLa, "%03d", ia );
+      snprintf ( syn->s0.LaLaLa, sizeof(syn->s0.LaLaLa), "%03d", ia );
       syn->s0.Ula[0] = syn->s0.LaLaLa[1];
       s->lat = s->val;
       break;
@@ -146,7 +146,7 @@ int buoy_parse_x05 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         s->mask |= SUBSET_MASK_LATITUDE_SOUTH; // Sign for latitude
       s->mask |= SUBSET_MASK_HAVE_LATITUDE;
       ia = ( int ) ( fabs ( s->val ) * 1000.0 + 0.5 );
-      sprintf ( b->s0.LaLaLaLaLa, "%05d",ia );
+      snprintf ( b->s0.LaLaLaLaLa, sizeof(b->s0.LaLaLaLaLa), "%05d",ia );
       s->lat = s->val;
       break;
 
@@ -221,10 +221,10 @@ int temp_parse_x05 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
       s->mask |= SUBSET_MASK_HAVE_LATITUDE;
       s->lat = s->val;
       ia = ( int ) ( fabs ( s->val ) * 10.0 + 0.5 );
-      sprintf ( t->a.s1.LaLaLa, "%03d",ia );
-      sprintf ( t->b.s1.LaLaLa, "%03d",ia );
-      sprintf ( t->c.s1.LaLaLa, "%03d",ia );
-      sprintf ( t->d.s1.LaLaLa, "%03d",ia );
+      snprintf ( t->a.s1.LaLaLa, sizeof(t->a.s1.LaLaLa), "%03d",ia );
+      snprintf ( t->b.s1.LaLaLa, sizeof(t->b.s1.LaLaLa), "%03d",ia );
+      snprintf ( t->c.s1.LaLaLa, sizeof(t->c.s1.LaLaLa), "%03d",ia );
+      snprintf ( t->d.s1.LaLaLa, sizeof(t->d.s1.LaLaLa), "%03d",ia );
       t->a.s1.Ula[0] = t->a.s1.LaLaLa[1];
       t->b.s1.Ula[0] = t->b.s1.LaLaLa[1];
       t->c.s1.Ula[0] = t->c.s1.LaLaLa[1];

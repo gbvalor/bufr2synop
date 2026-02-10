@@ -83,7 +83,7 @@ int syn_parse_x07 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           if (s->ival > 9999 || s->ival < -9999)
             return 1;
-          sprintf ( syn->s0.h0h0h0h0, "%04d", s->ival );
+          snprintf ( syn->s0.h0h0h0h0, sizeof(syn->s0.h0h0h0h0), "%04d", s->ival );
           syn->s0.im[0] = '1';// set unit as m
           s->mask |= SUBSET_MASK_HAVE_ALTITUDE;
         }
@@ -282,10 +282,10 @@ int temp_parse_x07 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
       break;
 
     case 30: // 0 07 030 . Height of station ground above msl
-      sprintf ( t->a.s1.h0h0h0h0, "%04.0lf" , s->val );
-      sprintf ( t->b.s1.h0h0h0h0, "%04.0lf" , s->val );
-      sprintf ( t->c.s1.h0h0h0h0, "%04.0lf" , s->val );
-      sprintf ( t->d.s1.h0h0h0h0, "%04.0lf" , s->val );
+      snprintf ( t->a.s1.h0h0h0h0, sizeof(t->a.s1.h0h0h0h0), "%04.0lf" , s->val );
+      snprintf ( t->b.s1.h0h0h0h0, sizeof(t->b.s1.h0h0h0h0), "%04.0lf" , s->val );
+      snprintf ( t->c.s1.h0h0h0h0, sizeof(t->c.s1.h0h0h0h0), "%04.0lf" , s->val );
+      snprintf ( t->d.s1.h0h0h0h0, sizeof(t->d.s1.h0h0h0h0), "%04.0lf" , s->val );
       break;
 
     case 31: // 0 07 031 . Height of barometer above msl

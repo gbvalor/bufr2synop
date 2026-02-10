@@ -90,9 +90,9 @@ size_t print_geo ( char **geo,  size_t lmax, const struct metreport *m )
   char sep = '|';
   
   if (m->g.wid.series == 0 && m->g.wid.issuer == 0 && m->g.wid.issue == 0 && m->g.wid.local_id[0] == '\0')
-    sprintf (aux,"0-0-0-MISSING");
+    snprintf ( aux, sizeof(aux), "0-0-0-MISSING");
   else
-    sprintf (aux,"%d-%d-%d-%s", m->g.wid.series, m->g.wid.issuer, m->g.wid.issue, m->g.wid.local_id );
+    snprintf ( aux, sizeof(aux), "%d-%d-%d-%s", m->g.wid.series, m->g.wid.issuer, m->g.wid.issue, m->g.wid.local_id );
  
   used = snprintf (*wid, lmax, "%-32s%c", aux, sep);
   *wid += used;

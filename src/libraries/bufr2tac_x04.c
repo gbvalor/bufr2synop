@@ -122,7 +122,7 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             bufr2tac_set_error ( s, 2, "syn_parse_x04()", "Bad year" );
           return 1;
         }
-      sprintf ( syn->e.YYYY, "%04d", s->ival );
+      snprintf ( syn->e.YYYY, sizeof(syn->e.YYYY), "%04d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_YEAR;
       break;
 
@@ -131,7 +131,7 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
-      sprintf ( syn->e.MM, "%02d", s->ival );
+      snprintf ( syn->e.MM, sizeof(syn->e.MM), "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_MONTH;
       break;
 
@@ -140,7 +140,7 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
-      sprintf ( syn->e.DD, "%02d", s->ival );
+      snprintf ( syn->e.DD, sizeof(syn->e.DD), "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_DAY;
       break;
 
@@ -149,7 +149,7 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
-      sprintf ( syn->e.HH, "%02d", s->ival );
+      snprintf ( syn->e.HH, sizeof(syn->e.HH), "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_HOUR;
       break;
 
@@ -158,7 +158,7 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
-      sprintf ( syn->e.mm, "%02d", s->ival );
+      snprintf ( syn->e.mm, sizeof(syn->e.mm), "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
 
@@ -270,7 +270,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 
       if ( b->e.YYYY[0] == 0 )
         {
-          sprintf ( b->e.YYYY, "%04d", s->ival );
+          snprintf ( b->e.YYYY, sizeof(b->e.YYYY), "%04d", s->ival );
         }
       s->mask |= SUBSET_MASK_HAVE_YEAR;
       break;
@@ -282,7 +282,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         }
       if ( b->e.MM[0] == 0 )
         {
-          sprintf ( b->e.MM, "%02d", s->ival );
+          snprintf ( b->e.MM, sizeof(b->e.MM), "%02d", s->ival );
         }
       s->mask |= SUBSET_MASK_HAVE_MONTH;
       break;
@@ -294,10 +294,10 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         }
       if ( b->e.DD[0] == 0 )
         {
-          sprintf ( b->e.DD, "%02d", s->ival );
+          snprintf ( b->e.DD, sizeof(b->e.DD), "%02d", s->ival );
         }
       s->mask |= SUBSET_MASK_HAVE_DAY;
-      //sprintf(b->s0.YY, "%02d", (int) sq->sequence[is].val);
+      //snprintf ( b->s0.YY, sizeof(b->s0.YY), "%02d", (int) sq->sequence[is].val);
       break;
 
     case 4: // 0 04 004 . Hour
@@ -307,10 +307,10 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         }
       if ( b->e.HH[0] == 0 )
         {
-          sprintf ( b->e.HH, "%02d", s->ival );
+          snprintf ( b->e.HH, sizeof(b->e.HH), "%02d", s->ival );
         }
       s->mask |= SUBSET_MASK_HAVE_HOUR;
-      //sprintf(b->s0.GG, "%02d", (int) sq->sequence[is].val);
+      //snprintf ( b->s0.GG, sizeof(b->s0.GG), "%02d", (int) sq->sequence[is].val);
       break;
 
     case 5: // 0 04 005 . Minute
@@ -320,7 +320,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         }
       if ( b->e.mm[0] == 0 )
         {
-          sprintf ( b->e.mm, "%02d", s->ival );
+          snprintf ( b->e.mm, sizeof(b->e.mm), "%02d", s->ival );
         }
       s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
@@ -428,15 +428,15 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           // this is the final year of a normal period
           s->is_normal = 1;
-          sprintf ( c->s2.YcYc, "%02d", s->ival % 100 );
+          snprintf ( c->s2.YcYc, sizeof(c->s2.YcYc), "%02d", s->ival % 100 );
           // then we fill the begin from tatest descriptor
-          sprintf ( c->s2.YbYb, "%02d", ( int ) s->a1->val % 100 );
+          snprintf ( c->s2.YbYb, sizeof(c->s2.YbYb), "%02d", ( int ) s->a1->val % 100 );
         }
       else if ( c->e.YYYY[0] == '\0' )
         {
-          sprintf ( c->e.YYYY, "%04d", s->ival );
+          snprintf ( c->e.YYYY, sizeof(c->e.YYYY), "%04d", s->ival );
           s->mask |= SUBSET_MASK_HAVE_YEAR;
-          sprintf ( c->s0.JJJ, "%03d", abs ( s->ival ) % 1000 );
+          snprintf ( c->s0.JJJ, sizeof(c->s0.JJJ), "%03d", abs ( s->ival ) % 1000 );
           c->mask |= CLIMAT_SEC0;
         }
       break;
@@ -446,9 +446,9 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           return 0;
         }
-      sprintf ( c->e.MM, "%02d", s->ival );
+      snprintf ( c->e.MM, sizeof(c->e.MM), "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_MONTH;
-      sprintf ( c->s0.MM, "%02d", s->ival );
+      snprintf ( c->s0.MM, sizeof(c->s0.MM), "%02d", s->ival );
       c->mask |= CLIMAT_SEC0;
       break;
 
@@ -459,7 +459,7 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         }
       if ( c->e.DD[0] == 0 )
         {
-          sprintf ( c->e.DD, "%02d", s->ival );
+          snprintf ( c->e.DD, sizeof(c->e.DD), "%02d", s->ival );
         }
       if ( s->a1->desc.x == 8 && s->a1->desc.y == 53 )
         {
@@ -476,7 +476,7 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         }
       if ( c->e.HH[0] == 0 )
         {
-          sprintf ( c->e.HH, "%02d", s->ival );
+          snprintf ( c->e.HH, sizeof(c->e.HH), "%02d", s->ival );
         }
       s->mask |= SUBSET_MASK_HAVE_HOUR;
       break;
@@ -488,7 +488,7 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         }
       if ( c->e.mm[0] == 0 )
         {
-          sprintf ( c->e.mm, "%02d", s->ival );
+          snprintf ( c->e.mm, sizeof(c->e.mm), "%02d", s->ival );
         }
       s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
@@ -517,7 +517,7 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           return 0;
         }
-      sprintf ( c->s4.GxGx, "%02d", s->ival );
+      snprintf ( c->s4.GxGx, sizeof(c->s4.GxGx), "%02d", s->ival );
       s->mask |= CLIMAT_SEC4;
       break;
 
@@ -526,7 +526,7 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           return 0;
         }
-      sprintf ( c->s4.GnGn, "%02d", s->ival );
+      snprintf ( c->s4.GnGn, sizeof(c->s4.GnGn), "%02d", s->ival );
       s->mask |= CLIMAT_SEC4;
       break;
 
@@ -537,12 +537,12 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         }
       if ( s->is_normal == 0 )
         {
-          sprintf ( c->s1.nrnr, "%02d", s->ival );
+          snprintf ( c->s1.nrnr, sizeof(c->s1.nrnr), "%02d", s->ival );
           s->mask |= CLIMAT_SEC1;
         }
       else
         {
-          sprintf ( c->s2.nrnr, "%02d", s->ival );
+          snprintf ( c->s2.nrnr, sizeof(c->s2.nrnr), "%02d", s->ival );
           s->mask |= CLIMAT_SEC2;
         }
       break;
@@ -589,10 +589,10 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
         }
       if ( t->a.e.YYYY[0] == 0 )
         {
-          sprintf ( t->a.e.YYYY, "%04d", s->ival );
-          sprintf ( t->b.e.YYYY, "%04d", s->ival );
-          sprintf ( t->c.e.YYYY, "%04d", s->ival );
-          sprintf ( t->d.e.YYYY, "%04d", s->ival );
+          snprintf ( t->a.e.YYYY, sizeof(t->a.e.YYYY), "%04d", s->ival );
+          snprintf ( t->b.e.YYYY, sizeof(t->b.e.YYYY), "%04d", s->ival );
+          snprintf ( t->c.e.YYYY, sizeof(t->c.e.YYYY), "%04d", s->ival );
+          snprintf ( t->d.e.YYYY, sizeof(t->d.e.YYYY), "%04d", s->ival );
         }
       s->mask |= SUBSET_MASK_HAVE_YEAR;
       break;
@@ -604,10 +604,10 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
         }
       if ( t->a.e.MM[0] == 0 )
         {
-          sprintf ( t->a.e.MM, "%02d", s->ival );
-          sprintf ( t->b.e.MM, "%02d", s->ival );
-          sprintf ( t->c.e.MM, "%02d", s->ival );
-          sprintf ( t->d.e.MM, "%02d", s->ival );
+          snprintf ( t->a.e.MM, sizeof(t->a.e.MM), "%02d", s->ival );
+          snprintf ( t->b.e.MM, sizeof(t->b.e.MM), "%02d", s->ival );
+          snprintf ( t->c.e.MM, sizeof(t->c.e.MM), "%02d", s->ival );
+          snprintf ( t->d.e.MM, sizeof(t->d.e.MM), "%02d", s->ival );
         }
       s->mask |= SUBSET_MASK_HAVE_MONTH;
       break;
@@ -619,13 +619,13 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
         }
       if ( t->a.e.DD[0] == 0 )
         {
-          sprintf ( t->a.e.DD, "%02d", s->ival );
-          sprintf ( t->b.e.DD, "%02d", s->ival );
-          sprintf ( t->c.e.DD, "%02d", s->ival );
-          sprintf ( t->d.e.DD, "%02d", s->ival );
+          snprintf ( t->a.e.DD, sizeof(t->a.e.DD), "%02d", s->ival );
+          snprintf ( t->b.e.DD, sizeof(t->b.e.DD), "%02d", s->ival );
+          snprintf ( t->c.e.DD, sizeof(t->c.e.DD), "%02d", s->ival );
+          snprintf ( t->d.e.DD, sizeof(t->d.e.DD), "%02d", s->ival );
         }
       s->mask |= SUBSET_MASK_HAVE_DAY;
-      //sprintf(t->s0.YY, "%02d", (int) sq->sequence[is].val);
+      //snprintf ( t->s0.YY, sizeof(t->s0.YY), "%02d", (int) sq->sequence[is].val);
       break;
 
     case 4: // 0 04 004 . Hour
@@ -635,17 +635,17 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
         }
       if ( t->a.e.HH[0] == 0 )
         {
-          sprintf ( t->a.e.HH, "%02d", s->ival );
-          sprintf ( t->b.e.HH, "%02d", s->ival );
-          sprintf ( t->c.e.HH, "%02d", s->ival );
-          sprintf ( t->d.e.HH, "%02d", s->ival );
-          sprintf ( t->a.s7.GG, "%02d", s->ival );
-          sprintf ( t->b.s7.GG, "%02d", s->ival );
-          sprintf ( t->c.s7.GG, "%02d", s->ival );
-          sprintf ( t->d.s7.GG, "%02d", s->ival );
+          snprintf ( t->a.e.HH, sizeof(t->a.e.HH), "%02d", s->ival );
+          snprintf ( t->b.e.HH, sizeof(t->b.e.HH), "%02d", s->ival );
+          snprintf ( t->c.e.HH, sizeof(t->c.e.HH), "%02d", s->ival );
+          snprintf ( t->d.e.HH, sizeof(t->d.e.HH), "%02d", s->ival );
+          snprintf ( t->a.s7.GG, sizeof(t->a.s7.GG), "%02d", s->ival );
+          snprintf ( t->b.s7.GG, sizeof(t->b.s7.GG), "%02d", s->ival );
+          snprintf ( t->c.s7.GG, sizeof(t->c.s7.GG), "%02d", s->ival );
+          snprintf ( t->d.s7.GG, sizeof(t->d.s7.GG), "%02d", s->ival );
         }
       s->mask |= SUBSET_MASK_HAVE_HOUR;
-      //sprintf(t->s0.GG, "%02d", (int) sq->sequence[is].val);
+      //snprintf ( t->s0.GG, sizeof(t->s0.GG), "%02d", (int) sq->sequence[is].val);
       break;
 
     case 5: // 0 04 005 . Minute
@@ -655,14 +655,14 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
         }
       if ( t->a.e.mm[0] == 0 )
         {
-          sprintf ( t->a.e.mm, "%02d", s->ival );
-          sprintf ( t->b.e.mm, "%02d", s->ival );
-          sprintf ( t->c.e.mm, "%02d", s->ival );
-          sprintf ( t->d.e.mm, "%02d", s->ival );
-          sprintf ( t->a.s7.gg, "%02d", s->ival );
-          sprintf ( t->b.s7.gg, "%02d", s->ival );
-          sprintf ( t->c.s7.gg, "%02d", s->ival );
-          sprintf ( t->d.s7.gg, "%02d", s->ival );
+          snprintf ( t->a.e.mm, sizeof(t->a.e.mm), "%02d", s->ival );
+          snprintf ( t->b.e.mm, sizeof(t->b.e.mm), "%02d", s->ival );
+          snprintf ( t->c.e.mm, sizeof(t->c.e.mm), "%02d", s->ival );
+          snprintf ( t->d.e.mm, sizeof(t->d.e.mm), "%02d", s->ival );
+          snprintf ( t->a.s7.gg, sizeof(t->a.s7.gg), "%02d", s->ival );
+          snprintf ( t->b.s7.gg, sizeof(t->b.s7.gg), "%02d", s->ival );
+          snprintf ( t->c.s7.gg, sizeof(t->c.s7.gg), "%02d", s->ival );
+          snprintf ( t->d.s7.gg, sizeof(t->d.s7.gg), "%02d", s->ival );
         }
       s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
@@ -674,10 +674,10 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
         }
       if ( t->a.e.ss[0] == 0 )
         {
-          sprintf ( t->a.e.ss, "%02d", s->ival );
-          sprintf ( t->b.e.ss, "%02d", s->ival );
-          sprintf ( t->c.e.ss, "%02d", s->ival );
-          sprintf ( t->d.e.ss, "%02d", s->ival );
+          snprintf ( t->a.e.ss, sizeof(t->a.e.ss), "%02d", s->ival );
+          snprintf ( t->b.e.ss, sizeof(t->b.e.ss), "%02d", s->ival );
+          snprintf ( t->c.e.ss, sizeof(t->c.e.ss), "%02d", s->ival );
+          snprintf ( t->d.e.ss, sizeof(t->d.e.ss), "%02d", s->ival );
         }
       s->mask |= SUBSET_MASK_HAVE_SECOND;
       break;

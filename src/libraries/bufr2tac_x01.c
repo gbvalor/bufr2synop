@@ -61,15 +61,15 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
   switch ( s->a->desc.y )
     {
     case 1: // 0 01 001 . WMO block number
-      sprintf ( syn->s0.II, "%02d", s->ival );
+      snprintf ( syn->s0.II, sizeof(syn->s0.II), "%02d", s->ival );
       break;
 
     case 2: // 0 01 002 . WMO station number
-      sprintf ( syn->s0.iii, "%03d", s->ival );
+      snprintf ( syn->s0.iii, sizeof(syn->s0.iii), "%03d", s->ival );
       break;
 
     case 3: // 0 01 003 . WMO Region
-      sprintf ( syn->s0.A1, "%d", s->ival );
+      snprintf ( syn->s0.A1, sizeof(syn->s0.A1), "%d", s->ival );
       if ( strcmp ( syn->s0.A1, "1" ) == 0 )
         strcpy ( syn->s0.Reg, "I" );
       else if ( strcmp ( syn->s0.A1, "2" ) == 0 )
@@ -86,7 +86,7 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 
     case 4: // 0 01 004 . WMO Subarea
     case 20: // 0 01 020 . WMO region subarea
-      sprintf ( syn->s0.bw, "%d", s->ival );
+      snprintf ( syn->s0.bw, sizeof(syn->s0.bw), "%d", s->ival );
       break;
 
     case 10: // 0 01 010. Stationary buoy platform identifier
@@ -213,21 +213,21 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
     {
     case 3: // 0 01 003
       if ( s->ival > 0 )
-        sprintf ( b->s0.A1, "%d", s->ival % 10 );
+        snprintf ( b->s0.A1, sizeof(b->s0.A1), "%d", s->ival % 10 );
       else if ( s->ival == 0 )
-        sprintf ( b->s0.A1, "7" );
+        snprintf ( b->s0.A1, sizeof(b->s0.A1), "7" );
       break;
 
     case 4: // 0 01 004
     case 20: // 0 01 004
-      sprintf ( b->s0.bw, "%d", s->ival );
+      snprintf ( b->s0.bw, sizeof(b->s0.bw), "%d", s->ival );
       break;
 
     case 5: // 0 01 005
       if ( s->ival < 1000 )
-        sprintf ( b->s0.nbnbnb, "%03d", s->ival % 1000 );
+        snprintf ( b->s0.nbnbnb, sizeof(b->s0.nbnbnb), "%03d", s->ival % 1000 );
       else
-        sprintf ( b->s0.nbnbnb, "%05d", s->ival % 100000 ); // note this is a nnnnn extension
+        snprintf ( b->s0.nbnbnb, sizeof(b->s0.nbnbnb), "%05d", s->ival % 100000 ); // note this is a nnnnn extension
       break;
 
     case 15: // 0 01 015. Station or site name
@@ -249,7 +249,7 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       // A1bwnnn is equivalent to A1Bwnnnnn when nnnnn < 1000
       if ( s->a->val < 100000000 )
         {
-          sprintf ( aux, "%07.0lf", s->a->val );
+          snprintf ( aux, sizeof(aux), "%07.0lf", s->a->val );
           b->s0.A1[0] = aux[0];
           b->s0.A1[1] = 0;
           b->s0.bw[0] = aux[1];
@@ -332,11 +332,11 @@ int climat_parse_x01 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
     {
 
     case 1: // 0 01 001 . WMO block number
-      sprintf ( c->s0.II, "%02d", s->ival );
+      snprintf ( c->s0.II, sizeof(c->s0.II), "%02d", s->ival );
       break;
 
     case 2: // 0 01 002 . WMO station number
-      sprintf ( c->s0.iii, "%03d", s->ival );
+      snprintf ( c->s0.iii, sizeof(c->s0.iii), "%03d", s->ival );
       break;
 
     case 3: // 0 01 003 . WMO Region
@@ -423,24 +423,24 @@ int temp_parse_x01 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
   switch ( s->a->desc.y )
     {
     case 1: // 0 01 001 . WMO block number
-      sprintf ( t->a.s1.II, "%02d", s->ival );
-      sprintf ( t->b.s1.II, "%02d", s->ival );
-      sprintf ( t->c.s1.II, "%02d", s->ival );
-      sprintf ( t->d.s1.II, "%02d", s->ival );
+      snprintf ( t->a.s1.II, sizeof(t->a.s1.II), "%02d", s->ival );
+      snprintf ( t->b.s1.II, sizeof(t->b.s1.II), "%02d", s->ival );
+      snprintf ( t->c.s1.II, sizeof(t->c.s1.II), "%02d", s->ival );
+      snprintf ( t->d.s1.II, sizeof(t->d.s1.II), "%02d", s->ival );
       break;
 
     case 2: // 0 01 002 . WMO station number
-      sprintf ( t->a.s1.iii, "%03d", s->ival );
-      sprintf ( t->b.s1.iii, "%03d", s->ival );
-      sprintf ( t->c.s1.iii, "%03d", s->ival );
-      sprintf ( t->d.s1.iii, "%03d", s->ival );
+      snprintf ( t->a.s1.iii, sizeof(t->a.s1.iii), "%03d", s->ival );
+      snprintf ( t->b.s1.iii, sizeof(t->b.s1.iii), "%03d", s->ival );
+      snprintf ( t->c.s1.iii, sizeof(t->c.s1.iii), "%03d", s->ival );
+      snprintf ( t->d.s1.iii, sizeof(t->d.s1.iii), "%03d", s->ival );
       break;
 
     case 3: // 0 01 003 . WMO Region
-      sprintf ( t->a.s1.A1, "%d", s->ival );
-      sprintf ( t->b.s1.A1, "%d", s->ival );
-      sprintf ( t->c.s1.A1, "%d", s->ival );
-      sprintf ( t->d.s1.A1, "%d", s->ival );
+      snprintf ( t->a.s1.A1, sizeof(t->a.s1.A1), "%d", s->ival );
+      snprintf ( t->b.s1.A1, sizeof(t->b.s1.A1), "%d", s->ival );
+      snprintf ( t->c.s1.A1, sizeof(t->c.s1.A1), "%d", s->ival );
+      snprintf ( t->d.s1.A1, sizeof(t->d.s1.A1), "%d", s->ival );
       if ( strcmp ( t->a.s1.A1, "1" ) == 0 )
         {
           strcpy ( t->a.s1.Reg, "I" );
@@ -487,10 +487,10 @@ int temp_parse_x01 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
 
     case 4: // 0 01 004 . WMO Subarea
     case 20: // 0 01 020 . WMO region subarea
-      sprintf ( t->a.s1.bw, "%d", s->ival );
-      sprintf ( t->b.s1.bw, "%d", s->ival );
-      sprintf ( t->c.s1.bw, "%d", s->ival );
-      sprintf ( t->d.s1.bw, "%d", s->ival );
+      snprintf ( t->a.s1.bw, sizeof(t->a.s1.bw), "%d", s->ival );
+      snprintf ( t->b.s1.bw, sizeof(t->b.s1.bw), "%d", s->ival );
+      snprintf ( t->c.s1.bw, sizeof(t->c.s1.bw), "%d", s->ival );
+      snprintf ( t->d.s1.bw, sizeof(t->d.s1.bw), "%d", s->ival );
       break;
 
     case 11: // 0 01 011. Ship or mobile land station index

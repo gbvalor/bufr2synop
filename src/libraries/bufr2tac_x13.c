@@ -41,7 +41,7 @@ char * prec_to_RRR ( char *target, double r )
     }
   else if ( r < 0.95 )
     {
-      sprintf ( target, "99%d", ( int ) ( r * 10.0 + 0.5 ) );
+      snprintf ( target, sizeof(target), "99%d", ( int ) ( r * 10.0 + 0.5 ) );
     }
   else if ( r >= 989.0 )
     {
@@ -49,7 +49,7 @@ char * prec_to_RRR ( char *target, double r )
     }
   else
     {
-      sprintf ( target, "%03d", ( int ) ( r + 0.5 ) );
+      snprintf ( target, sizeof(target), "%03d", ( int ) ( r + 0.5 ) );
     }
   return target;
 
@@ -69,7 +69,7 @@ char * prec_to_RRRR ( char *target, double r )
     }
   else if ( r <= 8899.0 )
     {
-      sprintf ( target,"%04d", ( int ) ( r + 0.5 ) );
+      snprintf ( target, sizeof(target), "%04d", ( int ) ( r + 0.5 ) );
     }
   else
     {
@@ -92,7 +92,7 @@ char * prec_to_RRRR24 ( char *target, double r )
     }
   else if ( r <= 999.8 )
     {
-      sprintf ( target,"%04d", ( int ) ( r * 10.0 + 0.5 ) );
+      snprintf ( target, sizeof(target), "%04d", ( int ) ( r * 10.0 + 0.5 ) );
     }
   else
     {
@@ -109,7 +109,7 @@ char * prec_to_RRRR24 ( char *target, double r )
 */
 char * prec_to_RxRxRxRx ( char *target, double r )
 {
-  sprintf ( target,"%04d", ( int ) ( r * 10.0 + 0.5 ) );
+  snprintf ( target, sizeof(target), "%04d", ( int ) ( r * 10.0 + 0.5 ) );
   return target;
 }
 
@@ -131,19 +131,19 @@ char * total_snow_depth_to_sss ( char *target, double r )
 
   if ( i > 0 && i <= 996 )
     {
-      sprintf ( target, "%03d", i );
+      snprintf ( target, sizeof(target), "%03d", i );
     }
   else if ( i == -1 )
     {
-      sprintf ( target, "997" );
+      snprintf ( target, sizeof(target), "997" );
     }
   else if ( i == -2 )
     {
-      sprintf ( target, "998" );
+      snprintf ( target, sizeof(target), "998" );
     }
   else
     {
-      sprintf ( target, "999" );
+      snprintf ( target, sizeof(target), "999" );
     }
   return target;
 }
@@ -161,27 +161,27 @@ char * recent_snow_to_ss ( char *target, double r )
 
   if ( i == 0 )
     {
-      sprintf ( target,"00" );
+      snprintf ( target, sizeof(target), "00" );
     }
   else if ( i < 0 )
     {
-      sprintf ( target,"97" );
+      snprintf ( target, sizeof(target), "97" );
     }
   else if ( i < 7 )
     {
-      sprintf ( target,"%02d", i + 90 );
+      snprintf ( target, sizeof(target), "%02d", i + 90 );
     }
   else if ( i < 600 )
     {
-      sprintf ( target,"%02d", i / 10 );
+      snprintf ( target, sizeof(target), "%02d", i / 10 );
     }
   else if ( i <= 4000 )
     {
-      sprintf ( target,"%02d", 50 + i/100 );
+      snprintf ( target, sizeof(target), "%02d", 50 + i/100 );
     }
   else 
     {
-      sprintf ( target,"98" );
+      snprintf ( target, sizeof(target), "98" );
     }
   return target;
 }
@@ -211,7 +211,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
-      sprintf ( syn->s1.UUU, "%03d", s->ival );
+      snprintf ( syn->s1.UUU, sizeof(syn->s1.UUU), "%03d", s->ival );
       syn->mask |= SYNOP_SEC1;
       break;
 
@@ -832,7 +832,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 56: // 0 13 056 . Character and intensity of precipitation
       if ( strcmp ( syn->s0.A1, "1" ) == 0 ) // Only for Region I
         {
-          sprintf ( aux, "%d", s->ival );
+          snprintf ( aux, sizeof(aux), "%d", s->ival );
           syn->s3.XoXoXoXo[2] = aux[0];
           syn->mask |= SYNOP_SEC3;
         }
@@ -841,7 +841,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 57: // 0 13 057 . Time of beginning or end of precipitation
       if ( strcmp ( syn->s0.A1, "1" ) == 0 ) // Only for region I
         {
-          sprintf ( aux, "%d" , s->ival );
+          snprintf ( aux, sizeof(aux), "%d" , s->ival );
           syn->s3.XoXoXoXo[3] = aux[0];
           syn->mask |= SYNOP_SEC3;
         }
@@ -850,7 +850,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 118: // 0 13 118 . Recent snow depth
       if ( syn->s3.d9.n < SYNOP_NMISC )
         {
-          sprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, "931%s", recent_snow_to_ss ( aux, s->val ) );
+          snprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, sizeof(syn->s3.d9.misc[syn->s3.d9.n].SpSp), "931%s", recent_snow_to_ss ( aux, s->val ) );
           ( syn->s3.d9.n ) ++;
         }
       break;
@@ -921,12 +921,12 @@ int climat_parse_x13 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
     case 4: // 0 13 004 . Mean vapor pressure in tenths of hectopascal
       if ( s->is_normal == 0 )
         {
-          sprintf ( c->s1.eee,"%03d", ( int ) ( s->val * 0.1 + 0.5 ) );
+          snprintf ( c->s1.eee, sizeof(c->s1.eee), "%03d", ( int ) ( s->val * 0.1 + 0.5 ) );
           c->mask |= CLIMAT_SEC1;
         }
       else
         {
-          sprintf ( c->s2.eee,"%03d", ( int ) ( s->val * 0.1 + 0.5 ) );
+          snprintf ( c->s2.eee, sizeof(c->s2.eee), "%03d", ( int ) ( s->val * 0.1 + 0.5 ) );
           c->mask |= CLIMAT_SEC2;
         }
       break;
@@ -934,7 +934,7 @@ int climat_parse_x13 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
     case 51: // 0 13 051 . Frequency group precipitation
       if ( s->ival >= 0 && s->ival <= 6 )
         {
-          sprintf ( c->s1.Rd, "%d", s->ival );
+          snprintf ( c->s1.Rd, sizeof(c->s1.Rd), "%d", s->ival );
         }
       break;
 
@@ -942,11 +942,11 @@ int climat_parse_x13 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
       prec_to_RxRxRxRx ( c->s4.RxRxRxRx, s->val );
       if ( s->more_days == 0 )
         {
-          sprintf ( c->s4.yr, "%02d", s->day );
+          snprintf ( c->s4.yr, sizeof(c->s4.yr), "%02d", s->day );
         }
       else
         {
-          sprintf ( c->s4.yr, "%02d", (s->day + 50) % 50 );
+          snprintf ( c->s4.yr, sizeof(c->s4.yr), "%02d", (s->day + 50) % 50 );
         }
       c->mask |= CLIMAT_SEC4;
       break;

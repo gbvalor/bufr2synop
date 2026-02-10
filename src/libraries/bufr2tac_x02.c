@@ -103,7 +103,7 @@ int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
     case 31: // 0 02 031 . Duration and time of current measurement
       if ( b->s3.k3[0] == 0 && s->ival < 10 )
         {
-          sprintf ( caux, "%d", s->ival );
+          snprintf ( caux, sizeof(caux), "%d", s->ival );
           b->s3.k3[0] = caux[0];
           b->s3.k3[1] = 0;
         }
@@ -111,7 +111,7 @@ int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       break;
       
     case 33: // 0 02 033 . Method of salinity depth measure
-      sprintf ( caux, "%d", s->ival );
+      snprintf ( caux, sizeof(caux), "%d", s->ival );
       b->s3.k2[0] = caux[0];
       b->s3.k2[1] = 0;
       b->mask |= BUOY_SEC3;
@@ -120,7 +120,7 @@ int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
     case 40: // 0 02 040 .Method of removing velocity and motion of platform from current
       if ( b->s3.k6[0] == 0 )
         {
-          sprintf ( caux, "%d", s->ival );
+          snprintf ( caux, sizeof(caux), "%d", s->ival );
           b->s3.k6[0] = caux[0];
           b->s3.k6[1] = 0;
         }
@@ -166,7 +166,7 @@ int climat_parse_x02 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
       break;
 
     case 51: // 0 02 051 . Observing method for extreme temperatures
-      sprintf ( c->s4.iy,"%d",s->ival );
+      snprintf ( c->s4.iy, sizeof(c->s4.iy), "%d",s->ival );
       break;
     default:
       if ( BUFR2TAC_DEBUG_LEVEL > 0 )
@@ -194,7 +194,7 @@ int temp_parse_x02 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
     case 3:  // 0 02 003 . Type of measuring equipment used
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
-          sprintf ( t->b.s1.a4,"/" );
+          snprintf ( t->b.s1.a4, sizeof(t->b.s1.a4), "/" );
           return 0;
         }
       switch ( s->ival )
@@ -203,13 +203,13 @@ int temp_parse_x02 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
         case 1:
         case 2:
         case 3:
-          sprintf ( t->b.s1.a4,"%d", s->ival );
+          snprintf ( t->b.s1.a4, sizeof(t->b.s1.a4), "%d", s->ival );
           break;
         case 4:
         case 5:
         case 6:
         case 7:
-          sprintf ( t->b.s1.a4,"%d", s->ival + 1 );
+          snprintf ( t->b.s1.a4, sizeof(t->b.s1.a4), "%d", s->ival + 1 );
           break;
         default:
           strcpy ( t->b.s1.a4, "9" ); // reserved
@@ -220,18 +220,18 @@ int temp_parse_x02 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
     case 11: // 0 02 011 . Radiosonde type
       if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
         {
-          sprintf ( t->a.s7.rara, "//" );
-          sprintf ( t->b.s7.rara, "//" );
-          sprintf ( t->c.s7.rara, "//" );
-          sprintf ( t->d.s7.rara, "//" );
+          snprintf ( t->a.s7.rara, sizeof(t->a.s7.rara), "//" );
+          snprintf ( t->b.s7.rara, sizeof(t->b.s7.rara), "//" );
+          snprintf ( t->c.s7.rara, sizeof(t->c.s7.rara), "//" );
+          snprintf ( t->d.s7.rara, sizeof(t->d.s7.rara), "//" );
           return 0;
         }
       if ( s->ival >= 0 )
         {
-          sprintf ( t->a.s7.rara, "%02d", s->ival % 100 );
-          sprintf ( t->b.s7.rara, "%02d", s->ival % 100 );
-          sprintf ( t->c.s7.rara, "%02d", s->ival % 100 );
-          sprintf ( t->d.s7.rara, "%02d", s->ival % 100 );
+          snprintf ( t->a.s7.rara, sizeof(t->a.s7.rara), "%02d", s->ival % 100 );
+          snprintf ( t->b.s7.rara, sizeof(t->b.s7.rara), "%02d", s->ival % 100 );
+          snprintf ( t->c.s7.rara, sizeof(t->c.s7.rara), "%02d", s->ival % 100 );
+          snprintf ( t->d.s7.rara, sizeof(t->d.s7.rara), "%02d", s->ival % 100 );
         }
       break;
 
@@ -247,10 +247,10 @@ int temp_parse_x02 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
         }
       if ( s->ival >= 0 && s->ival <= 7 )
         {
-          sprintf ( t->a.s7.sr, "%d", s->ival );
-          sprintf ( t->b.s7.sr, "%d", s->ival );
-          sprintf ( t->c.s7.sr, "%d", s->ival );
-          sprintf ( t->d.s7.sr, "%d", s->ival );
+          snprintf ( t->a.s7.sr, sizeof(t->a.s7.sr), "%d", s->ival );
+          snprintf ( t->b.s7.sr, sizeof(t->b.s7.sr), "%d", s->ival );
+          snprintf ( t->c.s7.sr, sizeof(t->c.s7.sr), "%d", s->ival );
+          snprintf ( t->d.s7.sr, sizeof(t->d.s7.sr), "%d", s->ival );
         }
       else
         {
@@ -273,10 +273,10 @@ int temp_parse_x02 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
         }
       if ( s->ival >= 0 && s->ival < 100 )
         {
-          sprintf ( t->a.s7.sasa, "%02d", s->ival );
-          sprintf ( t->b.s7.sasa, "%02d", s->ival );
-          sprintf ( t->c.s7.sasa, "%02d", s->ival );
-          sprintf ( t->d.s7.sasa, "%02d", s->ival );
+          snprintf ( t->a.s7.sasa, sizeof(t->a.s7.sasa), "%02d", s->ival );
+          snprintf ( t->b.s7.sasa, sizeof(t->b.s7.sasa), "%02d", s->ival );
+          snprintf ( t->c.s7.sasa, sizeof(t->c.s7.sasa), "%02d", s->ival );
+          snprintf ( t->d.s7.sasa, sizeof(t->d.s7.sasa), "%02d", s->ival );
         }
       else
         {

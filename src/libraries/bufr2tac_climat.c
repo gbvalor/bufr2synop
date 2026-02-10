@@ -49,7 +49,7 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr2tac_subset_state *
   // reject if still not coded type
   if ( strcmp ( s->type_report,"CLIMAT" ) )
     {
-      sprintf ( err,"bufr2tac: parse_subset_as_climat(): '%s' reports still not decoded in this software", s->type_report );
+      snprintf ( err, sizeof(err), "bufr2tac: parse_subset_as_climat(): '%s' reports still not decoded in this software", s->type_report );
       return 1;
     }
 
@@ -151,7 +151,7 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr2tac_subset_state *
       strcpy ( m->g.country, s->country );
     }
 
-  sprintf ( aux,"%s%s%s%s%s", c->e.YYYY, c->e.MM, c->e.DD, c->e.HH, c->e.mm );
+  snprintf ( aux, sizeof(aux), "%s%s%s%s%s", c->e.YYYY, c->e.MM, c->e.DD, c->e.HH, c->e.mm );
   YYYYMMDDHHmm_to_met_datetime ( &m->t, aux );
 
    // copy WIGOS ID 

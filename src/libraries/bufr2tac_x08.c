@@ -183,29 +183,29 @@ int climat_parse_x08 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
             {
             // days of missing data
             case 1: // pressure
-              sprintf ( c->s1.mpmp, "%02d", s->ival );
+              snprintf ( c->s1.mpmp, sizeof(c->s1.mpmp), "%02d", s->ival );
               c->mask |= CLIMAT_SEC1;
               break;
             case 2: // temperature
-              sprintf ( c->s1.mtmt, "%02d", s->ival );
+              snprintf ( c->s1.mtmt, sizeof(c->s1.mtmt), "%02d", s->ival );
               c->mask |= CLIMAT_SEC1;
               break;
             case 4: // vapour pressure
-              sprintf ( c->s1.meme, "%02d", s->ival );
+              snprintf ( c->s1.meme, sizeof(c->s1.meme), "%02d", s->ival );
               c->mask |= CLIMAT_SEC1;
               break;
             case 5: // precipitation
-              sprintf ( c->s1.mrmr, "%02d", s->ival );
+              snprintf ( c->s1.mrmr, sizeof(c->s1.mrmr), "%02d", s->ival );
               c->mask |= CLIMAT_SEC1;
               break;
             case 6: // sunshine duration
-              sprintf ( c->s1.msms, "%02d", s->ival );
+              snprintf ( c->s1.msms, sizeof(c->s1.msms), "%02d", s->ival );
               c->mask |= CLIMAT_SEC1;
               break;
             case 7: // Maximum temperature
               if ( s->ival < 10 )
                 {
-                  sprintf ( caux, "%d", s->ival );
+                  snprintf ( caux, sizeof(caux), "%d", s->ival );
                   c->s1.mtx[0] = caux[0];
                   c->s1.mtx[1] = 0;
                 }
@@ -218,7 +218,7 @@ int climat_parse_x08 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
             case 8: // Minimum temperature
               if ( s->ival < 10 )
                 {
-                  sprintf ( caux, "%d", s->ival );
+                  snprintf ( caux, sizeof(caux), "%d", s->ival );
                   c->s1.mtn[0] = caux[0];
                   c->s1.mtn[1] = 0;
                 }
@@ -238,27 +238,27 @@ int climat_parse_x08 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
             {
             // years of missing data
             case 1: // pressure
-              sprintf ( c->s2.ypyp, "%02d", s->ival );
+              snprintf ( c->s2.ypyp, sizeof(c->s2.ypyp), "%02d", s->ival );
               c->mask |= CLIMAT_SEC2;
               break;
             case 2: // temperature
-              sprintf ( c->s2.ytyt, "%02d", s->ival );
+              snprintf ( c->s2.ytyt, sizeof(c->s2.ytyt), "%02d", s->ival );
               c->mask |= CLIMAT_SEC2;
               break;
             case 3: // extreme temperature
-              sprintf ( c->s2.ytxytx, "%02d", s->ival );
+              snprintf ( c->s2.ytxytx, sizeof(c->s2.ytxytx), "%02d", s->ival );
               c->mask |= CLIMAT_SEC2;
               break;
             case 4: // vapour pressure
-              sprintf ( c->s2.yeye, "%02d", s->ival );
+              snprintf ( c->s2.yeye, sizeof(c->s2.yeye), "%02d", s->ival );
               c->mask |= CLIMAT_SEC2;
               break;
             case 5: // precipitation
-              sprintf ( c->s2.yryr, "%02d", s->ival );
+              snprintf ( c->s2.yryr, sizeof(c->s2.yryr), "%02d", s->ival );
               c->mask |= CLIMAT_SEC2;
               break;
             case 6: // sunshine duration
-              sprintf ( c->s2.ysys, "%02d", s->ival );
+              snprintf ( c->s2.ysys, sizeof(c->s2.ysys), "%02d", s->ival );
               c->mask |= CLIMAT_SEC2;
               break;
             default:
@@ -275,99 +275,99 @@ int climat_parse_x08 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
       switch ( s->isq_val )
         {
         case 0:
-          sprintf ( c->s3.f10, "%02d", s->ival );
+          snprintf ( c->s3.f10, sizeof(c->s3.f10), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 1:
-          sprintf ( c->s3.f20, "%02d", s->ival );
+          snprintf ( c->s3.f20, sizeof(c->s3.f20), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 2:
-          sprintf ( c->s3.f30, "%02d", s->ival );
+          snprintf ( c->s3.f30, sizeof(c->s3.f30), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 3:
-          sprintf ( c->s3.Tx0, "%02d", s->ival );
+          snprintf ( c->s3.Tx0, sizeof(c->s3.Tx0), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 4:
-          sprintf ( c->s3.T25, "%02d", s->ival );
+          snprintf ( c->s3.T25, sizeof(c->s3.T25), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 5:
-          sprintf ( c->s3.T30, "%02d", s->ival );
+          snprintf ( c->s3.T30, sizeof(c->s3.T30), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 6:
-          sprintf ( c->s3.T35, "%02d", s->ival );
+          snprintf ( c->s3.T35, sizeof(c->s3.T35), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 7:
-          sprintf ( c->s3.T40, "%02d", s->ival );
+          snprintf ( c->s3.T40, sizeof(c->s3.T40), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 8:
-          sprintf ( c->s3.Tn0, "%02d", s->ival );
+          snprintf ( c->s3.Tn0, sizeof(c->s3.Tn0), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 10:
-          sprintf ( c->s3.R01, "%02d", s->ival );
+          snprintf ( c->s3.R01, sizeof(c->s3.R01), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 11:
-          sprintf ( c->s3.R05, "%02d", s->ival );
+          snprintf ( c->s3.R05, sizeof(c->s3.R05), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 12:
-          sprintf ( c->s3.R10, "%02d", s->ival );
+          snprintf ( c->s3.R10, sizeof(c->s3.R10), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 13:
-          sprintf ( c->s3.R50, "%02d", s->ival );
+          snprintf ( c->s3.R50, sizeof(c->s3.R50), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 14:
-          sprintf ( c->s3.R100, "%02d", s->ival );
+          snprintf ( c->s3.R100, sizeof(c->s3.R100), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 15:
-          sprintf ( c->s3.R150, "%02d", s->ival );
+          snprintf ( c->s3.R150, sizeof(c->s3.R150), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 16:
-          sprintf ( c->s3.s00, "%02d", s->ival );
+          snprintf ( c->s3.s00, sizeof(c->s3.s00), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 17:
-          sprintf ( c->s3.s01, "%02d", s->ival );
+          snprintf ( c->s3.s01, sizeof(c->s3.s01), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 18:
-          sprintf ( c->s3.s10, "%02d", s->ival );
+          snprintf ( c->s3.s10, sizeof(c->s3.s10), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 19:
-          sprintf ( c->s3.s50, "%02d", s->ival );
+          snprintf ( c->s3.s50, sizeof(c->s3.s50), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 20:
-          sprintf ( c->s3.V1, "%02d", s->ival );
+          snprintf ( c->s3.V1, sizeof(c->s3.V1), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 21:
-          sprintf ( c->s3.V2, "%02d", s->ival );
+          snprintf ( c->s3.V2, sizeof(c->s3.V2), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 22:
-          sprintf ( c->s3.V3, "%02d", s->ival );
+          snprintf ( c->s3.V3, sizeof(c->s3.V3), "%02d", s->ival );
           c->mask |= CLIMAT_SEC3;
           break;
         case 23:
-          sprintf ( c->s4.Dgr, "%02d", s->ival );
+          snprintf ( c->s4.Dgr, sizeof(c->s4.Dgr), "%02d", s->ival );
           c->mask |= CLIMAT_SEC4;
           break;
         case 24:
-          sprintf ( c->s4.Dts, "%02d", s->ival );
+          snprintf ( c->s4.Dts, sizeof(c->s4.Dts), "%02d", s->ival );
           c->mask |= CLIMAT_SEC4;
           break;
         default:
