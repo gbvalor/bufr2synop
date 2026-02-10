@@ -45,11 +45,11 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 3: // 0 22 003 Direction of swell waves
       if ( syn->s2.dw1dw1[0] == 0 )
         {
-          direction_to_0877 ( syn->s2.dw1dw1, s->ival );
+          direction_to_0877 ( syn->s2.dw1dw1, sizeof(syn->s2.dw1dw1), s->ival );
         }
       else if ( syn->s2.dw2dw2[0] == 0 )
         {
-          direction_to_0877 ( syn->s2.dw2dw2, s->ival );
+          direction_to_0877 ( syn->s2.dw2dw2, sizeof(syn->s2.dw2dw2), s->ival );
         }
       syn->mask |= SYNOP_SEC2; // have sec2 data
       break;
@@ -121,7 +121,7 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 49: // 0 22 049 Sea surface temperature
       if ( syn->s2.TwTwTw[0] == 0 )
         {
-          if ( kelvin_to_snTTT ( aux, s->val ) )
+          if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               syn->s2.ss[0] = aux[0];
               strcpy ( syn->s2.TwTwTw, aux + 1 );
@@ -159,7 +159,7 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         {
           if ( b->s3.l2[s->layer].dd[0] == 0 )
             {
-              direction_to_0877 ( b->s3.l2[s->layer].dd, s->ival );
+              direction_to_0877 ( b->s3.l2[s->layer].dd, sizeof(b->s3.l2[s->layer].dd), s->ival );
               b->mask |= BUOY_SEC3;
             }
           if ( b->s3.l2[s->layer].zzzz[0] == 0 ) // also stores pendent deep
@@ -218,7 +218,7 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         {
           if ( b->s2.TwTwTw[0] == 0 )
             {
-              if ( kelvin_to_snTTT ( aux, s->val ) )
+              if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
                 {
                   b->s2.sn[0] = aux[0];
                   strcpy ( b->s2.TwTwTw, aux + 1 );
@@ -230,7 +230,7 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         {
           if ( b->s3.l1[s->layer].TTTT[0] == 0 )
             {
-              kelvin_to_TTTT ( b->s3.l1[s->layer].TTTT, s->val );
+              kelvin_to_TTTT ( b->s3.l1[s->layer].TTTT, sizeof(b->s3.l1[s->layer].TTTT), s->val );
               b->mask |= BUOY_SEC3;
             }
           if ( b->s3.l1[s->layer].zzzz[0] == 0 ) // also stores pendent deep
@@ -245,7 +245,7 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
     case 49: // 0 22 049 Sea surface temperature
       if ( b->s2.TwTwTw[0] == 0 )
         {
-          if ( kelvin_to_snTTT ( aux, s->val ) )
+          if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               b->s2.sn[0] = aux[0];
               strcpy ( b->s2.TwTwTw, aux + 1 );
@@ -296,7 +296,7 @@ int temp_parse_x22 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
   switch ( s->a->desc.y )
     {
     case 43:
-      if ( kelvin_to_snTTT ( aux, s->val ) )
+      if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
         {
           t->a.s7.sn[0] = aux[0];
           t->b.s7.sn[0] = aux[0];

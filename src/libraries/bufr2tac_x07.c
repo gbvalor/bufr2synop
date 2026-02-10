@@ -24,34 +24,35 @@
 #include "bufr2tac.h"
 
 /*!
-  \fn char * grad_to_ec ( char *target, double grad )
+  \fn char * grad_to_ec ( char *target, size_t lmax, double grad )
   \brief Converts elevation in grads to ec (code table 1004)
   \param grad the elevation angle (degrees)
   \param target the resulting code
 */
-char * grad_to_ec ( char *target, double grad )
+char* grad_to_ec(char* target, size_t lmax, double grad)
 {
-  if ( grad < 5.0 )
-    strcpy ( target, "9" );
-  else if ( grad < 6.5 )
-    strcpy ( target, "8" );
-  else if ( grad < 8.0 )
-    strcpy ( target, "7" );
-  else if ( grad < 10.5 )
-    strcpy ( target, "6" );
-  else if ( grad < 13.5 )
-    strcpy ( target, "5" );
-  else if ( grad < 17.5 )
-    strcpy ( target, "4" );
-  else if ( grad < 25.0 )
-    strcpy ( target, "3" );
-  else if ( grad < 40.0 )
-    strcpy ( target, "2" );
-  else if ( grad >= 45.0 )
-    strcpy ( target, "1" );
-  else
-    strcpy ( target, "0" );
-  return target;
+    if (grad < 5.0) {
+        strncpy_safe(target, "9", lmax);
+    } else if (grad < 6.5) {
+        strncpy_safe(target, "8", lmax);
+    } else if (grad < 8.0) {
+        strncpy_safe(target, "7", lmax);
+    } else if (grad < 10.5) {
+        strncpy_safe(target, "6", lmax);
+    } else if (grad < 13.5) {
+        strncpy_safe(target, "5", lmax);
+    } else if (grad < 17.5) {
+        strncpy_safe(target, "4", lmax);
+    } else if (grad < 25.0) {
+        strncpy_safe(target, "3", lmax);
+    } else if (grad < 40.0) {
+        strncpy_safe(target, "2", lmax);
+    } else if (grad >= 45.0) {
+        strncpy_safe(target, "1", lmax);
+    } else {
+        strncpy_safe(target, "0", lmax);
+    }
+    return target;
 }
 
 /*!
@@ -62,95 +63,78 @@ char * grad_to_ec ( char *target, double grad )
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int syn_parse_x07 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
+int syn_parse_x07(struct synop_chunks* syn, struct bufr2tac_subset_state* s)
 {
-  // this is to avoid warning
-  if ( syn == NULL )
-    {
-      return 1;
+    // this is to avoid warning
+    if (syn == NULL) {
+        return 1;
     }
 
-  switch ( s->a->desc.y )
-    {
+    switch (s->a->desc.y) {
     case 1: // 0 07 001 . Heigh of station
     case 30: // 0 07 030 . Height of station ground above msl
     case 31: // 0 07 031 . Height of barometer above msl
-      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        {
-          return 0;
+        if (s->a->mask & DESCRIPTOR_VALUE_MISSING) {
+            return 0;
         }
-      if ( syn->s0.h0h0h0h0[0] == 0 )
-        {
-          if (s->ival > 9999 || s->ival < -9999)
-            return 1;
-          snprintf ( syn->s0.h0h0h0h0, sizeof(syn->s0.h0h0h0h0), "%04d", s->ival );
-          syn->s0.im[0] = '1';// set unit as m
-          s->mask |= SUBSET_MASK_HAVE_ALTITUDE;
+        if (syn->s0.h0h0h0h0[0] == 0) {
+            if (s->ival > 9999 || s->ival < -9999)
+                return 1;
+            snprintf(syn->s0.h0h0h0h0, sizeof(syn->s0.h0h0h0h0), "%04d", s->ival);
+            syn->s0.im[0] = '1'; // set unit as m
+            s->mask |= SUBSET_MASK_HAVE_ALTITUDE;
         }
-      s->alt = s->val;
-      break;
+        s->alt = s->val;
+        break;
 
     case 4: // 0 07 004 . Pressure at standard level
-      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        {
-          return 0;
+        if (s->a->mask & DESCRIPTOR_VALUE_MISSING) {
+            return 0;
         }
-      if ( s->ival == 100000 )
-        {
-          strcpy ( syn->s1.a3, "1" );
+        if (s->ival == 100000) {
+            strcpy(syn->s1.a3, "1");
+        } else if (s->ival == 92500) {
+            strcpy(syn->s1.a3, "2");
+        } else if (s->ival == 85000) {
+            strcpy(syn->s1.a3, "8");
+        } else if (s->ival == 70000) {
+            strcpy(syn->s1.a3, "7");
+        } else if (s->ival == 50000) {
+            strcpy(syn->s1.a3, "5");
         }
-      else if ( s->ival == 92500 )
-        {
-          strcpy ( syn->s1.a3, "2" );
-        }
-      else if ( s->ival == 85000 )
-        {
-          strcpy ( syn->s1.a3, "8" );
-        }
-      else if ( s->ival == 70000 )
-        {
-          strcpy ( syn->s1.a3, "7" );
-        }
-      else if ( s->ival == 50000 )
-        {
-          strcpy ( syn->s1.a3, "5" );
-        }
-      break;
+        break;
 
     case 21: // 0 07 021 . Elevation angle
-      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        {
-          return 0;
+        if (s->a->mask & DESCRIPTOR_VALUE_MISSING) {
+            return 0;
         }
-      grad_to_ec ( syn->s3.ec, s->val );
-      syn->mask |= SYNOP_SEC3;
-      break;
+        grad_to_ec(syn->s3.ec, sizeof(syn->s3.ec), s->val);
+        syn->mask |= SYNOP_SEC3;
+        break;
 
     case 32: // 0 07 032 Height of sensor above local ground
-      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        {
-          s->hsensor = -999.9; // clean value
-          return 0;
+        if (s->a->mask & DESCRIPTOR_VALUE_MISSING) {
+            s->hsensor = -999.9; // clean value
+            return 0;
         }
-      s->hsensor = s->val;
-      break;
+        s->hsensor = s->val;
+        break;
 
     case 33: // 0 07 033 Height of sensor above water surface
-      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        {
-          s->hwsensor = -999.9; // clean value
-          return 0;
+        if (s->a->mask & DESCRIPTOR_VALUE_MISSING) {
+            s->hwsensor = -999.9; // clean value
+            return 0;
         }
-      s->hwsensor = s->val;
-      break;
+        s->hwsensor = s->val;
+        break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
-        bufr2tac_set_error ( s, 0, "syn_parse_x07()", "Descriptor not parsed" );
-      break;
+        if (BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
+            bufr2tac_set_error(s, 0, "syn_parse_x07()", "Descriptor not parsed");
+        break;
     }
 
-  return 0;
+    return 0;
 }
 
 /*!
@@ -161,40 +145,35 @@ int syn_parse_x07 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int buoy_parse_x07 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *s )
+int buoy_parse_x07(const struct buoy_chunks* b, struct bufr2tac_subset_state* s)
 {
 
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    {
-      return 0;
+    if (s->a->mask & DESCRIPTOR_VALUE_MISSING) {
+        return 0;
     }
 
-  if ( b == NULL )
-    {
-      return 1;
+    if (b == NULL) {
+        return 1;
     }
 
-  switch ( s->a->desc.y )
-    {
+    switch (s->a->desc.y) {
     case 62: // 0 07 062 Depth below sea/water surface
     case 63: // 0 07 063 Profundity below sea/water level
-      if ( s->k_rep == ( s->i - 1 ) ) // Case of first layer after a replicator
+        if (s->k_rep == (s->i - 1)) // Case of first layer after a replicator
         {
-          s->layer = 0;
+            s->layer = 0;
+        } else {
+            (s->layer)++;
         }
-      else
-        {
-          ( s->layer ) ++;
-        }
-      s->deep = ( int ) ( s->val + 0.5 );
-      break;
+        s->deep = (int)(s->val + 0.5);
+        break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
-        bufr2tac_set_error ( s, 0, "buoy_parse_x07()", "Descriptor not parsed" );
-      break;
+        if (BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
+            bufr2tac_set_error(s, 0, "buoy_parse_x07()", "Descriptor not parsed");
+        break;
     }
-  return 0;
+    return 0;
 }
 
 /*!
@@ -205,46 +184,43 @@ int buoy_parse_x07 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int climat_parse_x07 ( const struct climat_chunks *c, struct bufr2tac_subset_state *s )
+int climat_parse_x07(const struct climat_chunks* c, struct bufr2tac_subset_state* s)
 {
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    {
-      return 0;
+    if (s->a->mask & DESCRIPTOR_VALUE_MISSING) {
+        return 0;
     }
 
-  // this is to avoid warning
-  if ( c == NULL )
-    {
-      return 1;
+    // this is to avoid warning
+    if (c == NULL) {
+        return 1;
     }
 
-  switch ( s->a->desc.y )
-    {
+    switch (s->a->desc.y) {
     case 1: // 0 07 001 . Heigh of station
     case 30: // 0 07 030 . Height of station ground above msl
     case 31: // 0 07 031 . Height of barometer above msl
-      s->alt = s->val;
-      break;
+        s->alt = s->val;
+        break;
 
     case 32: // 0 07 032 . Pressure of standard level
-      // Not a useful value for alphanumeric climat
-      if ( BUFR2TAC_DEBUG_LEVEL > 0 )
-        bufr2tac_set_error ( s, 0, "climat_parse_x07()", "Descriptor not parsed" );
-      break;
+        // Not a useful value for alphanumeric climat
+        if (BUFR2TAC_DEBUG_LEVEL > 0)
+            bufr2tac_set_error(s, 0, "climat_parse_x07()", "Descriptor not parsed");
+        break;
 
     case 4: // Pressure of standard level
-      // Not a useful value for alphanumeric climat
-      if ( BUFR2TAC_DEBUG_LEVEL > 0 )
-        bufr2tac_set_error ( s, 0, "climat_parse_x07()", "Descriptor not parsed" );
-      break;
+        // Not a useful value for alphanumeric climat
+        if (BUFR2TAC_DEBUG_LEVEL > 0)
+            bufr2tac_set_error(s, 0, "climat_parse_x07()", "Descriptor not parsed");
+        break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
-        bufr2tac_set_error ( s, 0, "climat_parse_x07()", "Descriptor not parsed" );
-      break;
+        if (BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
+            bufr2tac_set_error(s, 0, "climat_parse_x07()", "Descriptor not parsed");
+        break;
     }
 
-  return 0;
+    return 0;
 }
 
 /*!
@@ -255,48 +231,42 @@ int climat_parse_x07 ( const struct climat_chunks *c, struct bufr2tac_subset_sta
 
   It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int temp_parse_x07 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
+int temp_parse_x07(struct temp_chunks* t, struct bufr2tac_subset_state* s)
 {
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    {
-      return 0;
+    if (s->a->mask & DESCRIPTOR_VALUE_MISSING) {
+        return 0;
     }
 
-// this is to avoid warning
-  if ( t == NULL )
-    {
-      return 1;
+    // this is to avoid warning
+    if (t == NULL) {
+        return 1;
     }
 
-  switch ( s->a->desc.y )
-    {
-    case 4:  // 0 07 004 . Pressure
-      if ( s->rep > 0 && s->r->n > 0 )
-        {
-          s->r->raw[s->r->n - 1].p = s->val;
+    switch (s->a->desc.y) {
+    case 4: // 0 07 004 . Pressure
+        if (s->rep > 0 && s->r->n > 0) {
+            s->r->raw[s->r->n - 1].p = s->val;
+        } else if (s->w->n > 0) {
+            s->w->raw[s->w->n - 1].p = s->val;
         }
-      else if ( s->w->n > 0 )
-        {
-          s->w->raw[s->w->n - 1].p = s->val;
-        }
-      break;
+        break;
 
     case 30: // 0 07 030 . Height of station ground above msl
-      snprintf ( t->a.s1.h0h0h0h0, sizeof(t->a.s1.h0h0h0h0), "%04.0lf" , s->val );
-      snprintf ( t->b.s1.h0h0h0h0, sizeof(t->b.s1.h0h0h0h0), "%04.0lf" , s->val );
-      snprintf ( t->c.s1.h0h0h0h0, sizeof(t->c.s1.h0h0h0h0), "%04.0lf" , s->val );
-      snprintf ( t->d.s1.h0h0h0h0, sizeof(t->d.s1.h0h0h0h0), "%04.0lf" , s->val );
-      break;
+        snprintf(t->a.s1.h0h0h0h0, sizeof(t->a.s1.h0h0h0h0), "%04.0lf", s->val);
+        snprintf(t->b.s1.h0h0h0h0, sizeof(t->b.s1.h0h0h0h0), "%04.0lf", s->val);
+        snprintf(t->c.s1.h0h0h0h0, sizeof(t->c.s1.h0h0h0h0), "%04.0lf", s->val);
+        snprintf(t->d.s1.h0h0h0h0, sizeof(t->d.s1.h0h0h0h0), "%04.0lf", s->val);
+        break;
 
     case 31: // 0 07 031 . Height of barometer above msl
-      s->alt = s->val;
-      break;
+        s->alt = s->val;
+        break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
-        bufr2tac_set_error ( s, 0, "temp_parse_x07()", "Descriptor not parsed" );
-      break;
+        if (BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
+            bufr2tac_set_error(s, 0, "temp_parse_x07()", "Descriptor not parsed");
+        break;
     }
 
-  return 0;
+    return 0;
 }

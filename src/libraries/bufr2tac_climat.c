@@ -49,7 +49,7 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr2tac_subset_state *
   // reject if still not coded type
   if ( strcmp ( s->type_report,"CLIMAT" ) )
     {
-      snprintf ( err, sizeof(err), "bufr2tac: parse_subset_as_climat(): '%s' reports still not decoded in this software", s->type_report );
+      snprintf ( err, ERR_SIZE, "bufr2tac: parse_subset_as_climat(): '%s' reports still not decoded in this software", s->type_report );
       return 1;
     }
 

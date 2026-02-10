@@ -21,13 +21,8 @@
  \file bufrtotac.h
  \brief Include header file for binary bufrtotac
 */
-#include "bufrdeco.h"
 #include "bufr2tac.h"
-
-/*! \def ERR_SIZE
- *  \brief Size (in bytes) of error strings 
- */
-#define ERR_SIZE (512U)
+#include "bufrdeco.h"
 
 extern struct bufrdeco BUFR;
 extern struct bufrdeco_subset_sequence_data SEQ;
@@ -41,7 +36,7 @@ extern char ERR[ERR_SIZE];
 extern char INPUTFILE[BUFRDECO_PATH_LENGTH];
 extern char OUTPUTFILE[BUFRDECO_PATH_LENGTH];
 extern char BUFR_XFILE[BUFRDECO_PATH_LENGTH];
-extern char OFFSETFILE[BUFRDECO_PATH_LENGTH + 8]; 
+extern char OFFSETFILE[BUFRDECO_PATH_LENGTH + 8];
 extern char BUFRTABLES_DIR[BUFRDECO_PATH_LENGTH];
 extern char LISTOFFILES[BUFRDECO_PATH_LENGTH];
 extern int NFILES;
@@ -68,14 +63,14 @@ extern int PRINT_JSON_SEC1;
 extern int PRINT_JSON_SEC2;
 extern int PRINT_JSON_SEC3;
 extern int PRINT_JSON_EXPANDED_TREE;
-extern FILE *FL;
-extern FILE *OUT;
+extern FILE* FL;
+extern FILE* OUT;
 
 // functions
-void bufrtotac_print_version( void );
-void bufrtotac_print_usage ( void );
-int bufrtotac_set_bufrdeco_bitmask (struct bufrdeco *b);
-int bufrtotac_read_args ( int _argc, char * _argv[] );
-char * get_bufrfile_path ( char *filename, char *fileoffset, char *err );
-int bufrtotac_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subset_state *st, struct bufrdeco *b,
-                                     char *err );
+void bufrtotac_print_version(void);
+void bufrtotac_print_usage(void);
+int bufrtotac_set_bufrdeco_bitmask(struct bufrdeco* b);
+int bufrtotac_read_args(int _argc, char* _argv[]);
+char* get_bufrfile_path(char* filename, char* fileoffset, char* err);
+int bufrtotac_parse_subset_sequence(struct metreport* m, struct bufr2tac_subset_state* st, struct bufrdeco* b,
+    char* err);

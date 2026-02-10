@@ -24,12 +24,12 @@
 #include "bufr2tac.h"
 
 /*!
-  \fn char * pascal_to_ppp ( char *target, double P )
+  \fn char * pascal_to_ppp ( char *target, size_t lmax, double P )
   \brief Converts pascal values (variation) into a ppp string
   \param P the pressure variation in Pascal units
   \param target string with the result
 */
-char * pascal_to_ppp ( char *target, double P )
+char * pascal_to_ppp ( char *target, size_t lmax, double P )
 {
   int ic;
   if ( P > 0 )
@@ -40,19 +40,19 @@ char * pascal_to_ppp ( char *target, double P )
     {
       ic = ( int ) ( -P * 0.1 );
     }
-  snprintf ( target, sizeof(target), "%03d", ic % 1000 );
+  snprintf ( target, lmax, "%03d", ic % 1000 );
   return target;
 }
 
 /*!
-  \fn char * pascal_to_pnpnpn ( char *target, double P )
+  \fn char * pascal_to_pnpnpn ( char *target, size_t lmax, double P )
   \brief Converts pascal values into a pnpnpn string
   \param P the pressure variation in Pascal units
   \param target string with the result
   If the value is below 10000.0 it should be expressed in decapascal units
   otherwise in hectopascal units
 */
-char * pascal_to_pnpnpn ( char *target, double P )
+char * pascal_to_pnpnpn ( char *target, size_t lmax, double P )
 {
   int ic;
   if ( P >= 10000.0 ) 
@@ -65,22 +65,22 @@ char * pascal_to_pnpnpn ( char *target, double P )
       if (ic == 1000)
         ic = 999;
     }
-  snprintf ( target, sizeof(target), "%03d", ic % 1000 );
+  snprintf ( target, lmax, "%03d", ic % 1000 );
   return target;
 }
 
 
 /*!
-  \fn char * pascal_to_PPPP ( char *target, double P )
+  \fn char * pascal_to_PPPP ( char *target, size_t lmax, double P )
   \brief Converts pascal values into a PPPP string
   \param P the pressure variation in Pascal units
   \param target string with the result
 */
-char * pascal_to_PPPP ( char *target, double P )
+char * pascal_to_PPPP ( char *target, size_t lmax, double P )
 {
   int ic;
   ic = ( int ) ( P * 0.1 );
-  snprintf ( target, sizeof(target), "%04d", ic % 10000 );
+  snprintf ( target, lmax, "%04d", ic % 10000 );
   return target;
 }
 
@@ -106,7 +106,7 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
   switch ( s->a->desc.y )
     {
     case 4: // 0 10 004 . Pressure
-      pascal_to_PPPP ( aux, s->val );
+      pascal_to_PPPP ( aux, sizeof(aux), s->val );
       strcpy ( syn->s1.PoPoPoPo, aux );
       syn->mask |= SYNOP_SEC1;
       break;
@@ -117,21 +117,21 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       break;
 
     case 51: // 0 10 051 . Pressure reduced to mean sea level
-      pascal_to_PPPP ( aux, s->val );
+      pascal_to_PPPP ( aux, sizeof(aux), s->val );
       memcpy ( syn->s1.PPPP, aux, 4 );
       syn->s1.PPPP[4] = 0;
       syn->mask |= SYNOP_SEC1;
       break;
 
     case 61: // 0 10 061 . 3-hour pressure change
-      pascal_to_ppp ( aux, s->val );
+      pascal_to_ppp ( aux, sizeof(aux), s->val );
       memcpy(syn->s1.ppp, aux, 3);
       syn->s1.ppp[3] = 0;
       syn->mask |= SYNOP_SEC1;
       break;
 
     case 62: // 0 10 062 . 24-hour pressure change
-      pascal_to_ppp ( aux, s->val );
+      pascal_to_ppp ( aux, sizeof(aux), s->val );
       memcpy ( syn->s3.ppp24, aux, 3 );
       syn->s3.ppp24[3] = 0;
       if ( s->val >= 0 )
@@ -181,13 +181,13 @@ int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
     {
 
     case 4: // 0 10 004 . Pressure
-      pascal_to_PPPP ( aux, s->val );
+      pascal_to_PPPP ( aux, sizeof(aux), s->val );
       strcpy ( b->s1.PoPoPoPo, aux );
       b->mask |= BUOY_SEC1;
       break;
 
     case 51: // 0 10 051 . Pressure reduced to mean sea level
-      pascal_to_PPPP ( aux, s->val );
+      pascal_to_PPPP ( aux, sizeof(aux), s->val );
       strcpy ( b->s1.PPPP, aux );
       b->mask |= BUOY_SEC1;
       break;
@@ -198,7 +198,7 @@ int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       break;
 
     case 61: // 0 10 061 . 3-hour pressure change
-      pascal_to_ppp ( aux, s->val );
+      pascal_to_ppp ( aux, sizeof(aux), s->val );
       memcpy( b->s1.ppp, aux, 3 );
       b->s1.ppp[3] = 0;
       b->mask |= BUOY_SEC1;
@@ -240,7 +240,7 @@ int climat_parse_x10 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
     case 4: // 0 10 004 . Pressure
       if ( s->isq_val == 4 )
         {
-          pascal_to_PPPP ( aux, s->val );
+          pascal_to_PPPP ( aux, sizeof(aux), s->val );
           if ( s->is_normal == 0 )
             {
               strcpy ( c->s1.PoPoPoPo, aux );
@@ -273,7 +273,7 @@ int climat_parse_x10 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
     case 51: // 0 10 051 . Pressure reduced to mean sea level
       if ( s->isq_val == 4 )
         {
-          pascal_to_PPPP ( aux, s->val );
+          pascal_to_PPPP ( aux, sizeof(aux), s->val );
           if ( s->is_normal == 0 )
             {
               strcpy ( c->s1.PPPP, aux );

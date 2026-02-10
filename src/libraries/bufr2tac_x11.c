@@ -31,7 +31,7 @@
 
   returns the pointer to \a tt
 */
-char * secs_to_tt ( char *tt, int secs )
+char * secs_to_tt ( char *tt, size_t lmax, int secs )
 {
   int i;
 
@@ -46,45 +46,45 @@ char * secs_to_tt ( char *tt, int secs )
 
   if ( i <= 60 )
     {
-      snprintf ( tt, sizeof(tt), "%02d", i );
+      snprintf ( tt, lmax, "%02d", i );
     }
   else if ( i < 700 )
     {
-      snprintf ( tt, sizeof(tt), "61" );
+      snprintf ( tt, lmax, "61" );
     }
   else if ( i < 800 )
     {
-      snprintf ( tt, sizeof(tt), "62" );
+      snprintf ( tt, lmax, "62" );
     }
   else if ( i < 900 )
     {
-      snprintf ( tt, sizeof(tt), "63" );
+      snprintf ( tt, lmax, "63" );
     }
   else if ( i < 1000 )
     {
-      snprintf ( tt, sizeof(tt), "64" );
+      snprintf ( tt, lmax, "64" );
     }
   else if ( i < 1100 )
     {
-      snprintf ( tt, sizeof(tt), "65" );
+      snprintf ( tt, lmax, "65" );
     }
   else if ( i < 1200 )
     {
-      snprintf ( tt, sizeof(tt), "66" );
+      snprintf ( tt, lmax, "66" );
     }
   else if ( i < 1800 )
     {
-      snprintf ( tt, sizeof(tt), "67" );
+      snprintf ( tt, lmax, "67" );
     }
   else
     {
-      snprintf ( tt, sizeof(tt), "68" );
+      snprintf ( tt, lmax, "68" );
     }
   return tt;
 }
 
 /*!
-  \fn void direction_to_0877 ( char *dd, uint32_t ival );
+  \fn void direction_to_0877 ( char *dd, size_t lmax, uint32_t ival );
   \brief encode dd from ival
   \param dd target string according to WMO 306 Vol I.1 (TAC), I.2 (BUFR)
   \param ival wind direction (value range: 0 .. 511)
@@ -161,7 +161,7 @@ Wind and wind waves reporting standards:
     Calm: speed: 0, direction: 0°
     Normal observation: speed >0, direction 1° - 360°
 */
-void direction_to_0877 ( char *dd, uint32_t ival )
+void direction_to_0877 ( char *dd, size_t lmax, uint32_t ival )
 {
   uint32_t ix;
 
@@ -169,7 +169,7 @@ void direction_to_0877 ( char *dd, uint32_t ival )
       strcpy ( dd, "00" );
   } else {
       ix = (( ival + 5 ) / 10 ) % 36;
-      snprintf ( dd, sizeof(dd), "%02u", ix == 0u ? 36u : ix );
+      snprintf ( dd, lmax, "%02u", ix == 0u ? 36u : ix );
   }
 }
 
@@ -181,7 +181,7 @@ void direction_to_0877 ( char *dd, uint32_t ival )
   \param dd wind direction (degrees)
   \param vv wind speed
 */
-char * wind_to_dndnfnfnfn ( char * target, double dd, double ff )
+char * wind_to_dndnfnfnfn ( char * target, size_t lmax, double dd, double ff )
 {
   int ix;
 
@@ -192,7 +192,7 @@ char * wind_to_dndnfnfnfn ( char * target, double dd, double ff )
     }
 
   ix = ( int ) ( ( dd + 2.5 ) / 5 ) * 5 * 100 + ( int ) ( ff + 0.5 );
-  snprintf ( target, sizeof(target), "%05d", ix );
+  snprintf ( target, lmax, "%05d", ix );
   return target;
 }
 
@@ -216,7 +216,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     {
     case 1: // 0 11 001 . Wind direction
     case 11: // 0 11 011 . Wind direction at 10 meters
-      direction_to_0877 ( syn->s1.dd, s->ival );
+      direction_to_0877 ( syn->s1.dd, sizeof(syn->s1.dd), s->ival );
       syn->mask |= SYNOP_SEC1;
       break;
 
@@ -281,7 +281,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           if ( s->mask & SUBSET_MASK_HAVE_GUST )
             {
               snprintf ( syn->s5.d9.misc[syn->s5.d9.n].SpSp, sizeof(syn->s5.d9.misc[syn->s5.d9.n].SpSp), "907" );
-              secs_to_tt ( syn->s5.d9.misc[syn->s5.d9.n].spsp, s->itval );
+              secs_to_tt ( syn->s5.d9.misc[syn->s5.d9.n].spsp, sizeof(syn->s5.d9.misc[syn->s5.d9.n].spsp), s->itval );
               syn->s5.d9.n++;
               snprintf ( syn->s5.d9.misc[syn->s5.d9.n].SpSp, sizeof(syn->s5.d9.misc[syn->s5.d9.n].SpSp), "911" );
               s->SnSn = 911;
@@ -306,7 +306,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           else
             {
               snprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, sizeof(syn->s3.d9.misc[syn->s3.d9.n].SpSp), "907" );
-              secs_to_tt ( syn->s3.d9.misc[syn->s3.d9.n].spsp, s->itval );
+              secs_to_tt ( syn->s3.d9.misc[syn->s3.d9.n].spsp, sizeof(syn->s3.d9.misc[syn->s3.d9.n].spsp), s->itval );
               syn->s3.d9.n++;
               snprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, sizeof(syn->s3.d9.misc[syn->s3.d9.n].SpSp), "911" );
               s->SnSn = 911;
@@ -338,7 +338,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           return 0;
         }
       snprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, sizeof(syn->s3.d9.misc[syn->s3.d9.n].SpSp), "907" );
-      secs_to_tt ( syn->s3.d9.misc[syn->s3.d9.n].spsp, s->itval );
+      secs_to_tt ( syn->s3.d9.misc[syn->s3.d9.n].spsp, sizeof(syn->s3.d9.misc[syn->s3.d9.n].spsp), s->itval );
       syn->s3.d9.n++;
       snprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, sizeof(syn->s3.d9.misc[syn->s3.d9.n].SpSp), "912" );
       s->SnSn = 912;
@@ -414,7 +414,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           if ( s->mask & SUBSET_MASK_HAVE_GUST )
             {
               snprintf ( syn->s5.d9.misc[syn->s5.d9.n].SpSp, sizeof(syn->s5.d9.misc[syn->s5.d9.n].SpSp), "907" );
-              secs_to_tt ( syn->s5.d9.misc[syn->s5.d9.n].spsp, s->itval );
+              secs_to_tt ( syn->s5.d9.misc[syn->s5.d9.n].spsp, sizeof(syn->s5.d9.misc[syn->s5.d9.n].spsp), s->itval );
               syn->s5.d9.n++;
               snprintf ( syn->s5.d9.misc[syn->s5.d9.n].SpSp, sizeof(syn->s5.d9.misc[syn->s5.d9.n].SpSp), "911" );
               if ( syn->s0.iw[0] == '1' )
@@ -438,7 +438,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           else
             {
               snprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, sizeof(syn->s3.d9.misc[syn->s3.d9.n].SpSp), "907" );
-              secs_to_tt ( syn->s3.d9.misc[syn->s3.d9.n].spsp, s->itval );
+              secs_to_tt ( syn->s3.d9.misc[syn->s3.d9.n].spsp, sizeof(syn->s3.d9.misc[syn->s3.d9.n].spsp), s->itval );
               syn->s3.d9.n++;
               snprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, sizeof(syn->s3.d9.misc[syn->s3.d9.n].SpSp), "911" );
               if ( syn->s0.iw[0] == '1' )
@@ -491,7 +491,7 @@ int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
     {
     case 1: // 0 11 001 . Wind direction
     case 11: // 0 11 011 . Wind direction at 10m
-      direction_to_0877 ( b->s1.dd, s->ival );
+      direction_to_0877 ( b->s1.dd, sizeof(b->s1.dd), s->ival );
       b->mask |= BUOY_SEC1;
       break;
     

@@ -31,7 +31,7 @@
   \param lon longitude (degree, E positive)
   \param target resulting MMM string
 */
-char * latlon_to_MMM ( char *target, double lat, double lon )
+char * latlon_to_MMM ( char *target, size_t lmax, double lat, double lon )
 {
   int col, row, ori = 0;
 
@@ -51,7 +51,7 @@ char * latlon_to_MMM ( char *target, double lat, double lon )
       row = ( int ) ( -lat * 0.1 );
     }
 
-  snprintf ( target, sizeof(target), "%03d", col + ori + row * 36 );
+  snprintf ( target, lmax, "%03d", col + ori + row * 36 );
 
   return target;
 }
@@ -112,7 +112,7 @@ int syn_parse_x06 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
   // check if about MMM
   if ( ( syn->s0.MMM[0] == 0 ) && syn->s0.LaLaLa[0] && syn->s0.LoLoLoLo[0] )
     {
-      latlon_to_MMM ( syn->s0.MMM, s->lat, s->lon );
+      latlon_to_MMM ( syn->s0.MMM, sizeof(syn->s0.MMM), s->lat, s->lon );
     }
 
   return 0;
@@ -247,7 +247,7 @@ int temp_parse_x06 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
       // check if about MMM
       if ( ( t->a.s1.MMM[0] == 0 ) && t->a.s1.LaLaLa[0] && t->a.s1.LoLoLoLo[0] )
         {
-          latlon_to_MMM ( t->a.s1.MMM, s->lat, s->lon );
+          latlon_to_MMM ( t->a.s1.MMM, sizeof(t->a.s1.MMM), s->lat, s->lon );
           strcpy ( t->b.s1.MMM, t->a.s1.MMM );
           strcpy ( t->c.s1.MMM, t->a.s1.MMM );
           strcpy ( t->d.s1.MMM, t->a.s1.MMM );

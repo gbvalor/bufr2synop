@@ -52,7 +52,7 @@ if (CMAKE_C_COMPILER_ID MATCHES "Clang")
   set( compiler_id_message "*****  Using Clang compiler ****")
 elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
   # using GNU compiler
-  set(CMAKE_C_FLAGS "-O2 -Wall -W -Wextra -g -Wno-stringop-truncation")
+  set(CMAKE_C_FLAGS "-O2 -Wall -W -Wextra -g -Wno-stringop-truncation -Wno-format-truncation")
   if (APPLE)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-format-overflow" )
   else()

@@ -132,7 +132,7 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
   // reject if still not coded type
   if ( strcmp ( s->type_report,"AAXX" ) && strcmp ( s->type_report,"BBXX" ) && strcmp ( s->type_report,"OOXX" ) )
     {
-      snprintf ( err, sizeof(err), "bufr2tac: parse_subset_as_synop(): '%s' reports still not decoded in this software", s->type_report );
+      snprintf ( err, ERR_SIZE, "bufr2tac: parse_subset_as_synop(): '%s' reports still not decoded in this software", s->type_report );
       return 1;
     }
 
@@ -247,7 +247,7 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
        ( ( s->mask & SUBSET_MASK_HAVE_MINUTE ) == 0 )
      )
     {
-      snprintf ( err, sizeof(err), "bufr2tac: %s(): lack of mandatory descriptor in sequence", __func__ );
+      snprintf ( err, ERR_SIZE, "bufr2tac: %s(): lack of mandatory descriptor in sequence", __func__ );
       return 1;
     }
 
@@ -266,7 +266,7 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
         }
       else
         {
-          snprintf ( err, sizeof(err), "bufr2tac: %s(): lack of mandatory index station for AAXX report", __func__ );
+          snprintf ( err, ERR_SIZE, "bufr2tac: %s(): lack of mandatory index station for AAXX report", __func__ );
           return 1;
         }
     }

@@ -87,7 +87,7 @@ int parse_subset_as_buoy ( struct metreport *m, struct bufr2tac_subset_state *s,
   // reject if still not coded type
   if ( strcmp ( s->type_report,"ZZYY" ) )
     {
-      snprintf ( err, sizeof(err), "bufr2tac: '%s' report still not decoded in this software", s->type_report );
+      snprintf ( err, ERR_SIZE, "bufr2tac: '%s' report still not decoded in this software", s->type_report );
       return 1;
     }
 
@@ -201,7 +201,7 @@ int parse_subset_as_buoy ( struct metreport *m, struct bufr2tac_subset_state *s,
        ( ( s->mask & SUBSET_MASK_HAVE_DAY ) == 0 ) ||
        ( ( s->mask & SUBSET_MASK_HAVE_HOUR ) == 0 ) )
     {
-      snprintf ( err, sizeof(err), "bufr2tac: parse_subset_as_buoy(): lack of mandatory descriptor in sequence" );
+      snprintf ( err, ERR_SIZE, "bufr2tac: parse_subset_as_buoy(): lack of mandatory descriptor in sequence" );
       return 1;
     }
 

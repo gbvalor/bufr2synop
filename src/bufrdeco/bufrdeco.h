@@ -341,6 +341,11 @@ extern "C" {
  */
 #define BUFRDECO_PATH_LENGTH (256U)
 
+/*! \def ERR_SIZE
+ *  \brief Size (in bytes) of error strings
+ */
+#define ERR_SIZE (512U)
+
 /*!
  * \def BUFRDECO_TABLES_CACHE_SIZE
  * \brief Max number of structs \ref bufr_tables in a \ref bufr_tables_cache
@@ -387,22 +392,24 @@ typedef int32_t ibuf_t;
  *  \def bufrdeco_assert
  *  \brief Check a expression and exit if it fails
  */
-#define bufrdeco_assert(__my_expr__)                                           \
-    if (!(__my_expr__)) {                                                      \
-        fprintf(stderr, "%s: %s():%d -> ***The expression (%s) is false***\n", \
-            basename(__FILE__), __func__, __LINE__, #__my_expr__);             \
-        exit(EXIT_FAILURE);                                                    \
-    }
+#define bufrdeco_assert(__my_expr__)                                                 \
+    do {                                                                             \
+        if (!(__my_expr__)) {                                                        \
+            fprintf(stderr, "%s: %s():%d -> ***The expression (%s) is false***\n",   \
+                basename((char*)__FILE__), (char*)__func__, __LINE__, #__my_expr__); \
+            exit(EXIT_FAILURE);                                                      \
+        }                                                                            \
+    } while (0)
 
 /*!
  *  \def bufrdeco_assert_with_return_val
  *  \brief Check a expression and returns a given value if it fails
  */
-#define bufrdeco_assert_with_return_val(__my_expr__, __returnval__)            \
-    if (!(__my_expr__)) {                                                      \
-        fprintf(stderr, "%s: %s():%d -> ***The expression (%s) is false***\n", \
-            basename(__FILE__), __func__, __LINE__, #__my_expr__);             \
-        return (__returnval__);                                                \
+#define bufrdeco_assert_with_return_val(__my_expr__, __returnval__)              \
+    if (!(__my_expr__)) {                                                        \
+        fprintf(stderr, "%s: %s():%d -> ***The expression (%s) is false***\n",   \
+            basename((char*)__FILE__), (char*)__func__, __LINE__, #__my_expr__); \
+        return (__returnval__);                                                  \
     }
 
 #ifdef DEBUG_TIME

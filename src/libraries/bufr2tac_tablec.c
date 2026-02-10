@@ -139,7 +139,7 @@ char* get_explained_table_val(char* expl, size_t dim, const char tablec[MAXLINES
     nl = strtol(&tablec[i][21], &c, 10);
 
     // if match then we have finished the search
-    strcpy(expl, &tablec[i][24]);
+    strncpy_safe(expl, &tablec[i][24], dim);
     if (nl > 1) {
         for (nv = 1; nv < nl; nv++)
             strcat_safe(expl, &tablec[i + nv][22], dim);
@@ -163,7 +163,7 @@ char* get_explained_table_val(char* expl, size_t dim, const char tablec[MAXLINES
 */
 char* get_explained_flag_val(char* expl, size_t dim, const char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec, const struct bufr_descriptor* d, unsigned long ival)
 {
-    char *c, *s;
+    char* c;
     unsigned long test, test0;
     unsigned long nb, nx, v, nl;
     size_t i, j;
@@ -189,8 +189,7 @@ char* get_explained_flag_val(char* expl, size_t dim, const char tablec[MAXLINES_
         return NULL;
 
     // read a value
-    s = expl;
-    s[0] = '\0';
+    expl[0] = '\0';
 
     for (j = 0, test0 = 2; j < nb && i < nlines_tablec; i++) {
         if (tablec[i][12] != ' ') {
@@ -203,12 +202,14 @@ char* get_explained_flag_val(char* expl, size_t dim, const char tablec[MAXLINES_
                 if (ival == 0) {
                     nl = strtol(&tablec[i][21], &c, 10);
                     if (strlen(expl) && (strlen(expl) + 1) < dim)
-                        s += snprintf(s, dim - (size_t)(s - expl), "|");
-                    s += snprintf(s, dim - (size_t)(s - expl), "%s", &tablec[i][24]);
+                        strcat_safe(expl, "|", dim);
+
+                    strcat_safe(expl, &tablec[i][24], dim);
+
                     if (nl > 1) {
                         for (nx = 1; nx < nl; nx++)
                             if ((strlen(expl) + strlen(&tablec[i + nx][22])) < dim) {
-                                s += snprintf(s, dim - (size_t)(s - expl), "%s", &tablec[i + nx][22]);
+                                strcat_safe(expl, &tablec[i + nx][22], dim);
                             }
                     }
                     return expl;
@@ -222,12 +223,14 @@ char* get_explained_flag_val(char* expl, size_t dim, const char tablec[MAXLINES_
                 // read how many lines for the descriptors
                 nl = strtol(&tablec[i][21], &c, 10);
                 if (strlen(expl) && (strlen(expl) + 1) < dim)
-                    s += snprintf(s, dim - (size_t)(s - expl), "|");
-                s += snprintf(s, dim - (size_t)(s - expl), "%s", &tablec[i][24]);
+                    strcat_safe(expl, "|", dim);
+
+                strcat_safe(expl, &tablec[i][24], dim);
+
                 if (nl > 1) {
                     for (nx = 1; nx < nl; nx++)
                         if ((strlen(expl) + strlen(&tablec[i + nx][22])) < dim) {
-                            s += snprintf(s, dim - (size_t)(s - expl), "%s", &tablec[i + nx][22]);
+                            strcat_safe(expl, &tablec[i + nx][22], dim);
                         }
                 }
 

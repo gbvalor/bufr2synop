@@ -24,12 +24,12 @@
 #include "bufr2tac.h"
 
 /*!
-  \fn char * kelvin_to_snTTT ( char *target, double T )
+  \fn char * kelvin_to_snTTT ( char *target, size_t lmax, double T )
   \brief converts a kelvin temperature value into a snTTT string
   \param T the temperature ( Kelvin )
   \param target string with the result
 */
-char * kelvin_to_snTTT ( char *target, double T )
+char * kelvin_to_snTTT ( char *target, size_t lmax, double T )
 {
   int ic;
   double Tx = T;
@@ -51,22 +51,22 @@ char * kelvin_to_snTTT ( char *target, double T )
   ic = ( int ) ( floor ( 10.0 * ( Tx - 273.15 ) + 0.45 ) );
   if ( ic < 0 )
     {
-      snprintf ( target, sizeof(target), "1%03d",  -ic );
+      snprintf ( target, lmax, "1%03d",  -ic );
     }
   else
     {
-      snprintf ( target, sizeof(target), "0%03d",  ic );
+      snprintf ( target, lmax, "0%03d",  ic );
     }
   return target;
 }
 
 /*!
-  \fn char * kelvin_to_snTT ( char *target, double T )
+  \fn char * kelvin_to_snTT ( char *target, size_t lmax, double T )
   \brief converts a kelvin temperature value into a snTT string
   \param T the temperature ( Kelvin )
   \param target string with the result
 */
-char * kelvin_to_snTT ( char *target, double T )
+char * kelvin_to_snTT ( char *target, size_t lmax, double T )
 {
   int ic;
   if ( T < 173.65 || T > 340.0 )
@@ -78,22 +78,22 @@ char * kelvin_to_snTT ( char *target, double T )
   ic = ( int ) ( floor ( ( T - 273.15 ) + 0.5 ) );
   if ( ic < 0 )
     {
-      snprintf ( target, sizeof(target), "1%02d", -ic );
+      snprintf ( target, lmax, "1%02d", -ic );
     }
   else
     {
-      snprintf ( target, sizeof(target), "%03d", ic );
+      snprintf ( target, lmax, "%03d", ic );
     }
   return target;
 }
 
 /*!
-  \fn char * kelvin_to_TT ( char *target, double T )
+  \fn char * kelvin_to_TT ( char *target, size_t lmax, double T )
   \brief converts a kelvin temperature value into a TT string
   \param T the temperature ( Kelvin )
   \param target string with the result
 */
-char * kelvin_to_TT ( char *target, double T )
+char * kelvin_to_TT ( char *target, size_t lmax, double T )
 {
   int ic;
   if ( T < 150.0 || T > 340.0 )
@@ -105,22 +105,22 @@ char * kelvin_to_TT ( char *target, double T )
   ic = ( int ) ( floor ( ( T - 273.15 ) + 0.5 ) );
   if ( ic < 0 )
     {
-      snprintf ( target, sizeof(target), "%02d", 50 - ic );
+      snprintf ( target, lmax, "%02d", 50 - ic );
     }
   else
     {
-      snprintf ( target, sizeof(target), "%02d", ic );
+      snprintf ( target, lmax, "%02d", ic );
     }
   return target;
 }
 
 /*!
-  \fn char * kelvin_to_TTTT ( char *target, double T )
+  \fn char * kelvin_to_TTTT ( char *target, size_t lmax, double T )
   \brief converts a kelvin temperature value into a TTTT string
   \param T the temperature ( Kelvin )
   \param target string with the result
 */
-char * kelvin_to_TTTT ( char *target, double T )
+char * kelvin_to_TTTT ( char *target, size_t lmax, double T )
 {
   int ic;
   if ( T < 150.0 || T > 340.0 )
@@ -133,7 +133,7 @@ char * kelvin_to_TTTT ( char *target, double T )
     {
       ic = 5000 - ic;
     }
-  snprintf ( target, sizeof(target), "%04d", ic );
+  snprintf ( target, lmax, "%04d", ic );
   return target;
 }
 
@@ -144,13 +144,13 @@ char * kelvin_to_TTTT ( char *target, double T )
   \param target result as string
   \param T temperature (kelvin)
 */
-char * kelvin_to_TTTa ( char *target, double T )
+char * kelvin_to_TTTa ( char *target, size_t lmax, double T )
 {
   int ix;
 
   if ( T == MISSING_REAL )
     {
-      snprintf ( target, sizeof(target), "///" );
+      snprintf ( target, lmax, "///" );
       return target;
     }
 
@@ -165,18 +165,18 @@ char * kelvin_to_TTTa ( char *target, double T )
       ix = ( -ix );
       ix |= 1;
     }
-  snprintf ( target, sizeof(target), "%03d", ix );
+  snprintf ( target, lmax, "%03d", ix );
   return target;
 }
 
 /*!
-  \fn  char * dewpoint_depression_to_DnDn ( char * target, double T, double Td )
+  \fn  char * dewpoint_depression_to_DnDn ( char * target, size_t lmax, double T, double Td )
   \brief Set DnDn (dewpoint depression)
   \param target string to set as result
   \param T temperature (Kelvin)
   \param Td dewpoint (Kelvin)
 */
-char * dewpoint_depression_to_DnDn ( char * target, double T, double Td )
+char * dewpoint_depression_to_DnDn ( char * target, size_t lmax, double T, double Td )
 {
   int ix;
   double dpd = T - Td;
@@ -204,7 +204,7 @@ char * dewpoint_depression_to_DnDn ( char * target, double T, double Td )
     {
       ix = 50 + ( ix + 5 ) / 10;
     }
-  snprintf ( target, sizeof(target), "%02d", ix );
+  snprintf ( target, lmax, "%02d", ix );
 
   return target;
 }
@@ -234,7 +234,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 104: // 0 12 104 . Air temperature at 2 m
       if ( syn->s1.TTT[0] == 0 )
         {
-          if ( kelvin_to_snTTT ( aux, s->val ) )
+          if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               syn->s1.sn1[0] = aux[0];
               strcpy ( syn->s1.TTT, aux + 1 );
@@ -251,7 +251,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 106: // 0 12 106 . Dewpoint temperature at 2 m
       if ( syn->s1.TdTdTd[0] == 0 )
         {
-          if ( kelvin_to_snTTT ( aux, s->val ) )
+          if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               syn->s1.sn2[0] = aux[0];
               strcpy ( syn->s1.TdTdTd, aux + 1 );
@@ -268,7 +268,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 116: // 0 12 116 . Maximum temperature at 2 m , past 24 hours
       if ( syn->s3.TxTxTx[0] == 0 && ( s->itval % ( 3 * 3600 ) ) == 0 ) // only for 3, 6 ... hours
         {
-          if ( kelvin_to_snTTT ( aux, s->val ) )
+          if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               syn->s3.snx[0] = aux[0];
               strcpy ( syn->s3.TxTxTx, aux + 1 );
@@ -285,7 +285,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
            ( s->hsensor >= 1.0 || s->hsensor <= 0 ) &&
            ( time_period_duration ( s ) % ( 12 * 3600 ) ) == 0 ) // only for 12 , 24 hours
         {
-          if ( kelvin_to_snTTT ( aux, s->val ) )
+          if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               syn->s3.snx[0] = aux[0];
               strcpy ( syn->s3.TxTxTx, aux + 1 );
@@ -303,7 +303,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 117: // 0 12 117 . Minimum temperature at 2 m , past 24 hours
       if ( syn->s3.TnTnTn[0] == 0 && ( s->itval % ( 3 * 3600 ) ) == 0 ) // only for 3, 6 ... hours
         {
-          if ( kelvin_to_snTTT ( aux, s->val ) )
+          if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               syn->s3.snn[0] = aux[0];
               strcpy ( syn->s3.TnTnTn, aux + 1 );
@@ -320,7 +320,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
            ( s->hsensor >= 1.0 || s->hsensor <= 0 ) &&
            ( time_period_duration ( s ) % ( 12 * 3600 ) ) == 0 ) // only for 12 , 24 hours
         {
-          if ( kelvin_to_snTTT ( aux, s->val ) )
+          if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               syn->s3.snn[0] = aux[0];
               strcpy ( syn->s3.TnTnTn, aux + 1 );
@@ -337,7 +337,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 105: // 0 12 105 . Wet bulb temperature at 2 m
       if ( syn->s2.TbTbTb[0] == 0 )
         {
-          if ( kelvin_to_snTTT ( aux, s->val ) )
+          if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               syn->s2.sw[0] = aux[0];
               strcpy ( syn->s2.TbTbTb, aux + 1 );
@@ -354,7 +354,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
            strcmp ( "2", syn->s0.A1 ) == 0
          ) // region III or VI
         {
-          if ( kelvin_to_snTT ( aux, s->val ) )
+          if ( kelvin_to_snTT ( aux, sizeof(aux), s->val ) )
             {
               strcpy ( syn->s3.jjj, aux );
               syn->mask |= SYNOP_SEC3;
@@ -364,7 +364,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( strcmp ( "1", syn->s0.A1 ) == 0 )
         {
-          if ( kelvin_to_TT ( aux, s->val ) )
+          if ( kelvin_to_TT ( aux, sizeof(aux), s->val ) )
             {
               syn->s3.XoXoXoXo[0] = aux[0];
               syn->s3.XoXoXoXo[1] = aux[1];
@@ -386,7 +386,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 121: // 0 12 121 . Ground minimum temperature (at the time of observation)
       if ( strcmp ( "2", syn->s0.A1 ) == 0 ) // region II
         {
-          if ( kelvin_to_snTT ( aux, s->val ) )
+          if ( kelvin_to_snTT ( aux, sizeof(aux), s->val ) )
             {
               syn->s3.XoXoXoXo[1] = aux[0];
               syn->s3.XoXoXoXo[2] = aux[1];
@@ -401,7 +401,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 120: // 0 12 120 . Ground temperature
       if ( strcmp ( "2", syn->s0.A1 ) == 0 ) // Only for Region II
         {
-          if ( kelvin_to_snTT ( aux, s->val ) )
+          if ( kelvin_to_snTT ( aux, sizeof(aux), s->val ) )
             {
               if ( syn->s3.E1[0] )
                 syn->s3.XoXoXoXo[0] = '/';
@@ -419,7 +419,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     case 122: // 0 12 122 . Ground minimum temperature during preceding night
       if ( strcmp ( "1", syn->s0.A1 ) == 0 ) // Only for Region I
         {
-          if ( kelvin_to_TT ( aux, s->val ) )
+          if ( kelvin_to_TT ( aux, sizeof(aux), s->val ) )
             {
               syn->s3.XoXoXoXo[0] = aux[0];
               syn->s3.XoXoXoXo[1] = aux[1];
@@ -439,7 +439,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       else if ( strcmp ( "2", syn->s0.A1 ) == 0 ||
                 strcmp ( "3", syn->s0.A1 ) == 0 ) // Region II and III
         {
-          if ( kelvin_to_snTT ( aux, s->val ) )
+          if ( kelvin_to_snTT ( aux, sizeof(aux), s->val ) )
             {
               strcpy ( syn->s3.jjj, aux );
               syn->mask |= SYNOP_SEC3;
@@ -480,7 +480,7 @@ int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
     case 104: // 0 12 104 . Air temperature at 2 m
       if ( b->s1.TTT[0] == 0 )
         {
-          if ( kelvin_to_snTTT ( aux, s->val ) )
+          if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               b->s1.sn1[0] = aux[0];
               strcpy ( b->s1.TTT, aux + 1 );
@@ -496,7 +496,7 @@ int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
     case 106: // 0 12 106 . Dewpoint temperature at 2 m
       if ( b->s1.TdTdTd[0] == 0 )
         {
-          if ( kelvin_to_snTTT ( aux, s->val ) )
+          if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               b->s1.sn2[0] = aux[0];
               strcpy ( b->s1.TdTdTd, aux + 1 );
@@ -544,7 +544,7 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           if ( s->isq_val == 4 ) // mean value
             {
-              if ( kelvin_to_snTTT ( aux, s->val ) )
+              if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
                 {
                   c->s1.s[0] = aux[0];
                   strcpy ( c->s1.TTT, aux + 1 );
@@ -555,7 +555,7 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
             }
           else if ( s->isq_val == 2 ) // maximum value
             {
-              if ( kelvin_to_snTTT ( aux, s->val ) )
+              if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
                 {
                   c->s4.sax[0] = aux[0];
                   strcpy ( c->s4.Tax, aux + 1 );
@@ -575,7 +575,7 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
             }
           else if ( s->isq_val == 3 ) // minimum value
             {
-              if ( kelvin_to_snTTT ( aux, s->val ) )
+              if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
                 {
                   c->s4.san[0] = aux[0];
                   strcpy ( c->s4.Tan, aux + 1 );
@@ -597,7 +597,7 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           if ( c->s2.TTT[0] == 0 )
             {
-              if ( kelvin_to_snTTT ( aux, s->val ) )
+              if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
                 {
                   c->s2.s[0] = aux[0];
                   strcpy ( c->s2.TTT, aux + 1 );
@@ -615,7 +615,7 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           if ( c->s1.TxTxTx[0] == 0 )
             {
-              if ( kelvin_to_snTTT ( aux, s->val ) )
+              if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
                 {
                   c->s1.sx[0] = aux[0];
                   strcpy ( c->s1.TxTxTx, aux + 1 );
@@ -629,7 +629,7 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           if ( c->s2.TxTxTx[0] == 0 )
             {
-              if ( kelvin_to_snTTT ( aux, s->val ) )
+              if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
                 {
                   c->s2.sx[0] = aux[0];
                   strcpy ( c->s2.TxTxTx, aux + 1 );
@@ -646,7 +646,7 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           if ( c->s1.TnTnTn[0] == 0 )
             {
-              if ( kelvin_to_snTTT ( aux, s->val ) )
+              if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
                 {
                   c->s1.sn[0] = aux[0];
                   strcpy ( c->s1.TnTnTn, aux + 1 );
@@ -660,7 +660,7 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           if ( c->s2.TnTnTn[0] == 0 )
             {
-              if ( kelvin_to_snTTT ( aux, s->val ) )
+              if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
                 {
                   c->s2.sn[0] = aux[0];
                   strcpy ( c->s2.TnTnTn, aux + 1 );
@@ -689,7 +689,7 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
     case 152: // 0 12 152 . Highest daily mean temperature
       if ( s->a1->desc.x == 4 && s->a1->desc.y == 3 )
         {
-          if ( kelvin_to_snTTT ( aux, s->val ) )
+          if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               c->s4.sx[0] = aux[0];
               strcpy ( c->s4.Txd, aux + 1 );
@@ -712,7 +712,7 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
     case 153: // 0 12 153 . Lowest daily mean temperature
       if ( s->a1->desc.x == 4 && s->a1->desc.y == 3 )
         {
-          if ( kelvin_to_snTTT ( aux, s->val ) )
+          if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               c->s4.sn[0] = aux[0];
               strcpy ( c->s4.Tnd, aux + 1 );
