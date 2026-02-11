@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -28,15 +28,15 @@ char BUFR_TABLES_DIRENV[PATH_MAX];
 /*!
   \fn int bufr_set_environment(char *default_bufrtables, char *bufrtables_dir)
   \brief set the environment vars needed to work properly with ECMWF bufrdc library
-  \param default_bufrtables defaut bufr tables dir. ususally '/usr/local/lib/bufrtables/'
-  \param bufrtables_dir alternative char with bufr tables dir
+  \param [in] default_bufrtables Default bufr tables dir, usually '/usr/local/lib/bufrtables/'
+  \param [in,out] bufrtables_dir Alternative char with bufr tables dir
+  \return 0 on success
 
-
-  During decoding Bufr table path and the names are printed. If user doeas not want that, set: VARIABLE
+  During decoding Bufr table path and the names are printed. If user does not want that, set: VARIABLE
     PRINT_TABLE_NAMES=false
 
   During decoding code/flag tables could be read if code figure meaning is needed. If user want to use
-  code and flag tables set: VARIABLE USE TABLE C=true
+  code and flag tables set: VARIABLE USE_TABLE_C=true
 
   Then we set the proper environment here
 */
@@ -48,7 +48,7 @@ int bufr_set_environment ( char *default_bufrtables, char *bufrtables_dir )
 
   i = stat ( default_bufrtables, &s );
 
-  if ( putenv ( "PRINT_TABLE_NAMES=false" ) || putenv ( "USE_TABLE_C=true" ) )
+  if ( putenv ((char*)"PRINT_TABLE_NAMES=false" ) || putenv ((char*)"USE_TABLE_C=true" ) )
     {
       fprintf ( stderr, "bufr2tac: Failure setting the environment\n" );
       exit ( EXIT_FAILURE );

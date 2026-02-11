@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -26,10 +26,10 @@
 /*!
   \fn size_t print_synop_sec0 (char **sec0, size_t lmax, const struct synop_chunks *syn)
   \brief Prints the synop section 0 (header)
-  \param sec0 the pointer where to print section
-  \param lmax max length permited
-  \param syn pointer to s atruct \ref synop_chunks where the parse results are set
-  \return Used bytes
+  \param [in,out] sec0 Pointer to the output buffer where section 0 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] syn Pointer to struct \ref synop_chunks where the parse results are set
+  \return Number of characters written to the buffer
 */
 size_t print_synop_sec0 ( char **sec0, size_t lmax, const struct synop_chunks *syn )
 {
@@ -100,10 +100,10 @@ size_t print_synop_sec0 ( char **sec0, size_t lmax, const struct synop_chunks *s
 /*!
   \fn size_t print_synop_sec1 (char **sec1, size_t lmax, struct synop_chunks *syn)
   \brief Prints the synop section 1
-  \param sec1 the pointer where to print section
-  \param lmax max length permited
-  \param syn pointer to s atruct \ref synop_chunks where the parse results are set
-  \return Used bytes
+  \param [in,out] sec1 Pointer to the output buffer where section 1 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] syn Pointer to struct \ref synop_chunks where the parse results are set
+  \return Number of characters written to the buffer
 */
 size_t print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn )
 {
@@ -242,10 +242,10 @@ size_t print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn )
 /*!
   \fn size_t print_synop_sec2 (char **sec2, size_t lmax, const struct synop_chunks *syn)
   \brief Prints the synop section 2
-  \param sec2 the pointer where to print section
-  \param lmax max length permited
-  \param syn pointer to s atruct \ref synop_chunks where the parse results are set
-  \return Used bytes
+  \param [in,out] sec2 Pointer to the output buffer where section 2 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] syn Pointer to struct \ref synop_chunks where the parse results are set
+  \return Number of characters written to the buffer
 */
 size_t print_synop_sec2 ( char **sec2, size_t lmax, const struct synop_chunks *syn )
 {
@@ -405,10 +405,10 @@ size_t print_synop_sec2 ( char **sec2, size_t lmax, const struct synop_chunks *s
 /*!
   \fn size_t print_synop_sec3 (char **sec3, size_t lmax, struct synop_chunks *syn)
   \brief Prints the synop section 3
-  \param sec3 the pointer where to print section
-  \param lmax max length permited
-  \param syn pointer to s atruct \ref synop_chunks where the parse results are set
-  \return Used bytes
+  \param [in,out] sec3 Pointer to the output buffer where section 3 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in,out] syn Pointer to struct \ref synop_chunks where the parse results are set
+  \return Number of characters written to the buffer
 */
 size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
 {
@@ -706,10 +706,10 @@ size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn )
 /*!
   \fn size_t print_synop_sec4 (char **sec4, size_t lmax, struct synop_chunks *syn)
   \brief Prints the synop section 4
-  \param sec4 the pointer where to print section
-  \param lmax max length permited
-  \param syn pointer to s atruct \ref synop_chunks where the parse results are set
-  \return Used bytes
+  \param [in,out] sec4 Pointer to the output buffer where section 4 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in,out] syn Pointer to struct \ref synop_chunks where the parse results are set
+  \return Number of characters written to the buffer
 */
 size_t print_synop_sec4 ( char **sec4, size_t lmax, struct synop_chunks *syn )
 {
@@ -760,10 +760,10 @@ size_t print_synop_sec4 ( char **sec4, size_t lmax, struct synop_chunks *syn )
 /*!
   \fn size_t print_synop_sec5 (char **sec5, size_t lmax, struct synop_chunks *syn)
   \brief Prints the synop section 5
-  \param sec5 the pointer where to print section
-  \param lmax max length permited
-  \param syn pointer to s atruct \ref synop_chunks where the parse results are set
-  \return Used bytes
+  \param [in,out] sec5 Pointer to the output buffer where section 5 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in,out] syn Pointer to struct \ref synop_chunks where the parse results are set
+  \return Number of characters written to the buffer
 */
 size_t print_synop_sec5 ( char **sec5, size_t lmax, struct synop_chunks *syn )
 {
@@ -811,10 +811,10 @@ size_t print_synop_sec5 ( char **sec5, size_t lmax, struct synop_chunks *syn )
 
 /*!
  \fn int print_synop_report(struct metreport *m)
- \brief prints a synop into a string
- \param m pointer to struct \ref metreport where are both target and source
+ \brief Prints a complete synop report into a string
+ \param [in,out] m Pointer to struct \ref metreport where are both target and source
 
-  If OK returns 0, otherwise 1
+ \return 0 if successful, 1 otherwise
 */
 int print_synop_report (struct metreport *m)
 {

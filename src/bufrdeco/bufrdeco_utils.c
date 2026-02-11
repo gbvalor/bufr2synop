@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -30,11 +30,11 @@ uint8_t bitk[8] = {0x80,0xc0,0xe0,0xf0,0xf8,0xfc,0xfe,0xff}; /*!< Mask first bit
 /*!
   \fn size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
   \brief Get a string from an array of bits
-  \param target string as result
-  \param has_data Output flags to check whether is missing data. If 0 then data is missing, othewise has data
-  \param source array of uint8_t elements. Most significant bit of first element is the bit offest reference
-  \param bit0_offset Bit offset
-  \param bit_length Lenght (in bits) for the chunck to extract
+  \param [out] target string as result
+  \param [out] has_data Output flags to check whether is missing data. If 0 then data is missing, othewise has data
+  \param [in] source array of uint8_t elements. Most significant bit of first element is the bit offest reference
+  \param [in,out] bit0_offset Bit offset
+  \param [in] bit_length Lenght (in bits) for the chunck to extract
   \return If returns the amount of bits readed. 0 if problems. It also update bits_offset with the new bits.
 */
 buf_t get_bits_as_char_array2 ( char *target, uint8_t *has_data, uint8_t *source, buf_t *bit0_offset, buf_t bit_length )
@@ -75,11 +75,11 @@ buf_t get_bits_as_char_array2 ( char *target, uint8_t *has_data, uint8_t *source
 /*!
   \fn size_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
   \brief get a sequence of bits in data section 4 from a BUFR reports to get an array of chars
-  \param target string with the resulting array
-  \param has_data if 1 then has data, if 0 what we got is missing data
-  \param source buffer of uint8_t which is actually the data section 4.
-  \param bit0_offset bit offset of first bit of first char
-  \param bit_length number of bits to extract. Obviously this will be divisible by 8
+  \param [out] target string with the resulting array
+  \param [out] has_data if 1 then has data, if 0 what we got is missing data
+  \param [in] source buffer of uint8_t which is actually the data section 4.
+  \param [in,out] bit0_offset bit offset of first bit of first char
+  \param [in] bit_length number of bits to extract. Obviously this will be divisible by 8
   \return If returns the amount of bits readed. 0 if problems. It also update bit0_offset with the new bits.
 */
 buf_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source, buf_t *bit0_offset, buf_t bit_length )
@@ -120,11 +120,11 @@ buf_t get_bits_as_char_array ( char *target, uint8_t *has_data, uint8_t *source,
 /*!
   \fn size_t get_bits_as_uint32_t2 ( uint32_t *target, uint8_t *has_data, uint8_t *source, buf_t *bit0_offset, buf_t bit_length )
   \brief Read bits from an array of uint8_t and set them as an uint32_t
-  \param target uint32_t pointer where to set the result
-  \param has_data Output flags to check whether is missing data. If 0 then data is missing, othewise has data
-  \param source array of uint8_t elements. Most significant bit of first element is the bit offset reference
-  \param bit0_offset Bit offset
-  \param bit_length Lenght (in bits) for the chunck to extract
+  \param [out] target uint32_t pointer where to set the result
+  \param [out] has_data Output flags to check whether is missing data. If 0 then data is missing, othewise has data
+  \param [in] source array of uint8_t elements. Most significant bit of first element is the bit offset reference
+  \param [in,out] bit0_offset Bit offset
+  \param [in] bit_length Lenght (in bits) for the chunck to extract
   \return If returns the amount of bits readed. 0 if problems. It also update bits_offset with the new bits.
 
   This is a version which extract bit a bit. For more than about 8 bits should be used the algorithm in
@@ -166,11 +166,11 @@ uint32_t get_bits_as_uint32_t2 ( uint32_t *target, uint8_t *has_data, uint8_t *s
 /*!
   \fn size_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *source, size_t *bit0_offset, size_t bit_length )
   \brief Read bits from an array of uint8_t and set them as an uint32_t
-  \param target uint32_t pointer where to set the result
-  \param has_data Output flags to check whether is missing data. If 0 then data is missing, othewise has data
-  \param source array of uint8_t elements. Most significant bit of first element is the bit offset reference
-  \param bit0_offset Bit offset
-  \param bit_length Lenght (in bits) for the chunck to extract
+  \param [out] target uint32_t pointer where to set the result
+  \param [out] has_data Output flags to check whether is missing data. If 0 then data is missing, othewise has data
+  \param [in] source array of uint8_t elements. Most significant bit of first element is the bit offset reference
+  \param [in,out] bit0_offset Bit offset
+  \param [in] bit_length Lenght (in bits) for the chunck to extract
   \return If returns the amount of bits readed. 0 if problems. It also update bits_offset with the new bits.
 
   If bil_length is less than 8 then it uses version 2 \ref get_bits_as_uint32_t2
@@ -209,9 +209,9 @@ uint32_t get_bits_as_uint32_t ( uint32_t *target, uint8_t *has_data, uint8_t *so
 /*!
  \fn int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_t source )
  \brief Get an int32_t from bits according with bufr criteria to change the reference of a descritor. Most significant bit in source is sign
- \param target int32_t as result
- \param bits number of bits to consider
- \param source uint32_T with the data to transform
+ \param [out] target int32_t as result
+ \param [in] bits number of bits to consider
+ \param [in] source uint32_T with the data to transform
  \return If success return 0, 1 otherwise
 */
 // most significant of bits is the sign
@@ -241,7 +241,7 @@ int get_table_b_reference_from_uint32_t ( int32_t *target, uint8_t bits, uint32_
 /*!
   \fn uint32_t two_bytes_to_uint32(const uint8_t *source)
   \brief returns the uint32_t value from an array of two bytes, most significant first
-  \param source pointer to source uint8_t
+  \param [in] source pointer to source uint8_t
   \return the uint32_t resulting
 */
 uint32_t two_bytes_to_uint32 ( const uint8_t *source )
@@ -256,7 +256,7 @@ uint32_t two_bytes_to_uint32 ( const uint8_t *source )
 /*!
   \fn uint32_t three_bytes_to_uint32(const uint8_t *source)
   \brief returns the uint32_t value from an array of three bytes, most significant first
-  \param source pointer to source uint8_t
+  \param [in] source pointer to source uint8_t
   \return the uint32_t resulting
 */
 uint32_t three_bytes_to_uint32 ( const uint8_t *source )
@@ -268,8 +268,8 @@ uint32_t three_bytes_to_uint32 ( const uint8_t *source )
 /*!
   \fn int uint32_t_to_descriptor(struct bufr_descriptor *d, uint32_t id)
   \brief parse an integer with a descriptor fom bufr ECWMF libary
-  \param d pointer to a struct \ref bufr_descriptor where to set the result on output
-  \param id integer with the descriptor from ewcwf
+  \param [out] d pointer to a struct \ref bufr_descriptor where to set the result on output
+  \param [in] id integer with the descriptor from ewcwf
   \return the resulting uint32_t
 */
 int uint32_t_to_descriptor ( struct bufr_descriptor *d, uint32_t id )
@@ -279,15 +279,15 @@ int uint32_t_to_descriptor ( struct bufr_descriptor *d, uint32_t id )
   d->f = id / 100000;
   d->x = ( id % 100000 ) / 1000;
   d->y = id % 1000;
-  sprintf ( d->c, "%06u", id );
+  snprintf ( d->c, sizeof(d->c), "%06u", id );
   return 0;
 }
 
 /*!
   \fn int two_bytes_to_descriptor (struct bufr_descriptor *d, const uint8_t *source)
   \brief set a struct \ref bufr_descriptor from two consecutive bytes in bufr file
-  \param source pointer to first byte (most significant)
-  \param d pointer to the resulting descriptor
+  \param [in] source pointer to first byte (most significant)
+  \param [out] d pointer to the resulting descriptor
 
   \return 0 if all is OK. 1 otherwise
  */
@@ -298,16 +298,16 @@ int two_bytes_to_descriptor ( struct bufr_descriptor *d, const uint8_t *source )
   d->y = source[1];
   d->x = source[0] & 0x3f;
   d->f = ( source[0] >> 6 ) & 0x03;
-  sprintf ( d->c, "%u%02u%03u", d->f, d->x, d->y );
+  snprintf ( d->c, sizeof(d->c), "%u%02u%03u", d->f, d->x, d->y );
   return 0;
 }
 
 /*!
   \fn char * bufr_charray_to_string(char *s, char *buf, size_t size)
   \brief get a null termitated c-string from an array of unsigned chars
-  \param s resulting string
-  \param buf pointer to first element in array
-  \param size number of chars in array
+  \param [out] s resulting string
+  \param [in] buf pointer to first element in array
+  \param [in] size number of chars in array
   \result the resulting s string
 */
 char * bufr_charray_to_string ( char *s, const char *buf, size_t size )
@@ -324,7 +324,7 @@ char * bufr_charray_to_string ( char *s, const char *buf, size_t size )
 /*!
   \fn char * bufr_adjust_string(char *s)
   \brief Supress trailing blanks of a string
-  \param s string to process
+  \param [in,out] s string to process
   \result the resulting s string
 */
 char * bufr_adjust_string ( char *s )
@@ -342,7 +342,7 @@ char * bufr_adjust_string ( char *s )
 /*!
   \fn int is_a_delayed_descriptor ( struct bufr_descriptor *d )
   \brief check if a descriptor is a delayed descriptor
-  \param d pointer to a struct \ref bufr_descriptor to check
+  \param [in] d pointer to a struct \ref bufr_descriptor to check
   \return If is a delayed desccriptor return 1, 0 otherwise.
 */
 int is_a_delayed_descriptor ( const struct bufr_descriptor *d )
@@ -360,7 +360,7 @@ int is_a_delayed_descriptor ( const struct bufr_descriptor *d )
 /*!
   \fn int is_a_short_delayed_descriptor ( struct bufr_descriptor *d )
   \brief check if a descriptor is a short delayed descriptor
-  \param d pointer to a struct \ref bufr_descriptor to check
+  \param [in] d pointer to a struct \ref bufr_descriptor to check
   \return If is a delayed descriptor return 1, 0 otherwise.
 */
 int is_a_short_delayed_descriptor ( const struct bufr_descriptor *d )
@@ -379,7 +379,7 @@ int is_a_short_delayed_descriptor ( const struct bufr_descriptor *d )
 /*!
   \fn int is_a_local_descriptor ( struct bufr_descriptor *d )
   \brief check if a descriptor is a local descriptor
-  \param d pointer to a struct \ref bufr_descriptor to check
+  \param [in] d pointer to a struct \ref bufr_descriptor to check
   \return If is a local desccriptor return 1, 0 otherwise.
 */
 int is_a_local_descriptor ( const struct bufr_descriptor *d )
@@ -397,10 +397,10 @@ int is_a_local_descriptor ( const struct bufr_descriptor *d )
 /*!
    \fn char *get_formatted_value_from_escale ( char *fmt, size_t dim, int32_t escale, double val )
    \brief gets a string with formatted value depending of scale
-   \param fmt The output target string
-   \param dim Size of available space (bytes) to write the result
-   \param escale value scale in descriptor
-   \param val double to printf
+   \param [out] fmt The output target string
+   \param [in] dim Size of available space (bytes) to write the result
+   \param [in] escale value scale in descriptor
+   \param [in] val double to printf
    \return the resulting fmt string
    This version use 17 width for number plus a final space
 */
@@ -411,7 +411,7 @@ char *get_formatted_value_from_escale ( char *fmt, size_t dim, int32_t escale, d
   if ( escale >= 0 )
     {
       char aux[32];
-      sprintf ( aux, "%%17.%dlf ", escale );
+      snprintf ( aux, sizeof(aux), "%%17.%dlf ", escale );
       snprintf ( fmt, dim, aux, val );
     }
   else
@@ -422,10 +422,10 @@ char *get_formatted_value_from_escale ( char *fmt, size_t dim, int32_t escale, d
 /*!
    \fn char *get_formatted_value_from_escale2 ( char *fmt, size_t dim, int32_t escale, double val )
    \brief gets a string with formatted value depending of scale
-   \param fmt The output target string
-   \param dim Size of available space (bytes) to write the result
-   \param escale value scale in descriptor
-   \param val double to printf
+   \param [out] fmt The output target string
+   \param [in] dim Size of available space (bytes) to write the result
+   \param [in] escale value scale in descriptor
+   \param [in] val double to printf
    \return the resulting fmt string
 
    Differs from get_formatted_value_from_escale that no blanks are written
@@ -437,7 +437,7 @@ char *get_formatted_value_from_escale2 ( char *fmt, size_t dim, int32_t escale, 
   if ( escale >= 0 )
     {
       char aux[32];
-      sprintf ( aux, "%%.%dlf", escale );
+      snprintf ( aux, sizeof(aux), "%%.%dlf", escale );
       snprintf ( fmt, dim, aux, val );
     }
   else
@@ -449,9 +449,9 @@ char *get_formatted_value_from_escale2 ( char *fmt, size_t dim, int32_t escale, 
 /*!
    \fn int bufrdeco_add_to_bitmap( struct bufrdeco_bitmap *bm, buf_t index_to, buf_t index_by )
    \brief Push a bitmap element in a \ref bufrdeco_bitmap
-   \param bm target struct \ref bufrdeco_bitmap where to push
-   \param index_to index of the \ref bufrdeco_bitmap which this is bitmapping to
-   \param index_by index of the \ref bufrdeco_bitmap which this is bitmapped by
+   \param [in,out] bm target struct \ref bufrdeco_bitmap where to push
+   \param [in] index_to index of the \ref bufrdeco_bitmap which this is bitmapping to
+   \param [in] index_by index of the \ref bufrdeco_bitmap which this is bitmapped by
 
    \return If no space to push returns 1, otherwise 0
 */
@@ -472,9 +472,9 @@ int bufrdeco_add_to_bitmap ( struct bufrdeco_bitmap *bm, buf_t index_to, buf_t i
 /*!
  * \fn int bufrdeco_get_bitmaped_info ( struct bufrdeco_bitmap_related_vars *brv, uint32_t target, struct bufrdeco *b )
  * \brief Get bitmap info searching into bitmaps
- * \param brv pointer to struct \ref bufrdeco_bitmap_related_vars where to set the results
- * \param target The key to find in array of bitmaps. It is the index of a ref in compressed case or an atom data in other case
- * \param b pointer to the current struct \ref bufrdeco
+ * \param [out] brv pointer to struct \ref bufrdeco_bitmap_related_vars where to set the results
+ * \param [in] target The key to find in array of bitmaps. It is the index of a ref in compressed case or an atom data in other case
+ * \param [in] b pointer to the current struct \ref bufrdeco
  *
  * \return If found the target return 0, othewise return 1
  */
@@ -545,8 +545,8 @@ int bufrdeco_get_bitmaped_info ( struct bufrdeco_bitmap_related_vars *brv, uint3
 /*!
  * \fn int bufr_write_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offsets *off)
  * \brief Write offset bit array for subsets in a non-compressed bufr
- * \param f file pointer opened by caller
- * \param off pointer to the struct \ref bufrdeco_subset_bit_offsets with the data to write into file
+ * \param [in] f file pointer opened by caller
+ * \param [in] off pointer to the struct \ref bufrdeco_subset_bit_offsets with the data to write into file
  * \return if success return 0, otherwise 1
  */
 int bufr_write_subset_offset_bits ( FILE *f, const struct bufrdeco_subset_bit_offsets *off )
@@ -567,8 +567,8 @@ int bufr_write_subset_offset_bits ( FILE *f, const struct bufrdeco_subset_bit_of
 /*!
  * \fn int bufr_read_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offsets *off)
  * \brief Write offset bit array for subsets in a non-compressed bufr
- * \param f file pointer opened by caller
- * \param off pointer to the struct \ref bufrdeco_subset_bit_offsets with the data to write into file
+ * \param [in] f file pointer opened by caller
+ * \param [out] off pointer to the struct \ref bufrdeco_subset_bit_offsets with the data to write into file
  * \return if success return 0, otherwise 1
  */
 int bufr_read_subset_offset_bits ( FILE *f, struct bufrdeco_subset_bit_offsets *off )
@@ -589,6 +589,10 @@ int bufr_read_subset_offset_bits ( FILE *f, struct bufrdeco_subset_bit_offsets *
 /*!
  * \fn char *strcat_safe ( char *dst, const char *src, size_t n )
  * \brief An secure version emulation of strcat.
+ * \param [in,out] dst destination string
+ * \param [in] src source string to concatenate
+ * \param [in] n maximum size of destination buffer
+ * \return pointer to dst
  */
 char *strcat_safe ( char *dst, const char *src, size_t n )
 {

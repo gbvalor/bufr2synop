@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -26,8 +26,9 @@
 /*!
   \fn  int print_plain ( FILE *f, struct metreport *m )
   \brief Print in a file the report decoded to Traditional Alphanumeric Code in plain text format. A line per report
-  \param f pointer to file where to write to
-  \param m pointer to struct \ref metreport where the decoded report is stored
+  \param [in,out] f Pointer to file where to write to
+  \param [in] m Pointer to struct \ref metreport where the decoded report is stored
+  \return 0 if successful
 */
 int print_plain ( FILE *f, const struct metreport *m )
 {
@@ -45,8 +46,9 @@ int print_plain ( FILE *f, const struct metreport *m )
 /*!
   \fn  int print_html ( FILE *f, struct metreport *m )
   \brief Print in a file the report decoded to Traditional Alphanumeric Code in plain html format. A line per report
-  \param f pointer to file where to write to
-  \param m pointer to struct \ref metreport where the decoded report is stored
+  \param [in,out] f Pointer to file where to write to
+  \param [in] m Pointer to struct \ref metreport where the decoded report is stored
+  \return 0 if successful
 */
 int print_html ( FILE *f, const struct metreport *m )
 {
@@ -65,8 +67,11 @@ int print_html ( FILE *f, const struct metreport *m )
 
 /*!
  *  \fn size_t print_geo ( char **geo,  size_t lmax, const struct metrepor *m )
- *  \brief Prints a WIGOS identifier in a TAC output report
- *  \param m pointer to struct \ref metreport where are both target and source
+ *  \brief Prints geographic metadata (latitude, longitude, altitude) for a report
+ *  \param [in,out] geo Pointer to the output buffer where geographic data will be written
+ *  \param [in] lmax Maximum length permitted for the output buffer
+ *  \param [in] m Pointer to struct \ref metreport where are both target and source
+ *  \return Number of characters written to the buffer
  */
 size_t print_geo ( char **geo,  size_t lmax, const struct metreport *m )
 {
@@ -81,7 +86,10 @@ size_t print_geo ( char **geo,  size_t lmax, const struct metreport *m )
 /*!
  *  \fn size_t print_wigos_id ( char **wid,  size_t lmax, const struct metrepor *m )
  *  \brief Prints a WIGOS identifier in a TAC output report
- *  \param m pointer to struct \ref metreport where are both target and source
+ *  \param [in,out] wid Pointer to the output buffer where WIGOS ID will be written
+ *  \param [in] lmax Maximum length permitted for the output buffer
+ *  \param [in] m Pointer to struct \ref metreport where are both target and source
+ *  \return Number of characters written to the buffer
  */
   size_t print_wigos_id ( char **wid,  size_t lmax, const struct metreport *m )
 {

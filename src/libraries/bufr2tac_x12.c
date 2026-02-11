@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -25,9 +25,11 @@
 
 /*!
   \fn char * kelvin_to_snTTT ( char *target, size_t lmax, double T )
-  \brief converts a kelvin temperature value into a snTTT string
-  \param T the temperature ( Kelvin )
-  \param target string with the result
+  \brief Converts a kelvin temperature value into a snTTT string
+  \param [out] target Pointer to string where result will be stored
+  \param [in] lmax Maximum length of target buffer
+  \param [in] T Temperature in Kelvin
+  \return Pointer to target string, or NULL if out of valid range
 */
 char * kelvin_to_snTTT ( char *target, size_t lmax, double T )
 {
@@ -62,9 +64,11 @@ char * kelvin_to_snTTT ( char *target, size_t lmax, double T )
 
 /*!
   \fn char * kelvin_to_snTT ( char *target, size_t lmax, double T )
-  \brief converts a kelvin temperature value into a snTT string
-  \param T the temperature ( Kelvin )
-  \param target string with the result
+  \brief Converts a kelvin temperature value into a snTT string
+  \param [out] target Pointer to string where result will be stored
+  \param [in] lmax Maximum length of target buffer
+  \param [in] T Temperature in Kelvin
+  \return Pointer to target string, or NULL if out of valid range
 */
 char * kelvin_to_snTT ( char *target, size_t lmax, double T )
 {
@@ -89,9 +93,11 @@ char * kelvin_to_snTT ( char *target, size_t lmax, double T )
 
 /*!
   \fn char * kelvin_to_TT ( char *target, size_t lmax, double T )
-  \brief converts a kelvin temperature value into a TT string
-  \param T the temperature ( Kelvin )
-  \param target string with the result
+  \brief Converts a kelvin temperature value into a TT string
+  \param [out] target Pointer to string where result will be stored
+  \param [in] lmax Maximum length of target buffer
+  \param [in] T Temperature in Kelvin
+  \return Pointer to target string, or NULL if out of valid range
 */
 char * kelvin_to_TT ( char *target, size_t lmax, double T )
 {
@@ -116,9 +122,11 @@ char * kelvin_to_TT ( char *target, size_t lmax, double T )
 
 /*!
   \fn char * kelvin_to_TTTT ( char *target, size_t lmax, double T )
-  \brief converts a kelvin temperature value into a TTTT string
-  \param T the temperature ( Kelvin )
-  \param target string with the result
+  \brief Converts a kelvin temperature value into a TTTT string
+  \param [out] target Pointer to string where result will be stored
+  \param [in] lmax Maximum length of target buffer
+  \param [in] T Temperature in Kelvin
+  \return Pointer to target string, or NULL if out of valid range
 */
 char * kelvin_to_TTTT ( char *target, size_t lmax, double T )
 {
@@ -141,8 +149,10 @@ char * kelvin_to_TTTT ( char *target, size_t lmax, double T )
 /*!
   \fn char * kelvin_to_TTTa(char *target, double T)
   \brief Set temperature TTTa
-  \param target result as string
-  \param T temperature (kelvin)
+  \param [out] target Pointer to string where result will be stored
+  \param [in] lmax Maximum length of target buffer
+  \param [in] T Temperature in Kelvin
+  \return Pointer to target string
 */
 char * kelvin_to_TTTa ( char *target, size_t lmax, double T )
 {
@@ -172,9 +182,11 @@ char * kelvin_to_TTTa ( char *target, size_t lmax, double T )
 /*!
   \fn  char * dewpoint_depression_to_DnDn ( char * target, size_t lmax, double T, double Td )
   \brief Set DnDn (dewpoint depression)
-  \param target string to set as result
-  \param T temperature (Kelvin)
-  \param Td dewpoint (Kelvin)
+  \param [out] target Pointer to string where result will be stored
+  \param [in] lmax Maximum length of target buffer
+  \param [in] T Temperature in Kelvin
+  \param [in] Td Dewpoint temperature in Kelvin
+  \return Pointer to target string, or NULL if invalid
 */
 char * dewpoint_depression_to_DnDn ( char * target, size_t lmax, double T, double Td )
 {
@@ -211,11 +223,10 @@ char * dewpoint_depression_to_DnDn ( char * target, size_t lmax, double T, doubl
 
 /*!
   \fn int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 12
-  \param syn pointer to a struct \ref synop_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 12 (temperature)
+  \param [in,out] syn Pointer to struct \ref synop_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 {
@@ -457,11 +468,10 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 
 /*!
   \fn int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 12
-  \param b pointer to a struct \ref buoy_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 12 (temperature)
+  \param [in,out] b Pointer to struct \ref buoy_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 {
@@ -517,11 +527,10 @@ int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 
 /*!
   \fn int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 12
-  \param c pointer to a struct \ref climat_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 12 (temperature)
+  \param [in,out] c Pointer to struct \ref climat_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s )
 {
@@ -742,11 +751,10 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
 
 /*!
   \fn int temp_parse_x12 ( const struct temp_chunks *t, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 12
-  \param t pointer to a struct \ref temp_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 12 (temperature)
+  \param [in] t Pointer to struct \ref temp_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int temp_parse_x12 ( const struct temp_chunks *t, struct bufr2tac_subset_state *s )
 {

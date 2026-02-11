@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -40,8 +40,8 @@ const char CSV_FINAL = '\n';
 /*!
   \fn char * csv_quoted_string( char *out, char *in)
   \brief Transform a string to a quoted string to be inserted in a csv file
-  \param out resulting string
-  \param in input string
+  \param [out] out Resulting string
+  \param [in] in Input string
 
   \return If problem returns NULL, otherwise out
 */
@@ -76,9 +76,9 @@ char * csv_quoted_string ( char *out, char *in )
 /*!
   \fn int parse_csv_line2(int *nt, char *tk[], char *lin)
   \brief Parse a csv line
-  \param nt pointer to a integer. On success is the number of items found
-  \param tk array of pointers. Every pointer is a item on success
-  \param lin input line which is modified in this routine to be splitted into items
+  \param [out] nt Pointer to a integer. On success is the number of items found
+  \param [out] tk Array of pointers. Every pointer is a item on success
+  \param [in,out] lin Input line which is modified in this routine to be splitted into items
   \return On success return 0, otherwise -1
 
   NOTE that input line is modified

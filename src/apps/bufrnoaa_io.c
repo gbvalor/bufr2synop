@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -28,6 +28,10 @@
 
 #include "bufrnoaa.h"
 
+/*!
+  \fn void print_usage(void)
+  \brief Print usage help message to stdout
+*/
 void print_usage ( void )
 {
   print_version();
@@ -66,50 +70,53 @@ void print_usage ( void )
 }
 
 /*!
-  \fn char *bufrnoaa_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch)
+  \fn char *bufrnoaa_get_version(char *version, size_t version_size, char *build, size_t build_size, char *builder, size_t builder_size, int *version_major, int *version_minor, int *version_patch)
   \brief Get strings with version information and build date and time
-  \param version  pointer to string with version as result if not NULL
-  \param build pointer to string with compiler and compilation date and time if not NULL 
-  \param builder pointer to string with builder utility. 'cmake' or 'autotools' if not NULL 
-  \param version_major pointer to string with version_major component if not NULL
-  \param version_minor pointer to string with version_minor component if not NULL
-  \param version_patch pointer to string with version_patch component if not NULL
+  \param [out] version  pointer to string with version as result if not NULL
+  \param [out] build pointer to string with compiler and compilation date and time if not NULL 
+  \param [out] builder pointer to string with builder utility. 'cmake' or 'autotools' if not NULL 
+  \param [out] version_major pointer to string with version_major component if not NULL
+  \param [out] version_minor pointer to string with version_minor component if not NULL
+  \param [out] version_patch pointer to string with version_patch component if not NULL
   
   Retuns string pointer \a version.  
  */
-char *bufrnoaa_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch)
+char *bufrnoaa_get_version(char *version, size_t version_size, char *build, size_t build_size, char *builder, size_t builder_size, int *version_major, int *version_minor, int *version_patch)
 {
   int major = 0, minor = 0, patch = 0;
   char *c;
   
   if (version == NULL)
     return NULL;
-  sprintf(version, "%s", VERSION);
+  snprintf(version, version_size, "%s", VERSION);
   // default values
   sscanf(version, "%d.%d.%d", &major, &minor, &patch);
   if (build)
     {
        c = build;
 #if defined(__INTEL_COMPILER)
-       c += sprintf(build, "using INTEL C compiler icc %d.%d ", __INTEL_COMPILER, __INTEL_COMPILER_UPDATE);
+       c += snprintf(build, build_size, "using INTEL C compiler icc %d.%d ", __INTEL_COMPILER, __INTEL_COMPILER_UPDATE);
 #elif defined(__clang_version__) 
-       c += sprintf(build, "using clang C compiler %s ", __clang_version__);
+       c += snprintf(build, build_size, "using clang C compiler %s ", __clang_version__);
 #elif defined(__GNUC__) 
-       c += sprintf(build, "using GNU C compiler gcc %d.%d.%d ", __GNUC__ , __GNUC_MINOR__ , __GNUC_PATCHLEVEL__);
+       c += snprintf(build, build_size, "using GNU C compiler gcc %d.%d.%d ", __GNUC__ , __GNUC_MINOR__ , __GNUC_PATCHLEVEL__);
 #elif defined(_MSC_VER) 
-       c += sprintf(build, "using MICROSOFT C compiler %d ", _MSC_VER);
+       c += snprintf(build, build_size, "using MICROSOFT C compiler %d ", _MSC_VER);
 #else
-       c += sprintf(build, "using an unknown C compiler ");
+       c += snprintf(build, build_size, "using an unknown C compiler ");
 #endif
-       sprintf(c,"at %s %s",__DATE__,__TIME__);
+       snprintf(c, build_size - (c - build),"at %s %s",__DATE__,__TIME__);
     }
 
-  if (builder)
+  if (builder) {
 #ifdef BUILD_USING_CMAKE
-    strcpy(builder, "cmake");
+    strncpy(builder, "cmake", builder_size);
+    builder[builder_size-1] = '\0';
 #else
-    strcpy(builder, "autotools");
-#endif    
+    strncpy(builder, "autotools", builder_size);
+    builder[builder_size-1] = '\0';
+#endif 
+  } 
   if (version_major)
     *version_major = major;
   if (version_minor)
@@ -119,19 +126,23 @@ char *bufrnoaa_get_version(char *version, char *build, char *builder, int *versi
   return version;  
 }
 
+/*!
+  \fn void print_version(void)
+  \brief Print version and build information to stdout
+*/
 void print_version()
 {
    char version[16], build[64], builder[32];
 
-   bufrnoaa_get_version(version, build, builder, NULL, NULL, NULL);
+   bufrnoaa_get_version(version, sizeof (version),build, sizeof(build),builder, sizeof(builder),NULL, NULL, NULL);
    printf ("%s: Version '%s' built %s and %s.\n" , OWN, VERSION, build, builder);
 }
 
 /*!
   \fn int read_args( int _argc, char * _argv[])
   \brief read the arguments from stdio
-  \param _argc number of arguments passed
-  \param _argv array of arguments
+  \param [in] _argc number of arguments passed
+  \param [in] _argv array of arguments
 
   Returns 1 if succcess, -1 othewise
 */

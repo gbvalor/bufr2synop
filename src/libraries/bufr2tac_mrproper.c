@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -25,7 +25,7 @@
 
 /*! \fn void clean_syn_sec0(struct synop_sec0 *s)
     \brief clean a synop_sec0 struct
-    \param s pointer to the synop_sec0 struct
+    \param [in,out] s Pointer to the synop_sec0 struct to clean
 */
 void clean_syn_sec0 ( struct synop_sec0 *s )
 {
@@ -34,7 +34,7 @@ void clean_syn_sec0 ( struct synop_sec0 *s )
 
 /*! \fn void clean_syn_sec1(struct synop_sec1 *s)
     \brief clean a synop_sec1 struct
-    \param s pointer to the synop_sec1 struct
+    \param [in,out] s Pointer to the synop_sec1 struct to clean
 */
 void clean_syn_sec1 ( struct synop_sec1 *s )
 {
@@ -43,7 +43,7 @@ void clean_syn_sec1 ( struct synop_sec1 *s )
 
 /*! \fn void clean_syn_sec2(struct synop_sec2 *s)
     \brief clean a synop_sec2 struct
-    \param s pointer to the synop_sec2 struct
+    \param [in,out] s Pointer to the synop_sec2 struct to clean
 */
 void clean_syn_sec2 ( struct synop_sec2 *s )
 {
@@ -52,7 +52,7 @@ void clean_syn_sec2 ( struct synop_sec2 *s )
 
 /*! \fn void clean_syn_sec3(struct synop_sec3 *s)
     \brief clean a synop_sec3 struct
-    \param s pointer to the synop_sec3 struct
+    \param [in,out] s Pointer to the synop_sec3 struct to clean
 */
 void clean_syn_sec3 ( struct synop_sec3 *s )
 {
@@ -61,7 +61,7 @@ void clean_syn_sec3 ( struct synop_sec3 *s )
 
 /*! \fn void clean_syn_sec4(struct synop_sec4 *s)
     \brief clean a synop_sec4 struct
-    \param s pointer to the synop_sec4 struct
+    \param [in,out] s Pointer to the synop_sec4 struct to clean
 */
 void clean_syn_sec4 ( struct synop_sec4 *s )
 {
@@ -70,7 +70,7 @@ void clean_syn_sec4 ( struct synop_sec4 *s )
 
 /*! \fn void clean_syn_sec5(struct synop_sec5 *s)
     \brief clean a synop_sec5 struct
-    \param s pointer to the synop_sec5 struct
+    \param [in,out] s Pointer to the synop_sec5 struct to clean
 */
 void clean_syn_sec5 ( struct synop_sec5 *s )
 {
@@ -79,8 +79,8 @@ void clean_syn_sec5 ( struct synop_sec5 *s )
 
 
 /*! \fn void clean_report_date_ext(struct report_date_ext *s)
-    \brief clean a synop_ext struct
-    \param s pointer to the synop_ext struct
+    \brief clean a report_date_ext struct
+    \param [in,out] s Pointer to the report_date_ext struct to clean
 */
 void clean_report_date_ext ( struct report_date_ext *s )
 {
@@ -88,8 +88,8 @@ void clean_report_date_ext ( struct report_date_ext *s )
 }
 
 /*! \fn void clean_wigos_id(struct wigos_id *w)
-    \brief clean a synop_ext struct
-    \param w pointer to the wigos_id struct
+    \brief clean a wigos_id struct
+    \param [in,out] w Pointer to the wigos_id struct to clean
 */
 void clean_wigos_id ( struct wigos_id *w )
 {
@@ -97,9 +97,9 @@ void clean_wigos_id ( struct wigos_id *w )
 }
 
 /*!
-  \fn void clean_synop_chunks( struct synop_chunks *syn)
+  \fn void bufr2tac_clean_synop_chunks(struct synop_chunks *syn)
   \brief cleans a \ref synop_chunks struct
-  \param syn pointer to the struct to clean
+  \param [in,out] syn Pointer to the struct to clean
 */
 void bufr2tac_clean_synop_chunks ( struct synop_chunks *syn )
 {
@@ -127,7 +127,7 @@ void bufr2tac_clean_synop_chunks ( struct synop_chunks *syn )
 
 /*! \fn void clean_buoy_sec0(struct buoy_sec0 *s)
     \brief clean a buoy_sec0 struct
-    \param s pointer to the buoy_sec0 struct
+    \param [in,out] s Pointer to the buoy_sec0 struct to clean
 */
 void clean_buoy_sec0 ( struct buoy_sec0 *s )
 {
@@ -136,7 +136,7 @@ void clean_buoy_sec0 ( struct buoy_sec0 *s )
 
 /*! \fn void clean_buoy_sec1(struct buoy_sec1 *s)
     \brief clean a buoy_sec1 struct
-    \param s pointer to the buoy_sec1 struct
+    \param [in,out] s Pointer to the buoy_sec1 struct to clean
 */
 void clean_buoy_sec1 ( struct buoy_sec1 *s )
 {
@@ -145,7 +145,7 @@ void clean_buoy_sec1 ( struct buoy_sec1 *s )
 
 /*! \fn void clean_buoy_sec2(struct buoy_sec2 *s)
     \brief clean a buoy_sec2 struct
-    \param s pointer to the buoy_sec2 struct
+    \param [in,out] s Pointer to the buoy_sec2 struct to clean
 */
 void clean_buoy_sec2 ( struct buoy_sec2 *s )
 {
@@ -154,7 +154,7 @@ void clean_buoy_sec2 ( struct buoy_sec2 *s )
 
 /*! \fn void clean_buoy_sec3(struct buoy_sec3 *s)
     \brief clean a buoy_sec3 struct
-    \param s pointer to the buoy_sec3 struct
+    \param [in,out] s Pointer to the buoy_sec3 struct to clean
 */
 void clean_buoy_sec3 ( struct buoy_sec3 *s )
 {
@@ -163,7 +163,7 @@ void clean_buoy_sec3 ( struct buoy_sec3 *s )
 
 /*! \fn void clean_buoy_sec4(struct buoy_sec4 *s)
     \brief clean a buoy_sec4 struct
-    \param s pointer to the buoy_sec3 struct
+    \param [in,out] s Pointer to the buoy_sec4 struct to clean
 */
 void clean_buoy_sec4 ( struct buoy_sec4 *s )
 {
@@ -171,9 +171,9 @@ void clean_buoy_sec4 ( struct buoy_sec4 *s )
 }
 
 /*!
-  \fn void bufr2tac_clean_buoy_chunks( struct buoy_chunks *b)
+  \fn void bufr2tac_clean_buoy_chunks(struct buoy_chunks *b)
   \brief cleans a \ref buoy_chunks struct
-  \param b pointer to the struct to clean
+  \param [in,out] b Pointer to the struct to clean
 */
 void bufr2tac_clean_buoy_chunks ( struct buoy_chunks *b )
 {
@@ -190,9 +190,9 @@ void bufr2tac_clean_buoy_chunks ( struct buoy_chunks *b )
 }
 
 /*!
-  \fn void bufr2tac_clean_temp_chunks( struct temp_chunks *t)
-  \brief cleans a \ref buoy_chunks struct
-  \param t pointer to the struct to clean
+  \fn void bufr2tac_clean_temp_chunks(struct temp_chunks *t)
+  \brief cleans a \ref temp_chunks struct
+  \param [in,out] t Pointer to the struct to clean
 */
 void bufr2tac_clean_temp_chunks ( struct temp_chunks *t )
 {
@@ -201,7 +201,7 @@ void bufr2tac_clean_temp_chunks ( struct temp_chunks *t )
 
 /*! \fn void clean_climat_sec0(struct climat_sec0 *s)
     \brief clean a climat_sec0 struct
-    \param s pointer to the climat_sec0 struct
+    \param [in,out] s Pointer to the climat_sec0 struct to clean
 */
 void clean_climat_sec0 ( struct climat_sec0 *s )
 {
@@ -210,7 +210,7 @@ void clean_climat_sec0 ( struct climat_sec0 *s )
 
 /*! \fn void clean_climat_sec1(struct climat_sec1 *s)
     \brief clean a climat_sec1 struct
-    \param s pointer to the climat_sec1 struct
+    \param [in,out] s Pointer to the climat_sec1 struct to clean
 */
 void clean_climat_sec1 ( struct climat_sec1 *s )
 {
@@ -219,7 +219,7 @@ void clean_climat_sec1 ( struct climat_sec1 *s )
 
 /*! \fn void clean_climat_sec2(struct climat_sec2 *s)
     \brief clean a climat_sec2 struct
-    \param s pointer to the climat_sec2 struct
+    \param [in,out] s Pointer to the climat_sec2 struct to clean
 */
 void clean_climat_sec2 ( struct climat_sec2 *s )
 {
@@ -228,7 +228,7 @@ void clean_climat_sec2 ( struct climat_sec2 *s )
 
 /*! \fn void clean_climat_sec3(struct climat_sec3 *s)
     \brief clean a climat_sec3 struct
-    \param s pointer to the climat_sec3 struct
+    \param [in,out] s Pointer to the climat_sec3 struct to clean
 */
 void clean_climat_sec3 ( struct climat_sec3 *s )
 {
@@ -237,7 +237,7 @@ void clean_climat_sec3 ( struct climat_sec3 *s )
 
 /*! \fn void clean_climat_sec4(struct climat_sec4 *s)
     \brief clean a climat_sec4 struct
-    \param s pointer to the climat_sec4 struct
+    \param [in,out] s Pointer to the climat_sec4 struct to clean
 */
 void clean_climat_sec4 ( struct climat_sec4 *s )
 {
@@ -245,8 +245,8 @@ void clean_climat_sec4 ( struct climat_sec4 *s )
 }
 
 /*! \fn void clean_climat_old(struct climat_old *s)
-    \brief clean a climat_sec4 struct
-    \param s pointer to the climat_old struct
+    \brief clean a climat_old struct
+    \param [in,out] s Pointer to the climat_old struct to clean
 */
 void clean_climat_old ( struct climat_old *s )
 {
@@ -255,9 +255,9 @@ void clean_climat_old ( struct climat_old *s )
 
 
 /*!
-  \fn void bufr2tac_clean_climat_chunks( struct climat_chunks *c)
+  \fn void bufr2tac_clean_climat_chunks(struct climat_chunks *c)
   \brief cleans a \ref climat_chunks struct
-  \param c pointer to the struct to clean
+  \param [in,out] c Pointer to the struct to clean
 */
 void bufr2tac_clean_climat_chunks ( struct climat_chunks *c )
 {
@@ -273,6 +273,11 @@ void bufr2tac_clean_climat_chunks ( struct climat_chunks *c )
   c->error[0] = '\0';
 }
 
+/*!
+  \fn void bufr2tac_clean_metreport(struct metreport *m)
+  \brief cleans a \ref metreport struct
+  \param [in,out] m Pointer to the struct to clean
+*/
 void bufr2tac_clean_metreport (struct metreport *m)
 {
   if (m != NULL)

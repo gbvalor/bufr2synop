@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,6 +23,15 @@
 */
 #include "bufr2tac.h"
 
+/*!
+  \fn int print_json_alphanum(FILE *f, const char *type, const char *alphanum, const struct metreport *m)
+  \brief Prints a single alphanumeric report in JSON format
+  \param [in] f File pointer to output stream
+  \param [in] type Report type string
+  \param [in] alphanum Alphanumeric report string
+  \param [in] m Pointer to struct \ref metreport containing the data
+  \return 0 on success
+*/
 int print_json_alphanum ( FILE *f, const char *type, const char *alphanum, const struct metreport *m )
 {
   fprintf ( f, " { \n  \"type\": \"%s\",\n", type );
@@ -56,8 +65,9 @@ int print_json_alphanum ( FILE *f, const char *type, const char *alphanum, const
 /*!
   \fn int print_json(FILE *f, const struct metreport *m)
   \brief prints a struct \ref metreport in json format
-  \param f pointer to a file already open by caller routine
-  \param m pointer to a struct \ref metreport containing the data to print
+  \param [in] f Pointer to a file already open by caller routine
+  \param [in] m Pointer to struct \ref metreport containing the data to print
+  \return 0 on success
 */
 int print_json ( FILE *f, const struct metreport *m )
 {

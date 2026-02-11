@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -26,7 +26,7 @@
 /*!
   \fn int is_bufr(unsigned char *b)
   \brief checks if an unsigned char from an array is the first char of 'BUFR'
-  \param b pointer to unsigned char to check
+  \param [in] b pointer to unsigned char to check
 
   Returns 1 if success, 0 othewise
 */
@@ -40,7 +40,7 @@ int is_bufr ( const unsigned char *b )
 /*!
  \fn int is_head(unsigned char *b)
  \brief checks if an unsigned char from an array is the first char of '****'
- \param b pointer to unsigned char to check
+ \param [in] b pointer to unsigned char to check
 
   Returns 1 if success, 0 othewise
 */
@@ -54,8 +54,8 @@ int is_head (const unsigned char *b )
 /*!
  \fn int is_head_custom(unsigned char *b, char mark)
  \brief checks if an unsigned char from an array is the first char of repeated mark char four times
- \param b pointer to unsigned char to check
- \param mark char to be found repeated four times since \a b 
+ \param [in] b pointer to unsigned char to check
+ \param [in] mark char to be found repeated four times since \a b 
   Returns 1 if success, 0 othewise
 */
 int is_head_custom ( const unsigned char *b, char mark )
@@ -69,7 +69,7 @@ int is_head_custom ( const unsigned char *b, char mark )
 /*!
  \fn int is_endb(unsigned char *b)
  \brief checks if an unsigned char from an array is the first char of '7777'
- \param b pointer to unsigned char to check
+ \param [in] b pointer to unsigned char to check
 
   Returns 1 if success, 0 othewise
 */
@@ -83,9 +83,9 @@ int is_endb ( const unsigned char *b )
 /*!
    \fn int timeval_substract (struct timeval *result, struct timeval *x, struct timeval *y)
    \brief Subtract the `struct timeval' values X and Y,  storing the result in RESULT.
-   \param result pointer to a struct timeval where to set the result
-   \param x pointer to struct timeval as X in (X - Y)
-   \param y pointer to struct timeval as Y in (X - Y)
+   \param [out] result pointer to a struct timeval where to set the result
+   \param [in] x pointer to struct timeval as X in (X - Y)
+   \param [in,out] y pointer to struct timeval as Y in (X - Y)
 
    Return 1 if the difference is negative, otherwise 0.
 */
@@ -119,7 +119,7 @@ int timeval_substract ( struct timeval *result, const struct timeval *x,
 /*!
   \fn int bufr_is_selected(char *name)
   \brief returns 1 if selected message 0 otherwise
-  \param name string with name to check
+  \param [in] name string with name to check
 */
 int bufr_is_selected ( const char *name )
 {
@@ -157,8 +157,8 @@ int bufr_is_selected ( const char *name )
 /*!
   \fn nt date_mtime_from_stat(char *date, struct stat *st)
   \brief get a string with date and time from a struct stat
-  \param date string wuth the result
-  \param st pointer to a strucr stat
+  \param [out] date string wuth the result
+  \param [in] st pointer to a strucr stat
 */
 int date_mtime_from_stat ( char *date, struct stat *st )
 {
@@ -172,8 +172,8 @@ int date_mtime_from_stat ( char *date, struct stat *st )
 /*!
  \fn int mtime_from_stat(char *filename, struct stat *st)
  \brief modifies a file update time from a struct stat
- \param filename string with the pathname of file to modify
- \param st pointer to a struct stat as reference
+ \param [in] filename string with the pathname of file to modify
+ \param [in] st pointer to a struct stat as reference
 */
 int mtime_from_stat ( char *filename, const struct stat *st )
 {

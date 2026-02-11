@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -59,8 +59,10 @@ int C_FIELDS_3[8] = {0,2,3,4,5,6,-1,-1}; // Fields selected for CodeFlag (C) typ
 int D_FIELDS_3[8] = {2,5,3,6,-1,-1,-1,-1}; // Fields selected for D type (Common sequences) for version >= 38
 
 
-
-
+/*!
+  \fn void print_usage(void)
+  \brief Print usage help message to stdout
+*/
 void print_usage ( void )
 {
   printf ( "%s %s\n", SELF, PACKAGE_VERSION );
@@ -73,7 +75,13 @@ void print_usage ( void )
   printf ( "       -3 Version 38 or newest\n");
 }
 
-
+/*!
+  \fn int main(int argc, char *argv[])
+  \brief Main function for build_bufrdeco_tables utility
+  \param [in] argc number of arguments
+  \param [in] argv array of argument strings
+  \return EXIT_SUCCESS if success, EXIT_FAILURE otherwise
+*/
 int main ( int argc, char *argv[] )
 {
   int iopt;

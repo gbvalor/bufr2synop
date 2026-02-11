@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -26,9 +26,10 @@
 /*!
   \fn size_t print_climat_sec0 (char **sec0, size_t lmax, const struct climat_chunks *cl)
   \brief Prints the climat section 0 (header)
-  \param sec0 the pointer where to print section
-  \param lmax max length permited
-  \param cl pointer to s atruct \ref climat_chunks where the parse results are set
+  \param [in,out] sec0 Pointer to the output buffer where section 0 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] cl Pointer to struct \ref climat_chunks where the parse results are set
+  \return Number of characters written to the buffer
 */
 size_t print_climat_sec0 ( char **sec0, size_t lmax, const struct climat_chunks *cl )
 {
@@ -57,9 +58,10 @@ size_t print_climat_sec0 ( char **sec0, size_t lmax, const struct climat_chunks 
 /*!
   \fn size_t print_climat_sec1 (char **sec1, size_t lmax, struct climat_chunks *cl)
   \brief Prints the climat section 1
-  \param sec1 the pointer where to print section
-  \param lmax max length permited
-  \param cl pointer to s atruct \ref climat_chunks where the parse results are set
+  \param [in,out] sec1 Pointer to the output buffer where section 1 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in,out] cl Pointer to struct \ref climat_chunks where the parse results are set
+  \return Number of characters written to the buffer
 */
 size_t print_climat_sec1 ( char **sec1, size_t lmax, struct climat_chunks *cl )
 {
@@ -191,9 +193,10 @@ size_t print_climat_sec1 ( char **sec1, size_t lmax, struct climat_chunks *cl )
 /*!
   \fn size_t print_climat_sec2 (char **sec2, size_t lmax, struct climat_chunks *cl)
   \brief Prints the climat section 2
-  \param sec2 the pointer where to print section
-  \param lmax max length permited
-  \param cl pointer to s atruct \ref climat_chunks where the parse results are set
+  \param [in,out] sec2 Pointer to the output buffer where section 2 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in,out] cl Pointer to struct \ref climat_chunks where the parse results are set
+  \return Number of characters written to the buffer
 */
 size_t print_climat_sec2 ( char **sec2, size_t lmax, struct climat_chunks *cl )
 {
@@ -347,9 +350,10 @@ size_t print_climat_sec2 ( char **sec2, size_t lmax, struct climat_chunks *cl )
 /*!
   \fn size_t print_climat_sec3 (char **sec3, size_t lmax, struct climat_chunks *cl)
   \brief Prints the climat section 3
-  \param sec3 the pointer where to print section
-  \param lmax max length permited
-  \param cl pointer to s atruct \ref climat_chunks where the parse results are set
+  \param [in,out] sec3 Pointer to the output buffer where section 3 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in,out] cl Pointer to struct \ref climat_chunks where the parse results are set
+  \return Number of characters written to the buffer
 */
 size_t print_climat_sec3 ( char **sec3, size_t lmax, struct climat_chunks *cl )
 {
@@ -548,9 +552,10 @@ size_t print_climat_sec3 ( char **sec3, size_t lmax, struct climat_chunks *cl )
 /*!
   \fn size_t print_climat_sec4 (char **sec4, size_t lmax, struct climat_chunks *cl)
   \brief Prints the climat section 4
-  \param sec4 the pointer where to print section
-  \param lmax max length permited
-  \param cl pointer to s atruct \ref climat_chunks where the parse results are set
+  \param [in,out] sec4 Pointer to the output buffer where section 4 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in,out] cl Pointer to struct \ref climat_chunks where the parse results are set
+  \return Number of characters written to the buffer
 */
 size_t print_climat_sec4 ( char **sec4, size_t lmax, struct climat_chunks *cl )
 {
@@ -710,10 +715,10 @@ size_t print_climat_sec4 ( char **sec4, size_t lmax, struct climat_chunks *cl )
 
 /*!
  \fn int print_climat_report ( struct metreport *m )
- \brief prints a climat into a string
- \param m pointer to struct \ref metreport where are both target and source
+ \brief Prints a complete climat report into a string
+ \param [in,out] m Pointer to struct \ref metreport where are both target and source
 
-  If OK returns 0, otherwise 1
+ \return 0 if successful, 1 otherwise
 */
 int print_climat_report ( struct metreport *m )
 {

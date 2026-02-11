@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -27,7 +27,7 @@
 /*!
   \fn int bufr_read_tableC ( struct bufrdeco *b )
   \brief Reads a file with table C content (Code table and bit flags) according with csv WMO format
-  \param b pointer to a target struct \ref bufrdeco
+  \param [in,out] b Pointer to a target struct \ref bufrdeco
   \return  0 if success, 1 otherwise
 */
 int bufr_read_tableC ( struct bufrdeco *b )
@@ -137,10 +137,10 @@ int bufr_read_tableC ( struct bufrdeco *b )
 /*!
   \fn int bufr_find_tableC_csv_index ( buf_t *index, struct bufr_tableb *tb, const char *key, uint32_t code )
   \brief found a descriptor index in a struct \ref bufr_tableC
-  \param index pointer  to a size_t where to set the result if success
-  \param tb pointer to struct \ref bufr_tableb where are stored all table B data
-  \param key descriptor string in format FXXYYY
-  \param code value to search in this table/flag
+  \param [out] index Pointer to a size_t where to set the result if success
+  \param [in] tc Pointer to struct \ref bufr_tableC where are stored all table C data
+  \param [in] key Descriptor string in format FXXYYY
+  \param [in] code Value to search in this table/flag
   \return  0 if success, 1 otherwise
 */
 int bufr_find_tableC_csv_index ( buf_t *index, struct bufr_tableC *tc, const char *key, uint32_t code )
@@ -169,12 +169,12 @@ int bufr_find_tableC_csv_index ( buf_t *index, struct bufr_tableC *tc, const cha
 /*!
   \fn char * bufrdeco_explained_table_csv_val (char *expl, size_t dim, struct bufr_tableC *tc, struct bufr_descriptor *d, int ival)
   \brief gets a string with the meaning of a value for a code table descriptor
-  \param expl string with resulting meaning
-  \param dim numero máximo de caracteres de la cadena resultante
-  \param tc pointer to a \ref bufr_tableC struct
-  \param index element to read if is not 0
-  \param d pointer to the source descriptor
-  \param ival integer value for the descriptor
+  \param [out] expl String with resulting meaning
+  \param [in] dim Número máximo de caracteres de la cadena resultante
+  \param [in] tc Pointer to a \ref bufr_tableC struct
+  \param [out] index Element to read if is not 0
+  \param [in] d Pointer to the source descriptor
+  \param [in] ival Integer value for the descriptor
   \return If something went wrong, it returns NULL . Otherwise it returns \a expl
 */
 char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tableC *tc, uint32_t *index, const struct bufr_descriptor *d, uint32_t ival )
@@ -198,11 +198,12 @@ char * bufrdeco_explained_table_val ( char *expl, size_t dim, struct bufr_tableC
 /*!
   \fn char * bufrdeco_explained_flag_val(char *expl, size_t dim, struct bufr_descriptor *d, unsigned long ival, uint8_t nbits)
   \brief gets a string with the meaning of a value for a flag table descriptor
-  \param expl string with resulting meaning
-  \param dim max length alowed for \a expl string
-  \param d pointer to the source descriptor
-  \param ival integer value for the descriptos
-  \param nbits uint8_t with the bit extensión of descriptor
+  \param [out] expl String with resulting meaning
+  \param [in] dim Max length allowed for \a expl string
+  \param [in] tc Pointer to table C struct
+  \param [in] d Pointer to the source descriptor
+  \param [in] ival Integer value for the descriptor
+  \param [in] nbits uint8_t with the bit extension of descriptor
   \return If something went wrong, it returns NULL . Otherwise it returns \a expl
 
   Remember that in FLAG tables for bufr, bit 1 is most significant and N the less one. Bit N only is set to

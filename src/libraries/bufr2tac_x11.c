@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -25,11 +25,11 @@
 
 /*!
   \fn char * secs_to_tt(char *tt, int secs)
-  \brief get tt code from seconds
-  \param tt string with the resulting table code
-  \param secs second
-
-  returns the pointer to \a tt
+  \brief Get tt code from seconds
+  \param [out] tt Pointer to string with the resulting table code
+  \param [in] lmax Maximum length of target buffer
+  \param [in] secs Seconds value
+  \return Pointer to tt string
 */
 char * secs_to_tt ( char *tt, size_t lmax, int secs )
 {
@@ -85,9 +85,10 @@ char * secs_to_tt ( char *tt, size_t lmax, int secs )
 
 /*!
   \fn void direction_to_0877 ( char *dd, size_t lmax, uint32_t ival );
-  \brief encode dd from ival
-  \param dd target string according to WMO 306 Vol I.1 (TAC), I.2 (BUFR)
-  \param ival wind direction (value range: 0 .. 511)
+  \brief Encode dd from ival according to WMO code table 0877
+  \param [out] dd Pointer to target string according to WMO 306 Vol I.1 (TAC), I.2 (BUFR)
+  \param [in] lmax Maximum length of target buffer
+  \param [in] ival Wind direction (value range: 0 .. 511)
 
 TAC
 ===
@@ -176,10 +177,12 @@ void direction_to_0877 ( char *dd, size_t lmax, uint32_t ival )
 
 /*!
   \fn char * wind_to_dndnfnfnfn( char target, double dd, double ff)
-  \brief sets dndnfnfnfn item in a temp report
-  \param target string set as resul
-  \param dd wind direction (degrees)
-  \param vv wind speed
+  \brief Sets dndnfnfnfn item in a temp report
+  \param [out] target Pointer to string where result will be stored
+  \param [in] lmax Maximum length of target buffer
+  \param [in] dd Wind direction (degrees)
+  \param [in] ff Wind speed
+  \return Pointer to target string
 */
 char * wind_to_dndnfnfnfn ( char * target, size_t lmax, double dd, double ff )
 {
@@ -198,11 +201,10 @@ char * wind_to_dndnfnfnfn ( char * target, size_t lmax, double dd, double ff )
 
 /*!
   \fn int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 11
-  \param syn pointer to a struct \ref synop_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 11 (wind)
+  \param [in,out] syn Pointer to struct \ref synop_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 {
@@ -473,11 +475,10 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 
 /*!
   \fn int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 11
-  \param b pointer to a struct \ref buoy_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 11 (wind)
+  \param [in,out] b Pointer to struct \ref buoy_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 {
@@ -544,11 +545,10 @@ int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 
 /*!
   \fn int climat_parse_x11 ( struct climat_chunks *c, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 11
-  \param c pointer to a struct \ref climat_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 11 (wind)
+  \param [in,out] c Pointer to struct \ref climat_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int climat_parse_x11 ( struct climat_chunks *c, struct bufr2tac_subset_state *s )
 {
@@ -590,11 +590,10 @@ int climat_parse_x11 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
 
 /*!
   \fn int temp_parse_x11 ( const struct temp_chunks *t, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 11
-  \param t pointer to a struct \ref temp_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 11 (wind)
+  \param [in] t Pointer to struct \ref temp_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int temp_parse_x11 ( const struct temp_chunks *t, struct bufr2tac_subset_state *s )
 {

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -26,7 +26,8 @@
 /*!
   \fn int synop_YYYYMMDDHHmm_to_YYGG(struct synop_chunks *syn)
   \brief Sets YYGG from YYYYMMDDHHmm extended group
-  \param syn pointer to the target struct \ref synop_chunks
+  \param [in,out] syn Pointer to the target struct \ref synop_chunks
+  \return 0 on success, 1 on error
 */
 int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
 {
@@ -87,9 +88,8 @@ int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
 /*!
   \fn char *guess_WMO_region_synop(struct synop_chunks *syn)
   \brief Try to find WMO region if it is not already set and WMO Block and number index are known
-  \param syn pointer to the struct \ref synop_chunks with all known data for a synop
-
-  It returns a pointer to the string with WMO region
+  \param [in,out] syn Pointer to the struct \ref synop_chunks with all known data for a synop
+  \return Pointer to the string with WMO region
 */
 char *guess_WMO_region_synop ( struct synop_chunks *syn )
 {
@@ -110,12 +110,11 @@ char *guess_WMO_region_synop ( struct synop_chunks *syn )
 /*!
   \fn int parse_subset_as_synop (struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
   \brief parses a subset sequence as an Land fixed SYNOP FM-12, SHIP FM-13 or SYNOP-mobil FM-14 report
-  \param m pointer to a struct \ref metreport where set some results
-  \param s pointer to a struct \ref bufr2tac_subset_state
-  \param sq pointer to a struct \ref bufr_subset_sequence_data with the parsed sequence on input
-  \param err string with detected errors, if any
-
-  It return 0 if all is OK. Otherwise returns 1 and it also fills the \a err string
+  \param [in,out] m Pointer to a struct \ref metreport where set some results
+  \param [in,out] s Pointer to a struct \ref bufr2tac_subset_state
+  \param [in] sq Pointer to a struct \ref bufr_subset_sequence_data with the parsed sequence on input
+  \param [out] err String with detected errors, if any
+  \return 0 if all is OK, 1 otherwise (also fills the \a err string)
 */
 int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq, char *err )
 {

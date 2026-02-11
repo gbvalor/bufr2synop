@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -25,9 +25,11 @@
 
 /*!
   \fn char * prec_to_RRR ( char *target, size_t lmax, double r )
-  \brief converts a precipitation in Kg/m2 into a RRR string
-  \param r the precipitation
-  \param target the resulting string
+  \brief Converts a precipitation in Kg/m2 into a RRR string
+  \param [out] target Pointer to string where result will be stored
+  \param [in] lmax Maximum length of target buffer
+  \param [in] r Precipitation in Kg/m2
+  \return Pointer to target string
 */
 char * prec_to_RRR ( char *target, size_t lmax, double r )
 {
@@ -57,9 +59,11 @@ char * prec_to_RRR ( char *target, size_t lmax, double r )
 
 /*!
   \fn char * prec_to_RRRR ( char *target, size_t lmax, double r )
-  \brief converts a precipitation in Kg/m2 into a RRRR string (code table 3596)
-  \param r the precipitation
-  \param target the resulting string
+  \brief Converts a precipitation in Kg/m2 into a RRRR string (code table 3596)
+  \param [out] target Pointer to string where result will be stored
+  \param [in] lmax Maximum length of target buffer
+  \param [in] r Precipitation in Kg/m2
+  \return Pointer to target string
 */
 char * prec_to_RRRR ( char *target, size_t lmax, double r )
 {
@@ -80,9 +84,11 @@ char * prec_to_RRRR ( char *target, size_t lmax, double r )
 
 /*!
   \fn char * prec_to_RRRR24 ( char *target, size_t lmax, double r )
-  \brief converts a precipitation in Kg/m2 into a RRRR24 string
-  \param r the precipitation
-  \param target the resulting string
+  \brief Converts a precipitation in Kg/m2 into a RRRR24 string
+  \param [out] target Pointer to string where result will be stored
+  \param [in] lmax Maximum length of target buffer
+  \param [in] r Precipitation in Kg/m2
+  \return Pointer to target string
 */
 char * prec_to_RRRR24 ( char *target, size_t lmax, double r )
 {
@@ -103,9 +109,11 @@ char * prec_to_RRRR24 ( char *target, size_t lmax, double r )
 
 /*!
   \fn char * prec_to_RxRxRxRx ( char *target, size_t lmax, double r )
-  \brief converts a precipitation in Kg/m2 into a RxRxRxRx string
-  \param r the precipitation
-  \param target the resulting string
+  \brief Converts a precipitation in Kg/m2 into a RxRxRxRx string
+  \param [out] target Pointer to string where result will be stored
+  \param [in] lmax Maximum length of target buffer
+  \param [in] r Precipitation in Kg/m2
+  \return Pointer to target string
 */
 char * prec_to_RxRxRxRx ( char *target, size_t lmax, double r )
 {
@@ -117,9 +125,11 @@ char * prec_to_RxRxRxRx ( char *target, size_t lmax, double r )
 
 /*!
   \fn char * total_snow_depth_to_sss ( char *target, size_t lmax, double r )
-  \brief converts tatal snow depth in m to sss (code table 3889)
-  \param r recent snow depth in meters
-  \param target the resulting string
+  \brief Converts total snow depth in m to sss (code table 3889)
+  \param [out] target Pointer to string where result will be stored
+  \param [in] lmax Maximum length of target buffer
+  \param [in] r Total snow depth in meters
+  \return Pointer to target string
 */
 char * total_snow_depth_to_sss ( char *target, size_t lmax, double r )
 {
@@ -150,9 +160,11 @@ char * total_snow_depth_to_sss ( char *target, size_t lmax, double r )
 
 /*!
   \fn char * recent_snow_to_ss( char *target, size_t lmax, double r )
-  \brief converts recent snow in m to ss (code table 3870)
-  \param r recent snow depth in meters
-  \param target the resulting string
+  \brief Converts recent snow in m to ss (code table 3870)
+  \param [out] target Pointer to string where result will be stored
+  \param [in] lmax Maximum length of target buffer
+  \param [in] r Recent snow depth in meters
+  \return Pointer to target string
 */
 char * recent_snow_to_ss ( char *target, size_t lmax, double r )
 {
@@ -188,11 +200,10 @@ char * recent_snow_to_ss ( char *target, size_t lmax, double r )
 
 /*!
   \fn int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 13
-  \param syn pointer to a struct \ref synop_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 13 (precipitation and hydrology)
+  \param [in,out] syn Pointer to struct \ref synop_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 {
@@ -864,11 +875,10 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 
 /*!
   \fn int buoy_parse_x13 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 13
-  \param b pointer to a struct \ref buoy_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 13 (precipitation and hydrology)
+  \param [in] b Pointer to struct \ref buoy_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int buoy_parse_x13 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 {
@@ -896,11 +906,10 @@ int buoy_parse_x13 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *
 
 /*!
   \fn int climat_parse_x13 ( struct climat_chunks *c, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 13
-  \param c pointer to a struct \ref climat_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 13 (precipitation and hydrology)
+  \param [in,out] c Pointer to struct \ref climat_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int climat_parse_x13 ( struct climat_chunks *c, struct bufr2tac_subset_state *s )
 {

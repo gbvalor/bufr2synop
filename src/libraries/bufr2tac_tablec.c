@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,12 +24,14 @@
 #include "bufr2tac.h"
 
 /*!
-  \fn char * get_ecmwf_tablename(char *target, char type, char *bufrtables_dir, int ksec1[40])
+  \fn char * get_ecmwf_tablename(char *target, char type, const char *bufrtables_dir, const int ksec1[40])
   \brief Get the complete pathname of a table file needed by a bufr message
-  \param target the resulting name
-  \param type a char with type, i.e, 'B', 'C', or 'D'
-  \param bufrtables_dir string with path to bufr file tables dir
-  \param ksec1 array of integer processed prevoiously by ecmwf bufr library
+  \param [out] target The resulting pathname
+  \param [in] type A char with type, i.e, 'B', 'C', or 'D'
+  \param [in] bufrtables_dir String with path to bufr file tables dir
+  \param [in] ksec1 Array of integers processed previously by ECMWF bufr library
+  \return Pointer to target
+
   In ECMWF library the name of a table file is Kssswwwwwxxxxxyyyzzz.TXT , where
        - K - type of table, i.e, 'B', 'C', or 'D'
        - sss - Master table number (zero for WMO meteorological tables)
@@ -55,8 +57,13 @@ char* get_ecmwf_tablename(char* target, char type, const char* bufrtables_dir, c
 }
 
 /*!
-  \fn int read_table_c(void)
+  \fn int read_table_c(char tablec[MAXLINES_TABLEC][92], size_t* nlines_tablec, const char* bufrtables_dir, int ksec1[40])
   \brief read a Table C file with code TABLE and flag descriptors
+  \param [out] tablec Array to store table C lines
+  \param [out] nlines_tablec Pointer to store number of lines read
+  \param [in] bufrtables_dir Path to bufr tables directory
+  \param [in] ksec1 Array of integers from ECMWF bufr library
+  \return Number of lines read, 0 on error
 */
 int read_table_c(char tablec[MAXLINES_TABLEC][92], size_t* nlines_tablec, const char* bufrtables_dir, int ksec1[40])
 {
@@ -86,14 +93,15 @@ int read_table_c(char tablec[MAXLINES_TABLEC][92], size_t* nlines_tablec, const 
 }
 
 /*!
-  \fn char * get_explained_table_val(char *expl, size_t dim, struct bufr_descriptor *d, int ival)
+  \fn char * get_explained_table_val(char *expl, size_t dim, const char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec, const struct bufr_descriptor *d, int ival)
   \brief gets a string with the meaning of a value for a code table descriptor
-  \param expl string with resulting meaning
-  \param dim max length alowed for \a expl string
-  \param d pointer to the source descriptor
-  \param ival integer value for the descriptos
-
-  If something went wrong, it returns NULL . Otherwise it returns \a expl
+  \param [out] expl String with resulting meaning
+  \param [in] dim Max length allowed for expl string
+  \param [in] tablec Table C data array
+  \param [in] nlines_tablec Number of lines in tablec
+  \param [in] d Pointer to the source descriptor
+  \param [in] ival Integer value for the descriptor
+  \return Pointer to expl on success, NULL on error
 */
 char* get_explained_table_val(char* expl, size_t dim, const char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec, const struct bufr_descriptor* d, int ival)
 {

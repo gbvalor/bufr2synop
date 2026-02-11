@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                 *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                 *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -34,6 +34,10 @@ int PRINT_JSON_EXPANDED_TREE; /*!< If != 0 Prints expanded tree in json format *
 int FIRST_SUBSET; /*!< First subset to parse */
 int LAST_SUBSET; /*!< Last subset to parse */
 
+/*!
+  \fn void print_usage(void)
+  \brief Print usage help message to stdout
+*/
 void print_usage ( void )
 {
   printf ( "Usage: \n" );
@@ -55,8 +59,8 @@ void print_usage ( void )
 /*!
   \fn int read_args( int _argc, char * _argv[])
   \brief read the arguments from stdio
-  \param _argc number of arguments passed
-  \param _argv array of arguments
+  \param [in] _argc number of arguments passed
+  \param [in] _argv array of arguments
 
   Returns 1 if succcess, -1 othewise
 */
@@ -161,6 +165,12 @@ int read_args ( int _argc, char * _argv[] )
   return 1;
 }
 
+/*!
+  \fn int set_bufrdeco_mask(struct bufrdeco *b)
+  \brief Set the bit mask according with input arguments
+  \param [in,out] b pointer to struct \ref bufrdeco
+  \return Always returns 0
+*/
 // set the bit mask according with input arguments
 int set_bufrdeco_mask ( struct bufrdeco *b )
 {
@@ -185,6 +195,13 @@ int set_bufrdeco_mask ( struct bufrdeco *b )
   return 0;
 }
 
+/*!
+  \fn int main(int argc, char *argv[])
+  \brief Main function for bufrdeco_json program
+  \param [in] argc number of arguments
+  \param [in] argv array of argument strings
+  \return EXIT_SUCCESS if success, EXIT_FAILURE otherwise
+*/
 int main ( int argc, char *argv[] )
 {
   size_t subset, first_subset, last_subset;

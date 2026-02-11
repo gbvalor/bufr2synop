@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -26,8 +26,10 @@
 /*!
   \fn char * pascal_to_ppp ( char *target, size_t lmax, double P )
   \brief Converts pascal values (variation) into a ppp string
-  \param P the pressure variation in Pascal units
-  \param target string with the result
+  \param [out] target Pointer to string where result will be stored
+  \param [in] lmax Maximum length of target buffer
+  \param [in] P Pressure variation in Pascal units
+  \return Pointer to target string
 */
 char * pascal_to_ppp ( char *target, size_t lmax, double P )
 {
@@ -47,8 +49,11 @@ char * pascal_to_ppp ( char *target, size_t lmax, double P )
 /*!
   \fn char * pascal_to_pnpnpn ( char *target, size_t lmax, double P )
   \brief Converts pascal values into a pnpnpn string
-  \param P the pressure variation in Pascal units
-  \param target string with the result
+  \param [out] target Pointer to string where result will be stored
+  \param [in] lmax Maximum length of target buffer
+  \param [in] P Pressure variation in Pascal units
+  \return Pointer to target string
+  
   If the value is below 10000.0 it should be expressed in decapascal units
   otherwise in hectopascal units
 */
@@ -73,8 +78,10 @@ char * pascal_to_pnpnpn ( char *target, size_t lmax, double P )
 /*!
   \fn char * pascal_to_PPPP ( char *target, size_t lmax, double P )
   \brief Converts pascal values into a PPPP string
-  \param P the pressure variation in Pascal units
-  \param target string with the result
+  \param [out] target Pointer to string where result will be stored
+  \param [in] lmax Maximum length of target buffer
+  \param [in] P Pressure variation in Pascal units
+  \return Pointer to target string
 */
 char * pascal_to_PPPP ( char *target, size_t lmax, double P )
 {
@@ -86,13 +93,10 @@ char * pascal_to_PPPP ( char *target, size_t lmax, double P )
 
 /*!
   \fn int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 10
-  \param syn pointer to a s      if ( BUFR2TAC_DEBUG_LEVEL > 0 )
-        bufr2tac_set_error ( s, 0, "syn_parse_x08()", "Descriptor not parsed" );
-truct \ref synop_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 10 (air pressure)
+  \param [in,out] syn Pointer to struct \ref synop_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 {
@@ -162,11 +166,10 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 
 /*!
   \fn int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 10
-  \param b pointer to a struct \ref buoy_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 10 (air pressure)
+  \param [in,out] b Pointer to struct \ref buoy_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 {
@@ -215,11 +218,10 @@ int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 
 /*!
   \fn int climat_parse_x10 ( struct climat_chunks *c, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 10
-  \param c pointer to a struct \ref climat_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 10 (air pressure)
+  \param [in,out] c Pointer to struct \ref climat_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int climat_parse_x10 ( struct climat_chunks *c, struct bufr2tac_subset_state *s )
 {
@@ -298,11 +300,10 @@ int climat_parse_x10 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
 
 /*!
   \fn int temp_parse_x10 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 10
-  \param t pointer to a struct \ref temp_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 10 (air pressure)
+  \param [in] t Pointer to struct \ref temp_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int temp_parse_x10 ( const struct temp_chunks *t, struct bufr2tac_subset_state *s )
 {

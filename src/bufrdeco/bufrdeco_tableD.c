@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -26,8 +26,8 @@
 /*!
   \fn int bufr_read_tableD ( struct bufrdeco *b )
   \brief Reads a file with table D content according with WMO csv format
-  \param b pointer to a target struct \ref bufrdeco
-  \return If succeded return 0, otherwise 1
+  \param [in,out] b Pointer to a target struct \ref bufrdeco
+  \return If succeeded return 0, otherwise 1
 */
 int bufr_read_tableD ( struct bufrdeco *b )
 {
@@ -175,10 +175,10 @@ int bufr_read_tableD ( struct bufrdeco *b )
 /*!
  \fn  int bufr_find_tableD_index ( size_t *index, struct bufr_tableD *td, const char *key )
  \brief Find the index of a line in table D for a given key of a descriptor
- \param index pointer where to set the result
- \param td pointer to a struct \ref bufr_tableD where all table data is stored
- \param key string in the form FXXYYY which is the key of descriptor we want to find out
- \return If the descriptor has been found with success then returns 0, othewise returns 1
+ \param [out] index Pointer where to set the result
+ \param [in] td Pointer to a struct \ref bufr_tableD where all table data is stored
+ \param [in] key String in the form FXXYYY which is the key of descriptor we want to find out
+ \return If the descriptor has been found with success then returns 0, otherwise returns 1
 */
 int bufr_find_tableD_index ( buf_t *index, struct bufr_tableD *td, const char *key )
 {
@@ -217,9 +217,9 @@ int bufr_find_tableD_index ( buf_t *index, struct bufr_tableD *td, const char *k
 /*!
  \fn int bufrdeco_tableD_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key )
  \brief get the descriptors array for a descriptor sequence defined in table D with F = 3
- \param s target struct \ref bufr_sequence
- \param b pointer to the basic container struct \ref bufrdeco
- \param key string in the form FXXYYY which is the key of descriptor we want to find out, F = 3
+ \param [out] s Target struct \ref bufr_sequence
+ \param [in,out] b Pointer to the basic container struct \ref bufrdeco
+ \param [in] key String in the form FXXYYY which is the key of descriptor we want to find out, F = 3
  \return If the sequence has been filled with success then returns 0, otherwise returns 1
 */
 int bufrdeco_tableD_get_descriptors_array ( struct bufr_sequence *s, struct bufrdeco *b, const char *key )

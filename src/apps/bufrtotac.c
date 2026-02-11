@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -133,6 +133,16 @@ FILE *OUT; /*!< Buffer to write to OUTPUTFILE */
   clock_t clk_start, clk_end;
 #endif
 
+/*!
+  \fn int main(int argc, char *argv[])
+  \brief Main function for bufrtotac program
+  \param [in] argc number of arguments
+  \param [in] argv array of argument strings
+  \return EXIT_SUCCESS if success, EXIT_FAILURE otherwise
+  
+  This function processes BUFR files and converts them to traditional alphanumeric code (TAC) format.
+  It supports multiple report types including SYNOP, SHIP, TEMP, BUOY, and CLIMAT.
+*/
 int main ( int argc, char *argv[] )
 {
   int first_subset, last_subset;
@@ -283,7 +293,7 @@ int main ( int argc, char *argv[] )
                 print_bufrdeco_compressed_data_references ( & ( BUFR.refs ) );
               if ( BUFR.mask & BUFRDECO_OUTPUT_HTML )
                 {
-                  sprintf ( subset_id, "subset_%d", SUBSET );
+                  snprintf ( subset_id, sizeof ( subset_id ), "subset_%d", SUBSET );
                   bufrdeco_print_subset_sequence_data_tagged_html ( seq, subset_id );
                 }
               else

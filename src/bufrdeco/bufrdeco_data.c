@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -27,7 +27,7 @@
 /*!
   \fn struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data(struct bufrdeco *b)
   \brief Parse and get a struct \ref bufrdeco_subset_sequence_data
-  \param b basic container struct \ref bufrdeco
+  \param [in,out] b basic container struct \ref bufrdeco
   \return If succeeded returns a pointer to the struct \ref bufrdeco_subset_sequence_data with the results for a
   subset,  otherwise returns NULL
 
@@ -51,7 +51,7 @@ struct bufrdeco_subset_sequence_data * bufrdeco_get_subset_sequence_data ( struc
 /*!
   \fn  int bufrdeco_decode_data_subset ( struct bufrdeco *b )
   \brief  User interface to decode a BUFR subset
-  \param b pointer to the base struct \ref bufrdeco
+  \param [in,out] b pointer to the base struct \ref bufrdeco
   \return Return 0 in case of success, 1 otherwise
 
   Note that if succeeded the counter to current subset index is increased. Remember that in case of non
@@ -133,9 +133,9 @@ int bufrdeco_decode_data_subset ( struct bufrdeco *b )
 /*!
   \fn int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data *d, struct bufr_sequence *l, struct bufrdeco *b )
   \brief decode the data from a subset in a recursive way
-  \param d pointer to the target struct \ref bufrdeco_subset_sequence_data
-  \param l pointer to the source struct \ref bufr_sequence
-  \param b pointer to the base struct \ref bufrdeco
+  \param [out] d pointer to the target struct \ref bufrdeco_subset_sequence_data
+  \param [in] l pointer to the source struct \ref bufr_sequence
+  \param [in,out] b pointer to the base struct \ref bufrdeco
 
   \return 0 in case of success, 1 otherwise
 */
@@ -571,9 +571,9 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
 /*!
   \fn int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *d, struct bufr_replicator *r, struct bufrdeco *b )
   \brief Decodes a replicated sequence
-  \param d target struct \ref bufrdeco_subset_sequence_data
-  \param r pointer to a struct \ref bufr_replicator which manage the replication task
-  \param b pointer to the base struct \ref bufrdeco
+  \param [out] d target struct \ref bufrdeco_subset_sequence_data
+  \param [in] r pointer to a struct \ref bufr_replicator which manage the replication task
+  \param [in,out] b pointer to the base struct \ref bufrdeco
   \return If succeeded return 0, 1 otherwise
 */
 int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *d, struct bufr_replicator *r, struct bufrdeco *b )

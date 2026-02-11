@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -30,11 +30,11 @@
 
 /*!
   \fn int bufrdeco_parse_f2_descriptor ( struct bufrdeco_subset_sequence_data *s, const struct bufr_descriptor *d, struct bufrdeco *b )
-  \brief parse a descritor with f = 2
-  \param s pointer to a struct \ref  bufrdeco_subset_sequence_data where to set data if any
-  \param d pointer to the source descriptor
-  \param b pointer to the base struct \ref bufrdeco
-  \return If succeded return 0, otherwise 1
+  \brief parse a descriptor with f = 2
+  \param [out] s Pointer to a struct \ref  bufrdeco_subset_sequence_data where to set data if any
+  \param [in] d Pointer to the source descriptor
+  \param [in,out] b Pointer to the base struct \ref bufrdeco
+  \return If succeeded return 0, otherwise 1
  */
 int bufrdeco_parse_f2_descriptor(struct bufrdeco_subset_sequence_data* s, const struct bufr_descriptor* d, struct bufrdeco* b)
 {
@@ -447,11 +447,11 @@ int bufrdeco_parse_f2_descriptor(struct bufrdeco_subset_sequence_data* s, const 
 
 /*!
   \fn int bufrdeco_parse_f2_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_descriptor *d, struct bufrdeco *b )
-  \brief parse a descritor with f = 2 in case of compressed bufr
-  \param r pointer to a struct \ref bufrdeco_compressed_data_references where to set data references if any
-  \param d pointer to the source descriptor
-  \param b pointer to the base struct \ref bufrdeco
-  \return If succeded return 0, otherwise 1
+  \brief parse a descriptor with f = 2 in case of compressed bufr
+  \param [out] r Pointer to a struct \ref bufrdeco_compressed_data_references where to set data references if any
+  \param [in] d Pointer to the source descriptor
+  \param [in,out] b Pointer to the base struct \ref bufrdeco
+  \return If succeeded return 0, otherwise 1
  */
 int bufrdeco_parse_f2_compressed(struct bufrdeco_compressed_data_references* r, struct bufr_descriptor* d, struct bufrdeco* b)
 {
@@ -882,9 +882,10 @@ int bufrdeco_parse_f2_compressed(struct bufrdeco_compressed_data_references* r, 
 
 /*!
  *  \fn char *bufrdeco_get_f2_descriptor_explanation ( char *e, const struct bufr_descriptor *d)
- *  \brief Return a stribg with brief explanation of descriptor when f = 2.
- *  \param e string with explanation as result
- *  \param d pointer to the struct \ref bufr_descriptor to explain
+ *  \brief Return a string with brief explanation of descriptor when f = 2.
+ *  \param [out] e String with explanation as result
+ *  \param [in] dim Size of the explanation string
+ *  \param [in] d Pointer to the struct \ref bufr_descriptor to explain
  *
  *  \return As result, returns the explanation string or null if problems.
  */

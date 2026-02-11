@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -26,8 +26,8 @@
 /*!
   \fn int bufrdeco_read_bufr ( struct bufrdeco *b,  char *filename )
   \brief Read bufr file and does preliminary and first decode pass
-  \param b pointer to struct \ref bufrdeco
-  \param filename complete path of BUFR file
+  \param [in,out] b Pointer to struct \ref bufrdeco
+  \param [in] filename Complete path of BUFR file
   \return 0 if all is OK, 1 otherwise
 
   This function does the folowing tasks:
@@ -96,9 +96,9 @@ int bufrdeco_read_bufr(struct bufrdeco* b, char* filename)
 /*!
   \fn int bufrdeco_extract_bufr ( struct bufrdeco *b,  char *filename )
   \brief Read file and try to find a bufr report inserted in. Once found do the same that bufrdeco_read_file()
-  \param b pointer to struct \ref bufrdeco
-  \param filename complete path of BUFR file
-  \param buf_xout if != NULL and strlen(bufrout) != 0 then it writes the extracted bufrfile to a file named as argument
+  \param [in,out] b Pointer to struct \ref bufrdeco
+  \param [in] filename Complete path of BUFR file
+  \param [in] bufr_xout If != NULL and strlen(bufrout) != 0 then it writes the extracted bufrfile to a file named as argument
   \return 0 if all is OK, 1 otherwise
 
   This function does the folowing tasks:
@@ -200,9 +200,9 @@ int bufrdeco_extract_bufr(struct bufrdeco* b, char* filename, char* bufr_xout)
 /*!
   \fn int bufrdeco_read_buffer ( struct bufrdeco *b, uint8_t *bufrx, size_t size  )
   \brief Read a memory buffer and does preliminary and first decode pass
-  \param b pointer to struct \ref bufrdeco
-  \param bufrx buffer already allocated by caller
-  \param size size of BUFR in buffer
+  \param [in,out] b Pointer to struct \ref bufrdeco
+  \param [in] bufrx Buffer already allocated by caller
+  \param [in] size Size of BUFR in buffer
   \return 0 if all is OK, 1 otherwise
 
   This function does the folowing tasks:

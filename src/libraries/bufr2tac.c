@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -89,7 +89,12 @@ char *bufr2tac_get_version(char *version, size_t dversion, char *build, size_t d
   return version;  
 }
 
-
+/*!
+  \fn int bufr2tac_set_debug_level(int level)
+  \brief Set the debug level for bufr2tac library
+  \param [in] level Debug level to set (0=no debug, 1=debug, 2=verbose debug)
+  \return 0 on success, 1 if level is out of valid range
+*/
 int bufr2tac_set_debug_level(int level)
 {
   if (level < 0 || level > 2)

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -26,8 +26,10 @@
 /*!
   \fn char * percent_to_okta ( char *target, size_t lmax, double perc )
   \brief Converts percent cloud cover into okta
-  \param perc the precent cloud cover
-  \param target the resulting okta string
+  \param [out] target The resulting okta string
+  \param [in] lmax Maximum length of target string
+  \param [in] perc The percent cloud cover
+  \return Pointer to the target string
 */
 char* percent_to_okta(char* target, size_t lmax, double perc)
 {
@@ -59,8 +61,10 @@ char* percent_to_okta(char* target, size_t lmax, double perc)
 /*!
   \fn char * m_to_h ( char *target, size_t lmax, double h )
   \brief converts the altitude of cloud layer into h string code
-  \param h the altitude in meters
-  \param target the resulting h coded string
+  \param [out] target The resulting h coded string
+  \param [in] lmax Maximum length of target string
+  \param [in] h The altitude in meters
+  \return Pointer to the target string
 */
 char* m_to_h(char* target, size_t lmax, double h)
 {
@@ -92,8 +96,10 @@ char* m_to_h(char* target, size_t lmax, double h)
 /*!
   \fn char * m_to_9h ( char *target, size_t lmax, double h )
   \brief converts the altitude of cloud layer into 9h string code
-  \param h the altitude in meters
-  \param target the resulting 9x coded string
+  \param [out] target The resulting 9h coded string
+  \param [in] lmax Maximum length of target string
+  \param [in] h The altitude in meters
+  \return Pointer to the target string
 */
 char* m_to_9h(char* target, size_t lmax, double h)
 {
@@ -125,8 +131,10 @@ char* m_to_9h(char* target, size_t lmax, double h)
 /*!
   \fn char * m_to_hh ( char *target, size_t lmax, double h )
   \brief converts the altitude of cloud layer into hh string code
-  \param h the altitude in meters
-  \param target the resulting h coded string
+  \param [out] target The resulting hh coded string
+  \param [in] lmax Maximum length of target string
+  \param [in] h The altitude in meters
+  \return Pointer to the target string
 */
 char* m_to_hh(char* target, size_t lmax, double h)
 {
@@ -151,8 +159,10 @@ char* m_to_hh(char* target, size_t lmax, double h)
 /*!
   \fn char * vism_to_VV ( char *target, size_t lmax, double V )
   \brief Convert horizontal visibilty in meters to a VV string
-  \param V the visibility (m)
-  \param target the resulting VV string
+  \param [out] target The resulting VV string
+  \param [in] lmax Maximum length of target string
+  \param [in] V The visibility (m)
+  \return Pointer to the target string
 */
 char* vism_to_VV(char* target, size_t lmax, double V)
 {
@@ -175,8 +185,10 @@ char* vism_to_VV(char* target, size_t lmax, double V)
 /*!
   \fn char * m_to_RR ( char *target, size_t lmax, double m )
   \brief Convert distance (m) in RR code (3570)
-  \param m the distance/diameter (m)
-  \param target the resulting RR string
+  \param [out] target The resulting RR string
+  \param [in] lmax Maximum length of target string
+  \param [in] m The distance/diameter (m)
+  \return Pointer to the target string
 */
 char* m_to_RR(char* target, size_t lmax, double m)
 {
@@ -200,11 +212,10 @@ char* m_to_RR(char* target, size_t lmax, double m)
 
 /*!
   \fn int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 20
-  \param syn pointer to a struct \ref synop_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 20 (observed phenomena)
+  \param [in,out] syn Pointer to struct \ref synop_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int syn_parse_x20(struct synop_chunks* syn, struct bufr2tac_subset_state* s)
 {
@@ -976,11 +987,10 @@ int syn_parse_x20(struct synop_chunks* syn, struct bufr2tac_subset_state* s)
 
 /*!
   \fn int buoy_parse_x20 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 20
-  \param b pointer to a struct \ref buoy_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 20 (observed phenomena)
+  \param [in] b Pointer to struct \ref buoy_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int buoy_parse_x20(const struct buoy_chunks* b, struct bufr2tac_subset_state* s)
 {
@@ -1003,11 +1013,10 @@ int buoy_parse_x20(const struct buoy_chunks* b, struct bufr2tac_subset_state* s)
 
 /*!
   \fn int temp_parse_x20 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 20
-  \param t pointer to a struct \ref temp_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 20 (observed phenomena)
+  \param [in,out] t Pointer to struct \ref temp_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int temp_parse_x20(struct temp_chunks* t, struct bufr2tac_subset_state* s)
 {

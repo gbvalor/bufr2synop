@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,13 +24,12 @@
 #include "bufr2tac.h"
 
 /*!
-  \fn int find_descriptor(int *haystack, size_t nlst, int needle)
+  \fn int find_descriptor(const int *haystack, size_t nlst, int needle)
   \brief Try to find a descriptor in an array
-  \param haystack array of integers as descriptors
-  \param nlst number of descriptors in array
-  \param needle descriptor to find
-
-  it returns 1 if found, 0 otherwise.
+  \param [in] haystack Array of integers as descriptors
+  \param [in] nlst Number of descriptors in array
+  \param [in] needle Descriptor to find
+  \return 1 if found, 0 otherwise
 */
 int find_descriptor ( const int *haystack, size_t nlst, int needle )
 {
@@ -44,17 +43,13 @@ int find_descriptor ( const int *haystack, size_t nlst, int needle )
 
 
 /*!
-  \fn int find_descriptor(int *haystack, size_t nlst, int needlemin, int needlemax)
+  \fn int find_descriptor_interval(const int *haystack, size_t nlst, int needlemin, int needlemax)
   \brief Try to find a descriptor in an array between two limits
-  \param haystack array of integers as descriptors
-  \param nlst number of descriptors in array
-  \param needlemin minimum descriptor to find
-  \param needlemax maximum descriptor to find
-
-  It tries to find a descriptor in haystack which is greater or equal to needlemin and
-  lesser or equal to needlemax
-
-  it returns 1 if found, 0 otherwise.
+  \param [in] haystack Array of integers as descriptors
+  \param [in] nlst Number of descriptors in array
+  \param [in] needlemin Minimum descriptor to find
+  \param [in] needlemax Maximum descriptor to find
+  \return 1 if found (descriptor >= needlemin and <= needlemax), 0 otherwise
 */
 int find_descriptor_interval ( const int *haystack, size_t nlst, int needlemin, int needlemax )
 {
@@ -68,15 +63,16 @@ int find_descriptor_interval ( const int *haystack, size_t nlst, int needlemin, 
 }
 
 /*!
-  \fn int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr2tac_subset_state *st,  int *kdtlst, size_t nlst, int *ksec1, char *err)
+  \fn int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr2tac_subset_state *st,  const int *kdtlst, size_t nlst, const int *ksec1, char *err)
   \brief Parse a sequence of expanded descriptors for a subset
-  \param m pointer to a struct \ref metreport where to set the data
-  \param sq pointer to a struct \ref bufr_subset_sequence_data where the values for sequence of descriptors for a subset has been decoded
-  \param st pointer to a struct \ref bufr2tac_subset_state
-  \param kdtlst array of integers with descriptors
-  \param nlst number of descriptors in \a kdtlst
-  \param ksec1 array of auxiliar integers decoded by bufrdc ECMWF library
-  \param err string where to write errors if any
+  \param [in,out] m Pointer to struct \ref metreport where to set the data
+  \param [in] sq Pointer to struct \ref bufr_subset_sequence_data where the values for sequence of descriptors for a subset has been decoded
+  \param [in,out] st Pointer to struct \ref bufr2tac_subset_state
+  \param [in] kdtlst Array of integers with descriptors
+  \param [in] nlst Number of descriptors in kdtlst
+  \param [in] ksec1 Array of auxiliary integers decoded by bufrdc ECMWF library
+  \param [out] err String where to write errors if any
+  \return 0 on success, 1 on error
 */
 int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr2tac_subset_state *st,  const int *kdtlst, size_t nlst, const int *ksec1, char *err )
 {

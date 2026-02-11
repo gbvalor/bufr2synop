@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,6 +23,14 @@
 */
 #include "bufr2tac.h"
 
+/*!
+  \fn int bufr2tac_push_error(struct bufr2tac_error_stack* e, int severity, const char* description)
+  \brief Push an error onto the error stack
+  \param [in,out] e Pointer to struct \ref bufr2tac_error_stack where to push the error
+  \param [in] severity Severity level: 0=INFO, 1=WARNING, 2=ERROR
+  \param [in] description Error description string
+  \return 1 if error pushed successfully, 0 if stack is full, -1 on fatal error
+*/
 int bufr2tac_push_error(struct bufr2tac_error_stack* e, int severity, const char* description)
 {
     // avoid segfaults
@@ -44,6 +52,12 @@ int bufr2tac_push_error(struct bufr2tac_error_stack* e, int severity, const char
     return -1; // bad e->ne
 }
 
+/*!
+  \fn int bufr2tac_clean_error_stack(struct bufr2tac_error_stack* e)
+  \brief Clean and reset the error stack
+  \param [in,out] e Pointer to struct \ref bufr2tac_error_stack to clean
+  \return 0 on success, -1 if e is NULL
+*/
 int bufr2tac_clean_error_stack(struct bufr2tac_error_stack* e)
 {
     if (e != NULL) {
@@ -53,6 +67,15 @@ int bufr2tac_clean_error_stack(struct bufr2tac_error_stack* e)
     return -1;
 }
 
+/*!
+  \fn int bufr2tac_set_error(struct bufr2tac_subset_state* s, int severity, const char* origin, const char* explanation)
+  \brief Set an error with descriptor context information
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state containing current parsing state
+  \param [in] severity Severity level: 0=INFO, 1=WARNING, 2=ERROR
+  \param [in] origin String identifying the function or location where error occurred
+  \param [in] explanation Error explanation string
+  \return Result from bufr2tac_push_error()
+*/
 int bufr2tac_set_error(struct bufr2tac_subset_state* s, int severity, const char* origin, const char* explanation)
 {
     char description[BUFR2TAC_ERROR_DESCRIPTION_LENGTH];
@@ -111,6 +134,12 @@ int bufr2tac_set_error(struct bufr2tac_subset_state* s, int severity, const char
     return bufr2tac_push_error(&s->e, severity, description);
 }
 
+/*!
+  \fn int bufr2tac_print_error(const struct bufr2tac_error_stack* e)
+  \brief Print all errors in the error stack to stdout
+  \param [in] e Pointer to struct \ref bufr2tac_error_stack to print
+  \return 0 on success, 1 if unknown severity found
+*/
 int bufr2tac_print_error(const struct bufr2tac_error_stack* e)
 {
     unsigned int i;

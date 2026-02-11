@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -26,9 +26,10 @@
 /*!
   \fn int print_temp_raw_data ( struct temp_raw_data *r )
   \brief Prints for debug a struct \ref temp_raw_data
-  \param r the pointer of struct to print
+  \param [in] r Pointer to struct to print
 
   This is used mainly for debug
+  \return 0 if successful
 */
 int print_temp_raw_data ( const struct temp_raw_data *r )
 {
@@ -91,9 +92,10 @@ int print_temp_raw_data ( const struct temp_raw_data *r )
 /*!
   \fn int print_temp_raw_wind_shear_data ( struct temp_raw_wind_shear_data *w )
   \brief Prints for debug a struct \ref temp_raw_data
-  \param w the pointer of struct to print
+  \param [in] w Pointer to struct to print
 
   Used in debug stage
+  \return 0 if successful
 */
 int print_temp_raw_wind_shear_data ( const struct temp_raw_wind_shear_data *w )
 {
@@ -136,11 +138,11 @@ int print_temp_raw_wind_shear_data ( const struct temp_raw_wind_shear_data *w )
 /*!
   \fn size_t print_temp_a_sec1 (char **sec1, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 1 of part A of a TEMP report
-  \param sec1 the pointer where to print section
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param [in,out] sec1 Pointer to the output buffer where section 1 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] t Pointer to struct \ref temp_chunks where the parse results are set
 
-  returns the string sec1
+  \return Number of characters written to the buffer
 */
 size_t print_temp_a_sec1 ( char **sec1, size_t lmax, const struct temp_chunks *t )
 {
@@ -202,11 +204,11 @@ size_t print_temp_a_sec1 ( char **sec1, size_t lmax, const struct temp_chunks *t
 /*!
   \fn size_t print_temp_a_sec2 (char **sec2, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 2 of part A of a TEMP report
-  \param sec2 the pointer where to print section
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param [in,out] sec2 Pointer to the output buffer where section 2 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] t Pointer to struct \ref temp_chunks where the parse results are set
 
-  returns the string sec2
+  \return Number of characters written to the buffer
 */
 size_t print_temp_a_sec2 ( char **sec2, size_t lmax, const struct temp_chunks *t )
 {
@@ -233,11 +235,11 @@ size_t print_temp_a_sec2 ( char **sec2, size_t lmax, const struct temp_chunks *t
 /*!
   \fn size_t print_temp_a_sec3 (char **sec3, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 3 of part A of a TEMP report
-  \param sec3 the pointer where to print section
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param [in,out] sec3 Pointer to the output buffer where section 3 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] t Pointer to struct \ref temp_chunks where the parse results are set
 
-  returns the string sec3
+  \return Number of characters written to the buffer
 */
 size_t print_temp_a_sec3 ( char **sec3, size_t lmax, const struct temp_chunks *t )
 {
@@ -266,11 +268,11 @@ size_t print_temp_a_sec3 ( char **sec3, size_t lmax, const struct temp_chunks *t
 /*!
   \fn size_t print_temp_a_sec4 (char **sec4, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 4 of part A of a TEMP report
-  \param sec4 the pointer where to print section
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param [in,out] sec4 Pointer to the output buffer where section 4 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] t Pointer to struct \ref temp_chunks where the parse results are set
 
-  returns the string sec1
+  \return Number of characters written to the buffer
 */
 size_t print_temp_a_sec4 ( char **sec4, size_t lmax, const struct temp_chunks *t )
 {
@@ -310,11 +312,11 @@ size_t print_temp_a_sec4 ( char **sec4, size_t lmax, const struct temp_chunks *t
 /*!
   \fn size_t print_temp_a_sec7 (char **sec7, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 7 of part A of a TEMP report
-  \param sec7 the pointer where to print section
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param [in,out] sec7 Pointer to the output buffer where section 7 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] t Pointer to struct \ref temp_chunks where the parse results are set
 
-  returns the string sec7
+  \return Number of characters written to the buffer
 */
 size_t print_temp_a_sec7 ( char **sec7, size_t lmax, const struct temp_chunks *t )
 {
@@ -337,9 +339,9 @@ size_t print_temp_a_sec7 ( char **sec7, size_t lmax, const struct temp_chunks *t
 /*!
   \fn size_t print_temp_a (struct metreport *m )
   \brief Prints the part A of a TEMP report into a string
-  \param m pointer to struct \ref metreport where are both target and source
+  \param [in,out] m Pointer to struct \ref metreport where are both target and source
   
-  If OK returns 0, otherwise 1
+  \return 0 if successful, 1 otherwise
 */
 int print_temp_a (  struct metreport *m )
 {
@@ -377,11 +379,11 @@ int print_temp_a (  struct metreport *m )
 /*!
   \fn size_t print_temp_b_sec1 (char **sec1, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 1 of part B of a TEMP report
-  \param sec1 the pointer where to print section
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param [in,out] sec1 Pointer to the output buffer where section 1 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] t Pointer to struct \ref temp_chunks where the parse results are set
 
-  returns the string sec1
+  \return Number of characters written to the buffer
 */
 size_t print_temp_b_sec1 ( char **sec1, size_t lmax, const struct temp_chunks *t )
 {
@@ -442,11 +444,11 @@ size_t print_temp_b_sec1 ( char **sec1, size_t lmax, const struct temp_chunks *t
 /*!
   \fn size_t print_temp_b_sec5 (char **sec5, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 5 of part B of a TEMP report
-  \param sec5 the pointer where to print section
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param [in,out] sec5 Pointer to the output buffer where section 5 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] t Pointer to struct \ref temp_chunks where the parse results are set
 
-  returns the string sec5
+  \return Number of characters written to the buffer
 */
 size_t print_temp_b_sec5 ( char **sec5, size_t lmax, const struct temp_chunks *t )
 {
@@ -467,11 +469,11 @@ size_t print_temp_b_sec5 ( char **sec5, size_t lmax, const struct temp_chunks *t
 /*!
   \fn size_t print_temp_b_sec6 (char **sec6, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 6 of part B of a TEMP report
-  \param sec6 the pointer where to print section
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param [in,out] sec6 Pointer to the output buffer where section 6 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] t Pointer to struct \ref temp_chunks where the parse results are set
 
-  returns the string sec6
+  \return Number of characters written to the buffer
 */
 size_t print_temp_b_sec6 ( char **sec6, size_t lmax, const struct temp_chunks *t )
 {
@@ -494,11 +496,11 @@ size_t print_temp_b_sec6 ( char **sec6, size_t lmax, const struct temp_chunks *t
 /*!
   \fn size_t print_temp_b_sec7 (char **sec7, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 7 of part B of a TEMP report
-  \param sec7 the pointer where to print section
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param [in,out] sec7 Pointer to the output buffer where section 7 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] t Pointer to struct \ref temp_chunks where the parse results are set
 
-  returns the string sec7
+  \return Number of characters written to the buffer
 */
 size_t print_temp_b_sec7 ( char **sec7, size_t lmax, const struct temp_chunks *t )
 {
@@ -521,11 +523,11 @@ size_t print_temp_b_sec7 ( char **sec7, size_t lmax, const struct temp_chunks *t
 /*!
   \fn size_t print_temp_b_sec8 (char **sec8, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 8 of part B of a TEMP report
-  \param sec8 the pointer where to print section
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param [in,out] sec8 Pointer to the output buffer where section 8 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] t Pointer to struct \ref temp_chunks where the parse results are set
 
-  returns the string sec8
+  \return Number of characters written to the buffer
 */
 size_t print_temp_b_sec8 ( char **sec8, size_t lmax, const struct temp_chunks *t )
 {
@@ -584,9 +586,9 @@ size_t print_temp_b_sec8 ( char **sec8, size_t lmax, const struct temp_chunks *t
 /*!
   \fn int print_temp_b (struct metreport *m )
   \brief Prints the part B of a TEMP report into a string
-  \param m pointer to struct \ref metreport where are both target and source
+  \param [in,out] m Pointer to struct \ref metreport where are both target and source
 
-  If OK returns 0, otherwise 1
+  \return 0 if successful, 1 otherwise
  */
 int print_temp_b ( struct metreport *m )
 {
@@ -625,11 +627,11 @@ int print_temp_b ( struct metreport *m )
 /*!
   \fn size_t print_temp_c_sec1 (char **sec1, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 1 of part C of a TEMP report
-  \param sec1 the pointer where to print section
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param [in,out] sec1 Pointer to the output buffer where section 1 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] t Pointer to struct \ref temp_chunks where the parse results are set
 
-  returns the string sec1
+  \return Number of characters written to the buffer
 */
 size_t print_temp_c_sec1 ( char **sec1, size_t lmax, const struct temp_chunks *t )
 {
@@ -690,11 +692,11 @@ size_t print_temp_c_sec1 ( char **sec1, size_t lmax, const struct temp_chunks *t
 /*!
   \fn size_t print_temp_c_sec2 (char **sec2, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 2 of part C of a TEMP report
-  \param sec2 the pointer where to print section
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param [in,out] sec2 Pointer to the output buffer where section 2 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] t Pointer to struct \ref temp_chunks where the parse results are set
 
-  returns the string sec2
+  \return Number of characters written to the buffer
 */
 size_t print_temp_c_sec2 ( char **sec2, size_t lmax, const struct temp_chunks *t )
 {
@@ -717,11 +719,11 @@ size_t print_temp_c_sec2 ( char **sec2, size_t lmax, const struct temp_chunks *t
 /*!
   \fn size_t print_temp_c_sec3 (char **sec3, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 3 of part C of a TEMP report
-  \param sec3 the pointer where to print section
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param [in,out] sec3 Pointer to the output buffer where section 3 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] t Pointer to struct \ref temp_chunks where the parse results are set
 
-  returns the string sec3
+  \return Number of characters written to the buffer
 */
 size_t print_temp_c_sec3 ( char **sec3, size_t lmax, const struct temp_chunks *t )
 {
@@ -750,11 +752,11 @@ size_t print_temp_c_sec3 ( char **sec3, size_t lmax, const struct temp_chunks *t
 /*!
   \fn size_t print_temp_c_sec4 (char **sec4, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 4 of part C of a TEMP report
-  \param sec4 the pointer where to print section
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param [in,out] sec4 Pointer to the output buffer where section 4 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] t Pointer to struct \ref temp_chunks where the parse results are set
 
-  returns the string sec4
+  \return Number of characters written to the buffer
 */
 size_t print_temp_c_sec4 ( char **sec4, size_t lmax, const struct temp_chunks *t )
 {
@@ -793,11 +795,11 @@ size_t print_temp_c_sec4 ( char **sec4, size_t lmax, const struct temp_chunks *t
 /*!
   \fn size_t print_temp_c_sec7 (char **sec7, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 7 of part C of a TEMP report
-  \param sec7 the pointer where to print section
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param [in,out] sec7 Pointer to the output buffer where section 7 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] t Pointer to struct \ref temp_chunks where the parse results are set
 
-  returns the string sec7
+  \return Number of characters written to the buffer
 */
 size_t print_temp_c_sec7 ( char **sec7, size_t lmax, const struct temp_chunks *t )
 {
@@ -820,9 +822,9 @@ size_t print_temp_c_sec7 ( char **sec7, size_t lmax, const struct temp_chunks *t
 /*!
   \fn int print_temp_c (struct metreport *m )
   \brief Prints the part C of a TEMP report into a string
-  \param m pointer to struct \ref metreport where are both target and source
+  \param [in,out] m Pointer to struct \ref metreport where are both target and source
 
-  If OK returns 0, otherwise 1
+  \return 0 if successful, 1 otherwise
 */
 int print_temp_c ( struct metreport *m )
 {
@@ -860,11 +862,11 @@ int print_temp_c ( struct metreport *m )
 /*!
   \fn size_t print_temp_d_sec1 (char **sec1, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 1 of part D of a TEMP report
-  \param sec1 the pointer where to print section
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param [in,out] sec1 Pointer to the output buffer where section 1 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] t Pointer to struct \ref temp_chunks where the parse results are set
 
-  returns the string sec1
+  \return Number of characters written to the buffer
 */
 size_t print_temp_d_sec1 ( char **sec1, size_t lmax, const struct temp_chunks *t )
 {
@@ -925,11 +927,11 @@ size_t print_temp_d_sec1 ( char **sec1, size_t lmax, const struct temp_chunks *t
 /*!
   \fn size_t print_temp_d_sec5 (char **sec5, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 5 of part D of a TEMP report
-  \param sec5 the pointer where to print section
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param [in,out] sec5 Pointer to the output buffer where section 5 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] t Pointer to struct \ref temp_chunks where the parse results are set
 
-  returns the string sec5
+  \return Number of characters written to the buffer
 */
 size_t print_temp_d_sec5 ( char **sec5, size_t lmax, const struct temp_chunks *t )
 {
@@ -950,11 +952,11 @@ size_t print_temp_d_sec5 ( char **sec5, size_t lmax, const struct temp_chunks *t
 /*!
   \fn size_t print_temp_d_sec6 (char **sec6, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 6 of part D of a TEMP report
-  \param sec6 the pointer where to print section
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param [in,out] sec6 Pointer to the output buffer where section 6 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] t Pointer to struct \ref temp_chunks where the parse results are set
 
-  returns the string sec6
+  \return Number of characters written to the buffer
 */
 size_t print_temp_d_sec6 ( char **sec6, size_t lmax, const struct temp_chunks *t )
 {
@@ -977,11 +979,11 @@ size_t print_temp_d_sec6 ( char **sec6, size_t lmax, const struct temp_chunks *t
 /*!
   \fn size_t print_temp_d_sec7 (char **sec7, size_t lmax, const struct temp_chunks *t)
   \brief Prints the section 7 of part D of a TEMP report
-  \param sec7 the pointer where to print section
-  \param lmax max length permited
-  \param t pointer to s atruct \ref temp_chunks where the parse results are set
+  \param [in,out] sec7 Pointer to the output buffer where section 7 will be written
+  \param [in] lmax Maximum length permitted for the output buffer
+  \param [in] t Pointer to struct \ref temp_chunks where the parse results are set
 
-  returns the string sec7
+  \return Number of characters written to the buffer
 */
 size_t print_temp_d_sec7 ( char **sec7, size_t lmax, const struct temp_chunks *t )
 {
@@ -1004,9 +1006,9 @@ size_t print_temp_d_sec7 ( char **sec7, size_t lmax, const struct temp_chunks *t
 /*!
   \fn int print_temp_d (struct metreport *m)
   \brief Prints the part D of a TEMP report into a string
-  \param m pointer to struct \ref metreport where are both target and source
+  \param [in,out] m Pointer to struct \ref metreport where are both target and source
 
-  If OK returns 0, otherwise 1
+  \return 0 if successful, 1 otherwise
 */
 int print_temp_d ( struct metreport *m )
 {
@@ -1041,8 +1043,10 @@ int print_temp_d ( struct metreport *m )
 
 /*!
    \fn int print_temp_report ( struct metreport *m )
-   \brief print the four parts of a decoded TEMP report from a BUFR file into strings
-   \param m pointer to a struct \ref metreport in which alphanumeric string members stores the reults
+   \brief Print the four parts of a decoded TEMP report from a BUFR file into strings
+   \param [in,out] m Pointer to struct \ref metreport in which alphanumeric string members stores the results
+   
+   \return 0 if successful, 1 otherwise
 */
 int print_temp_report ( struct metreport *m )
 {

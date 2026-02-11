@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -26,8 +26,8 @@
 /*!
  * \fn buf_t bufrdeco_print_json_scape_string_cvals ( FILE *out, char *source )
  * \brief prints a descriptor string value scaping the '"' for a json format
- * \param out output stream
- * \param source source string
+ * \param [in] out Output stream
+ * \param [in] source Source string
  * \return The amount of bytes sent to out
  */
 buf_t bufrdeco_print_json_scape_string_cvals ( FILE *out, const char *source )
@@ -51,8 +51,8 @@ buf_t bufrdeco_print_json_scape_string_cvals ( FILE *out, const char *source )
 /*!
  * \fn buf_t bufrdeco_print_subset_data_prologue (FILE *out,  struct bufrdeco *b )
  * \brief Prints the prologue of object with a subset data in json format
- * \param out output stream opened by caller
- * \param b pointer to active struct \ref bufrdeco
+ * \param [in] out Output stream opened by caller
+ * \param [in] b Pointer to active struct \ref bufrdeco
  * \return The amount of bytes sent to out
  */
 buf_t bufrdeco_print_json_subset_data_prologue ( FILE *out,  const struct bufrdeco *b )
@@ -70,7 +70,7 @@ buf_t bufrdeco_print_json_subset_data_prologue ( FILE *out,  const struct bufrde
 /*!
  * \fn buf_t bufrdeco_print_subset_data_epilogue ( FILE *out )
  * \brief Prints the prologue of object with a subset data in json format
- * \param out output stream opened by caller
+ * \param [in] out Output stream opened by caller
  *
  * \return The amount of bytes sent to out
  */
@@ -86,8 +86,8 @@ buf_t bufrdeco_print_json_subset_data_epilogue ( FILE *out )
 /*!
  *  \fn buf_t bufrdeco_print_json_sequence_descriptor_header (FILE *out,  struct bufr_sequence *seq )
  *  \brief Print the header of a sequence descriptor (f == 3)
- *  \param out output stream opened by caller
- *  \param seq pointer to a bufr_sequence \ref bufr_sequence
+ *  \param [in] out Output stream opened by caller
+ *  \param [in] seq Pointer to a bufr_sequence \ref bufr_sequence
  *
  * \return The amount of bytes sent to out
  */
@@ -103,7 +103,7 @@ buf_t bufrdeco_print_json_sequence_descriptor_header ( FILE *out,  const struct 
 /*!
  *  \fn buf_t bufrdeco_print_json_sequence_descriptor_header (FILE *out )
  *  \brief Print the final of a sequence descriptor (f == 3)
- *  \param out output stream opened by caller
+ *  \param [in] out Output stream opened by caller
  *
  * \return The amount of bytes sent to out
  */
@@ -119,10 +119,10 @@ buf_t bufrdeco_print_json_sequence_descriptor_final ( FILE *out )
 /*!
  *  \fn buf_t bufrdeco_print_json_object_atom_data (FILE *out, struct bufr_atom_data *a, buf_t index_data, char *add )
  *  \brief Print an json object with a descriptor data
- *  \param out output stream opened by caller
- *  \param a pointer to target struct \ref bufr_atom_data
- *  \param index_data index in array of data
- *  \param add adtional optional info
+ *  \param [in] out Output stream opened by caller
+ *  \param [in] a Pointer to target struct \ref bufr_atom_data
+ *  \param [in] index_data Index in array of data
+ *  \param [in] add Additional optional info
  *
  * \return The amount of bytes sent to out
  *
@@ -195,10 +195,10 @@ buf_t bufrdeco_print_json_object_atom_data ( FILE *out,  struct bufr_atom_data *
 
 /*!
  *  \fn buf_t bufrdeco_print_json_object_operator_descriptor (FILE *out, struct bufr_descriptor *d, char *add )
- *  \brief print an operator desciptor as a json object
- *  \param out output stream opened by caller
- *  \param d pointer to operator descriptor
- *  \param add adtional optional info
+ *  \brief print an operator descriptor as a json object
+ *  \param [in] out Output stream opened by caller
+ *  \param [in] d Pointer to operator descriptor
+ *  \param [in] add Additional optional info
  *
  * \return The amount of bytes sent to out
  */
@@ -222,10 +222,10 @@ buf_t bufrdeco_print_json_object_operator_descriptor ( FILE *out,  const struct 
 
 /*!
  *  \fn buf_t bufrdeco_print_json_object_replicator_descriptor (FILE *out, struct bufr_descriptor *d, char *add )
- *  \brief print an operator desciptor as a json object
- *  \param out string where to print
- *  \param d pointer to operator descriptor
- *  \param add additional info
+ *  \brief print an operator descriptor as a json object
+ *  \param [in] out String where to print
+ *  \param [in] d Pointer to operator descriptor
+ *  \param [in] add Additional info
  *
  * \return The amount of bytes sent to out
  */
@@ -262,7 +262,7 @@ buf_t bufrdeco_print_json_object_replicator_descriptor ( FILE *out,  const struc
 /*!
  *  \fn buf_t bufrdeco_print_json_separator( FILE *out)
  *  \brief Print the comma ',' separator in an output
- *  \param out string where to print
+ *  \param [in] out String where to print
  *
  *  \return The amount of bytes sent to out
  */
@@ -274,8 +274,8 @@ buf_t bufrdeco_print_json_separator ( FILE *out )
 /*!
   \fn int sprint_sec0_info( FILE *out, const struct bufrdeco *b )
 * \brief Print info form sec 0 in json format
- * \param out string where to print
- * \param b actuve struct \ref bufrdeco
+ * \param [in] out String where to print
+ * \param [in] b Active struct \ref bufrdeco
  *
  * \return The amount of bytes sent to out
 */
@@ -294,8 +294,8 @@ buf_t bufrdeco_print_json_sec0 ( FILE *out, const struct bufrdeco *b )
 /*!
  * \fn bufrdeco_print_json_sec1 (FILE *out, const struct bufrdeco *b)
  * \brief Print info form sec 1 in json format
- * \param out string where to print
- * \param b actuve struct \ref bufrdeco
+ * \param [in] out String where to print
+ * \param [in] b Active struct \ref bufrdeco
  *
  * \return The amount of bytes sent to out
 */
@@ -344,8 +344,8 @@ buf_t bufrdeco_print_json_sec1 ( FILE *out, const struct bufrdeco *b )
 /*!
   \fn buf_t bufrdeco_print_json_sec2( FILE *out, const struct bufrdeco *b )
 * \brief Print info form optional sec 2 in json format
- * \param out string where to print
- * \param b actuve struct \ref bufrdeco
+ * \param [in] out String where to print
+ * \param [in] b Active struct \ref bufrdeco
  *
  * \return The amount of bytes sent to out
 */
@@ -366,8 +366,8 @@ buf_t bufrdeco_print_json_sec2 ( FILE *out, const struct bufrdeco *b )
 /*!
  * \fn bufrdeco_print_json_sec3 (FILE *out, const struct bufrdeco *b)
  * \brief Print info form sec 3 in json format
- * \param out string where to print
- * \param b actuve struct \ref bufrdeco
+ * \param [in] out String where to print
+ * \param [in] b Active struct \ref bufrdeco
  *
  * \return The amount of bytes sent to out
 */
@@ -399,9 +399,9 @@ buf_t bufrdeco_print_json_sec3 ( FILE *out, const struct bufrdeco *b )
 /*!
   \fn int bufrdeco_print_json_tree_recursive ( FILE *out, struct bufrdeco *b, struct bufr_sequence *seq )
   \brief  Print a tree of descriptors to a file in a recursive way in json format
-  \param out stream opened by caller
-  \param b pointer to the basic container struct \ref bufrdeco
-  \param seq pointer to the struct \ref bufr_sequence  to print
+  \param [in] out Stream opened by caller
+  \param [in,out] b Pointer to the basic container struct \ref bufrdeco
+  \param [in] seq Pointer to the struct \ref bufr_sequence  to print
   \return The amount of bytes sent to out
 */
 buf_t bufrdeco_print_json_tree_recursive ( FILE *out, struct bufrdeco *b, struct bufr_sequence *seq )
@@ -501,7 +501,7 @@ buf_t bufrdeco_print_json_tree_recursive ( FILE *out, struct bufrdeco *b, struct
 /*!
   \fn int bufrdeco_print_tree ( struct bufrdeco *b )
   \brief Print a tree of descriptors
-  \param b pointer to a basic container struct \ref bufrdeco
+  \param [in,out] b Pointer to a basic container struct \ref bufrdeco
   \return The amount of bytes sent to out
 */
 buf_t bufrdeco_print_json_tree ( struct bufrdeco *b )
@@ -550,7 +550,7 @@ buf_t bufrdeco_print_json_subset_data ( struct bufrdeco *b )
         {
           if ( j )
             bufrdeco_print_json_separator ( b->out );
-          used += bufrdeco_print_json_sequence_descriptor_header ( b->out,  event->pointer );
+          used += bufrdeco_print_json_sequence_descriptor_header ( b->out,  (const struct bufr_sequence *)event->pointer );
           j = 0;
         }
       else if ( event->mask & BUFRDECO_EVENT_SEQUENCE_FINAL_BITMASK )
@@ -563,7 +563,7 @@ buf_t bufrdeco_print_json_subset_data ( struct bufrdeco *b )
         {
           if ( j )
             bufrdeco_print_json_separator ( b->out );
-          used += bufrdeco_print_json_object_replicator_descriptor ( b->out, event->pointer, aux );
+          used += bufrdeco_print_json_object_replicator_descriptor ( b->out, (const struct bufr_descriptor *)event->pointer, aux );
           j++;
         }
 
@@ -577,7 +577,7 @@ buf_t bufrdeco_print_json_subset_data ( struct bufrdeco *b )
             }
           else
             {
-              used += bufrdeco_print_json_object_operator_descriptor ( b->out, event->pointer, aux );
+              used += bufrdeco_print_json_object_operator_descriptor ( b->out, (const struct bufr_descriptor *)event->pointer, aux );
             }
           j++;
         }

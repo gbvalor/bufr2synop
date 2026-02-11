@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,8 +24,10 @@
 #include "bufr2tac.h"
 
 /*!
-  \fn three_bytes_to_uint(const unsigned char *source)
+  \fn unsigned int three_bytes_to_uint(const unsigned char *source)
   \brief returns the integer value from an array of three bytes, most significant first
+  \param [in] source Pointer to array of three unsigned chars
+  \return Unsigned integer value (big-endian conversion)
 */
 unsigned int three_bytes_to_uint(const unsigned char* source)
 {
@@ -34,9 +36,10 @@ unsigned int three_bytes_to_uint(const unsigned char* source)
 
 /*!
   \fn int integer_to_descriptor(struct bufr_descriptor *d, int id)
-  \brief parse an integer with a descriptor fom bufr ECWMF libary
-  \param d pointer to a struct \ref bufr_descriptor where to set the result on output
-  \param id integer with the descriptor from ewcwf
+  \brief parse an integer with a descriptor from bufr ECMWF library
+  \param [out] d Pointer to struct \ref bufr_descriptor where to set the result on output
+  \param [in] id Integer with the descriptor from ECMWF
+  \return 0 on success, 1 if d is NULL
 */
 int integer_to_descriptor(struct bufr_descriptor* d, int id)
 {
@@ -51,9 +54,10 @@ int integer_to_descriptor(struct bufr_descriptor* d, int id)
 
 /*!
   \fn int descriptor_to_integer(int *id, const struct bufr_descriptor *d)
-  \brief parse a descriptor and sets an integer in the decimal formas fxxyyy
-  \param id pointer to target integer
-  \param d pointer to a struct \ref bufr_descriptor with the source
+  \brief parse a descriptor and sets an integer in the decimal format as fxxyyy
+  \param [out] id Pointer to target integer
+  \param [in] d Pointer to struct \ref bufr_descriptor with the source
+  \return 0 on success, 1 if d is NULL
 */
 int descriptor_to_integer(int* id, const struct bufr_descriptor* d)
 {
@@ -63,6 +67,13 @@ int descriptor_to_integer(int* id, const struct bufr_descriptor* d)
     return 0;
 }
 
+/*!
+  \fn uint32_t get_flag_value(uint8_t width, uint8_t index)
+  \brief Calculate flag value for a bit position in a flag table
+  \param [in] width Total width of the flag table in bits
+  \param [in] index Bit position (1-based) from the left
+  \return Bit mask value with the specified bit set, 0 if invalid
+*/
 uint32_t get_flag_value(uint8_t width, uint8_t index)
 {
     if (width == index)
@@ -77,10 +88,11 @@ uint32_t get_flag_value(uint8_t width, uint8_t index)
 
 /*!
   \fn char * charray_to_string(char *s, const unsigned char *buf, size_t size)
-  \brief get a null termitated c-string from an array of unsigned chars
-  \param s resulting string
-  \param buf pointer to first element in array
-  \param size number of chars in array
+  \brief get a null terminated c-string from an array of unsigned chars
+  \param [out] s Resulting null-terminated string
+  \param [in] buf Pointer to first element in array
+  \param [in] size Number of chars in array
+  \return Pointer to s
 */
 char* charray_to_string(char* s, const unsigned char* buf, size_t size)
 {
@@ -93,8 +105,9 @@ char* charray_to_string(char* s, const unsigned char* buf, size_t size)
 
 /*!
   \fn char * adjust_string(char *s)
-  \brief Supress trailing blanks of a string
-  \param s string to process
+  \brief Suppress trailing blanks of a string
+  \param [in,out] s String to process (modified in place)
+  \return Pointer to s
 */
 char* adjust_string(char* s)
 {
@@ -105,18 +118,16 @@ char* adjust_string(char* s)
     return s;
 }
 
-/*! \fn int tokenize_string(char *tk[], size_t ntk, char *target, size_t len, char *blanks)
+/*! \fn size_t tokenize_string(char *tk[], size_t ntk, char *target, size_t len, char *blanks)
         \brief Split the report string into tokens
-        \param tk array of strings. Memory have to be allocated previously by caller
-        \param ntk max amount of elements in tk array.
-        \param target string which is the report to split
-        \param len lenght of \a target string
-        \param blanks string with the character considered as blanks. If null
-                      the default " =\n\r\v\t" is considered
-        Returns the number of tokens \a target has been splitted into.
-        Retuns 0 in case of a void or too large target.
-        NOTE: \a target is changed after calling this routine. In fact, the pointers
-        in \a tk[] are linking to some char in string \a target
+        \param [out] tk Array of strings. Memory have to be allocated previously by caller
+        \param [in] ntk Max amount of elements in tk array
+        \param [in,out] target String which is the report to split (modified in place)
+        \param [in] len Length of target string
+        \param [in] blanks String with characters considered as blanks. If NULL the default " =\n\r\v\t" is used
+        \return The number of tokens target has been splitted into. Returns 0 in case of a void or too large target
+
+        NOTE: target is changed after calling this routine. The pointers in tk[] are linking to chars in string target
 */
 size_t tokenize_string(char* tk[], size_t ntk, char* target, size_t len, char* blanks)
 {
@@ -147,8 +158,9 @@ size_t tokenize_string(char* tk[], size_t ntk, char* target, size_t len, char* b
 /*!
   \fn int YYYYMMDDHHmm_to_met_datetime(struct met_datetime *t, const char *source)
   \brief Parse the string YYYYMMDDHHmm[ss] and set a struct \ref met_datetime
-  \param source string with date in YYYYMMDDHHmm[ss] format
-  \param t pointer to a struct \ref met_datetime where to set the results
+  \param [out] t Pointer to struct \ref met_datetime where to set the results
+  \param [in] source String with date in YYYYMMDDHHmm[ss] format (12 or 14 chars)
+  \return 0 on success, 1 if source length is invalid
 */
 int YYYYMMDDHHmm_to_met_datetime(struct met_datetime* t, const char* source)
 {
@@ -166,10 +178,12 @@ int YYYYMMDDHHmm_to_met_datetime(struct met_datetime* t, const char* source)
 }
 
 /*!
-  \fn char *met_datetime_to_YYGG (char *target, const struct met_datetime *t)
-  \brief Get YYGG from a struct \ref met_datetime
-  \param target string with result as output
-  \param t pointer to source struct \ref met_datetime
+  \fn char *met_datetime_to_YYGG (char *target, size_t lmax, const struct met_datetime *t)
+  \brief Get YYGG (day and hour) from a struct \ref met_datetime
+  \param [out] target String with result (rounded to nearest hour)
+  \param [in] lmax Maximum length of target buffer
+  \param [in] t Pointer to source struct \ref met_datetime
+  \return Pointer to target
 */
 char* met_datetime_to_YYGG(char* target, size_t lmax, const struct met_datetime* t)
 {
@@ -185,6 +199,13 @@ char* met_datetime_to_YYGG(char* target, size_t lmax, const struct met_datetime*
     return target;
 }
 
+/*!
+  \fn int round_met_datetime_to_hour(struct met_datetime* target, const struct met_datetime* source)
+  \brief Round a datetime to the nearest whole hour
+  \param [out] target Pointer to struct \ref met_datetime where to set the rounded result
+  \param [in] source Pointer to source struct \ref met_datetime
+  \return 0 on success
+*/
 int round_met_datetime_to_hour(struct met_datetime* target, const struct met_datetime* source)
 {
     target->t = ((source->t + 1800) / 3600) * 3600; // rounding to next whole hour
@@ -197,10 +218,11 @@ int round_met_datetime_to_hour(struct met_datetime* target, const struct met_dat
 /*!
   \fn char *guess_WMO_region(char *A1, char *Reg, const char *II, const char *iii)
   \brief get WMO region A1 and Reg items from II and iii (WMO index)
-  \param A1 string woth resulting A1
-  \param Reg string with resulting Reg
-  \param II WMO block number
-  \param iii WMO number
+  \param [out] A1 String with resulting A1 (single digit region number)
+  \param [out] Reg String with resulting Reg (Roman numeral region)
+  \param [in] II WMO block number (2 digits)
+  \param [in] iii WMO station number (3 digits)
+  \return Pointer to A1, or NULL on error
 */
 char* guess_WMO_region(char* A1, char* Reg, const char* II, const char* iii)
 {
@@ -250,11 +272,9 @@ char* guess_WMO_region(char* A1, char* Reg, const char* II, const char* iii)
 
 /*!
    \fn int check_date_from_future(const struct metreport *m)
-   \brief Check a estructure \ref metreport not from future
-   \param m pointer to a struct metreport to check about date and time
-
-   It resturns 1 if date/time is from future, and likely wrong
-   Returns 0 otherwise
+   \brief Check a structure \ref metreport is not from future
+   \param [in] m Pointer to struct metreport to check about date and time
+   \return 1 if date/time is from future (likely wrong), 0 otherwise
 */
 int check_date_from_future(const struct metreport* m)
 {
@@ -270,11 +290,9 @@ int check_date_from_future(const struct metreport* m)
 /*!
   \fn int guess_gts_header(struct gts_header *h, const char *f)
   \brief Guess the WMO GTS header from filename
-
-  \param h pointer to a struct \ref gts_header where to set the results
-  \param f pathname of bufrfile
-
-  It returns 1 if guessed, 0 otherwise
+  \param [out] h Pointer to struct \ref gts_header where to set the results
+  \param [in] f Pathname of bufr file
+  \return 1 if guessed successfully, 0 otherwise
 
   <pre>
   This routine assume the filename format of a bufr file is

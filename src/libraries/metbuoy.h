@@ -1,6 +1,6 @@
 /* $Id$ */
 /***************************************************************************
- *   Copyright (C) 2004-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2004-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This file is part of bufr2synop                                       *
@@ -25,7 +25,7 @@
 */
 #ifndef METBUOY_H
 #define METBUOY_H
-
+#include "metcommon.h"
 
 /*! \def BUOY_SEC0
     \brief mask bit meaning section 0 of buoy is solicited to or parsed with success

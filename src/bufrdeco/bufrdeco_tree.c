@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -26,9 +26,9 @@
 /*!
   \fn int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct bufrdeco *b )
   \brief Set to a struct \ref bufr_sequence an unexpanded descriptor array from sec3 in a BUFR report
-  \param s Pointer to the target struct \ref bufr_sequence
-  \param b Pointer to the base struct \ref bufrdeco
-  \return If succeded return 0
+  \param [out] s Pointer to the target struct \ref bufr_sequence
+  \param [in] b Pointer to the base struct \ref bufrdeco
+  \return If succeeded return 0
 
   Here we get a struct \ref bufr_sequence from the data about descriptors stored in sec3 of a bufr report
 */
@@ -51,10 +51,10 @@ int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct 
 /*!
   \fn int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *father, buf_t father_idesc, const char *key )
   \brief Parse the descriptor tree in a recursive way
-  \param key string with descriptor in form 'FXXYYY'
-  \param father pointer to the father struct \ref bufr_sequence
-  \param father_idesc index of sequence descriptor in father \ref bufr_sequence which this sequence derived  
-  \param b pointer to the base struct \ref bufrdeco
+  \param [in] key String with descriptor in form 'FXXYYY'
+  \param [in,out] father Pointer to the father struct \ref bufr_sequence
+  \param [in] father_idesc Index of sequence descriptor in father \ref bufr_sequence which this sequence derived  
+  \param [in,out] b Pointer to the base struct \ref bufrdeco
   \return 0 if success, 1 otherwise
  */
 int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *father,  buf_t father_idesc, const char *key )

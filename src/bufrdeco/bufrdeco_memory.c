@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -26,7 +26,7 @@
 /*!
   \fn int bufrdeco_init_tables ( struct bufr_tables **t )
   \brief Init a struct \ref bufr_tables allocating space
-  \param t pointer to the target pointer to struct \ref bufr_tables
+  \param [in,out] t Pointer to the target pointer to struct \ref bufr_tables
   \return 0 if succeeded, 1 otherwise
 */
 int bufrdeco_init_tables ( struct bufr_tables **t )
@@ -45,7 +45,7 @@ int bufrdeco_init_tables ( struct bufr_tables **t )
 /*!
   \fn int bufrdeco_free_tables ( struct bufr_tables **t )
   \brief Frees the allocated space for a struct \ref bufr_tables
-  \param t pointer to the target pointer to struct \ref bufr_tables
+  \param [in,out] t Pointer to the target pointer to struct \ref bufr_tables
   \return 0 and \a *t is set to NULL
 */
 int bufrdeco_free_tables ( struct bufr_tables **t )
@@ -63,7 +63,7 @@ int bufrdeco_free_tables ( struct bufr_tables **t )
 /*!
   \fn int bufrdeco_init_expanded_tree ( struct bufrdeco_expanded_tree **t )
   \brief Init a struct \ref bufrdeco_expanded_tree allocating space
-  \param t pointer to the target pointer to struct \ref bufrdeco_expanded_tree
+  \param [in,out] t Pointer to the target pointer to struct \ref bufrdeco_expanded_tree
 
   \return 0 if succeeded, 1 otherwise
 */
@@ -82,7 +82,7 @@ int bufrdeco_init_expanded_tree ( struct bufrdeco_expanded_tree **t )
 /*!
   \fn int bufrdeco_free_expanded_tree ( struct bufrdeco_expanded_tree **t )
   \brief Frees the allocated space for a struct \ref bufrdeco_expanded_tree
-  \param t pointer to the target pointer to struct \ref bufrdeco_expanded_tree
+  \param [in,out] t Pointer to the target pointer to struct \ref bufrdeco_expanded_tree
 
   \return 0 and \a *t is set to NULL
 */
@@ -101,9 +101,9 @@ int bufrdeco_free_expanded_tree ( struct bufrdeco_expanded_tree **t )
 /*!
   \fn int bufrdeco_substitute_tables ( struct bufr_tables **replaced, struct bufr_tables *source, struct bufrdeco *b )
   \brief substitute an struct \ref bufr_tables into a struct \ref bufrdeco
-  \param replaced  Pointer where to set the replaced pointer
-  \param source Pointer to a struct \ref bufr_tables
-  \param b pointer to the container basic struct \ref bufrdeco
+  \param [out] replaced  Pointer where to set the replaced pointer
+  \param [in] source Pointer to a struct \ref bufr_tables
+  \param [in,out] b Pointer to the container basic struct \ref bufrdeco
   \return 0 if succeeded, 1 otherwise
 
   Remember that the struct \ref bufr_tables used in bufrdeco library is the one which pointer is in struct
@@ -131,7 +131,7 @@ int bufrdeco_substitute_tables ( struct bufr_tables **replaced, struct bufr_tabl
 /*!
    \fn int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
    \brief Init a struct \ref bufrdeco_subset_sequence_data
-   \param ba pointer to the target struct
+   \param [in,out] ba Pointer to the target struct
    \return 0 if succeeded, 1 otherwise
 
    It is supossed that no memory is allocated for sequence. If we are not sure better use
@@ -154,7 +154,7 @@ int bufrdeco_init_subset_sequence_data ( struct bufrdeco_subset_sequence_data *b
 /*!
   \fn int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
   \brief Cleans a struct \ref bufrdeco_subset_sequence_data
-  \param ba Pointer to struct \ref bufrdeco_subset_sequence_data to clean
+  \param [in,out] ba Pointer to struct \ref bufrdeco_subset_sequence_data to clean
   \return 0 if succeeded, 1 otherwise
 
   For eficience, if sequence in the struct \ref bufrdeco_subset_sequence_data is allocated, just set the used
@@ -177,7 +177,7 @@ int bufrdeco_clean_subset_sequence_data ( struct bufrdeco_subset_sequence_data *
 /*!
  \fn  int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
  \brief Free the memory for sequence array in a struct \ref bufrdeco_subset_sequence_data
- \param ba pointer to the target struct to free
+ \param [in,out] ba Pointer to the target struct to free
  \return 0 if succeeded
 */
 int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *ba )
@@ -195,7 +195,7 @@ int bufrdeco_free_subset_sequence_data ( struct bufrdeco_subset_sequence_data *b
 /*!
   \fn int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *d )
   \brief doubles the allocated space for a struct \ref bufrdeco_subset_sequence_data whenever is posible
-  \param d pointer to source struct \ref bufrdeco_subset_sequence_data
+  \param [in,out] d Pointer to source struct \ref bufrdeco_subset_sequence_data
   \return 0 when success, otherwise return 1 and the struct is unmodified
 
   The amount of data in a bufr must be huge. In a first moment, the dimension of a sequence of structs
@@ -229,8 +229,8 @@ int bufrdeco_increase_data_array ( struct bufrdeco_subset_sequence_data *d )
 /*!
  * \fn int bufrdeco_increase_subset_sequence_data_count ( struct bufrdeco_subset_sequence_data *d, struct bufrdeco *b )
  * \brief Increment the count of a struct \ref bufrdeco_subset_sequence_data
- * \param d pointer to the target struct
- * \param b pointer to the current active struct \ref bufrdeco
+ * \param [in,out] d Pointer to the target struct
+ * \param [in,out] b Pointer to the current active struct \ref bufrdeco
  *
  * \return 0 if succeeded, 1 otherwise
  */
@@ -255,8 +255,8 @@ int bufrdeco_increase_subset_sequence_data_count ( struct bufrdeco_subset_sequen
 /*!
   \fn int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
   \brief Init a struct bufrdeco_compressed_data_references
-  \param rf pointer ti the target struct
-  \return 0 if succeded, otherwise 1
+  \param [in,out] rf Pointer to the target struct
+  \return 0 if succeeded, otherwise 1
 
   If already memory is allocated for array of references then just adjust the used index to zero. Otherwise
   it allocate the needed memory and init the struct
@@ -287,7 +287,7 @@ int bufrdeco_init_compressed_data_references ( struct bufrdeco_compressed_data_r
 /*!
   \fn int bufrdeco_clean_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
   \brief Clean a struct \ref bufrdeco_compressed_data_references
-  \param rf pointer to the target struct \ref bufrdeco_compressed_data_references to clean
+  \param [in,out] rf Pointer to the target struct \ref bufrdeco_compressed_data_references to clean
   \return If succeeded return 0, otherwise 1
 */
 int bufrdeco_clean_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
@@ -304,7 +304,7 @@ int bufrdeco_clean_compressed_data_references ( struct bufrdeco_compressed_data_
 /*!
   \fn int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
   \brief Free the memory allocated for array of references in a struct \ref bufrdeco_compressed_data_references
-  \param rf pointer to the target struct \ref bufrdeco_compressed_data_references to free
+  \param [in,out] rf Pointer to the target struct \ref bufrdeco_compressed_data_references to free
   \return If succeeded return 0, otherwise 1
 */
 int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_references *rf )
@@ -322,7 +322,7 @@ int bufrdeco_free_compressed_data_references ( struct bufrdeco_compressed_data_r
 /*!
   \fn int bufrdeco_increase_compressed_ref_array ( struct bufrdeco_compressed_data_references *r )
   \brief doubles the allocated space for a struct \ref bufrdeco_compressed_data_references whenever is posible
-  \param r pointer to source struct \ref bufrdeco_compressed_data_references
+  \param [in,out] r Pointer to source struct \ref bufrdeco_compressed_data_references
   \return 0 when success, otherwise return 1 and the struct is unmodified
 
   The amount of data in a bufr must be huge. In a first moment, the dimension of a sequence of structs
@@ -355,8 +355,8 @@ int bufrdeco_increase_compressed_ref_array ( struct bufrdeco_compressed_data_ref
 /*!
  * \fn int bufrdeco_increase_compressed_data_references_count ( struct bufrdeco_compressed_data_references *r, struct bufrdeco *b )
  * \brief Increment the count of a struct \ref bufrdeco_compressed_data_references
- * \param r pointer to the target struct
- * \param b pointer to the current active struct \ref bufrdeco
+ * \param [in,out] r Pointer to the target struct
+ * \param [in,out] b Pointer to the current active struct \ref bufrdeco
  *
  * \return 0 if succeeded, 1 otherwise
  */
@@ -382,7 +382,7 @@ int bufrdeco_increase_compressed_data_references_count ( struct bufrdeco_compres
 /*!
  * \fn int bufrdeco_allocate_bitmap ( struct bufrdeco *b )
  * \brief allocate bitmap
- * \param b the active struct \ref bufrdeco
+ * \param [in,out] b The active struct \ref bufrdeco
  * \return If succeeded return 0, otherwise 1
  */
 int bufrdeco_allocate_bitmap ( struct bufrdeco *b )
@@ -421,7 +421,7 @@ int bufrdeco_allocate_bitmap ( struct bufrdeco *b )
 /*!
  *  \fn int bufrdeco_clean_bitmaps ( struct bufrdeco *b )
  *  \brief Clean all allocated bitmaps, but still is in memory
- * \param b the active struct \ref bufrdeco
+ * \param [in,out] b The active struct \ref bufrdeco
  * \return If succeeded return 0, otherwise 1
  */
 int bufrdeco_clean_bitmaps ( struct bufrdeco *b )
@@ -444,7 +444,7 @@ int bufrdeco_clean_bitmaps ( struct bufrdeco *b )
 /*!
  * \fn int bufrdeco_free_bitmap_array ( struct bufrdeco_bitmap_array *a )
  * \brief Free an allocated bitmap array
- * \param a pointer to target struct \ref bufrdeco_bitmap_array to free
+ * \param [in,out] a Pointer to target struct \ref bufrdeco_bitmap_array to free
  * \return If succeeded return 0, otherwise 1
  */
 int bufrdeco_free_bitmap_array ( struct bufrdeco_bitmap_array *a )
@@ -468,7 +468,8 @@ int bufrdeco_free_bitmap_array ( struct bufrdeco_bitmap_array *a )
 /*!
  *  \fn int bufrdeco_add_event_to_bitacora ( struct bufrdeco *b )
  *  \brief Add an element into a struct \ref bufrdeco_compressed_data_registry 
- * \param b pointer to the current active struct \ref bufrdeco
+ * \param [in,out] b Pointer to the current active struct \ref bufrdeco
+ * \param [in] event Pointer to the event to add
  *
  * \return 0 if succeeded, 1 otherwise
  *   
@@ -500,7 +501,7 @@ int bufrdeco_add_event_to_bitacora ( struct bufrdeco *b, const struct bufrdeco_d
 /*!
  *  \fn int bufrdeco_init_subset_bitacora ( struct bufrdeco *b)
  *  \brief Init struct \ref bufrdeco_decode_subset_bitacora 
- *  \param active struct \ref bufrdeco
+ *  \param [in,out] b Active struct \ref bufrdeco
  *
  *  \return if succeeded return 0. Exit with failure otherwise 
  */
@@ -529,7 +530,7 @@ int bufrdeco_init_subset_bitacora ( struct bufrdeco *b)
 /*!
   \fn int bufrdeco_increase_subset_bitacora_array ( struct bufrdeco_deocde_subset_bitacora *dsb )
   \brief doubles the allocated space for a struct \ref bufrdeco_decode_subset_bitacora whenever is posible
-  \param dsb pointer to source struct \ref bufrdeco_decode_subset_bitacora
+  \param [in,out] dsb Pointer to source struct \ref bufrdeco_decode_subset_bitacora
   \return 0 when success, otherwise return 1 and the struct is unmodified
 
   The amount of data in a bufr must be huge. In a first moment, the dimension of a sequence of structs
@@ -562,7 +563,7 @@ int bufrdeco_increase_decode_subset_bitacora_array ( struct bufrdeco_decode_subs
 /*!
   \fn int bufrdeco_free_subset_data_registry ( struct bufrdeco_subset_data_registry *sdr )
   \brief Free the memory allocated for array of indexes \ref bufrdeco_subset_data_registry
-  \param rf pointer to the target struct \ref bufrdeco_subset_data_registry to free
+  \param [in,out] dsb Pointer to the target struct \ref bufrdeco_decode_subset_bitacora to free
   \return If succeeded return 0, otherwise 1
 */
 int bufrdeco_free_decode_subset_bitacora ( struct bufrdeco_decode_subset_bitacora *dsb )
@@ -579,8 +580,8 @@ int bufrdeco_free_decode_subset_bitacora ( struct bufrdeco_decode_subset_bitacor
 
 /*! \fn int bufrdeco_pop_associated_field (struct bufrdeco_associated_field *popped, struct bufrdeco_associated_field_stack *afs )
  *  \brief pop a struct \ref bufrdeco_associated_field into a struct \ref bufrdeco_associated_field_stack 
- *  \param popped pointer to the struct where the popped struct is moved
- *  \param afs pointer to the target struct \ref bufrdeco_associated_field_stack
+ *  \param [out] popped Pointer to the struct where the popped struct is moved
+ *  \param [in,out] afs Pointer to the target struct \ref bufrdeco_associated_field_stack
  *  \return If succeeded return 0, otherwise 1
  */
 int bufrdeco_pop_associated_field (struct bufrdeco_associated_field *popped, struct bufrdeco_associated_field_stack *afs )
@@ -601,8 +602,8 @@ int bufrdeco_pop_associated_field (struct bufrdeco_associated_field *popped, str
 
 /*! \fn int bufrdeco_push_associated_field (struct bufrdeco_associated_field *pushed, struct bufrdeco_associated_field_stack *afs )
  *  \brief push a struct \ref bufrdeco_associated_field into a struct \ref bufrdeco_associated_field_stack 
- *  \param pushed pointer to the struct to push
- *  \param afs pointer to the target struct \ref bufrdeco_associated_field_stack
+ *  \param [in] pushed Pointer to the struct to push
+ *  \param [in,out] afs Pointer to the target struct \ref bufrdeco_associated_field_stack
  *  \return If succeeded return 0, otherwise 1
  */
 int bufrdeco_push_associated_field (const struct bufrdeco_associated_field *pushed, struct bufrdeco_associated_field_stack *afs )
@@ -621,8 +622,8 @@ int bufrdeco_push_associated_field (const struct bufrdeco_associated_field *push
 
 /*! \fn int bufrdeco_add_associated_field (struct bufrdeco_associated_field *pushed, struct bufrdeco_associated_field_stack *afa )
  *  \brief add a struct \ref bufrdeco_associated_field into a struct \ref bufrdeco_associated_field_array 
- *  \param pushed pointer to the struct to push
- *  \param afa pointer to the target struct \ref bufrdeco_associated_field_array
+ *  \param [in] added Pointer to the struct to add
+ *  \param [in,out] afa Pointer to the target struct \ref bufrdeco_associated_field_array
  *  \return If succeeded return 0, otherwise 1
  */
 int bufrdeco_add_associated_field (const struct bufrdeco_associated_field *added, struct bufrdeco_associated_field_array *afa )

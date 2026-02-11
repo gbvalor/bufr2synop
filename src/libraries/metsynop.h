@@ -1,6 +1,6 @@
 /* $Id$ */
 /***************************************************************************
- *   Copyright (C) 2004-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2004-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This file is part of bufr2synop                                       *
@@ -26,6 +26,7 @@
 #ifndef METSYNOP_H
 #define METSYNOP_H
 
+#include <stddef.h>
 #include "metcommon.h"
 
 /*! \def SYNOP_SEC0
@@ -315,13 +316,63 @@ struct wmo_index_estado
   char estado[128]; /*! country assigned to the interval */
 };
 
+// Cleanup functions for synop structures
+// These functions initialize or reset synop-related structures to a clean state
+
+/*!
+  \fn void clean_report_date_ext(struct report_date_ext *s)
+  \brief Initialize/reset a report_date_ext structure
+  \param [out] s Pointer to report_date_ext structure to clean
+*/
 void clean_report_date_ext ( struct report_date_ext *s );
+
+/*!
+  \fn void clean_synop_chunks(struct synop_chunks *syn)
+  \brief Initialize/reset all synop_chunks structure members
+  \param [out] syn Pointer to synop_chunks structure to clean
+*/
 void clean_synop_chunks ( struct synop_chunks *syn );
+
+/*!
+  \fn void clean_syn_sec0(struct synop_sec0 *s)
+  \brief Initialize/reset synop section 0 structure
+  \param [out] s Pointer to synop_sec0 structure to clean
+*/
 void clean_syn_sec0 ( struct synop_sec0 *s );
+
+/*!
+  \fn void clean_syn_sec1(struct synop_sec1 *s)
+  \brief Initialize/reset synop section 1 structure
+  \param [out] s Pointer to synop_sec1 structure to clean
+*/
 void clean_syn_sec1 ( struct synop_sec1 *s );
+
+/*!
+  \fn void clean_syn_sec2(struct synop_sec2 *s)
+  \brief Initialize/reset synop section 2 structure
+  \param [out] s Pointer to synop_sec2 structure to clean
+*/
 void clean_syn_sec2 ( struct synop_sec2 *s );
+
+/*!
+  \fn void clean_syn_sec3(struct synop_sec3 *s)
+  \brief Initialize/reset synop section 3 structure
+  \param [out] s Pointer to synop_sec3 structure to clean
+*/
 void clean_syn_sec3 ( struct synop_sec3 *s );
+
+/*!
+  \fn void clean_syn_sec4(struct synop_sec4 *s)
+  \brief Initialize/reset synop section 4 structure
+  \param [out] s Pointer to synop_sec4 structure to clean
+*/
 void clean_syn_sec4 ( struct synop_sec4 *s );
+
+/*!
+  \fn void clean_syn_sec5(struct synop_sec5 *s)
+  \brief Initialize/reset synop section 5 structure
+  \param [out] s Pointer to synop_sec5 structure to clean
+*/
 void clean_syn_sec5 ( struct synop_sec5 *s );
 
 #endif

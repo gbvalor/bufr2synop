@@ -1,6 +1,6 @@
 /* $Id$ */
 /***************************************************************************
- *   Copyright (C) 2004-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2004-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This file is part of Ogimet                                           *

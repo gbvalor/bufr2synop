@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -37,15 +37,15 @@ const struct bufr_descriptor DESCRIPTOR_ROOT = { 0, 0, 0, 0, "000000" }; /*!< Th
 /*!
   \fn char *bufrdeco_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch)
   \brief Get strings with version information and build date and time
-  \param version  pointer to string with version as result if not NULL
-  \param dversion dimension of string \ref version
-  \param build pointer to string with compiler and compilation date and time if not NULL
-  \param dbuild dimension of string \ref build
-  \param builder pointer to string with builder utility. 'cmake' or 'autotools' if not NULL
-  \param dbuilder dimension of string \ref builder
-  \param version_major pointer to string with version_major component if not NULL
-  \param version_minor pointer to string with version_minor component if not NULL
-  \param version_patch pointer to string with version_patch component if not NULL
+  \param [out] version  pointer to string with version as result if not NULL
+  \param [in] dversion dimension of string \ref version
+  \param [out] build pointer to string with compiler and compilation date and time if not NULL
+  \param [in] dbuild dimension of string \ref build
+  \param [out] builder pointer to string with builder utility. 'cmake' or 'autotools' if not NULL
+  \param [in] dbuilder dimension of string \ref builder
+  \param [out] version_major pointer to string with version_major component if not NULL
+  \param [out] version_minor pointer to string with version_minor component if not NULL
+  \param [out] version_patch pointer to string with version_patch component if not NULL
 
   Retuns string pointer \ref version.
  */
@@ -97,7 +97,7 @@ char* bufrdeco_get_version(char* version, size_t dversion, char* build, size_t d
 /*!
   \fn int bufrdeco_parse_tree ( struct bufrdeco *b )
   \brief Parse the tree of descriptors without expand the replicators
-  \param b Pointer to the source struct \ref bufrdeco
+  \param [in,out] b Pointer to the source struct \ref bufrdeco
 
   This is the user function to parse the descriptor structure of a BUFR report. This is the first task
   we need to perform after read the bufr report with the aid of \ref bufrdeco_read_bufr function.
@@ -129,7 +129,7 @@ int bufrdeco_parse_tree(struct bufrdeco* b)
 /*!
    \fn int bufrdeco_init(struct bufrdeco *b)
    \brief Inits and allocate memory for a struct \ref bufrdeco
-   \param b pointer to the target struct
+   \param [in,out] b pointer to the target struct
 
    This function only must be called once. When finished the function \ref bufrdeco_close must be called to
    free all needed memory
@@ -172,7 +172,7 @@ int bufrdeco_init(struct bufrdeco* b)
 /*!
    \fn int bufrdeco_reset(struct bufrdeco *b)
    \brief Reset an struct \ref bufrdeco. This is needed when changing to another bufr.
-   \param b pointer to the target struct to be resed with another bufrfile
+   \param [in,out] b pointer to the target struct to be resed with another bufrfile
 
    This function must be called when parsing another BUFR report without calling
    \ref bufrdeco_close and \ref bufrdeco_init. It
@@ -222,8 +222,8 @@ int bufrdeco_reset(struct bufrdeco* b)
 /*!
  * \fn int bufrdeco_set_out_stream (FILE *out, struct bufrdeco *b)
  * \brief Set the library normal output stream.
- * \param out stream opened by caller
- * \param b pointer to current active struct \ref bufrdeco
+ * \param [in] out stream opened by caller
+ * \param [in,out] b pointer to current active struct \ref bufrdeco
  * \return If succeeded return 0, otherwise 1
  *
  * Without calling to this funcion, the default is stdout
@@ -237,8 +237,8 @@ int bufrdeco_set_out_stream(FILE* out, struct bufrdeco* b)
 /*!
  * \fn int bufrdeco_set_err_stream (FILE *err, struct bufrdeco *b)
  * \brief Set the error stream.
- * \param err stream opened by caller
- * \param b pointer to current active struct \ref bufrdeco
+ * \param [in] err stream opened by caller
+ * \param [in,out] b pointer to current active struct \ref bufrdeco
  * \return If succeeded return 0, otherwise 1
  *
  * Without calling to this funcion, the default is stderr
@@ -252,7 +252,7 @@ int bufrdeco_set_err_stream(FILE* err, struct bufrdeco* b)
 /*!
   \fn int bufrdeco_close ( struct bufrdeco *b )
   \brief Free all allocated memory. Needed when no more task to do with bufrdeco library
-  \param b pointer to the target struct
+  \param [in,out] b pointer to the target struct
   \return If succeeded return 0, otherwise 1
 
   This function must be called at the end when no more calls to bufrdeco library is needed
@@ -283,8 +283,8 @@ int bufrdeco_close(struct bufrdeco* b)
 /*!
  * \fn int bufrdeco_set_tables_dir( struct bufrdeco *b, char *tables_dir)
  * \brief Sets the directory path for BUFR tables. Needed if it is not any default directories.
- * \param b pointer to the target struct
- * \param tables_dir Source path of tables directory
+ * \param [in,out] b pointer to the target struct
+ * \param [in] tables_dir Source path of tables directory
  * \return 1 if problem, 0 otherwise
  *
  * The default directories are '/usr/share/bufr2synop' and '/usr/local/share/bufr2synop'
@@ -302,8 +302,8 @@ int bufrdeco_set_tables_dir(struct bufrdeco* b, const char* tables_dir)
 /*!
   \fn int bufrdeco_get_bufr ( struct bufrdeco *b,  char *filename )
   \brief Read file and try to find a bufr report inserted in. Once found do the same that \ref bufrdeco_read_bufr()
-  \param b pointer to struct \ref bufrdeco
-  \param filename complete path of BUFR file
+  \param [in,out] b pointer to struct \ref bufrdeco
+  \param [in] filename complete path of BUFR file
   \return Returns 0 if all is OK, 1 otherwise
 
 
@@ -326,8 +326,8 @@ int bufrdeco_get_bufr(struct bufrdeco* b, char* filename)
 /*!
  * \fn int bufrdeco_write_subset_offset_bits ( struct bufrdeco *b, char *filename )
  * \brief Write offset bit array for subsets in a non-compressed bufr
- * \param filename complete path of output file to open
- * \param b pointer to the struct \ref bufrdeco
+ * \param [in] filename complete path of output file to open
+ * \param [in] b pointer to the struct \ref bufrdeco
  * \return 1 if problem, 0 otherwise
  */
 int bufrdeco_write_subset_offset_bits(struct bufrdeco* b, const char* filename)
@@ -353,8 +353,8 @@ int bufrdeco_write_subset_offset_bits(struct bufrdeco* b, const char* filename)
 /*!
  * \fn int bufrdeco_read_subset_offset_bits ( struct bufrdeco *b, char *filename )
  * \brief Write offset bit array for subsets in a non-compressed bufr
- * \param filename complete path of input file to open
- * \param b pointer to the struct \ref bufrdeco
+ * \param [in] filename complete path of input file to open
+ * \param [in,out] b pointer to the struct \ref bufrdeco
  * \return 1 if problem, 0 otherwise
  */
 int bufrdeco_read_subset_offset_bits(struct bufrdeco* b, char* filename)
@@ -386,8 +386,8 @@ int bufrdeco_read_subset_offset_bits(struct bufrdeco* b, char* filename)
 /*!
  *  \fn struct bufrdeco_subset_sequence_data *bufrdeco_get_target_subset_sequence_data (buf_t nset, struct bufrdeco *b)
  *  \brief Prepare the struct \ref bufrdeco to get data from the solicited subset
- *  \param nset index of subset we want to parse and get data. First subset in a BUFR file has index 0.
- *  \param b pointer to the struct \ref bufrdeco
+ *  \param [in] nset index of subset we want to parse and get data. First subset in a BUFR file has index 0.
+ *  \param [in,out] b pointer to the struct \ref bufrdeco
  *
  *  \return If succeeded returns a pointer to the struct \ref bufrdeco_subset_sequence_data with the results for the
  * desired subset,  otherwise returns NULL

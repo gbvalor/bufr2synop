@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -32,7 +32,7 @@ const char DEFAULT_BUFRTABLES_WMO_CSV_DIR2[] = "/usr/share/bufr2synop/";
 /*!
   \fn int get_wmo_tablenames ( struct bufrdeco *b)
   \brief Get the complete pathnames for WMO csv table files needed by a bufr message
-  \param b pointer for a struct \ref bufrdeco
+  \param [in,out] b Pointer for a struct \ref bufrdeco
   \return if success return 0, otherwise 1
 
   For WMO files this format is adopted
@@ -161,7 +161,7 @@ int get_wmo_tablenames ( struct bufrdeco *b )
 /*!
   \fn int bufr_read_tables (struct bufrdeco *b)
   \brief Read the tables according with bufr file data from a bufr table directory
-  \param b basic struct with needed data
+  \param [in,out] b Basic struct with needed data
   \return if success return 0, otherwise 1
 
   The default directories where to search bufr tables are stored in \ref DEFAULT_BUFRTABLES_WMO_CSV_DIR1 and \ref DEFAULT_BUFRTABLES_WMO_CSV_DIR2
@@ -267,9 +267,9 @@ int bufr_read_tables ( struct bufrdeco *b )
 /*!
  *  \fn int bufrdeco_store_tables ( struct bufr_tables **t, struct bufr_tables_cache *c,  uint8_t ver )
  *  \brief Init an element of array c->tab[] if still not allocated. If allocated clean it and set *t pointing to this element
- *  \param t pointer to array of struct \ref bufr_tables
- *  \param c pointer ti struct \ref bufr_tables_cache
- *  \param ver version of tables acting as key
+ *  \param [out] t Pointer to array of struct \ref bufr_tables
+ *  \param [in,out] c Pointer to struct \ref bufr_tables_cache
+ *  \param [in] ver Version of tables acting as key
  *  \return if success return 0
  *
  */
@@ -303,8 +303,8 @@ int bufrdeco_store_tables ( struct bufr_tables **t, struct bufr_tables_cache *c,
 /*!
  * \fn int bufrdeco_cache_tables_search ( struct bufr_tables_cache *c, uint8_t ver )
  * \brief Search a struct \ref bufr_tables in \ref bufr_tables_cache 
- * \param c pointer to the struct \ref bufr_tables_cache where to search
- * \param ver small int with the master version acting as a key in the seardch
+ * \param [in] c Pointer to the struct \ref bufr_tables_cache where to search
+ * \param [in] ver Small int with the master version acting as a key in the search
  * 
  * \return The index of found struct. If no struct found returns -1
  */
@@ -323,7 +323,7 @@ int bufrdeco_cache_tables_search ( const struct bufr_tables_cache *c, uint8_t ve
 /*!
  * \fn int bufrdeco_free_cache_tables (struct bufr_tables_cache *c)
  * \brief deallocate and clean a \ref bufr_tables_cache
- * \param c pointer to the struct to clean
+ * \param [in,out] c Pointer to the struct to clean
  * \return 0 if success
  */
 int bufrdeco_free_cache_tables ( struct bufr_tables_cache *c )

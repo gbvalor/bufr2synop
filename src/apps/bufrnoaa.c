@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2024 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -210,7 +210,16 @@ char OWN[] = "bufrnoaa";
 char SEP[] = "\r\r\n";
 char FINAL_SEP[4];
 
-
+/*!
+  \fn int main(int argc, char *argv[])
+  \brief Main function for bufrnoaa program
+  \param [in] argc number of arguments
+  \param [in] argv array of argument strings
+  \return EXIT_SUCCESS if success, EXIT_FAILURE otherwise
+  
+  This program extracts BUFR messages from NOAA binary archive files.
+  It can filter messages by type and extract individual BUFR files.
+*/
 int main ( int argc, char *argv[] )
 {
   size_t nb = 0, nc, nx = 0, nbuf = 0, nsel = 0, nerr = 0, i, nh = 0, nw;

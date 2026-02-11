@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -28,6 +28,10 @@
 
 #include "bufrtotac.h"
 
+/*!
+  \fn void bufrtotac_print_usage(void)
+  \brief Print usage help message to stdout
+*/
 void bufrtotac_print_usage ( void )
 {
   bufrtotac_print_version ();
@@ -63,19 +67,19 @@ void bufrtotac_print_usage ( void )
 }
 
 /*!
-  \fn char *bufrtotac_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch)
+  \fn char *bufrtotac_get_version(char *version, size_t dversion, char *build, size_t dbuild, char *builder, size_t dbuilder, int *version_major, int *version_minor, int *version_patch)
   \brief Get strings with version information and build date and time
-  \param version  pointer to string with version as result if not NULL
-  \param dversion dimension of string \ref version
-  \param build pointer to string with compiler and compilation date and time if not NULL 
-  \param dbuild dimension of string \ref build 
-  \param builder pointer to string with builder utility. 'cmake' or 'autotools' if not NULL 
-  \param dbuilder dimension of string \ref builder
-  \param version_major pointer to string with version_major component if not NULL
-  \param version_minor pointer to string with version_minor component if not NULL
-  \param version_patch pointer to string with version_patch component if not NULL
+  \param [out] version pointer to string with version as result if not NULL
+  \param [in] dversion dimension of string version
+  \param [out] build pointer to string with compiler and compilation date and time if not NULL 
+  \param [in] dbuild dimension of string build
+  \param [out] builder pointer to string with builder utility. 'cmake' or 'autotools' if not NULL 
+  \param [in] dbuilder dimension of string builder
+  \param [out] version_major pointer to int with version_major component if not NULL
+  \param [out] version_minor pointer to int with version_minor component if not NULL
+  \param [out] version_patch pointer to int with version_patch component if not NULL
   
-  Retuns string pointer \ref version.  
+  \return string pointer version
  */
 char *bufrtotac_get_version(char *version, size_t dversion, char *build, size_t dbuild, char *builder, size_t dbuilder, 
                            int *version_major, int *version_minor, int *version_patch)
@@ -121,7 +125,10 @@ char *bufrtotac_get_version(char *version, size_t dversion, char *build, size_t 
   return version;  
 }
 
-
+/*!
+  \fn void bufrtotac_print_version(void)
+  \brief Print version and build information to stdout
+*/
 void bufrtotac_print_version()
 {
   char version[16], build[128], builder[32];
@@ -138,8 +145,8 @@ void bufrtotac_print_version()
 /*!
   \fn int read_args( int _argc, char * _argv[])
   \brief read the arguments from stdio
-  \param _argc number of arguments passed
-  \param _argv array of arguments
+  \param [in] _argc number of arguments passed
+  \param [in] _argv array of arguments
 
   Returns 1 if succcess, -1 othewise
 */
@@ -359,6 +366,17 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
   return 1;
 }
 
+/*!
+ * \fn int bufrtotac_parse_subset_sequence(struct metreport *m, struct bufr2tac_subset_state *st, struct bufrdeco *b, char *err)
+ * \brief Parse a BUFR subset sequence and convert to TAC format
+ * \param [out] m pointer to struct \ref metreport where to store the parsed report
+ * \param [in,out] st pointer to struct \ref bufr2tac_subset_state with parsing state
+ * \param [in] b pointer to struct \ref bufrdeco with BUFR data
+ * \param [out] err string buffer to write error messages
+ * \return 0 if success, 1 otherwise
+ * 
+ * This is an interface to use bufr2tac library
+ */
 /* this is an interface to use bufr2tac */
 int bufrtotac_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subset_state *st,
                                       struct bufrdeco *b, char *err )
@@ -371,7 +389,7 @@ int bufrtotac_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subse
   // memory for kdtlst
   if ( ( kdtlst = ( int * ) calloc ( 1, nlst * sizeof ( int ) ) ) == NULL )
     {
-      sprintf ( err, "decobufr_parse_subset_sequence(): cannot alloc memory for kdtlst\n" );
+      snprintf ( err, ERR_SIZE, "decobufr_parse_subset_sequence(): cannot alloc memory for kdtlst\n" );
       return 1;
     }
 
@@ -405,10 +423,12 @@ int bufrtotac_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subse
 }
 
 /*!
-  \fn char * get_bufrfile_path( char *filename, char *fileoffset, *err)
+  \fn char * get_bufrfile_path(char *filename, char *fileoffset, char *err)
   \brief Get bufr file names to parse
-  \param filename string where the file is on output
-  \param err string where to set the error if any
+  \param [out] filename string where the file is on output
+  \param [out] fileoffset string where to set the offset filename
+  \param [out] err string where to set the error if any
+  \return pointer to filename if success, NULL if no more files or error
 
   If success, it returns a pointer to filename. If there is no more files
   to parse, or error returns NULL.
@@ -431,7 +451,7 @@ char * get_bufrfile_path ( char *filename, char *fileoffset, char *err )
       if ( NFILES == 0 )
         {
           if ( filename != INPUTFILE )
-            strcpy_safe ( filename, INPUTFILE );
+            strncpy_safe ( filename, INPUTFILE, BUFRDECO_PATH_LENGTH );
           return filename;
         }
       else
@@ -450,7 +470,7 @@ char * get_bufrfile_path ( char *filename, char *fileoffset, char *err )
       char *c =  strrchr ( aux,'\n' );
       if ( c )
         *c = 0;
-      strcpy_safe ( filename, aux );
+      strncpy_safe ( filename, aux, BUFRDECO_PATH_LENGTH );
       snprintf (fileoffset, BUFRDECO_PATH_LENGTH , "%s.offs", filename);
       return filename;
     }
@@ -462,9 +482,9 @@ char * get_bufrfile_path ( char *filename, char *fileoffset, char *err )
 }
 
 /*!
- * \fn int bufrtotac_set_bufrdeco_bitmask (struct bufrdeco *b)
+ * \fn int bufrtotac_set_bufrdeco_bitmask(struct bufrdeco *b)
  * \brief Set the bufrdeco struct bitmask according with readed args from shell
- * \param b Pointer to struct \ref bufrdeco already inited
+ * \param [in,out] b Pointer to struct \ref bufrdeco already inited
  * \return 0 if succeded 
  */
 int bufrtotac_set_bufrdeco_bitmask (struct bufrdeco *b)

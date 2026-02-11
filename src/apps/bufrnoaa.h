@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2004-2024 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2004-2026 by Guillermo Ballester Valor                  *
  *   gbv@oxixares.com                                                      *
  *                                                                         *
  *   This file is part of Ogimet                                           *

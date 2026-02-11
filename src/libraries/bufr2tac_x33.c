@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -25,11 +25,10 @@
 
 /*!
   \fn int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 33
-  \param b pointer to a struct \ref buoy_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 33 (Quality data)
+  \param [in,out] b Pointer to a struct \ref buoy_chunks where to set the results
+  \param [in,out] s Pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 on success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 {
@@ -91,11 +90,10 @@ int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 
 /*!
   \fn int temp_parse_x33 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 33
-  \param t pointer to a struct \ref temp_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 33 (Quality data)
+  \param [in,out] t Pointer to a struct \ref temp_chunks where to set the results
+  \param [in,out] s Pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 on success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int temp_parse_x33 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
 {

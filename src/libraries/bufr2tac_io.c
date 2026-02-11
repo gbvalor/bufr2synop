@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2018 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -25,11 +25,12 @@
 #include "bufr2tac.h"
 
 /*!
-  \fn int read_bufr(unsigned char *bufr, char *filename, int *length)
+  \fn int read_bufr(unsigned char *bufr, const char *filename, int *length)
   \brief read a bufr file as an array of unsigned chars
-  \param bufr pointer to an array of unsigned chars. On output it will contain the bufr
-  \param filename string with complete pathname of bufr file to read
-  \param length On input max length allocated by caller. On output real length of bufr
+  \param [out] bufr Pointer to an array of unsigned chars. On output it will contain the bufr data
+  \param [in] filename String with complete pathname of bufr file to read
+  \param [in,out] length On input max length allocated by caller. On output real length of bufr
+  \return 0 on success, negative values on error: -1 if not BUFR, -2 if no ending '7777', -3 if size mismatch, -4 if too small
 */
 int read_bufr ( unsigned char *bufr, const char *filename, int *length )
 {

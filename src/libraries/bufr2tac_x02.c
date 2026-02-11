@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -25,11 +25,10 @@
 
 /*!
   \fn int syn_parse_x02 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 02
-  \param syn pointer to a struct \ref synop_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 02 (Instrumentation and station type)
+  \param [in,out] syn Pointer to a struct \ref synop_chunks where to set the results
+  \param [in,out] s Pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 on success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int syn_parse_x02 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 {
@@ -74,11 +73,10 @@ int syn_parse_x02 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 
 /*!
   \fn int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 02
-  \param b pointer to a struct \ref buoy_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 02 (Instrumentation and station type)
+  \param [in,out] b Pointer to a struct \ref buoy_chunks where to set the results
+  \param [in,out] s Pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 on success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 {
@@ -137,11 +135,10 @@ int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 
 /*!
   \fn int climat_parse_x02 ( struct climat_chunks *c, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 02
-  \param c pointer to a struct \ref climat_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 02 (Instrumentation and station type)
+  \param [in,out] c Pointer to a struct \ref climat_chunks where to set the results
+  \param [in,out] s Pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 on success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int climat_parse_x02 ( struct climat_chunks *c, struct bufr2tac_subset_state *s )
 {
@@ -178,11 +175,10 @@ int climat_parse_x02 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
 
 /*!
   \fn int temp_parse_x02 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 02
-  \param t pointer to a struct \ref temp_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 02 (Instrumentation and station type)
+  \param [in,out] t Pointer to a struct \ref temp_chunks where to set the results
+  \param [in,out] s Pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 on success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int temp_parse_x02 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
 {

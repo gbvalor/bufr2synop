@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2017 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -42,7 +42,10 @@ char REF[BUFR_MAXLINES_TABLED][CSV_MAXL];
 char LIN[CSV_MAXL];
 FILE *F, *R;
 
-
+/*!
+  \fn void print_usage(void)
+  \brief Print usage help message to stdout
+*/
 void print_usage ( void )
 {
   printf ( "%s %s\n", SELF, PACKAGE_VERSION );
@@ -51,6 +54,13 @@ void print_usage ( void )
   printf ( "       -h Print this help\n" );
 }
 
+/*!
+  \fn int main(int argc, char *argv[])
+  \brief Main function for update_tableD utility
+  \param [in] argc number of arguments
+  \param [in] argv array of argument strings
+  \return EXIT_SUCCESS if success, EXIT_FAILURE otherwise
+*/
 int main ( int argc, char *argv[] )
 {
   int iopt, i, j, k, nt;

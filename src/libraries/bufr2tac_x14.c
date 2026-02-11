@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2022 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -26,9 +26,8 @@
 /*!
   \fn int check_kj_m2(double val)
   \brief Check if a radiation value can be wrote in Kj/m2 using up to 4 chars
-  \param val radiation value in J/m2
-
-  Returns 1 if success, 0 otherwise
+  \param [in] val Radiation value in J/m2
+  \return 1 if success, 0 otherwise
 */
 int check_kj_m2 ( double val )
 {
@@ -38,9 +37,8 @@ int check_kj_m2 ( double val )
 /*!
   \fn int check_j_cm2(double val)
   \brief Check if a radiation value can be wrote in J/cm2 using up to 4 chars
-  \param val radiation value in J/m2
-
-  Returns 1 if success, 0 otherwise
+  \param [in] val Radiation value in J/m2
+  \return 1 if success, 0 otherwise
 */
 int check_j_cm2 ( double val )
 {
@@ -50,11 +48,10 @@ int check_j_cm2 ( double val )
 
 /*!
   \fn int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 14
-  \param syn pointer to a struct \ref synop_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 14 (radiation)
+  \param [in,out] syn Pointer to struct \ref synop_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 {
@@ -458,11 +455,10 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 
 /*!
   \fn int buoy_parse_x14 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 14
-  \param b pointer to a struct \ref buoy_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 14 (radiation)
+  \param [in] b Pointer to struct \ref buoy_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int buoy_parse_x14 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 {
@@ -488,11 +484,10 @@ int buoy_parse_x14 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *
 
 /*!
   \fn int climat_parse_x14 ( struct climat_chunks *c, struct bufr2tac_subset_state *s )
-  \brief Parse a expanded descriptor with X = 14
-  \param c pointer to a struct \ref climat_chunks where to set the results
-  \param s pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
-
-  It returns 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
+  \brief Parse a expanded descriptor with X = 14 (radiation)
+  \param [in,out] c Pointer to struct \ref climat_chunks where to set the results
+  \param [in,out] s Pointer to struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
+  \return 0 if success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
 int climat_parse_x14 ( struct climat_chunks *c, struct bufr2tac_subset_state *s )
 {

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2025 by Guillermo Ballester Valor                  *
+ *   Copyright (C) 2013-2026 by Guillermo Ballester Valor                  *
  *   gbv@ogimet.com                                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -25,10 +25,11 @@
 
 /*!
   \fn size_t print_buoy_sec0 (char **sec0, size_t lmax, const struct buoy_chunks *b)
-  \brief Prints the buoy section 1
-  \param sec0 the pointer where to print section
-  \param lmax max length permited
-  \param b pointer to s atruct \ref buoy_chunks where the parse results are set
+  \brief Prints the buoy section 0 (identification and basic data)
+  \param [in,out] sec0 Pointer to the pointer where to print section
+  \param [in] lmax Maximum length permitted
+  \param [in] b Pointer to a struct \ref buoy_chunks where the parse results are set
+  \return Number of characters written
 */
 size_t print_buoy_sec0 ( char **sec0, size_t lmax, const struct buoy_chunks *b )
 {
@@ -103,10 +104,11 @@ size_t print_buoy_sec0 ( char **sec0, size_t lmax, const struct buoy_chunks *b )
 
 /*!
   \fn size_t print_buoy_sec1 (char **sec1, size_t lmax, struct buoy_chunks *b)
-  \brief Prints the buoy section 1
-  \param sec1 the pointer where to print section
-  \param lmax max length permited
-  \param b pointer to s atruct \ref buoy_chunks where the parse results are set
+  \brief Prints the buoy section 1 (meteorological data)
+  \param [in,out] sec1 Pointer to the pointer where to print section
+  \param [in] lmax Maximum length permitted
+  \param [in,out] b Pointer to a struct \ref buoy_chunks where the parse results are set
+  \return Number of characters written
 */
 size_t print_buoy_sec1 ( char **sec1, size_t lmax, struct buoy_chunks *b )
 {
@@ -204,10 +206,11 @@ size_t print_buoy_sec1 ( char **sec1, size_t lmax, struct buoy_chunks *b )
 
 /*!
   \fn size_t print_buoy_sec2 (char **sec2, size_t lmax, const struct buoy_chunks *b)
-  \brief Prints the buoy section 1
-  \param sec2 the pointer where to print section
-  \param lmax max length permited
-  \param b pointer to s atruct \ref buoy_chunks where the parse results are set
+  \brief Prints the buoy section 2 (sea data)
+  \param [in,out] sec2 Pointer to the pointer where to print section
+  \param [in] lmax Maximum length permitted
+  \param [in] b Pointer to a struct \ref buoy_chunks where the parse results are set
+  \return Number of characters written
 */
 size_t print_buoy_sec2 ( char **sec2, size_t lmax, const struct buoy_chunks *b )
 {
@@ -287,10 +290,11 @@ size_t print_buoy_sec2 ( char **sec2, size_t lmax, const struct buoy_chunks *b )
 
 /*!
   \fn size_t print_buoy_sec3 (char **sec3, size_t lmax, const struct buoy_chunks *b)
-  \brief Prints the buoy section 3
-  \param sec3 the pointer where to print section
-  \param lmax max length permited
-  \param b pointer to s atruct \ref buoy_chunks where the parse results are set
+  \brief Prints the buoy section 3 (oceanographic data - temperature and salinity profiles)
+  \param [in,out] sec3 Pointer to the pointer where to print section
+  \param [in] lmax Maximum length permitted
+  \param [in] b Pointer to a struct \ref buoy_chunks where the parse results are set
+  \return Number of characters written
 */
 size_t print_buoy_sec3 ( char **sec3, size_t lmax, const struct buoy_chunks *b )
 {
@@ -361,8 +365,12 @@ size_t print_buoy_sec3 ( char **sec3, size_t lmax, const struct buoy_chunks *b )
 }
 
 /*!
- *  \fn size_t print_synop_wigos_id ( char **wid,  size_t lmax, const struct buoy_chunks *b )
+ *  \fn size_t print_buoy_wigos_id ( char **wid,  size_t lmax, const struct buoy_chunks *b )
  *  \brief Prints a WIGOS identifier in a buoy report
+ *  \param [in,out] wid Pointer to the pointer where to print WIGOS ID
+ *  \param [in] lmax Maximum length permitted
+ *  \param [in] b Pointer to a struct \ref buoy_chunks with WIGOS identifier data
+ *  \return Number of characters written
  */
 size_t print_buoy_wigos_id ( char **wid,  size_t lmax, const struct buoy_chunks *b )
 {
@@ -383,11 +391,9 @@ size_t print_buoy_wigos_id ( char **wid,  size_t lmax, const struct buoy_chunks 
 
 /*!
  \fn int print_buoy_report(struct metreport *m )
- \brief prints a buoy into a string
- \param m pointer to struct \ref metreport where are both target and source
-
-
-  If OK returns 0, otherwise 1
+ \brief Prints a complete buoy report into the alphanum string
+ \param [in,out] m Pointer to struct \ref metreport where are both target and source
+ \return 0 if OK, 1 otherwise
 */
 int print_buoy_report ( struct metreport *m )
 {
