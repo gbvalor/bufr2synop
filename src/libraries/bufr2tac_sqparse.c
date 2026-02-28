@@ -102,6 +102,11 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
         {
           strcpy ( st->type_report,"OOXX" );  // FM-14 synop-mobil
         }
+      // these descriptors should be in category 1, but some FM-13 are coded as category 0  
+      else if ( find_descriptor ( kdtlst, nlst,308009 ) )
+        {
+          strcpy ( st->type_report,"BBXX" );  // FM-13 ship
+        }
       break;
     case 1:
       if ( find_descriptor_interval ( kdtlst, nlst, 308004, 308005 ) ||
