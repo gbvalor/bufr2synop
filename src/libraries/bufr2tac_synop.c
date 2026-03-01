@@ -32,9 +32,8 @@
 int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
 {
   char aux[20];
-  char tz[256], *c;
   time_t t;
-  struct tm tim;
+  struct tm tim = { 0 };
 
   aux[0] = '\0';
   if ( strlen ( syn->e.YYYY ) &&
@@ -51,37 +50,15 @@ int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn )
       return 1;
     }
 
-  // Get current TZ
-  tz[0] = '\0';
-  c = getenv ( "TZ" );
-  if ( c != NULL && c[0] && strlen ( c ) < 256 )
-    {
-      strcpy ( tz, c );
-    }
-
-  // Set TZ to UTC
-  setenv ( "TZ", "UTC", 1 );
-  tzset();
-
-  memset ( &tim, 0, sizeof ( struct tm ) );
   strptime ( aux, "%Y%m%d%H%M", &tim );
-
-  t = mktime ( &tim ) + 1799 ; // rounding trick
-  gmtime_r ( &t, &tim );
-  snprintf ( syn->s0.YY, sizeof(syn->s0.YY), "%02d", tim.tm_mday );
-  snprintf ( syn->s0.GG, sizeof(syn->s0.GG), "%02d", tim.tm_hour );
-
-  // Revert TZ changes
-  if ( tz[0] )
-    {
-      setenv ( "TZ", tz, 1 );
-      tzset();
-    }
-  else
-    {
-      unsetenv ( "TZ" );
-    }
-
+  tim.tm_isdst = -1; // Like this, mktime will determine if it is daylight saving time or not
+  t = timegm ( &tim ); // Get the unix timestamp in UTC
+  t += 1799; // rounding trick to get the next hour if minute is > 30
+  memset ( &tim, 0, sizeof ( struct tm ) ); // clean the struct tm
+  gmtime_r ( &t, &tim ); // Get the time in UTC again, with the rounding applied
+  snprintf ( syn->s0.YY, sizeof(syn->s0.YY), "%02d", tim.tm_mday ); // Set the day (YY)
+  snprintf ( syn->s0.GG, sizeof(syn->s0.GG), "%02d", tim.tm_hour ); // Set the hour (GG)
+  
   return 0;
 }
 
