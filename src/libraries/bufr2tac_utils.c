@@ -173,7 +173,7 @@ int YYYYMMDDHHmm_to_met_datetime(struct met_datetime* t, const char* source)
         strptime(source, "%Y%m%d%H%M%S", &t->tim);
     }
     strcpy(t->datime, source);
-    t->t = mktime(&t->tim);
+    t->t = timegm(&t->tim);
     return 0;
 }
 

@@ -94,7 +94,10 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
                 find_descriptor ( kdtlst, nlst,307182 ) ||
                 ksec1[6] == 0 || ksec1[6] == 1 || ksec1[6] == 2 )
         {
-          strcpy ( st->type_report,"AAXX" );  // FM-12 synop
+          if ( find_descriptor (kdtlst, nlst, 1010 ) )
+             strcpy ( st->type_report,"BBXX" );  // Fixed Buoy platform as ship 
+          else  
+             strcpy ( st->type_report,"AAXX" );  // FM-12 synop
         }
       else if ( find_descriptor ( kdtlst, nlst,307090 ) ||
                 find_descriptor ( kdtlst, nlst,301092 ) ||

@@ -33,23 +33,23 @@ extern "C" {
 #define _GNU_SOURCE
 #endif
 
+#include <getopt.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <getopt.h>
-#include <time.h>
-#include <math.h>
 #include <sys/stat.h>
+#include <time.h>
 
 // project includes
 #include "bufrdeco.h"
-#include "metsynop.h"
 #include "metbuoy.h"
-#include "mettemp.h"
 #include "metclimat.h"
-//#define DEBUG
+#include "metsynop.h"
+#include "mettemp.h"
+// #define DEBUG
 
-//#define USE_BUFRDC
+// #define USE_BUFRDC
 
 #ifdef USE_BUFRDC
 /*!
@@ -184,22 +184,26 @@ extern "C" {
  \def SUBSET_MASK_HAVE_GUST10
  \brief Bit mask to mark a struct \ref bufr_subset_sequence_data having wind gust observation other than 10 minutes
 */
-#define SUBSET_MASK_HAVE_GUST10 ( 2 * 131072)
+#define SUBSET_MASK_HAVE_GUST10 (2 * 131072)
 
 /*!
  \def SUBSET_MASK_HAVE_WIGOS_ID
  \brief Bit mask to mark if a subset has a WIGOS ID
 */
-#define SUBSET_MASK_HAVE_WIGOS_ID ( 4 * 131072)
+#define SUBSET_MASK_HAVE_WIGOS_ID (4 * 131072)
 
+/*! \def SUBSET_MASK_HAVE_WMO_ID
+ *  \brief Bit mask to mark if a subset has a legacy WMO ID, not WIGOS ID
+ */
+#define SUBSET_MASK_HAVE_WMO_ID (8 * 131072)
 
 /*! \def BUFR2TAC_ERROR_STACK_DIM
- *  \brief set de dimension of a struct \ref bufr2tac_error_stack 
+ *  \brief set de dimension of a struct \ref bufr2tac_error_stack
  */
 #define BUFR2TAC_ERROR_STACK_DIM 16
 
 /*! \def BUFR2TAC_ERROR_DESCRIPTION_LENGTH
- *  \brief set de dimension of member \a description of a struct \ref bufr2tac_error 
+ *  \brief set de dimension of member \a description of a struct \ref bufr2tac_error
  */
 #define BUFR2TAC_ERROR_DESCRIPTION_LENGTH 1024
 
@@ -224,114 +228,111 @@ extern "C" {
  * \def bufr_subset_sequence_data
  * \brief To use bufrdeco library with legacy old code using ECMWF library which is not used currently
  */
-# define bufr_subset_sequence_data bufrdeco_subset_sequence_data
+#define bufr_subset_sequence_data bufrdeco_subset_sequence_data
 
 /*!
  * \struct bufr2tac_error
  * \brief Store an error/warning/info and its severity
  */
 struct bufr2tac_error {
-  int severity; /*!< Level of severity. if = 1 then is a warning. if = 2 is an error */
-  char description[BUFR2TAC_ERROR_DESCRIPTION_LENGTH]; /*!< string with error description */
+    int severity; /*!< Level of severity. if = 1 then is a warning. if = 2 is an error */
+    char description[BUFR2TAC_ERROR_DESCRIPTION_LENGTH]; /*!< string with error description */
 };
 
 /*!
  * \struct bufr2tac_error_stack
  * \brief A stack of structs \ref bufr2tac_error
- */ 
+ */
 struct bufr2tac_error_stack {
-  size_t ne; /*!< Current warning/error active. If = 0 then no errors */
-  int full; /*!< if 1 then one or more warnings cannot be pushed because of full stack. If = 2 an error cannot be pushed */
-  struct bufr2tac_error err[BUFR2TAC_ERROR_STACK_DIM] ; /*!< Dimension of stack array */  
+    size_t ne; /*!< Current warning/error active. If = 0 then no errors */
+    int full; /*!< if 1 then one or more warnings cannot be pushed because of full stack. If = 2 an error cannot be pushed */
+    struct bufr2tac_error err[BUFR2TAC_ERROR_STACK_DIM]; /*!< Dimension of stack array */
 };
 
 /*!
   \struct bufr2tac_subset_state
   \brief stores information needed to parse a sequential list of expanded descriptors for a subset
 */
-struct bufr2tac_subset_state
-{
-  char type_report[16]; /*!< The type of report to decode (MMMM) */
-  struct bufr2tac_error_stack e; /*!< Pointer to a struct \ref bufr2tac_error_stack */
-  struct bufr_atom_data *a; /*!< the current struct \ref bufr_atom_data being parsed */
-  struct bufr_atom_data *a1; /*!< the prior struct \ref bufr_atom_data being parsed */
-  size_t i; /*!< current index in array element */
-  int rep;  /*!< Latest delayed replicator */
-  size_t k_rep;  /*!< Index of latest delayed replicator */
-  int ival; /*!< the integer value in the descriptor */
-  double val; /*!< the float value in the descriptor */
-  int itval; /*!< Latest parsed time displacement in seconds */
-  int itmask; /*!< Latest time displacement descriptor mask */
-  size_t k_itval; /*!< index in array of latest time displacemet descriptor */
-  int jtval; /*!< Prior to latest parsed time displacement in seconds */
-  int jtmask; /*!< Prior to latest time displacement descriptor mask */
-  size_t k_jtval; /*!< index in array of time prior to latest displacemet descriptor */
-  int isq; /*!< if 1, the current atom data is in a Significant qualifier squence, and not computed */
-  int isq_val; /*!< Value of a significant qualifier */
-  int type; /*!< type of station */
-  int clayer; /*!< cloud layer being parsed */
-  int layer; /*!< Layer/level of data when parsing Buoy report*/
-  int deep; /*!< Latest parsed deep in meters of a layer */
-  double lat; /*!< Latitude of station */
-  double lon; /*!< longitude of station */
-  double alt; /*!< Altitude (m)*/
-  double hsensor; /*!< Sensor height over station ground (m) */
-  double hwsensor; /*!< Sensor height over water surface (m) */
-  char name[80]; /*!< Name of observatory, if any */
-  char country[80]; /*!< Name of state/country if known */
-  time_t tobs; /*!< Unix time reference*/
-  int dift; /*!< UTC - LST , in hours */
-  int day; /*!< Day of ephemerides in some reports */
-  int more_days; /*!< If = 1 there are more than a day in ephemeride */
-  int nday; /*!< period (days) in some reports */
-  int month; /*!< month for some normal values */
-  int is_normal; /*!< if 1, the values are normal of a defined period */
-  int mask; /*!< mask which contain several information from the subset data taken at the moment */
-  int SnSn; /*!< Latest int value of Synop suplementary information */
-  int tw1w2; /*!< Period for synop w1w2 (seconds) */
-  struct temp_raw_data *r; /*!< pointer to a struct where to set the data from a temp profile being parsed */
-  struct temp_raw_wind_shear_data *w; /*!< pointer to a struct where to set the data from a temp profile being parsed */
+struct bufr2tac_subset_state {
+    char type_report[16]; /*!< The type of report to decode (MMMM) */
+    struct bufr2tac_error_stack e; /*!< Pointer to a struct \ref bufr2tac_error_stack */
+    struct bufr_atom_data* a; /*!< the current struct \ref bufr_atom_data being parsed */
+    struct bufr_atom_data* a1; /*!< the prior struct \ref bufr_atom_data being parsed */
+    size_t i; /*!< current index in array element */
+    int rep; /*!< Latest delayed replicator */
+    size_t k_rep; /*!< Index of latest delayed replicator */
+    int ival; /*!< the integer value in the descriptor */
+    double val; /*!< the float value in the descriptor */
+    int itval; /*!< Latest parsed time displacement in seconds */
+    int itmask; /*!< Latest time displacement descriptor mask */
+    size_t k_itval; /*!< index in array of latest time displacemet descriptor */
+    int jtval; /*!< Prior to latest parsed time displacement in seconds */
+    int jtmask; /*!< Prior to latest time displacement descriptor mask */
+    size_t k_jtval; /*!< index in array of time prior to latest displacemet descriptor */
+    int isq; /*!< if 1, the current atom data is in a Significant qualifier squence, and not computed */
+    int isq_val; /*!< Value of a significant qualifier */
+    int type; /*!< type of station */
+    int clayer; /*!< cloud layer being parsed */
+    int layer; /*!< Layer/level of data when parsing Buoy report*/
+    int deep; /*!< Latest parsed deep in meters of a layer */
+    double lat; /*!< Latitude of station */
+    double lon; /*!< longitude of station */
+    double alt; /*!< Altitude (m)*/
+    double hsensor; /*!< Sensor height over station ground (m) */
+    double hwsensor; /*!< Sensor height over water surface (m) */
+    char name[80]; /*!< Name of observatory, if any */
+    char country[80]; /*!< Name of state/country if known */
+    time_t tobs; /*!< Unix time reference*/
+    int dift; /*!< UTC - LST , in hours */
+    int day; /*!< Day of ephemerides in some reports */
+    int more_days; /*!< If = 1 there are more than a day in ephemeride */
+    int nday; /*!< period (days) in some reports */
+    int month; /*!< month for some normal values */
+    int is_normal; /*!< if 1, the values are normal of a defined period */
+    int mask; /*!< mask which contain several information from the subset data taken at the moment */
+    int SnSn; /*!< Latest int value of Synop suplementary information */
+    int tw1w2; /*!< Period for synop w1w2 (seconds) */
+    struct temp_raw_data* r; /*!< pointer to a struct where to set the data from a temp profile being parsed */
+    struct temp_raw_wind_shear_data* w; /*!< pointer to a struct where to set the data from a temp profile being parsed */
 };
 
 /*!
    \struct met_geo
    \brief Geographic meta information
 */
-struct met_geo
-{
-  struct wigos_id wid; /*!< The WIGOS Id if known or '0-0-0-MISSING' */
-  char index[16]; /*!< The index indetifier of place, if any */
-  char name[80]; /*!< The common name of place */
-  char country[80]; /*!< The country name, if known */
-  double lat; /*!< Latitude in degrees. North positive */
-  double lon; /*!< Longitude in degrees. East positive */
-  double alt; /*!< Altitude in metres */
+struct met_geo {
+    struct wigos_id wid; /*!< The WIGOS Id if known or '0-0-0-MISSING' */
+    char index[16]; /*!< The index indetifier of place, if any */
+    char name[80]; /*!< The common name of place */
+    char country[80]; /*!< The country name, if known */
+    double lat; /*!< Latitude in degrees. North positive */
+    double lon; /*!< Longitude in degrees. East positive */
+    double alt; /*!< Altitude in metres */
 };
 
 /*!
    \struct metreport
    \brief all the information for a meteorological report in WMO text format from a BUFR file
 */
-struct metreport
-{
-  char source[256];/*!< The bufr source filename */
-  int subset; /*!< Subset index in bufr report */
-  int print_mask; /*!< Mode of print 0=legacy, 1= with WIGOS id, 2=with lat/lon/alt */
-  struct gts_header *h; /*!< A pointer to a GTS Header Bulletin */
-  struct met_datetime t; /*!< The date/time information for report */
-  struct met_geo g; /*!< The geographical info */
-  struct synop_chunks synop; /*!< The possible parsed synop */
-  struct buoy_chunks buoy; /*!< The possible parsed buoy */
-  struct temp_chunks temp; /*!< The possible parsed temp */
-  struct climat_chunks climat; /*!< The pssible parsed climat */
-  char type[8]; /*!< The type of report as MiMiMjMj */
-  char alphanum[REPORT_LENGTH]; /*!< The alphanumeric report */
-  char type2[8]; /*!< The type of report of part 2 as MiMiMjMj */
-  char alphanum2[REPORT_LENGTH]; /*!< The alphanumeric report, part 2 */
-  char type3[8]; /*!< The type of report of part 3 as MiMiMjMj */
-  char alphanum3[REPORT_LENGTH]; /*!< The alphanumeric report, part 3 */
-  char type4[8]; /*!< The type of report of part 4 as MiMiMjMj */
-  char alphanum4[REPORT_LENGTH]; /*!< The alphanumeric report, part 4 */
+struct metreport {
+    char source[256]; /*!< The bufr source filename */
+    int subset; /*!< Subset index in bufr report */
+    int print_mask; /*!< Mode of print 0=legacy, 1= with WIGOS id, 2=with lat/lon/alt */
+    struct gts_header* h; /*!< A pointer to a GTS Header Bulletin */
+    struct met_datetime t; /*!< The date/time information for report */
+    struct met_geo g; /*!< The geographical info */
+    struct synop_chunks synop; /*!< The possible parsed synop */
+    struct buoy_chunks buoy; /*!< The possible parsed buoy */
+    struct temp_chunks temp; /*!< The possible parsed temp */
+    struct climat_chunks climat; /*!< The pssible parsed climat */
+    char type[8]; /*!< The type of report as MiMiMjMj */
+    char alphanum[REPORT_LENGTH]; /*!< The alphanumeric report */
+    char type2[8]; /*!< The type of report of part 2 as MiMiMjMj */
+    char alphanum2[REPORT_LENGTH]; /*!< The alphanumeric report, part 2 */
+    char type3[8]; /*!< The type of report of part 3 as MiMiMjMj */
+    char alphanum3[REPORT_LENGTH]; /*!< The alphanumeric report, part 3 */
+    char type4[8]; /*!< The type of report of part 4 as MiMiMjMj */
+    char alphanum4[REPORT_LENGTH]; /*!< The alphanumeric report, part 4 */
 };
 
 /* Functions definitions */
@@ -350,9 +351,8 @@ struct metreport
   \param [out] version_patch Pointer to integer for patch version number
   \return Pointer to version string on success, NULL on error
 */
-char *bufr2tac_get_version(char *version, size_t dversion, char *build, size_t dbuild, char *builder, size_t dbuilder, 
-                           int *version_major, int *version_minor, int *version_patch);
-
+char* bufr2tac_get_version(char* version, size_t dversion, char* build, size_t dbuild, char* builder, size_t dbuilder,
+    int* version_major, int* version_minor, int* version_patch);
 
 /* Error/debug functions */
 
@@ -364,7 +364,7 @@ char *bufr2tac_get_version(char *version, size_t dversion, char *build, size_t d
   \param [in] description String with error description
   \return 0 on success, 1 if stack is full
 */
-int bufr2tac_push_error ( struct bufr2tac_error_stack *e, int severity, const char *description );
+int bufr2tac_push_error(struct bufr2tac_error_stack* e, int severity, const char* description);
 
 /*!
   \fn int bufr2tac_clean_error_stack(struct bufr2tac_error_stack *e)
@@ -372,7 +372,7 @@ int bufr2tac_push_error ( struct bufr2tac_error_stack *e, int severity, const ch
   \param [in,out] e Pointer to error stack to clean
   \return 0 on success
 */
-int bufr2tac_clean_error_stack ( struct bufr2tac_error_stack *e );
+int bufr2tac_clean_error_stack(struct bufr2tac_error_stack* e);
 
 /*!
   \fn int bufr2tac_set_error(struct bufr2tac_subset_state *s, int severity, const char *origin, const char *explanation)
@@ -383,7 +383,7 @@ int bufr2tac_clean_error_stack ( struct bufr2tac_error_stack *e );
   \param [in] explanation String explaining the error
   \return 0 on success, 1 on error
 */
-int bufr2tac_set_error ( struct bufr2tac_subset_state *s, int severity, const char *origin, const char *explanation);
+int bufr2tac_set_error(struct bufr2tac_subset_state* s, int severity, const char* origin, const char* explanation);
 
 /*!
   \fn int bufr2tac_print_error(const struct bufr2tac_error_stack *e)
@@ -391,7 +391,7 @@ int bufr2tac_set_error ( struct bufr2tac_subset_state *s, int severity, const ch
   \param [in] e Pointer to error stack to print
   \return 0 on success
 */
-int bufr2tac_print_error ( const struct bufr2tac_error_stack *e );
+int bufr2tac_print_error(const struct bufr2tac_error_stack* e);
 
 /*!
   \fn int bufr2tac_set_debug_level(int level)
@@ -401,44 +401,40 @@ int bufr2tac_print_error ( const struct bufr2tac_error_stack *e );
 */
 int bufr2tac_set_debug_level(int level);
 
-
-
 /*!
   \fn void bufr2tac_clean_buoy_chunks(struct buoy_chunks *b)
   \brief Clean/reset all data in a buoy_chunks structure
   \param [in,out] b Pointer to buoy_chunks structure to clean
 */
-void bufr2tac_clean_buoy_chunks ( struct buoy_chunks *b );
+void bufr2tac_clean_buoy_chunks(struct buoy_chunks* b);
 
 /*!
   \fn void bufr2tac_clean_synop_chunks(struct synop_chunks *s)
   \brief Clean/reset all data in a synop_chunks structure
   \param [in,out] s Pointer to synop_chunks structure to clean
 */
-void bufr2tac_clean_synop_chunks ( struct synop_chunks *s );
+void bufr2tac_clean_synop_chunks(struct synop_chunks* s);
 
 /*!
   \fn void bufr2tac_clean_temp_chunks(struct temp_chunks *t)
   \brief Clean/reset all data in a temp_chunks structure
   \param [in,out] t Pointer to temp_chunks structure to clean
 */
-void bufr2tac_clean_temp_chunks ( struct temp_chunks *t );
+void bufr2tac_clean_temp_chunks(struct temp_chunks* t);
 
 /*!
   \fn void bufr2tac_clean_climat_chunks(struct climat_chunks *c)
   \brief Clean/reset all data in a climat_chunks structure
   \param [in,out] c Pointer to climat_chunks structure to clean
 */
-void bufr2tac_clean_climat_chunks ( struct climat_chunks *c );
+void bufr2tac_clean_climat_chunks(struct climat_chunks* c);
 
 /*!
   \fn void bufr2tac_clean_metreport(struct metreport *m)
   \brief Clean/reset all data in a metreport structure
   \param [in,out] m Pointer to metreport structure to clean
 */
-void bufr2tac_clean_metreport (struct metreport *m);
-
-
+void bufr2tac_clean_metreport(struct metreport* m);
 
 /*!
   \fn int set_environment(char *default_bufrtables, char *bufrtables_dir)
@@ -447,7 +443,7 @@ void bufr2tac_clean_metreport (struct metreport *m);
   \param [out] bufrtables_dir String where to write the configured directory
   \return 0 on success, 1 on error
 */
-int set_environment ( char *default_bufrtables, char *bufrtables_dir );
+int set_environment(char* default_bufrtables, char* bufrtables_dir);
 
 /*!
   \fn int integer_to_descriptor(struct bufr_descriptor *d, int id)
@@ -456,7 +452,7 @@ int set_environment ( char *default_bufrtables, char *bufrtables_dir );
   \param [in] id Integer representation of descriptor
   \return 0 on success, 1 on error
 */
-int integer_to_descriptor ( struct bufr_descriptor *d, int id );
+int integer_to_descriptor(struct bufr_descriptor* d, int id);
 
 /*!
   \fn int descriptor_to_integer(int *id, const struct bufr_descriptor *d)
@@ -465,7 +461,7 @@ int integer_to_descriptor ( struct bufr_descriptor *d, int id );
   \param [in] d Pointer to descriptor structure
   \return 0 on success, 1 on error
 */
-int descriptor_to_integer ( int *id, const struct bufr_descriptor *d );
+int descriptor_to_integer(int* id, const struct bufr_descriptor* d);
 
 /*!
   \fn unsigned int three_bytes_to_uint(const unsigned char *source)
@@ -473,7 +469,7 @@ int descriptor_to_integer ( int *id, const struct bufr_descriptor *d );
   \param [in] source Pointer to three bytes array
   \return Unsigned integer value
 */
-unsigned int three_bytes_to_uint ( const unsigned char *source );
+unsigned int three_bytes_to_uint(const unsigned char* source);
 
 /*!
   \fn char * charray_to_string(char *s, const unsigned char *buf, size_t size)
@@ -483,7 +479,7 @@ unsigned int three_bytes_to_uint ( const unsigned char *source );
   \param [in] size Size of input array
   \return Pointer to output string
 */
-char * charray_to_string ( char *s, const unsigned char *buf, size_t size );
+char* charray_to_string(char* s, const unsigned char* buf, size_t size);
 
 /*!
   \fn char * adjust_string(char *s)
@@ -491,7 +487,7 @@ char * charray_to_string ( char *s, const unsigned char *buf, size_t size );
   \param [in,out] s String to adjust
   \return Pointer to adjusted string
 */
-char * adjust_string ( char *s );
+char* adjust_string(char* s);
 
 /*!
   \fn char * get_explained_table_val(char *expl, size_t dim, const char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec, const struct bufr_descriptor *d, int ival)
@@ -504,8 +500,8 @@ char * adjust_string ( char *s );
   \param [in] ival Integer value to explain
   \return Pointer to explanation string
 */
-char * get_explained_table_val ( char *expl, size_t dim, const char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec,
-                                 const struct bufr_descriptor *d, int ival );
+char* get_explained_table_val(char* expl, size_t dim, const char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec,
+    const struct bufr_descriptor* d, int ival);
 
 /*!
   \fn char * get_explained_flag_val(char *expl, size_t dim, const char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec, const struct bufr_descriptor *d, unsigned long ival)
@@ -518,8 +514,8 @@ char * get_explained_table_val ( char *expl, size_t dim, const char tablec[MAXLI
   \param [in] ival Unsigned long value to explain
   \return Pointer to explanation string
 */
-char * get_explained_flag_val ( char *expl, size_t dim, const char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec,
-                                const struct bufr_descriptor *d, unsigned long ival );
+char* get_explained_flag_val(char* expl, size_t dim, const char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec,
+    const struct bufr_descriptor* d, unsigned long ival);
 
 /*!
   \fn char * get_ecmwf_tablename(char *target, char type, const char *bufrtables_dir, const int ksec1[40])
@@ -530,7 +526,7 @@ char * get_explained_flag_val ( char *expl, size_t dim, const char tablec[MAXLIN
   \param [in] ksec1 BUFR section 1 data array
   \return Pointer to table filename string
 */
-char * get_ecmwf_tablename ( char *target, char type, const char *bufrtables_dir, const int ksec1[40] );
+char* get_ecmwf_tablename(char* target, char type, const char* bufrtables_dir, const int ksec1[40]);
 
 /*!
   \fn int parse_subset_as_buoy(struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq, char *err)
@@ -541,8 +537,8 @@ char * get_ecmwf_tablename ( char *target, char type, const char *bufrtables_dir
   \param [out] err Buffer for error messages
   \return 0 on success, 1 on error
 */
-int parse_subset_as_buoy ( struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq,
-                           char *err );
+int parse_subset_as_buoy(struct metreport* m, struct bufr2tac_subset_state* s, struct bufr_subset_sequence_data* sq,
+    char* err);
 
 /*!
   \fn int parse_subset_as_synop(struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq, char *err)
@@ -553,8 +549,8 @@ int parse_subset_as_buoy ( struct metreport *m, struct bufr2tac_subset_state *s,
   \param [out] err Buffer for error messages
   \return 0 on success, 1 on error
 */
-int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq,
-                            char *err );
+int parse_subset_as_synop(struct metreport* m, struct bufr2tac_subset_state* s, struct bufr_subset_sequence_data* sq,
+    char* err);
 
 /*!
   \fn int parse_subset_as_temp(struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq, char *err)
@@ -565,8 +561,8 @@ int parse_subset_as_synop ( struct metreport *m, struct bufr2tac_subset_state *s
   \param [out] err Buffer for error messages
   \return 0 on success, 1 on error
 */
-int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq,
-                           char *err );
+int parse_subset_as_temp(struct metreport* m, struct bufr2tac_subset_state* s, struct bufr_subset_sequence_data* sq,
+    char* err);
 
 /*!
   \fn int parse_subset_as_climat(struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq, char *err)
@@ -577,8 +573,8 @@ int parse_subset_as_temp ( struct metreport *m, struct bufr2tac_subset_state *s,
   \param [out] err Buffer for error messages
   \return 0 on success, 1 on error
 */
-int parse_subset_as_climat ( struct metreport *m, struct bufr2tac_subset_state *s, struct bufr_subset_sequence_data *sq,
-                             char *err );
+int parse_subset_as_climat(struct metreport* m, struct bufr2tac_subset_state* s, struct bufr_subset_sequence_data* sq,
+    char* err);
 
 /*!
   \fn int YYYYMMDDHHmm_to_met_datetime(struct met_datetime *t, const char *source)
@@ -587,7 +583,7 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr2tac_subset_state *
   \param [in] source String in YYYYMMDDHHmm format
   \return 0 on success, 1 on error
 */
-int YYYYMMDDHHmm_to_met_datetime ( struct met_datetime *t, const char *source );
+int YYYYMMDDHHmm_to_met_datetime(struct met_datetime* t, const char* source);
 
 /*!
   \fn int round_met_datetime_to_hour(struct met_datetime *target, const struct met_datetime *source)
@@ -596,7 +592,7 @@ int YYYYMMDDHHmm_to_met_datetime ( struct met_datetime *t, const char *source );
   \param [in] source Pointer to source datetime structure
   \return 0 on success, 1 on error
 */
-int round_met_datetime_to_hour ( struct met_datetime *target, const struct met_datetime *source );
+int round_met_datetime_to_hour(struct met_datetime* target, const struct met_datetime* source);
 
 /*!
   \fn int synop_YYYYMMDDHHmm_to_YYGG(struct synop_chunks *syn)
@@ -604,7 +600,7 @@ int round_met_datetime_to_hour ( struct met_datetime *target, const struct met_d
   \param [in,out] syn Pointer to synop_chunks structure
   \return 0 on success, 1 on error
 */
-int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn );
+int synop_YYYYMMDDHHmm_to_YYGG(struct synop_chunks* syn);
 
 /*!
   \fn char *met_datetime_to_YYGG(char *target, size_t lmax, const struct met_datetime *t)
@@ -614,7 +610,7 @@ int synop_YYYYMMDDHHmm_to_YYGG ( struct synop_chunks *syn );
   \param [in] t Pointer to met_datetime structure
   \return Pointer to target string
 */
-char *met_datetime_to_YYGG ( char *target, size_t lmax, const struct met_datetime *t );
+char* met_datetime_to_YYGG(char* target, size_t lmax, const struct met_datetime* t);
 
 /*!
   \fn int buoy_YYYYMMDDHHmm_to_JMMYYGGgg(struct buoy_chunks *b)
@@ -622,7 +618,7 @@ char *met_datetime_to_YYGG ( char *target, size_t lmax, const struct met_datetim
   \param [in,out] b Pointer to buoy_chunks structure
   \return 0 on success, 1 on error
 */
-int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b );
+int buoy_YYYYMMDDHHmm_to_JMMYYGGgg(struct buoy_chunks* b);
 
 /*!
   \fn int check_date_from_future(const struct metreport *m)
@@ -630,7 +626,7 @@ int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b );
   \param [in] m Pointer to metreport structure
   \return 0 if date is valid, 1 if from future
 */
-int check_date_from_future ( const struct metreport *m );
+int check_date_from_future(const struct metreport* m);
 
 /*!
   \fn char *guess_WMO_region(char *A1, char *Reg, const char *II, const char *iii)
@@ -641,7 +637,7 @@ int check_date_from_future ( const struct metreport *m );
   \param [in] iii Station number
   \return Pointer to A1 string
 */
-char *guess_WMO_region ( char *A1, char *Reg, const char *II, const char *iii );
+char* guess_WMO_region(char* A1, char* Reg, const char* II, const char* iii);
 
 /*!
   \fn char * guess_WMO_region_synop(struct synop_chunks *syn)
@@ -649,7 +645,7 @@ char *guess_WMO_region ( char *A1, char *Reg, const char *II, const char *iii );
   \param [in,out] syn Pointer to synop_chunks structure
   \return Pointer to A1 string in synop structure
 */
-char * guess_WMO_region_synop ( struct synop_chunks *syn );
+char* guess_WMO_region_synop(struct synop_chunks* syn);
 
 /*!
   \fn char *guess_WMO_region_temp(struct temp_chunks *temp)
@@ -657,7 +653,7 @@ char * guess_WMO_region_synop ( struct synop_chunks *syn );
   \param [in,out] temp Pointer to temp_chunks structure
   \return Pointer to A1 string in temp structure
 */
-char *guess_WMO_region_temp ( struct temp_chunks *temp );
+char* guess_WMO_region_temp(struct temp_chunks* temp);
 
 /*!
   \fn int read_table_c(char tablec[MAXLINES_TABLEC][92], size_t *nlines_tablec, const char *bufrtables_dir, int ksec1[40])
@@ -668,7 +664,7 @@ char *guess_WMO_region_temp ( struct temp_chunks *temp );
   \param [in] ksec1 BUFR section 1 data array
   \return 0 on success, 1 on error
 */
-int read_table_c ( char tablec[MAXLINES_TABLEC][92], size_t *nlines_tablec, const char *bufrtables_dir, int ksec1[40] );
+int read_table_c(char tablec[MAXLINES_TABLEC][92], size_t* nlines_tablec, const char* bufrtables_dir, int ksec1[40]);
 
 /*!
   \fn int parse_subset_sequence(struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr2tac_subset_state *st, const int *kdtlst, size_t nlst, const int *ksec1, char *err)
@@ -682,8 +678,8 @@ int read_table_c ( char tablec[MAXLINES_TABLEC][92], size_t *nlines_tablec, cons
   \param [out] err Buffer for error messages
   \return 0 on success, 1 on error
 */
-int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_data *sq, struct bufr2tac_subset_state *st,
-                            const int *kdtlst, size_t nlst, const int *ksec1, char *err );
+int parse_subset_sequence(struct metreport* m, struct bufr_subset_sequence_data* sq, struct bufr2tac_subset_state* st,
+    const int* kdtlst, size_t nlst, const int* ksec1, char* err);
 
 /*!
   \fn int find_descriptor(const int *haystack, size_t nlst, int needle)
@@ -693,7 +689,7 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
   \param [in] needle Descriptor to find
   \return Index of descriptor if found, -1 otherwise
 */
-int find_descriptor ( const int *haystack, size_t nlst, int needle );
+int find_descriptor(const int* haystack, size_t nlst, int needle);
 
 /*!
   \fn int find_descriptor_interval(const int *haystack, size_t nlst, int needlemin, int needlemax)
@@ -704,7 +700,7 @@ int find_descriptor ( const int *haystack, size_t nlst, int needle );
   \param [in] needlemax Maximum descriptor value in range
   \return Index of first descriptor in range if found, -1 otherwise
 */
-int find_descriptor_interval ( const int *haystack, size_t nlst, int needlemin, int needlemax );
+int find_descriptor_interval(const int* haystack, size_t nlst, int needlemin, int needlemax);
 
 /*!
   \fn int bufr_set_environment(char *default_bufrtables, char *bufrtables_dir)
@@ -713,7 +709,7 @@ int find_descriptor_interval ( const int *haystack, size_t nlst, int needlemin, 
   \param [out] bufrtables_dir String where to write the configured directory
   \return 0 on success, 1 on error
 */
-int bufr_set_environment ( char *default_bufrtables, char *bufrtables_dir );
+int bufr_set_environment(char* default_bufrtables, char* bufrtables_dir);
 
 /*!
   \fn int guess_gts_header(struct gts_header *h, const char *f)
@@ -722,7 +718,7 @@ int bufr_set_environment ( char *default_bufrtables, char *bufrtables_dir );
   \param [in] f Filename string
   \return 0 on success, 1 on error
 */
-int guess_gts_header ( struct gts_header *h, const char *f );
+int guess_gts_header(struct gts_header* h, const char* f);
 
 /*!
   \fn int read_bufr(unsigned char *bufr, const char *filename, int *length)
@@ -732,7 +728,7 @@ int guess_gts_header ( struct gts_header *h, const char *f );
   \param [out] length Pointer to store length of data read
   \return 0 on success, 1 on error
 */
-int read_bufr ( unsigned char *bufr, const char *filename, int *length );
+int read_bufr(unsigned char* bufr, const char* filename, int* length);
 
 /*!
   \fn int time_period_duration(const struct bufr2tac_subset_state *s)
@@ -740,7 +736,7 @@ int read_bufr ( unsigned char *bufr, const char *filename, int *length );
   \param [in] s Pointer to subset state
   \return Duration in seconds, -1 on error
 */
-int time_period_duration ( const struct bufr2tac_subset_state *s );
+int time_period_duration(const struct bufr2tac_subset_state* s);
 
 /*!
   \fn int hour_rounded(const struct synop_chunks *syn)
@@ -748,7 +744,7 @@ int time_period_duration ( const struct bufr2tac_subset_state *s );
   \param [in] syn Pointer to synop_chunks structure
   \return 1 if rounded, 0 otherwise
 */
-int hour_rounded ( const struct synop_chunks *syn );
+int hour_rounded(const struct synop_chunks* syn);
 
 /*!
   \fn void direction_to_0877(char *dd, size_t lmax, uint32_t ival)
@@ -757,9 +753,7 @@ int hour_rounded ( const struct synop_chunks *syn );
   \param [in] lmax Maximum size of dd buffer
   \param [in] ival Integer direction value
 */
-void direction_to_0877 ( char *dd, size_t lmax, uint32_t ival );
-
-
+void direction_to_0877(char* dd, size_t lmax, uint32_t ival);
 
 // Unit conversion functions
 
@@ -772,7 +766,7 @@ void direction_to_0877 ( char *dd, size_t lmax, uint32_t ival );
   \param [in] lon Longitude in degrees
   \return Pointer to target string
 */
-char * latlon_to_MMM ( char *target, size_t lmax, double lat, double lon );
+char* latlon_to_MMM(char* target, size_t lmax, double lat, double lon);
 
 /*!
   \fn char * kelvin_to_TTTT(char *target, size_t lmax, double T)
@@ -782,7 +776,7 @@ char * latlon_to_MMM ( char *target, size_t lmax, double lat, double lon );
   \param [in] T Temperature in Kelvin
   \return Pointer to target string
 */
-char * kelvin_to_TTTT ( char *target, size_t lmax, double T );
+char* kelvin_to_TTTT(char* target, size_t lmax, double T);
 
 /*!
   \fn char * kelvin_to_snTTT(char *target, size_t lmax, double T)
@@ -792,7 +786,7 @@ char * kelvin_to_TTTT ( char *target, size_t lmax, double T );
   \param [in] T Temperature in Kelvin
   \return Pointer to target string
 */
-char * kelvin_to_snTTT ( char *target, size_t lmax, double T );
+char* kelvin_to_snTTT(char* target, size_t lmax, double T);
 
 /*!
   \fn char * kelvin_to_snTT(char *target, size_t lmax, double T)
@@ -802,7 +796,7 @@ char * kelvin_to_snTTT ( char *target, size_t lmax, double T );
   \param [in] T Temperature in Kelvin
   \return Pointer to target string
 */
-char * kelvin_to_snTT ( char *target, size_t lmax, double T );
+char* kelvin_to_snTT(char* target, size_t lmax, double T);
 
 /*!
   \fn char * kelvin_to_TT(char *target, size_t lmax, double T)
@@ -812,7 +806,7 @@ char * kelvin_to_snTT ( char *target, size_t lmax, double T );
   \param [in] T Temperature in Kelvin
   \return Pointer to target string
 */
-char * kelvin_to_TT ( char *target, size_t lmax, double T );
+char* kelvin_to_TT(char* target, size_t lmax, double T);
 
 /*!
   \fn char * kelvin_to_TTTa(char *target, size_t lmax, double T)
@@ -822,7 +816,7 @@ char * kelvin_to_TT ( char *target, size_t lmax, double T );
   \param [in] T Temperature in Kelvin
   \return Pointer to target string
 */
-char * kelvin_to_TTTa ( char *target, size_t lmax, double T );
+char* kelvin_to_TTTa(char* target, size_t lmax, double T);
 
 /*!
   \fn char * dewpoint_depression_to_DnDn(char * target, size_t lmax, double T, double Td)
@@ -833,7 +827,7 @@ char * kelvin_to_TTTa ( char *target, size_t lmax, double T );
   \param [in] Td Dewpoint temperature in Kelvin
   \return Pointer to target string
 */
-char * dewpoint_depression_to_DnDn ( char * target, size_t lmax, double T, double Td );
+char* dewpoint_depression_to_DnDn(char* target, size_t lmax, double T, double Td);
 
 /*!
   \fn char * m_to_h(char *target, size_t lmax, double h)
@@ -843,7 +837,7 @@ char * dewpoint_depression_to_DnDn ( char * target, size_t lmax, double T, doubl
   \param [in] h Height in meters
   \return Pointer to target string
 */
-char * m_to_h ( char *target, size_t lmax, double h );
+char* m_to_h(char* target, size_t lmax, double h);
 
 /*!
   \fn char * m_to_hh(char *target, size_t lmax, double h)
@@ -853,7 +847,7 @@ char * m_to_h ( char *target, size_t lmax, double h );
   \param [in] h Height in meters
   \return Pointer to target string
 */
-char * m_to_hh ( char *target, size_t lmax, double h );
+char* m_to_hh(char* target, size_t lmax, double h);
 
 /*!
   \fn char * m_to_9h(char *target, size_t lmax, double h)
@@ -863,7 +857,7 @@ char * m_to_hh ( char *target, size_t lmax, double h );
   \param [in] h Height in meters
   \return Pointer to target string
 */
-char * m_to_9h ( char *target, size_t lmax, double h );
+char* m_to_9h(char* target, size_t lmax, double h);
 
 /*!
   \fn char * m_to_RR(char *target, size_t lmax, double m)
@@ -873,7 +867,7 @@ char * m_to_9h ( char *target, size_t lmax, double h );
   \param [in] m Precipitation in meters
   \return Pointer to target string
 */
-char * m_to_RR ( char *target, size_t lmax, double m );
+char* m_to_RR(char* target, size_t lmax, double m);
 
 /*!
   \fn char * pascal_to_ppp(char *target, size_t lmax, double P)
@@ -883,7 +877,7 @@ char * m_to_RR ( char *target, size_t lmax, double m );
   \param [in] P Pressure in Pascals
   \return Pointer to target string
 */
-char * pascal_to_ppp ( char *target, size_t lmax, double P );
+char* pascal_to_ppp(char* target, size_t lmax, double P);
 
 /*!
   \fn char * pascal_to_pnpnpn(char *target, size_t lmax, double P)
@@ -893,7 +887,7 @@ char * pascal_to_ppp ( char *target, size_t lmax, double P );
   \param [in] P Pressure in Pascals
   \return Pointer to target string
 */
-char * pascal_to_pnpnpn ( char *target, size_t lmax, double P );
+char* pascal_to_pnpnpn(char* target, size_t lmax, double P);
 
 /*!
   \fn char * pascal_to_PPPP(char *target, size_t lmax, double P)
@@ -903,7 +897,7 @@ char * pascal_to_pnpnpn ( char *target, size_t lmax, double P );
   \param [in] P Pressure in Pascals
   \return Pointer to target string
 */
-char * pascal_to_PPPP ( char *target, size_t lmax, double P );
+char* pascal_to_PPPP(char* target, size_t lmax, double P);
 
 /*!
   \fn char * percent_to_okta(char *target, size_t lmax, double perc)
@@ -913,7 +907,7 @@ char * pascal_to_PPPP ( char *target, size_t lmax, double P );
   \param [in] perc Cloud cover in percentage
   \return Pointer to target string
 */
-char * percent_to_okta ( char *target, size_t lmax, double perc );
+char* percent_to_okta(char* target, size_t lmax, double perc);
 
 /*!
   \fn char * prec_to_RRR(char *target, size_t lmax, double r)
@@ -923,7 +917,7 @@ char * percent_to_okta ( char *target, size_t lmax, double perc );
   \param [in] r Precipitation in kg/m2 or mm
   \return Pointer to target string
 */
-char * prec_to_RRR ( char *target, size_t lmax, double r );
+char* prec_to_RRR(char* target, size_t lmax, double r);
 
 /*!
   \fn char * prec_to_RRRR24(char *target, size_t lmax, double r)
@@ -933,7 +927,7 @@ char * prec_to_RRR ( char *target, size_t lmax, double r );
   \param [in] r Precipitation in kg/m2 or mm
   \return Pointer to target string
 */
-char * prec_to_RRRR24 ( char *target, size_t lmax, double r );
+char* prec_to_RRRR24(char* target, size_t lmax, double r);
 
 /*!
   \fn char * secs_to_tt(char *tt, size_t lmax, int secs)
@@ -943,7 +937,7 @@ char * prec_to_RRRR24 ( char *target, size_t lmax, double r );
   \param [in] secs Time period in seconds
   \return Pointer to tt string
 */
-char * secs_to_tt ( char *tt, size_t lmax, int secs );
+char* secs_to_tt(char* tt, size_t lmax, int secs);
 
 /*!
   \fn char * vism_to_VV(char *target, size_t lmax, double V)
@@ -953,7 +947,7 @@ char * secs_to_tt ( char *tt, size_t lmax, int secs );
   \param [in] V Visibility in meters
   \return Pointer to target string
 */
-char * vism_to_VV ( char *target, size_t lmax, double V );
+char* vism_to_VV(char* target, size_t lmax, double V);
 
 /*!
   \fn char * recent_snow_to_ss(char *target, size_t lmax, double r)
@@ -963,7 +957,7 @@ char * vism_to_VV ( char *target, size_t lmax, double V );
   \param [in] r Snow depth in meters
   \return Pointer to target string
 */
-char * recent_snow_to_ss ( char *target, size_t lmax, double r );
+char* recent_snow_to_ss(char* target, size_t lmax, double r);
 
 /*!
   \fn char * total_snow_depth_to_sss(char *target, size_t lmax, double r)
@@ -973,7 +967,7 @@ char * recent_snow_to_ss ( char *target, size_t lmax, double r );
   \param [in] r Snow depth in meters
   \return Pointer to target string
 */
-char * total_snow_depth_to_sss ( char *target, size_t lmax, double r );
+char* total_snow_depth_to_sss(char* target, size_t lmax, double r);
 
 /*!
   \fn char * wind_to_dndnfnfnfn(char *target, size_t lmax, double dd, double ff)
@@ -984,7 +978,7 @@ char * total_snow_depth_to_sss ( char *target, size_t lmax, double r );
   \param [in] ff Wind speed in m/s
   \return Pointer to target string
 */
-char * wind_to_dndnfnfnfn ( char *target, size_t lmax, double dd, double ff );
+char* wind_to_dndnfnfnfn(char* target, size_t lmax, double dd, double ff);
 
 /*!
   \fn char * grad_to_D(char *D, size_t lmax, double grad)
@@ -994,7 +988,7 @@ char * wind_to_dndnfnfnfn ( char *target, size_t lmax, double dd, double ff );
   \param [in] grad Angle in gradians
   \return Pointer to D string
 */
-char * grad_to_D ( char *D, size_t lmax, double grad );
+char* grad_to_D(char* D, size_t lmax, double grad);
 
 /*!
   \fn char * grad_to_ec(char *target, size_t lmax, double grad)
@@ -1004,7 +998,7 @@ char * grad_to_D ( char *D, size_t lmax, double grad );
   \param [in] grad Angle in gradians
   \return Pointer to target string
 */
-char * grad_to_ec ( char *target, size_t lmax, double grad );
+char* grad_to_ec(char* target, size_t lmax, double grad);
 
 /*!
   \fn int check_kj_m2(double val)
@@ -1012,7 +1006,7 @@ char * grad_to_ec ( char *target, size_t lmax, double grad );
   \param [in] val Value to check
   \return 1 if valid, 0 otherwise
 */
-int check_kj_m2 ( double val );
+int check_kj_m2(double val);
 
 /*!
   \fn int check_j_cm2(double val)
@@ -1020,9 +1014,7 @@ int check_kj_m2 ( double val );
   \param [in] val Value to check
   \return 1 if valid, 0 otherwise
 */
-int check_j_cm2 ( double val );
-
-
+int check_j_cm2(double val);
 
 // Geographic and WIGOS ID print functions
 
@@ -1034,7 +1026,7 @@ int check_j_cm2 ( double val );
   \param [in] m Pointer to metreport structure
   \return Number of bytes written
 */
-size_t print_geo ( char **geo,  size_t lmax, const struct metreport *m );
+size_t print_geo(char** geo, size_t lmax, const struct metreport* m);
 
 /*!
   \fn size_t print_wigos_id(char **wid, size_t lmax, const struct metreport *m)
@@ -1044,7 +1036,7 @@ size_t print_geo ( char **geo,  size_t lmax, const struct metreport *m );
   \param [in] m Pointer to metreport structure
   \return Number of bytes written
 */
-size_t print_wigos_id ( char **wid,  size_t lmax, const struct metreport *m );
+size_t print_wigos_id(char** wid, size_t lmax, const struct metreport* m);
 
 // SYNOP print functions
 
@@ -1054,7 +1046,7 @@ size_t print_wigos_id ( char **wid,  size_t lmax, const struct metreport *m );
   \param [in,out] m Pointer to metreport structure containing SYNOP data
   \return 0 on success, 1 on error
 */
-int print_synop_report ( struct metreport *m);
+int print_synop_report(struct metreport* m);
 
 /*!
   \fn size_t print_synop_sec0(char **sec0, size_t lmax, const struct synop_chunks *syn)
@@ -1064,7 +1056,7 @@ int print_synop_report ( struct metreport *m);
   \param [in] syn Pointer to synop_chunks structure
   \return Number of bytes written
 */
-size_t print_synop_sec0 ( char **sec0, size_t lmax, const struct synop_chunks *syn );
+size_t print_synop_sec0(char** sec0, size_t lmax, const struct synop_chunks* syn);
 
 /*!
   \fn size_t print_synop_sec1(char **sec1, size_t lmax, struct synop_chunks *syn)
@@ -1074,7 +1066,7 @@ size_t print_synop_sec0 ( char **sec0, size_t lmax, const struct synop_chunks *s
   \param [in,out] syn Pointer to synop_chunks structure
   \return Number of bytes written
 */
-size_t print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn );
+size_t print_synop_sec1(char** sec1, size_t lmax, struct synop_chunks* syn);
 
 /*!
   \fn size_t print_synop_sec2(char **sec2, size_t lmax, const struct synop_chunks *syn)
@@ -1084,7 +1076,7 @@ size_t print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn );
   \param [in] syn Pointer to synop_chunks structure
   \return Number of bytes written
 */
-size_t print_synop_sec2 ( char **sec2, size_t lmax, const struct synop_chunks *syn );
+size_t print_synop_sec2(char** sec2, size_t lmax, const struct synop_chunks* syn);
 
 /*!
   \fn size_t print_synop_sec3(char **sec3, size_t lmax, struct synop_chunks *syn)
@@ -1094,7 +1086,7 @@ size_t print_synop_sec2 ( char **sec2, size_t lmax, const struct synop_chunks *s
   \param [in,out] syn Pointer to synop_chunks structure
   \return Number of bytes written
 */
-size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn );
+size_t print_synop_sec3(char** sec3, size_t lmax, struct synop_chunks* syn);
 
 /*!
   \fn size_t print_synop_wigos_id(char **wid, size_t lmax, struct synop_chunks *syn)
@@ -1104,9 +1096,9 @@ size_t print_synop_sec3 ( char **sec3, size_t lmax, struct synop_chunks *syn );
   \param [in,out] syn Pointer to synop_chunks structure
   \return Number of bytes written
 */
-size_t print_synop_wigos_id ( char **wid,  size_t lmax, struct synop_chunks *syn );
+size_t print_synop_wigos_id(char** wid, size_t lmax, struct synop_chunks* syn);
 
-int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b );
+int buoy_YYYYMMDDHHmm_to_JMMYYGGgg(struct buoy_chunks* b);
 
 // BUOY print functions
 
@@ -1116,7 +1108,7 @@ int buoy_YYYYMMDDHHmm_to_JMMYYGGgg ( struct buoy_chunks *b );
   \param [in,out] m Pointer to metreport structure containing BUOY data
   \return 0 on success, 1 on error
 */
-int print_buoy_report ( struct metreport *m);
+int print_buoy_report(struct metreport* m);
 
 /*!
   \fn size_t print_buoy_sec0(char **sec0, size_t lmax, const struct buoy_chunks *b)
@@ -1126,7 +1118,7 @@ int print_buoy_report ( struct metreport *m);
   \param [in] b Pointer to buoy_chunks structure
   \return Number of bytes written
 */
-size_t print_buoy_sec0 ( char **sec0, size_t lmax, const struct buoy_chunks *b );
+size_t print_buoy_sec0(char** sec0, size_t lmax, const struct buoy_chunks* b);
 
 /*!
   \fn size_t print_buoy_sec1(char **sec1, size_t lmax, struct buoy_chunks *b)
@@ -1136,7 +1128,7 @@ size_t print_buoy_sec0 ( char **sec0, size_t lmax, const struct buoy_chunks *b )
   \param [in,out] b Pointer to buoy_chunks structure
   \return Number of bytes written
 */
-size_t print_buoy_sec1 ( char **sec1, size_t lmax, struct buoy_chunks *b );
+size_t print_buoy_sec1(char** sec1, size_t lmax, struct buoy_chunks* b);
 
 /*!
   \fn size_t print_buoy_sec2(char **sec2, size_t lmax, const struct buoy_chunks *b)
@@ -1146,7 +1138,7 @@ size_t print_buoy_sec1 ( char **sec1, size_t lmax, struct buoy_chunks *b );
   \param [in] b Pointer to buoy_chunks structure
   \return Number of bytes written
 */
-size_t print_buoy_sec2 ( char **sec2, size_t lmax, const struct buoy_chunks *b );
+size_t print_buoy_sec2(char** sec2, size_t lmax, const struct buoy_chunks* b);
 
 /*!
   \fn size_t print_buoy_sec3(char **sec3, size_t lmax, const struct buoy_chunks *b)
@@ -1156,7 +1148,7 @@ size_t print_buoy_sec2 ( char **sec2, size_t lmax, const struct buoy_chunks *b )
   \param [in] b Pointer to buoy_chunks structure
   \return Number of bytes written
 */
-size_t print_buoy_sec3 ( char **sec3, size_t lmax, const struct buoy_chunks *b );
+size_t print_buoy_sec3(char** sec3, size_t lmax, const struct buoy_chunks* b);
 
 /*!
   \fn size_t print_buoy_wigos_id(char **wid, size_t lmax, const struct buoy_chunks *b)
@@ -1166,7 +1158,7 @@ size_t print_buoy_sec3 ( char **sec3, size_t lmax, const struct buoy_chunks *b )
   \param [in] b Pointer to buoy_chunks structure
   \return Number of bytes written
 */
-size_t print_buoy_wigos_id ( char **wid,  size_t lmax, const struct buoy_chunks *b);
+size_t print_buoy_wigos_id(char** wid, size_t lmax, const struct buoy_chunks* b);
 
 // CLIMAT print functions
 
@@ -1176,7 +1168,7 @@ size_t print_buoy_wigos_id ( char **wid,  size_t lmax, const struct buoy_chunks 
   \param [in,out] m Pointer to metreport structure containing CLIMAT data
   \return 0 on success, 1 on error
 */
-int print_climat_report ( struct metreport *m);
+int print_climat_report(struct metreport* m);
 
 /*!
   \fn size_t print_climat_sec0(char **sec0, size_t lmax, const struct climat_chunks *cl)
@@ -1186,7 +1178,7 @@ int print_climat_report ( struct metreport *m);
   \param [in] cl Pointer to climat_chunks structure
   \return Number of bytes written
 */
-size_t print_climat_sec0 ( char **sec0, size_t lmax, const struct climat_chunks *cl );
+size_t print_climat_sec0(char** sec0, size_t lmax, const struct climat_chunks* cl);
 
 /*!
   \fn size_t print_climat_sec1(char **sec1, size_t lmax, struct climat_chunks *cl)
@@ -1196,7 +1188,7 @@ size_t print_climat_sec0 ( char **sec0, size_t lmax, const struct climat_chunks 
   \param [in,out] cl Pointer to climat_chunks structure
   \return Number of bytes written
 */
-size_t print_climat_sec1 ( char **sec1, size_t lmax, struct climat_chunks *cl );
+size_t print_climat_sec1(char** sec1, size_t lmax, struct climat_chunks* cl);
 
 /*!
   \fn size_t print_climat_sec2(char **sec2, size_t lmax, struct climat_chunks *cl)
@@ -1206,7 +1198,7 @@ size_t print_climat_sec1 ( char **sec1, size_t lmax, struct climat_chunks *cl );
   \param [in,out] cl Pointer to climat_chunks structure
   \return Number of bytes written
 */
-size_t print_climat_sec2 ( char **sec2, size_t lmax, struct climat_chunks *cl );
+size_t print_climat_sec2(char** sec2, size_t lmax, struct climat_chunks* cl);
 
 /*!
   \fn size_t print_climat_sec3(char **sec3, size_t lmax, struct climat_chunks *cl)
@@ -1216,7 +1208,7 @@ size_t print_climat_sec2 ( char **sec2, size_t lmax, struct climat_chunks *cl );
   \param [in,out] cl Pointer to climat_chunks structure
   \return Number of bytes written
 */
-size_t print_climat_sec3 ( char **sec3, size_t lmax, struct climat_chunks *cl );
+size_t print_climat_sec3(char** sec3, size_t lmax, struct climat_chunks* cl);
 
 /*!
   \fn size_t print_climat_sec4(char **sec4, size_t lmax, struct climat_chunks *cl)
@@ -1226,7 +1218,7 @@ size_t print_climat_sec3 ( char **sec3, size_t lmax, struct climat_chunks *cl );
   \param [in,out] cl Pointer to climat_chunks structure
   \return Number of bytes written
 */
-size_t print_climat_sec4 ( char **sec4, size_t lmax, struct climat_chunks *cl );
+size_t print_climat_sec4(char** sec4, size_t lmax, struct climat_chunks* cl);
 
 /*!
   \fn size_t print_climat_wigos_id(char **wid, size_t lmax, struct climat_chunks *cl)
@@ -1236,7 +1228,7 @@ size_t print_climat_sec4 ( char **sec4, size_t lmax, struct climat_chunks *cl );
   \param [in,out] cl Pointer to climat_chunks structure
   \return Number of bytes written
 */
-size_t print_climat_wigos_id ( char **wid,  size_t lmax, struct climat_chunks *cl);
+size_t print_climat_wigos_id(char** wid, size_t lmax, struct climat_chunks* cl);
 
 // TEMP print functions
 
@@ -1246,7 +1238,7 @@ size_t print_climat_wigos_id ( char **wid,  size_t lmax, struct climat_chunks *c
   \param [in,out] m Pointer to metreport structure containing TEMP data
   \return 0 on success, 1 on error
 */
-int print_temp_report ( struct metreport *m );
+int print_temp_report(struct metreport* m);
 
 /*!
   \fn int print_temp_a(struct metreport *m)
@@ -1254,7 +1246,7 @@ int print_temp_report ( struct metreport *m );
   \param [in,out] m Pointer to metreport structure
   \return 0 on success, 1 on error
 */
-int print_temp_a ( struct metreport *m );
+int print_temp_a(struct metreport* m);
 
 /*!
   \fn size_t print_temp_a_sec1(char **sec1, size_t lmax, const struct temp_chunks *t)
@@ -1264,7 +1256,7 @@ int print_temp_a ( struct metreport *m );
   \param [in] t Pointer to temp_chunks structure
   \return Number of bytes written
 */
-size_t print_temp_a_sec1 ( char **sec1, size_t lmax, const struct temp_chunks *t );
+size_t print_temp_a_sec1(char** sec1, size_t lmax, const struct temp_chunks* t);
 
 /*!
   \fn size_t print_temp_a_sec2(char **sec2, size_t lmax, const struct temp_chunks *t)
@@ -1274,7 +1266,7 @@ size_t print_temp_a_sec1 ( char **sec1, size_t lmax, const struct temp_chunks *t
   \param [in] t Pointer to temp_chunks structure
   \return Number of bytes written
 */
-size_t print_temp_a_sec2 ( char **sec2, size_t lmax, const struct temp_chunks *t );
+size_t print_temp_a_sec2(char** sec2, size_t lmax, const struct temp_chunks* t);
 
 /*!
   \fn size_t print_temp_a_sec3(char **sec3, size_t lmax, const struct temp_chunks *t)
@@ -1284,7 +1276,7 @@ size_t print_temp_a_sec2 ( char **sec2, size_t lmax, const struct temp_chunks *t
   \param [in] t Pointer to temp_chunks structure
   \return Number of bytes written
 */
-size_t print_temp_a_sec3 ( char **sec3, size_t lmax, const struct temp_chunks *t );
+size_t print_temp_a_sec3(char** sec3, size_t lmax, const struct temp_chunks* t);
 
 /*!
   \fn size_t print_temp_a_sec4(char **sec4, size_t lmax, const struct temp_chunks *t)
@@ -1294,7 +1286,7 @@ size_t print_temp_a_sec3 ( char **sec3, size_t lmax, const struct temp_chunks *t
   \param [in] t Pointer to temp_chunks structure
   \return Number of bytes written
 */
-size_t print_temp_a_sec4 ( char **sec4, size_t lmax, const struct temp_chunks *t );
+size_t print_temp_a_sec4(char** sec4, size_t lmax, const struct temp_chunks* t);
 
 /*!
   \fn size_t print_temp_a_sec7(char **sec7, size_t lmax, const struct temp_chunks *t)
@@ -1304,7 +1296,7 @@ size_t print_temp_a_sec4 ( char **sec4, size_t lmax, const struct temp_chunks *t
   \param [in] t Pointer to temp_chunks structure
   \return Number of bytes written
 */
-size_t print_temp_a_sec7 ( char **sec7, size_t lmax, const struct temp_chunks *t );
+size_t print_temp_a_sec7(char** sec7, size_t lmax, const struct temp_chunks* t);
 
 /*!
   \fn int print_temp_b(struct metreport *m)
@@ -1312,7 +1304,7 @@ size_t print_temp_a_sec7 ( char **sec7, size_t lmax, const struct temp_chunks *t
   \param [in,out] m Pointer to metreport structure
   \return 0 on success, 1 on error
 */
-int print_temp_b ( struct metreport *m );
+int print_temp_b(struct metreport* m);
 
 /*!
   \fn size_t print_temp_b_sec1(char **sec1, size_t lmax, const struct temp_chunks *t)
@@ -1322,7 +1314,7 @@ int print_temp_b ( struct metreport *m );
   \param [in] t Pointer to temp_chunks structure
   \return Number of bytes written
 */
-size_t print_temp_b_sec1 ( char **sec1, size_t lmax, const struct temp_chunks *t );
+size_t print_temp_b_sec1(char** sec1, size_t lmax, const struct temp_chunks* t);
 
 /*!
   \fn size_t print_temp_b_sec5(char **sec5, size_t lmax, const struct temp_chunks *t)
@@ -1332,17 +1324,17 @@ size_t print_temp_b_sec1 ( char **sec1, size_t lmax, const struct temp_chunks *t
   \param [in] t Pointer to temp_chunks structure
   \return Number of bytes written
 */
-size_t print_temp_b_sec5 ( char **sec5, size_t lmax, const struct temp_chunks *t );
+size_t print_temp_b_sec5(char** sec5, size_t lmax, const struct temp_chunks* t);
 
- /*!
-  \fn size_t print_temp_b_sec6(char **sec6, size_t lmax, const struct temp_chunks *t)
-  \brief Print TEMP part B section 6
-  \param [out] sec6 Pointer to string pointer where to write section 6
-  \param [in] lmax Maximum size available
-  \param [in] t Pointer to temp_chunks structure
-  \return Number of bytes written
+/*!
+ \fn size_t print_temp_b_sec6(char **sec6, size_t lmax, const struct temp_chunks *t)
+ \brief Print TEMP part B section 6
+ \param [out] sec6 Pointer to string pointer where to write section 6
+ \param [in] lmax Maximum size available
+ \param [in] t Pointer to temp_chunks structure
+ \return Number of bytes written
 */
-size_t print_temp_b_sec6 ( char **sec6, size_t lmax, const struct temp_chunks *t );
+size_t print_temp_b_sec6(char** sec6, size_t lmax, const struct temp_chunks* t);
 
 /*!
   \fn size_t print_temp_b_sec7(char **sec7, size_t lmax, const struct temp_chunks *t)
@@ -1352,7 +1344,7 @@ size_t print_temp_b_sec6 ( char **sec6, size_t lmax, const struct temp_chunks *t
   \param [in] t Pointer to temp_chunks structure
   \return Number of bytes written
 */
-size_t print_temp_b_sec7 ( char **sec7, size_t lmax, const struct temp_chunks *t );
+size_t print_temp_b_sec7(char** sec7, size_t lmax, const struct temp_chunks* t);
 
 /*!
   \fn size_t print_temp_b_sec8(char **sec8, size_t lmax, const struct temp_chunks *t)
@@ -1362,7 +1354,7 @@ size_t print_temp_b_sec7 ( char **sec7, size_t lmax, const struct temp_chunks *t
   \param [in] t Pointer to temp_chunks structure
   \return Number of bytes written
 */
-size_t print_temp_b_sec8 ( char **sec8, size_t lmax, const struct temp_chunks *t );
+size_t print_temp_b_sec8(char** sec8, size_t lmax, const struct temp_chunks* t);
 
 /*!
   \fn int print_temp_c(struct metreport *m)
@@ -1370,7 +1362,7 @@ size_t print_temp_b_sec8 ( char **sec8, size_t lmax, const struct temp_chunks *t
   \param [in,out] m Pointer to metreport structure
   \return 0 on success, 1 on error
 */
-int print_temp_c ( struct metreport *m );
+int print_temp_c(struct metreport* m);
 
 /*!
   \fn size_t print_temp_c_sec1(char **sec1, size_t lmax, const struct temp_chunks *t)
@@ -1380,7 +1372,7 @@ int print_temp_c ( struct metreport *m );
   \param [in] t Pointer to temp_chunks structure
   \return Number of bytes written
 */
-size_t print_temp_c_sec1 ( char **sec1, size_t lmax, const struct temp_chunks *t );
+size_t print_temp_c_sec1(char** sec1, size_t lmax, const struct temp_chunks* t);
 
 /*!
   \fn size_t print_temp_c_sec2(char **sec2, size_t lmax, const struct temp_chunks *t)
@@ -1390,7 +1382,7 @@ size_t print_temp_c_sec1 ( char **sec1, size_t lmax, const struct temp_chunks *t
   \param [in] t Pointer to temp_chunks structure
   \return Number of bytes written
 */
-size_t print_temp_c_sec2 ( char **sec2, size_t lmax, const struct temp_chunks *t );
+size_t print_temp_c_sec2(char** sec2, size_t lmax, const struct temp_chunks* t);
 
 /*!
   \fn size_t print_temp_c_sec3(char **sec3, size_t lmax, const struct temp_chunks *t)
@@ -1400,7 +1392,7 @@ size_t print_temp_c_sec2 ( char **sec2, size_t lmax, const struct temp_chunks *t
   \param [in] t Pointer to temp_chunks structure
   \return Number of bytes written
 */
-size_t print_temp_c_sec3 ( char **sec3, size_t lmax, const struct temp_chunks *t );
+size_t print_temp_c_sec3(char** sec3, size_t lmax, const struct temp_chunks* t);
 
 /*!
   \fn size_t print_temp_c_sec4(char **sec4, size_t lmax, const struct temp_chunks *t)
@@ -1410,7 +1402,7 @@ size_t print_temp_c_sec3 ( char **sec3, size_t lmax, const struct temp_chunks *t
   \param [in] t Pointer to temp_chunks structure
   \return Number of bytes written
 */
-size_t print_temp_c_sec4 ( char **sec4, size_t lmax, const struct temp_chunks *t );
+size_t print_temp_c_sec4(char** sec4, size_t lmax, const struct temp_chunks* t);
 
 /*!
   \fn size_t print_temp_c_sec7(char **sec7, size_t lmax, const struct temp_chunks *t)
@@ -1420,7 +1412,7 @@ size_t print_temp_c_sec4 ( char **sec4, size_t lmax, const struct temp_chunks *t
   \param [in] t Pointer to temp_chunks structure
   \return Number of bytes written
 */
-size_t print_temp_c_sec7 ( char **sec7, size_t lmax, const struct temp_chunks *t );
+size_t print_temp_c_sec7(char** sec7, size_t lmax, const struct temp_chunks* t);
 
 /*!
   \fn int print_temp_d(struct metreport *m)
@@ -1428,7 +1420,7 @@ size_t print_temp_c_sec7 ( char **sec7, size_t lmax, const struct temp_chunks *t
   \param [in,out] m Pointer to metreport structure
   \return 0 on success, 1 on error
 */
-int print_temp_d ( struct metreport *m );
+int print_temp_d(struct metreport* m);
 
 /*!
   \fn size_t print_temp_d_sec1(char **sec1, size_t lmax, const struct temp_chunks *t)
@@ -1438,7 +1430,7 @@ int print_temp_d ( struct metreport *m );
   \param [in] t Pointer to temp_chunks structure
   \return Number of bytes written
 */
-size_t print_temp_d_sec1 ( char **sec1, size_t lmax, const struct temp_chunks *t );
+size_t print_temp_d_sec1(char** sec1, size_t lmax, const struct temp_chunks* t);
 
 /*!
   \fn size_t print_temp_d_sec5(char **sec5, size_t lmax, const struct temp_chunks *t)
@@ -1448,7 +1440,7 @@ size_t print_temp_d_sec1 ( char **sec1, size_t lmax, const struct temp_chunks *t
   \param [in] t Pointer to temp_chunks structure
   \return Number of bytes written
 */
-size_t print_temp_d_sec5 ( char **sec5, size_t lmax, const struct temp_chunks *t );
+size_t print_temp_d_sec5(char** sec5, size_t lmax, const struct temp_chunks* t);
 
 /*!
   \fn size_t print_temp_d_sec6(char **sec6, size_t lmax, const struct temp_chunks *t)
@@ -1458,7 +1450,7 @@ size_t print_temp_d_sec5 ( char **sec5, size_t lmax, const struct temp_chunks *t
   \param [in] t Pointer to temp_chunks structure
   \return Number of bytes written
 */
-size_t print_temp_d_sec6 ( char **sec6, size_t lmax, const struct temp_chunks *t );
+size_t print_temp_d_sec6(char** sec6, size_t lmax, const struct temp_chunks* t);
 
 /*!
   \fn size_t print_temp_d_sec7(char **sec7, size_t lmax, const struct temp_chunks *t)
@@ -1468,7 +1460,7 @@ size_t print_temp_d_sec6 ( char **sec6, size_t lmax, const struct temp_chunks *t
   \param [in] t Pointer to temp_chunks structure
   \return Number of bytes written
 */
-size_t print_temp_d_sec7 ( char **sec7, size_t lmax, const struct temp_chunks *t );
+size_t print_temp_d_sec7(char** sec7, size_t lmax, const struct temp_chunks* t);
 
 /*!
   \fn size_t print_temp_d_sec8(char **sec8, size_t lmax, const struct temp_chunks *t)
@@ -1478,7 +1470,7 @@ size_t print_temp_d_sec7 ( char **sec7, size_t lmax, const struct temp_chunks *t
   \param [in] t Pointer to temp_chunks structure
   \return Number of bytes written
 */
-size_t print_temp_d_sec8 ( char **sec8, size_t lmax, const struct temp_chunks *t );
+size_t print_temp_d_sec8(char** sec8, size_t lmax, const struct temp_chunks* t);
 
 /*!
   \fn size_t print_temp_wigos_id(char **wid, size_t lmax, struct temp_chunks *t)
@@ -1488,7 +1480,7 @@ size_t print_temp_d_sec8 ( char **sec8, size_t lmax, const struct temp_chunks *t
   \param [in,out] t Pointer to temp_chunks structure
   \return Number of bytes written
 */
-size_t print_temp_wigos_id ( char **wid,  size_t lmax, struct temp_chunks *t );
+size_t print_temp_wigos_id(char** wid, size_t lmax, struct temp_chunks* t);
 
 // TEMP raw data parsing functions
 
@@ -1499,7 +1491,7 @@ size_t print_temp_wigos_id ( char **wid,  size_t lmax, struct temp_chunks *t );
   \param [in] r Pointer to temp_raw_data structure with raw data
   \return 0 on success, 1 on error
 */
-int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r );
+int parse_temp_raw_data(struct temp_chunks* t, struct temp_raw_data* r);
 
 /*!
   \fn int parse_temp_raw_wind_shear_data(struct temp_chunks *t, struct temp_raw_wind_shear_data *w)
@@ -1508,7 +1500,7 @@ int parse_temp_raw_data ( struct temp_chunks *t, struct temp_raw_data *r );
   \param [in] w Pointer to temp_raw_wind_shear_data structure with raw data
   \return 0 on success, 1 on error
 */
-int parse_temp_raw_wind_shear_data ( struct temp_chunks *t, struct temp_raw_wind_shear_data *w );
+int parse_temp_raw_wind_shear_data(struct temp_chunks* t, struct temp_raw_wind_shear_data* w);
 
 /*!
   \fn int print_temp_raw_data(const struct temp_raw_data *r)
@@ -1516,7 +1508,7 @@ int parse_temp_raw_wind_shear_data ( struct temp_chunks *t, struct temp_raw_wind
   \param [in] r Pointer to temp_raw_data structure
   \return 0 on success, 1 on error
 */
-int print_temp_raw_data ( const struct temp_raw_data *r );
+int print_temp_raw_data(const struct temp_raw_data* r);
 
 /*!
   \fn int print_temp_raw_wind_shear_data(const struct temp_raw_wind_shear_data *w)
@@ -1524,7 +1516,7 @@ int print_temp_raw_data ( const struct temp_raw_data *r );
   \param [in] w Pointer to temp_raw_wind_shear_data structure
   \return 0 on success, 1 on error
 */
-int print_temp_raw_wind_shear_data ( const struct temp_raw_wind_shear_data *w );
+int print_temp_raw_wind_shear_data(const struct temp_raw_wind_shear_data* w);
 
 // Output format functions
 
@@ -1535,7 +1527,7 @@ int print_temp_raw_wind_shear_data ( const struct temp_raw_wind_shear_data *w );
   \param [in] m Pointer to metreport structure
   \return 0 on success, 1 on error
 */
-int print_csv ( FILE *f, const struct metreport *m );
+int print_csv(FILE* f, const struct metreport* m);
 
 /*!
   \fn int print_json(FILE *f, const struct metreport *m)
@@ -1544,7 +1536,7 @@ int print_csv ( FILE *f, const struct metreport *m );
   \param [in] m Pointer to metreport structure
   \return 0 on success, 1 on error
 */
-int print_json ( FILE *f, const struct metreport *m );
+int print_json(FILE* f, const struct metreport* m);
 
 /*!
   \fn int print_xml(FILE *f, const struct metreport *m)
@@ -1553,7 +1545,7 @@ int print_json ( FILE *f, const struct metreport *m );
   \param [in] m Pointer to metreport structure
   \return 0 on success, 1 on error
 */
-int print_xml ( FILE *f, const struct metreport *m );
+int print_xml(FILE* f, const struct metreport* m);
 
 /*!
   \fn int print_plain(FILE *f, const struct metreport *m)
@@ -1562,7 +1554,7 @@ int print_xml ( FILE *f, const struct metreport *m );
   \param [in] m Pointer to metreport structure
   \return 0 on success, 1 on error
 */
-int print_plain ( FILE *f, const struct metreport *m );
+int print_plain(FILE* f, const struct metreport* m);
 
 /*!
   \fn int print_html(FILE *f, const struct metreport *m)
@@ -1571,7 +1563,7 @@ int print_plain ( FILE *f, const struct metreport *m );
   \param [in] m Pointer to metreport structure
   \return 0 on success, 1 on error
 */
-int print_html ( FILE *f, const struct metreport *m );
+int print_html(FILE* f, const struct metreport* m);
 
 // SYNOP descriptor parsing functions (class X)
 // These functions parse BUFR descriptors from class X (0-3) for SYNOP reports
@@ -1584,7 +1576,7 @@ int print_html ( FILE *f, const struct metreport *m );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int syn_parse_x01 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x01(struct synop_chunks* syn, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int syn_parse_x02(struct synop_chunks *syn, struct bufr2tac_subset_state *s)
@@ -1593,7 +1585,7 @@ int syn_parse_x01 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int syn_parse_x02 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x02(struct synop_chunks* syn, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int syn_parse_x04(struct synop_chunks *syn, struct bufr2tac_subset_state *s)
@@ -1602,7 +1594,7 @@ int syn_parse_x02 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x04(struct synop_chunks* syn, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int syn_parse_x05(struct synop_chunks *syn, struct bufr2tac_subset_state *s)
@@ -1611,7 +1603,7 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int syn_parse_x05 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x05(struct synop_chunks* syn, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int syn_parse_x06(struct synop_chunks *syn, struct bufr2tac_subset_state *s)
@@ -1620,7 +1612,7 @@ int syn_parse_x05 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int syn_parse_x06 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x06(struct synop_chunks* syn, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int syn_parse_x07(struct synop_chunks *syn, struct bufr2tac_subset_state *s)
@@ -1629,7 +1621,7 @@ int syn_parse_x06 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int syn_parse_x07 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x07(struct synop_chunks* syn, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int syn_parse_x08(const struct synop_chunks *syn, struct bufr2tac_subset_state *s)
@@ -1638,7 +1630,7 @@ int syn_parse_x07 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int syn_parse_x08 ( const struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x08(const struct synop_chunks* syn, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int syn_parse_x10(struct synop_chunks *syn, struct bufr2tac_subset_state *s)
@@ -1647,7 +1639,7 @@ int syn_parse_x08 ( const struct synop_chunks *syn, struct bufr2tac_subset_state
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x10(struct synop_chunks* syn, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int syn_parse_x11(struct synop_chunks *syn, struct bufr2tac_subset_state *s)
@@ -1656,7 +1648,7 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x11(struct synop_chunks* syn, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int syn_parse_x12(struct synop_chunks *syn, struct bufr2tac_subset_state *s)
@@ -1665,7 +1657,7 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x12(struct synop_chunks* syn, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int syn_parse_x13(struct synop_chunks *syn, struct bufr2tac_subset_state *s)
@@ -1674,7 +1666,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x13(struct synop_chunks* syn, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int syn_parse_x14(struct synop_chunks *syn, struct bufr2tac_subset_state *s)
@@ -1683,7 +1675,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x14(struct synop_chunks* syn, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int syn_parse_x20(struct synop_chunks *syn, struct bufr2tac_subset_state *s)
@@ -1692,7 +1684,7 @@ int syn_parse_x14 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x20(struct synop_chunks* syn, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int syn_parse_x22(struct synop_chunks *syn, struct bufr2tac_subset_state *s)
@@ -1701,7 +1693,7 @@ int syn_parse_x20 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int syn_parse_x22 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x22(struct synop_chunks* syn, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int syn_parse_x31(const struct synop_chunks *syn, struct bufr2tac_subset_state *s)
@@ -1710,7 +1702,7 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int syn_parse_x31 ( const struct synop_chunks *syn, struct bufr2tac_subset_state *s );
+int syn_parse_x31(const struct synop_chunks* syn, struct bufr2tac_subset_state* s);
 
 // BUOY descriptor parsing functions (class X)
 // These functions parse BUFR descriptors from class X (0-3) for BUOY reports
@@ -1723,7 +1715,7 @@ int syn_parse_x31 ( const struct synop_chunks *syn, struct bufr2tac_subset_state
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x01(struct buoy_chunks* b, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int buoy_parse_x02(struct buoy_chunks *b, struct bufr2tac_subset_state *s)
@@ -1732,7 +1724,7 @@ int buoy_parse_x01 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x02(struct buoy_chunks* b, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int buoy_parse_x04(struct buoy_chunks *b, struct bufr2tac_subset_state *s)
@@ -1741,7 +1733,7 @@ int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x04(struct buoy_chunks* b, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int buoy_parse_x05(struct buoy_chunks *b, struct bufr2tac_subset_state *s)
@@ -1750,7 +1742,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int buoy_parse_x05 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x05(struct buoy_chunks* b, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int buoy_parse_x06(struct buoy_chunks *b, struct bufr2tac_subset_state *s)
@@ -1759,7 +1751,7 @@ int buoy_parse_x05 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int buoy_parse_x06 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x06(struct buoy_chunks* b, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int buoy_parse_x07(const struct buoy_chunks *b, struct bufr2tac_subset_state *s)
@@ -1768,7 +1760,7 @@ int buoy_parse_x06 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int buoy_parse_x07 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x07(const struct buoy_chunks* b, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int buoy_parse_x08(const struct buoy_chunks *b, struct bufr2tac_subset_state *s)
@@ -1777,7 +1769,7 @@ int buoy_parse_x07 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int buoy_parse_x08 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x08(const struct buoy_chunks* b, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int buoy_parse_x10(struct buoy_chunks *b, struct bufr2tac_subset_state *s)
@@ -1786,7 +1778,7 @@ int buoy_parse_x08 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x10(struct buoy_chunks* b, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int buoy_parse_x11(struct buoy_chunks *b, struct bufr2tac_subset_state *s)
@@ -1795,7 +1787,7 @@ int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x11(struct buoy_chunks* b, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int buoy_parse_x12(struct buoy_chunks *b, struct bufr2tac_subset_state *s)
@@ -1804,7 +1796,7 @@ int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x12(struct buoy_chunks* b, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int buoy_parse_x13(const struct buoy_chunks *b, struct bufr2tac_subset_state *s)
@@ -1813,7 +1805,7 @@ int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int buoy_parse_x13 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x13(const struct buoy_chunks* b, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int buoy_parse_x14(const struct buoy_chunks *b, struct bufr2tac_subset_state *s)
@@ -1822,7 +1814,7 @@ int buoy_parse_x13 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int buoy_parse_x14 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x14(const struct buoy_chunks* b, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int buoy_parse_x20(const struct buoy_chunks *b, struct bufr2tac_subset_state *s)
@@ -1831,7 +1823,7 @@ int buoy_parse_x14 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int buoy_parse_x20 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x20(const struct buoy_chunks* b, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int buoy_parse_x22(struct buoy_chunks *b, struct bufr2tac_subset_state *s)
@@ -1840,7 +1832,7 @@ int buoy_parse_x20 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x22(struct buoy_chunks* b, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int buoy_parse_x31(const struct buoy_chunks *b, struct bufr2tac_subset_state *s)
@@ -1849,7 +1841,7 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int buoy_parse_x31 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x31(const struct buoy_chunks* b, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int buoy_parse_x33(struct buoy_chunks *b, struct bufr2tac_subset_state *s)
@@ -1858,7 +1850,7 @@ int buoy_parse_x31 ( const struct buoy_chunks *b, struct bufr2tac_subset_state *
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
+int buoy_parse_x33(struct buoy_chunks* b, struct bufr2tac_subset_state* s);
 
 // CLIMAT descriptor parsing functions (class X)
 // These functions parse BUFR descriptors from class X (0-3) for CLIMAT reports
@@ -1871,7 +1863,7 @@ int buoy_parse_x33 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int climat_parse_x01 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x01(struct climat_chunks* c, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int climat_parse_x02(struct climat_chunks *c, struct bufr2tac_subset_state *s)
@@ -1880,7 +1872,7 @@ int climat_parse_x01 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int climat_parse_x02 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x02(struct climat_chunks* c, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int climat_parse_x04(struct climat_chunks *c, struct bufr2tac_subset_state *s)
@@ -1889,7 +1881,7 @@ int climat_parse_x02 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x04(struct climat_chunks* c, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int climat_parse_x05(const struct climat_chunks *c, struct bufr2tac_subset_state *s)
@@ -1898,7 +1890,7 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int climat_parse_x05 ( const struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x05(const struct climat_chunks* c, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int climat_parse_x06(const struct climat_chunks *c, struct bufr2tac_subset_state *s)
@@ -1907,7 +1899,7 @@ int climat_parse_x05 ( const struct climat_chunks *c, struct bufr2tac_subset_sta
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int climat_parse_x06 ( const struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x06(const struct climat_chunks* c, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int climat_parse_x07(const struct climat_chunks *c, struct bufr2tac_subset_state *s)
@@ -1916,7 +1908,7 @@ int climat_parse_x06 ( const struct climat_chunks *c, struct bufr2tac_subset_sta
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int climat_parse_x07 ( const struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x07(const struct climat_chunks* c, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int climat_parse_x08(struct climat_chunks *c, struct bufr2tac_subset_state *s)
@@ -1925,7 +1917,7 @@ int climat_parse_x07 ( const struct climat_chunks *c, struct bufr2tac_subset_sta
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int climat_parse_x08 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x08(struct climat_chunks* c, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int climat_parse_x10(struct climat_chunks *c, struct bufr2tac_subset_state *s)
@@ -1934,7 +1926,7 @@ int climat_parse_x08 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int climat_parse_x10 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x10(struct climat_chunks* c, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int climat_parse_x11(struct climat_chunks *c, struct bufr2tac_subset_state *s)
@@ -1943,7 +1935,7 @@ int climat_parse_x10 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int climat_parse_x11 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x11(struct climat_chunks* c, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int climat_parse_x12(struct climat_chunks *c, struct bufr2tac_subset_state *s)
@@ -1952,7 +1944,7 @@ int climat_parse_x11 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x12(struct climat_chunks* c, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int climat_parse_x13(struct climat_chunks *c, struct bufr2tac_subset_state *s)
@@ -1961,7 +1953,7 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int climat_parse_x13 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x13(struct climat_chunks* c, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int climat_parse_x14(struct climat_chunks *c, struct bufr2tac_subset_state *s)
@@ -1970,7 +1962,7 @@ int climat_parse_x13 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int climat_parse_x14 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x14(struct climat_chunks* c, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int climat_parse_x20(struct climat_chunks *c, struct bufr2tac_subset_state *s)
@@ -1979,7 +1971,7 @@ int climat_parse_x14 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int climat_parse_x20 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x20(struct climat_chunks* c, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int climat_parse_x22(struct climat_chunks *c, struct bufr2tac_subset_state *s)
@@ -1988,7 +1980,7 @@ int climat_parse_x20 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int climat_parse_x22 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x22(struct climat_chunks* c, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int climat_parse_x31(struct climat_chunks *c, struct bufr2tac_subset_state *s)
@@ -1997,7 +1989,7 @@ int climat_parse_x22 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int climat_parse_x31 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x31(struct climat_chunks* c, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int climat_parse_x33(struct climat_chunks *c, struct bufr2tac_subset_state *s)
@@ -2006,7 +1998,7 @@ int climat_parse_x31 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int climat_parse_x33 ( struct climat_chunks *c, struct bufr2tac_subset_state *s );
+int climat_parse_x33(struct climat_chunks* c, struct bufr2tac_subset_state* s);
 
 // TEMP descriptor parsing functions (class X)
 // These functions parse BUFR descriptors from class X (0-3) for TEMP/PILOT reports
@@ -2019,7 +2011,7 @@ int climat_parse_x33 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int temp_parse_x01 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x01(struct temp_chunks* t, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int temp_parse_x02(struct temp_chunks *t, struct bufr2tac_subset_state *s)
@@ -2028,7 +2020,7 @@ int temp_parse_x01 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int temp_parse_x02 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x02(struct temp_chunks* t, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int temp_parse_x04(struct temp_chunks *t, struct bufr2tac_subset_state *s)
@@ -2037,7 +2029,7 @@ int temp_parse_x02 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x04(struct temp_chunks* t, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int temp_parse_x05(struct temp_chunks *t, struct bufr2tac_subset_state *s)
@@ -2046,7 +2038,7 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int temp_parse_x05 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x05(struct temp_chunks* t, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int temp_parse_x06(struct temp_chunks *t, struct bufr2tac_subset_state *s)
@@ -2055,7 +2047,7 @@ int temp_parse_x05 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int temp_parse_x06 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x06(struct temp_chunks* t, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int temp_parse_x07(struct temp_chunks *t, struct bufr2tac_subset_state *s)
@@ -2064,7 +2056,7 @@ int temp_parse_x06 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int temp_parse_x07 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x07(struct temp_chunks* t, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int temp_parse_x08(const struct temp_chunks *t, struct bufr2tac_subset_state *s)
@@ -2073,7 +2065,7 @@ int temp_parse_x07 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int temp_parse_x08 ( const struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x08(const struct temp_chunks* t, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int temp_parse_x10(const struct temp_chunks *t, struct bufr2tac_subset_state *s)
@@ -2082,7 +2074,7 @@ int temp_parse_x08 ( const struct temp_chunks *t, struct bufr2tac_subset_state *
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int temp_parse_x10 ( const struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x10(const struct temp_chunks* t, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int temp_parse_x11(const struct temp_chunks *t, struct bufr2tac_subset_state *s)
@@ -2091,7 +2083,7 @@ int temp_parse_x10 ( const struct temp_chunks *t, struct bufr2tac_subset_state *
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int temp_parse_x11 ( const struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x11(const struct temp_chunks* t, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int temp_parse_x12(const struct temp_chunks *t, struct bufr2tac_subset_state *s)
@@ -2100,7 +2092,7 @@ int temp_parse_x11 ( const struct temp_chunks *t, struct bufr2tac_subset_state *
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int temp_parse_x12 ( const struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x12(const struct temp_chunks* t, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int temp_parse_x20(struct temp_chunks *t, struct bufr2tac_subset_state *s)
@@ -2109,7 +2101,7 @@ int temp_parse_x12 ( const struct temp_chunks *t, struct bufr2tac_subset_state *
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int temp_parse_x20 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x20(struct temp_chunks* t, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int temp_parse_x22(struct temp_chunks *t, struct bufr2tac_subset_state *s)
@@ -2118,7 +2110,7 @@ int temp_parse_x20 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int temp_parse_x22 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x22(struct temp_chunks* t, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int temp_parse_x31(const struct temp_chunks *t, struct bufr2tac_subset_state *s)
@@ -2127,7 +2119,7 @@ int temp_parse_x22 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int temp_parse_x31 ( const struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x31(const struct temp_chunks* t, struct bufr2tac_subset_state* s);
 
 /*!
   \fn int temp_parse_x33(struct temp_chunks *t, struct bufr2tac_subset_state *s)
@@ -2136,7 +2128,7 @@ int temp_parse_x31 ( const struct temp_chunks *t, struct bufr2tac_subset_state *
   \param [in,out] s Pointer to subset state
   \return 0 on success, 1 on error
 */
-int temp_parse_x33 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
+int temp_parse_x33(struct temp_chunks* t, struct bufr2tac_subset_state* s);
 
 // ECMWF BUFR library function prototypes
 // These are wrapper functions for the ECMWF BUFR library (written in FORTRAN)
@@ -2147,63 +2139,63 @@ int temp_parse_x33 ( struct temp_chunks *t, struct bufr2tac_subset_state *s );
   \brief ECMWF BUFR library function - Set up BUFR tables
   \return Status code
 */
-int bus012_ ( int *, unsigned int *, int *, int *, int *, int *, int * );
+int bus012_(int*, unsigned int*, int*, int*, int*, int*, int*);
 
 /*!
   \fn int buprs0_(int *)
   \brief ECMWF BUFR library function - Print section 0 of BUFR message
   \return Status code
 */
-int buprs0_ ( int * );
+int buprs0_(int*);
 
 /*!
   \fn int buprs1_(int *)
   \brief ECMWF BUFR library function - Print section 1 of BUFR message
   \return Status code
 */
-int buprs1_ ( int * );
+int buprs1_(int*);
 
 /*!
   \fn int buprs3_(int *, int *, int *, int *, int *, int *, char **)
   \brief ECMWF BUFR library function - Print section 3 of BUFR message
   \return Status code
 */
-int buprs3_ ( int *, int *, int *, int *, int *, int *, char ** );
+int buprs3_(int*, int*, int*, int*, int*, int*, char**);
 
 /*!
   \fn int bufrex_(int *, int *, int *, int *, int *, int *, int *, int *, int *, char **, char **, int *, double *, char **, int *)
   \brief ECMWF BUFR library function - Expand BUFR message
   \return Status code
 */
-int bufrex_ ( int *, int *, int *, int *, int *, int *, int *, int *, int *, char **, char **, int *, double *, char **, int * );
+int bufrex_(int*, int*, int*, int*, int*, int*, int*, int*, int*, char**, char**, int*, double*, char**, int*);
 
 /*!
   \fn int busel_(int *, int *, int *, int *, int *)
   \brief ECMWF BUFR library function - Select BUFR subset
   \return Status code
 */
-int busel_ ( int *, int *, int *, int *, int * );
+int busel_(int*, int*, int*, int*, int*);
 
 /*!
   \fn int busel2_(int *, int *, int *, char **, int *, char **, char **, char **, int *)
   \brief ECMWF BUFR library function - Enhanced BUFR subset selection
   \return Status code
 */
-int busel2_ ( int *, int *, int *,  char **, int *, char **, char **, char **, int * );
+int busel2_(int*, int*, int*, char**, int*, char**, char**, char**, int*);
 
 /*!
   \fn int buukey_(int *, int *, int *, int *, int *)
   \brief ECMWF BUFR library function - Get key information
   \return Status code
 */
-int buukey_ ( int *, int *, int *, int *, int * );
+int buukey_(int*, int*, int*, int*, int*);
 
 /*!
   \fn int buprt_(int *, int *, int *, int *, char **, char **, char **, int *, double *, int *, int *, int *)
   \brief ECMWF BUFR library function - Print expanded BUFR data
   \return Status code
 */
-int buprt_ ( int *, int *, int *, int *, char **, char **, char **, int *, double *, int *, int *, int * );
+int buprt_(int*, int*, int*, int*, char**, char**, char**, int*, double*, int*, int*, int*);
 
 // Global variables
 /*! Global debug level variable - Controls verbosity of debug output (0=none, higher=more verbose) */
@@ -2216,9 +2208,8 @@ extern int BUFR2TAC_DEBUG_LEVEL;
 /*! Path to BUFR tables directory - Can be set via environment variable */
 extern char BUFR_TABLES_DIRENV[PATH_MAX];
 
-
 #ifdef __cplusplus
 } /* closing brace for extern "C" */
 #endif
 
-#endif  // from ifndef BUFR2TAC_H
+#endif // from ifndef BUFR2TAC_H

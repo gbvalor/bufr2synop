@@ -838,14 +838,14 @@ int print_synop_report (struct metreport *m)
     {
       used += print_wigos_id ( &c, lmax, m );
     }
-  else
+  /*else
     {
       // Do not print a synop if no IIiii identifier when mode = 0
       if ( ( strcmp(syn->s0.MiMi, "AA") == 0 && strcmp(syn->s0.MjMj, "XX") == 0) && 
         ( syn->s0.II[0] == '\0' || syn->s0.iii[0] == '\0' || strcmp ( syn->s0.II, "00" ) == 0 ))
         return 1;
     }
-
+  */
   if ( m->print_mask & PRINT_BITMASK_GEO )
     {
       used += print_geo ( &c, lmax, m );
