@@ -84,7 +84,7 @@ int hour_rounded ( const struct synop_chunks *syn )
   if ( strlen ( aux ) == 12 )
     {
       strptime ( aux, "%Y%m%d%H%M", &tim );
-      t = mktime ( &tim );
+      t = timegm ( &tim );
       t += 1800;
       gmtime_r ( &t, &tim );
       return tim.tm_hour;
