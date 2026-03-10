@@ -238,19 +238,16 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           if ( syn->s3.RRR[0] == 0 )
             {
-              if ( strcmp ( "1", syn->s0.A1 ) == 0 ||
-                   strcmp ( "2", syn->s0.A1 ) == 0 ||
-                   strcmp ( "3", syn->s0.A1 ) == 0 ||
-                   strcmp ( "4", syn->s0.A1 ) == 0 ||
-                   strcmp ( "5", syn->s0.A1 ) == 0 ||
-                   strcmp ( "6", syn->s0.A1 ) == 0 )
+              if ( strcmp ( "1", syn->s0.A1 ) == 0 || // REG I
+                   strcmp ( "2", syn->s0.A1 ) == 0 || // REG II
+                   strcmp ( "3", syn->s0.A1 ) == 0 || // REG III
+                   strcmp ( "4", syn->s0.A1 ) == 0 || // REG IV
+                   strcmp ( "5", syn->s0.A1 ) == 0 || // REG V
+                   strcmp ( "6", syn->s0.A1 ) == 0 )   // REG VI
                 {
-                  /*if ( hr % 3)
-                    {*/
                   syn->s3.tr[0] = '5'; // 1 hour
                   prec_to_RRR ( syn->s3.RRR, sizeof(syn->s3.RRR), s->val );
                   syn->mask |= SYNOP_SEC3;
-                  /*}*/
                 }
             }
           else if ( syn->s5.RRR[0] == 0 )
@@ -266,7 +263,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
             {
               if ( strcmp ( "6", syn->s0.A1 ) )
                 {
-                  //Not for REG IV
+                  //Not for REG VI
                   syn->s1.tr[0] = '6'; // 2 hour
                   prec_to_RRR ( syn->s1.RRR, sizeof(syn->s1.RRR), s->val );
                   syn->mask |= SYNOP_SEC1;
@@ -290,7 +287,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( tpd == ( 6 * 3600 ) )
         {
-          if ( strcmp ( "1", syn->s0.A1 ) == 0 )
+          if ( strcmp ( "1", syn->s0.A1 ) == 0 ) // REG I
             {
               if ( ( hr % 12 ) == 0 )
                 {
@@ -299,7 +296,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
                   syn->mask |= SYNOP_SEC1;
                 }
             }
-          else if ( strcmp ( "2", syn->s0.A1 ) == 0 )
+          else if ( strcmp ( "2", syn->s0.A1 ) == 0 ) // REG II
             {
               if ( ( hr % 3 )  == 0 )
                 {
@@ -308,7 +305,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
                   syn->mask |= SYNOP_SEC1;
                 }
             }
-          else if ( strcmp ( "3", syn->s0.A1 ) == 0 )
+          else if ( strcmp ( "3", syn->s0.A1 ) == 0 ) // REG III
             {
               if ( hr == 0 ||
                    hr == 6 ||
@@ -319,7 +316,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
                   syn->mask |= SYNOP_SEC1;
                 }
             }
-          else if ( strcmp ( "4", syn->s0.A1 ) == 0 )
+          else if ( strcmp ( "4", syn->s0.A1 ) == 0 ) // REG IV
             {
               if ( ( hr % 6 ) == 0 )
                 {
@@ -328,7 +325,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
                   syn->mask |= SYNOP_SEC1;
                 }
             }
-          else if ( strcmp ( "5", syn->s0.A1 ) == 0 )
+          else if ( strcmp ( "5", syn->s0.A1 ) == 0 ) // REG V
             {
               if ( hr == 6  ||
                    hr == 12 ||
@@ -339,7 +336,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
                   syn->mask |= SYNOP_SEC1;
                 }
             }
-          else if ( strcmp ( "6", syn->s0.A1 ) == 0 )
+          else if ( strcmp ( "6", syn->s0.A1 ) == 0 ) // REG VI
             {
               if ( hr == 0 ||
                    hr == 18 )
@@ -349,7 +346,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
                   syn->mask |= SYNOP_SEC1;
                 }
             }
-          else if ( strcmp ( "7", syn->s0.A1 ) == 0 )
+          else if ( strcmp ( "7", syn->s0.A1 ) == 0 ) // REG VII
             {
               if ( hr == 6 )
                 {
@@ -387,7 +384,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       else if ( tpd == ( 12 * 3600 ) )
         {
-          if ( strcmp ( "1", syn->s0.A1 ) == 0 )
+          if ( strcmp ( "1", syn->s0.A1 ) == 0 ) // REG I
             {
               if ( hr == 18 )
                 {
@@ -396,7 +393,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
                   syn->mask |= SYNOP_SEC1;
                 }
             }
-          else if ( strcmp ( "2", syn->s0.A1 ) == 0 )
+          else if ( strcmp ( "2", syn->s0.A1 ) == 0 ) // REG II
             {
               if ( ( hr % 3 ) == 0 )
                 {
@@ -405,7 +402,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
                   syn->mask |= SYNOP_SEC1;
                 }
             }
-          else if ( strcmp ( "6", syn->s0.A1 ) == 0 )
+          else if ( strcmp ( "6", syn->s0.A1 ) == 0 ) // REG VI
             {
               if ( ( hr % 12 ) == 6 )
                 {
@@ -420,7 +417,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
                   syn->mask |= SYNOP_SEC1;
                 }
             }
-          else if ( strcmp ( "7", syn->s0.A1 ) == 0 )
+          else if ( strcmp ( "7", syn->s0.A1 ) == 0 ) // REG VII
             {
               if ( hr == 12 )
                 {

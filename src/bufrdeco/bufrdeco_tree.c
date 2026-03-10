@@ -120,6 +120,16 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
     {
       struct bufr_descriptor *d = & ( l->lseq[i] ); // To write/read code easily
 
+      if (d->f == 0)
+      { 
+        buf_t iaux;
+        if (bufr_find_tableB_index ( &iaux, &b->tables->b, d->c))
+        {
+          snprintf ( b->error, sizeof (b->error ), "%s(): descriptor '%s' not found in table B\n", __func__, d->c );
+          return 1; // descritor not found
+        }
+      }
+
       // Case of replication
       if ( d->f == 1 )
         {

@@ -523,7 +523,12 @@ int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, const st
       return 0;
     }
 
-  i = tb->x_start[d->x] + tb->y_ref[d->x][d->y];
+  /*if ( bufr_find_tableB_index ( &i, &b->tables->b, d->c ))  
+    {
+      snprintf ( b->error, sizeof (b->error ), "%s(): descriptor '%s' not found in table B\n", __func__, d->c );
+      return 1; // descritor not found
+    }*/
+  i = b->tables->b.x_start[d->x] + b->tables->b.y_ref[d->x][d->y];
 
   memcpy ( & ( a->desc ), d, sizeof ( struct bufr_descriptor ) );
   a->mask = 0;
