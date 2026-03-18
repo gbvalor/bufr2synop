@@ -32,9 +32,7 @@
 int synop_YYYYMMDDHHmm_to_YYGG(struct synop_chunks* syn)
 {
     char aux[20];
-    time_t t;
-    struct tm tim = { 0 };
-
+  
     aux[0] = '\0';
     if (strlen(syn->e.YYYY) && strlen(syn->e.MM) && strlen(syn->e.DD) && strlen(syn->e.HH) && strlen(syn->e.mm)) {
         snprintf(aux, sizeof(aux), "%s%s%s%s%s", syn->e.YYYY, syn->e.MM, syn->e.DD, syn->e.HH, syn->e.mm);
@@ -44,6 +42,9 @@ int synop_YYYYMMDDHHmm_to_YYGG(struct synop_chunks* syn)
         return 1;
     }
 
+    time_t t;
+    struct tm tim;
+    memset(&tim, 0, sizeof(struct tm));
     strptime(aux, "%Y%m%d%H%M", &tim);
     t = timegm(&tim); // Get the unix timestamp in UTC
     t += 1799; // rounding trick to get the next hour if minute is > 30
@@ -106,7 +107,14 @@ int parse_subset_as_synop(struct metreport* m, struct bufr2tac_subset_state* s, 
     syn->s0.MjMj[0] = s->type_report[2];
     syn->s0.MjMj[1] = s->type_report[3];
 
-    strcpy(m->type, s->type_report);
+    //strcpy(m->type, s->type_report);
+    m->type[0] = s->type_report[0];
+    m->type[1] = s->type_report[1];
+    m->type[2] = s->type_report[2];
+    m->type[3] = s->type_report[3];
+    m->type[4] = 0;
+
+    syn->mask = SYNOP_SEC0;
 
     /**** First pass, sequential analysis *****/
     for (is = 0; is < sq->nd; is++) {
@@ -317,8 +325,14 @@ int parse_subset_as_synop(struct metreport* m, struct bufr2tac_subset_state* s, 
         snprintf(syn->e.mm, sizeof(syn->e.mm), "00");
     synop_YYYYMMDDHHmm_to_YYGG(syn);
     if (strcmp(syn->e.mm, "00")) {
-        strcpy(syn->s1.GG, syn->e.HH);
-        strcpy(syn->s1.gg, syn->e.mm);
+        //strcpy(syn->s1.GG, syn->e.HH);
+        //strcpy(syn->s1.gg, syn->e.mm);
+        syn->s1.GG[0] = syn->e.HH[0];
+        syn->s1.GG[1] = syn->e.HH[1];
+        syn->s1.GG[2] = 0;
+        syn->s1.gg[0] = syn->e.mm[0];
+        syn->s1.gg[1] = syn->e.mm[1];
+        syn->s1.gg[2] = 0;
     }
     syn->mask |= SYNOP_EXT;
 
@@ -327,8 +341,14 @@ int parse_subset_as_synop(struct metreport* m, struct bufr2tac_subset_state* s, 
 
     // Fill some metreport fields
     if (strlen(syn->s0.II)) {
-        strcpy(m->g.index, syn->s0.II);
-        strcat(m->g.index, syn->s0.iii);
+        m->g.index[0] = syn->s0.II[0];
+        m->g.index[1] = syn->s0.II[1];
+        m->g.index[2] = syn->s0.iii[0];
+        m->g.index[3] = syn->s0.iii[1];
+        m->g.index[4] = syn->s0.iii[2];
+        m->g.index[5] = 0;
+        //strcpy(m->g.index, syn->s0.II);
+        //strcat(m->g.index, syn->s0.iii);
     } else if (strlen(syn->s0.D_D)) {
         strcpy(m->g.index, syn->s0.D_D);
     } else if (strlen(syn->s0.IIIII)) {
@@ -345,10 +365,10 @@ int parse_subset_as_synop(struct metreport* m, struct bufr2tac_subset_state* s, 
         m->g.alt = s->alt;
     }
     if (s->mask & SUBSET_MASK_HAVE_NAME) {
-        strcpy(m->g.name, s->name);
+        memcpy(m->g.name, s->name, sizeof(m->g.name));
     }
     if (s->mask & SUBSET_MASK_HAVE_COUNTRY) {
-        strcpy(m->g.country, s->country);
+        memcpy(m->g.country, s->country, sizeof(m->g.country));
     }
 
     snprintf(aux, sizeof(aux), "%s%s%s%s%s", syn->e.YYYY, syn->e.MM, syn->e.DD, syn->e.HH, syn->e.mm);

@@ -63,6 +63,7 @@ extern int PRINT_JSON_SEC1;
 extern int PRINT_JSON_SEC2;
 extern int PRINT_JSON_SEC3;
 extern int PRINT_JSON_EXPANDED_TREE;
+extern int LOCAL_TABLES;
 extern FILE* FL;
 extern FILE* OUT;
 

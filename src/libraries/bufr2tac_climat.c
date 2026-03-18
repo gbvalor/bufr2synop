@@ -52,7 +52,7 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr2tac_subset_state *
       return 1;
     }
 
-  strcpy ( m->type, s->type_report );
+  strcpy ( m->type, "CLIMAT" );
 
   /**** First pass, sequential analysis *****/
   for ( is = 0; is < sq->nd; is++ )
@@ -125,8 +125,14 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr2tac_subset_state *
   // Fill some metreport fields
   if ( strlen ( c->s0.II ) )
     {
-      strcpy ( m->g.index, c->s0.II );
-      strcat ( m->g.index, c->s0.iii );
+      m->g.index[0] = c->s0.II[0];
+      m->g.index[1] = c->s0.II[1];
+      m->g.index[2] = c->s0.iii[0];
+      m->g.index[3] = c->s0.iii[1];
+      m->g.index[4] = c->s0.iii[2];
+      m->g.index[5] = '\0';
+      //strcpy ( m->g.index, c->s0.II );
+      //strcat ( m->g.index, c->s0.iii );
     }
 
   if ( s->mask & SUBSET_MASK_HAVE_LATITUDE )
@@ -143,11 +149,11 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr2tac_subset_state *
     }
   if ( s->mask & SUBSET_MASK_HAVE_NAME )
     {
-      strcpy ( m->g.name, s->name );
+      memcpy ( m->g.name, s->name, sizeof(m->g.name) );
     }
   if ( s->mask & SUBSET_MASK_HAVE_COUNTRY )
     {
-      strcpy ( m->g.country, s->country );
+      memcpy ( m->g.country, s->country, sizeof(m->g.country) );
     }
 
   snprintf ( aux, sizeof(aux), "%s%s%s%s%s", c->e.YYYY, c->e.MM, c->e.DD, c->e.HH, c->e.mm );

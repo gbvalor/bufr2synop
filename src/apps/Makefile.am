@@ -17,7 +17,7 @@ AM_CPPFLAGS= $(all_includes) -I/$(top_builddir) -I$(top_srcdir)/src/bufrdeco -I$
 # the library search path.
 AM_CFLAGS = -W -Wall
 
-bin_PROGRAMS = bufrnoaa bufrdeco_json bufrtotac build_bufrdeco_tables update_tableD
+bin_PROGRAMS = bufrnoaa bufrdeco_json bufrtotac build_bufrdeco_tables update_tableD eccodes_local_to_bufrdeco
 noinst_HEADERS = bufrtotac.h bufrnoaa.h
 
 bufrnoaa_SOURCES = bufrnoaa.c bufrnoaa_io.c bufrnoaa_utils.c
@@ -33,5 +33,8 @@ build_bufrdeco_tables_LDADD = $(top_builddir)/src/bufrdeco/libbufrdeco.la -lm
 
 update_tableD = update_tableD.c
 update_tableD_LDADD = $(top_builddir)/src/bufrdeco/libbufrdeco.la -lm 
+
+eccodes_local_to_bufrdeco_SOURCES = eccodes_local_to_bufrdeco.c
+eccodes_local_to_bufrdeco_LDADD = $(top_builddir)/src/bufrdeco/libbufrdeco.la -lm 
 
 EXTRA_DIST = CMakeLists.txt

@@ -277,7 +277,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               if ( syn->s3.tr[0] == '5' )
                 {
                   syn->s5.tr[0] = '5';
-                  strcpy ( syn->s5.RRR, syn->s3.RRR );
+                  memcpy ( syn->s5.RRR, syn->s3.RRR, sizeof(syn->s5.RRR) );
                   syn->mask |= SYNOP_SEC5;
                 }
               syn->s3.tr[0] = '7'; // 3 hour
@@ -447,8 +447,8 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
                   else if ( syn->s3.tr[0] == '1' ||
                             syn->s3.tr[0] == '5' )
                     {
-                      strcpy ( syn->s5.tr, syn->s3.tr );
-                      strcpy ( syn->s5.RRR, syn->s3.RRR );
+                      syn->s5.tr[0] =  syn->s3.tr[0];
+                      memcpy ( syn->s5.RRR, syn->s3.RRR, sizeof(syn->s5.RRR) );
                       syn->mask |= SYNOP_SEC5;
                       syn->s3.tr[0] = '2'; // 12 hour
                       prec_to_RRR ( syn->s3.RRR, sizeof(syn->s3.RRR), s->val );
@@ -599,7 +599,7 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           if ( syn->s3.tr[0] == '5' )
             {
               syn->s5.tr[0] = '5';
-              strcpy ( syn->s5.RRR, syn->s3.RRR );
+              memcpy ( syn->s5.RRR, syn->s3.RRR, sizeof(syn->s5.RRR) );
               syn->mask |= SYNOP_SEC5;
             }
           syn->s3.tr[0] = '7'; // 3 hour
@@ -749,8 +749,8 @@ int syn_parse_x13 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
               else if ( syn->s3.tr[0] == '1' ||
                         syn->s3.tr[0] == '5' )
                 {
-                  strcpy ( syn->s5.tr, syn->s3.tr );
-                  strcpy ( syn->s5.RRR, syn->s3.RRR );
+                  syn->s5.tr[0] =  syn->s3.tr[0];
+                  memcpy ( syn->s5.RRR, syn->s3.RRR, sizeof(syn->s5.RRR) );
                   syn->mask |= SYNOP_SEC5;
                   syn->s3.tr[0] = '2'; // 12 hour
                   prec_to_RRR ( syn->s3.RRR, sizeof(syn->s3.RRR), s->val );

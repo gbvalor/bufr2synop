@@ -81,8 +81,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
   struct bufr_replicator replicator;
   const struct bufrdeco_decode_subset_bitacora *dsb;
   struct bufrdeco_decode_subset_event event;
-  struct bufr_tableB *tb;
-
+  
 
   // Check arguments
   if ( b == NULL )
@@ -225,7 +224,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
               b->state.associated.afield[b->state.associated.nd - 1].val = rf->ref0;
               b->assoc.afield[b->assoc.nd - 1].val = rf->ref0;
               // Get the meaning of associated field
-              tb = & ( b->tables->b );
+              struct bufr_tableB *tb = & ( b->tables->b );
               bufrdeco_explained_table_val ( b->assoc.afield[b->assoc.nd - 1].cval, 256, & ( b->tables->c ),
                                              & ( tb->item[i].tableC_ref ), & ( seq->lseq[i] ), rf->ref0 );
               strcpy ( b->state.associated.afield[b->state.associated.nd - 1].cval, b->assoc.afield[b->assoc.nd - 1].cval );
@@ -438,7 +437,7 @@ int bufrdeco_parse_compressed_recursive ( struct bufrdeco_compressed_data_refere
 */
 int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compressed_data_references *r, struct bufr_replicator *rep, struct bufrdeco *b )
 {
-  buf_t i, j, k;
+  buf_t j, k;
   buf_t ixloop; // Index for loop
   buf_t ixd; // Index for descriptor
   struct bufrdeco_compressed_ref *rf;
@@ -470,7 +469,7 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
     {
       for ( ixd = 0; ixd < rep->ndesc ; ixd ++ )
         {
-          i = ixd + rep->ixdel + 1;
+          int i = ixd + rep->ixdel + 1;
 
           // init and common event members
           event.mask = 0;
@@ -490,8 +489,8 @@ int bufrdeco_decode_replicated_subsequence_compressed ( struct bufrdeco_compress
 
               // Checks if no_data_present is active for this descriptor in this sequence
               if ( l->no_data_present.active &&
-                   i >= l->no_data_present.first &&
-                   i <= l->no_data_present.last )
+                   i >= (int) l->no_data_present.first &&
+                   i <= (int) l->no_data_present.last )
                 {
                   // If here then no_data_present has been active in this sequence
                   if ( l->lseq[i].x > 9 &&

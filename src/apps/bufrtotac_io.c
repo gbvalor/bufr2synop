@@ -47,6 +47,7 @@ void bufrtotac_print_usage ( void )
   printf ( "       -I list_of_files. Pathname of a file with the list of files to parse, one filename per line\n" );
   printf ( "       -j. The output is in json format\n" );
   printf ( "       -J. Output expanded subset SEC 4 data in json format\n");
+  printf ( "       -N. Do not use local tables\n" );
   printf ( "       -n. Do not try to decode to TAC, just parse BUFR report\n" );
   printf ( "       -o output. Pathname of output file. Default is standar output\n" );
   printf ( "       -R. Read bit_offsets file if exists. The path of these files is to add '.offs' to the name of input BUFR file\n");
@@ -183,11 +184,12 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
   PRINT_JSON_SEC2 = 0;
   PRINT_JSON_SEC3 = 0;
   PRINT_JSON_EXPANDED_TREE = 0;
+  LOCAL_TABLES = 1; // by default try to read and use local tables if needed
   
   /*
      Read input options
   */
-  while ( ( iopt = getopt ( _argc, _argv, "cD:Ehi:jJHI:no:S:st:TvgGVWRxX0123B:" ) ) !=-1 )
+  while ( ( iopt = getopt ( _argc, _argv, "cD:Ehi:jJHI:Nno:S:st:TvgGVWRxX0123B:" ) ) !=-1 )
     switch ( iopt )
       {
       case 'i':
@@ -336,6 +338,10 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
         if ( strlen ( optarg ) < BUFRDECO_PATH_LENGTH )
           strcpy ( BUFR_XFILE, optarg );
         break;
+
+      case 'N':
+         LOCAL_TABLES = 0;
+         break;
 
       case 'h':
       default:
@@ -514,6 +520,9 @@ int bufrtotac_set_bufrdeco_bitmask (struct bufrdeco *b)
   
   if (PRINT_JSON_EXPANDED_TREE)
     b->mask |= BUFRDECO_OUTPUT_JSON_EXPANDED_TREE;
+
+  if (LOCAL_TABLES)
+    b->mask |= BUFRDECO_LOCAL_TABLES;
   
   return 0;
 }

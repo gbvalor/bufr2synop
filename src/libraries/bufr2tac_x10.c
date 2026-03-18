@@ -111,7 +111,7 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     {
     case 4: // 0 10 004 . Pressure
       pascal_to_PPPP ( aux, sizeof(aux), s->val );
-      strcpy ( syn->s1.PoPoPoPo, aux );
+      memcpy ( syn->s1.PoPoPoPo, aux, 5 );
       syn->mask |= SYNOP_SEC1;
       break;
 
@@ -122,29 +122,26 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
 
     case 51: // 0 10 051 . Pressure reduced to mean sea level
       pascal_to_PPPP ( aux, sizeof(aux), s->val );
-      memcpy ( syn->s1.PPPP, aux, 4 );
-      syn->s1.PPPP[4] = 0;
+      memcpy ( syn->s1.PPPP, aux, 5 );
       syn->mask |= SYNOP_SEC1;
       break;
 
     case 61: // 0 10 061 . 3-hour pressure change
       pascal_to_ppp ( aux, sizeof(aux), s->val );
-      memcpy(syn->s1.ppp, aux, 3);
-      syn->s1.ppp[3] = 0;
+      memcpy(syn->s1.ppp, aux, 4);
       syn->mask |= SYNOP_SEC1;
       break;
 
     case 62: // 0 10 062 . 24-hour pressure change
       pascal_to_ppp ( aux, sizeof(aux), s->val );
-      memcpy ( syn->s3.ppp24, aux, 3 );
-      syn->s3.ppp24[3] = 0;
+      memcpy ( syn->s3.ppp24, aux, 4 );
       if ( s->val >= 0 )
         {
-          strcpy ( syn->s3.snp24, "8" );
+          syn->s3.snp24[0] = '8';
         }
       else
         {
-          strcpy ( syn->s3.snp24, "9" );
+          syn->s3.snp24[0] = '9';
         }
       syn->mask |= SYNOP_SEC3;
       break;
@@ -185,13 +182,13 @@ int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 
     case 4: // 0 10 004 . Pressure
       pascal_to_PPPP ( aux, sizeof(aux), s->val );
-      strcpy ( b->s1.PoPoPoPo, aux );
+      memcpy ( b->s1.PoPoPoPo, aux, 5 );
       b->mask |= BUOY_SEC1;
       break;
 
     case 51: // 0 10 051 . Pressure reduced to mean sea level
       pascal_to_PPPP ( aux, sizeof(aux), s->val );
-      strcpy ( b->s1.PPPP, aux );
+      memcpy ( b->s1.PPPP, aux, 5 );
       b->mask |= BUOY_SEC1;
       break;
 
@@ -202,8 +199,7 @@ int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 
     case 61: // 0 10 061 . 3-hour pressure change
       pascal_to_ppp ( aux, sizeof(aux), s->val );
-      memcpy( b->s1.ppp, aux, 3 );
-      b->s1.ppp[3] = 0;
+      memcpy( b->s1.ppp, aux, 4 );
       b->mask |= BUOY_SEC1;
       break;
 
@@ -245,12 +241,12 @@ int climat_parse_x10 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
           pascal_to_PPPP ( aux, sizeof(aux), s->val );
           if ( s->is_normal == 0 )
             {
-              strcpy ( c->s1.PoPoPoPo, aux );
+              memcpy ( c->s1.PoPoPoPo, aux, 5 );
               c->mask |= CLIMAT_SEC1;
             }
           else
             {
-              strcpy ( c->s2.PoPoPoPo, aux );
+              memcpy ( c->s2.PoPoPoPo, aux, 5 );
               c->mask |= CLIMAT_SEC2;
             }
         }
@@ -278,12 +274,12 @@ int climat_parse_x10 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
           pascal_to_PPPP ( aux, sizeof(aux), s->val );
           if ( s->is_normal == 0 )
             {
-              strcpy ( c->s1.PPPP, aux );
+              memcpy ( c->s1.PPPP, aux, 5 );
               c->mask |= CLIMAT_SEC1;
             }
           else
             {
-              strcpy ( c->s2.PPPP, aux );
+              memcpy ( c->s2.PPPP, aux, 5 );
               c->mask |= CLIMAT_SEC2;
             }
         }

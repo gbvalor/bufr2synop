@@ -97,7 +97,7 @@ To build the package
 
 ## WHAT WE GET AFTER A SUCCESSFULL BUILD? ##
 
-Assume you built the package. you will have up to five binaries:
+Assume you built the package. you will have up to six binaries:
 
 - ***bufrdeco_json***
     Binary to check and view all data from **BUFR** files in json format.
@@ -109,6 +109,9 @@ Assume you built the package. you will have up to five binaries:
 - ***build_bufrdeco_tables***
     A binary to convert BUFR table files from ECMWF and WMO to table files used by bufrdeco library. This is used by **bufr2synp`** developers ans the
     results included in the directory tables of the package. User do not need to used it.
+- ***eccodes_local_to_bufrdeco***
+        A binary to convert local BUFR tables from ecCodes format (`element.table`, `sequence.def`, `codetables/*.table`) into bufrdeco CSV files:
+        `tableB_LOCAL_<local>_<centre>_<subcentre>.csv`, `tableC_LOCAL_<local>_<centre>_<subcentre>.csv`, `tableD_LOCAL_<local>_<centre>_<subcentre>.csv`.
 
 And also the libraries :
 

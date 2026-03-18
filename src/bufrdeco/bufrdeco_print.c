@@ -116,11 +116,18 @@ int sprint_sec1_info ( char *target, size_t lmax, struct bufrdeco *b )
     used += snprintf ( target + used, lmax - used, "Aditional space:       %5u\n", b->sec1.length - 17 );
   else
     used += snprintf ( target + used, lmax - used, "Aditional space:       %5u\n", b->sec1.length - 22 );
+  
   if ( b->tables->b.path[0] )
     {
       used += snprintf ( target + used, lmax - used, "Tables used: '%s'\n", b->tables->b.path );
       used += snprintf ( target + used, lmax - used, "             '%s'\n", b->tables->c.path );
-      snprintf ( target + used, lmax - used, "             '%s'\n", b->tables->d.path );
+      used += snprintf ( target + used, lmax - used, "             '%s'\n", b->tables->d.path );
+      if ( b->tables->b.local_path[0] )
+        used += snprintf ( target + used, lmax - used, "             '%s'\n", b->tables->b.local_path );
+      if ( b->tables->c.local_path[0] )
+        used += snprintf ( target + used, lmax - used, "             '%s'\n", b->tables->c.local_path );
+      if ( b->tables->d.local_path[0] )
+        used += snprintf ( target + used, lmax - used, "             '%s'\n", b->tables->d.local_path );
     }
   return 0;
 }

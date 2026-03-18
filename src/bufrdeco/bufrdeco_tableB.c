@@ -32,6 +32,76 @@ const double pow10pos[8]= {1.0, 10.0, 100.0, 1000.0, 10000.0, 100000.0, 1000000.
 const double pow10neg[8]= {1.0,  0.1,  0.01,  0.001,  0.0001,  0.00001,  0.000001,  0.0000001};
 
 /*!
+  \struct bufr_tableB_csv_row
+  \brief struct with the data readed from a csv line of a table B file
+*/
+struct bufr_tableB_csv_row {
+    uint32_t fxy; 
+    char name[BUFR_TABLEB_NAME_LENGTH];
+    char unit[BUFR_TABLEB_UNIT_LENGTH];
+    int32_t scale;
+    int32_t reference;
+    buf_t nbits;
+};
+
+/*!
+  \fn static int bufr_tableB_read_next_csv_row ( FILE *f, const char *path, struct bufr_tableB_csv_row *row, struct bufrdeco *b )
+  \brief Read the next line of a csv file with the format of a WMO table B and set the data in a struct \ref bufr_tableB_csv_row
+  \param [in] f Pointer to the file stream to read
+  \param [in] path String with the path of the file being readed, used for error messages
+  \param [out] row Pointer to the struct where to set the data readed from csv line
+  \param [in,out] b Pointer to the struct \ref bufrdeco where to set error messages if any
+  \return 1 if a line is readed and set in row, 0 if end of file is reached, -1 if an error is detected
+*/
+static int bufr_tableB_read_next_csv_row ( FILE *f, const char *path, struct bufr_tableB_csv_row *row, struct bufrdeco *b )
+{
+  char l[CSV_MAXL];
+  char caux[BUFR_TABLEB_NAME_LENGTH];
+  char *tk[16];
+  int nt;
+  char *c;
+
+  // read line by line until we get a valid line or end of file
+  while ( fgets ( l, CSV_MAXL, f ) != NULL )
+    {
+      // Parse line as csv and get tokens in tk array. nt is the number of tokens
+      if ( parse_csv_line ( &nt, tk, l ) < 0 || nt != 7 )
+        {
+          snprintf ( b->error, sizeof ( b->error ),"Error parsing csv line from table B file '%s'\n", path );
+          return -1;
+        }
+
+      // Set data in row struct  
+      row->fxy = strtoul ( tk[0], &c, 10 );
+
+      if ( tk[2][0] )
+        {
+          snprintf ( caux, sizeof ( caux ), "%s %s", tk[1], tk[2] );
+        }
+      else
+        {
+          strncpy_safe ( caux, tk[1], sizeof ( caux ) );
+        }
+
+      memcpy ( row->name, caux, sizeof ( row->name ) );
+      strncpy_safe ( row->unit, tk[3], sizeof ( row->unit ) );
+      row->scale = strtol ( tk[4], &c, 10 );
+      row->reference = strtol ( tk[5], &c, 10 );
+      row->nbits = strtol ( tk[6], &c, 10 );
+
+      // If we get here then we have readed a line and set the data in row, so we return 1
+      return 1;
+    }
+
+  if ( ferror ( f ) )
+    {
+      snprintf ( b->error, sizeof ( b->error ),"Error reading from table B file '%s'\n", path );
+      return -1;
+    }
+  return 0;
+}
+
+/*!
   \fn int bufr_read_tableB ( struct bufrdeco b )
   \brief Read a Table B file from a WMO csv formatted file and set the result in a struct \ref bufr_tableB
   \param [in,out] b Pointer to the struct \ref bufrdeco where to set the results
@@ -41,16 +111,17 @@ const double pow10neg[8]= {1.0,  0.1,  0.01,  0.001,  0.0001,  0.00001,  0.00000
 */
 int bufr_read_tableB ( struct bufrdeco *b )
 {
-  char *c;
   FILE *t;
+  FILE *t_local;
   buf_t i = 0;
-  int nt;
-  uint32_t ix;
-  char l[CSV_MAXL];
   char caux[512];
-  char *tk[16];
+  int have_master;
+  int have_local;
   struct bufr_tableB *tb;
   struct bufr_descriptor desc;
+  struct bufr_tableB_csv_row row_master;
+  struct bufr_tableB_csv_row row_local;
+  const struct bufr_tableB_csv_row *row;
 
   bufrdeco_assert ( b != NULL );
 
@@ -60,8 +131,8 @@ int bufr_read_tableB ( struct bufrdeco *b )
       return 1;
     }
 
-  // If we've already readed this table. We just regenerate the table with original values
-  if ( strcmp ( tb->path, tb->old_path ) == 0 )
+  // If we've already read this table. We just regenerate the table with original values
+  if ( strcmp ( tb->path, tb->old_path ) == 0 && strcmp ( tb->local_path, tb->local_path_old ) == 0 )
     {
 #ifdef __DEBUG
       printf ( "# Reused table %s\n", tb->path );
@@ -76,77 +147,153 @@ int bufr_read_tableB ( struct bufrdeco *b )
       return 0; // all done
     }
 
-  strcpy_safe ( caux, tb->path );
+  memcpy ( caux, tb->path, sizeof (tb->path) );
   memset ( tb, 0, sizeof ( struct bufr_tableB ) );
-  strcpy_safe ( tb->path, caux );
+  memcpy ( tb->path, caux, sizeof (tb->path) );
+
+  t_local = NULL; // initialize to NULL in case we don't have a local table
+  // Open master table B file
   if ( ( t = fopen ( tb->path, "r" ) ) == NULL )
     {
       snprintf ( b->error, sizeof ( b->error ),"Unable to open table B file '%s'\n", tb->path );
       return 1;
     }
 
-  // read first line, it is ignored
-  fgets ( l, CSV_MAXL, t );
-
-  while ( fgets ( l, CSV_MAXL, t ) != NULL && i < BUFR_MAXLINES_TABLEB )
+  if ( tb->local_path[0] )
     {
-      // Parse line
-      if ( parse_csv_line ( &nt, tk, l ) < 0 || nt != 7 )
+      // Open local table B file
+      t_local = fopen ( tb->local_path, "r" );
+    }
+
+  // read first line, it is ignored
+  if ( fgets ( caux, sizeof ( caux ), t ) == NULL && ferror ( t ) )
+    {
+      snprintf ( b->error, sizeof ( b->error ),"Error reading from table B file '%s'\n", tb->path );
+      fclose ( t );
+      if ( t_local != NULL )
         {
-          snprintf ( b->error, sizeof ( b->error ),"Error parsing csv line from table B file '%s'\n", tb->path );
+          fclose ( t_local );
+        }
+      return 1;
+    }
+
+  if ( t_local != NULL )
+    {
+
+      if ( fgets ( caux, sizeof ( caux ), t_local ) == NULL && ferror ( t_local ) )
+        {
+          fclose ( t );
+          fclose ( t_local );
+          snprintf ( b->error, sizeof ( b->error ),"Error reading from table B file '%s'\n", tb->local_path );
           return 1;
         }
+    }
 
-      // First we build the descriptor
-      ix = strtoul ( tk[0], &c, 10 );
-      uint32_t_to_descriptor ( &desc, ix );
-      tb->item[i].changed = 0; // Original from table B
-      tb->item[i].x = desc.x; // x
-      tb->item[i].y = desc.y; // y
-      strcpy_safe ( tb->item[i].key, desc.c ); // key
-      if ( tb->num[desc.x] == 0 )
+  // read first line of master table
+  have_master = bufr_tableB_read_next_csv_row ( t, tb->path, &row_master, b );
+  if ( have_master < 0 )
+    {
+      fclose ( t );
+      if ( t_local != NULL )
         {
-          tb->x_start[desc.x] = i;  // marc the start
+          fclose ( t_local );
         }
-      tb->y_ref[desc.x][desc.y] = i - tb->x_start[desc.x]; // marc the position from start of first x
-      ( tb->num[desc.x] )++;
+      return 1;
+    }
 
-      // detailed name
-      if ( tk[2][0] )
+
+  have_local = 0;
+  if ( t_local != NULL )
+    {
+      // read first line of local table
+      have_local = bufr_tableB_read_next_csv_row ( t_local, tb->local_path, &row_local, b );
+      if ( have_local < 0 )
         {
-          snprintf ( caux, sizeof ( tb->item[i].name ), "%s %s", tk[1], tk[2] );
+          fclose ( t );
+          fclose ( t_local );
+          return 1;
+        }
+    }
+
+  // We read both tables at the same time, comparing the fxy of each line and taking the lowest one. 
+  // In this way we can merge both tables in one pass. We also stop when we reach the maximum number of lines allowed in table B  
+  while ( ( have_master || have_local ) && i < BUFR_MAXLINES_TABLEB )
+    {
+      if ( have_local && ( ! have_master || row_local.fxy <= row_master.fxy ) )
+        {
+          row = &row_local;
+          if ( have_master && row_local.fxy == row_master.fxy )
+            {
+              have_master = bufr_tableB_read_next_csv_row ( t, tb->path, &row_master, b );
+              if ( have_master < 0 )
+                {
+                  fclose ( t );
+                  fclose ( t_local );
+                  return 1;
+                }
+            }
+
+          have_local = bufr_tableB_read_next_csv_row ( t_local, tb->local_path, &row_local, b );
+          if ( have_local < 0 )
+            {
+              fclose ( t );
+              fclose ( t_local );
+              return 1;
+            }
         }
       else
         {
-          strcpy_safe ( caux, tk[1] );
+          row = &row_master;
+          have_master = bufr_tableB_read_next_csv_row ( t, tb->path, &row_master, b );
+          if ( have_master < 0 )
+            {
+              fclose ( t );
+              if ( t_local != NULL )
+                {
+                  fclose ( t_local );
+                }
+              return 1;
+            }
         }
 
-      // and finally copy
-      strcpy_safe ( tb->item[i].name, caux );
+      uint32_t_to_descriptor ( &desc, row->fxy );
+      tb->item[i].changed = 0; // Original from table B
+      tb->item[i].x = desc.x; // x
+      tb->item[i].y = desc.y; // y
+      memcpy ( tb->item[i].key, desc.c, sizeof ( tb->item[i].key ) ); // key
+      tb->item[i].key[sizeof ( tb->item[i].key ) - 1] = 0; // ensure null termination
+      if ( tb->num[desc.x] == 0 )
+        {
+          tb->x_start[desc.x] = i;  // mark the start
+        }
+      tb->y_ref[desc.x][desc.y] = i - tb->x_start[desc.x]; // mark the position from start of first x
+      ( tb->num[desc.x] )++;
 
-      // unit
-      strcpy_safe ( caux, tk[3] );
-      strcpy_safe ( tb->item[i].unit, caux );
+      memcpy ( tb->item[i].name, row->name, sizeof ( tb->item[i].name ) );
+      memcpy ( tb->item[i].unit, row->unit, sizeof ( tb->item[i].unit ) );
 
-      // escale
-      tb->item[i].scale_ori = strtol ( tk[4], &c, 10 );
+      tb->item[i].scale_ori = row->scale;
       tb->item[i].scale = tb->item[i].scale_ori;
 
-      // reference
-      tb->item[i].reference_ori = strtol ( tk[5], &c, 10 );
+      tb->item[i].reference_ori = row->reference;
       tb->item[i].reference = tb->item[i].reference_ori;
 
-      // bits
-      tb->item[i].nbits_ori = strtol ( tk[6], &c, 10 );
+      tb->item[i].nbits_ori = row->nbits;
       tb->item[i].nbits = tb->item[i].nbits_ori;
 
       i++;
     }
+
   tb->x_start[0] = 0; // fix the start for x = 0
   fclose ( t );
+  if ( t_local != NULL )
+    {
+      fclose ( t_local );
+    }
   tb->nlines = i;
   tb->wmo_table = 1;
-  strcpy_safe ( tb->old_path, tb->path ); // store latest path
+  memcpy ( tb->old_path, tb->path, sizeof ( tb->old_path ) ); // store latest path
+  memcpy ( tb->local_path_old, tb->local_path, sizeof ( tb->local_path_old ) ); // store latest local path
   return 0;
 }
 
@@ -277,7 +424,8 @@ int bufrdeco_tableB_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
       r->escale = 0; // The scale is 0 for associated field
       // build the index for tableB
       //i = tb->x_start[d->x] + tb->y_ref[d->x][d->y];
-      strcpy_safe ( r->name, b->state.associated.afield[mode - 1].cval ); // copy the name from associated field stack
+      memcpy ( r->name, b->state.associated.afield[mode - 1].cval, sizeof ( r->name ) ); // copy the name from associated field stack
+      r->name[sizeof ( r->name ) - 1] = 0; // ensure null termination
       strcpy ( r->unit, "Code table" ); // copy the unit name
       r->bit0 = b->state.bit_offset; // Sets the reference offset to current state offset
 
@@ -307,8 +455,8 @@ int bufrdeco_tableB_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
       r->desc = d;
       r->bits = b->state.local_bit_reserved;
       r->bit0 = b->state.bit_offset; // OFFSET
-      strcpy_safe ( r->name, "LOCAL DESCRIPTOR" );
-      strcpy_safe ( r->unit, "UNKNOWN" );
+      strcpy ( r->name, "LOCAL DESCRIPTOR" );
+      strcpy ( r->unit, "UNKNOWN" );
 
       // get bits for ref0
       if ( get_bits_as_uint32_t ( &r->ref0, &r->has_data, &b->sec4.raw[4], & ( b->state.bit_offset ),
@@ -343,8 +491,8 @@ int bufrdeco_tableB_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
   r->ref = tb->item[i].reference_ori; // copy the reference value from tableB, first from original
   r->bits = tb->item[i].nbits + b->state.added_bit_length; // copy the bits from tableB
   r->escale = tb->item[i].scale; // copy the scale from Tableb
-  strcpy_safe ( r->name, tb->item[i].name ); // copy the name
-  strcpy_safe ( r->unit, tb->item[i].unit ); // copy the unit name
+  memcpy ( r->name, tb->item[i].name, sizeof ( r->name ) ); // copy the name
+  memcpy ( r->unit, tb->item[i].unit, sizeof ( r->unit ) ); // copy the unit name
 
   // Add the added_scaled if not flag or code table
   if ( strstr ( r->unit, "CODE TABLE" ) != r->unit &&  strstr ( r->unit,"FLAG" ) != r->unit &&
@@ -375,7 +523,7 @@ int bufrdeco_tableB_compressed ( struct bufrdeco_compressed_ref *r, struct bufrd
           return 1;
         }
 
-      strcpy_safe ( r->unit, "NEW REFERENCE" );
+      memcpy ( r->unit, "NEW REFERENCE", sizeof ( "NEW REFERENCE" ) );
       r->ref = tb->item[i].reference;
 
       // extracting inc_bits from next 6 bits
@@ -491,9 +639,8 @@ int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, const st
       //printf("nbits=%u\n", nbits );
       a->escale = 0; // The scale is 0 for associated field
 
-      strcpy ( a->name, "Associated value" );
-      //strcpy_safe ( a->name, b->state.associated.afield[mode - 1].cval ); // copy the name from associated field stack
-      strcpy ( a->unit, "Code table" ); // copy the unit name
+      memcpy ( a->name, "Associated value", sizeof ( "Associated value" ) ); // copy the name from associated field stack
+      memcpy ( a->unit, "Code table", sizeof ( "Code table" ) ); // copy the unit name
 
       // get associated bits
       if ( get_bits_as_uint32_t ( & ( a->associated ), &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), nbits ) == 0 )
@@ -511,8 +658,8 @@ int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, const st
     {
       // if is a local descriptor we just skip the bits signified by operator 2 06 YYY
       a->mask = DESCRIPTOR_IS_LOCAL;
-      strcpy_safe ( a->name, "LOCAL DESCRIPTOR" );
-      strcpy_safe ( a->unit, "UNKNOWN" );
+      memcpy ( a->name, "LOCAL DESCRIPTOR", sizeof ( "LOCAL DESCRIPTOR" ) );
+      memcpy ( a->unit, "UNKNOWN", sizeof ( "UNKNOWN" ) );
       if ( get_bits_as_uint32_t ( &ival, &has_data, &b->sec4.raw[4], & ( b->state.bit_offset ), b->state.local_bit_reserved ) == 0 )
         {
           snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot get bits from '%s'\n", __func__, d->c );
@@ -532,8 +679,8 @@ int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, const st
 
   memcpy ( & ( a->desc ), d, sizeof ( struct bufr_descriptor ) );
   a->mask = 0;
-  strcpy_safe ( a->name, tb->item[i].name );
-  strcpy_safe ( a->unit, tb->item[i].unit );
+  memcpy ( a->name, tb->item[i].name, sizeof ( a->name ) );
+  memcpy ( a->unit, tb->item[i].unit, sizeof ( a->unit ) );
   a->escale = tb->item[i].scale;
 
   // Case of difference statistics active
@@ -558,7 +705,7 @@ int bufrdeco_tableB_val ( struct bufr_atom_data *a, struct bufrdeco *b, const st
           snprintf ( b->error, sizeof ( b->error ), "%s(): Cannot change reference in 2 03 YYY operator for '%s'\n", __func__, d->c );
           return 1;
         }
-      strcpy_safe ( a->unit, "NEW REFERENCE" );
+      memcpy ( a->unit, "NEW REFERENCE", sizeof ( "NEW REFERENCE" ) );
       a->val = ( double ) tb->item[i].reference;
       return 0;
     }

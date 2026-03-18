@@ -67,7 +67,7 @@ char* get_ecmwf_tablename(char* target, char type, const char* bufrtables_dir, c
 */
 int read_table_c(char tablec[MAXLINES_TABLEC][92], size_t* nlines_tablec, const char* bufrtables_dir, int ksec1[40])
 {
-    char *c, file[256];
+    char file[256];
     FILE* t;
     size_t i = 0;
 
@@ -81,6 +81,7 @@ int read_table_c(char tablec[MAXLINES_TABLEC][92], size_t* nlines_tablec, const 
     }
 
     while (i < MAXLINES_TABLEC && fgets(tablec[i], 90, t) != NULL) {
+        char *c;
         // supress the newline
         if ((c = strrchr(tablec[i], '\n')) != NULL)
             *c = '\0';
@@ -106,7 +107,7 @@ int read_table_c(char tablec[MAXLINES_TABLEC][92], size_t* nlines_tablec, const 
 char* get_explained_table_val(char* expl, size_t dim, const char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec, const struct bufr_descriptor* d, int ival)
 {
     char* c;
-    long nv, v, nl;
+    long nv, nl;
     size_t i, j;
 
     // Find first line for descriptor
@@ -132,7 +133,7 @@ char* get_explained_table_val(char* expl, size_t dim, const char tablec[MAXLINES
     // read a value
     for (j = 0; (long)j < nv && i < nlines_tablec; i++) {
         if (tablec[i][12] != ' ') {
-            v = strtol(&tablec[i][12], &c, 10);
+            long v = strtol(&tablec[i][12], &c, 10);
             j++;
             if (v != ival)
                 continue;
@@ -172,7 +173,7 @@ char* get_explained_table_val(char* expl, size_t dim, const char tablec[MAXLINES
 char* get_explained_flag_val(char* expl, size_t dim, const char tablec[MAXLINES_TABLEC][92], size_t nlines_tablec, const struct bufr_descriptor* d, unsigned long ival)
 {
     char* c;
-    unsigned long test, test0;
+    unsigned long test0;
     unsigned long nb, nx, v, nl;
     size_t i, j;
 
@@ -224,7 +225,7 @@ char* get_explained_flag_val(char* expl, size_t dim, const char tablec[MAXLINES_
                 }
             }
 
-            test = test0 << (nb - v);
+            unsigned long test = test0 << (nb - v);
 
             if (v && (test & ival) != 0) {
                 // bit match

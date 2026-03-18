@@ -248,7 +248,8 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               syn->s1.sn1[0] = aux[0];
-              strcpy ( syn->s1.TTT, aux + 1 );
+              memcpy ( syn->s1.TTT, aux + 1, 4 );
+              //strcpy ( syn->s1.TTT, aux + 1 );
               syn->mask |= SYNOP_SEC1;
             }
           else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
@@ -265,7 +266,8 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               syn->s1.sn2[0] = aux[0];
-              strcpy ( syn->s1.TdTdTd, aux + 1 );
+              memcpy ( syn->s1.TdTdTd, aux + 1, 4 );
+              //strcpy ( syn->s1.TdTdTd, aux + 1 );
               syn->mask |= SYNOP_SEC1;
             }
           else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
@@ -282,7 +284,8 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               syn->s3.snx[0] = aux[0];
-              strcpy ( syn->s3.TxTxTx, aux + 1 );
+              memcpy ( syn->s3.TxTxTx, aux + 1, 4 );
+              //strcpy ( syn->s3.TxTxTx, aux + 1 );
               syn->mask |= SYNOP_SEC3;
             }
           else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
@@ -299,7 +302,8 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               syn->s3.snx[0] = aux[0];
-              strcpy ( syn->s3.TxTxTx, aux + 1 );
+              memcpy ( syn->s3.TxTxTx, aux + 1, 4 );
+              //strcpy ( syn->s3.TxTxTx, aux + 1
               syn->mask |= SYNOP_SEC3;
             }
           else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
@@ -317,7 +321,8 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               syn->s3.snn[0] = aux[0];
-              strcpy ( syn->s3.TnTnTn, aux + 1 );
+              memcpy ( syn->s3.TnTnTn, aux + 1, 4 );
+              //strcpy ( syn->s3.TnTnTn, aux + 1 );
               syn->mask |= SYNOP_SEC3;
             }
           else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
@@ -334,7 +339,8 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               syn->s3.snn[0] = aux[0];
-              strcpy ( syn->s3.TnTnTn, aux + 1 );
+              memcpy ( syn->s3.TnTnTn, aux + 1, 4 );
+              //strcpy ( syn->s3.TnTnTn, aux + 1
               syn->mask |= SYNOP_SEC3;
             }
           else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
@@ -351,7 +357,8 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               syn->s2.sw[0] = aux[0];
-              strcpy ( syn->s2.TbTbTb, aux + 1 );
+              memcpy ( syn->s2.TbTbTb, aux + 1, 4 );
+              //strcpy ( syn->s2.TbTbTb, aux + 1 );
               syn->mask |= SYNOP_SEC2;
             }
           else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
@@ -367,7 +374,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           if ( kelvin_to_snTT ( aux, sizeof(aux), s->val ) )
             {
-              strcpy ( syn->s3.jjj, aux );
+              memcpy ( syn->s3.jjj, aux, 4 );
               syn->mask |= SYNOP_SEC3;
             }
           else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
@@ -418,9 +425,7 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
                 syn->s3.XoXoXoXo[0] = '/';
               else if ( syn->s3.E[0] )
                 syn->s3.XoXoXoXo[0] = syn->s3.E[0];
-              syn->s3.XoXoXoXo[1] = aux[0];
-              syn->s3.XoXoXoXo[2] = aux[1];
-              syn->s3.XoXoXoXo[3] = aux[2];
+              memcpy ( syn->s3.XoXoXoXo + 1, aux, 3 );
             }
           else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
             bufr2tac_set_error ( s, 1, "syn_parse_x12()->kelvin_to_snTT()", "Unspected parse problem" );
@@ -452,7 +457,8 @@ int syn_parse_x12 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           if ( kelvin_to_snTT ( aux, sizeof(aux), s->val ) )
             {
-              strcpy ( syn->s3.jjj, aux );
+              memcpy ( syn->s3.jjj, aux, 4 );
+              //strcpy ( syn->s3.jjj, aux );
               syn->mask |= SYNOP_SEC3;
             }
         }
@@ -493,7 +499,12 @@ int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
           if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               b->s1.sn1[0] = aux[0];
-              strcpy ( b->s1.TTT, aux + 1 );
+              
+              b->s1.TTT[0] = aux[1];
+              b->s1.TTT[1] = aux[2];
+              b->s1.TTT[2] = aux[3];
+              b->s1.TTT[3] = 0;
+              //strcpy ( b->s1.TTT, aux + 1 );
               b->mask |= BUOY_SEC1;
             }
           else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
@@ -509,7 +520,8 @@ int buoy_parse_x12 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
           if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               b->s1.sn2[0] = aux[0];
-              strcpy ( b->s1.TdTdTd, aux + 1 );
+              memcpy ( b->s1.TdTdTd, aux + 1, 4 );
+              //strcpy ( b->s1.TdTdTd, aux + 1 );
               b->mask |= BUOY_SEC1;
             }
           else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
@@ -556,7 +568,8 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
               if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
                 {
                   c->s1.s[0] = aux[0];
-                  strcpy ( c->s1.TTT, aux + 1 );
+                  memcpy ( c->s1.TTT, aux + 1, 4 );
+                  //strcpy ( c->s1.TTT, aux + 1 );
                   c->mask |= CLIMAT_SEC1;
                 }
               else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
@@ -567,7 +580,8 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
               if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
                 {
                   c->s4.sax[0] = aux[0];
-                  strcpy ( c->s4.Tax, aux + 1 );
+                  memcpy ( c->s4.Tax, aux + 1, 4 );
+                  //strcpy ( c->s4.Tax, aux + 1 );
                   if ( s->more_days == 0 )
                     {
                       snprintf ( c->s4.yax, sizeof(c->s4.yax), "%02d", s->day );
@@ -587,7 +601,8 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
               if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
                 {
                   c->s4.san[0] = aux[0];
-                  strcpy ( c->s4.Tan, aux + 1 );
+                  memcpy ( c->s4.Tan, aux + 1, 4 );
+                  //strcpy ( c->s4.Tan, aux + 1 );
                   if ( s->more_days == 0 )
                     {
                       snprintf ( c->s4.yan, sizeof(c->s4.yan), "%02d", s->day );
@@ -609,7 +624,8 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
               if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
                 {
                   c->s2.s[0] = aux[0];
-                  strcpy ( c->s2.TTT, aux + 1 );
+                  memcpy ( c->s2.TTT, aux + 1, 4 );
+                  //  strcpy ( c->s2.TTT, aux + 1 );
                   c->mask |= CLIMAT_SEC2;
                 }
               else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
@@ -627,7 +643,8 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
               if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
                 {
                   c->s1.sx[0] = aux[0];
-                  strcpy ( c->s1.TxTxTx, aux + 1 );
+                  memcpy ( c->s1.TxTxTx, aux + 1, 4 );
+                  //strcpy ( c->s1.TxTxTx, aux + 1 );
                   c->mask |= CLIMAT_SEC1;
                 }
               else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
@@ -641,7 +658,8 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
               if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
                 {
                   c->s2.sx[0] = aux[0];
-                  strcpy ( c->s2.TxTxTx, aux + 1 );
+                  memcpy ( c->s2.TxTxTx, aux + 1, 4 );
+                  //strcpy ( c->s2.TxTxTx, aux + 1 );
                   c->mask |= CLIMAT_SEC2;
                 }
               else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
@@ -658,7 +676,8 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
               if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
                 {
                   c->s1.sn[0] = aux[0];
-                  strcpy ( c->s1.TnTnTn, aux + 1 );
+                  memcpy ( c->s1.TnTnTn, aux + 1, 4 );
+                  //strcpy ( c->s1.TnTnTn, aux + 1 );
                   c->mask |= CLIMAT_SEC1;
                 }
               else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
@@ -672,7 +691,8 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
               if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
                 {
                   c->s2.sn[0] = aux[0];
-                  strcpy ( c->s2.TnTnTn, aux + 1 );
+                  memcpy ( c->s2.TnTnTn, aux + 1, 4 );
+                  //strcpy ( c->s2.TnTnTn, aux + 1 );
                   c->mask |= CLIMAT_SEC2;
                 }
               else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
@@ -701,7 +721,8 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
           if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               c->s4.sx[0] = aux[0];
-              strcpy ( c->s4.Txd, aux + 1 );
+              memcpy ( c->s4.Txd, aux + 1, 4 );
+              //strcpy ( c->s4.Txd, aux + 1 );
             }
           else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
             bufr2tac_set_error ( s, 1, "climat_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );
@@ -724,7 +745,8 @@ int climat_parse_x12 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
           if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               c->s4.sn[0] = aux[0];
-              strcpy ( c->s4.Tnd, aux + 1 );
+              memcpy ( c->s4.Tnd, aux + 1, 4 );
+              //strcpy ( c->s4.Tnd, aux + 1 );
             }
           else if ( BUFR2TAC_DEBUG_LEVEL > 0 )
             bufr2tac_set_error ( s, 1, "climat_parse_x12()->kelvin_to_snTTT()", "Unspected parse problem" );

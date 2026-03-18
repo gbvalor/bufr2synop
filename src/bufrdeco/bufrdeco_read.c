@@ -109,11 +109,11 @@ int bufrdeco_read_bufr(struct bufrdeco* b, char* filename)
   - Reads the needed Table files and store them in memory.
 
  */
-int bufrdeco_extract_bufr(struct bufrdeco* b, char* filename, char* bufr_xout)
+int bufrdeco_extract_bufr(struct bufrdeco* b, char* filename, const char* bufr_xout)
 {
     int aux, res;
     uint8_t *bufrx = NULL, *pbeg = NULL; /*!< pointer to a memory buffer where we write raw bufr file */
-    buf_t n = 0, beg, end, size = 0;
+    buf_t n = 0, size = 0;
     FILE* fp;
     struct stat st;
 
@@ -150,7 +150,8 @@ int bufrdeco_extract_bufr(struct bufrdeco* b, char* filename, char* bufr_xout)
         return 1;
     }
 
-    beg = st.st_size;
+    buf_t beg = st.st_size;
+
     while ((aux = fgetc(fp)) != EOF && (int)n < st.st_size) {
         bufrx[n++] = (uint8_t)aux;
 
@@ -162,8 +163,7 @@ int bufrdeco_extract_bufr(struct bufrdeco* b, char* filename, char* bufr_xout)
 
         // check if first '7777' has been found after first 'BUFR'
         if (n > 4 && beg < ((size_t)st.st_size - 4) && bufrx[n - 4] == '7' && bufrx[n - 3] == '7' && bufrx[n - 2] == '7' && bufrx[n - 1] == '7') {
-            end = n - 1;
-            size = end - beg + 1;
+            size = n - beg;
         }
     }
 
@@ -191,6 +191,7 @@ int bufrdeco_extract_bufr(struct bufrdeco* b, char* filename, char* bufr_xout)
         fclose(fpo);
     }
 
+    // read the extracted bufr buffer
     res = bufrdeco_read_buffer(b, pbeg, size);
     if (bufrx != NULL)
         free((void*)bufrx);
@@ -316,6 +317,11 @@ int bufrdeco_read_buffer(struct bufrdeco* b, uint8_t* bufrx, buf_t size)
         return 1;
     }
 
+    if (!(b->mask & BUFRDECO_LOCAL_TABLES) && b->sec1.master_local != 0) {
+        snprintf(b->error, sizeof(b->error), "%s(): This file is coded with master local %u but the option to use local tables is not set\n", __func__, b->sec1.master_local);
+        return 1;
+    }
+
     if (b->sec1.length > BUFR_LEN_SEC1) {
         snprintf(b->error, sizeof(b->error), "%s(): Sec1 length %u is over limit %u\n", __func__, b->sec1.length, BUFR_LEN_SEC1);
         return 1;
@@ -397,3 +403,136 @@ int bufrdeco_read_buffer(struct bufrdeco* b, uint8_t* bufrx, buf_t size)
 
     return 0;
 }
+
+/*! \fn int bufrdeco_fast_read_sec_0_1(struct bufr_sec0* s0, struct bufr_sec1* s1, char* filename, char* error, size_t error_size)
+  \brief Read sec0 and sec1 of a bufr file without parsing anything further
+  \param [out] s0 Pointer to struct \ref bufr_sec0 where the data will be stored
+  \param [out] s1 Pointer to struct \ref bufr_sec1 where the data will be stored
+  \param [in] filename Complete path of BUFR file
+  \param [out] error Pointer to a char array where the error message will be written in case of error. It must be allocated by caller.
+  \param [in] error_size Size of error buffer
+  \return 0 if all is OK, 1 otherwise
+
+   This function is useful when we want to know the edition number and some metadata of the file before doing any parsing. 
+   It only reads the first 30 bytes of the file to do it.
+*/
+int bufrdeco_fast_read_sec_0_1(struct bufr_sec0* s0, struct bufr_sec1* s1, char* filename, char* error, size_t error_size)
+{
+    if (s0 == NULL || s1 == NULL || filename == NULL) {
+        if (error != NULL && error_size > 0)
+            snprintf(error, error_size, "%s(): invalid arguments\n", __func__);
+        return 1;
+    }
+
+    // Open the file
+    FILE* fp;
+
+    if ((fp = fopen(filename, "rb")) == NULL) {
+        snprintf(error, error_size, "%s(): Cannot open file %s\n", __func__, filename);
+        return 1;
+    }
+
+    uint8_t sec0_1[30];
+    if (fread(sec0_1, 1, sizeof(sec0_1), fp) != sizeof(sec0_1)) {
+        snprintf(error, error_size, "%s(): Cannot read sec0/sec1 from file %s\n", __func__, filename);
+        fclose(fp);
+        return 1;
+    }
+
+    fclose(fp);
+    return bufrdeco_get_sec_0_1_from_buffer(s0, s1, (const char*)sec0_1, sizeof(sec0_1), error, error_size);
+}
+
+/*! \fn int bufrdeco_get_sec_0_1_from_buffer(struct bufr_sec0* s0, struct bufr_sec1* s1, char* filename, char* error, size_t error_size)
+  \brief Read sec0 and sec1 of a bufr file without parsing anything further
+  \param [out] s0 Pointer to struct \ref bufr_sec0 where the data will be stored
+  \param [out] s1 Pointer to struct \ref bufr_sec1 where the data will be stored
+  \param [in] buff Pointer to the buffer containing the BUFR data
+  \param [in] size Size of the buffer
+  \param [out] error Pointer to a char array where the error message will be written in case of error. It must be allocated by caller.
+  \param [in] error_size Size of error buffer
+  \return 0 if all is OK, 1 otherwise
+
+    This function is useful when we want to know the edition number and some metadata of the file before doing any parsing. 
+    It only reads the first 30 bytes of the buffer to do it. It is used by bufrdeco_fast_read_sec_0_1() but can be also used 
+    when we already have the data in a buffer and we want just to read sec0 and sec1.   
+*/
+int bufrdeco_get_sec_0_1_from_buffer(struct bufr_sec0* s0, struct bufr_sec1* s1, const char* buff, size_t size, char* error, size_t error_size)
+{
+    if (s0 == NULL || s1 == NULL || buff == NULL || size < 30) {
+        if (error != NULL && error_size > 0)
+            snprintf(error, error_size, "%s(): invalid arguments\n", __func__);
+        return 1;
+    }
+
+    // Use the buffer instead of opening the file
+    const uint8_t* sec0 = (const uint8_t*)buff;
+    const uint8_t* sec1 = (const uint8_t*)(buff + 8);
+
+    // check if begins with BUFR
+    if (sec0[0] != 'B' || sec0[1] != 'U' || sec0[2] != 'F' || sec0[3] != 'R') {
+        snprintf(error, error_size, "%s(): bufr file does not begin with 'BUFR' chars\n", __func__);
+        return 1;
+    }
+    
+
+    // length of whole message
+    s0->bufr_length = three_bytes_to_uint32(&sec0[4]);
+ 
+    // get bufr edition number
+    s0->edition = sec0[7]; 
+
+
+    switch (s0->edition) {
+    case 3:
+        s1->length = three_bytes_to_uint32(sec1);
+        s1->master = sec1[3];
+        s1->subcentre = sec1[4];
+        s1->centre = sec1[5];
+        s1->update = sec1[6];
+        s1->options = sec1[7];
+        s1->category = sec1[8];
+        s1->subcategory = sec1[9];
+        s1->subcategory_local = 0; // not in version 3
+        s1->master_version = sec1[10];
+        s1->master_local = sec1[11];
+        if (sec1[12] > 80)
+            s1->year = 1900 + sec1[12];
+        else
+            s1->year = 2000 + sec1[12];
+        s1->month = sec1[13];
+        s1->day = sec1[14];
+        s1->hour = sec1[15];
+        s1->minute = sec1[16];
+        s1->second = 0; // not in version 3
+        break;
+    case 4:
+        s1->length = three_bytes_to_uint32(sec1);
+        s1->master = sec1[3];
+        s1->centre = two_bytes_to_uint32(&sec1[4]);
+        s1->subcentre = two_bytes_to_uint32(&sec1[6]);
+        s1->update = sec1[8];
+        s1->options = sec1[9];
+        s1->category = sec1[10];
+        s1->subcategory = sec1[11];
+        s1->subcategory_local = sec1[12];
+        s1->master_version = sec1[13];
+        s1->master_local = sec1[14];
+        s1->year = two_bytes_to_uint32(&sec1[15]);
+        s1->month = sec1[17];
+        s1->day = sec1[18];
+        s1->hour = sec1[19];
+        s1->minute = sec1[20];
+        s1->second = sec1[21];
+        break;
+    default:
+        snprintf(error, error_size, "%s(): This file is coded with version %u and is not supported\n", __func__, s0->edition);
+        return 1;
+    }
+
+    return 0;
+}
+
+
+
+

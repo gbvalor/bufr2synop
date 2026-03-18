@@ -123,7 +123,7 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               syn->s2.ss[0] = aux[0];
-              strcpy ( syn->s2.TwTwTw, aux + 1 );
+              memcpy ( syn->s2.TwTwTw, aux + 1, sizeof(syn->s2.TwTwTw) );
               syn->mask |= SYNOP_SEC2; // have sec2 data
             }
         }
@@ -219,7 +219,7 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
               if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
                 {
                   b->s2.sn[0] = aux[0];
-                  strcpy ( b->s2.TwTwTw, aux + 1 );
+                  memcpy ( b->s2.TwTwTw, aux + 1, sizeof(b->s2.TwTwTw) );
                   b->mask |= BUOY_SEC2; // have sec2 data
                 }
             }
@@ -246,7 +246,7 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
           if ( kelvin_to_snTTT ( aux, sizeof(aux), s->val ) )
             {
               b->s2.sn[0] = aux[0];
-              strcpy ( b->s2.TwTwTw, aux + 1 );
+              memcpy ( b->s2.TwTwTw, aux + 1, sizeof(b->s2.TwTwTw) );
               b->mask |= BUOY_SEC2; // have sec2 data
             }
         }
@@ -299,10 +299,10 @@ int temp_parse_x22 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
           t->b.s7.sn[0] = aux[0];
           t->c.s7.sn[0] = aux[0];
           t->d.s7.sn[0] = aux[0];
-          strcpy ( t->a.s7.TwTwTw, aux + 1 );
-          strcpy ( t->b.s7.TwTwTw, aux + 1 );
-          strcpy ( t->c.s7.TwTwTw, aux + 1 );
-          strcpy ( t->d.s7.TwTwTw, aux + 1 );
+          memcpy ( t->a.s7.TwTwTw, aux + 1, sizeof(t->a.s7.TwTwTw) );
+          memcpy ( t->b.s7.TwTwTw, aux + 1, sizeof(t->b.s7.TwTwTw) );
+          memcpy ( t->c.s7.TwTwTw, aux + 1, sizeof(t->c.s7.TwTwTw) );
+          memcpy ( t->d.s7.TwTwTw, aux + 1, sizeof(t->d.s7.TwTwTw) );
           t->a.mask |= TEMP_SEC_7; // have sec7 data
         }
       break;

@@ -126,6 +126,7 @@ int PRINT_JSON_SEC1;
 int PRINT_JSON_SEC2;
 int PRINT_JSON_SEC3;
 int PRINT_JSON_EXPANDED_TREE;
+int LOCAL_TABLES; /*!< if != 0 then read and use local BUFR tables */
 
 FILE *FL; /*!< Buffer to read the list of files */
 FILE *OUT; /*!< Buffer to write to OUTPUTFILE */

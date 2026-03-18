@@ -155,6 +155,72 @@ int get_wmo_tablenames ( struct bufrdeco *b )
       snprintf ( b->tables->d.path, sizeof ( b->tables->d.path ),"%sBUFR_45_0_0_TableD_en.csv", aux );
       break;
     }
+
+  // Check if local tables are needed, when sec1.master_local_version not zero. 
+  // Thne tables needed are in local directory, and with the named schema 
+  // local/tableB_LOCAL_XX_Y_Z.csv 
+  // local/tableC_LOCAL_XX_Y_Z.csv 
+  // local/tableD_LOCAL_XX_Y_Z.csv, where XX is sec1.master_local, Y is sec1.centre and Z is sec1.subcentre
+  // if Z version for a subcentre is not found, then 0 is used as version, and then the file named local/tableB_LOCAL_XX_Y_0.csv is searched. 
+  // If not found, then local tables are not use 
+  // note that some local tables may not exist, but if at least one exist, then local tables are used, and the missing ones are not used but with the same format as WMO tables.
+  if ( (b->mask & BUFRDECO_LOCAL_TABLES) && b->sec1.master_local != 0 )
+    {
+      // clean local tables path, and set new ones
+      b->tables->b.local_path[0] = '\0';
+      b->tables->c.local_path[0] = '\0';
+      b->tables->d.local_path[0] = '\0';
+      char local_path[BUFRDECO_PATH_LENGTH];
+
+      // local table B
+      snprintf ( local_path, sizeof ( local_path ), "%slocal/tableB_LOCAL_%u_%u_%u.csv", aux, b->sec1.master_local, b->sec1.centre, b->sec1.subcentre );
+      if ( ! stat ( local_path, &st ) )
+        {
+          strncpy( b->tables->b.local_path, local_path, sizeof ( b->tables->b.local_path ) );
+        }
+      else
+        {
+          // if not found with subcentre, try with subcentre 0
+          snprintf ( local_path, sizeof ( local_path ), "%slocal/tableB_LOCAL_%u_%u_0.csv", aux, b->sec1.master_local, b->sec1.centre );
+          if ( ! stat ( local_path, &st ) )
+            {
+              strncpy( b->tables->b.local_path, local_path, sizeof ( b->tables->b.local_path ) );
+            }
+        }
+
+      // local table C
+      snprintf ( local_path, sizeof ( local_path ), "%slocal/tableC_LOCAL_%u_%u_%u.csv", aux, b->sec1.master_local, b->sec1.centre, b->sec1.subcentre );
+      if ( ! stat ( local_path, &st ) )
+        {
+          strncpy( b->tables->c.local_path, local_path, sizeof ( b->tables->c.local_path ) );
+        }
+      else
+        {
+          // if not found with subcentre, try with subcentre 0
+          snprintf ( local_path, sizeof ( local_path ), "%slocal/tableC_LOCAL_%u_%u_0.csv", aux, b->sec1.master_local, b->sec1.centre );
+          if ( ! stat ( local_path, &st ) )
+            {
+              strncpy( b->tables->c.local_path, local_path, sizeof ( b->tables->c.local_path ) );
+            }
+        }
+
+      // local table D  
+      snprintf ( local_path, sizeof ( local_path ), "%slocal/tableD_LOCAL_%u_%u_%u.csv", aux, b->sec1.master_local, b->sec1.centre, b->sec1.subcentre );
+      if ( ! stat ( local_path, &st ) )
+        {
+          strncpy( b->tables->d.local_path, local_path, sizeof ( b->tables->d.local_path ) );
+        }
+      else
+        {
+          // if not found with subcentre, try with subcentre 0
+          snprintf ( local_path, sizeof ( local_path ), "%slocal/tableD_LOCAL_%u_%u_0.csv", aux, b->sec1.master_local, b->sec1.centre );
+          if ( ! stat ( local_path, &st ) )
+            {
+              strncpy( b->tables->d.local_path, local_path, sizeof ( b->tables->d.local_path ) );
+            }
+        }
+    }
+
   return 0;
 }
 

@@ -59,7 +59,7 @@ int get_unexpanded_descriptor_array_from_sec3 ( struct bufr_sequence *s, struct 
  */
 int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *father,  buf_t father_idesc, const char *key )
 {
-  buf_t i, j, nl;
+  buf_t i, j;
   struct bufr_sequence *l;
   
 
@@ -71,12 +71,12 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
       memset ( b->tree, 0, sizeof ( struct bufrdeco_expanded_tree ) ); //reset memory
       b->tree->nseq = 1; // Set current number of sequences in tree, i.e. 1
       l = & ( b->tree->seq[0] ); // This is to write easily
-      strcpy ( l->key, "000000" ); // Key '000000' is the first descriptor of first sequence of level 0
+      memcpy ( l->key, "000000", sizeof ( "000000" ) ); // Key '000000' is the first descriptor of first sequence of level 0
       l->level = 0; // Level 0
       l->father = NULL; // This layer is God, it has not father
       l->father_idesc = father_idesc; // No meaning here
       l->iseq = 0; // first
-      strcpy ( l->name, "Main sequence from SEC3" );
+      memcpy ( l->name, "Main sequence from SEC3", sizeof ( "Main sequence from SEC3" ) ); // Name of sequence
       // here we get l->ndesc and l->lsec[] array
       get_unexpanded_descriptor_array_from_sec3 ( l, b );
     }
@@ -94,7 +94,7 @@ int bufrdeco_parse_tree_recursive ( struct bufrdeco *b, struct bufr_sequence *fa
                     "Use bigger NMAXSEQ_LAYER \n" , __func__);
           return 1;
         }
-      nl = b->tree->nseq; // To write code easily
+      buf_t nl = b->tree->nseq; // To write code easily
       l = & ( b->tree->seq[nl - 1] ); // To write code easily
       strcpy ( l->key, key ); // Set the key of sequence in table d (f == 3)
       l->level = father->level + 1; // level for sequence

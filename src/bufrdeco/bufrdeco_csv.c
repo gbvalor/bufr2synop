@@ -87,7 +87,7 @@ int parse_csv_line2 ( int *nt, char *tk[], char *lin )
 {
   size_t i, j, k = 0, l, latest_char = 0;
   int flag;
-  char c, caux[CSV_MAXL];
+  char caux[CSV_MAXL];
 
   bufrdeco_assert (lin != NULL && tk != NULL && nt != NULL);
   
@@ -96,13 +96,13 @@ int parse_csv_line2 ( int *nt, char *tk[], char *lin )
     return -1;
 
   // copy original string. In this case the copy is safe
-  strcpy ( caux, lin );
+  memcpy ( caux, lin, l + 1 );
 
   flag = CSV_WAIT_ITEM;
 
   for ( i = 0, j = 0, k = 0; i < l; i++ )
     {
-      c = caux[i]; // original char
+      char c = caux[i]; // original char
 
       if ( ( flag & CSV_IS_CITED ) == 0 )
         {

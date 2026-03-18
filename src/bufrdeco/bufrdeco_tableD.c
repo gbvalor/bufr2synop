@@ -23,103 +23,103 @@
  */
 #include "bufrdeco.h"
 
-/*!
-  \fn int bufr_read_tableD ( struct bufrdeco *b )
-  \brief Reads a file with table D content according with WMO csv format
-  \param [in,out] b Pointer to a target struct \ref bufrdeco
-  \return If succeeded return 0, otherwise 1
-*/
-int bufr_read_tableD ( struct bufrdeco *b )
+struct bufr_tableD_csv_row {
+    char key[8];
+    char key2[8];
+    char description[BUFR_EXPLAINED_LENGTH];
+    char description2[BUFR_EXPLAINED_LENGTH];
+};
+
+static int bufr_tableD_read_next_csv_row ( FILE *f, const char *path, struct bufr_tableD_csv_row *row, struct bufrdeco *b )
 {
-  char aux[32], *c;
+  char laux[CSV_MAXL];
   char *tk[16];
   int nt;
-  FILE *t;
-  buf_t ix;
-  buf_t i = 0;
-  int j0, nj = 0;
-  char oldkey[8];
-  char caux[256];
-  char laux[CSV_MAXL];
-  struct bufr_descriptor desc;
-  struct bufr_tableD *td;
 
-  bufrdeco_assert (b != NULL);
-
-  td = & ( b->tables->d );
-  if ( td->path[0] == 0 )
+  while ( fgets ( laux, CSV_MAXL, f ) != NULL )
     {
-      return 1;
-    }
-
-  // Check if we've already readed this table.
-  if ( strcmp ( td->path, td->old_path ) == 0 )
-    {
-#ifdef __DEBUG
-      printf ( "# Reused table %s\n", td->path );
-#endif
-      return 0; // all done
-    }
-
-  strcpy_safe ( caux, td->path );
-  memset ( td, 0, sizeof ( struct bufr_tableD ) );
-  strcpy_safe ( td->path, caux );
-  if ( ( t = fopen ( td->path, "r" ) ) == NULL )
-    {
-      snprintf ( b->error, sizeof ( b->error ),"Unable to open table D file '%s'\n", td->path );
-      return 1;
-    }
-
-  // read first line, it is ignored
-  fgets ( laux, CSV_MAXL, t );
-
-  oldkey[0] = 0;
-  j0 = 0;
-
-  while (i < BUFR_MAXLINES_TABLED)
-    {
-      if (fgets(laux, CSV_MAXL, t) == NULL)
-        {
-          if (feof(t)) {
-            break; // End of file reached, normal exit
-          } else if (ferror(t)) {
-            snprintf ( b->error, sizeof ( b->error ),"Error reading from table D file '%s'\n", td->path );
-            clearerr(t);
-            fclose(t);
-            return 1;
-          }
-          clearerr(t);
-          break;
-        }
-        
-      // Parse line
-      //printf("%s\n",laux);
       if ( parse_csv_line ( &nt, tk, laux ) < 0 || ( nt != 2 && nt != 4 ) )
         {
-          snprintf ( b->error, sizeof ( b->error ),"Error parsing csv line from table D file '%s' found %d tokens in line %u\n", td->path, nt, i );
-          return 1;
+          snprintf ( b->error, sizeof ( b->error ),"Error parsing csv line from table D file '%s'\n", path );
+          return -1;
         }
 
-      // item fields
-      strcpy_safe ( td->item[i].key, tk[0] );
-      strcpy_safe ( td->item[i].key2, tk[1] );
+      strncpy_safe ( row->key, tk[0], sizeof ( row->key ) );
+      strncpy_safe ( row->key2, tk[1], sizeof ( row->key2 ) );
 
       if ( nt == 4 && tk[2][0] )
-        strcpy_safe ( td->item[i].description, tk[2] )
+        {
+          strncpy_safe ( row->description, tk[2], sizeof ( row->description ) );
+        }
       else
-        td->item[i].description[0] = 0;
+        {
+          row->description[0] = 0;
+        }
 
       if ( nt == 4 && tk[3][0] )
-        strcpy_safe ( td->item[i].description2, tk[3] )
+        {
+          strncpy_safe ( row->description2, tk[3], sizeof ( row->description2 ) );
+        }
       else
-        td->item[i].description2[0] = 0;
+        {
+          row->description2[0] = 0;
+        }
 
-      if ( strcmp ( oldkey, tk[0] ) )
+      return 1;
+    }
+
+  if ( ferror ( f ) )
+    {
+      snprintf ( b->error, sizeof ( b->error ),"Error reading from table D file '%s'\n", path );
+      return -1;
+    }
+  return 0;
+}
+
+static int bufr_tableD_append_row ( struct bufr_tableD *td, const struct bufr_tableD_csv_row *row, buf_t *i )
+{
+  struct bufr_descriptor desc;
+  char *c;
+  uint32_t ix;
+  buf_t idx;
+
+  if ( *i >= BUFR_MAXLINES_TABLED )
+    {
+      return 1;
+    }
+
+  idx = *i;
+  memcpy ( td->item[idx].key, row->key, sizeof ( td->item[idx].key ) );
+  memcpy ( td->item[idx].key2, row->key2, sizeof ( td->item[idx].key2 ) );
+  memcpy ( td->item[idx].description, row->description, sizeof ( td->item[idx].description ) );
+  memcpy ( td->item[idx].description2, row->description2, sizeof ( td->item[idx].description2 ) );
+
+  ix = strtoul ( row->key, &c, 10 );
+  uint32_t_to_descriptor ( &desc, ix );
+  if ( td->num[desc.x] == 0 )
+    {
+      td->x_start[desc.x] = idx;
+    }
+  ( td->num[desc.x] ) ++;
+  ( *i ) ++;
+  return 0;
+}
+
+static void bufr_tableD_build_ecmwf_lines ( struct bufr_tableD *td )
+{
+  buf_t i;
+  buf_t j0 = 0;
+  int nj = 0;
+  char oldkey[8] = {0};
+  char aux[32];
+
+  for ( i = 0; i < td->nlines; i++ )
+    {
+      if ( strcmp ( oldkey, td->item[i].key ) )
         {
           if ( oldkey[0] )
             {
-              // write number of descriptors in emulated ECMWF line
-              snprintf ( aux, sizeof (aux), "%s%3d", oldkey, nj );
+              snprintf ( aux, sizeof ( aux ), "%s%3d", oldkey, nj );
               td->l[j0][1] = aux[0];
               td->l[j0][2] = aux[1];
               td->l[j0][3] = aux[2];
@@ -137,38 +137,196 @@ int bufr_read_tableD ( struct bufrdeco *b )
         {
           nj++;
         }
-      strcpy_safe ( oldkey, tk[0] );
 
-      ix = strtoul ( tk[0], &c, 10 );
-      uint32_t_to_descriptor ( &desc, ix );
-
-      if ( td->num[desc.x] == 0 )
-        {
-          td->x_start[desc.x] = i;  // marc the start
-        }
-      ( td->num[desc.x] ) ++;
-
-      // Now emule ECMWF format
-      snprintf ( td->l[i], sizeof (td->l[i]) , "           %s", tk[1] );
-      i++;
+      memcpy ( oldkey, td->item[i].key, sizeof ( oldkey ) );
+      snprintf ( td->l[i], sizeof ( td->l[i] ), "           %s", td->item[i].key2 );
     }
-  fclose ( t );
 
-  // Last sequence
-  snprintf ( aux, sizeof (aux), "%s%3d", oldkey, nj );
-  td->l[j0][1] = aux[0];
-  td->l[j0][2] = aux[1];
-  td->l[j0][3] = aux[2];
-  td->l[j0][4] = aux[3];
-  td->l[j0][5] = aux[4];
-  td->l[j0][6] = aux[5];
-  td->l[j0][7] = aux[6];
-  td->l[j0][8] = aux[7];
-  td->l[j0][9] = aux[8];
+  if ( oldkey[0] )
+    {
+      snprintf ( aux, sizeof ( aux ), "%s%3d", oldkey, nj );
+      td->l[j0][1] = aux[0];
+      td->l[j0][2] = aux[1];
+      td->l[j0][3] = aux[2];
+      td->l[j0][4] = aux[3];
+      td->l[j0][5] = aux[4];
+      td->l[j0][6] = aux[5];
+      td->l[j0][7] = aux[6];
+      td->l[j0][8] = aux[7];
+      td->l[j0][9] = aux[8];
+    }
+}
+
+/*!
+  \fn int bufr_read_tableD ( struct bufrdeco *b )
+  \brief Reads a file with table D content according with WMO csv format
+  \param [in,out] b Pointer to a target struct \ref bufrdeco
+  \return If succeeded return 0, otherwise 1
+*/
+int bufr_read_tableD ( struct bufrdeco *b )
+{
+  FILE *t;
+  FILE *t_local;
+  buf_t i = 0;
+  int have_master;
+  int have_local;
+  char key_active[8];
+  char caux[256];
+  char laux[CSV_MAXL];
+  struct bufr_tableD *td;
+  struct bufr_tableD_csv_row row_master;
+  struct bufr_tableD_csv_row row_local;
+  const struct bufr_tableD_csv_row *row;
+
+  bufrdeco_assert (b != NULL);
+
+  td = & ( b->tables->d );
+  if ( td->path[0] == 0 )
+    {
+      return 1;
+    }
+
+  // Check if we've already readed this table.
+  if ( strcmp ( td->path, td->old_path ) == 0 && strcmp ( td->local_path, td->local_path_old ) == 0 )
+    {
+#ifdef __DEBUG
+      printf ( "# Reused table %s\n", td->path );
+#endif
+      return 0; // all done
+    }
+
+  memcpy ( caux, td->path, sizeof ( caux ) );
+  memset ( td, 0, sizeof ( struct bufr_tableD ) );
+  memcpy ( td->path, caux, sizeof ( td->path ) );
+  t_local = NULL;
+  if ( ( t = fopen ( td->path, "r" ) ) == NULL )
+    {
+      snprintf ( b->error, sizeof ( b->error ),"Unable to open table D file '%s'\n", td->path );
+      return 1;
+    }
+
+  if ( td->local_path[0] )
+    {
+      t_local = fopen ( td->local_path, "r" );
+    }
+
+  // read first line, it is ignored
+  if ( fgets ( laux, CSV_MAXL, t ) == NULL && ferror ( t ) )
+    {
+      snprintf ( b->error, sizeof ( b->error ),"Error reading from table D file '%s'\n", td->path );
+      fclose ( t );
+      if ( t_local != NULL )
+        {
+          fclose ( t_local );
+        }
+      return 1;
+    }
+
+  if ( t_local != NULL )
+    {
+      if ( fgets ( laux, CSV_MAXL, t_local ) == NULL && ferror ( t_local ) )
+        {
+          snprintf ( b->error, sizeof ( b->error ),"Error reading from table D file '%s'\n", td->local_path );
+          fclose ( t );
+          fclose ( t_local );
+          return 1;
+        }
+    }
+
+  have_master = bufr_tableD_read_next_csv_row ( t, td->path, &row_master, b );
+  if ( have_master < 0 )
+    {
+      fclose ( t );
+      if ( t_local != NULL )
+        {
+          fclose ( t_local );
+        }
+      return 1;
+    }
+
+  have_local = 0;
+  if ( t_local != NULL )
+    {
+      have_local = bufr_tableD_read_next_csv_row ( t_local, td->local_path, &row_local, b );
+      if ( have_local < 0 )
+        {
+          fclose ( t );
+          fclose ( t_local );
+          return 1;
+        }
+    }
+
+  while ( ( have_master || have_local ) && i < BUFR_MAXLINES_TABLED )
+    {
+      if ( have_local && ( ! have_master || strcmp ( row_local.key, row_master.key ) <= 0 ) )
+        {
+          memcpy ( key_active, row_local.key, sizeof ( key_active ) );
+
+          while ( have_local && strcmp ( row_local.key, key_active ) == 0 && i < BUFR_MAXLINES_TABLED )
+            {
+              row = &row_local;
+              if ( bufr_tableD_append_row ( td, row, &i ) )
+                {
+                  break;
+                }
+
+              have_local = bufr_tableD_read_next_csv_row ( t_local, td->local_path, &row_local, b );
+              if ( have_local < 0 )
+                {
+                  fclose ( t );
+                  fclose ( t_local );
+                  return 1;
+                }
+            }
+
+          while ( have_master && strcmp ( row_master.key, key_active ) == 0 )
+            {
+              have_master = bufr_tableD_read_next_csv_row ( t, td->path, &row_master, b );
+              if ( have_master < 0 )
+                {
+                  fclose ( t );
+                  fclose ( t_local );
+                  return 1;
+                }
+            }
+        }
+      else
+        {
+          memcpy ( key_active, row_master.key, sizeof ( key_active ) );
+
+          while ( have_master && strcmp ( row_master.key, key_active ) == 0 && i < BUFR_MAXLINES_TABLED )
+            {
+              row = &row_master;
+              if ( bufr_tableD_append_row ( td, row, &i ) )
+                {
+                  break;
+                }
+
+              have_master = bufr_tableD_read_next_csv_row ( t, td->path, &row_master, b );
+              if ( have_master < 0 )
+                {
+                  fclose ( t );
+                  if ( t_local != NULL )
+                    {
+                      fclose ( t_local );
+                    }
+                  return 1;
+                }
+            }
+        }
+    }
+
+  fclose ( t );
+  if ( t_local != NULL )
+    {
+      fclose ( t_local );
+    }
 
   td->nlines = i;
+  bufr_tableD_build_ecmwf_lines ( td );
   td->wmo_table = 1;
-  strcpy_safe ( td->old_path, td->path ); // store latest path
+  memcpy ( td->old_path, td->path, sizeof ( td->old_path ) ); // store latest path
+  memcpy ( td->local_path_old, td->local_path, sizeof ( td->local_path_old ) ); // store latest local path
   return 0;
 }
 
@@ -250,7 +408,7 @@ int bufrdeco_tableD_get_descriptors_array ( struct bufr_sequence *s, struct bufr
 
   // Get the name of common sequence
   if ( td->item[i].description[0] )
-    strcpy_safe ( s->name, td->item[i].description )
+    memcpy ( s->name, td->item[i].description, sizeof ( s->name ) );
   else
     s->name[0] = 0;
 

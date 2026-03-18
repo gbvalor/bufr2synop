@@ -318,6 +318,12 @@ extern "C" {
 #define BUFRDECO_OUTPUT_JSON (BUFRDECO_OUTPUT_JSON_SEC0 | BUFRDECO_OUTPUT_JSON_SEC1 | BUFRDECO_OUTPUT_JSON_SEC2 | BUFRDECO_OUTPUT_JSON_SEC3)
 
 /*!
+  \def BUFRDECO_LOCAL_TABLES
+  \brief Bit mask to the member mask for struct \ref bufrdeco to use local tables if needed
+*/
+#define BUFRDECO_LOCAL_TABLES (512) 
+
+/*!
   \def BUFR_TABLEB_NAME_LENGTH
   \brief Max length (in chars) reserved for a name of variable in table B
 */
@@ -972,6 +978,8 @@ struct bufr_tableB {
     int wmo_table; /*!< 1 when table is from WMO csv file, 0 otherwise */
     char path[BUFRDECO_PATH_LENGTH]; /*!< Complete path of current file readed */
     char old_path[BUFRDECO_PATH_LENGTH]; /*!< Cmplete path of prior file readed, used to avoid read two consecutive times the same file */
+    char local_path[BUFRDECO_PATH_LENGTH]; /*!< Complete path of local table B, with the same format as table B but with the local descriptors defined in sec1 */
+    char local_path_old[BUFRDECO_PATH_LENGTH]; /*!< Complete path of prior local table B, used to avoid read two consecutive times the same file */
     buf_t nlines; /*!< Current lines readed from file, i. e. used in array item[] */
     buf_t x_start[64]; /*!< Index in array \a item[] for first x. x_start[j] is index for first descriptor which x == j */
     buf_t num[64]; /*!< Amount of items for x. num[i] is the amount of items in array where x = i */
@@ -1000,6 +1008,8 @@ struct bufr_tableC {
     int wmo_table; /*!< 1 when table is from WMO csv file, 0 otherwise */
     char path[BUFRDECO_PATH_LENGTH]; /*!< Complete path of current file readed */
     char old_path[BUFRDECO_PATH_LENGTH]; /*!< Cmplete path of prior file readed, used to avoid read two consecutive times the same file */
+    char local_path[BUFRDECO_PATH_LENGTH]; /*!< Complete path of local table C, with the same format as table C but with the local descriptors defined in sec1 */
+    char local_path_old[BUFRDECO_PATH_LENGTH]; /*!< Complete path of prior local table C, used to avoid read two consecutive times the same file */
     buf_t nlines; /*!< Current lines readed from file, i. e. used in array \a l[] */
     buf_t x_start[64]; /*!< Index in array \a l[] for first x. x_start[j] is index for first descriptor which x == j */
     buf_t num[64]; /*!< Amonut of lines for x. num[i] is the amount of items in array where x = i */
@@ -1026,6 +1036,8 @@ struct bufr_tableD {
     int wmo_table; /*!< 1 when table is from WMO csv file, 0 otherwise */
     char path[BUFRDECO_PATH_LENGTH]; /*!< Complete path of current file readed */
     char old_path[BUFRDECO_PATH_LENGTH]; /*!< Cmplete path of prior file readed, used to avoid read two consecutive times the same file */
+    char local_path[BUFRDECO_PATH_LENGTH]; /*!< Complete path of local table D, with the same format as table D but with the local sequences defined in sec1 */
+    char local_path_old[BUFRDECO_PATH_LENGTH]; /*!< Complete path of prior local table D, used to avoid read two consecutive times the same file */
     buf_t nlines; /*!< Current lines readed from file, i. e. used in array \a l[] */
     buf_t x_start[64]; /*!< Index in array \a l[] for first x. x_start[j] is index for first descriptor which x == j */
     buf_t num[64]; /*!< Amonut of lines for x. num[i] is the amount of items in array where x = i */
@@ -1141,8 +1153,11 @@ int bufrdeco_add_associated_field(const struct bufrdeco_associated_field* added,
 
 // Read bufr functions
 int bufrdeco_read_bufr(struct bufrdeco* b, char* filename);
-int bufrdeco_extract_bufr(struct bufrdeco* b, char* filename, char* bufr_xout);
+int bufrdeco_extract_bufr(struct bufrdeco* b, char* filename, const char* bufr_xout);
 int bufrdeco_read_buffer(struct bufrdeco* b, uint8_t* bufrx, buf_t size);
+int bufrdeco_fast_read_sec_0_1(struct bufr_sec0* s0, struct bufr_sec1* s1, char* filename, char* error, size_t error_size);
+int bufrdeco_get_sec_0_1_from_buffer(struct bufr_sec0* s0, struct bufr_sec1* s1, const char* buff, size_t size, char* error, size_t error_size);
+
 
 // Read bufr WMO csv table files
 int get_wmo_tablenames(struct bufrdeco* b);

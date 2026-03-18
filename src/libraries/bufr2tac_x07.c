@@ -93,15 +93,15 @@ int syn_parse_x07(struct synop_chunks* syn, struct bufr2tac_subset_state* s)
             return 0;
         }
         if (s->ival == 100000) {
-            strcpy(syn->s1.a3, "1");
+            syn->s1.a3[0] = '1';
         } else if (s->ival == 92500) {
-            strcpy(syn->s1.a3, "2");
+            syn->s1.a3[0] = '2';
         } else if (s->ival == 85000) {
-            strcpy(syn->s1.a3, "8");
+            syn->s1.a3[0] = '8';
         } else if (s->ival == 70000) {
-            strcpy(syn->s1.a3, "7");
+            syn->s1.a3[0] = '7';
         } else if (s->ival == 50000) {
-            strcpy(syn->s1.a3, "5");
+            syn->s1.a3[0] = '5';
         }
         break;
 

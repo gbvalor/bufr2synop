@@ -97,16 +97,16 @@ int syn_parse_x06 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       if ( s->mask & SUBSET_MASK_LATITUDE_SOUTH )
         {
           if ( s->mask & SUBSET_MASK_LONGITUDE_WEST )
-            strcpy ( syn->s0.Qc, "5" );
+            syn->s0.Qc[0] = '5';
           else
-            strcpy ( syn->s0.Qc, "3" );
+            syn->s0.Qc[0] = '3';
         }
       else
         {
           if ( s->mask & SUBSET_MASK_LONGITUDE_WEST )
-            strcpy ( syn->s0.Qc, "7" );
+            syn->s0.Qc[0] = '7';
           else
-            strcpy ( syn->s0.Qc, "1" );
+            syn->s0.Qc[0] = '1';
         }
     }
 
@@ -226,29 +226,29 @@ int temp_parse_x06 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
           if ( s->mask & SUBSET_MASK_LATITUDE_SOUTH )
             {
               if ( s->mask & SUBSET_MASK_LONGITUDE_WEST )
-                strcpy ( t->a.s1.Qc, "5" );
+                t->a.s1.Qc[0] = '5';
               else
-                strcpy ( t->a.s1.Qc, "3" );
+                t->a.s1.Qc[0] = '3';
             }
           else
             {
               if ( s->mask & SUBSET_MASK_LONGITUDE_WEST )
-                strcpy ( t->a.s1.Qc, "7" );
+                t->a.s1.Qc[0] = '7';
               else
-                strcpy ( t->a.s1.Qc, "1" );
+                t->a.s1.Qc[0] = '1';
             }
-          strcpy ( t->b.s1.Qc, t->a.s1.Qc );
-          strcpy ( t->c.s1.Qc, t->a.s1.Qc );
-          strcpy ( t->d.s1.Qc, t->a.s1.Qc );
+          t->b.s1.Qc[0] = t->a.s1.Qc[0];
+          t->c.s1.Qc[0] = t->a.s1.Qc[0];
+          t->d.s1.Qc[0] = t->a.s1.Qc[0];
         }
 
       // check if about MMM
       if ( ( t->a.s1.MMM[0] == 0 ) && t->a.s1.LaLaLa[0] && t->a.s1.LoLoLoLo[0] )
         {
           latlon_to_MMM ( t->a.s1.MMM, sizeof(t->a.s1.MMM), s->lat, s->lon );
-          strcpy ( t->b.s1.MMM, t->a.s1.MMM );
-          strcpy ( t->c.s1.MMM, t->a.s1.MMM );
-          strcpy ( t->d.s1.MMM, t->a.s1.MMM );
+          memcpy ( t->b.s1.MMM, t->a.s1.MMM, sizeof(t->a.s1.MMM) );
+          memcpy ( t->c.s1.MMM, t->a.s1.MMM, sizeof(t->a.s1.MMM) );
+          memcpy ( t->d.s1.MMM, t->a.s1.MMM, sizeof(t->a.s1.MMM) );
         }
       break;
 

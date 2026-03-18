@@ -145,8 +145,6 @@ int bufrdeco_parse_f2_descriptor(struct bufrdeco_subset_sequence_data* s, const 
         } else {
             a->mask |= DESCRIPTOR_HAVE_STRING_VALUE;
         }
-        // strcpy_safe ( a->name, "SIGNIFY CHARACTER" );
-        // strcpy_safe ( a->unit, "CCITTIA5" ); // unit
         strcpy(a->name, "SIGNIFY CHARACTER");
         strcpy(a->unit, "CCITTIA5"); // unit
         if (b->mask & BUFRDECO_OUTPUT_JSON_SUBSET_DATA) {
@@ -558,8 +556,6 @@ int bufrdeco_parse_f2_compressed(struct bufrdeco_compressed_data_references* r, 
             snprintf(b->error, sizeof(b->error), "%s(): Cannot get %u uchars from '%s'\n", __func__, d->y, d->c);
             return 1;
         }
-        // strcpy_safe ( rf->name, "SIGNIFY CHARACTER" );
-        // strcpy_safe ( rf->unit, "CCITTIA5" ); // unit
         strcpy(rf->name, "SIGNIFY CHARACTER");
         strcpy(rf->unit, "CCITTIA5"); // unit
 

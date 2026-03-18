@@ -578,7 +578,7 @@ int bufrdeco_decode_subset_data_recursive ( struct bufrdeco_subset_sequence_data
 */
 int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_data *d, struct bufr_replicator *r, struct bufrdeco *b )
 {
-  buf_t i, j, k;
+  buf_t j, k;
   buf_t ixloop; // Index for loop
   buf_t ixd; // Index for descriptor
   struct bufr_sequence *l;; // sequence
@@ -606,7 +606,7 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
     {
       for ( ixd = 0; ixd < r->ndesc ; ixd ++ )
         {
-          i = ixd + r->ixdel + 1;
+          int i = ixd + r->ixdel + 1;
 
           // init and common event members
           event.mask = 0;
@@ -625,8 +625,8 @@ int bufrdeco_decode_replicated_subsequence ( struct bufrdeco_subset_sequence_dat
             case 0:
               // Checks if no_data_present is active for this descriptor in this sequence
               if ( l->no_data_present.active &&
-                   i >= l->no_data_present.first &&
-                   i <= l->no_data_present.last )
+                   i >= (int) l->no_data_present.first &&
+                   i <= (int) l->no_data_present.last )
                 {
                   // If here then no_data_present has been active in this sequence
                   if ( l->lseq[i].x > 9 &&

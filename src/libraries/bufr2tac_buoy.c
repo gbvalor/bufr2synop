@@ -250,7 +250,7 @@ int parse_subset_as_buoy ( struct metreport *m, struct bufr2tac_subset_state *s,
     }
   if ( s->mask & SUBSET_MASK_HAVE_NAME )
     {
-      strcpy ( m->g.name, s->name );
+      memcpy ( m->g.name, s->name, sizeof(m->g.name) );
     }
   snprintf ( aux, sizeof(aux), "%s%s%s%s%s", b->e.YYYY, b->e.MM, b->e.DD, b->e.HH, b->e.mm );
   YYYYMMDDHHmm_to_met_datetime ( &m->t, aux );

@@ -23,6 +23,83 @@
  */
 #include "bufrdeco.h"
 
+struct bufr_tableC_csv_row {
+    char key[8];
+    uint8_t x;
+    uint8_t y;
+    uint32_t ival;
+    char description[BUFR_EXPLAINED_LENGTH];
+};
+
+static int bufr_tableC_read_next_csv_row ( FILE *f, const char *path, struct bufr_tableC_csv_row *row, struct bufrdeco *b )
+{
+  char *tk[16];
+  char l[CSV_MAXL];
+  int nt;
+  uint32_t ix;
+  char *c;
+  struct bufr_descriptor desc;
+
+  while ( fgets ( l, CSV_MAXL, f ) != NULL )
+    {
+      if ( parse_csv_line ( &nt, tk, l ) < 0 || nt != 6 )
+        {
+          snprintf ( b->error, sizeof ( b->error ),"Error parsing csv line from table C file '%s'\n", path );
+          return -1;
+        }
+
+      if ( tk[1][0] == 0 || strchr ( tk[1], '-' ) != NULL || strstr ( tk[1], "All" ) != NULL )
+        {
+          continue;
+        }
+
+      ix = strtoul ( tk[0], &c, 10 );
+      uint32_t_to_descriptor ( &desc, ix );
+      strncpy_safe ( row->key, tk[0], sizeof ( row->key ) );
+      row->x = desc.x;
+      row->y = desc.y;
+      row->ival = strtoul ( tk[1], &c, 10 );
+      snprintf ( row->description, sizeof ( row->description ), "%s %s %s %s", tk[2], tk[3], tk[4], tk[5] );
+      return 1;
+    }
+
+  if ( ferror ( f ) )
+    {
+      snprintf ( b->error, sizeof ( b->error ),"Error reading from table C file '%s'\n", path );
+      return -1;
+    }
+  return 0;
+}
+
+static int bufr_tableC_append_row ( struct bufr_tableC *tc, const struct bufr_tableC_csv_row *row, buf_t *i )
+{
+  buf_t idx;
+
+  if ( *i >= BUFR_MAXLINES_TABLEC )
+    {
+      return 1;
+    }
+
+  idx = *i;
+  memcpy ( tc->item[idx].key, row->key, sizeof ( tc->item[idx].key ) );
+  tc->item[idx].x = row->x;
+  tc->item[idx].y = row->y;
+  tc->item[idx].ival = row->ival;
+  memcpy ( tc->item[idx].description, row->description, sizeof ( tc->item[idx].description ) );
+
+  if ( tc->num[row->x] == 0 )
+    {
+      tc->x_start[row->x] = idx;
+    }
+  if ( tc->y_ref[row->x][row->y] == 0 )
+    {
+      tc->y_ref[row->x][row->y] = idx - tc->x_start[row->x];
+    }
+  ( tc->num[row->x] ) ++;
+  ( *i ) ++;
+  return 0;
+}
+
 
 /*!
   \fn int bufr_read_tableC ( struct bufrdeco *b )
@@ -32,15 +109,16 @@
 */
 int bufr_read_tableC ( struct bufrdeco *b )
 {
-  char *c;
-  //size_t  used = 0;
   FILE *t;
-  int nt;
-  uint32_t ix;
+  FILE *t_local;
+  int have_master;
+  int have_local;
   buf_t i = 0;
-  struct bufr_descriptor desc;
   struct bufr_tableC *tc;
-  char *tk[16];
+  struct bufr_tableC_csv_row row_master;
+  struct bufr_tableC_csv_row row_local;
+  const struct bufr_tableC_csv_row *row;
+  char key_active[8];
   char caux[256], l[CSV_MAXL];
 
   bufrdeco_assert ( b != NULL );
@@ -53,7 +131,7 @@ int bufr_read_tableC ( struct bufrdeco *b )
     }
 
   // If we've already readed this table.
-  if ( strcmp ( tc->path, tc->old_path ) == 0 )
+  if ( strcmp ( tc->path, tc->old_path ) == 0 && strcmp ( tc->local_path, tc->local_path_old ) == 0 )
     {
 #ifdef __DEBUG      
       printf ("# Reused table %s\n", tc->path);
@@ -61,81 +139,140 @@ int bufr_read_tableC ( struct bufrdeco *b )
       return 0; // all done
     }
 
-  strcpy ( caux, tc->path );
+  memcpy ( caux, tc->path, sizeof ( caux ) );
   memset ( tc, 0, sizeof ( struct bufr_tableC ) );
-  strcpy ( tc->path, caux );
+  memcpy ( tc->path, caux, sizeof ( tc->path ) );
+  t_local = NULL;
   if ( ( t = fopen ( tc->path, "r" ) ) == NULL )
     {
       snprintf ( b->error, sizeof ( b->error ),"Unable to open table C file '%s'\n", tc->path );
       return 1;
     }
 
-  // read first line, it is ignored
-  fgets ( l, CSV_MAXL, t );
-
-  while (i < BUFR_MAXLINES_TABLEC)
+  if ( tc->local_path[0] )
     {
-      if (fgets(l, CSV_MAXL, t) == NULL)
-        {
-          if (ferror(t))
-            {
-              snprintf ( b->error, sizeof ( b->error ),"Error reading from table C file '%s'\n", tc->path );
-              fclose ( t );
-              return 1;
-            }
-          clearerr(t); // Clear error indicator to avoid indeterminate file position
-          break;
-        }
+      t_local = fopen ( tc->local_path, "r" );
+    }
 
-      // Parse line
-      if ( parse_csv_line ( &nt, tk, l ) < 0 || nt != 6 )
+  // read first line, it is ignored
+  if ( fgets ( l, CSV_MAXL, t ) == NULL && ferror ( t ) )
+    {
+      snprintf ( b->error, sizeof ( b->error ),"Error reading from table C file '%s'\n", tc->path );
+      fclose ( t );
+      if ( t_local != NULL )
         {
-          snprintf ( b->error, sizeof ( b->error ),"Error parsing csv line from table C file '%s'. Found %d fields in line %u \n", tc->path, nt, i );
+          fclose ( t_local );
+        }
+      return 1;
+    }
+
+  if ( t_local != NULL )
+    {
+      if ( fgets ( l, CSV_MAXL, t_local ) == NULL && ferror ( t_local ) )
+        {
+          snprintf ( b->error, sizeof ( b->error ),"Error reading from table C file '%s'\n", tc->local_path );
           fclose ( t );
+          fclose ( t_local );
           return 1;
         }
-
-      // Check if code contains other than non-numeric i.e. 'All' or '-'
-      // In this case, the line is ignored
-      if ( tk[1][0] == 0 || strchr ( tk[1], '-' ) != NULL || strstr ( tk[1], "All" ) != NULL )
-        continue;
-
-      // Key
-      // First we build the descriptor
-      ix = strtoul ( tk[0], &c, 10 );
-      uint32_t_to_descriptor ( &desc, ix );
-      strcpy_safe ( tc->item[i].key, tk[0] );
-      tc->item[i].x = desc.x;
-      tc->item[i].y = desc.y;
-
-      // Integer value
-      tc->item[i].ival = strtoul ( tk[1], &c, 10 );
-
-      // Description
-      c = & tc->item[i].description[0];
-      snprintf ( c, BUFR_EXPLAINED_LENGTH, "%s %s %s %s", tk[2], tk[3], tk[4], tk[5] );
-
-      if ( tc->num[desc.x] == 0 )
-        {
-          tc->x_start[desc.x] = i;  // marc the start
-        }
-      if ( tc->y_ref[desc.x][desc.y] == 0 )
-        {
-          tc->y_ref[desc.x][desc.y] = i - tc->x_start[desc.x]; // marc the position from start of first x
-        }
-      ( tc->num[desc.x] ) ++;
-      i++;
     }
+
+  have_master = bufr_tableC_read_next_csv_row ( t, tc->path, &row_master, b );
+  if ( have_master < 0 )
+    {
+      fclose ( t );
+      if ( t_local != NULL )
+        {
+          fclose ( t_local );
+        }
+      return 1;
+    }
+
+  have_local = 0;
+  if ( t_local != NULL )
+    {
+      have_local = bufr_tableC_read_next_csv_row ( t_local, tc->local_path, &row_local, b );
+      if ( have_local < 0 )
+        {
+          fclose ( t );
+          fclose ( t_local );
+          return 1;
+        }
+    }
+
+  while ( ( have_master || have_local ) && i < BUFR_MAXLINES_TABLEC )
+    {
+      if ( have_local && ( ! have_master || strcmp ( row_local.key, row_master.key ) <= 0 ) )
+        {
+          memcpy ( key_active, row_local.key, sizeof ( key_active ) );
+
+          while ( have_local && strcmp ( row_local.key, key_active ) == 0 && i < BUFR_MAXLINES_TABLEC )
+            {
+              row = &row_local;
+              if ( bufr_tableC_append_row ( tc, row, &i ) )
+                {
+                  break;
+                }
+              have_local = bufr_tableC_read_next_csv_row ( t_local, tc->local_path, &row_local, b );
+              if ( have_local < 0 )
+                {
+                  fclose ( t );
+                  fclose ( t_local );
+                  return 1;
+                }
+            }
+
+          while ( have_master && strcmp ( row_master.key, key_active ) == 0 )
+            {
+              have_master = bufr_tableC_read_next_csv_row ( t, tc->path, &row_master, b );
+              if ( have_master < 0 )
+                {
+                  fclose ( t );
+                  fclose ( t_local );
+                  return 1;
+                }
+            }
+        }
+      else
+        {
+          memcpy ( key_active, row_master.key, sizeof ( key_active ) );
+
+          while ( have_master && strcmp ( row_master.key, key_active ) == 0 && i < BUFR_MAXLINES_TABLEC )
+            {
+              row = &row_master;
+              if ( bufr_tableC_append_row ( tc, row, &i ) )
+                {
+                  break;
+                }
+              have_master = bufr_tableC_read_next_csv_row ( t, tc->path, &row_master, b );
+              if ( have_master < 0 )
+                {
+                  fclose ( t );
+                  if ( t_local != NULL )
+                    {
+                      fclose ( t_local );
+                    }
+                  return 1;
+                }
+            }
+        }
+    }
+
   fclose ( t );
+  if ( t_local != NULL )
+    {
+      fclose ( t_local );
+    }
   tc->nlines = i;
   tc->wmo_table = 1;
-  strcpy ( tc->old_path, tc->path ); // store latest path
+  memcpy ( tc->old_path, tc->path, sizeof ( tc->old_path ) ); // store latest path
+  memcpy ( tc->local_path_old, tc->local_path, sizeof ( tc->local_path_old ) ); // store latest local path
   return 0;
 }
 
 
 /*!
-  \fn int bufr_find_tableC_csv_index ( buf_t *index, struct bufr_tableb *tb, const char *key, uint32_t code )
+  \fn int bufr_find_tableC_csv_index ( buf_t *index, struct bufr_tableC *tc, const char *key, uint32_t code )
   \brief found a descriptor index in a struct \ref bufr_tableC
   \param [out] index Pointer to a size_t where to set the result if success
   \param [in] tc Pointer to struct \ref bufr_tableC where are stored all table C data

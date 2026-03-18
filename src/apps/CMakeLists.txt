@@ -30,4 +30,7 @@ target_link_libraries(build_bufrdeco_tables m bufrdeco)
 add_executable(update_tableD update_tableD.c)
 target_link_libraries(update_tableD m bufrdeco)
 
-install (TARGETS bufrnoaa bufrtotac bufrdeco_json build_bufrdeco_tables update_tableD DESTINATION ${CMAKE_INSTALL_BINDIR} )
+add_executable(eccodes_local_to_bufrdeco eccodes_local_to_bufrdeco.c)
+target_link_libraries(eccodes_local_to_bufrdeco m bufrdeco)
+
+install (TARGETS bufrnoaa bufrtotac bufrdeco_json build_bufrdeco_tables update_tableD eccodes_local_to_bufrdeco DESTINATION ${CMAKE_INSTALL_BINDIR} )

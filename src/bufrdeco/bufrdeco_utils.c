@@ -39,7 +39,7 @@ uint8_t bitk[8] = {0x80,0xc0,0xe0,0xf0,0xf8,0xfc,0xfe,0xff}; /*!< Mask first bit
 */
 buf_t get_bits_as_char_array2 ( char *target, uint8_t *has_data, uint8_t *source, buf_t *bit0_offset, buf_t bit_length )
 {
-  buf_t i, j;
+  buf_t j;
   buf_t nc;
 
   bufrdeco_assert (has_data != NULL && source != NULL && target != NULL && bit0_offset != NULL);
@@ -57,7 +57,7 @@ buf_t get_bits_as_char_array2 ( char *target, uint8_t *has_data, uint8_t *source
       do
         {
           const uint8_t *c = source + ( *bit0_offset + d ) / 8;
-          i = ( *bit0_offset + d ) % 8;
+          buf_t i = ( *bit0_offset + d ) % 8;
           if ( *c & bitf[i] )
             * ( target + j ) += ( 1U << ( r - 1 ) );
           else
@@ -481,7 +481,6 @@ int bufrdeco_add_to_bitmap ( struct bufrdeco_bitmap *bm, buf_t index_to, buf_t i
 int bufrdeco_get_bitmaped_info ( struct bufrdeco_bitmap_related_vars *brv, uint32_t target, struct bufrdeco *b )
 {
   buf_t i, j, k;
-  buf_t delta;
   struct bufrdeco_bitmap *bm;
 
   bufrdeco_assert (b != NULL && brv != NULL);
@@ -497,7 +496,7 @@ int bufrdeco_get_bitmaped_info ( struct bufrdeco_bitmap_related_vars *brv, uint3
               brv->nba = i;
               brv->nb = j;
               brv->bitmaped_by = bm->me[j]; // is the index of bit present data in ref/data
-              delta = bm->me[j] - bm->me[0]; // delta is the refence with recpect the reference of first data present (bit = 0) in bitmap
+              buf_t delta = bm->me[j] - bm->me[0]; // delta is the refence with recpect the reference of first data present (bit = 0) in bitmap
               // quality data
               if ( bm->nq )
                 {
