@@ -1,0 +1,6 @@
+"FXY","ElementName_en","Note_en","BUFR_Unit","BUFR_Scale","BUFR_ReferenceValue","BUFR_DataWidth_Bits"
+"010200","Mean dynamic topography accuracy",,"m","3","-131072","18"
+"025200","Band specific ocean quality flag",,"Flag table","0","0","9"
+"025201","Altimeter echo processing mode",,"Code Table","0","0","8"
+"025202","Altimeter tracking mode",,"Code Table","0","0","8"
+"025203","Sea ice freeboard",,"m","3","-131072","18"
