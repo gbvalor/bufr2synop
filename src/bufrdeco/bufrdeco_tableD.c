@@ -172,6 +172,7 @@ int bufr_read_tableD ( struct bufrdeco *b )
   int have_local;
   char key_active[8];
   char caux[256];
+  char caux_local[BUFRDECO_PATH_LENGTH];
   char laux[CSV_MAXL];
   struct bufr_tableD *td;
   struct bufr_tableD_csv_row row_master;
@@ -196,8 +197,10 @@ int bufr_read_tableD ( struct bufrdeco *b )
     }
 
   memcpy ( caux, td->path, sizeof ( caux ) );
+  memcpy ( caux_local, td->local_path, sizeof ( td->local_path ) );
   memset ( td, 0, sizeof ( struct bufr_tableD ) );
   memcpy ( td->path, caux, sizeof ( td->path ) );
+  memcpy ( td->local_path, caux_local, sizeof ( td->local_path ) );
   t_local = NULL;
   if ( ( t = fopen ( td->path, "r" ) ) == NULL )
     {

@@ -115,6 +115,7 @@ int bufr_read_tableB ( struct bufrdeco *b )
   FILE *t_local;
   buf_t i = 0;
   char caux[512];
+  char caux_local[BUFRDECO_PATH_LENGTH];
   int have_master;
   int have_local;
   struct bufr_tableB *tb;
@@ -148,8 +149,10 @@ int bufr_read_tableB ( struct bufrdeco *b )
     }
 
   memcpy ( caux, tb->path, sizeof (tb->path) );
+  memcpy ( caux_local, tb->local_path, sizeof (tb->local_path) );
   memset ( tb, 0, sizeof ( struct bufr_tableB ) );
   memcpy ( tb->path, caux, sizeof (tb->path) );
+  memcpy ( tb->local_path, caux_local, sizeof (tb->local_path) );
 
   t_local = NULL; // initialize to NULL in case we don't have a local table
   // Open master table B file

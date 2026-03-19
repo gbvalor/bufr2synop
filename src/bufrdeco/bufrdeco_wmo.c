@@ -243,7 +243,7 @@ int bufr_read_tables ( struct bufrdeco *b )
     {
       // When using cache, member b->tables is actually a pointer in array b->cache.tab[]
 
-      if ( ( index = bufrdeco_cache_tables_search ( & ( b->cache ), b->sec1.master_version ) ) >= 0 )
+      if ( ( index = bufrdeco_cache_tables_search ( & ( b->cache ), b->sec1.master_version, b->sec1.master_local, b->sec1.centre, b->sec1.subcentre ) ) >= 0 )
         {
 #ifdef __DEBUG
           printf ( "# Found tables in cache for version %u index %d\n", b->sec1.master_version, index );
@@ -269,7 +269,7 @@ int bufr_read_tables ( struct bufrdeco *b )
           printf ( "# Tables for version %u not found in cache. Stored in index %u\n", b->sec1.master_version, b->cache.next );
 #endif
           // If not in cache, the new master version tables has to be stored. This implies that
-          bufrdeco_store_tables ( & ( b->tables ), & ( b->cache ), b->sec1.master_version );
+          bufrdeco_store_tables ( & ( b->tables ), & ( b->cache ), b->sec1.master_version, b->sec1.master_local, b->sec1.centre, b->sec1.subcentre );
 
           // get tablenames
           if ( get_wmo_tablenames ( b ) )
@@ -339,7 +339,7 @@ int bufr_read_tables ( struct bufrdeco *b )
  *  \return if success return 0
  *
  */
-int bufrdeco_store_tables ( struct bufr_tables **t, struct bufr_tables_cache *c,  uint8_t ver )
+int bufrdeco_store_tables ( struct bufr_tables **t, struct bufr_tables_cache *c,  uint8_t ver, uint8_t local_ver, uint8_t centre, uint8_t subcentre )
 {
   if ( c->tab[c->next] == NULL )
     {
@@ -356,6 +356,9 @@ int bufrdeco_store_tables ( struct bufr_tables **t, struct bufr_tables_cache *c,
 
       // sets the proper version as a key of element
       c->ver[c->next] = ver;
+      c->local_ver[c->next] = local_ver;
+      c->centre[c->next] = centre;
+      c->subcentre[c->next] = subcentre;
     }
 
   // t will point to array element
@@ -374,13 +377,13 @@ int bufrdeco_store_tables ( struct bufr_tables **t, struct bufr_tables_cache *c,
  * 
  * \return The index of found struct. If no struct found returns -1
  */
-int bufrdeco_cache_tables_search ( const struct bufr_tables_cache *c, uint8_t ver )
+int bufrdeco_cache_tables_search ( const struct bufr_tables_cache *c, uint8_t ver, uint8_t local_ver, uint8_t centre, uint8_t subcentre )
 {
   buf_t i = 0;
 
   for ( i = 0; i < BUFRDECO_TABLES_CACHE_SIZE ; i++ )
     {
-      if ( c->ver[i] == ver )
+      if ( c->ver[i] == ver && c->local_ver[i] == local_ver && c->centre[i] == centre && c->subcentre[i] == subcentre )
         return i; // found
     }
   return -1; // Not found

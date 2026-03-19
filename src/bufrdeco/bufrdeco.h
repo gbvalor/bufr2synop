@@ -1067,6 +1067,9 @@ struct bufr_tables_cache {
     buf_t nt; /*!< Tables actually allocated in cache */
     buf_t next; /*< index of next element in array to add */
     int8_t ver[BUFRDECO_TABLES_CACHE_SIZE]; /*!< Table version for array elements */
+    int8_t local_ver[BUFRDECO_TABLES_CACHE_SIZE]; /*!< Local table version for array elements */
+    int8_t centre[BUFRDECO_TABLES_CACHE_SIZE]; /*!< Centre for array elements */
+    int8_t subcentre[BUFRDECO_TABLES_CACHE_SIZE]; /*!< Sub-centre for array elements */
     struct bufr_tables* tab[BUFRDECO_TABLES_CACHE_SIZE]; /*! Array of structs \ref bufr_tables allocated */
 };
 
@@ -1140,8 +1143,8 @@ int bufrdeco_free_compressed_data_references(struct bufrdeco_compressed_data_ref
 int bufrdeco_init_compressed_data_references(struct bufrdeco_compressed_data_references* rf);
 int bufrdeco_increase_compressed_ref_array(struct bufrdeco_compressed_data_references* r);
 int bufrdeco_increase_data_array(struct bufrdeco_subset_sequence_data* s);
-int bufrdeco_store_tables(struct bufr_tables** t, struct bufr_tables_cache* c, uint8_t ver);
-int bufrdeco_cache_tables_search(const struct bufr_tables_cache* c, uint8_t ver);
+int bufrdeco_store_tables(struct bufr_tables** t, struct bufr_tables_cache* c, uint8_t ver, uint8_t local_ver, uint8_t centre, uint8_t subcentre);
+int bufrdeco_cache_tables_search(const struct bufr_tables_cache* c, uint8_t ver, uint8_t local_ver, uint8_t centre, uint8_t subcentre);
 int bufrdeco_free_cache_tables(struct bufr_tables_cache* c);
 int bufrdeco_add_event_to_bitacora(struct bufrdeco* b, const struct bufrdeco_decode_subset_event* event);
 int bufrdeco_init_subset_bitacora(struct bufrdeco* b);
