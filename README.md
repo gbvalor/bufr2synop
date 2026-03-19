@@ -224,39 +224,41 @@ customized bufr tables if you are using them.
           By default all A1 are selected
 
     $> butrtotac -h
-    bufrtotac -h
-    bufrtotac: Version '0.24.0' built using GNU C compiler gcc 12.2.1 at Oct  3 2022 10:41:51 and cmake.
-    Linked to bufr2tac library version '0.24.0' built using GNU C compiler gcc 12.2.1 at Oct  3 2022 06:57:27 and cmake.
-    Linked to bufrdeco library version '0.24.0' built using GNU C compiler gcc 12.2.1 at Oct  3 2022 06:57:25 and cmake.
+ufrtotac -h
+bufrtotac: Version '0.36.0' built using clang C compiler 17.0.0 (clang-1700.6.4.2) at Mar 19 2026 18:33:17 and cmake.
+Linked to bufr2tac library version '0.36.0' built using clang C compiler 17.0.0 (clang-1700.6.4.2) at Mar 19 2026 18:33:16 and cmake.
+Linked to bufrdeco library version '0.36.0' built using clang C compiler 17.0.0 (clang-1700.6.4.2) at Mar 19 2026 18:33:16 and cmake.
 
-    Usage:
-    bufrtotac -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-X][-c][-h][more optional args....]
-           -c. The output is in csv format
-           -D debug level. 0 = No debug, 1 = Debug, 2 = Verbose debug (default = 0)
-           -E. Print expanded tree in json format
-           -G. Print latitude, logitude and altitude
-           -g. Print WIGOS ID
-           -h Print this help
-           -i Input file. Complete input path file for bufr file
-           -I list_of_files. Pathname of a file with the list of files to parse, one filename per line
-           -j. The output is in json format
-           -J. Output expanded subset SEC 4 data in json format
-           -n. Do not try to decode to TAC, just parse BUFR report
-           -o output. Pathname of output file. Default is standar output
-           -R. Read bit_offsets file if exists. The path of these files is to add '.offs' to the name of input BUFR file
-           -s prints a long output with explained sequence of descriptors
-           -S first..last . Print only results for subsets in range first..last (First subset available is 0). Default is all subsets
-           -t bufrtable_dir. Pathname of bufr tables directory. Ended with '/'
-           -T. Use cache of tables to optimize execution time
-           -W. Write bit_offsets file. The path of these files is to add '.offs' to the name of input BUFR file
-           -V. Verbose output
-           -v. Print version
-           -x. The output is in xml format
-           -X. Try to extract an embebed bufr in a file seraching for a first '7777' after first 'BUFR'
-           -0. Prints BUFR Sec 0 information in json format
-           -1. Prints BUFR Sec 1 information in json format
-           -2. Prints BUFR Sec 2 information in json format
-           -3. Prints BUFR Sec 3 information in json formatbufrtotac: Version '0.23.0' built using GNU C compiler gcc 12.1.1 at Aug 30 2022 18:39:58 and cmake.
+Usage: 
+bufrtotac -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-X][-c][-h][more optional args....]
+       -c. The output is in csv format
+       -D debug level. 0 = No debug, 1 = Debug, 2 = Verbose debug (default = 0)
+       -E. Print expanded tree in json format
+       -G. Print latitude, logitude and altitude 
+       -g. Print WIGOS ID
+       -h Print this help
+       -i Input file. Complete input path file for bufr file
+       -I list_of_files. Pathname of a file with the list of files to parse, one filename per line
+       -j. The output is in json format
+       -J. Output expanded subset SEC 4 data in json format
+       -N. Do not use local tables
+       -n. Do not try to decode to TAC, just parse BUFR report
+       -o output. Pathname of output file. Default is standar output
+       -R. Read bit_offsets file if exists. The path of these files is to add '.offs' to the name of input BUFR file
+       -s prints a long output with explained sequence of descriptors
+       -S first..last . Print only results for subsets in range first..last (First subset available is 0). Default is all subsets
+       -t bufrtable_dir. Pathname of bufr tables directory. Ended with '/'
+       -T. Use cache of tables to optimize execution time
+       -W. Write bit_offsets file. The path of these files is to add '.offs' to the name of input BUFR file
+       -V. Verbose output
+       -v. Print version
+       -x. The output is in xml format
+       -X. Try to extract an embebed bufr in a file seraching for a first '7777' after first 'BUFR'
+       -B  bufr_xfile. In case of -X flag, write the extracted BUFR to bufr_xfile
+       -0. Prints BUFR Sec 0 information in json format
+       -1. Prints BUFR Sec 1 information in json format
+       -2. Prints BUFR Sec 2 information in json format
+       -3. Prints BUFR Sec 3 information in json format
 <!-- markdownlint-enable MD052 -->
 
 Since version 0.23.0 there are four new interesting options in **buftotac** as you can see.

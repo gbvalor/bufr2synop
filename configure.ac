@@ -10,7 +10,7 @@
 #  configure.ac for bufr2synop project
 #
 
-AC_INIT([bufr2synop],[0.35.0])
+AC_INIT([bufr2synop],[0.36.0])
 AC_CONFIG_SRCDIR([src/apps/bufrtotac.c])
 AM_INIT_AUTOMAKE
 
