@@ -1,0 +1,141 @@
+CodeFigure_DataCategories,Name_DataCategories_en,CodeFigure_InternationalDataSubcategories,Name_InternationalDataSubcategories_en,Status
+0,Surface data - land,0,Hourly synoptic observations from fixed land stations (SYNOP),Operational
+0,Surface data - land,1,Intermediate synoptic observations from fixed land stations (SYNOP),Operational
+0,Surface data - land,2,Main synoptic observations from fixed land stations (SYNOP),Operational
+0,Surface data - land,3,Hourly synoptic observations from mobile land stations (SYNOP MOBIL),Operational
+0,Surface data - land,4,Intermediate synoptic observations from mobile land stations (SYNOP MOBIL),Operational
+0,Surface data - land,5,Main synoptic observations from mobile land stations (SYNOP MOBIL),Operational
+0,Surface data - land,6,One-hour observations from automated stations,Operational
+0,Surface data - land,7,n-minute observations from AWS stations,Operational
+0,Surface data - land,8,Radiation observations from one-hour period,Operational
+0,Surface data - land,9,Radiation observations from n-minute period,Operational
+0,Surface data - land,10,Routine aeronautical observations (METAR),Operational
+0,Surface data - land,11,Special aeronautical observations (SPECI),Operational
+0,Surface data - land,14,Ground-based GPS humidity observations (GPSIWV),Operational
+0,Surface data - land,20,Climatological observations (CLIMAT),Operational
+0,Surface data - land,21,Climatological observations (monthly reports of daily climate data),Operational
+0,Surface data - land,30,Sferics locations,Operational
+0,Surface data - land,40,Hydrologic reports,Operational
+0,Surface data - land,50,Hourly synoptic observations with supplementary one-hour data,Operational
+0,Surface data - land,51,Intermediate synoptic observations with supplementary one-hour data,Operational
+0,Surface data - land,52,Main synoptic observations with supplementary one-hour data,Operational
+1,Surface data - sea,0,Synoptic observations (SHIP),Operational
+1,Surface data - sea,6,One-hour observations from automated stations,Operational
+1,Surface data - sea,7,n-minute observations from AWS stations,Operational
+1,Surface data - sea,15,Uncrewed surface vehicle,Operational
+1,Surface data - sea,20,Climatological observations (CLIMAT SHIP),Operational
+1,Surface data - sea,25,Buoy observation (BUOY),Operational
+1,Surface data - sea,30,Tide gauge,Operational
+1,Surface data - sea,31,Observed water level time series,Operational
+2,Vertical soundings (other than satellite),1,Upper-wind reports from fixed land stations (PILOT),Operational
+2,Vertical soundings (other than satellite),2,Upper-wind reports from ships (PILOT SHIP),Operational
+2,Vertical soundings (other than satellite),3,Upper-wind reports from mobile land stations (PILOT MOBIL),Operational
+2,Vertical soundings (other than satellite),4,Upper-level temperature/humidity/wind reports from fixed land stations (TEMP),Operational
+2,Vertical soundings (other than satellite),5,Upper-level temperature/humidity/wind reports from ships (TEMP SHIP),Operational
+2,Vertical soundings (other than satellite),6,Upper-level temperature/humidity/wind report from mobile land stations (TEMP MOBIL),Operational
+2,Vertical soundings (other than satellite),7,Upper-level temperature/humidity/wind reports from dropwinsondes (TEMP DROP),Operational
+2,Vertical soundings (other than satellite),10,Wind profiler reports,Operational
+2,Vertical soundings (other than satellite),11,RASS temperature profiles,Operational
+2,Vertical soundings (other than satellite),14,Upper-level temperature/humidity/wind reports from descent radiosondes originally launched from fixed land stations,Operational
+2,Vertical soundings (other than satellite),15,Upper-level temperature/humidity/wind reports from descent radiosondes originally launched from ships,Operational
+2,Vertical soundings (other than satellite),16,Upper-level temperature/humidity/wind reports from descent radiosondes originally launched from mobile land stations,Operational
+2,Vertical soundings (other than satellite),20,ASDAR/ACARS profiles (AMDAR),Operational
+2,Vertical soundings (other than satellite),21,Profiles of atmospheric constituents concentrations,Operational
+2,Vertical soundings (other than satellite),25,Climatological observations from fixed land stations (CLIMAT TEMP),Operational
+2,Vertical soundings (other than satellite),26,Climatological observations from ships (CLIMAT TEMP SHIP),Operational
+2,Vertical soundings (other than satellite),40,MW temperature/humidity sounding,Operational
+2,Vertical soundings (other than satellite),50,Radio occultation sounding,Operational
+2,Vertical soundings (other than satellite),104,Upper-level temperature/humidity/wind reports from fixed land stations (TEMP) with re-used radiosondes,Operational
+2,Vertical soundings (other than satellite),105,Upper-level temperature/humidity/wind reports from ships (TEMP SHIP) with re-used radiosondes,Operational
+2,Vertical soundings (other than satellite),106,Upper-level temperature/humidity/wind report from mobile land stations (TEMP MOBIL) with re-used radiosondes,Operational
+2,Vertical soundings (other than satellite),114,Upper-level temperature/humidity/wind reports from descent radiosondes originally launched from fixed land stations with re-used radiosondes,Operational
+2,Vertical soundings (other than satellite),115,Upper-level temperature/humidity/wind reports from descent radiosondes originally launched from ships with re-used radiosondes,Operational
+2,Vertical soundings (other than satellite),116,Upper-level temperature/humidity/wind reports from descent radiosondes originally launched from mobile land stations with re-used radiosondes,Operational
+3,Vertical soundings (satellite),0,Temperature (SATEM),Operational
+3,Vertical soundings (satellite),1,TIROS (TOVS),Operational
+3,Vertical soundings (satellite),2,ATOVS,Operational
+3,Vertical soundings (satellite),3,AMSU-A,Operational
+3,Vertical soundings (satellite),4,AMSU-B,Operational
+3,Vertical soundings (satellite),5,HIRS,Operational
+3,Vertical soundings (satellite),6,MHS,Operational
+3,Vertical soundings (satellite),7,IASI,Operational
+3,Vertical soundings (satellite),8,VASS (Vertical atmospheric sounding system),Operational
+3,Vertical soundings (satellite),20,IR temperature/humidity sounding,Operational
+3,Vertical soundings (satellite),30,Hyperspectral temperature/humidity sounding,Operational
+3,Vertical soundings (satellite),40,MW temperature/humidity sounding,Operational
+3,Vertical soundings (satellite),50,Radio occultation sounding,Operational
+4,Single level upper-air data (other than satellite),0,ASDAR/ACARS (AMDAR),Operational
+4,Single level upper-air data (other than satellite),1,"Manual (AIREP, PIREP)",Operational
+4,Single level upper-air data (other than satellite),2,Mode-S,Operational
+4,Single level upper-air data (other than satellite),3,Long-duration balloon,Operational
+5,Single level upper-air data (satellite),0,Cloud wind data (SATOB),Operational
+5,Single level upper-air data (satellite),1,Cloud properties,Operational
+6,Radar data,0,Reflectivity data,Operational
+6,Radar data,1,Doppler wind profiles,Operational
+6,Radar data,2,Derived products,Operational
+6,Radar data,3,Ground radar weather (RADOB),Operational
+7,Synoptic features,0,Forecast tropical cyclone tracks from ensemble prediction system,Operational
+7,Synoptic features,1,Squall line,Operational
+7,Synoptic features,2,Forecast tropical cyclone from deterministic system,Operational
+7,Synoptic features,3,Forecast tropical cyclone from machine learning deterministic system,Operational
+7,Synoptic features,4,Forecast tropical cyclone from machine learning ensemble prediction system,Operational
+8,Physical/chemical constituents,0,Surface ozone,Operational
+8,Physical/chemical constituents,1,Ozone vertical sounding,Operational
+8,Physical/chemical constituents,2,Total ozone,Operational
+8,Physical/chemical constituents,3,Acid rain,Operational
+8,Physical/chemical constituents,4,Aerosol,Operational
+9,Dispersal and transport,0,"Trajectories, analysis or forecast",Operational
+10,Radiological data,1,Observation (RADREP),Operational
+10,Radiological data,2,Forecast (RADOF),Operational
+12,Surface data (satellite),0,ERS-uwa,Operational
+12,Surface data (satellite),1,ERS-uwi,Operational
+12,Surface data (satellite),2,ERS-ura,Operational
+12,Surface data (satellite),3,ERS-uat,Operational
+12,Surface data (satellite),4,SSM/I radiometer,Operational
+12,Surface data (satellite),5,Quikscat,Operational
+12,Surface data (satellite),6,Surface temp./radiation (SATOB),Operational
+12,Surface data (satellite),7,ASCAT data,Operational
+12,Surface data (satellite),8,Soil moisture,Operational
+12,Surface data (satellite),9,Normalized differential vegetation index (NDVI),Operational
+12,Surface data (satellite),10,Normalized radar backscatter,Operational
+12,Surface data (satellite),11,Surface emissivity,Operational
+12,Surface data (satellite),12,Sea-surface temperature,Operational
+12,Surface data (satellite),13,Precipitation,Operational
+21,Radiances (satellite measured),0,Earth radiation budget,Operational
+21,Radiances (satellite measured),5,Cross-track infrared sounder,Operational
+21,Radiances (satellite measured),6,Advanced technology microwave sounder,Operational
+21,Radiances (satellite measured),7,Visible/infrared imager radiometer suite,Operational
+22,Radar (satellite) but not altimeter and scatterometer,0,Cloud and precipitation radar,Operational
+22,Radar (satellite) but not altimeter and scatterometer,1,Synthetic aperture radar,Operational
+23,Lidar (satellite),0,"Lidar based missions (for wind, for cloud/aerosol, for water vapour, for altimetry)",Operational
+24,Scatterometry (satellite),0,Wind scatterometry,Operational
+25,Altimetry (satellite),0,Radar altimetry,Operational
+26,Spectrometry (satellite),0,Cross nadir short-wave spectrometry (for chemistry),Operational
+26,Spectrometry (satellite),1,Cross nadir IR spectrometry (for chemistry),Operational
+26,Spectrometry (satellite),2,Limb sounding short-wave spectrometry,Operational
+26,Spectrometry (satellite),3,Limb sounding IR spectrometry,Operational
+26,Spectrometry (satellite),4,Limb sounding sub-millimetre wave spectrometry,Operational
+30,Calibration dataset (satellite),0,Subsetted data,Operational
+30,Calibration dataset (satellite),1,Collocated data,Operational
+30,Calibration dataset (satellite),2,On-board calibration data,Operational
+30,Calibration dataset (satellite),3,Bias monitoring,Operational
+30,Calibration dataset (satellite),4,Near-real-time correction,Operational
+30,Calibration dataset (satellite),5,Re-analysis correction,Operational
+31,Oceanographic data,0,Surface observation,Operational
+31,Oceanographic data,1,Surface observation along track (TRACKOB),Operational
+31,Oceanographic data,2,Spectral wave observation (WAVEOB),Operational
+31,Oceanographic data,3,Bathythermal observation (BATHY),Operational
+31,Oceanographic data,4,Subsurface floats (profile),Operational
+31,Oceanographic data,5,XBT/XCTD profiles (TESAC),Operational
+31,Oceanographic data,6,Waves reports,Operational
+31,Oceanographic data,7,Tsunameter data,Operational
+31,Oceanographic data,8,Glider data,Operational
+32,Lidar (ground-based),0,"Wind, cloud, aerosol",Operational
+101,Image data (satellite),0,Multi-purpose VIS/IR imagery,Operational
+101,Image data (satellite),1,Conical scanning MW imagery (intermediate frequencies),Operational
+101,Image data (satellite),2,Low frequency MW imagery,Operational
+101,Image data (satellite),3,Ocean colour imagery,Operational
+101,Image data (satellite),4,Imagery with special viewing geometry,Operational
+101,Image data (satellite),5,Lightning imagery,Operational
+101,Image data (satellite),6,High-resolution short-wave imagery for land observation,Operational
+101,Image data (satellite),7,SMOS data,Operational

@@ -1,0 +1,214 @@
+CodeFigure_OriginatingCentres,Name_OriginatingCentres_en,CodeFigure_SubCentres,Name_SubCentres_en,Status
+,,0,No sub-centre,Operational
+,REGION I,,,Operational
+,,,,Operational
+,REGION II,,,Operational
+34,"Tokyo (RSMC), Japan Meteorological Agency",207,Syowa,Operational
+34,"Tokyo (RSMC), Japan Meteorological Agency",240,Kiyose,Operational
+34,"Tokyo (RSMC), Japan Meteorological Agency",241,Reanalysis project,Operational
+39,Beijing (RSMC),225,Beijing,Operational
+39,Beijing (RSMC),226,Guangzhou,Operational
+39,Beijing (RSMC),228,Urumuqi,Operational
+40,Seoul,243,Seoul,Operational
+40,Seoul,245,Jincheon,Operational
+110,"Hong-Kong, China",229,Hong-Kong,Operational
+,REGION III,,,Operational
+46,Brazilian Space Agency INPE,10,Cachoeira Paulista (INPE),Operational
+46,Brazilian Space Agency INPE,11,Cuiaba (INPE),Operational
+46,Brazilian Space Agency INPE,12,Brasilia (SEPIS - INMET),Operational
+46,Brazilian Space Agency INPE,13,Fortaleza (FUNCEME),Operational
+46,Brazilian Space Agency INPE,14,Natal (Navy Hygrog. Centre),Operational
+46,Brazilian Space Agency INPE,15,Manaus (SIVAM),Operational
+46,Brazilian Space Agency INPE,16,Natal (INPE),Operational
+46,Brazilian Space Agency INPE,17,Boa Vista,Operational
+46,Brazilian Space Agency INPE,18,SIPAM-Porto Velho-RO,Operational
+46,Brazilian Space Agency INPE,19,SIPAM-Belem-PA,Operational
+46,Brazilian Space Agency INPE,25,Sao Paulo University - USP,Operational
+145,French Guiana,1,DBNet station of Cayenne (French Guiana),Operational
+147,National Commission on Space Activities (CONAE) - Argentina,10,Cordoba,Operational
+147,National Commission on Space Activities (CONAE) - Argentina,15,Ushuaia,Operational
+147,National Commission on Space Activities (CONAE) - Argentina,20,Marambio,Operational
+147,National Commission on Space Activities (CONAE) - Argentina,30,Santiago de Chile,Operational
+147,National Commission on Space Activities (CONAE) - Argentina,40,Punta Arenas,Operational
+147,National Commission on Space Activities (CONAE) - Argentina,50,Base Presidente Frei,Operational
+147,National Commission on Space Activities (CONAE) - Argentina,60,Cotopaxi,Operational
+148,Brazilian Department of Airspace Control - DECEA,1,Integrated Centre of Aeronautical Meteorology - CIMAER,Operational
+,REGION IV,,,Operational
+7,"US National Weather Service, NCEP",1,NCEP Reanalysis Project,Operational
+7,"US National Weather Service, NCEP",2,NCEP Ensemble Products,Operational
+7,"US National Weather Service, NCEP",3,NCEP Central Operations,Operational
+7,"US National Weather Service, NCEP",4,Environmental Modeling Center,Operational
+7,"US National Weather Service, NCEP",5,Weather Prediction Center,Operational
+7,"US National Weather Service, NCEP",6,Ocean Prediction Center,Operational
+7,"US National Weather Service, NCEP",7,Climate Prediction Center,Operational
+7,"US National Weather Service, NCEP",8,Aviation Weather Center,Operational
+7,"US National Weather Service, NCEP",9,Storm Prediction Center,Operational
+7,"US National Weather Service, NCEP",10,National Hurricane Center,Operational
+7,"US National Weather Service, NCEP",11,NWS Techniques Development Laboratory,Operational
+7,"US National Weather Service, NCEP",12,NESDIS Office of Research and Applications,Operational
+7,"US National Weather Service, NCEP",13,Federal Aviation Administration,Operational
+7,"US National Weather Service, NCEP",14,NWS Meteorological Development Laboratory,Operational
+7,"US National Weather Service, NCEP",15,North American Regional Reanalysis Project,Operational
+7,"US National Weather Service, NCEP",16,Space Weather Prediction Center,Operational
+7,"US National Weather Service, NCEP",17,ESRL Global Systems Division,Operational
+160,United States NOAA/NESDIS,1,National Climatic Data Center,Operational
+160,United States NOAA/NESDIS,2,National Geophysical Data Center,Operational
+160,United States NOAA/NESDIS,3,National Oceanographic Data Center,Operational
+160,United States NOAA/NESDIS,4,Center for Satellite Applications and Research (STAR),Operational
+160,United States NOAA/NESDIS,5,Joint Polar Satellite System,Operational
+160,United States NOAA/NESDIS,10,Tromso (Norway),Operational
+160,United States NOAA/NESDIS,11,McMurdo (Antarctica),Operational
+161,United States NOAA Office of Oceanic and Atmospheric Research (NOAA/OAR),1,Great Lakes Environmental Research Laboratory,Operational
+161,United States NOAA Office of Oceanic and Atmospheric Research (NOAA/OAR),2,Earth System Research Laboratory,Operational
+161,United States NOAA Office of Oceanic and Atmospheric Research (NOAA/OAR),3,Atlantic Oceanographic and Meteorological Laboratory,Operational
+161,United States NOAA Office of Oceanic and Atmospheric Research (NOAA/OAR),4,Pacific Marine Environmental Laboratory,Operational
+161,United States NOAA Office of Oceanic and Atmospheric Research (NOAA/OAR),5,Air Resources Laboratory,Operational
+161,United States NOAA Office of Oceanic and Atmospheric Research (NOAA/OAR),6,Geophysical Fluid Dynamics Laboratory,Operational
+161,United States NOAA Office of Oceanic and Atmospheric Research (NOAA/OAR),7,National Severe Storms Laboratory,Operational
+173,United States National Aeronautics and Space Administration (NASA),1,Ames Research Center,Operational
+173,United States National Aeronautics and Space Administration (NASA),2,Dryden Flight Research Center,Operational
+173,United States National Aeronautics and Space Administration (NASA),3,Glenn Research Center,Operational
+173,United States National Aeronautics and Space Administration (NASA),4,Goddard Space Flight Center,Operational
+173,United States National Aeronautics and Space Administration (NASA),5,Jet Propulsion Laboratory,Operational
+173,United States National Aeronautics and Space Administration (NASA),6,Johnson Space Center,Operational
+173,United States National Aeronautics and Space Administration (NASA),7,Kennedy Space Center,Operational
+173,United States National Aeronautics and Space Administration (NASA),8,Langley Research Center,Operational
+173,United States National Aeronautics and Space Administration (NASA),9,Marshall Space Flight Center,Operational
+173,United States National Aeronautics and Space Administration (NASA),10,Stennis Space Center,Operational
+173,United States National Aeronautics and Space Administration (NASA),11,Goddard Institute for Space Studies,Operational
+173,United States National Aeronautics and Space Administration (NASA),12,Independent Verification and Validation Facility,Operational
+173,United States National Aeronautics and Space Administration (NASA),13,NASA Shared Service Center,Operational
+173,United States National Aeronautics and Space Administration (NASA),14,Wallops Flight Facility,Operational
+176,Cooperative Institute for Meteorological Satellite Studies (CIMSS) - United States,10,Tromso (Norway),Operational
+176,Cooperative Institute for Meteorological Satellite Studies (CIMSS) - United States,11,McMurdo (Antarctica),Operational
+176,Cooperative Institute for Meteorological Satellite Studies (CIMSS) - United States,12,Sodankyla (Finland),Operational
+176,Cooperative Institute for Meteorological Satellite Studies (CIMSS) - United States,13,Fairbanks (United States),Operational
+176,Cooperative Institute for Meteorological Satellite Studies (CIMSS) - United States,14,Barrow (United States),Operational
+176,Cooperative Institute for Meteorological Satellite Studies (CIMSS) - United States,15,Rothera (Antarctica),Operational
+176,Cooperative Institute for Meteorological Satellite Studies (CIMSS) - United States,20,Honolulu (United States),Operational
+176,Cooperative Institute for Meteorological Satellite Studies (CIMSS) - United States,21,Gilmore Creek (United States),Operational
+176,Cooperative Institute for Meteorological Satellite Studies (CIMSS) - United States,22,Madison (United States),Operational
+176,Cooperative Institute for Meteorological Satellite Studies (CIMSS) - United States,23,Miami (United States),Operational
+176,Cooperative Institute for Meteorological Satellite Studies (CIMSS) - United States,24,Mayaguez (Puerto Rico),Operational
+176,Cooperative Institute for Meteorological Satellite Studies (CIMSS) - United States,25,Monterey (United States),Operational
+176,Cooperative Institute for Meteorological Satellite Studies (CIMSS) - United States,26,Guam,Operational
+176,Cooperative Institute for Meteorological Satellite Studies (CIMSS) - United States,27,Corvallis (United States),Operational
+176,Cooperative Institute for Meteorological Satellite Studies (CIMSS) - United States,28,Hampton (United States),Operational
+176,Cooperative Institute for Meteorological Satellite Studies (CIMSS) - United States,29,New York City (United States),Operational
+177,NOAA National Ocean Service - United States,1,Center for Operational Oceanographic Products and Services,Operational
+177,NOAA National Ocean Service - United States,2,Coast Survey Development Laboratory,Operational
+183,Scripps Institute of Oceanography (UC San Diego - United States),1,Center for Western Weather and Water Extremes,Operational
+183,Scripps Institute of Oceanography (UC San Diego - United States),2,Global Drifter Program,Operational
+,REGION V,,,Operational
+2,Melbourne,201,Casey,Operational
+2,Melbourne,203,Davis,Operational
+2,Melbourne,210,Alice Springs,Operational
+2,Melbourne,211,Melbourne Crib Point 1,Operational
+2,Melbourne,214,Darwin,Operational
+2,Melbourne,217,Perth,Operational
+2,Melbourne,219,Townsville,Operational
+2,Melbourne,232,Fiji,Operational
+2,Melbourne,235,Noumea,Operational
+2,Melbourne,237,Papeete,Operational
+2,Melbourne,250,Vladivostock,Operational
+2,Melbourne,251,Guam,Operational
+2,Melbourne,252,Honolulu,Operational
+69,Wellington (RSMC),204,National Institute of Water and Atmospheric Research (NIWA - New Zealand),Operational
+69,Wellington (RSMC),205,Niue,Operational
+69,Wellington (RSMC),206,Rarotonga (Cook Islands),Operational
+69,Wellington (RSMC),207,Apia (Samoa),Operational
+69,Wellington (RSMC),208,Tonga,Operational
+69,Wellington (RSMC),209,Tuvalu,Operational
+69,Wellington (RSMC),210,Kiribati,Operational
+69,Wellington (RSMC),211,Tokelau,Operational
+69,Wellington (RSMC),243,Kelburn,Operational
+72,Singapore,249,Singapore,Operational
+191,French Polynesia (NMC),1,RARS station of Tahiti (French Polynesia),Operational
+204,National Institute of Water and Atmospheric Research (NIWA - New Zealand),101,Maupuia,Operational
+204,National Institute of Water and Atmospheric Research (NIWA - New Zealand),102,Lauder,Operational
+,REGION VI,,,Operational
+74,"UK Met Office, Exeter (RSMC)",1,Shanwick Oceanic Area Control Centre,Operational
+74,"UK Met Office, Exeter (RSMC)",2,Fucino,Operational
+74,"UK Met Office, Exeter (RSMC)",3,Gatineau,Operational
+74,"UK Met Office, Exeter (RSMC)",4,Maspalomas (Spain),Operational
+74,"UK Met Office, Exeter (RSMC)",5,ESA ERS Central Facility,Operational
+74,"UK Met Office, Exeter (RSMC)",6,Prince Albert,Operational
+74,"UK Met Office, Exeter (RSMC)",7,West Freugh,Operational
+74,"UK Met Office, Exeter (RSMC)",13,Tromso,Operational
+74,"UK Met Office, Exeter (RSMC)",21,Agenzia Spaziale Italiana (Italy),Operational
+74,"UK Met Office, Exeter (RSMC)",22,Centre National de la Recherche Scientifique (France),Operational
+74,"UK Met Office, Exeter (RSMC)",23,GeoForschungs Zentrum (Germany),Operational
+74,"UK Met Office, Exeter (RSMC)",24,Geodetic Observatory Pecny (Czechia),Operational
+74,"UK Met Office, Exeter (RSMC)",25,Institut d'Estudis Espacials de Catalunya (Spain),Operational
+74,"UK Met Office, Exeter (RSMC)",26,Federal Office of Topography (Switzerland),Operational
+74,"UK Met Office, Exeter (RSMC)",27,Nordic Commission of Geodesy (Norway),Operational
+74,"UK Met Office, Exeter (RSMC)",28,Nordic Commission of Geodesy (Sweden),Operational
+74,"UK Met Office, Exeter (RSMC)",29,Institute Geographique National (France) - Service de geodesie,Operational
+74,"UK Met Office, Exeter (RSMC)",30,Bundesamt fuer Kartographie und Geodaesie (Germany),Operational
+74,"UK Met Office, Exeter (RSMC)",31,Institute of Engineering Satellite Surveying and Geodesy (United Kingdom),Operational
+74,"UK Met Office, Exeter (RSMC)",32,Joint Operational Meteorology and Oceanography Centre (JOMOC),Operational
+74,"UK Met Office, Exeter (RSMC)",33,Koninklijk Nederlands Meteorologisch Institut (Netherlands),Operational
+74,"UK Met Office, Exeter (RSMC)",34,Nordic GPS Atmospheric Analysis centre (Sweden),Operational
+74,"UK Met Office, Exeter (RSMC)",35,Instituto Geografico Nacional de Espana (Spain),Operational
+74,"UK Met Office, Exeter (RSMC)",36,Met Eireann (Ireland),Operational
+74,"UK Met Office, Exeter (RSMC)",37,Royal Observatory of Belgium (Belgium),Operational
+78,Offenbach (RSMC),10,POLARA (Polarimetric Radar Algorithms instance),Operational
+78,Offenbach (RSMC),64,Bundeswehr Geoinformation Office (BGIO),Operational
+78,Offenbach (RSMC),110,NowCast mobile (Lightning data),Operational
+78,Offenbach (RSMC),221,"Schleswig-Holstein, Traffic Operations Computing Centre (TOCC) Kiel/Neumuenster",Operational
+78,Offenbach (RSMC),222,"Hamburg, TOCC Hamburg",Operational
+78,Offenbach (RSMC),223,"Niedersachsen, TOCC Hannover",Operational
+78,Offenbach (RSMC),224,Austria (NMC),Operational
+78,Offenbach (RSMC),225,"Nordrhein-Westfalen, TOCC Kamen Leverkusen",Operational
+78,Offenbach (RSMC),226,"Hessen, TOCC Ruesselsheim",Operational
+78,Offenbach (RSMC),227,"Rheinland-Pfalz, TOCC Koblenz",Operational
+78,Offenbach (RSMC),228,"Baden-Wuerttemberg, TOCC Ludwigsburg",Operational
+78,Offenbach (RSMC),229,"Bayern, TOCC Freimann",Operational
+78,Offenbach (RSMC),230,"Saarland, TOCC Rohrbach",Operational
+78,Offenbach (RSMC),231,"Bayern, Autobahn directorate Nordbayern",Operational
+78,Offenbach (RSMC),232,"Brandenburg, TOCC Stolpe",Operational
+78,Offenbach (RSMC),233,"Mecklenburg-Vorpommern, TOCC Malchow",Operational
+78,Offenbach (RSMC),234,"Sachsen, TOCC Dresden",Operational
+78,Offenbach (RSMC),235,"Sachsen-Anhalt, TOCC Halle",Operational
+78,Offenbach (RSMC),236,"Thueringen, TOCC Erfurt",Operational
+78,Offenbach (RSMC),237,EasyWay - Meteotrans,Operational
+78,Offenbach (RSMC),254,EUMETSAT,Operational
+80,Rome (RSMC),101,Albania (NMC),Operational
+80,Rome (RSMC),102,National Research Council/Institute of Atmospheric Sciences and Climate (CNR-ISAC),Operational
+85,Toulouse (RSMC),200,Institut National de l'Environnement Industriel et des Risques (France),Operational
+85,Toulouse (RSMC),201,Rheinisches Institut fuer Umweltforschung an der Universitaet zu Koeln E.V. (Germany),Operational
+85,Toulouse (RSMC),202,Institut Francais de Recherche pour l'Exploitation de la Mer,Operational
+85,Toulouse (RSMC),203,Aarhus University (Denmark),Operational
+85,Toulouse (RSMC),204,Institute of Environmental Protection - National Research Institute (Poland),Operational
+89,Prague (RTH),1,Solar and Ozone Observatory Hradec Kralove,Operational
+96,Athens,1,Cyprus (NMC),Operational
+211,Lannion,10,Saint-Denis (La Reunion),Operational
+227,Belgium (NMC),1,Luxembourg (NMC),Operational
+250,COSMO (COnsortium for Small scale MOdelling),76,Roshydromet (Russian Federation),Operational
+250,COSMO (COnsortium for Small scale MOdelling),78,Deutscher Wetterdienst (Germany),Operational
+250,COSMO (COnsortium for Small scale MOdelling),80,Ufficio Generale Spazio Aereo e Meteorologia (Italy),Operational
+250,COSMO (COnsortium for Small scale MOdelling),96,Hellenic National Meteorological Service (Greece),Operational
+250,COSMO (COnsortium for Small scale MOdelling),215,MeteoSwiss (Switzerland),Operational
+250,COSMO (COnsortium for Small scale MOdelling),220,Institute of Meteorology and Water Management (Poland),Operational
+250,COSMO (COnsortium for Small scale MOdelling),242,National Meteorological Administration (Romania),Operational
+254,EUMETSAT Operation Centre,10,Tromso (Norway),Operational
+254,EUMETSAT Operation Centre,20,Maspalomas (Spain),Operational
+254,EUMETSAT Operation Centre,30,Kangerlussuaq (Greenland),Operational
+254,EUMETSAT Operation Centre,40,Edmonton (Canada),Operational
+254,EUMETSAT Operation Centre,50,Bedford (Canada),Operational
+254,EUMETSAT Operation Centre,60,Gander (Canada),Operational
+254,EUMETSAT Operation Centre,70,Monterey (United States),Operational
+254,EUMETSAT Operation Centre,80,Wallops Island (United States),Operational
+254,EUMETSAT Operation Centre,90,Gilmor Creek (United States),Operational
+254,EUMETSAT Operation Centre,100,Athens (Greece),Operational
+254,EUMETSAT Operation Centre,120,"Ewa Beach, Hawaii",Operational
+254,EUMETSAT Operation Centre,125,"Ford Island, Hawaii",Operational
+254,EUMETSAT Operation Centre,130,"Miami, Florida",Operational
+254,EUMETSAT Operation Centre,140,Lannion (France),Operational
+254,EUMETSAT Operation Centre,150,Svalbard (Norway),Operational
+254,EUMETSAT Operation Centre,170,Saint-Denis (La Reunion),Operational
+254,EUMETSAT Operation Centre,180,Moscow,Operational
+254,EUMETSAT Operation Centre,190,Muscat,Operational
+254,EUMETSAT Operation Centre,200,Khabarovsk,Operational
+254,EUMETSAT Operation Centre,210,Novosibirsk,Operational
+254,EUMETSAT Operation Centre,220,NOAA Satellite Operations Facility (NSOF),Operational

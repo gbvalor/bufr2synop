@@ -440,10 +440,10 @@ int bufrdeco_fast_read_sec_0_1(struct bufr_sec0* s0, struct bufr_sec1* s1, char*
     }
 
     fclose(fp);
-    return bufrdeco_get_sec_0_1_from_buffer(s0, s1, (const char*)sec0_1, sizeof(sec0_1), error, error_size);
+    return bufrdeco_get_sec_0_1_from_buffer(s0, s1, (const uint8_t*)sec0_1, sizeof(sec0_1), error, error_size);
 }
 
-/*! \fn int bufrdeco_get_sec_0_1_from_buffer(struct bufr_sec0* s0, struct bufr_sec1* s1, char* filename, char* error, size_t error_size)
+/*! \fn int bufrdeco_get_sec_0_1_from_buffer(struct bufr_sec0* s0, struct bufr_sec1* s1, const uint8_t* buff, size_t size, char* error, size_t error_size)
   \brief Read sec0 and sec1 of a bufr file without parsing anything further
   \param [out] s0 Pointer to struct \ref bufr_sec0 where the data will be stored
   \param [out] s1 Pointer to struct \ref bufr_sec1 where the data will be stored
@@ -457,7 +457,7 @@ int bufrdeco_fast_read_sec_0_1(struct bufr_sec0* s0, struct bufr_sec1* s1, char*
     It only reads the first 30 bytes of the buffer to do it. It is used by bufrdeco_fast_read_sec_0_1() but can be also used 
     when we already have the data in a buffer and we want just to read sec0 and sec1.   
 */
-int bufrdeco_get_sec_0_1_from_buffer(struct bufr_sec0* s0, struct bufr_sec1* s1, const char* buff, size_t size, char* error, size_t error_size)
+int bufrdeco_get_sec_0_1_from_buffer(struct bufr_sec0* s0, struct bufr_sec1* s1, const uint8_t* buff, size_t size, char* error, size_t error_size)
 {
     if (s0 == NULL || s1 == NULL || buff == NULL || size < 30) {
         if (error != NULL && error_size > 0)
