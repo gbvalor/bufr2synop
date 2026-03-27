@@ -324,66 +324,6 @@ int bufrdeco_get_bufr(struct bufrdeco* b, char* filename)
 }
 
 /*!
- * \fn int bufrdeco_write_subset_offset_bits ( struct bufrdeco *b, char *filename )
- * \brief Write offset bit array for subsets in a non-compressed bufr
- * \param [in] filename complete path of output file to open
- * \param [in] b pointer to the struct \ref bufrdeco
- * \return 1 if problem, 0 otherwise
- */
-int bufrdeco_write_subset_offset_bits(struct bufrdeco* b, const char* filename)
-{
-    FILE* f;
-
-    // assert nice args
-    bufrdeco_assert_with_return_val(b != NULL && filename != NULL, 1);
-
-    // open the file
-    f = fopen(filename, "w");
-    bufrdeco_assert_with_return_val(f != NULL, 1);
-
-    // Read the offsets
-    if (bufr_write_subset_offset_bits(f, &(b->offsets))) {
-        fclose(f);
-        return 1;
-    }
-    fclose(f);
-    return 0;
-}
-
-/*!
- * \fn int bufrdeco_read_subset_offset_bits ( struct bufrdeco *b, char *filename )
- * \brief Write offset bit array for subsets in a non-compressed bufr
- * \param [in] filename complete path of input file to open
- * \param [in,out] b pointer to the struct \ref bufrdeco
- * \return 1 if problem, 0 otherwise
- */
-int bufrdeco_read_subset_offset_bits(struct bufrdeco* b, char* filename)
-{
-    struct stat st;
-    FILE* f;
-
-    // assert nice args
-    bufrdeco_assert_with_return_val(b != NULL && filename != NULL, 1);
-
-    // silently return if cannot stat the file
-    if (stat(filename, &st) < 0) {
-        return 1;
-    }
-
-    // open the file
-    f = fopen(filename, "r");
-    bufrdeco_assert_with_return_val(f != NULL, 1);
-
-    // Read the offsets
-    if (bufr_read_subset_offset_bits(f, &(b->offsets))) {
-        fclose(f);
-        return 1;
-    }
-    fclose(f);
-    return 0;
-}
-
-/*!
  *  \fn struct bufrdeco_subset_sequence_data *bufrdeco_get_target_subset_sequence_data (buf_t nset, struct bufrdeco *b)
  *  \brief Prepare the struct \ref bufrdeco to get data from the solicited subset
  *  \param [in] nset index of subset we want to parse and get data. First subset in a BUFR file has index 0.

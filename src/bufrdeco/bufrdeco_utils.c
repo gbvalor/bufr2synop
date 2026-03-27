@@ -540,51 +540,6 @@ int bufrdeco_get_bitmaped_info ( struct bufrdeco_bitmap_related_vars *brv, uint3
   return 1;
 }
 
-
-/*!
- * \fn int bufr_write_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offsets *off)
- * \brief Write offset bit array for subsets in a non-compressed bufr
- * \param [in] f file pointer opened by caller
- * \param [in] off pointer to the struct \ref bufrdeco_subset_bit_offsets with the data to write into file
- * \return if success return 0, otherwise 1
- */
-int bufr_write_subset_offset_bits ( FILE *f, const struct bufrdeco_subset_bit_offsets *off )
-{
-  size_t wrote;
-
-  bufrdeco_assert (off != NULL && f != NULL );
-
-  wrote = fwrite ( & ( off->nr ), sizeof ( buf_t ), 1, f );
-  bufrdeco_assert_with_return_val ( wrote == 1, 1 );
-
-  wrote = fwrite ( & ( off->ofs[0] ), sizeof ( buf_t ), off->nr, f );
-  bufrdeco_assert_with_return_val ( wrote == off->nr, 1 );
-
-  return 0;
-}
-
-/*!
- * \fn int bufr_read_subset_offset_bits (FILE *f , struct bufrdeco_subset_bit_offsets *off)
- * \brief Write offset bit array for subsets in a non-compressed bufr
- * \param [in] f file pointer opened by caller
- * \param [out] off pointer to the struct \ref bufrdeco_subset_bit_offsets with the data to write into file
- * \return if success return 0, otherwise 1
- */
-int bufr_read_subset_offset_bits ( FILE *f, struct bufrdeco_subset_bit_offsets *off )
-{
-  size_t readed;
-
-  bufrdeco_assert (off != NULL && f != NULL );
-
-  readed = fread ( & ( off->nr ), sizeof ( buf_t ), 1, f );
-  bufrdeco_assert_with_return_val ( readed == 1, 1 );
-
-  readed = fread ( & ( off->ofs[0] ), sizeof ( buf_t ), off->nr, f );
-  bufrdeco_assert_with_return_val ( readed == off->nr, 1 );
-
-  return 0;
-}
-
 /*!
  * \fn char *strcat_safe ( char *dst, const char *src, size_t n )
  * \brief An secure version emulation of strcat.

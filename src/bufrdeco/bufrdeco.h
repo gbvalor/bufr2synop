@@ -1127,6 +1127,8 @@ int bufrdeco_get_bufr(struct bufrdeco* b, char* filename);
 struct bufrdeco_subset_sequence_data* bufrdeco_get_target_subset_sequence_data(buf_t nset, struct bufrdeco* b);
 int bufrdeco_read_subset_offset_bits(struct bufrdeco* b, char* filename);
 int bufrdeco_write_subset_offset_bits(struct bufrdeco* b, const char* filename);
+int bufrdeco_read_subset_offset_bits_universal(struct bufrdeco* b, const char* filename);
+int bufrdeco_write_subset_offset_bits_be(struct bufrdeco* b, const char* filename);
 
 // Memory funcions
 int bufrdeco_init_expanded_tree(struct bufrdeco_expanded_tree** t);
@@ -1295,6 +1297,17 @@ char* strcat_safe(char* dst, const char* src, size_t n);
 // I/O of bit offset for subsets
 int bufr_read_subset_offset_bits(FILE* f, struct bufrdeco_subset_bit_offsets* off);
 int bufr_write_subset_offset_bits(FILE* f, const struct bufrdeco_subset_bit_offsets* off);
+int bufr_read_subset_offset_bits_universal(FILE* f, struct bufrdeco_subset_bit_offsets* off);
+int bufr_write_subset_offset_bits_be(FILE* f, const struct bufrdeco_subset_bit_offsets* off);
+size_t bufr_subset_offset_bits_binary_size(const struct bufrdeco_subset_bit_offsets* off);
+int bufr_write_subset_offset_bits_to_buffer(uint8_t* buffer, size_t buffer_size, size_t* used_size,
+    const struct bufrdeco_subset_bit_offsets* off);
+int bufr_read_subset_offset_bits_from_buffer(const uint8_t* buffer, size_t buffer_size,
+    struct bufrdeco_subset_bit_offsets* off);
+int bufr_write_subset_offset_bits_be_to_buffer(uint8_t* buffer, size_t buffer_size, size_t* used_size,
+    const struct bufrdeco_subset_bit_offsets* off);
+int bufr_read_subset_offset_bits_universal_from_buffer(const uint8_t* buffer, size_t buffer_size,
+    struct bufrdeco_subset_bit_offsets* off);
 
 #ifdef __cplusplus
 } /* closing brace for extern "C" */

@@ -229,7 +229,7 @@ bufrtotac: Version '0.36.0' built using clang C compiler 17.0.0 (clang-1700.6.4.
 Linked to bufr2tac library version '0.36.0' built using clang C compiler 17.0.0 (clang-1700.6.4.2) at Mar 19 2026 18:33:16 and cmake.
 Linked to bufrdeco library version '0.36.0' built using clang C compiler 17.0.0 (clang-1700.6.4.2) at Mar 19 2026 18:33:16 and cmake.
 
-Usage: 
+Usage:
 bufrtotac -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-X][-c][-h][more optional args....]
        -c. The output is in csv format
        -D debug level. 0 = No debug, 1 = Debug, 2 = Verbose debug (default = 0)
