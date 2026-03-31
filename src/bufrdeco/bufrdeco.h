@@ -1160,8 +1160,8 @@ int bufrdeco_add_associated_field(const struct bufrdeco_associated_field* added,
 int bufrdeco_read_bufr(struct bufrdeco* b, char* filename);
 int bufrdeco_extract_bufr(struct bufrdeco* b, char* filename, const char* bufr_xout);
 int bufrdeco_read_buffer(struct bufrdeco* b, uint8_t* bufrx, buf_t size);
-int bufrdeco_fast_read_sec_0_1(struct bufr_sec0* s0, struct bufr_sec1* s1, char* filename, char* error, size_t error_size);
-int bufrdeco_get_sec_0_1_from_buffer(struct bufr_sec0* s0, struct bufr_sec1* s1, const uint8_t* buff, size_t size, char* error, size_t error_size);
+int bufrdeco_fast_read_sec_0_1_3(struct bufr_sec0* s0, struct bufr_sec1* s1, struct bufr_sec3 *s3, char* filename, char* error, size_t error_size);
+int bufrdeco_get_sec_0_1_3_from_buffer(struct bufr_sec0* s0, struct bufr_sec1* s1, struct bufr_sec3 *s3, const uint8_t* buff, size_t size, char* error, size_t error_size);
 
 
 // Read bufr WMO csv table files

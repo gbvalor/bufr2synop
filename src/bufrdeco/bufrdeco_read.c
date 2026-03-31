@@ -404,21 +404,22 @@ int bufrdeco_read_buffer(struct bufrdeco* b, uint8_t* bufrx, buf_t size)
     return 0;
 }
 
-/*! \fn int bufrdeco_fast_read_sec_0_1(struct bufr_sec0* s0, struct bufr_sec1* s1, char* filename, char* error, size_t error_size)
-  \brief Read sec0 and sec1 of a bufr file without parsing anything further
+/*! \fn int bufrdeco_fast_read_sec_0_1_3(struct bufr_sec0* s0, struct bufr_sec1* s1, struct bufr_sec3* s3, char* filename, char* error, size_t error_size)
+  \brief Read sec0, sec1, and sec3 of a bufr file without parsing anything further
   \param [out] s0 Pointer to struct \ref bufr_sec0 where the data will be stored
   \param [out] s1 Pointer to struct \ref bufr_sec1 where the data will be stored
+  \param [out] s3 Pointer to struct \ref bufr_sec3 where the data will be stored
   \param [in] filename Complete path of BUFR file
   \param [out] error Pointer to a char array where the error message will be written in case of error. It must be allocated by caller.
   \param [in] error_size Size of error buffer
   \return 0 if all is OK, 1 otherwise
 
    This function is useful when we want to know the edition number and some metadata of the file before doing any parsing. 
-   It only reads the first 30 bytes of the file to do it.
+   It only reads secs 0, 1, and 3 of from file without parsing anything further.   
 */
-int bufrdeco_fast_read_sec_0_1(struct bufr_sec0* s0, struct bufr_sec1* s1, char* filename, char* error, size_t error_size)
+int bufrdeco_fast_read_sec_0_1_3(struct bufr_sec0* s0, struct bufr_sec1* s1, struct bufr_sec3* s3, char* filename, char* error, size_t error_size)
 {
-    if (s0 == NULL || s1 == NULL || filename == NULL) {
+    if (s0 == NULL || s1 == NULL || s3 == NULL || filename == NULL) {
         if (error != NULL && error_size > 0)
             snprintf(error, error_size, "%s(): invalid arguments\n", __func__);
         return 1;
@@ -440,13 +441,14 @@ int bufrdeco_fast_read_sec_0_1(struct bufr_sec0* s0, struct bufr_sec1* s1, char*
     }
 
     fclose(fp);
-    return bufrdeco_get_sec_0_1_from_buffer(s0, s1, (const uint8_t*)sec0_1, sizeof(sec0_1), error, error_size);
+    return bufrdeco_get_sec_0_1_3_from_buffer(s0, s1, s3, (const uint8_t*)sec0_1, sizeof(sec0_1), error, error_size);
 }
 
-/*! \fn int bufrdeco_get_sec_0_1_from_buffer(struct bufr_sec0* s0, struct bufr_sec1* s1, const uint8_t* buff, size_t size, char* error, size_t error_size)
-  \brief Read sec0 and sec1 of a bufr file without parsing anything further
+/*! \fn int bufrdeco_get_sec_0_1_3_from_buffer(struct bufr_sec0* s0, struct bufr_sec1* s1, struct bufr_sec3* s3, const uint8_t* buff, size_t size, char* error, size_t error_size)
+  \brief Read sec0, sec1, and sec3 of a bufr file without parsing anything further
   \param [out] s0 Pointer to struct \ref bufr_sec0 where the data will be stored
   \param [out] s1 Pointer to struct \ref bufr_sec1 where the data will be stored
+  \param [out] s3 Pointer to struct \ref bufr_sec3 where the data will be stored
   \param [in] buff Pointer to the buffer containing the BUFR data
   \param [in] size Size of the buffer
   \param [out] error Pointer to a char array where the error message will be written in case of error. It must be allocated by caller.
@@ -454,12 +456,13 @@ int bufrdeco_fast_read_sec_0_1(struct bufr_sec0* s0, struct bufr_sec1* s1, char*
   \return 0 if all is OK, 1 otherwise
 
     This function is useful when we want to know the edition number and some metadata of the file before doing any parsing. 
-    It only reads the first 30 bytes of the buffer to do it. It is used by bufrdeco_fast_read_sec_0_1() but can be also used 
-    when we already have the data in a buffer and we want just to read sec0 and sec1.   
+    It only reads the first 30 bytes of the buffer to do it. It is used by bufrdeco_fast_read_sec_0_1_3() but can be also used 
+    when we already have the data in a buffer and we want just to read sec0, sec1, and sec3.   
 */
-int bufrdeco_get_sec_0_1_from_buffer(struct bufr_sec0* s0, struct bufr_sec1* s1, const uint8_t* buff, size_t size, char* error, size_t error_size)
+int bufrdeco_get_sec_0_1_3_from_buffer(struct bufr_sec0* s0, struct bufr_sec1* s1, struct bufr_sec3* s3, const uint8_t* buff, size_t size, char* error, size_t error_size)
 {
-    if (s0 == NULL || s1 == NULL || buff == NULL || size < 30) {
+    // Some fast checks
+    if (s0 == NULL || s1 == NULL || s3 == NULL || buff == NULL || size < 30) {
         if (error != NULL && error_size > 0)
             snprintf(error, error_size, "%s(): invalid arguments\n", __func__);
         return 1;
@@ -530,6 +533,34 @@ int bufrdeco_get_sec_0_1_from_buffer(struct bufr_sec0* s0, struct bufr_sec1* s1,
         return 1;
     }
 
+    // now we read sec3, but be in mind it can be a sec2 amnog the sec1 and sec3, so we need to check the options bit in sec1
+    uint32_t sec2_length = 0;
+    if (s1->options & 0x80) {
+        // sec2 is present, so we need to jump the length of sec2 to get to sec3
+        const uint8_t* sec2 = (const uint8_t*)(buff + 8 + s1->length); // pointer to begin of sec2 (or sec3 if sec2 is not present)
+        sec2_length = three_bytes_to_uint32(sec2);
+    } 
+    const uint8_t* sec3 = (const uint8_t*)(buff + 8 + s1->length + sec2_length); // pointer to begin of sec3
+    s3->length = three_bytes_to_uint32(sec3);
+    s3->subsets = two_bytes_to_uint32(&sec3[4]);
+    if (sec3[6] & 0x80)
+        s3->observed = 1;
+    else
+        s3->observed = 0;
+    if (sec3[6] & 0x40)        
+        s3->compressed = 1;
+    else
+        s3->compressed = 0;
+
+    // loop of unexpanded descriptors
+    buf_t ix, ud;
+    for (ix = 7, ud = 0; (ix + 1) < s3->length && ud < BUFR_LEN_UNEXPANDED_DESCRIPTOR; ix += 2) {
+        two_bytes_to_descriptor(&s3->unexpanded[ud], &sec3[ix]);
+        if (s3->unexpanded[ud].f || s3->unexpanded[ud].x || s3->unexpanded[ud].y)
+            ud++;
+    }
+    s3->ndesc = ud;
+    memcpy(s3->raw, sec3, s3->length); // raw data
     return 0;
 }
 
