@@ -258,15 +258,14 @@ size_t bufr_subset_offset_bits_binary_size ( const struct bufrdeco_subset_bit_of
 int bufr_write_subset_offset_bits_to_buffer ( uint8_t *buffer, size_t buffer_size, size_t *used_size,
     const struct bufrdeco_subset_bit_offsets *off )
 {
-  size_t need;
 
   // Validate input parameters
   bufrdeco_assert_with_return_val ( buffer != NULL && off != NULL, 1 );
   bufrdeco_assert_with_return_val ( off->nr <= BUFR_MAX_SUBSETS, 1 );
 
   // Calculate the required size and check if the buffer is large enough
-  need = bufr_subset_offset_bits_binary_size ( off );
-  bufrdeco_assert_with_return_val ( need > 0u && buffer_size >= need, 1 );
+  size_t need = bufr_subset_offset_bits_binary_size ( off );
+  bufrdeco_assert_with_return_val ( need > 0 && buffer_size >= need, 1 );
 
   // Copy the count and offsets to the buffer
   memcpy ( buffer, &( off->nr ), sizeof ( buf_t ) );
