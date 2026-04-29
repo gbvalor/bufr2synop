@@ -363,6 +363,14 @@ int parse_subset_as_synop(struct metreport* m, struct bufr2tac_subset_state* s, 
     }
     if (s->mask & SUBSET_MASK_HAVE_ALTITUDE) {
         m->g.alt = s->alt;
+        if (strcmp(s->type_report, "AAXX") == 0) {
+            // case of fixed land station, if altitude of barometer is available and is consistent with station altitude, 
+            // we use it instead of station altitude, because it is more relevant for the pressure value in the report,
+            // and also more consistent with legacy reports where station altitude is not given but barometer altitude is used instead
+            if (s->altb != 0.0 && fabs(s->alt - s->altb) < 30.0) {
+                m->g.alt = s->altb;
+            }
+        }     
     }
     if (s->mask & SUBSET_MASK_HAVE_NAME) {
         memcpy(m->g.name, s->name, sizeof(m->g.name));

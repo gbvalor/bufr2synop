@@ -74,7 +74,6 @@ int syn_parse_x07(struct synop_chunks* syn, struct bufr2tac_subset_state* s)
     switch (s->a->desc.y) {
     case 1: // 0 07 001 . Heigh of station
     case 30: // 0 07 030 . Height of station ground above msl
-    case 31: // 0 07 031 . Height of barometer above msl
         if (s->a->mask & DESCRIPTOR_VALUE_MISSING) {
             return 0;
         }
@@ -84,10 +83,15 @@ int syn_parse_x07(struct synop_chunks* syn, struct bufr2tac_subset_state* s)
             snprintf(syn->s0.h0h0h0h0, sizeof(syn->s0.h0h0h0h0), "%04d", s->ival);
             syn->s0.im[0] = '1'; // set unit as m
             s->mask |= SUBSET_MASK_HAVE_ALTITUDE;
+            s->alt = s->val;
         }
-        s->alt = s->val;
         break;
-
+    case 31: // 0 07 031 . Height of barometer above msl
+        if (s->a->mask & DESCRIPTOR_VALUE_MISSING) {
+            return 0;
+        }
+        s->altb = s->val;
+        break;
     case 4: // 0 07 004 . Pressure at standard level
         if (s->a->mask & DESCRIPTOR_VALUE_MISSING) {
             return 0;

@@ -278,6 +278,7 @@ struct bufr2tac_subset_state {
     double lat; /*!< Latitude of station */
     double lon; /*!< longitude of station */
     double alt; /*!< Altitude (m)*/
+    double altb; /*!< Altitude of barometer (m) */
     double hsensor; /*!< Sensor height over station ground (m) */
     double hwsensor; /*!< Sensor height over water surface (m) */
     char name[80]; /*!< Name of observatory, if any */
