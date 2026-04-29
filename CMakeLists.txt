@@ -7,7 +7,7 @@
 #   GNU General Public License v2 or above                                #
 ###########################################################################
 #
-# CMadkeLists.txt for root directory for project bufr2synop
+# CMakeLists.txt for root directory for project bufr2synop
 #
 
 CMAKE_MINIMUM_REQUIRED (VERSION 3.10)
@@ -16,7 +16,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 3.10)
 cmake_policy(SET CMP0048 NEW)
 
 # Establecemos la version 
-project (bufr2synop LANGUAGES C VERSION 0.37.0)
+project (bufr2synop LANGUAGES C VERSION 0.37.1)
 
 #Definitions needed to generate config.h
 SET(PACKAGE_NAME "${PROJECT_NAME}")
