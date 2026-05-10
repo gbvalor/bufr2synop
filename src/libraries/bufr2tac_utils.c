@@ -453,8 +453,11 @@ int guess_gts_header(struct gts_header* h, const char* f)
     char aux[256], *tk[16], *c;
 
     // parse file name
-    strcpy(h->filename, f);
-    strcpy(aux, f);
+    // cp strings for safe operations
+    strncpy(h->filename, f, sizeof(h->filename) - 1);
+    h->filename[sizeof(h->filename) - 1] = '\0';
+    strncpy(aux, h->filename, sizeof(aux) - 1);
+    aux[sizeof(aux) - 1] = '\0';
 
     // check latest '/' in filename
     if ((c = strrchr(aux, '/')) == NULL)
@@ -465,12 +468,12 @@ int guess_gts_header(struct gts_header* h, const char* f)
     nt = tokenize_string(tk, 16, c, strlen(c), (char*)"_. ");
     // parse filenames with format as example 'AAAAMMDDHHmmss_ISIE06_SBBR_012100_RRB.bufr'
 
-    // 5 or 6 items
-    if (nt < 5 || nt > 6)
+    // need at least 5 tokens
+    if (nt < 5)
         return 0;
 
-    // extension bufr
-    if (strcmp(tk[nt - 1], "bufr"))
+    // extension (last token) must be 'bufr' or 'bufr4'
+    if (strcmp(tk[nt - 1], "bufr") && strcmp(tk[nt - 1], "bufr4"))
         return 0;
 
     // item 0 the timestamp of file in NOAA GTS gateway
