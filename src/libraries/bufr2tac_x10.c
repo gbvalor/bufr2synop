@@ -110,6 +110,13 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
   switch ( s->a->desc.y )
     {
     case 4: // 0 10 004 . Pressure
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if (s->val > BUFR2TAC_MAX_AIR_PRESSURE) {
+          if (BUFR2TAC_DEBUG_LEVEL > 0)
+              bufr2tac_set_error(s, 2, "syn_parse_x10()", "Bad air pressure");
+          return 1;
+      }
+#endif
       pascal_to_PPPP ( aux, sizeof(aux), s->val );
       memcpy ( syn->s1.PoPoPoPo, aux, 5 );
       syn->mask |= SYNOP_SEC1;
@@ -121,18 +128,39 @@ int syn_parse_x10 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       break;
 
     case 51: // 0 10 051 . Pressure reduced to mean sea level
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if (s->val > BUFR2TAC_MAX_AIR_PRESSURE) {
+          if (BUFR2TAC_DEBUG_LEVEL > 0)
+              bufr2tac_set_error(s, 2, "syn_parse_x10()", "Bad sea level air pressure");
+          return 1;
+      }
+#endif
       pascal_to_PPPP ( aux, sizeof(aux), s->val );
       memcpy ( syn->s1.PPPP, aux, 5 );
       syn->mask |= SYNOP_SEC1;
       break;
 
     case 61: // 0 10 061 . 3-hour pressure change
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if (fabs(s->val) > BUFR2TAC_MAX_AIR_PRESSURE_3H_CHANGE) {
+          if (BUFR2TAC_DEBUG_LEVEL > 0)
+              bufr2tac_set_error(s, 2, "syn_parse_x10()", "Bad 3-hour air pressure change");
+          return 1;
+      }
+#endif
       pascal_to_ppp ( aux, sizeof(aux), s->val );
       memcpy(syn->s1.ppp, aux, 4);
       syn->mask |= SYNOP_SEC1;
       break;
 
     case 62: // 0 10 062 . 24-hour pressure change
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if (fabs(s->val) > BUFR2TAC_MIN_AIR_PRESSURE_24H_CHANGE) {
+          if (BUFR2TAC_DEBUG_LEVEL > 0)
+              bufr2tac_set_error(s, 2, "syn_parse_x10()", "Bad 24-hour air pressure change");
+          return 1;
+      }
+#endif
       pascal_to_ppp ( aux, sizeof(aux), s->val );
       memcpy ( syn->s3.ppp24, aux, 4 );
       if ( s->val >= 0 )
@@ -179,14 +207,27 @@ int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
 
   switch ( s->a->desc.y )
     {
-
     case 4: // 0 10 004 . Pressure
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if (fabs(s->val) > BUFR2TAC_MAX_AIR_PRESSURE) {
+          if (BUFR2TAC_DEBUG_LEVEL > 0)
+              bufr2tac_set_error(s, 2, "buoy_parse_x10()", "Bad air pressure");
+          return 1;
+      }
+#endif
       pascal_to_PPPP ( aux, sizeof(aux), s->val );
       memcpy ( b->s1.PoPoPoPo, aux, 5 );
       b->mask |= BUOY_SEC1;
       break;
 
     case 51: // 0 10 051 . Pressure reduced to mean sea level
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if (fabs(s->val) > BUFR2TAC_MAX_AIR_PRESSURE) {
+          if (BUFR2TAC_DEBUG_LEVEL > 0)
+              bufr2tac_set_error(s, 2, "buoy_parse_x10()", "Bad air pressure reduced to mean sea level");
+          return 1;
+      }
+#endif
       pascal_to_PPPP ( aux, sizeof(aux), s->val );
       memcpy ( b->s1.PPPP, aux, 5 );
       b->mask |= BUOY_SEC1;
@@ -198,6 +239,13 @@ int buoy_parse_x10 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       break;
 
     case 61: // 0 10 061 . 3-hour pressure change
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if (fabs(s->val) > BUFR2TAC_MAX_AIR_PRESSURE_3H_CHANGE) {
+          if (BUFR2TAC_DEBUG_LEVEL > 0)
+              bufr2tac_set_error(s, 2, "buoy_parse_x10()", "Bad 3-hour air pressure change");
+          return 1;
+      }
+#endif
       pascal_to_ppp ( aux, sizeof(aux), s->val );
       memcpy( b->s1.ppp, aux, 4 );
       b->mask |= BUOY_SEC1;
@@ -238,6 +286,13 @@ int climat_parse_x10 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
     case 4: // 0 10 004 . Pressure
       if ( s->isq_val == 4 )
         {
+#ifdef BUFR2TAC_CHECK_LIMITS
+          if (fabs(s->val) > BUFR2TAC_MAX_AIR_PRESSURE) {
+              if (BUFR2TAC_DEBUG_LEVEL > 0)
+                  bufr2tac_set_error(s, 2, "climat_parse_x10()", "Bad air pressure");
+              return 1;
+          }
+#endif
           pascal_to_PPPP ( aux, sizeof(aux), s->val );
           if ( s->is_normal == 0 )
             {
@@ -271,6 +326,13 @@ int climat_parse_x10 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
     case 51: // 0 10 051 . Pressure reduced to mean sea level
       if ( s->isq_val == 4 )
         {
+#ifdef BUFR2TAC_CHECK_LIMITS
+          if (fabs(s->val) > BUFR2TAC_MAX_AIR_PRESSURE) {
+              if (BUFR2TAC_DEBUG_LEVEL > 0)
+                  bufr2tac_set_error(s, 2, "climat_parse_x10()", "Bad air pressure reduced to mean sea level");
+              return 1;
+          }
+#endif
           pascal_to_PPPP ( aux, sizeof(aux), s->val );
           if ( s->is_normal == 0 )
             {

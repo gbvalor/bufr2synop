@@ -78,8 +78,12 @@ int syn_parse_x07(struct synop_chunks* syn, struct bufr2tac_subset_state* s)
             return 0;
         }
         if (syn->s0.h0h0h0h0[0] == 0) {
-            if (s->ival > 9999 || s->ival < -9999)
+#ifdef BUFR2TAC_CHECK_LIMITS
+            if (s->ival > BUFR2TAC_MAX_ALTITUDE || s->ival < BUFR2TAC_MIN_ALTITUDE) {
+                bufr2tac_set_error(s, 2, "syn_parse_x07()", "Bad height");
                 return 1;
+            }
+#endif
             snprintf(syn->s0.h0h0h0h0, sizeof(syn->s0.h0h0h0h0), "%04d", s->ival);
             syn->s0.im[0] = '1'; // set unit as m
             s->mask |= SUBSET_MASK_HAVE_ALTITUDE;
@@ -134,7 +138,7 @@ int syn_parse_x07(struct synop_chunks* syn, struct bufr2tac_subset_state* s)
         break;
 
     default:
-        if (BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
+        if ( (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
             bufr2tac_set_error(s, 0, "syn_parse_x07()", "Descriptor not parsed");
         break;
     }
@@ -173,7 +177,7 @@ int buoy_parse_x07(const struct buoy_chunks* b, struct bufr2tac_subset_state* s)
         break;
 
     default:
-        if (BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
+        if ( (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
             bufr2tac_set_error(s, 0, "buoy_parse_x07()", "Descriptor not parsed");
         break;
     }
@@ -207,18 +211,16 @@ int climat_parse_x07(const struct climat_chunks* c, struct bufr2tac_subset_state
 
     case 32: // 0 07 032 . Pressure of standard level
         // Not a useful value for alphanumeric climat
-        if (BUFR2TAC_DEBUG_LEVEL > 0)
-            bufr2tac_set_error(s, 0, "climat_parse_x07()", "Descriptor not parsed");
+        bufr2tac_set_error(s, 0, "climat_parse_x07()", "Descriptor not parsed");
         break;
 
     case 4: // Pressure of standard level
         // Not a useful value for alphanumeric climat
-        if (BUFR2TAC_DEBUG_LEVEL > 0)
-            bufr2tac_set_error(s, 0, "climat_parse_x07()", "Descriptor not parsed");
+        bufr2tac_set_error(s, 0, "climat_parse_x07()", "Descriptor not parsed");
         break;
 
     default:
-        if (BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
+        if ( (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
             bufr2tac_set_error(s, 0, "climat_parse_x07()", "Descriptor not parsed");
         break;
     }
@@ -265,7 +267,7 @@ int temp_parse_x07(struct temp_chunks* t, struct bufr2tac_subset_state* s)
         break;
 
     default:
-        if (BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
+        if ((s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
             bufr2tac_set_error(s, 0, "temp_parse_x07()", "Descriptor not parsed");
         break;
     }

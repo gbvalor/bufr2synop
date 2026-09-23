@@ -227,6 +227,16 @@ int parse_subset_as_temp(struct metreport* m, struct bufr2tac_subset_state* s, s
         }
     }
 
+    if (BUFR2TAC_STRICT_MODE) {
+        // Check for errors of severity 2 (errors)
+        if (bufr2tac_error_severity_count(&s->e, 2) > 0) {
+            if (BUFR2TAC_DEBUG_LEVEL > 0) {
+                snprintf(err, ERR_SIZE, "bufr2tac: %s(): strict mode enabled and errors present", __func__);
+            }
+            return 1;
+        }
+    }
+
     /* Check about needed descriptors */
     if (((s->mask & SUBSET_MASK_HAVE_LATITUDE) == 0) || ((s->mask & SUBSET_MASK_HAVE_LONGITUDE) == 0) || ((s->mask & SUBSET_MASK_HAVE_YEAR) == 0) || ((s->mask & SUBSET_MASK_HAVE_MONTH) == 0) || ((s->mask & SUBSET_MASK_HAVE_DAY) == 0) || ((s->mask & SUBSET_MASK_HAVE_HOUR) == 0) || ((s->mask & SUBSET_MASK_HAVE_MINUTE) == 0)) {
         snprintf(err, ERR_SIZE, "bufr2tac: parse_subset_as_temp(): lack of mandatory descriptor in sequence");

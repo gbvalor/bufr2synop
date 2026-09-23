@@ -223,18 +223,17 @@ customized bufr tables if you are using them.
        -U sels. String with selection for A1 when T2='U'
           By default all A1 are selected
 
-    $> butrtotac -h
-ufrtotac -h
-bufrtotac: Version '0.36.0' built using clang C compiler 17.0.0 (clang-1700.6.4.2) at Mar 19 2026 18:33:17 and cmake.
-Linked to bufr2tac library version '0.36.0' built using clang C compiler 17.0.0 (clang-1700.6.4.2) at Mar 19 2026 18:33:16 and cmake.
-Linked to bufrdeco library version '0.36.0' built using clang C compiler 17.0.0 (clang-1700.6.4.2) at Mar 19 2026 18:33:16 and cmake.
+    $> bufrtotac -h
+bufrtotac: Version '0.37.2' built using clang C compiler 21.0.0 (clang-2100.3.34.2) at Sep 23 2026 18:05:08 and cmake.
+Linked to bufr2tac library version '0.37.2' built using clang C compiler 21.0.0 (clang-2100.3.34.2) at Sep 23 2026 18:05:05 and cmake.
+Linked to bufrdeco library version '0.37.2' built using clang C compiler 21.0.0 (clang-2100.3.34.2) at Sep 23 2026 18:05:03 and cmake.
 
 Usage:
 bufrtotac -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-X][-c][-h][more optional args....]
        -c. The output is in csv format
        -D debug level. 0 = No debug, 1 = Debug, 2 = Verbose debug (default = 0)
        -E. Print expanded tree in json format
-       -G. Print latitude, logitude and altitude 
+       -G. Print latitude, logitude and altitude
        -g. Print WIGOS ID
        -h Print this help
        -i Input file. Complete input path file for bufr file
@@ -244,6 +243,7 @@ bufrtotac -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o out
        -N. Do not use local tables
        -n. Do not try to decode to TAC, just parse BUFR report
        -o output. Pathname of output file. Default is standar output
+       -p mode. Permisive mode. Not strict about errors (1=permissive, 0=strict). Default is 1. Use -p 0 to enable strict mode
        -R. Read bit_offsets file if exists. The path of these files is to add '.offs' to the name of input BUFR file
        -s prints a long output with explained sequence of descriptors
        -S first..last . Print only results for subsets in range first..last (First subset available is 0). Default is all subsets

@@ -122,6 +122,16 @@ int parse_subset_as_climat ( struct metreport *m, struct bufr2tac_subset_state *
 
     }
 
+    if (BUFR2TAC_STRICT_MODE) {
+        // Check for errors of severity 2 (errors)
+        if (bufr2tac_error_severity_count(&s->e, 2) > 0) {
+            if (BUFR2TAC_DEBUG_LEVEL > 0) {
+                snprintf(err, ERR_SIZE, "bufr2tac: %s(): strict mode enabled and errors present", __func__);
+            }
+            return 1;
+        }
+    }
+
   // Fill some metreport fields
   if ( strlen ( c->s0.II ) )
     {

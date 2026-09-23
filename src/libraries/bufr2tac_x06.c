@@ -76,6 +76,12 @@ int syn_parse_x06 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     {
     case 1: // 0 06 001 . Longitude (High accuracy)
     case 2: // 0 06 002 . Longitude (Coarse)
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if (fabs(s->val) > 180.0) {
+          bufr2tac_set_error(s, 2, "syn_parse_x06()", "Bad longitude");
+          return 1;
+      }
+#endif
       if ( s->val < 0.0 )
         s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
       s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
@@ -86,7 +92,7 @@ int syn_parse_x06 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+      if ( (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
         bufr2tac_set_error ( s, 0, "syn_parse_x06()", "Descriptor not parsed" );
       break;
     }
@@ -137,6 +143,12 @@ int buoy_parse_x06 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
     {
     case 1: // 0 06 001 . Longitude (High accuracy)
     case 2: // 0 06 002 . Longitude (Coarse accuracy)
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if (fabs(s->val) > 180.0) {
+          bufr2tac_set_error(s, 2, "buoy_parse_x06()", "Bad longitude");
+          return 1;
+      }
+#endif
       if ( s->val < 0.0 )
         s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
       s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
@@ -146,7 +158,7 @@ int buoy_parse_x06 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+      if ( (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
         bufr2tac_set_error ( s, 0, "buoy_parse_x06()", "Descriptor not parsed" );
       break;
     }
@@ -174,6 +186,12 @@ int climat_parse_x06 ( const struct climat_chunks *c, struct bufr2tac_subset_sta
     {
     case 1: // 0 06 001 . Longitude (High accuracy)
     case 2: // 0 06 002 . Longitude (Coarse accuracy)
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if (fabs(s->val) > 180.0) {
+          bufr2tac_set_error(s, 2, "climat_parse_x06()", "Bad longitude");
+          return 1;
+      }
+#endif
       if ( s->val < 0.0 )
         s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
       s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
@@ -181,7 +199,7 @@ int climat_parse_x06 ( const struct climat_chunks *c, struct bufr2tac_subset_sta
       break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+      if ( (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
         bufr2tac_set_error ( s, 0, "climat_parse_x06()", "Descriptor not parsed" );
       break;
     }
@@ -206,6 +224,12 @@ int temp_parse_x06 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
     {
     case 1: // 0 06 001 . Longitude (High accuracy)
     case 2: // 0 06 002 . Longitude (Coarse)
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if (fabs(s->val) > 180.0) {
+          bufr2tac_set_error(s, 2, "temp_parse_x06()", "Bad longitude");
+          return 1;
+      }
+#endif
       if ( s->val < 0.0 )
         s->mask |= SUBSET_MASK_LONGITUDE_WEST; // Sign for longitude
       s->mask |= SUBSET_MASK_HAVE_LONGITUDE;
@@ -264,7 +288,7 @@ int temp_parse_x06 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
       break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+      if ( (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
         bufr2tac_set_error ( s, 0, "temp_parse_x06()", "Descriptor not parsed" );
       break;
     }

@@ -129,7 +129,7 @@ int syn_parse_x22 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         }
       break;
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+      if ( (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
         bufr2tac_set_error ( s, 0, "syn_parse_x22()", "Descriptor not parsed" );
       break;
     }
@@ -269,7 +269,7 @@ int buoy_parse_x22 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+      if ( (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
         bufr2tac_set_error ( s, 0, "buoy_parse_x22()", "Descriptor not parsed" );
       break;
    }
@@ -308,7 +308,7 @@ int temp_parse_x22 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
       break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
+      if ( (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
         bufr2tac_set_error ( s, 0, "temp_parse_x22()", "Descriptor not parsed" );
       break;
     }

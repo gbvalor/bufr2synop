@@ -205,6 +205,15 @@ int parse_subset_as_synop(struct metreport* m, struct bufr2tac_subset_state* s, 
         }
     }
 
+    if (BUFR2TAC_STRICT_MODE) {
+        if (bufr2tac_error_severity_count(&s->e, 2) > 0) {
+            if (BUFR2TAC_DEBUG_LEVEL > 0) {
+                snprintf(err, ERR_SIZE, "bufr2tac: %s(): strict mode enabled and errors present", __func__);
+            }
+            return 1;
+        }
+    }
+
     /* Check about needed descriptors */
     // Station identifier is mandatory, either WMO or WIGOS
     if (((s->mask & SUBSET_MASK_HAVE_WMO_ID) == 0) && ((s->mask & SUBSET_MASK_HAVE_WIGOS_ID) == 0)) {

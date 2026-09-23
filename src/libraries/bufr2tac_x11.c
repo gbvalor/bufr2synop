@@ -218,12 +218,26 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
     {
     case 1: // 0 11 001 . Wind direction
     case 11: // 0 11 011 . Wind direction at 10 meters
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->ival < 0 || s->ival > 360 ) {
+          if (BUFR2TAC_DEBUG_LEVEL > 0)
+              bufr2tac_set_error(s, 2, "syn_parse_x11()", "Bad wind direction");
+          return 1;
+      }
+#endif
       direction_to_0877 ( syn->s1.dd, sizeof(syn->s1.dd), s->ival );
       syn->mask |= SYNOP_SEC1;
       break;
 
     case 2: // 0 11 002 . Wind speed
     case 12: // 0 11 012 . Wind speed at 10 meters
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->val < 0.0 || s->val > BUFR2TAC_MAX_WIND_SPEED ) {
+          if (BUFR2TAC_DEBUG_LEVEL > 0)
+              bufr2tac_set_error(s, 2, "syn_parse_x11()", "Bad wind speed");
+          return 1;
+      }
+#endif
       if ( syn->s0.iw[0] == '4' )
         {
           s->val *= 1.94384449;
@@ -250,6 +264,13 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
           return 0; // No more groups space
         }
         
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->val < 0.0 || s->val > BUFR2TAC_MAX_WIND_SPEED ) {
+          if (BUFR2TAC_DEBUG_LEVEL > 0)
+              bufr2tac_set_error(s, 2, "syn_parse_x11()", "Bad max wind gust speed");
+          return 1;
+      }
+#endif
       if ( s->itval == -600 )
         {
           if ( syn->mask & SUBSET_MASK_HAVE_GUST10 )
@@ -344,6 +365,13 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       syn->s3.d9.n++;
       snprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, sizeof(syn->s3.d9.misc[syn->s3.d9.n].SpSp), "912" );
       s->SnSn = 912;
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->val < 0.0 || s->val > BUFR2TAC_MAX_WIND_SPEED ) {
+          if (BUFR2TAC_DEBUG_LEVEL > 0)
+              bufr2tac_set_error(s, 2, "syn_parse_x11()", "Bad max wind speed");
+          return 1;
+      }
+#endif
       if ( syn->s0.iw[0] == '4' )
         {
           s->val *= 1.94384449;
@@ -369,9 +397,16 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       break;
 
     case 84: // 0 11 084 . Wind speed in knots
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->val < 0.0 || s->val > (BUFR2TAC_MAX_WIND_SPEED / 1.94384449) ) {
+          if (BUFR2TAC_DEBUG_LEVEL > 0)
+              bufr2tac_set_error(s, 2, "syn_parse_x11()", "Bad wind speed in knots");
+          return 1;
+      }
+#endif
       if ( syn->s0.iw[0] == '1' )
         {
-          s->val /= 1.94384449;
+          s->val /= 1.94384449; // original values in knots. passed to m/s
         }
       if ( s->val < 100.0 )
         {
@@ -390,6 +425,13 @@ int syn_parse_x11 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->val < 0.0 || s->val > (BUFR2TAC_MAX_WIND_SPEED / 1.94384449) ) {
+          if (BUFR2TAC_DEBUG_LEVEL > 0)
+              bufr2tac_set_error(s, 2, "syn_parse_x11()", "Bad max wind speed in knots");
+          return 1;
+      }
+#endif
       if ( s->itval == -600 )
         {
           snprintf ( syn->s3.d9.misc[syn->s3.d9.n].SpSp, sizeof(syn->s3.d9.misc[syn->s3.d9.n].SpSp), "910" );
@@ -498,9 +540,16 @@ int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
     
     case 2: // 0 11 002 . Wind speed
     case 12: // 0 11 012 . Wind speed at 10 meters
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->val < 0.0 || s->val > BUFR2TAC_MAX_WIND_SPEED ) {
+          if (BUFR2TAC_DEBUG_LEVEL > 0)
+              bufr2tac_set_error(s, 2, "buoy_parse_x11()", "Bad wind speed");
+          return 1;
+      }
+#endif
       if ( b->s0.iw[0] == '4' )
         {
-          s->val *= 1.94384449;
+          s->val *= 1.94384449; // convert from m/s to knots
         }
       if ( s->val < 100.0 )
         {
@@ -519,6 +568,13 @@ int buoy_parse_x11 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       break;
 
     case 84: // 0 11 084  (wind in knots)
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->val < 0.0 || s->val > (BUFR2TAC_MAX_WIND_SPEED / 1.94384449) ) {
+          if (BUFR2TAC_DEBUG_LEVEL > 0)
+              bufr2tac_set_error(s, 2, "buoy_parse_x11()", "Bad wind speed in knots");
+          return 1;
+      }
+#endif
       if ( b->s0.iw[0] == '1' )
         {
           s->val /= 1.94384449;
@@ -560,6 +616,13 @@ int climat_parse_x11 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
 
   switch ( s->a->desc.y )
     {
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->val < 0.0 || s->val > BUFR2TAC_MAX_WIND_SPEED ) {
+          if (BUFR2TAC_DEBUG_LEVEL > 0)
+              bufr2tac_set_error(s, 2, "climat_parse_x11()", "Bad wind speed");
+          return 1;
+      }
+#endif
     case 46: // 0 11 046 . Maximum wind speed
       if ( c->s4.iw[0] == '4' )
         {
@@ -614,6 +677,13 @@ int temp_parse_x11 ( const struct temp_chunks *t, struct bufr2tac_subset_state *
             }
           else
             {
+#ifdef BUFR2TAC_CHECK_LIMITS
+              if ( s->val < 0.0 || s->val > 360.0 ) {
+                  if (BUFR2TAC_DEBUG_LEVEL > 0)
+                      bufr2tac_set_error(s, 2, "temp_parse_x11()", "Bad wind direction");
+                  return 1;
+              }
+#endif
               s->r->raw[s->r->n - 1].dd = s->val;
             }
         }
@@ -628,6 +698,13 @@ int temp_parse_x11 ( const struct temp_chunks *t, struct bufr2tac_subset_state *
             }
           else
             {
+#ifdef BUFR2TAC_CHECK_LIMITS
+              if ( s->val < 0.0 || s->val > BUFR2TAC_MAX_WIND_SPEED ) {
+                  if (BUFR2TAC_DEBUG_LEVEL > 0)
+                      bufr2tac_set_error(s, 2, "temp_parse_x11()", "Bad wind speed in knots");
+                  return 1;
+              }
+#endif
               s->r->raw[s->r->n - 1].ff = s->val;
             }
         }

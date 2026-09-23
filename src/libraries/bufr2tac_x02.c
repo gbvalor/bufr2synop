@@ -30,45 +30,42 @@
   \param [in,out] s Pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
   \return 0 on success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int syn_parse_x02 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
+int syn_parse_x02(struct synop_chunks* syn, struct bufr2tac_subset_state* s)
 {
 
-
-  switch ( s->a->desc.y )
-    {
+    switch (s->a->desc.y) {
     case 1: // 0 02 001 Type of station
-      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        {
-          strcpy ( syn->s1.ix,"/" );
-          return 0;
+        if (s->a->mask & DESCRIPTOR_VALUE_MISSING) {
+            strcpy(syn->s1.ix, "/");
+            return 0;
         }
-      s->type = s->ival;
-      s->mask |= SUBSET_MASK_HAVE_TYPE_STATION;
-      break;
+        s->type = s->ival;
+        s->mask |= SUBSET_MASK_HAVE_TYPE_STATION;
+        break;
     case 2: // 0 02 002 . Type of instrumentation for wind measurement
-      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        return 0;
-      if ( s->ival == 0 )
-        strcpy ( syn->s0.iw, "0" );
-      else if ( s->ival == 8 )
-        strcpy ( syn->s0.iw, "1" );
-      else if ( s->ival == 4 )
-        strcpy ( syn->s0.iw, "3" );
-      else if ( s->ival == 12 )
-        strcpy ( syn->s0.iw, "4" );
+        if (s->a->mask & DESCRIPTOR_VALUE_MISSING)
+            return 0;
+        if (s->ival == 0)
+            strcpy(syn->s0.iw, "0");
+        else if (s->ival == 8)
+            strcpy(syn->s0.iw, "1");
+        else if (s->ival == 4)
+            strcpy(syn->s0.iw, "3");
+        else if (s->ival == 12)
+            strcpy(syn->s0.iw, "4");
 
-      /*
-      if ( s->ival & 4 )
-        strcpy ( syn->s0.iw, "4" );
-      else
-        strcpy ( syn->s0.iw, "1" );*/
-      break;
+        /*
+        if ( s->ival & 4 )
+          strcpy ( syn->s0.iw, "4" );
+        else
+          strcpy ( syn->s0.iw, "1" );*/
+        break;
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0 ) 
-        bufr2tac_set_error ( s, 0, "syn_parse_x02()", "Descriptor not parsed" );
-      break;
+        if ((s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
+            bufr2tac_set_error(s, 0, "syn_parse_x02()", "Descriptor not parsed");
+        break;
     }
-  return 0;
+    return 0;
 }
 
 /*!
@@ -78,59 +75,55 @@ int syn_parse_x02 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
   \param [in,out] s Pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
   \return 0 on success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
+int buoy_parse_x02(struct buoy_chunks* b, struct bufr2tac_subset_state* s)
 {
-  char caux[16];
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    return 0;
+    char caux[16];
+    if (s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        return 0;
 
-  switch ( s->a->desc.y )
-    {
+    switch (s->a->desc.y) {
     case 1: // 0 02 001 . Type of station
-      s->type = s->ival;
-      s->mask |= SUBSET_MASK_HAVE_TYPE_STATION;
-      break;
-      
+        s->type = s->ival;
+        s->mask |= SUBSET_MASK_HAVE_TYPE_STATION;
+        break;
+
     case 2: // 0 02 002 . Type of instrumentation for wind measurement
-      if ( s->ival & 4 )
-        strcpy ( b->s0.iw, "4" );
-      else
-        strcpy ( b->s0.iw, "1" );
-      break;
-      
+        if (s->ival & 4)
+            strcpy(b->s0.iw, "4");
+        else
+            strcpy(b->s0.iw, "1");
+        break;
+
     case 31: // 0 02 031 . Duration and time of current measurement
-      if ( b->s3.k3[0] == 0 && s->ival < 10 )
-        {
-          snprintf ( caux, sizeof(caux), "%d", s->ival );
-          b->s3.k3[0] = caux[0];
-          b->s3.k3[1] = 0;
+        if (b->s3.k3[0] == 0 && s->ival < 10) {
+            snprintf(caux, sizeof(caux), "%d", s->ival);
+            b->s3.k3[0] = caux[0];
+            b->s3.k3[1] = 0;
         }
-      b->mask |= BUOY_SEC3;
-      break;
-      
+        b->mask |= BUOY_SEC3;
+        break;
+
     case 33: // 0 02 033 . Method of salinity depth measure
-      snprintf ( caux, sizeof(caux), "%d", s->ival );
-      b->s3.k2[0] = caux[0];
-      b->s3.k2[1] = 0;
-      b->mask |= BUOY_SEC3;
-      break;
-      
+        snprintf(caux, sizeof(caux), "%d", s->ival);
+        b->s3.k2[0] = caux[0];
+        b->s3.k2[1] = 0;
+        b->mask |= BUOY_SEC3;
+        break;
+
     case 40: // 0 02 040 .Method of removing velocity and motion of platform from current
-      if ( b->s3.k6[0] == 0 )
-        {
-          snprintf ( caux, sizeof(caux), "%d", s->ival );
-          b->s3.k6[0] = caux[0];
-          b->s3.k6[1] = 0;
+        if (b->s3.k6[0] == 0) {
+            snprintf(caux, sizeof(caux), "%d", s->ival);
+            b->s3.k6[0] = caux[0];
+            b->s3.k6[1] = 0;
         }
-      b->mask |= BUOY_SEC3;
-      break;
+        b->mask |= BUOY_SEC3;
+        break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 0 )
-        bufr2tac_set_error ( s, 0, "buoy_parse_x02()", "Descriptor not parsed" );
-      break;
+        bufr2tac_set_error(s, 0, "buoy_parse_x02()", "Descriptor not parsed");
+        break;
     }
-  return 0;
+    return 0;
 }
 
 /*!
@@ -140,37 +133,35 @@ int buoy_parse_x02 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
   \param [in,out] s Pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
   \return 0 on success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int climat_parse_x02 ( struct climat_chunks *c, struct bufr2tac_subset_state *s )
+int climat_parse_x02(struct climat_chunks* c, struct bufr2tac_subset_state* s)
 {
-  if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-    return 0;
+    if (s->a->mask & DESCRIPTOR_VALUE_MISSING)
+        return 0;
 
-  if ( c == NULL )
-    return 1;
+    if (c == NULL)
+        return 1;
 
-  switch ( s->a->desc.y )
-    {
+    switch (s->a->desc.y) {
     case 1: // 0 02 001 . Type of station
-      s->type = s->ival;
-      s->mask |= SUBSET_MASK_HAVE_TYPE_STATION;
-      break;
+        s->type = s->ival;
+        s->mask |= SUBSET_MASK_HAVE_TYPE_STATION;
+        break;
 
     case 2: // 0 02 002 . Type of instrumentation for wind measurement
-      if ( s->ival & 4 )
-        strcpy ( c->s4.iw, "4" );
-      else
-        strcpy ( c->s4.iw, "1" );
-      break;
+        if (s->ival & 4)
+            strcpy(c->s4.iw, "4");
+        else
+            strcpy(c->s4.iw, "1");
+        break;
 
     case 51: // 0 02 051 . Observing method for extreme temperatures
-      snprintf ( c->s4.iy, sizeof(c->s4.iy), "%d",s->ival );
-      break;
+        snprintf(c->s4.iy, sizeof(c->s4.iy), "%d", s->ival);
+        break;
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 0 )
-        bufr2tac_set_error ( s, 0, "climat_parse_x02()", "Descriptor not parsed" );
-      break;
+        bufr2tac_set_error(s, 0, "climat_parse_x02()", "Descriptor not parsed");
+        break;
     }
-  return 0;
+    return 0;
 }
 
 /*!
@@ -180,113 +171,98 @@ int climat_parse_x02 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
   \param [in,out] s Pointer to a struct \ref bufr2tac_subset_state where is stored needed information in sequential analysis
   \return 0 on success, 1 if problems when processing. If a descriptor is not processed returns 0 anyway
 */
-int temp_parse_x02 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
+int temp_parse_x02(struct temp_chunks* t, struct bufr2tac_subset_state* s)
 {
-  if ( t == NULL )
-    return 1;
+    if (t == NULL)
+        return 1;
 
-  switch ( s->a->desc.y )
-    {
-    case 3:  // 0 02 003 . Type of measuring equipment used
-      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        {
-          snprintf ( t->b.s1.a4, sizeof(t->b.s1.a4), "/" );
-          return 0;
+    switch (s->a->desc.y) {
+    case 3: // 0 02 003 . Type of measuring equipment used
+        if (s->a->mask & DESCRIPTOR_VALUE_MISSING) {
+            snprintf(t->b.s1.a4, sizeof(t->b.s1.a4), "/");
+            return 0;
         }
-      switch ( s->ival )
-        {
+        switch (s->ival) {
         case 0:
         case 1:
         case 2:
         case 3:
-          snprintf ( t->b.s1.a4, sizeof(t->b.s1.a4), "%d", s->ival );
-          break;
+            snprintf(t->b.s1.a4, sizeof(t->b.s1.a4), "%d", s->ival);
+            break;
         case 4:
         case 5:
         case 6:
         case 7:
-          snprintf ( t->b.s1.a4, sizeof(t->b.s1.a4), "%d", s->ival + 1 );
-          break;
+            snprintf(t->b.s1.a4, sizeof(t->b.s1.a4), "%d", s->ival + 1);
+            break;
         default:
-          strcpy ( t->b.s1.a4, "9" ); // reserved
-          break;
+            strcpy(t->b.s1.a4, "9"); // reserved
+            break;
         }
-      break;
+        break;
 
     case 11: // 0 02 011 . Radiosonde type
-      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        {
-          snprintf ( t->a.s7.rara, sizeof(t->a.s7.rara), "//" );
-          snprintf ( t->b.s7.rara, sizeof(t->b.s7.rara), "//" );
-          snprintf ( t->c.s7.rara, sizeof(t->c.s7.rara), "//" );
-          snprintf ( t->d.s7.rara, sizeof(t->d.s7.rara), "//" );
-          return 0;
+        if (s->a->mask & DESCRIPTOR_VALUE_MISSING) {
+            snprintf(t->a.s7.rara, sizeof(t->a.s7.rara), "//");
+            snprintf(t->b.s7.rara, sizeof(t->b.s7.rara), "//");
+            snprintf(t->c.s7.rara, sizeof(t->c.s7.rara), "//");
+            snprintf(t->d.s7.rara, sizeof(t->d.s7.rara), "//");
+            return 0;
         }
-      if ( s->ival >= 0 )
-        {
-          snprintf ( t->a.s7.rara, sizeof(t->a.s7.rara), "%02d", s->ival % 100 );
-          snprintf ( t->b.s7.rara, sizeof(t->b.s7.rara), "%02d", s->ival % 100 );
-          snprintf ( t->c.s7.rara, sizeof(t->c.s7.rara), "%02d", s->ival % 100 );
-          snprintf ( t->d.s7.rara, sizeof(t->d.s7.rara), "%02d", s->ival % 100 );
+        if (s->ival >= 0) {
+            snprintf(t->a.s7.rara, sizeof(t->a.s7.rara), "%02d", s->ival % 100);
+            snprintf(t->b.s7.rara, sizeof(t->b.s7.rara), "%02d", s->ival % 100);
+            snprintf(t->c.s7.rara, sizeof(t->c.s7.rara), "%02d", s->ival % 100);
+            snprintf(t->d.s7.rara, sizeof(t->d.s7.rara), "%02d", s->ival % 100);
         }
-      break;
+        break;
 
     case 13: // 0 02 013 . Solar and infrared radiation correction
-      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        {
-          strcpy ( t->a.s7.sr, "/" );
-          strcpy ( t->b.s7.sr, "/" );
-          strcpy ( t->c.s7.sr, "/" );
-          strcpy ( t->d.s7.sr, "/" );
-          return 0;
-
+        if (s->a->mask & DESCRIPTOR_VALUE_MISSING) {
+            strcpy(t->a.s7.sr, "/");
+            strcpy(t->b.s7.sr, "/");
+            strcpy(t->c.s7.sr, "/");
+            strcpy(t->d.s7.sr, "/");
+            return 0;
         }
-      if ( s->ival >= 0 && s->ival <= 7 )
-        {
-          snprintf ( t->a.s7.sr, sizeof(t->a.s7.sr), "%d", s->ival );
-          snprintf ( t->b.s7.sr, sizeof(t->b.s7.sr), "%d", s->ival );
-          snprintf ( t->c.s7.sr, sizeof(t->c.s7.sr), "%d", s->ival );
-          snprintf ( t->d.s7.sr, sizeof(t->d.s7.sr), "%d", s->ival );
+        if (s->ival >= 0 && s->ival <= 7) {
+            snprintf(t->a.s7.sr, sizeof(t->a.s7.sr), "%d", s->ival);
+            snprintf(t->b.s7.sr, sizeof(t->b.s7.sr), "%d", s->ival);
+            snprintf(t->c.s7.sr, sizeof(t->c.s7.sr), "%d", s->ival);
+            snprintf(t->d.s7.sr, sizeof(t->d.s7.sr), "%d", s->ival);
+        } else {
+            // case of missing data
+            strcpy(t->a.s7.sr, "/");
+            strcpy(t->b.s7.sr, "/");
+            strcpy(t->c.s7.sr, "/");
+            strcpy(t->d.s7.sr, "/");
         }
-      else
-        {
-          // case of missing data
-          strcpy ( t->a.s7.sr, "/" );
-          strcpy ( t->b.s7.sr, "/" );
-          strcpy ( t->c.s7.sr, "/" );
-          strcpy ( t->d.s7.sr, "/" );
-        }
-      break;
+        break;
 
     case 14: // 0 02 014 . Tracking technique/status of system used
-      if ( s->a->mask & DESCRIPTOR_VALUE_MISSING )
-        {
-          strcpy ( t->a.s7.sasa, "//" );
-          strcpy ( t->b.s7.sasa, "//" );
-          strcpy ( t->c.s7.sasa, "//" );
-          strcpy ( t->d.s7.sasa, "//" );
-          return 0;
+        if (s->a->mask & DESCRIPTOR_VALUE_MISSING) {
+            strcpy(t->a.s7.sasa, "//");
+            strcpy(t->b.s7.sasa, "//");
+            strcpy(t->c.s7.sasa, "//");
+            strcpy(t->d.s7.sasa, "//");
+            return 0;
         }
-      if ( s->ival >= 0 && s->ival < 100 )
-        {
-          snprintf ( t->a.s7.sasa, sizeof(t->a.s7.sasa), "%02d", s->ival );
-          snprintf ( t->b.s7.sasa, sizeof(t->b.s7.sasa), "%02d", s->ival );
-          snprintf ( t->c.s7.sasa, sizeof(t->c.s7.sasa), "%02d", s->ival );
-          snprintf ( t->d.s7.sasa, sizeof(t->d.s7.sasa), "%02d", s->ival );
+        if (s->ival >= 0 && s->ival < 100) {
+            snprintf(t->a.s7.sasa, sizeof(t->a.s7.sasa), "%02d", s->ival);
+            snprintf(t->b.s7.sasa, sizeof(t->b.s7.sasa), "%02d", s->ival);
+            snprintf(t->c.s7.sasa, sizeof(t->c.s7.sasa), "%02d", s->ival);
+            snprintf(t->d.s7.sasa, sizeof(t->d.s7.sasa), "%02d", s->ival);
+        } else {
+            strcpy(t->a.s7.sasa, "//");
+            strcpy(t->b.s7.sasa, "//");
+            strcpy(t->c.s7.sasa, "//");
+            strcpy(t->d.s7.sasa, "//");
         }
-      else
-        {
-          strcpy ( t->a.s7.sasa, "//" );
-          strcpy ( t->b.s7.sasa, "//" );
-          strcpy ( t->c.s7.sasa, "//" );
-          strcpy ( t->d.s7.sasa, "//" );
-        }
-      break;
+        break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 0 )
-        bufr2tac_set_error ( s, 0, "temp_parse_x02()", "Descriptor not parsed" );
-      break;
+        bufr2tac_set_error(s, 0, "temp_parse_x02()", "Descriptor not parsed");
+        break;
     }
-  return 0;
+    return 0;
 }

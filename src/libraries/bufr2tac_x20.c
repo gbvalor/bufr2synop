@@ -538,6 +538,12 @@ int syn_parse_x20(struct synop_chunks* syn, struct bufr2tac_subset_state* s)
         if (s->a->mask & DESCRIPTOR_VALUE_MISSING) {
             return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+        if (s->val < 0) {
+            bufr2tac_set_error(s, 2, "syn_parse_x20()", "Bad height of base of cloud");
+            return 1;
+        }
+#endif
         if (s->clayer == 0 || s->clayer == 7 || s->clayer == 5 || s->clayer == 62) // first layer or low layer is for sec1
         {
             m_to_h(syn->s1.h, sizeof(syn->s1.h), s->val);
@@ -554,6 +560,12 @@ int syn_parse_x20(struct synop_chunks* syn, struct bufr2tac_subset_state* s)
         if (s->a->mask & DESCRIPTOR_VALUE_MISSING) {
             return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+        if (s->val < 0) {
+            bufr2tac_set_error(s, 2, "syn_parse_x20()", "Bad height of top of cloud");
+            return 1;
+        }
+#endif
         if (s->clayer < 0) // base below station level
         {
             m_to_hh(syn->s4.H1H1, sizeof(syn->s4.H1H1), s->val);
@@ -972,7 +984,7 @@ int syn_parse_x20(struct synop_chunks* syn, struct bufr2tac_subset_state* s)
         break;
 
     default:
-        if (BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
+        if ( (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
             bufr2tac_set_error(s, 0, "syn_parse_x20()", "Descriptor not parsed");
         break;
     }
@@ -1004,7 +1016,7 @@ int buoy_parse_x20(const struct buoy_chunks* b, struct bufr2tac_subset_state* s)
 
     switch (s->a->desc.y) {
     default:
-        if (BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
+        if ( (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
             bufr2tac_set_error(s, 0, "buoy_parse_x20()", "Descriptor not parsed");
         break;
     }
@@ -1066,7 +1078,7 @@ int temp_parse_x20(struct temp_chunks* t, struct bufr2tac_subset_state* s)
         break;
 
     default:
-        if (BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
+        if ( (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
             bufr2tac_set_error(s, 0, "temp_parse_x20()", "Descriptor not parsed");
         break;
     }

@@ -50,6 +50,7 @@ void bufrtotac_print_usage ( void )
   printf ( "       -N. Do not use local tables\n" );
   printf ( "       -n. Do not try to decode to TAC, just parse BUFR report\n" );
   printf ( "       -o output. Pathname of output file. Default is standar output\n" );
+  printf ( "       -p mode. Permisive mode. Not strict about errors (1=permissive, 0=strict). Default is 1. Use -p 0 to enable strict mode\n" );
   printf ( "       -R. Read bit_offsets file if exists. The path of these files is to add '.offs' to the name of input BUFR file\n");
   printf ( "       -s prints a long output with explained sequence of descriptors\n" );
   printf ( "       -S first..last . Print only results for subsets in range first..last (First subset available is 0). Default is all subsets\n" );
@@ -189,7 +190,7 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
   /*
      Read input options
   */
-  while ( ( iopt = getopt ( _argc, _argv, "cD:Ehi:jJHI:Nno:S:st:TvgGVWRxX0123B:" ) ) !=-1 )
+  while ( ( iopt = getopt ( _argc, _argv, "cD:Ehi:jJHI:Nnp:o:S:st:TvgGVWRxX0123B:" ) ) !=-1 )
     switch ( iopt )
       {
       case 'i':
@@ -342,6 +343,14 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
       case 'N':
          LOCAL_TABLES = 0;
          break;
+
+      case 'p': // Set strict/permissive mode for bufr2tac library
+        if ( strlen ( optarg ) < 2 &&
+             strspn ( optarg, "01" ) == strlen ( optarg ) )
+          {
+            bufr2tac_set_strict_mode( atoi ( optarg ) == 0 ? 1 : 0);
+          }
+        break;  
 
       case 'h':
       default:

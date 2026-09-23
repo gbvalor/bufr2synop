@@ -135,6 +135,25 @@ int bufr2tac_set_error(struct bufr2tac_subset_state* s, int severity, const char
 }
 
 /*!
+  \fn int bufr2tac_error_severity_count(const struct bufr2tac_error_stack* e, int severity)
+  \brief Count the number of errors with a specific severity in the error stack
+  \param [in] e Pointer to struct \ref bufr2tac_error_stack to check
+  \param [in] severity Severity level to count (0 = INFO, 1 = WARNING, 2 = ERROR)
+  \return Number of errors with the specified severity
+*/
+int bufr2tac_error_severity_count(const struct bufr2tac_error_stack* e, int severity)
+{
+    unsigned int count = 0;
+    unsigned int i;
+    for (i = 0; i < e->ne; i++) {
+        if (e->err[i].severity == severity) {
+            count++;
+        }
+    }
+    return count;
+}
+
+/*!
   \fn int bufr2tac_print_error(const struct bufr2tac_error_stack* e)
   \brief Print all errors in the error stack to stdout
   \param [in] e Pointer to struct \ref bufr2tac_error_stack to print

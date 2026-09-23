@@ -74,6 +74,12 @@ int syn_parse_x05(struct synop_chunks* syn, struct bufr2tac_subset_state* s)
     switch (s->a->desc.y) {
     case 1: // 0 05 001 . Latitude (High accuracy)
     case 2: // 0 05 002 . Latitude (Coarse accuracy)
+#ifdef BUFR2TAC_CHECK_LIMITS
+        if (fabs(s->val) > 90.0) {
+            bufr2tac_set_error(s, 2, "syn_parse_x05()", "Bad latitude");
+            return 1;
+        }
+#endif
         if (s->val < 0.0)
             s->mask |= SUBSET_MASK_LATITUDE_SOUTH; // Sign for latitude
         s->mask |= SUBSET_MASK_HAVE_LATITUDE;
@@ -86,11 +92,17 @@ int syn_parse_x05(struct synop_chunks* syn, struct bufr2tac_subset_state* s)
         break;
 
     case 21: // 0 05 021 . Bearing or azimut
+#ifdef BUFR2TAC_CHECK_LIMITS
+        if (s->val < 0.0 || s->val > 360.0) {
+            bufr2tac_set_error(s, 2, "syn_parse_x05()", "Bad bearing");
+            return 1;
+        }
+#endif
         grad_to_D(syn->s3.Da, sizeof(syn->s3.Da), s->val);
         syn->mask |= SYNOP_SEC3;
         break;
     default:
-        if (BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
+        if ( (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
             bufr2tac_set_error(s, 0, "syn_parse_x05()", "Descriptor not parsed");
         break;
     }
@@ -135,6 +147,12 @@ int buoy_parse_x05(struct buoy_chunks* b, struct bufr2tac_subset_state* s)
     switch (s->a->desc.y) {
     case 1: // 0 05 001 . Latitude (High accuracy)
     case 2: // 0 05 002 . Latitude (Coarse accuracy)
+#ifdef BUFR2TAC_CHECK_LIMITS
+        if (fabs(s->val) > 90.0) {
+            bufr2tac_set_error(s, 2, "buoy_parse_x05()", "Bad latitude");
+            return 1;
+        }
+#endif
         if (s->val < 0.0)
             s->mask |= SUBSET_MASK_LATITUDE_SOUTH; // Sign for latitude
         s->mask |= SUBSET_MASK_HAVE_LATITUDE;
@@ -144,7 +162,7 @@ int buoy_parse_x05(struct buoy_chunks* b, struct bufr2tac_subset_state* s)
         break;
 
     default:
-        if (BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
+        if ( (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
             bufr2tac_set_error(s, 0, "buoy_parse_x05()", "Descriptor not parsed");
         break;
     }
@@ -171,13 +189,19 @@ int climat_parse_x05(const struct climat_chunks* c, struct bufr2tac_subset_state
     switch (s->a->desc.y) {
     case 1: // 0 05 001 . Latitude (High accuracy)
     case 2: // 0 05 002 . Latitude (Coarse accuracy)
+#ifdef BUFR2TAC_CHECK_LIMITS
+        if (fabs(s->val) > 90.0) {
+            bufr2tac_set_error(s, 2, "climat_parse_x05()", "Bad latitude");
+            return 1;
+        }
+#endif
         if (s->val < 0.0)
             s->mask |= SUBSET_MASK_LATITUDE_SOUTH; // Sign for latitude
         s->mask |= SUBSET_MASK_HAVE_LATITUDE;
         s->lat = s->val;
         break;
     default:
-        if (BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
+        if ( (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
             bufr2tac_set_error(s, 0, "climat_parse_x05()", "Descriptor not parsed");
         break;
     }
@@ -205,6 +229,12 @@ int temp_parse_x05(struct temp_chunks* t, struct bufr2tac_subset_state* s)
     switch (s->a->desc.y) {
     case 1: // 0 05 001 . Latitude (High accuracy)
     case 2: // 0 05 002 . Latitude (Coarse accuracy)
+#ifdef BUFR2TAC_CHECK_LIMITS
+        if (fabs(s->val) > 90.0) {
+            bufr2tac_set_error(s, 2, "temp_parse_x05()", "Bad latitude");
+            return 1;
+        }
+#endif
         if (s->val < 0.0)
             s->mask |= SUBSET_MASK_LATITUDE_SOUTH; // Sign for latitude
         s->mask |= SUBSET_MASK_HAVE_LATITUDE;
@@ -255,7 +285,7 @@ int temp_parse_x05(struct temp_chunks* t, struct bufr2tac_subset_state* s)
         break;
 
     default:
-        if (BUFR2TAC_DEBUG_LEVEL > 1 && (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
+        if ( (s->a->mask & DESCRIPTOR_VALUE_MISSING) == 0)
             bufr2tac_set_error(s, 0, "temp_parse_x05()", "Descriptor not parsed");
         break;
     }

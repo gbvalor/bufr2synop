@@ -29,6 +29,7 @@
 #include "bufr2tac.h"
 
 int BUFR2TAC_DEBUG_LEVEL = 0; /*!< Set debug level. 0 -> no debug. 1 -> debug. 2 -> verbose debug */
+int BUFR2TAC_STRICT_MODE = 0; /*!< Set strict/permissive mode. 1 -> strict mode. 0 -> permissive mode */
 
 /*!
   \fn char *bufr2tac_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch)
@@ -103,4 +104,16 @@ int bufr2tac_set_debug_level(int level)
   // Here we set 
   BUFR2TAC_DEBUG_LEVEL = level;
   return 0;  
+}
+
+/*!
+  \fn int bufr2tac_set_strict_mode(int mode)
+  \brief Set the strict mode for bufr2tac library
+  \param [in] mode Strict mode to set (0=permissive, 1=strict)
+  \return 0 on success
+*/
+int bufr2tac_set_strict_mode(int mode)
+{
+  BUFR2TAC_STRICT_MODE = mode ? 1 : 0;
+  return 0;
 }

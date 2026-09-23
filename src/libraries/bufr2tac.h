@@ -73,6 +73,12 @@ extern "C" {
 #endif // USE_BUFRDC
 
 /*!
+ \def BUFR2TAC_CHECK_LIMITS
+ \brief Enable or disable checking of limits for some data values in bufr2tac. As example, it can check if latitude and longitude values are within valid ranges.
+*/
+#define BUFR2TAC_CHECK_LIMITS 1
+
+/*!
  \def SUBSET_MASK_LATITUDE_SOUTH
  \brief Bit mask to mark a struct \ref bufr_subset_sequence_data with south latitude
 */
@@ -197,10 +203,11 @@ extern "C" {
  */
 #define SUBSET_MASK_HAVE_WMO_ID (8 * 131072)
 
+
 /*! \def BUFR2TAC_ERROR_STACK_DIM
  *  \brief set de dimension of a struct \ref bufr2tac_error_stack
  */
-#define BUFR2TAC_ERROR_STACK_DIM 16
+#define BUFR2TAC_ERROR_STACK_DIM 64
 
 /*! \def BUFR2TAC_ERROR_DESCRIPTION_LENGTH
  *  \brief set de dimension of member \a description of a struct \ref bufr2tac_error
@@ -229,6 +236,17 @@ extern "C" {
  * \brief To use bufrdeco library with legacy old code using ECMWF library which is not used currently
  */
 #define bufr_subset_sequence_data bufrdeco_subset_sequence_data
+
+#ifdef BUFR2TAC_CHECK_LIMITS
+#define BUFR2TAC_MAX_ALTITUDE 9999 ///< Maximum valid altitude in meters
+#define BUFR2TAC_MIN_ALTITUDE -400 ///< Minimum valid altitude in meters
+#define BUFR2TAC_MAX_AIR_PRESSURE 110000.0 ///< Maximum valid air pressure in Pascal
+#define BUFR2TAC_MAX_AIR_PRESSURE_3H_CHANGE 5000.0 ///< Maximum valid 3-hour air pressure change in Pascal
+#define BUFR2TAC_MIN_AIR_PRESSURE_24H_CHANGE 20000.0 ///< Minimum valid 24-hour air pressure change in Pascal
+#define BUFR2TAC_MAX_WIND_SPEED 150.0 ///< Maximum valid wind speed in m/s
+#define BUFR2TAC_MAX_AIR_TEMPERATURE (60.0 + 273.15) ///< Maximum valid air temperature in kelvin
+#define BUFR2TAC_MIN_AIR_TEMPERATURE (-100.0 + 273.15) ///< Minimum valid air temperature in kelvin
+#endif
 
 /*!
  * \struct bufr2tac_error
@@ -387,6 +405,15 @@ int bufr2tac_clean_error_stack(struct bufr2tac_error_stack* e);
 int bufr2tac_set_error(struct bufr2tac_subset_state* s, int severity, const char* origin, const char* explanation);
 
 /*!
+  \fn int bufr2tac_error_severity_count(const struct bufr2tac_error_stack* e, int severity)
+  \brief Count the number of errors with a specific severity in the error stack
+  \param [in] e Pointer to error stack to check
+  \param [in] severity Severity level to count (0 = INFO, 1 = WARNING, 2 = ERROR)
+  \return Number of errors with the specified severity
+*/
+int bufr2tac_error_severity_count(const struct bufr2tac_error_stack* e, int severity);
+
+/*!
   \fn int bufr2tac_print_error(const struct bufr2tac_error_stack *e)
   \brief Print all errors/warnings in error stack
   \param [in] e Pointer to error stack to print
@@ -401,6 +428,15 @@ int bufr2tac_print_error(const struct bufr2tac_error_stack* e);
   \return Previous debug level
 */
 int bufr2tac_set_debug_level(int level);
+
+/*!
+  \fn int bufr2tac_set_strict_mode(int mode)
+  \brief Set the strict mode for bufr2tac library
+  \param [in] mode Strict mode to set (0=permissive, 1=strict)
+  \return 0 on success
+*/
+int bufr2tac_set_strict_mode(int mode);
+
 
 /*!
   \fn void bufr2tac_clean_buoy_chunks(struct buoy_chunks *b)
@@ -2201,6 +2237,7 @@ int buprt_(int*, int*, int*, int*, char**, char**, char**, int*, double*, int*, 
 // Global variables
 /*! Global debug level variable - Controls verbosity of debug output (0=none, higher=more verbose) */
 extern int BUFR2TAC_DEBUG_LEVEL;
+extern int BUFR2TAC_STRICT_MODE;
 
 #ifndef PATH_MAX
 #define PATH_MAX 1024

@@ -24,6 +24,13 @@
 #include "bufr2tac.h"
 
 /*!
+  \brief Macro to check if a temperature value is within valid air temperature limits
+  \param [in] _T Temperature value to check
+  \return Returns NULL if the temperature is out of range
+*/
+#define check_temp_limits(_T) if ((_T) < BUFR2TAC_MIN_AIR_TEMPERATURE || (_T) > BUFR2TAC_MAX_AIR_TEMPERATURE) { return NULL; }
+
+/*!
   \fn char * kelvin_to_snTTT ( char *target, size_t lmax, double T )
   \brief Converts a kelvin temperature value into a snTTT string
   \param [out] target Pointer to string where result will be stored
@@ -40,10 +47,9 @@ char * kelvin_to_snTTT ( char *target, size_t lmax, double T )
     {
       Tx *= 10.0;
     }
-  if ( Tx < 173.205 || Tx > 340.0 )
-    {
-      return NULL;
-    }
+
+  // Check if the temperature is within valid limits
+  check_temp_limits(Tx);
 
   // tenths of degree (Celsius)
   // Patch introduced on 22-Dec-2019 due to some roundings errors from India and Australia
@@ -73,10 +79,8 @@ char * kelvin_to_snTTT ( char *target, size_t lmax, double T )
 char * kelvin_to_snTT ( char *target, size_t lmax, double T )
 {
   int ic;
-  if ( T < 173.65 || T > 340.0 )
-    {
-      return NULL;
-    }
+  // Check if the temperature is within valid limits
+  check_temp_limits(T);
 
   // Whole degrees (Celsius)
   ic = ( int ) ( floor ( ( T - 273.15 ) + 0.5 ) );
@@ -102,10 +106,8 @@ char * kelvin_to_snTT ( char *target, size_t lmax, double T )
 char * kelvin_to_TT ( char *target, size_t lmax, double T )
 {
   int ic;
-  if ( T < 150.0 || T > 340.0 )
-    {
-      return NULL;
-    }
+  // Check if the temperature is within valid limits
+  check_temp_limits(T);
 
   // Whole degrees (Celsius)
   ic = ( int ) ( floor ( ( T - 273.15 ) + 0.5 ) );
@@ -131,10 +133,9 @@ char * kelvin_to_TT ( char *target, size_t lmax, double T )
 char * kelvin_to_TTTT ( char *target, size_t lmax, double T )
 {
   int ic;
-  if ( T < 150.0 || T > 340.0 )
-    {
-      return NULL;
-    }
+  // Check if the temperature is within valid limits
+  check_temp_limits(T);
+  
   // hundreth of degrees (Celsius)
   ic = ( int ) ( floor ( 100.0 * ( T - 273.15 ) + 0.5 ) );
   if ( ic < 0 )

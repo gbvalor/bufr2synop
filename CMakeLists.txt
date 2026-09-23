@@ -1,7 +1,7 @@
 ###########################################################################
 #   Project: bufr2synop                                                   #
 #                                                                         #
-#   Copyright (C) 2016-2024 by Guillermo Ballester Valor                  #
+#   Copyright (C) 2016-2026 by Guillermo Ballester Valor                  #
 #   gbvalor@ogimet.com                                                    #
 #                                                                         #
 #   GNU General Public License v2 or above                                #
@@ -16,7 +16,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 3.10)
 cmake_policy(SET CMP0048 NEW)
 
 # Establecemos la version 
-project (bufr2synop LANGUAGES C VERSION 0.37.1)
+project (bufr2synop LANGUAGES C VERSION 0.37.2)
 
 #Definitions needed to generate config.h
 SET(PACKAGE_NAME "${PROJECT_NAME}")

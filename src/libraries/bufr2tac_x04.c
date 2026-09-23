@@ -113,12 +113,13 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
       else if ( s->ival < 2000 || s->ival > 2050 )
         {
-          if ( BUFR2TAC_DEBUG_LEVEL > 0 )
-            bufr2tac_set_error ( s, 2, "syn_parse_x04()", "Bad year" );
+          bufr2tac_set_error ( s, 2, "syn_parse_x04()", "Bad year" );
           return 1;
         }
+#endif
       snprintf ( syn->e.YYYY, sizeof(syn->e.YYYY), "%04d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_YEAR;
       break;
@@ -128,6 +129,13 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->ival < 1 || s->ival > 12 )
+        {
+          bufr2tac_set_error ( s, 2, "syn_parse_x04()", "Bad month" );
+          return 1;
+        }
+#endif
       snprintf ( syn->e.MM, sizeof(syn->e.MM), "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_MONTH;
       break;
@@ -137,6 +145,13 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->ival < 1 || s->ival > 31 )
+        {
+          bufr2tac_set_error ( s, 2, "syn_parse_x04()", "Bad day of month" );
+          return 1;
+        }
+#endif
       snprintf ( syn->e.DD, sizeof(syn->e.DD), "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_DAY;
       break;
@@ -146,6 +161,13 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->ival < 0 || s->ival > 23 )
+        {
+          bufr2tac_set_error ( s, 2, "syn_parse_x04()", "Bad hour" );
+          return 1;
+        }
+#endif
       snprintf ( syn->e.HH, sizeof(syn->e.HH), "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_HOUR;
       break;
@@ -155,6 +177,13 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->ival < 0 || s->ival > 59 )
+        {
+          bufr2tac_set_error ( s, 2, "syn_parse_x04()", "Bad minute" );
+          return 1;
+        }
+#endif
       snprintf ( syn->e.mm, sizeof(syn->e.mm), "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_MINUTE;
       break;
@@ -233,7 +262,7 @@ int syn_parse_x04 ( struct synop_chunks *syn, struct bufr2tac_subset_state *s )
       break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && ( s->a->mask & DESCRIPTOR_VALUE_MISSING ) == 0 )
+      if ( ( s->a->mask & DESCRIPTOR_VALUE_MISSING ) == 0 )
         bufr2tac_set_error ( s, 0, "syn_parse_x04()", "Descriptor not parsed" );
       break;
     }
@@ -257,10 +286,16 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->ival < 2000 || s->ival > 2050 )
+        {
+          bufr2tac_set_error ( s, 2, "buoy_parse_x04()", "Bad year" );
+          return 1;
+        }
+#endif
       else if ( s->ival < 2000 || s->ival > 2050 )
         {
-          if ( BUFR2TAC_DEBUG_LEVEL > 0 )
-            bufr2tac_set_error ( s, 2, "buoy_parse_x04()", "Bad year" );
+          bufr2tac_set_error ( s, 2, "buoy_parse_x04()", "Bad year" );
           return 1;
         }
 
@@ -276,6 +311,13 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->ival < 1 || s->ival > 12 )
+        {
+          bufr2tac_set_error ( s, 2, "buoy_parse_x04()", "Bad month" );
+          return 1;
+        }
+#endif
       if ( b->e.MM[0] == 0 )
         {
           snprintf ( b->e.MM, sizeof(b->e.MM), "%02d", s->ival );
@@ -288,6 +330,13 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->ival < 1 || s->ival > 31 )
+        {
+          bufr2tac_set_error ( s, 2, "buoy_parse_x04()", "Bad day of month" );
+          return 1;
+        }
+#endif
       if ( b->e.DD[0] == 0 )
         {
           snprintf ( b->e.DD, sizeof(b->e.DD), "%02d", s->ival );
@@ -301,6 +350,13 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->ival < 0 || s->ival > 23 )
+        {
+          bufr2tac_set_error ( s, 2, "buoy_parse_x04()", "Bad hour" );
+          return 1;
+        }
+#endif
       if ( b->e.HH[0] == 0 )
         {
           snprintf ( b->e.HH, sizeof(b->e.HH), "%02d", s->ival );
@@ -314,6 +370,13 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->ival < 0 || s->ival > 59 )
+        {
+          bufr2tac_set_error ( s, 2, "buoy_parse_x04()", "Bad minute" );
+          return 1;
+        }
+#endif
       if ( b->e.mm[0] == 0 )
         {
           snprintf ( b->e.mm, sizeof(b->e.mm), "%02d", s->ival );
@@ -383,7 +446,7 @@ int buoy_parse_x04 ( struct buoy_chunks *b, struct bufr2tac_subset_state *s )
       break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && ( s->a->mask & DESCRIPTOR_VALUE_MISSING ) == 0 )
+      if (( s->a->mask & DESCRIPTOR_VALUE_MISSING ) == 0 )
         bufr2tac_set_error ( s, 0, "buoy_parse_x04()", "Descriptor not parsed" );
       break;
     }
@@ -412,12 +475,13 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
       else if ( s->ival < 2000 || s->ival > 2050 )
         {
-          if ( BUFR2TAC_DEBUG_LEVEL > 0 )
-            bufr2tac_set_error ( s, 2, "climat_parse_x04()", "Bad year" );
+          bufr2tac_set_error ( s, 2, "climat_parse_x04()", "Bad year" );
           return 1;
         }
+#endif
 
       if ( s->i && ( s->a1->desc.x == 4 ) && ( s->a1->desc.y == 1 ) )
         {
@@ -441,6 +505,13 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->ival < 1 || s->ival > 12 )
+        {
+          bufr2tac_set_error ( s, 2, "climat_parse_x04()", "Bad month" );
+          return 1;
+        }
+#endif
       snprintf ( c->e.MM, sizeof(c->e.MM), "%02d", s->ival );
       s->mask |= SUBSET_MASK_HAVE_MONTH;
       snprintf ( c->s0.MM, sizeof(c->s0.MM), "%02d", s->ival );
@@ -452,6 +523,13 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->ival < 1 || s->ival > 31 )
+        {
+          bufr2tac_set_error ( s, 2, "climat_parse_x04()", "Bad day of month" );
+          return 1;
+        }
+#endif
       if ( c->e.DD[0] == 0 )
         {
           snprintf ( c->e.DD, sizeof(c->e.DD), "%02d", s->ival );
@@ -469,6 +547,13 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->ival < 0 || s->ival > 23 )
+        {
+          bufr2tac_set_error ( s, 2, "climat_parse_x04()", "Bad hour" );
+          return 1;
+        }
+#endif
       if ( c->e.HH[0] == 0 )
         {
           snprintf ( c->e.HH, sizeof(c->e.HH), "%02d", s->ival );
@@ -481,6 +566,13 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->ival < 0 || s->ival > 59 )
+        {
+          bufr2tac_set_error ( s, 2, "climat_parse_x04()", "Bad minute" );
+          return 1;
+        }
+#endif
       if ( c->e.mm[0] == 0 )
         {
           snprintf ( c->e.mm, sizeof(c->e.mm), "%02d", s->ival );
@@ -552,7 +644,7 @@ int climat_parse_x04 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
       break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && ( s->a->mask & DESCRIPTOR_VALUE_MISSING ) == 0 )
+      if ( ( s->a->mask & DESCRIPTOR_VALUE_MISSING ) == 0 )
         bufr2tac_set_error ( s, 0, "climat_parse_x04()", "Descriptor not parsed" );
       break;
     }
@@ -575,12 +667,13 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
-      else if ( s->ival < 2000 || s->ival > 2050 )
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->ival < 2000 || s->ival > 2050 )
         {
-          if ( BUFR2TAC_DEBUG_LEVEL > 0 )
-            bufr2tac_set_error ( s, 2, "temp_parse_x04()", "Bad year" );
+          bufr2tac_set_error ( s, 2, "temp_parse_x04()", "Bad year" );
           return 1;
         }
+#endif
       if ( t->a.e.YYYY[0] == 0 )
         {
           snprintf ( t->a.e.YYYY, sizeof(t->a.e.YYYY), "%04d", s->ival );
@@ -596,6 +689,13 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->ival < 1 || s->ival > 12 )
+        {
+          bufr2tac_set_error ( s, 2, "temp_parse_x04()", "Bad month" );
+          return 1;
+        }
+#endif
       if ( t->a.e.MM[0] == 0 )
         {
           snprintf ( t->a.e.MM, sizeof(t->a.e.MM), "%02d", s->ival );
@@ -611,6 +711,13 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->ival < 1 || s->ival > 31 )
+        {
+          bufr2tac_set_error ( s, 2, "temp_parse_x04()", "Bad day of month" );
+          return 1;
+        }
+#endif
       if ( t->a.e.DD[0] == 0 )
         {
           snprintf ( t->a.e.DD, sizeof(t->a.e.DD), "%02d", s->ival );
@@ -627,6 +734,13 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->ival < 0 || s->ival > 23 )
+        {
+          bufr2tac_set_error ( s, 2, "temp_parse_x04()", "Bad hour" );
+          return 1;
+        }
+#endif
       if ( t->a.e.HH[0] == 0 )
         {
           snprintf ( t->a.e.HH, sizeof(t->a.e.HH), "%02d", s->ival );
@@ -647,6 +761,13 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->ival < 0 || s->ival > 59 )
+        {
+          bufr2tac_set_error ( s, 2, "temp_parse_x04()", "Bad minute" );
+          return 1;
+        }
+#endif
       if ( t->a.e.mm[0] == 0 )
         {
           snprintf ( t->a.e.mm, sizeof(t->a.e.mm), "%02d", s->ival );
@@ -666,6 +787,13 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
         {
           return 0;
         }
+#ifdef BUFR2TAC_CHECK_LIMITS
+      if ( s->ival < 0 || s->ival > 59 )
+        {
+          bufr2tac_set_error ( s, 2, "temp_parse_x04()", "Bad second" );
+          return 1;
+        }
+#endif
       if ( t->a.e.ss[0] == 0 )
         {
           snprintf ( t->a.e.ss, sizeof(t->a.e.ss), "%02d", s->ival );
@@ -710,7 +838,7 @@ int temp_parse_x04 ( struct temp_chunks *t, struct bufr2tac_subset_state *s )
       break;
 
     default:
-      if ( BUFR2TAC_DEBUG_LEVEL > 1 && ( s->a->mask & DESCRIPTOR_VALUE_MISSING ) == 0 )
+      if ( ( s->a->mask & DESCRIPTOR_VALUE_MISSING ) == 0 )
         bufr2tac_set_error ( s, 0, "temp_parse_x04()", "Descriptor not parsed" );
       break;
     }
