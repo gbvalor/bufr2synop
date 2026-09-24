@@ -194,39 +194,46 @@ customized bufr tables if you are using them.
    There are some more options for **bufrnoaa** and **bufrtotac**. You can see a list using option *-h*
 
 <!-- markdownlint-disable MD052 -->
-    $> bufr2noaa -h
-    bufrnoaa -h
-    bufrnoaa: Version '0.24.0' built using GNU C compiler gcc 12.2.1 at Oct  3 2022 06:41:17 and cmake.
-    Usage:
+    $> bufrnoaa -h
+bufrnoaa: Version '0.38.0' built using clang C compiler 21.0.0 (clang-2100.3.34.2) at Sep 24 2026 11:00:47 and cmake.
+Usage:
 
-    bufrnoaa -i input_file [-h][-v][-f][-l][-F prefix][-T T2_selection][-O selo][-S sels][-U selu]
-       -h Print this help
-       -v Print information about build and version
-       -i Input file. Complete input path file for NOAA *.bin bufr archive file
-       -2 Input file is formatted in alternative form: Headers has '#' instead of '*' marks and no sep after '7777'
-       -l list the names of reports in input file
-       -f Extract selected reports and write them in files, one per bufr message, as
-          example '20110601213442_ISIE06_SBBR_012100_RRB.bufr'. First field in name is input file timestamp
-          Other fields are from header
-       -F prefix. Builds an archive file with the same format as NOAA one but just with selected messages
-          witgh option  -T. Resulting name is 'prefix_input_filename'
-          If no -F option no archive bin file is created.
-          If no message is selected, the a void file is created.
-          File timestamp is the same than input file
-       -T T2_selection. A string with selection. A character per type (T2 code)
-          'S' = Surface . 'O'= Oceanographic. 'U'= upper air
-          If no -T argument then nothing is selected
-       -S sels. String with selection for A1 when T2='S'
-          By default all A1 are selected
-       -O selo. String with selection for A1 when T2='O'
-          By default all A1 are selected
-       -U sels. String with selection for A1 when T2='U'
-          By default all A1 are selected
+bufrnoaa -i input_file [-h][-v][-f][-l][-F prefix][-T T2_selection][-O selo][-S sels][-U selu][-P selp][-t selt][-X selx][-Z selz]
+   -h Print this help
+   -v Print information about build and version
+   -i Input file. Complete input path file for NOAA *.bin bufr archive file
+   -2 Input file is formatted in alternative form: Headers has '#' instead of '*' marks and no sep after '7777'
+   -l list the names of reports in input file
+   -f Extract selected reports and write them in files, one per bufr message, as
+      example '20110601213442_ISIE06_SBBR_012100_RRB.bufr'. First field in name is input file timestamp
+      Other fields are from header
+   -F prefix. Builds an archive file with the same format as NOAA one but just with selected messages
+      witgh option  -T. Resulting name is 'prefix_input_filename'
+      If no -F option no archive bin file is created.
+      If no message is selected, the a void file is created.
+      File timestamp is the same than input file
+   -T T2_selection. A string with selection. A character per type (T2 code)
+      'S' = Surface . 'O'= Oceanographic. 'U'= upper air
+      If no -T argument then nothing is selected
+   -S sels. String with selection for A1 when T2='S'
+      By default all A1 are selected
+   -O selo. String with selection for A1 when T2='O'
+      By default all A1 are selected
+   -U sels. String with selection for A1 when T2='U'
+      By default all A1 are selected
+   -P selp. String with selection for A1 when T2='P'
+      By default all A1 are selected
+   -t selt. String with selection for A1 when T2='T'
+      By default all A1 are selected
+   -X selx. String with selection for A1 when T2='X'
+      By default all A1 are selected
+   -Z sels. String with selection for A1 when T2='Z'
+      By default all A1 are selected
 
-    $> bufrtotac -h
-bufrtotac: Version '0.37.2' built using clang C compiler 21.0.0 (clang-2100.3.34.2) at Sep 23 2026 18:05:08 and cmake.
-Linked to bufr2tac library version '0.37.2' built using clang C compiler 21.0.0 (clang-2100.3.34.2) at Sep 23 2026 18:05:05 and cmake.
-Linked to bufrdeco library version '0.37.2' built using clang C compiler 21.0.0 (clang-2100.3.34.2) at Sep 23 2026 18:05:03 and cmake.
+    $>bufrtotac -h
+bufrtotac: Version '0.38.0' built using clang C compiler 21.0.0 (clang-2100.3.34.2) at Sep 24 2026 10:56:09 and cmake.
+Linked to bufr2tac library version '0.38.0' built using clang C compiler 21.0.0 (clang-2100.3.34.2) at Sep 24 2026 10:56:06 and cmake.
+Linked to bufrdeco library version '0.38.0' built using clang C compiler 21.0.0 (clang-2100.3.34.2) at Sep 24 2026 10:56:05 and cmake.
 
 Usage:
 bufrtotac -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-X][-c][-h][more optional args....]
