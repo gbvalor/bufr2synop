@@ -193,80 +193,81 @@ customized bufr tables if you are using them.
 
    There are some more options for **bufrnoaa** and **bufrtotac**. You can see a list using option *-h*
 
-<!-- markdownlint-disable MD052 -->
-    $> bufrnoaa -h
-bufrnoaa: Version '0.38.0' built using clang C compiler 21.0.0 (clang-2100.3.34.2) at Sep 24 2026 11:00:47 and cmake.
-Usage:
+       $> bufrnoaa -h
+       bufrnoaa: Version '0.38.0' built using clang C compiler 21.0.0 (clang-2100.3.34.2) at Sep 24 2026 11:00:47 and cmake.
+       Usage:
 
-bufrnoaa -i input_file [-h][-v][-f][-l][-F prefix][-T T2_selection][-O selo][-S sels][-U selu][-P selp][-t selt][-X selx][-Z selz]
-   -h Print this help
-   -v Print information about build and version
-   -i Input file. Complete input path file for NOAA *.bin bufr archive file
-   -2 Input file is formatted in alternative form: Headers has '#' instead of '*' marks and no sep after '7777'
-   -l list the names of reports in input file
-   -f Extract selected reports and write them in files, one per bufr message, as
-      example '20110601213442_ISIE06_SBBR_012100_RRB.bufr'. First field in name is input file timestamp
-      Other fields are from header
-   -F prefix. Builds an archive file with the same format as NOAA one but just with selected messages
-      witgh option  -T. Resulting name is 'prefix_input_filename'
-      If no -F option no archive bin file is created.
-      If no message is selected, the a void file is created.
-      File timestamp is the same than input file
-   -T T2_selection. A string with selection. A character per type (T2 code)
-      'S' = Surface . 'O'= Oceanographic. 'U'= upper air
-      If no -T argument then nothing is selected
-   -S sels. String with selection for A1 when T2='S'
-      By default all A1 are selected
-   -O selo. String with selection for A1 when T2='O'
-      By default all A1 are selected
-   -U sels. String with selection for A1 when T2='U'
-      By default all A1 are selected
-   -P selp. String with selection for A1 when T2='P'
-      By default all A1 are selected
-   -t selt. String with selection for A1 when T2='T'
-      By default all A1 are selected
-   -X selx. String with selection for A1 when T2='X'
-      By default all A1 are selected
-   -Z sels. String with selection for A1 when T2='Z'
-      By default all A1 are selected
+       bufrnoaa -i input_file [-h][-v][-f][-l][-F prefix][-T T2_selection][-O selo][-S sels][-U selu][-P selp][-t selt][-X selx][-Z selz]
+           -h Print this help
+           -v Print information about build and version
+           -i Input file. Complete input path file for NOAA *.bin bufr archive file
+           -2 Input file is formatted in alternative form: Headers has '#' instead of '*' marks and no sep after '7777'
+           -l list the names of reports in input file
+           -f Extract selected reports and write them in files, one per bufr message, as
+              example '20110601213442_ISIE06_SBBR_012100_RRB.bufr'. First field in name is input file timestamp
+              Other fields are from header
+           -F prefix. Builds an archive file with the same format as NOAA one but just with selected messages
+              witgh option  -T. Resulting name is 'prefix_input_filename'
+              If no -F option no archive bin file is created.
+              If no message is selected, the a void file is created.
+              File timestamp is the same than input file
+           -T T2_selection. A string with selection. A character per type (T2 code)
+              'S' = Surface . 'O'= Oceanographic. 'U'= upper air
+              If no -T argument then nothing is selected
+           -S sels. String with selection for A1 when T2='S'
+              By default all A1 are selected
+           -O selo. String with selection for A1 when T2='O'
+              By default all A1 are selected
+           -U sels. String with selection for A1 when T2='U'
+              By default all A1 are selected
+           -P selp. String with selection for A1 when T2='P'
+              By default all A1 are selected
+           -t selt. String with selection for A1 when T2='T'
+              By default all A1 are selected
+           -X selx. String with selection for A1 when T2='X'
+              By default all A1 are selected
+           -Z sels. String with selection for A1 when T2='Z'
+              By default all A1 are selected
 
-    $>bufrtotac -h
-bufrtotac: Version '0.38.0' built using clang C compiler 21.0.0 (clang-2100.3.34.2) at Sep 24 2026 10:56:09 and cmake.
-Linked to bufr2tac library version '0.38.0' built using clang C compiler 21.0.0 (clang-2100.3.34.2) at Sep 24 2026 10:56:06 and cmake.
-Linked to bufrdeco library version '0.38.0' built using clang C compiler 21.0.0 (clang-2100.3.34.2) at Sep 24 2026 10:56:05 and cmake.
 
-Usage:
-bufrtotac -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-X][-c][-h][more optional args....]
-       -c. The output is in csv format
-       -D debug level. 0 = No debug, 1 = Debug, 2 = Verbose debug (default = 0)
-       -E. Print expanded tree in json format
-       -G. Print latitude, logitude and altitude
-       -g. Print WIGOS ID
-       -h Print this help
-       -i Input file. Complete input path file for bufr file
-       -I list_of_files. Pathname of a file with the list of files to parse, one filename per line
-       -j. The output is in json format
-       -J. Output expanded subset SEC 4 data in json format
-       -N. Do not use local tables
-       -n. Do not try to decode to TAC, just parse BUFR report
-       -o output. Pathname of output file. Default is standar output
-       -p mode. Permisive mode. Not strict about errors (1=permissive, 0=strict). Default is 1. Use -p 0 to enable strict mode
-       -R. Read bit_offsets file if exists. The path of these files is to add '.offs' to the name of input BUFR file
-       -s prints a long output with explained sequence of descriptors
-       -S first..last . Print only results for subsets in range first..last (First subset available is 0). Default is all subsets
-       -t bufrtable_dir. Pathname of bufr tables directory. Ended with '/'
-       -T. Use cache of tables to optimize execution time
-       -W. Write bit_offsets file. The path of these files is to add '.offs' to the name of input BUFR file
-       -V. Verbose output
-       -v. Print version
-       -x. The output is in xml format
-       -X. Try to extract an embebed bufr in a file seraching for a first '7777' after first 'BUFR'
-       -B  bufr_xfile. In case of -X flag, write the extracted BUFR to bufr_xfile
-       -0. Prints BUFR Sec 0 information in json format
-       -1. Prints BUFR Sec 1 information in json format
-       -2. Prints BUFR Sec 2 information in json format
-       -3. Prints BUFR Sec 3 information in json format
-<!-- markdownlint-enable MD052 -->
+        $>bufrtotac -h
+        bufrtotac: Version '0.38.0' built using clang C compiler 21.0.0 (clang-2100.3.34.2) at Sep 24 2026 10:56:09 and cmake.
+        Linked to bufr2tac library version '0.38.0' built using clang C compiler 21.0.0 (clang-2100.3.34.2) at Sep 24 2026 10:56:06 and cmake.
+        Linked to bufrdeco library version '0.38.0' built using clang C compiler 21.0.0 (clang-2100.3.34.2) at Sep 24 2026 10:56:05 and cmake.
+
+        Usage:
+        bufrtotac -i input_file [-i input] [-I list_of_files] [-t bufrtable_dir] [-o output] [-s] [-v][-j][-x][-X][-c][-h][more optional args....]
+           -c. The output is in csv format
+           -D debug level. 0 = No debug, 1 = Debug, 2 = Verbose debug (default = 0)
+           -E. Print expanded tree in json format
+           -G. Print latitude, logitude and altitude
+           -g. Print WIGOS ID
+           -h Print this help
+           -i Input file. Complete input path file for bufr file
+           -I list_of_files. Pathname of a file with the list of files to parse, one filename per line
+           -j. The output is in json format
+           -J. Output expanded subset SEC 4 data in json format
+           -N. Do not use local tables
+           -n. Do not try to decode to TAC, just parse BUFR report
+           -o output. Pathname of output file. Default is standar output
+           -p mode. Permisive mode. Not strict about errors (1=permissive, 0=strict). Default is 1. Use -p 0 to enable strict mode
+           -R. Read bit_offsets file if exists. The path of these files is to add '.offs' to the name of input BUFR file
+           -s prints a long output with explained sequence of descriptors
+           -S first..last . Print only results for subsets in range first..last (First subset available is 0). Default is all subsets
+           -t bufrtable_dir. Pathname of bufr tables directory. Ended with '/'
+           -T. Use cache of tables to optimize execution time
+           -W. Write bit_offsets file. The path of these files is to add '.offs' to the name of input BUFR file
+           -V. Verbose output
+           -v. Print version
+           -x. The output is in xml format
+           -X. Try to extract an embebed bufr in a file seraching for a first '7777' after first 'BUFR'
+           -B  bufr_xfile. In case of -X flag, write the extracted BUFR to bufr_xfile
+           -0. Prints BUFR Sec 0 information in json format
+           -1. Prints BUFR Sec 1 information in json format
+           -2. Prints BUFR Sec 2 information in json format
+           -3. Prints BUFR Sec 3 information in json format
+
+
 
 Since version 0.23.0 there are four new interesting options in **buftotac** as you can see.
 
