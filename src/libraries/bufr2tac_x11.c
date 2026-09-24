@@ -616,6 +616,7 @@ int climat_parse_x11 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
 
   switch ( s->a->desc.y )
     {
+    case 46: // 0 11 046 . Maximum wind speed
 #ifdef BUFR2TAC_CHECK_LIMITS
       if ( s->val < 0.0 || s->val > BUFR2TAC_MAX_WIND_SPEED ) {
           if (BUFR2TAC_DEBUG_LEVEL > 0)
@@ -623,7 +624,6 @@ int climat_parse_x11 ( struct climat_chunks *c, struct bufr2tac_subset_state *s 
           return 1;
       }
 #endif
-    case 46: // 0 11 046 . Maximum wind speed
       if ( c->s4.iw[0] == '4' )
         {
           snprintf ( c->s4.fxfxfx, sizeof(c->s4.fxfxfx), "%03d", ( int ) ( s->val * 10.0 * 1.94384449 + 0.5 ) );

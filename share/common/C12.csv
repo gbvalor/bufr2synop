@@ -175,6 +175,10 @@ CodeFigure_OriginatingCentres,Name_OriginatingCentres_en,CodeFigure_SubCentres,N
 78,Offenbach (RSMC),254,EUMETSAT,Operational
 80,Rome (RSMC),101,Albania (NMC),Operational
 80,Rome (RSMC),102,National Research Council/Institute of Atmospheric Sciences and Climate (CNR-ISAC),Operational
+82,Norrkoping (SMHI),0,Norrkoping - Swedish Meteorological and Hydrological Institute (SMHI-Sweden),Operational
+82,Norrkoping (SHMI),10,Kangerlussuaq - Danish Meteorological Institute (DMI-Greenland),Operational
+82,Norrkoping (SMHI),20,Oslo - Norwegian Meteorological Institute (NMI-Norway),Operational
+82,Norrkoping (SMHI),30,Sodankyla - Arctic Research Centre (FMI/ARC-Finland),Operational
 85,Toulouse (RSMC),200,Institut National de l'Environnement Industriel et des Risques (France),Operational
 85,Toulouse (RSMC),201,Rheinisches Institut fuer Umweltforschung an der Universitaet zu Koeln E.V. (Germany),Operational
 85,Toulouse (RSMC),202,Institut Francais de Recherche pour l'Exploitation de la Mer,Operational
