@@ -132,7 +132,7 @@ char *bufrnoaa_get_version(char *version, size_t version_size, char *build, size
 */
 void print_version()
 {
-   char version[16], build[64], builder[32];
+   char version[16], build[96], builder[32];
 
    bufrnoaa_get_version(version, sizeof (version),build, sizeof(build),builder, sizeof(builder),NULL, NULL, NULL);
    printf ("%s: Version '%s' built %s and %s.\n" , OWN, VERSION, build, builder);
