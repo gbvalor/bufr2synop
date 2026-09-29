@@ -414,12 +414,13 @@ int bufr2tac_set_error(struct bufr2tac_subset_state* s, int severity, const char
 int bufr2tac_error_severity_count(const struct bufr2tac_error_stack* e, int severity);
 
 /*!
-  \fn int bufr2tac_print_error(const struct bufr2tac_error_stack *e)
-  \brief Print all errors/warnings in error stack
+  \fn int bufr2tac_print_error(const struct bufr2tac_error_stack *e, int debug_level)
+  \brief Print errors from the error stack according to the debug level
   \param [in] e Pointer to error stack to print
+  \param [in] debug_level Debug level (0=no output, 1=errors only, 2=all entries)
   \return 0 on success
 */
-int bufr2tac_print_error(const struct bufr2tac_error_stack* e);
+int bufr2tac_print_error(const struct bufr2tac_error_stack* e, int debug_level);
 
 /*!
   \fn int bufr2tac_set_debug_level(int level)

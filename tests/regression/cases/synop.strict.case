@@ -1,0 +1,7 @@
+# SYNOP with -p 0 -D 1: strict mode on a malformed report (bad bearing/wind
+# values). No TAC is produced; the interesting output is the error stack on
+# stderr, so this case checks both streams.
+INPUT=20260922050724_ISNG01_WSSS_220500.bufr
+ARGS="-p 0 -D 1"
+GOLDEN=synop_strict.stdout
+GOLDEN_ERR=synop_strict.stderr

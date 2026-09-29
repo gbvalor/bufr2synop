@@ -17,7 +17,13 @@
 # one already in examples/, then add cases/<name>.case defining INPUT, ARGS
 # (extra bufrtotac flags beyond -i/-t, may be empty; QUOTE it if it has more
 # than one word, e.g. ARGS="-n -3", otherwise the shell parses it as
-# "run the command -3 with ARGS=-n set") and GOLDEN (filename under golden/).
+# "run the command -3 with ARGS=-n set"), GOLDEN (filename under golden/ for
+# stdout) and optionally GOLDEN_ERR (filename under golden/ for stderr, e.g.
+# for a strict-mode case that produces no TAC and only logs to stderr).
+# stdout and stderr are captured and compared separately, never merged: a
+# `2>&1` capture's byte order between the two streams depends on libc
+# buffering, which differs between Linux and macOS, and this suite runs CI on
+# both.
 # Run with --record and review the golden output by hand before trusting it
 # — recording only captures "what the code does now", not
 # "what is correct".
@@ -70,8 +76,25 @@ if [ ${#case_files[@]} -eq 0 ]; then
 fi
 
 tmp_out="$(mktemp)"
+tmp_err="$(mktemp)"
 tmp_diff="$(mktemp)"
-trap 'rm -f "$tmp_out" "$tmp_diff"' EXIT
+trap 'rm -f "$tmp_out" "$tmp_err" "$tmp_diff"' EXIT
+
+# Compares $2 (actual) against $1 (golden), labeling failures with $3/$4
+# (stream name / case name). Prints a diff and returns 1 on mismatch.
+check_stream() {
+    local golden_path="$1" actual_path="$2" label="$3" name="$4"
+    if [ ! -f "$golden_path" ]; then
+        echo "FAIL $name ($label): no golden file yet, run '$0 --record' first"
+        return 1
+    fi
+    if diff -u "$golden_path" "$actual_path" > "$tmp_diff" 2>&1; then
+        return 0
+    fi
+    echo "FAIL $name ($label): output differs from golden file"
+    cat "$tmp_diff"
+    return 1
+}
 
 status=0
 for case_file in "${case_files[@]}"; do
@@ -82,6 +105,7 @@ for case_file in "${case_files[@]}"; do
     INPUT=""
     ARGS=""
     GOLDEN=""
+    GOLDEN_ERR=""
     # shellcheck disable=SC1090
     source "$case_file"
 
@@ -115,25 +139,28 @@ for case_file in "${case_files[@]}"; do
     # Intentionally unquoted: ARGS is a space-separated list of extra flags
     # (e.g. "-p 0"), and this avoids bash-3.2's "unbound variable" trap on
     # empty arrays under `set -u` (macOS ships bash 3.2 as /bin/bash).
-    ( cd "$REPO_ROOT" && "$BUFRTOTAC" -i "$rel_input" -t "$TABLES_DIR" $ARGS ) > "$tmp_out"
+    ( cd "$REPO_ROOT" && "$BUFRTOTAC" -i "$rel_input" -t "$TABLES_DIR" $ARGS ) > "$tmp_out" 2> "$tmp_err"
 
     if [ "$MODE" = "record" ]; then
         cp "$tmp_out" "$golden"
-        echo "recorded $case_name -> ${golden#"$REPO_ROOT"/}"
+        echo "recorded $case_name (stdout) -> ${golden#"$REPO_ROOT"/}"
+        if [ -n "$GOLDEN_ERR" ]; then
+            golden_err="$GOLDEN_DIR/$GOLDEN_ERR"
+            cp "$tmp_err" "$golden_err"
+            echo "recorded $case_name (stderr) -> ${golden_err#"$REPO_ROOT"/}"
+        fi
         continue
     fi
 
-    if [ ! -f "$golden" ]; then
-        echo "FAIL $case_name: no golden file yet, run '$0 --record' first"
-        status=1
-        continue
+    case_status=0
+    check_stream "$golden" "$tmp_out" "stdout" "$case_name" || case_status=1
+    if [ -n "$GOLDEN_ERR" ]; then
+        check_stream "$GOLDEN_DIR/$GOLDEN_ERR" "$tmp_err" "stderr" "$case_name" || case_status=1
     fi
 
-    if diff -u "$golden" "$tmp_out" > "$tmp_diff" 2>&1; then
+    if [ "$case_status" -eq 0 ]; then
         echo "PASS $case_name"
     else
-        echo "FAIL $case_name: output differs from golden file"
-        cat "$tmp_diff"
         status=1
     fi
 done

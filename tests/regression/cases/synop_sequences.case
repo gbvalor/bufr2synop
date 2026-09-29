@@ -1,0 +1,4 @@
+# SYNOP with -S 5..7: only subsets 5 to 7 of the batch are decoded.
+INPUT=20141018211119_ISIN03_EGRR_182100.bufr
+ARGS="-S 5..7"
+GOLDEN=20141018211119_ISIN03_EGRR_182100.bufr.seqs_5_7.tac

@@ -1,0 +1,6 @@
+# ERROR: syn_parse_x05():  Descriptor: 0 05 021: "Bearing or azimuth" = 486.770000 . Bad bearing
+# ERROR: syn_parse_x05():  Descriptor: 0 05 021: "Bearing or azimuth" = 509.000000 . Bad bearing
+# ERROR: syn_parse_x11():  Descriptor: 0 11 002: "Wind speed" = 241.100000 . Bad wind speed
+# ERROR: syn_parse_x11():  Descriptor: 0 11 041: "Maximum wind gust speed" = 385.700000 . Bad max wind gust speed
+# ERROR: syn_parse_x11():  Descriptor: 0 11 041: "Maximum wind gust speed" = 408.700000 . Bad max wind gust speed
+# bufr2tac: parse_subset_as_synop(): strict mode enabled and errors present

@@ -21,7 +21,12 @@ testing a different build tree.
   - `ARGS` — extra `bufrtotac` flags beyond `-i`/`-t` (may be empty). **Quote it** if it has
     more than one word, e.g. `ARGS="-n -3"` — otherwise the shell parses `ARGS=-n -3` as
     "run the command `-3` with `ARGS=-n` set", not as an assignment.
-  - `GOLDEN` — filename of the expected output, under `golden/`.
+  - `GOLDEN` — filename of the expected stdout, under `golden/`.
+  - `GOLDEN_ERR` — optional filename of the expected stderr, under `golden/`. Set this for a
+    case where the interesting output is on stderr (e.g. `-D 1`/`-D 2` debug logging, or a
+    strict-mode `-p 0` case that produces no TAC at all). stdout and stderr are captured and
+    compared separately, never merged — a merged `2>&1` capture's byte order between the two
+    streams depends on libc buffering, which differs between Linux and macOS, and CI runs both.
 - `inputs/` — BUFR files that exist only for testing. Reuse a file already in `examples/`
   instead of duplicating it here when one already exercises what you need — `examples/` is
   also what the README's usage walkthrough and `make install` ship.

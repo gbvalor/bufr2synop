@@ -154,33 +154,37 @@ int bufr2tac_error_severity_count(const struct bufr2tac_error_stack* e, int seve
 }
 
 /*!
-  \fn int bufr2tac_print_error(const struct bufr2tac_error_stack* e)
-  \brief Print all errors in the error stack to stdout
+    \fn int bufr2tac_print_error(const struct bufr2tac_error_stack* e, int debug_level)
+    \brief Print errors from the error stack according to the debug level
   \param [in] e Pointer to struct \ref bufr2tac_error_stack to print
+    \param [in] debug_level Debug level (0=no output, 1=errors only, 2=all entries)
   \return 0 on success, 1 if unknown severity found
 */
-int bufr2tac_print_error(const struct bufr2tac_error_stack* e)
+int bufr2tac_print_error(const struct bufr2tac_error_stack* e, int debug_level)
 {
     unsigned int i;
-    if (e->ne == 0) {
-        printf("# No info/warning/error \n");
+    if (debug_level == 0 || e->ne == 0)
         return 0;
-    }
+    if (debug_level < 0 || debug_level > 2)
+        return 1;
 
     for (i = 0; i < e->ne; i++) {
+        if (debug_level == 1 && e->err[i].severity != 2)
+            continue;
         if (e->err[i].severity == 0)
-            printf("# INFO: ");
+            fprintf(stderr,"# INFO: ");
         else if (e->err[i].severity == 1)
-            printf("# WARNING: ");
+            fprintf(stderr,"# WARNING: ");
         else if (e->err[i].severity == 2)
-            printf("# ERROR: ");
+            fprintf(stderr,"# ERROR: ");
         else {
-            printf("# %d\n", e->err[i].severity);
+            fprintf(stderr,"# %d\n", e->err[i].severity);
             return 1;
         }
-        printf("%s\n", e->err[i].description);
+        fprintf(stderr,"%s\n", e->err[i].description);
     }
-    if (e->full > 0)
-        printf("# More debug info follows, stack of logs full\n");
+    if (debug_level == 2 && e->full > 0)
+        fprintf(stderr,"# More debug info follows, stack of logs full\n");
+    fflush(stderr);
     return 0;
 }

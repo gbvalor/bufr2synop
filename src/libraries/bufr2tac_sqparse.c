@@ -172,8 +172,7 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
       // Parse FM-12, FM-13 and FM-14
       if ( parse_subset_as_synop ( m, st, sq, err ) == 0 )
         {
-          if (BUFR2TAC_DEBUG_LEVEL)
-            bufr2tac_print_error(&st->e);
+          bufr2tac_print_error(&st->e, BUFR2TAC_DEBUG_LEVEL);
           return print_synop_report ( m );
         }
         
@@ -183,8 +182,7 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
       // parse BUOY
       if ( parse_subset_as_buoy ( m, st, sq, err ) == 0 )
         {
-          if (BUFR2TAC_DEBUG_LEVEL)
-            bufr2tac_print_error(&st->e);
+          bufr2tac_print_error(&st->e, BUFR2TAC_DEBUG_LEVEL);
           return print_buoy_report ( m );
         }
     }
@@ -193,8 +191,7 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
       // psrse TEMP
       if ( parse_subset_as_temp ( m, st, sq, err ) == 0 )
         {
-          if (BUFR2TAC_DEBUG_LEVEL)
-            bufr2tac_print_error(&st->e);
+          bufr2tac_print_error(&st->e, BUFR2TAC_DEBUG_LEVEL);
           return print_temp_report ( m );
         }
     }
@@ -203,14 +200,12 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
       // psrse CLIMAT
       if ( parse_subset_as_climat ( m, st, sq, err ) == 0 )
         {
-          if (BUFR2TAC_DEBUG_LEVEL)
-            bufr2tac_print_error(&st->e);
+          bufr2tac_print_error(&st->e, BUFR2TAC_DEBUG_LEVEL);
           return print_climat_report ( m );
         }
     }
 
   // when reached this point we have han error
-  if (BUFR2TAC_DEBUG_LEVEL)
-    bufr2tac_print_error(&st->e);
+  bufr2tac_print_error(&st->e, BUFR2TAC_DEBUG_LEVEL);
   return 1;
 }
