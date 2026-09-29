@@ -1,0 +1,4 @@
+# SYNOP: default TAC output for a batch of surface synoptic reports.
+INPUT=20141018211119_ISIN03_EGRR_182100.bufr
+ARGS=
+GOLDEN=20141018211119_ISIN03_EGRR_182100.bufr.tac

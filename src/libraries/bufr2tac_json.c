@@ -71,7 +71,12 @@ int print_json_alphanum ( FILE *f, const char *type, const char *alphanum, const
 */
 int print_json ( FILE *f, const struct metreport *m )
 {
-  fprintf ( f, "{\"metreport\" :" );
+  // A report with more than one part (e.g. TEMP TTAA/TTBB/TTCC/TTDD) needs a JSON array to
+  // hold them; a single-part report keeps the plain object shape used since json output
+  // was introduced, so existing single-part consumers see no change.
+  int multipart = ( m->alphanum2[0] || m->alphanum3[0] || m->alphanum4[0] );
+
+  fprintf ( f, "{\"metreport\" :%s", multipart ? " [" : "" );
   if ( m->alphanum[0] )
     {
       print_json_alphanum ( f, m->type, m->alphanum, m );
@@ -94,6 +99,6 @@ int print_json ( FILE *f, const struct metreport *m )
       print_json_alphanum ( f, m->type4, m->alphanum4, m );
     }
 
-  fprintf ( f, "\n}\n" );
+  fprintf ( f, "%s\n}\n", multipart ? " ]" : "" );
   return 0;
 }

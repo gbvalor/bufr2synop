@@ -1,0 +1,6 @@
+# TEMP with -j: exercises the multi-part ("metreport" as array) JSON path,
+# fixed 2026-09-29 (was invalid JSON before: parts were concatenated as
+# sibling `{...}, {...}` values instead of array elements).
+INPUT=20160402121749_IUSH01_DRRN_021100.bufr
+ARGS="-j"
+GOLDEN=temp_json.json

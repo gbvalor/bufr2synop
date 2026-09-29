@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 #
-# Regression test for bufrtotac: decodes the sample BUFR files in examples/
-# and compares the TAC output against golden files stored in golden/.
+# Regression test for bufrtotac. Each file in cases/*.case describes one test:
+# which sample BUFR file to decode, which extra bufrtotac options to use, and
+# which golden file in golden/ holds the expected output.
 #
 # Usage:
 #   tests/regression/run.sh            # check current output against golden files
@@ -11,11 +12,22 @@
 #   BUFR2TAC_TEST_BIN     path to the bufrtotac binary to test
 #                         (default: build/src/apps/bufrtotac or build0/src/apps/bufrtotac)
 #   BUFR2TAC_TEST_TABLES  path to the bufr tables directory (default: share/)
+#
+# Adding a case: drop the source BUFR in inputs/ (test-only fixtures) or reuse
+# one already in examples/, then add cases/<name>.case defining INPUT, ARGS
+# (extra bufrtotac flags beyond -i/-t, may be empty; QUOTE it if it has more
+# than one word, e.g. ARGS="-n -3", otherwise the shell parses it as
+# "run the command -3 with ARGS=-n set") and GOLDEN (filename under golden/).
+# Run with --record and review the golden output by hand before trusting it
+# — recording only captures "what the code does now", not
+# "what is correct".
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+CASES_DIR="$SCRIPT_DIR/cases"
+INPUTS_DIR="$SCRIPT_DIR/inputs"
 EXAMPLES_DIR="$REPO_ROOT/examples"
 GOLDEN_DIR="$SCRIPT_DIR/golden"
 TABLES_DIR="${BUFR2TAC_TEST_TABLES:-$REPO_ROOT/share}"
@@ -46,48 +58,81 @@ if [ -z "$BUFRTOTAC" ] || [ ! -x "$BUFRTOTAC" ]; then
     exit 2
 fi
 
-# Sample files known to decode to TAC (sn.0000.bin is a NOAA archive for bufrnoaa, not bufrtotac)
-FILES=(
-    "20141018211119_ISIN03_EGRR_182100.bufr"
-    "20150705121512_ISCD01_LIIB_050000.bufr"
-    "20160402121749_IUSH01_DRRN_021100.bufr"
-)
-
 mkdir -p "$GOLDEN_DIR"
+
+shopt -s nullglob
+case_files=("$CASES_DIR"/*.case)
+shopt -u nullglob
+
+if [ ${#case_files[@]} -eq 0 ]; then
+    echo "error: no test cases found in $CASES_DIR" >&2
+    exit 2
+fi
 
 tmp_out="$(mktemp)"
 tmp_diff="$(mktemp)"
 trap 'rm -f "$tmp_out" "$tmp_diff"' EXIT
 
 status=0
-for name in "${FILES[@]}"; do
-    input="$EXAMPLES_DIR/$name"
-    golden="$GOLDEN_DIR/$name.tac"
+for case_file in "${case_files[@]}"; do
+    case_name="$(basename "$case_file" .case)"
 
-    if [ ! -f "$input" ]; then
-        echo "FAIL $name: input file not found at $input"
+    # Reset per-case variables so a case that forgets to set one doesn't
+    # silently inherit it from the previous case in the loop.
+    INPUT=""
+    ARGS=""
+    GOLDEN=""
+    # shellcheck disable=SC1090
+    source "$case_file"
+
+    if [ -z "$INPUT" ] || [ -z "$GOLDEN" ]; then
+        echo "FAIL $case_name: case file must set INPUT and GOLDEN"
         status=1
         continue
     fi
 
-    "$BUFRTOTAC" -i "$input" -t "$TABLES_DIR" > "$tmp_out"
+    input_path=""
+    for dir in "$INPUTS_DIR" "$EXAMPLES_DIR"; do
+        if [ -f "$dir/$INPUT" ]; then
+            input_path="$dir/$INPUT"
+            break
+        fi
+    done
+
+    if [ -z "$input_path" ]; then
+        echo "FAIL $case_name: input '$INPUT' not found in $INPUTS_DIR or $EXAMPLES_DIR"
+        status=1
+        continue
+    fi
+
+    golden="$GOLDEN_DIR/$GOLDEN"
+
+    # Run with cwd = repo root and pass a repo-relative -i path: bufrtotac echoes the -i
+    # argument verbatim into e.g. JSON output ("bufrfile"), so an absolute path here would
+    # bake this machine's checkout location into the golden file and break on any other one.
+    rel_input="${input_path#"$REPO_ROOT"/}"
+
+    # Intentionally unquoted: ARGS is a space-separated list of extra flags
+    # (e.g. "-p 0"), and this avoids bash-3.2's "unbound variable" trap on
+    # empty arrays under `set -u` (macOS ships bash 3.2 as /bin/bash).
+    ( cd "$REPO_ROOT" && "$BUFRTOTAC" -i "$rel_input" -t "$TABLES_DIR" $ARGS ) > "$tmp_out"
 
     if [ "$MODE" = "record" ]; then
         cp "$tmp_out" "$golden"
-        echo "recorded $name -> ${golden#"$REPO_ROOT"/}"
+        echo "recorded $case_name -> ${golden#"$REPO_ROOT"/}"
         continue
     fi
 
     if [ ! -f "$golden" ]; then
-        echo "FAIL $name: no golden file yet, run '$0 --record' first"
+        echo "FAIL $case_name: no golden file yet, run '$0 --record' first"
         status=1
         continue
     fi
 
     if diff -u "$golden" "$tmp_out" > "$tmp_diff" 2>&1; then
-        echo "PASS $name"
+        echo "PASS $case_name"
     else
-        echo "FAIL $name: output differs from golden file"
+        echo "FAIL $case_name: output differs from golden file"
         cat "$tmp_diff"
         status=1
     fi
