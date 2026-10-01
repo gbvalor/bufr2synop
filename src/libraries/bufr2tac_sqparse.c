@@ -87,6 +87,16 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
         {
           strcpy ( st->type_report, "CLIMAT" );  // FM-71 CLIMAT
         }
+      else if ( find_descriptor ( kdtlst, nlst,307090 ) ||
+                find_descriptor ( kdtlst, nlst,301092 ) )
+        {
+          // Explicit, unambiguous FM-14 sequence: check this before the
+          // ksec1[6] (subcategory_local, a centre-specific and often unset
+          // field) fallback below, otherwise a message reporting
+          // subcategory_local == 0 would be misclassified as AAXX even
+          // though it contains 307090/301092.
+          strcpy ( st->type_report,"OOXX" );  // FM-14 synop-mobil
+        }
       else if ( find_descriptor_interval ( kdtlst, nlst, 307079, 307086 ) ||
                 find_descriptor ( kdtlst, nlst,307091 ) ||
                 find_descriptor ( kdtlst, nlst,307092 ) ||
@@ -95,13 +105,11 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
                 ksec1[6] == 0 || ksec1[6] == 1 || ksec1[6] == 2 )
         {
           if ( find_descriptor (kdtlst, nlst, 1010 ) )
-             strcpy ( st->type_report,"BBXX" );  // Fixed Buoy platform as ship 
-          else  
+             strcpy ( st->type_report,"BBXX" );  // Fixed Buoy platform as ship
+          else
              strcpy ( st->type_report,"AAXX" );  // FM-12 synop
         }
-      else if ( find_descriptor ( kdtlst, nlst,307090 ) ||
-                find_descriptor ( kdtlst, nlst,301092 ) ||
-                ksec1[6] == 3 || ksec1[6] == 4 || ksec1[6] == 5 )
+      else if ( ksec1[6] == 3 || ksec1[6] == 4 || ksec1[6] == 5 )
         {
           strcpy ( st->type_report,"OOXX" );  // FM-14 synop-mobil
         }

@@ -1,0 +1,8 @@
+# SYNOP MOBIL (OOXX, FM-14), sequence 307090, category 0 / subcategory 3 /
+# subcategory_local 0. Regression case for a bug where a 0 subcategory_local
+# (a centre-specific, often-unset field) made parse_subset_sequence() match
+# the AAXX fallback heuristic before ever checking for the explicit 307090
+# descriptor, misclassifying OOXX reports as AAXX.
+INPUT=20261001103813_ISNA49_EKMI_011000.bufr
+ARGS=""
+GOLDEN=synop_mobil.tac
