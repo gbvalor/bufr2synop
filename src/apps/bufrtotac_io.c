@@ -416,7 +416,8 @@ int bufrtotac_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subse
 
   // And now set only used ksec1 elements
   ksec1[5] = b->sec1.category;
-  ksec1[6] = b->sec1.subcategory_local;
+  //ksec1[6] = b->sec1.subcategory_local;
+  ksec1[6] = b->sec1.subcategory;
 
   // Finaly we call to bufr2tac library
   bufr2tac_clean_metreport( m );

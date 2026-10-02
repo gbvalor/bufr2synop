@@ -349,20 +349,25 @@ int parse_subset_as_synop(struct metreport* m, struct bufr2tac_subset_state* s, 
     syn->mask |= SYNOP_BUFR;
 
     // Fill some metreport fields
-    if (strlen(syn->s0.II)) {
+    if (syn->s0.D_D[0]) {
+        strcpy(m->g.index, syn->s0.D_D);
+    } else if (syn->s0.IIIII[0]) {
+        strcpy(m->g.index, syn->s0.IIIII);
+    } else if (syn->s0.A1[0] && syn->s0.bw[0] && syn->s0.nbnbnb[0]) {
+        m->g.index[0] = syn->s0.A1[0]; // Initialize the index to an empty string before concatenation
+        m->g.index[1] = syn->s0.bw[0];
+        m->g.index[2] = syn->s0.nbnbnb[0];
+        m->g.index[3] = syn->s0.nbnbnb[1];
+        m->g.index[4] = syn->s0.nbnbnb[2];
+        m->g.index[5] = 0;
+    } else if (syn->s0.II[0] && syn->s0.iii[0]) {
         m->g.index[0] = syn->s0.II[0];
         m->g.index[1] = syn->s0.II[1];
         m->g.index[2] = syn->s0.iii[0];
         m->g.index[3] = syn->s0.iii[1];
         m->g.index[4] = syn->s0.iii[2];
         m->g.index[5] = 0;
-        //strcpy(m->g.index, syn->s0.II);
-        //strcat(m->g.index, syn->s0.iii);
-    } else if (strlen(syn->s0.D_D)) {
-        strcpy(m->g.index, syn->s0.D_D);
-    } else if (strlen(syn->s0.IIIII)) {
-        strcpy(m->g.index, syn->s0.IIIII);
-    }
+    } 
 
     if (s->mask & SUBSET_MASK_HAVE_LATITUDE) {
         m->g.lat = s->lat;

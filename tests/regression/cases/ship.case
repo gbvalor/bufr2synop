@@ -1,0 +1,6 @@
+# SHIP (BBXX, FM-13), sequence 308009, category 1 / subcategory 0 /
+# subcategory_local 0. Regression case for a bug becaus it also includes 
+# 001001 and 001002 (WMO block and station number) before main sequence 308009
+INPUT=20261002174152_ISSD03_ENMI_021700.bufr
+ARGS=""
+GOLDEN=ship.tac

@@ -35,6 +35,7 @@ size_t print_synop_sec0 ( char **sec0, size_t lmax, const struct synop_chunks *s
 {
   char *c = *sec0;
   size_t used = 0;
+  int set_id = 0;
 
   used += snprintf ( c + used, lmax - used,  "%s%s%s%s%s", syn->e.YYYY, syn->e.MM, syn->e.DD, syn->e.HH, syn->e.mm );
 
@@ -44,10 +45,12 @@ size_t print_synop_sec0 ( char **sec0, size_t lmax, const struct synop_chunks *s
   if ( syn->s0.D_D[0] )
     {
       used += snprintf ( c + used, lmax - used,  " %s", syn->s0.D_D );
+      set_id = 1;
     }
   else if ( syn->s0.A1[0] && syn->s0.bw[0] && syn->s0.nbnbnb[0] )
     {
       used += snprintf ( c + used, lmax - used,  " %s%s%s", syn->s0.A1, syn->s0.bw, syn->s0.nbnbnb );
+      set_id = 1;
     }
 
 
@@ -55,7 +58,7 @@ size_t print_synop_sec0 ( char **sec0, size_t lmax, const struct synop_chunks *s
   used += snprintf ( c + used, lmax - used, " %s%s%s", syn->s0.YY, syn->s0.GG, syn->s0.iw );
 
   // print IIiii
-  if ( syn->s0.II[0] )
+  if ( set_id == 0 && syn->s0.II[0] )
     {
       used += snprintf ( c + used, lmax - used, " %s%s", syn->s0.II, syn->s0.iii );
     }

@@ -97,6 +97,10 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
           // though it contains 307090/301092.
           strcpy ( st->type_report,"OOXX" );  // FM-14 synop-mobil
         }
+      else if ( find_descriptor ( kdtlst, nlst, 308009 ) )
+        {
+          strcpy ( st->type_report,"BBXX" );  // FM-13 ship
+        }
       else if ( find_descriptor_interval ( kdtlst, nlst, 307079, 307086 ) ||
                 find_descriptor ( kdtlst, nlst,307091 ) ||
                 find_descriptor ( kdtlst, nlst,307092 ) ||
@@ -104,7 +108,7 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
                 find_descriptor ( kdtlst, nlst,307182 ) ||
                 ksec1[6] == 0 || ksec1[6] == 1 || ksec1[6] == 2 )
         {
-          if ( find_descriptor (kdtlst, nlst, 1010 ) )
+          if (find_descriptor (kdtlst, nlst, 1010 ) )
              strcpy ( st->type_report,"BBXX" );  // Fixed Buoy platform as ship
           else
              strcpy ( st->type_report,"AAXX" );  // FM-12 synop
@@ -112,11 +116,6 @@ int parse_subset_sequence ( struct metreport *m, struct bufr_subset_sequence_dat
       else if ( ksec1[6] == 3 || ksec1[6] == 4 || ksec1[6] == 5 )
         {
           strcpy ( st->type_report,"OOXX" );  // FM-14 synop-mobil
-        }
-      // these descriptors should be in category 1, but some FM-13 are coded as category 0  
-      else if ( find_descriptor ( kdtlst, nlst,308009 ) )
-        {
-          strcpy ( st->type_report,"BBXX" );  // FM-13 ship
         }
       break;
     case 1:
