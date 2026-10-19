@@ -232,6 +232,20 @@ extern "C" {
 #define PRINT_BITMASK_GEO (2)
 
 /*!
+*  \def PRINT_BITMASK_SYNOP_AIR_PRESSURE 
+*  \brief Bit mask to member \a print_mask in struct \ref metreport to print non mandatory Synop Sec 1. 4PPPP as 
+          4//// if no data available
+*/
+#define PRINT_BITMASK_SYNOP_AIR_PRESSURE (4)
+
+/*!
+ * \def PRINT_BITMASK_SYNOP_AIR_DEWPOINT
+ * \brief Bit mask to member \a print_mask in struct \ref metreport to print non mandatory Synop Sec 1. 2snTdTdTd as 
+         2//// if no data available
+*/
+#define PRINT_BITMASK_SYNOP_AIR_DEWPOINT (8)
+
+/*!
  * \def bufr_subset_sequence_data
  * \brief To use bufrdeco library with legacy old code using ECMWF library which is not used currently
  */
@@ -2235,10 +2249,17 @@ int buukey_(int*, int*, int*, int*, int*);
 */
 int buprt_(int*, int*, int*, int*, char**, char**, char**, int*, double*, int*, int*, int*);
 
+/*! \brief Set the print bitmask for a metreport based on bufr2tac settings
+  \param [in] m Pointer to the metreport structure
+  \return 0 on success
+*/
+int bufr2tac_set_print_bitmask_from_metreport(const struct metreport *m);
+
 // Global variables
 /*! Global debug level variable - Controls verbosity of debug output (0=none, higher=more verbose) */
 extern int BUFR2TAC_DEBUG_LEVEL;
 extern int BUFR2TAC_STRICT_MODE;
+extern int BUFR2TAC_PRINT_BITMASK;
 
 #ifndef PATH_MAX
 #define PATH_MAX 1024

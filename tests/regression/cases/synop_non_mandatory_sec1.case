@@ -1,0 +1,6 @@
+# SYNOP with -P: print non-mandatory Sec 1 groups 2snTdTdTd and 4PPPP as
+# 2//// / 4//// placeholders when the dewpoint/air-pressure data is missing,
+# instead of omitting the group entirely (default behavior without -P).
+INPUT=20261018060201_ISXD01_EDZW_180600_BBB_7042.bufr
+ARGS="-P"
+GOLDEN=20261018060201_ISXD01_EDZW_180600_BBB_7042.bufr._P.tac

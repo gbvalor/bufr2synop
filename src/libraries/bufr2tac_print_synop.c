@@ -142,6 +142,10 @@ size_t print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn )
         {
           used += snprintf ( c + used, lmax - used, " 29%s", syn->s1.UUU );
         }
+      else if ( BUFR2TAC_PRINT_BITMASK & PRINT_BITMASK_SYNOP_AIR_DEWPOINT )
+        {
+          used += snprintf ( c + used, lmax - used, " 2////" );
+        } 
 
       // printf 3PoPoPoPo
       if ( syn->s1.PoPoPoPo[0] )
@@ -161,6 +165,10 @@ size_t print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn )
               syn->s1.a3[0] = '/';
             }
           used += snprintf ( c + used, lmax - used, " 4%s%s", syn->s1.a3, syn->s1.hhh );
+        }
+      else if ( BUFR2TAC_PRINT_BITMASK & PRINT_BITMASK_SYNOP_AIR_PRESSURE )
+        {
+          used += snprintf ( c + used, lmax - used, " 4////" );
         }
 
       // printf 5appp
@@ -823,7 +831,7 @@ int print_synop_report (struct metreport *m)
 {
   if (m == NULL)
     {
-      return 1; // No climat report to print
+      return 1; // No synop report to print
     }
   
   char *c = &(m->alphanum[0]);
@@ -831,6 +839,9 @@ int print_synop_report (struct metreport *m)
   size_t lmax = sizeof(m->alphanum);
   struct synop_chunks *syn = &m->synop;
   
+  // set the print bitmask
+  bufr2tac_set_print_bitmask_from_metreport(m);
+
   // Needs time extension
   if ( syn->e.YYYY[0] == 0 || syn->e.YYYY[0] == '0' )
     {

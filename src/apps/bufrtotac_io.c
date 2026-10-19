@@ -51,6 +51,7 @@ void bufrtotac_print_usage ( void )
   printf ( "       -n. Do not try to decode to TAC, just parse BUFR report\n" );
   printf ( "       -o output. Pathname of output file. Default is standar output\n" );
   printf ( "       -p mode. Permisive mode. Not strict about errors (1=permissive, 0=strict). Default is 1. Use -p 0 to enable strict mode\n" );
+  printf ( "       -P. Print non mandatory Synop Sec 1. 2snTdTdTd and 4PPPP as 2//// 4//// if no data available\n" );
   printf ( "       -R. Read bit_offsets file if exists. The path of these files is to add '.offs' to the name of input BUFR file\n");
   printf ( "       -s prints a long output with explained sequence of descriptors\n" );
   printf ( "       -S first..last . Print only results for subsets in range first..last (First subset available is 0). Default is all subsets\n" );
@@ -186,11 +187,12 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
   PRINT_JSON_SEC3 = 0;
   PRINT_JSON_EXPANDED_TREE = 0;
   LOCAL_TABLES = 1; // by default try to read and use local tables if needed
-  
+  PRINT_SYNOP_NON_MANDATORY_SEC1 = 0;
+
   /*
      Read input options
   */
-  while ( ( iopt = getopt ( _argc, _argv, "cD:Ehi:jJHI:Nnp:o:S:st:TvgGVWRxX0123B:" ) ) !=-1 )
+  while ( ( iopt = getopt ( _argc, _argv, "cD:Ehi:jJHI:Nnp:Po:S:st:TvgGVWRxX0123B:" ) ) !=-1 )
     switch ( iopt )
       {
       case 'i':
@@ -335,6 +337,10 @@ int bufrtotac_read_args ( int _argc, char * _argv[] )
          PRINT_JSON_SEC3 = 1;
          break;
          
+      case 'P':
+         PRINT_SYNOP_NON_MANDATORY_SEC1 = 1;
+         break;
+         
       case 'B':
         if ( strlen ( optarg ) < BUFRDECO_PATH_LENGTH )
           strcpy ( BUFR_XFILE, optarg );
@@ -430,8 +436,12 @@ int bufrtotac_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subse
   
   if (PRINT_GEO)
     m->print_mask |= PRINT_BITMASK_GEO;
-  
-  
+
+  if (PRINT_SYNOP_NON_MANDATORY_SEC1) {
+      m->print_mask |= PRINT_BITMASK_SYNOP_AIR_PRESSURE;
+      m->print_mask |= PRINT_BITMASK_SYNOP_AIR_DEWPOINT;
+  }
+    
   m->h = &b->header;
   res = parse_subset_sequence ( m, &b->seq, st, kdtlst, nlst, ksec1, err );
   free ( ( void * ) kdtlst );

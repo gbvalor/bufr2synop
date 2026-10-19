@@ -127,6 +127,7 @@ int PRINT_JSON_SEC2;
 int PRINT_JSON_SEC3;
 int PRINT_JSON_EXPANDED_TREE;
 int LOCAL_TABLES; /*!< if != 0 then read and use local BUFR tables */
+int PRINT_SYNOP_NON_MANDATORY_SEC1; /*!< If == 1 then print non mandatory Synop Sec 1. 2snTdTdTd and 4PPPP as 2//// 4//// if no data available */
 
 FILE *FL; /*!< Buffer to read the list of files */
 FILE *OUT; /*!< Buffer to write to OUTPUTFILE */

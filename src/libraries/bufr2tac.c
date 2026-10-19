@@ -30,6 +30,7 @@
 
 int BUFR2TAC_DEBUG_LEVEL = 0; /*!< Set debug level. 0 -> no debug. 1 -> debug. 2 -> verbose debug */
 int BUFR2TAC_STRICT_MODE = 0; /*!< Set strict/permissive mode. 1 -> strict mode. 0 -> permissive mode */
+int BUFR2TAC_PRINT_BITMASK = 0; 
 
 /*!
   \fn char *bufr2tac_get_version(char *version, char *build, char *builder, int *version_major, int *version_minor, int *version_patch)
@@ -115,5 +116,21 @@ int bufr2tac_set_debug_level(int level)
 int bufr2tac_set_strict_mode(int mode)
 {
   BUFR2TAC_STRICT_MODE = mode ? 1 : 0;
+  return 0;
+}
+
+/*!
+  \fn int bufr2tac_set_print_bitmask_from_metreport(struct metreport *m)
+  \brief Set the print bitmask for a metreport based on bufr2tac settings
+  \param [in] m Pointer to the metreport structure
+  \return 0 on success
+*/
+int bufr2tac_set_print_bitmask_from_metreport(const struct metreport *m)
+{
+  if (m == NULL)
+    return 1; // No metreport provided
+
+  BUFR2TAC_PRINT_BITMASK = m->print_mask;
+
   return 0;
 }
