@@ -51,7 +51,7 @@ void bufrtotac_print_usage ( void )
   printf ( "       -n. Do not try to decode to TAC, just parse BUFR report\n" );
   printf ( "       -o output. Pathname of output file. Default is standar output\n" );
   printf ( "       -p mode. Permisive mode. Not strict about errors (1=permissive, 0=strict). Default is 1. Use -p 0 to enable strict mode\n" );
-  printf ( "       -P. Print non mandatory Synop Sec 1. 2snTdTdTd and 4PPPP as 2//// 4//// if no data available\n" );
+  printf ( "       -P. Print non mandatory Synop Sec 1. 2snTdTdTd, 3PoPoPoPo and 4PPPP as 2//// 3//// 4//// if no data available\n" );
   printf ( "       -R. Read bit_offsets file if exists. The path of these files is to add '.offs' to the name of input BUFR file\n");
   printf ( "       -s prints a long output with explained sequence of descriptors\n" );
   printf ( "       -S first..last . Print only results for subsets in range first..last (First subset available is 0). Default is all subsets\n" );
@@ -440,6 +440,7 @@ int bufrtotac_parse_subset_sequence ( struct metreport *m, struct bufr2tac_subse
   if (PRINT_SYNOP_NON_MANDATORY_SEC1) {
       m->print_mask |= PRINT_BITMASK_SYNOP_AIR_PRESSURE;
       m->print_mask |= PRINT_BITMASK_SYNOP_AIR_DEWPOINT;
+      m->print_mask |= PRINT_BITMASK_SYNOP_STATION_PRESSURE;
   }
     
   m->h = &b->header;

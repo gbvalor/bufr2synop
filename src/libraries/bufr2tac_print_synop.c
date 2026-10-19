@@ -152,6 +152,10 @@ size_t print_synop_sec1 ( char **sec1, size_t lmax, struct synop_chunks *syn )
         {
           used += snprintf ( c + used, lmax - used, " 3%s", syn->s1.PoPoPoPo );
         }
+      else if ( BUFR2TAC_PRINT_BITMASK & PRINT_BITMASK_SYNOP_STATION_PRESSURE )
+        {
+          used += snprintf ( c + used, lmax - used, " 3////" );
+        }
 
       // printf 4PPPP or 4a3hhh
       if ( syn->s1.PPPP[0] )

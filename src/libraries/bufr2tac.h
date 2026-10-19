@@ -246,6 +246,13 @@ extern "C" {
 #define PRINT_BITMASK_SYNOP_AIR_DEWPOINT (8)
 
 /*!
+ * \def PRINT_BITMASK_SYNOP_STATION_PRESSURE
+ * \brief Bit mask to member \a print_mask in struct \ref metreport to print non mandatory Synop Sec 1. 3PoPoPoPo as
+        3//// if no data available
+*/
+#define PRINT_BITMASK_SYNOP_STATION_PRESSURE (16)
+
+/*!
  * \def bufr_subset_sequence_data
  * \brief To use bufrdeco library with legacy old code using ECMWF library which is not used currently
  */
