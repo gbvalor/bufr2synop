@@ -1,0 +1,6 @@
+# BUOY with -j (first subset only, so the golden is a single valid JSON object): the metreport "type" must be "ZZYY". Before 2026-11-19 parse_subset_as_buoy() did not
+# set m->type, so it came out empty in the JSON/CSV/XML outputs (and output filters on the report type,
+# such as -S in bufrdb2tacfil, could not match buoy reports).
+INPUT=20261118002733_IOBX18_CWAO_180002.bufr
+ARGS="-j -S 0..0"
+GOLDEN=buoy_json.json

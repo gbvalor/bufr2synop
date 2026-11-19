@@ -95,6 +95,8 @@ int parse_subset_as_buoy ( struct metreport *m, struct bufr2tac_subset_state *s,
   strcpy ( b->s0.MiMi, "ZZ" );
   strcpy ( b->s0.MjMj, "YY" );
 
+  strcpy ( m->type, "ZZYY" );
+
   b->mask = BUOY_SEC0;
 
   /**** First pass, sequential analysis *****/

@@ -1,0 +1,14 @@
+{"metreport" : { 
+  "type": "ZZYY",
+  "bufrfile": "tests/regression/inputs/20261118002733_IOBX18_CWAO_180002.bufr",
+  "gts_header": "IOBX18 CWAO 180002 BBB",
+  "observation_datetime": "202611180002",
+  "geo": { 
+    "index": "1801967",
+    "latitude": 57.830570,
+    "longitude": -45.938490,
+    "altitude": 0.0
+    },
+  "report": "202611180002 ZZYY 1801967 17116 2302/ 757831 045938 6013/ 22219 00055 33300 88870 20000 30552="
+  }
+}
